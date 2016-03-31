@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggerFactoryBridge;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.util.NameUtil;
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class Category {
 
-    private static LoggerFactory loggerFactory = new PrivateFactory();
+    private static LoggerFactoryBridge loggerFactory = new PrivateFactory();
 
     private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP =
         new WeakHashMap<>();
@@ -83,6 +84,17 @@ public class Category {
     }
 
     static Logger getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
+        final ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
+        Logger logger = loggers.get(name);
+        if (logger != null) {
+            return logger;
+        }
+        logger = factory.makeNewLoggerInstance(name);
+        final Logger prev = loggers.putIfAbsent(name, logger);
+        return prev == null ? logger : prev;
+    }
+
+    static Logger getInstance(final LoggerContext context, final String name, final LoggerFactoryBridge factory) {
         final ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
         Logger logger = loggers.get(name);
         if (logger != null) {
@@ -444,10 +456,10 @@ public class Category {
     /**
      * Private logger factory.
      */
-    private static class PrivateFactory implements LoggerFactory {
+    private static class PrivateFactory implements LoggerFactoryBridge {
 
         @Override
-        public Logger makeNewLoggerInstance(final LoggerContext context, final String name) {
+        public Logger makeNewLoggerInstance(org.apache.logging.log4j.core.LoggerContext context, final String name) {
             return new Logger(context, name);
         }
     }

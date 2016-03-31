@@ -20,14 +20,17 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * Implement this interface to create new instances of Logger or a sub-class of Logger.
+ * Implement this interface to create new instances of Logger or a sub-class of Logger when instantiating with specific
+ * context.
  *
  * <p>
  * See <code>examples/subclass/MyLogger.java</code> for an example.
  * </p>
+ * 
+ * @since 2.6
  */
-public interface LoggerFactory {
+public interface LoggerFactoryBridge {
 
-    Logger makeNewLoggerInstance(String name);
+    Logger makeNewLoggerInstance(org.apache.logging.log4j.core.LoggerContext context, String name);
 
 }
