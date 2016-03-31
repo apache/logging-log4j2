@@ -28,6 +28,8 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -118,10 +120,22 @@ public class LoggerTest {
     private Logger testMessageFactoryMismatch(final String name, final MessageFactory messageFactory1, final MessageFactory messageFactory2) {
         final Logger testLogger = LogManager.getLogger(name, messageFactory1);
         assertThat(testLogger, is(notNullValue()));
-        assertThat(testLogger.getMessageFactory(), equalTo(messageFactory1));
+        checkMessageFactory(messageFactory1, testLogger);
         final Logger testLogger2 = LogManager.getLogger(name, messageFactory2);
-        assertThat(testLogger2.getMessageFactory(), equalTo(messageFactory1));
+        checkMessageFactory(messageFactory1, testLogger2);
         return testLogger;
+    }
+
+    private static void checkMessageFactory(final MessageFactory messageFactory1, final Logger testLogger1) {
+        if (messageFactory1 == null) {
+            assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger1.getMessageFactory().getClass());
+        } else {
+            MessageFactory actual = testLogger1.getMessageFactory();
+            if (actual instanceof MessageFactory2Adapter) {
+                actual = ((MessageFactory2Adapter) actual).getOriginal();
+            }
+            assertEquals(messageFactory1, actual);
+        }
     }
 
     @Test
