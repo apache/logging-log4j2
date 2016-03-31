@@ -32,11 +32,13 @@ import java.util.Locale;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
@@ -232,8 +234,8 @@ public class LoggerTest {
         final TestLogger altLogger = (TestLogger) LogManager.getFormatterLogger(getClass());
         assertEquals(testLogger.getName(), altLogger.getName());
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
+        assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -245,11 +247,18 @@ public class LoggerTest {
         // The message factory is only used when the logger is created.
         final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(TestStringFormatterMessageFactory.class);
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
+        assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
+    }
+
+    private static void assertMessageFactoryInstanceOf(MessageFactory factory, Class cls) {
+        if (factory instanceof MessageFactory2Adapter) {
+            factory = ((MessageFactory2Adapter) factory).getOriginal();
+        }
+        assertTrue(factory.getClass().isAssignableFrom(cls));
     }
 
     @Test
@@ -258,8 +267,8 @@ public class LoggerTest {
         // The message factory is only used when the logger is created.
         final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(new TestStringFormatterMessageFactory());
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
+        assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -270,8 +279,8 @@ public class LoggerTest {
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger("getLogger_String_StringFormatterMessageFactory");
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -285,7 +294,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(TestParameterizedMessageFactory.class,
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(" DEBUG " + Integer.MAX_VALUE, testLogger.getEntries().get(0));
@@ -298,7 +307,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(TestStringFormatterMessageFactory.class,
                 StringFormatterMessageFactory.INSTANCE);
         assertNotNull(testLogger);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -312,10 +321,18 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestParameterizedMessageFactory(),
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(" DEBUG " + Integer.MAX_VALUE, testLogger.getEntries().get(0));
+    }
+
+    private void assertEqualMessageFactory(final MessageFactory messageFactory, final TestLogger testLogger) {
+        MessageFactory actual = testLogger.getMessageFactory();
+        if (actual instanceof MessageFactory2Adapter) {
+            actual = ((MessageFactory2Adapter) actual).getOriginal();
+        }
+        assertEquals(messageFactory, actual);
     }
 
     @Test
@@ -326,7 +343,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestStringFormatterMessageFactory(),
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -338,7 +355,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         final TestLogger testLogger2 = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
                 ParameterizedMessageFactory.INSTANCE);
         assertNotNull(testLogger2);
@@ -356,7 +373,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_ParameterizedMessageFactory",
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(" DEBUG " + Integer.MAX_VALUE, testLogger.getEntries().get(0));
@@ -368,7 +385,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory",
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{} %,d {foo}", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(" DEBUG {} %,d {foo}", testLogger.getEntries().get(0));
@@ -380,7 +397,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory",
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));

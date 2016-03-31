@@ -35,8 +35,8 @@ public class ThresholdFilterTest {
         final ThresholdFilter filter = ThresholdFilter.createFilter(Level.ERROR, null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Test")) //

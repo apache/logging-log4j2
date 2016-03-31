@@ -136,6 +136,210 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     }
 
     /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        return Result.NEUTRAL;
+    }
+
+    /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        return Result.NEUTRAL;
+    }
+
+    /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        return Result.NEUTRAL;
+    }
+
+    /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        return Result.NEUTRAL;
+    }
+
+    /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return Result.NEUTRAL;
+    }
+
+    /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return Result.NEUTRAL;
+    }
+
+    /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return Result.NEUTRAL;
+    }
+
+    /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return Result.NEUTRAL;
+    }
+
+    /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return Result.NEUTRAL;
+    }
+
+    /**
+     * Appender Filter method. The default returns NEUTRAL.
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @param p9 the message parameters
+     * @return The Result of filtering.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return Result.NEUTRAL;
+    }
+
+    /**
      * Returns the Result to be returned when a match occurs.
      * @return the onMatch Result.
      */

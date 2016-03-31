@@ -83,6 +83,74 @@ public class LambdaLoggerTest {
         }
 
         @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5, final Object p6) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5, final Object p6,
+                final Object p7) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5, final Object p6,
+                final Object p7, final Object p8) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5, final Object p6,
+                final Object p7, final Object p8, final Object p9) {
+            return enabled;
+        }
+
+        @Override
         public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
             list.add(new LogEvent(fqcn, level, marker, message, t));
         }
@@ -132,6 +200,9 @@ public class LambdaLoggerTest {
     }
 
     final MySupplier supplier = new MySupplier();
+    final MySupplier supplier2 = new MySupplier();
+    final Supplier[] supplierArray1 = new Supplier[] {supplier};
+    final Supplier[] supplierArray2 = new Supplier[] {supplier, supplier2};
 
     @Before
     public void beforeEachTest() {
@@ -270,11 +341,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testDebugStringParamSupplier() {
-        logger2.disable().debug("abc {}", supplier);
+        logger2.disable().debug("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().debug("abc {}", supplier);
+        logger2.enable().debug("abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -285,11 +356,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testDebugMarkerStringParamSupplier() {
-        logger2.disable().debug(marker, "abc {}", supplier);
+        logger2.disable().debug(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().debug(marker, "abc {}", supplier);
+        logger2.enable().debug(marker, "abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -429,11 +500,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testErrorStringParamSupplier() {
-        logger2.disable().error("abc {}", supplier);
+        logger2.disable().error("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().error("abc {}", supplier);
+        logger2.enable().error("abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -444,11 +515,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testErrorMarkerStringParamSupplier() {
-        logger2.disable().error(marker, "abc {}", supplier);
+        logger2.disable().error(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().error(marker, "abc {}", supplier);
+        logger2.enable().error(marker, "abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -588,11 +659,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testFatalStringParamSupplier() {
-        logger2.disable().fatal("abc {}", supplier);
+        logger2.disable().fatal("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().fatal("abc {}", supplier);
+        logger2.enable().fatal("abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -602,12 +673,29 @@ public class LambdaLoggerTest {
     }
 
     @Test
+    public void testFatalStringParam2Suppliers() {
+        logger2.disable().fatal("abc {}{}", supplierArray2);
+        assertTrue(logger2.list.isEmpty());
+        assertFalse(supplier.invoked);
+        assertFalse(supplier2.invoked);
+
+        logger2.enable().fatal("abc {}{}", supplierArray2);
+        assertEquals(1, logger2.list.size());
+        assertTrue(supplier.invoked);
+        assertTrue(supplier2.invoked);
+
+        final LogEvent event = logger2.list.get(0);
+        assertEquals(Level.FATAL, event.level);
+        assertEquals("abc HiHi", event.message.getFormattedMessage());
+    }
+
+    @Test
     public void testFatalMarkerStringParamSupplier() {
-        logger2.disable().fatal(marker, "abc {}", supplier);
+        logger2.disable().fatal(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().fatal(marker, "abc {}", supplier);
+        logger2.enable().fatal(marker, "abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -747,11 +835,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testInfoStringParamSupplier() {
-        logger2.disable().info("abc {}", supplier);
+        logger2.disable().info("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().info("abc {}", supplier);
+        logger2.enable().info("abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -762,11 +850,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testInfoMarkerStringParamSupplier() {
-        logger2.disable().info(marker, "abc {}", supplier);
+        logger2.disable().info(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().info(marker, "abc {}", supplier);
+        logger2.enable().info(marker, "abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -906,11 +994,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testTraceStringParamSupplier() {
-        logger2.disable().trace("abc {}", supplier);
+        logger2.disable().trace("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().trace("abc {}", supplier);
+        logger2.enable().trace("abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -921,11 +1009,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testTraceMarkerStringParamSupplier() {
-        logger2.disable().trace(marker, "abc {}", supplier);
+        logger2.disable().trace(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().trace(marker, "abc {}", supplier);
+        logger2.enable().trace(marker, "abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -1065,11 +1153,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testWarnStringParamSupplier() {
-        logger2.disable().warn("abc {}", supplier);
+        logger2.disable().warn("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().warn("abc {}", supplier);
+        logger2.enable().warn("abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -1080,11 +1168,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testWarnMarkerStringParamSupplier() {
-        logger2.disable().warn(marker, "abc {}", supplier);
+        logger2.disable().warn(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().warn(marker, "abc {}", supplier);
+        logger2.enable().warn(marker, "abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -1224,11 +1312,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testLogStringParamSupplier() {
-        logger2.disable().log(Level.WARN, "abc {}", supplier);
+        logger2.disable().log(Level.WARN, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().log(Level.WARN, "abc {}", supplier);
+        logger2.enable().log(Level.WARN, "abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
@@ -1239,11 +1327,11 @@ public class LambdaLoggerTest {
 
     @Test
     public void testLogMarkerStringParamSupplier() {
-        logger2.disable().log(Level.WARN, marker, "abc {}", supplier);
+        logger2.disable().log(Level.WARN, marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
 
-        logger2.enable().log(Level.WARN, marker, "abc {}", supplier);
+        logger2.enable().log(Level.WARN, marker, "abc {}", supplierArray1);
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 

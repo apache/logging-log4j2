@@ -56,21 +56,26 @@ public class VarargsBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long varargParams() {
-        return varargMethod("example {} {} {}", "one", "two", "three", "four");
+        return varargMethod("example {} {} {} {} {} {} {} {} {} {}", "one", "two", "three", "four", "five",
+                "six", "seven", "eight", "nine", "ten");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long individualParams() {
-        return individualArgMethod("example {} {} {}", "one", "two", "three");
+        return individualArgMethod("example {} {} {} {} {} {} {} {} {} {}", "one", "two", "three", "four", "five",
+                "six", "seven", "eight", "nine", "ten");
     }
 
-    private long varargMethod(String string, String... params) {
-        return string.length() + params.length;
+    private long varargMethod(String string, String... p) {
+        return string.length() + p[0].length() + p[1].length() + p[2].length() + p[3].length() + p[4].length()
+                + p[5].length() + p[6].length() + p[7].length() + p[8].length() + p[9].length();
     }
 
-    private long individualArgMethod(String string, String param1, String param2, String param3) {
-        return string.length() + param1.length();
+    private long individualArgMethod(String string, String p1, String p2, String p3, String p4, String p5, String p6,
+            String p7, String p8, String p9, String p10) {
+        return string.length() + p1.length() + p2.length() + p3.length() + p4.length() + p5.length() + p6.length()
+                + p7.length() + p8.length() + p9.length() + p10.length();
     }
 }
