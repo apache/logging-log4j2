@@ -17,24 +17,28 @@
   </properties>
   <body>
     <section name="Garbage-free Steady State Logging">
+      <!--
       <p>
         Different applications have different performance requirements.
         Some only need to worry about throughput, but for many
         the most important performance consideration is latency (response time).
-        Users of such applications would consider it a big problem
+        Users of such applications would consider it a serious problem
         if the system becomes unresponsive for more than a few seconds, or even milliseconds in some cases.
         In financial trading for example predictable low latency is so important that it is often considered
-        worthwhile to trade off some throughput in return for consistent response time.
+        worthwhile to trade off some throughput in return for a consistent response time.
       </p>
+      -->
       <p>
         Garbage collection pauses are a common cause of latency spikes and for many systems
         significant effort is spent on controlling these pauses.
       </p>
       <p>
-        Traditionally, logging libraries allocate many temporary objects like log event objects, Strings, byte arrays
-        and more during steady state logging.
+        Traditionally, logging libraries allocate many temporary objects like log event objects, Strings,
+        char arrays, byte arrays and more during steady state logging.
         This contributes to pressure on the garbage collector and increases the frequency with which GC pauses occur.
-        From version 2.6, Log4j can be run in a "garbage free" mode where objects and buffers are reused
+      </p>
+      <p>
+        From version 2.6, Log4j can be used in a "garbage free" mode where objects and buffers are reused
         and temporary object allocation is avoided as much as possible.
       </p>
       <p>
@@ -44,12 +48,11 @@
       <subsection name="A Contrived Example">
         <p>
           To highlight the difference, we used Java Flight Recorder to measure a simple application that
-          does nothing but logging a simple string for about 12 seconds.
+          does nothing but logging a simple string as often as possible for about 12 seconds.
         </p>
         <p>
           The application was configured to use Async Loggers, a RandomAccessFile appender and a
           "%d %p %c{1.} [%t] %m %ex%n" pattern layout.
-          It logged about 8.5 million messages and generated a ~600MB log file.
         </p>
         <p>
           Mission Control shows that with Log4j 2.5 this application allocated memory at a rate of about 809 MB/sec,
@@ -61,13 +64,14 @@
           <tr>
             <td>
         <a href="../images/log4j-2.5-FlightRecording.png"><img
-            src="../images/log4j-2.5-FlightRecording.png"
-            alt="log4j-2.5: allocation rate 809 MB/sec, 141 minor GCs, each pausing 7 ms on avg" /></a>
+            src="../images/log4j-2.5-FlightRecording.png" /></a><br />
+              With Log4j 2.5: memory allocation rate 809 MB/sec, 141 minor collections.
             </td>
             <td>
               <a href="../images/log4j-2.6-FlightRecording.png"><img
-                  src="../images/log4j-2.6-FlightRecording.png"
-                  alt="log4j-2.6: allocation rate 1.6 MB/sec, 0 minor or major GCs" /></a>
+                  src="../images/log4j-2.6-FlightRecording.png" /></a>
+              <br />
+              Log4j 2.6 did not allocate temporary objects: 0 (zero) garbage collections.
             </td>
           </tr>
         </table>
