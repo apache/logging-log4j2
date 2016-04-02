@@ -17,7 +17,8 @@
 package org.apache.logging.log4j.perf.nogc;
 
 import java.util.Date;
-import static org.apache.logging.log4j.perf.nogc.Unbox.*;
+
+import static org.apache.logging.log4j.util.Unbox.*;
 
 /**
  * Tests the classic Log4j2 components.
