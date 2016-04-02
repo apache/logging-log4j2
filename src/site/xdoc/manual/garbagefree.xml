@@ -47,15 +47,15 @@
           does nothing but logging a simple string for about 12 seconds.
         </p>
         <p>
-          The application is configured to use Async Loggers, a RandomAccessFile appender and a
-          "%d %p %c{1.} [%t] %X{aKey} %m %ex%n" pattern layout).
+          The application was configured to use Async Loggers, a RandomAccessFile appender and a
+          "%d %p %c{1.} [%t] %m %ex%n" pattern layout.
           It logged about 8.5 million messages and generated a ~600MB log file.
         </p>
         <p>
           Mission Control shows that with Log4j 2.5 this application allocated memory at a rate of about 809 MB/sec,
-          resulting in 141 minor collections, with an average pause time of 7 ms.
+          resulting in 141 minor collections.
           Log4j 2.6 does not allocate temporary objects in this configuration, and as a result
-          the same application with Log4j 2.6 had an allocation rate of 1.6 MB/sec and 0 (zero) garbage collections.
+          the same application with Log4j 2.6 had a memory allocation rate of 1.6 MB/sec and 0 (zero) garbage collections.
         </p>
         <table>
           <tr>
