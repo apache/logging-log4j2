@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1345" dev="rpopma" type="update">
+        (Doc) Clarify documentation for properties that control Log4j behaviour.
+      </action>
       <action issue="LOG4J2-1336" dev="ggregory" type="fix" due-to="Zbynek Vyskovsky">
         LoggerFactory in 1.2 API module is not compatible with 1.2.
       </action>

@@ -1502,6 +1502,10 @@ public class AwesomeTest {
           Below follows a number of system properties that can be used to control Log4j 2 behaviour.
           Any spaces present in the property name are for visual flow and should be removed.
         </p>
+          <p>
+            The below properties can also be specified by creating a file named
+            <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
+          </p>
 <table>
   <caption align="top">Log4j 2 System Properties</caption>
   <tr>
