@@ -376,7 +376,7 @@ public class RollingFileManager extends FileManager {
     private static class RollingFileManagerFactory implements ManagerFactory<RollingFileManager, FactoryData> {
 
         /**
-         * Create the RollingFileManager.
+         * Creates a RollingFileManager.
          * @param name The name of the entity to manage.
          * @param data The data required to create the entity.
          * @return a RollingFileManager.
