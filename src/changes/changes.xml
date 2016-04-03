@@ -31,7 +31,7 @@
         LoggerFactory in 1.2 API module is not compatible with 1.2.
       </action>
       <action issue="LOG4J2-1346" type="fix">
-        Throw exception in Log4jServletContextListener preventing jetty-maven-plugin run-forked.
+        Exception from Log4jServletContextListener prevents jetty-maven-plugin run-forked.
       </action>
       <action issue="LOG4J2-1278" dev="rpopma" type="add">
         (GC) Added unrolled varargs methods to Logger API, added Unbox utility to avoid auto-boxing when logging primitive values.
