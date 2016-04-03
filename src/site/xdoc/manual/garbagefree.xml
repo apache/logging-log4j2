@@ -33,8 +33,8 @@
         significant effort is spent on controlling these pauses.
       </p>
       <p>
-        Traditionally, logging libraries allocate many temporary objects like log event objects, Strings,
-        char arrays, byte arrays and more during steady state logging.
+        Many logging libraries, including previous versions of Log4j, allocate many temporary objects like
+        log event objects, Strings, char arrays, byte arrays and more during steady state logging.
         This contributes to pressure on the garbage collector and increases the frequency with which GC pauses occur.
       </p>
       <p>
@@ -48,17 +48,17 @@
       <subsection name="A Contrived Example">
         <p>
           To highlight the difference, we used Java Flight Recorder to measure a simple application that
-          does nothing but logging a simple string as often as possible for about 12 seconds.
+          does nothing but log a simple string as often as possible for about 12 seconds.
         </p>
         <p>
           The application was configured to use Async Loggers, a RandomAccessFile appender and a
           "%d %p %c{1.} [%t] %m %ex%n" pattern layout.
         </p>
         <p>
-          Mission Control shows that with Log4j 2.5 this application allocated memory at a rate of about 809 MB/sec,
+          Mission Control shows that with Log4j 2.5 this application allocates memory at a rate of about 809 MB/sec,
           resulting in 141 minor collections.
           Log4j 2.6 does not allocate temporary objects in this configuration, and as a result
-          the same application with Log4j 2.6 had a memory allocation rate of 1.6 MB/sec and 0 (zero) garbage collections.
+          the same application with Log4j 2.6 has a memory allocation rate of 1.6 MB/sec and had 0 (zero) garbage collections.
         </p>
         <table>
           <tr>
@@ -83,42 +83,42 @@
         <subsubsection name="Configuration">
           <h4>Configuration</h4>
           <p>
-            In Log4j 2.6, garbage-free logging is enabled by default, except for web applications.
+            In Log4j 2.6, garbage-free logging is enabled by default, except in web applications.
             Log4j will disable garbage-free logging if it detects that it is used in a web application
-            (either when the <tt>javax.servlet.Servlet</tt>
+            (either when the <tt>javax.servlet.Servlet</tt> class
             is in the classpath or when the <tt>log4j2.is.webapp</tt> system property is set to "true").
             This is because garbage-free logging uses a number of ThreadLocal fields, which can cause
-            memory leaks when the thread pools of web application containers hold references
-            to these fields even after the web application is undeployed.
+            memory leaks when a thread pool of the web application server continues to hold references
+            to these fields after the web application is undeployed.
           </p>
           <p>
             It is possible to manually disable garbage-free logging by setting system property
             <tt>log4j2.enable.threadlocals</tt> to "false" before Log4j is initialized.
           </p>
           <p>
-            The above properties can also be specified by creating a file named
-            <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
+            Instead of system properties, the above properties can also be specified in a file named
+            <tt>log4j2.component.properties</tt> by including this file in the classpath of the application.
           </p>
           <table><tr><td><b>Caution:</b> as of version 2.6, a Log4j configuration containing a <tt>&lt;Properties&gt;</tt> section
             will result in temporary objects being created during steady-state logging.
           </td></tr></table>
         </subsubsection>
         <a name="Appenders" />
-        <subsubsection name="Appenders">
-          <h4>Appenders</h4>
+        <subsubsection name="Supported Appenders">
+          <h4>Supported Appenders</h4>
           <p>
-            The following <a href="appenders.html">appenders</a> are garbage-free:
+            The following <a href="appenders.html">appenders</a> are garbage-free during steady-state logging:
             Console, File, RollingFile, RandomAccessFile, RollingRandomAccessFile,
-            MemoryMappedFile, and Socket.
+            MemoryMappedFile, and Socket. Some temporary objects are created during file rollover.
           </p>
           <p>
-            Any other appenders (including Async) not in the above list create temporary objects during steady-state
+            Any other appenders not in the above list (including Async) create temporary objects during steady-state
             logging. Use <a href="async.html">Async Loggers</a> to log asynchronously in a garbage-free manner.
           </p>
         </subsubsection>
         <a name="Layouts" />
-        <subsubsection name="Layouts">
-          <h4>Layouts</h4>
+        <subsubsection name="Supported Layouts">
+          <h4>Supported Layouts</h4>
           <p>
             From the built-in <a href="layouts.html">layouts</a>, currently only PatternLayout is garbage-free,
             but only when used with the following conversion patterns.
@@ -142,16 +142,16 @@
             <li>ThreadPriorityPatternConverter</li>
           </ul>
           <p>
-            Other PatternLayout conversion patterns, and some other Layouts are scheduled to be updated
-            to avoid creating temporary objects in a subsequent release.
+            Other PatternLayout conversion patterns, and other Layouts may be updated
+            to avoid creating temporary objects in future releases. (Patches welcome!)
           </p>
           <table><tr><td><b>Caution:</b> patterns containing regular expressions and lookups for property substitution
             will result in temporary objects being created during steady-state logging.
           </td></tr></table>
         </subsubsection>
-        <a name="code" />
-        <subsubsection name="Application Code and Autoboxing">
-        <h4>Application Code and Autoboxing</h4>
+        <a name="codeImpact" />
+        <subsubsection name="Impact on Application Code: Autoboxing">
+        <h4>Impact on Application Code: Autoboxing</h4>
         <p>
           We made an effort to make existing application logging code garbage-free without requiring code changes,
           but there is one area where this was not possible.
@@ -196,17 +196,24 @@ public void garbageFree() {
         <p>
         </p>
       </subsection>
-      <!--
       <a name="Performance" />
-      <subsection name="Garbage-free Logging Performance">
+      <subsection name="Performance">
 
         <a name="Latency" />
-        <h4>Latency</h4>
+        <h4>TBD what to include here</h4>
       </subsection>
       <a name="UnderTheHood" />
-      <subsection name="Under The Hood">
+      <subsection name="Under the Hood">
+        <p>
+          Custom Layouts that want to be garbage-free should implement the <tt>Encoder&lt;LogEvent&gt;</tt> interface.
+          The <tt>TextEncoder</tt> class may be useful for custom Layouts that convert a LogEvent to a text
+          representation.
+        </p>
+        <p>
+          Custom Appenders that want to be garbage-free should provide their Layout with a
+          <tt>ByteBufferDestination</tt> implementation that the Layout can directly write into.
+        </p>
       </subsection>
-      -->
     </section>
   </body>
 </document>
