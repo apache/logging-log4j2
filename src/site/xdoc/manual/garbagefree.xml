@@ -77,8 +77,62 @@
         </table>
       </subsection>
 
-      <a name="Enabling" />
+      <a name="Enable" />
       <subsection name="Enabling Garbage-free Logging">
+      <a name="Config" />
+        <subsubsection name="Configuration">
+          <h4>Configuration</h4>
+          <p>
+            In Log4j 2.6, garbage-free logging is enabled by default, except for web applications.
+            Log4j will disable garbage-free logging if it detects that it is used in a web application
+            (either because the <tt>javax.servlet.Servlet</tt>
+            is in the classpath or because the "log4j2.is.webapp" system property is set to true).
+            This is because garbage-free logging uses a number of ThreadLocal fields, which can cause
+            memory leaks when the thread pools of web application containers hold references
+            to these fields even after the web application is undeployed.
+          </p>
+          <p>
+            It is possible to manually disable garbage-free logging by setting system property
+            "log4j2.enable.threadlocals" to false before Log4j is initialized.
+            (The above properties can also be specified by creating a file named
+            <tt>log4j2.component.properties</tt> and including it in the classpath of the application.
+          </p>
+        </subsubsection>
+        <a name="Appenders" />
+        <subsubsection name="Appenders">
+          <h4>Appenders</h4>
+          <p>
+            Supported appenders: Console, File, RollingFile, RandomAccessFile, RollingRandomAccessFile,
+            MemoryMappedFile, and Socket.
+          </p>
+        </subsubsection>
+        <a name="Layouts" />
+        <subsubsection name="Layouts">
+          <h4>Layouts</h4>
+          <p>
+            Supported layouts: only PatternLayout, and only the following conversion patterns:
+          </p>
+          <ul>
+            <li>ClassNamePatternConverter</li>
+            <li>DatePatternConverter</li>
+            <li>FileLocationPatternConverter</li>
+            <li>LevelPatternConverter</li>
+            <li>LineLocationPatternConverter</li>
+            <li>LineSeparatorPatternConverter</li>
+            <li>LiteralPatternConverter (unless literal contains '${')</li>
+            <li>LoggerPatternConverter</li>
+            <li>MarkerSimpleNamePatternConverter</li>
+            <li>MessagePatternConverter</li>
+            <li>MethodLocationPatternConverter</li>
+            <li>NamePatternConverter</li>
+            <li>NanoTimePatternConverter</li>
+            <li>ThreadIdPatternConverter</li>
+            <li>ThreadNamePatternConverter</li>
+            <li>ThreadPriorityPatternConverter</li>
+          </ul>
+        </subsubsection>
+
+        <h4>Varargs and Unboxing</h4>
         <p>
           As of log4j-2.6, only a limited set of functionality is garbage-free. This set may grow in the future,
           but for now only the following configuration does not allocate temporary objects during steady-state logging:
