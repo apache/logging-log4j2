@@ -17,6 +17,9 @@
 
 package org.apache.logging.log4j.util;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Indicates that a particular annotated construct was written with certain performance constraints in mind that
  * should be considered when modifying or testing. Descriptive values should be similar to the conventions used by
@@ -25,6 +28,9 @@ package org.apache.logging.log4j.util;
  *
  * @since 2.6
  */
+// Not @Documented: Do not (yet) make this annotation part of the public API of annotated elements.
+// No @Target: No restrictions yet on what code elements may be annotated or not.
+@Retention(RetentionPolicy.CLASS) // Currently no need to reflectively discover this annotation at runtime.
 public @interface PerformanceSensitive {
     /** Description of why this is written the way it is. */
     String[] value() default "";
