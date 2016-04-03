@@ -85,32 +85,43 @@
           <p>
             In Log4j 2.6, garbage-free logging is enabled by default, except for web applications.
             Log4j will disable garbage-free logging if it detects that it is used in a web application
-            (either because the <tt>javax.servlet.Servlet</tt>
-            is in the classpath or because the "log4j2.is.webapp" system property is set to true).
+            (either when the <tt>javax.servlet.Servlet</tt>
+            is in the classpath or when the <tt>log4j2.is.webapp</tt> system property is set to "true").
             This is because garbage-free logging uses a number of ThreadLocal fields, which can cause
             memory leaks when the thread pools of web application containers hold references
             to these fields even after the web application is undeployed.
           </p>
           <p>
             It is possible to manually disable garbage-free logging by setting system property
-            "log4j2.enable.threadlocals" to false before Log4j is initialized.
-            (The above properties can also be specified by creating a file named
-            <tt>log4j2.component.properties</tt> and including it in the classpath of the application.
+            <tt>log4j2.enable.threadlocals</tt> to "false" before Log4j is initialized.
           </p>
+          <p>
+            The above properties can also be specified by creating a file named
+            <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
+          </p>
+          <table><tr><td><b>Caution:</b> as of version 2.6, a Log4j configuration containing a <tt>&lt;Properties&gt;</tt> section
+            will result in temporary objects being created during steady-state logging.
+          </td></tr></table>
         </subsubsection>
         <a name="Appenders" />
         <subsubsection name="Appenders">
           <h4>Appenders</h4>
           <p>
-            Supported appenders: Console, File, RollingFile, RandomAccessFile, RollingRandomAccessFile,
+            The following <a href="appenders.html">appenders</a> are garbage-free:
+            Console, File, RollingFile, RandomAccessFile, RollingRandomAccessFile,
             MemoryMappedFile, and Socket.
+          </p>
+          <p>
+            Any other appenders (including Async) not in the above list create temporary objects during steady-state
+            logging. Use <a href="async.html">Async Loggers</a> to log asynchronously in a garbage-free manner.
           </p>
         </subsubsection>
         <a name="Layouts" />
         <subsubsection name="Layouts">
           <h4>Layouts</h4>
           <p>
-            Supported layouts: only PatternLayout, and only the following conversion patterns:
+            From the built-in <a href="layouts.html">layouts</a>, currently only PatternLayout is garbage-free,
+            but only when used with the following conversion patterns.
           </p>
           <ul>
             <li>ClassNamePatternConverter</li>
@@ -130,81 +141,56 @@
             <li>ThreadNamePatternConverter</li>
             <li>ThreadPriorityPatternConverter</li>
           </ul>
+          <p>
+            Other PatternLayout conversion patterns, and some other Layouts are scheduled to be updated
+            to avoid creating temporary objects in a subsequent release.
+          </p>
+          <table><tr><td><b>Caution:</b> patterns containing regular expressions and lookups for property substitution
+            will result in temporary objects being created during steady-state logging.
+          </td></tr></table>
         </subsubsection>
-
-        <h4>Varargs and Unboxing</h4>
+        <a name="code" />
+        <subsubsection name="Application Code and Autoboxing">
+        <h4>Application Code and Autoboxing</h4>
         <p>
-          As of log4j-2.6, only a limited set of functionality is garbage-free. This set may grow in the future,
-          but for now only the following configuration does not allocate temporary objects during steady-state logging:
-        </p>
-        <ul>
-          <li>ThreadLocals are enabled (system property <tt>log4j2.enable.threadlocals</tt> is set to
-            <tt>true</tt>).
-          </li>
-          <li>Loggers are all asynchronous (system property <tt>Log4jContextSelector</tt> is set to
-            <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt>).
-          </li>
-          <li>The "steady-state" appenders are either <tt>RandomAccessFile</tt> or <tt>RollingRandomAccessFile</tt>.
-            Logging to any other appender, including <tt>FileAppender</tt> or <tt>ConsoleAppender</tt>,
-            will cause temporary objects to be created.</li>
-          <li>The Layout is a <tt>PatternLayout</tt> that uses one of the pre-defined date formats,
-            and does not contain regular expression replacements or lookups.</li>
-          <li>The configuration does not contain a <tt>&lt;Properties&gt;</tt> section.</li>
-        </ul>
-        <p>
-          In addition to configuration, user code should follow these guidelines to be garbage-free:
+          We made an effort to make existing application logging code garbage-free without requiring code changes,
+          but there is one area where this was not possible.
+          When logging primitive values (i.e. int, double, boolean, etc.),
+          autoboxing occurs and the JVM converts these primitive values to their Object wrapper equivalents.
         </p>
         <p>
-          The following code snippet demonstrates garbage-free logging.
-          Note the use of Log4j's <tt>Unboxer</tt> utility to prevent auto-boxing of primitive parameters.
+          Log4j provides an <tt>Unboxer</tt> utility to prevent autoboxing of primitive parameters.
+          This utility contains a thread-local pool of reused <tt>StringBuilder</tt>s.
+          The <tt>Unboxer.box(primitive)</tt> methods write directly into a StringBuilder, and
+          the resulting text will be copied into the final log message text without creating temporary objects.
         </p>
-        <pre class="prettyprint linenums">import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Marker;
-import static org.apache.logging.log4j.util.Unboxer.box;
+        <pre class="prettyprint linenums">import static org.apache.logging.log4j.util.Unboxer.box;
 
-public class Usage {
-    private static final Logger logger = LogManager.getLogger("GarbageFree");
-
-    public void garbageFree() {
-        logger.info("Simple string message");
-        logger.info("Message with {}", "parameters");
-        logger.info("Var-args {} {} {} {} {} {}", "are", "unrolled", "up", "to", "10", "parameters"); // etc up to 10 parameters
-        logger.info("Prevent primitive auto-boxing {} {}", box(10L), box(2.6d));
-        logger.info(() -> callExpensiveMethod());
-
-        // of course similarly for all log levels including custom log levels
-        logger.debug("debug level message");
-        logger.trace("trace level message");
-        logger.log(Level.forName("NOTICE", 345), "custom level message");
-    }
-...</pre>
-        <p>
-          However, not all logging is garbage free. Specifically:
-          <ul>
-            <li>Use no more than 10 parameters when logging a parameterized message to avoid vararg array creation.</li>
-            <li>Avoid using the ThreadContext map and stack for now since these are copy-on-write data structures by default.</li>
-            <li>Avoid the <tt>Logger.traceEntry</tt> and <tt>Logger.traceExit</tt> for now.</li>
-          </ul>
-        </p>
-        <pre class="prettyprint linenums">...
-    private static final String TOO_LARGE = new String(new char[519]);
-
-    public void notGarbageFree() {
-        logger.traceEntry("creates temporary objects");
-        logger.info(TOO_LARGE); // causes resize of internal StringBuilder, which will be trimmed back to 518 characters
-        logger.info("Messages containing '${': substituting a ${variable} creates temporary objects");
-
-        // a vararg array is created when logging a parameterized message with lambda parameters
-        logger.info("lambda value is {}", () -> callExpensiveMethod());
-
-        // a vararg array is created when logging more than 10 params
-        logger.info("{}{}{}{}{}{}{}{}{}{}{}", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
-        logger.info("Auto-boxing creates java.lang.Integer {} java.lang.Double {} etc", 987665, 3.14d);
-        ThreadContext.put("any", "thing"); // creates copy of the map
-        logger.traceExit("creates temporary objects");
-    }
-}</pre>
+...
+public void garbageFree() {
+    logger.debug("Prevent primitive autoboxing {} {}", box(10L), box(2.6d));
+}
+</pre>
+          <table><tr><td>
+            <p>
+              <b>Caution:</b> not all logging is garbage free. Specifically:
+            </p>
+            <ul>
+              <li>The ThreadContext map and stack are not garbage-free yet.</li>
+              <li>Logging more than 10 parameters creates vararg arrays.</li>
+              <li>Logging very large messages (more than 518 characters) when all loggers are Async Loggers
+                will cause the internal StringBuilder in the RingBuffer to be trimmed back to their max size.
+              </li>
+              <li>Logging messages containing '${': substituting a ${variable} creates temporary objects.</li>
+              <li>Logging a lambda <em>as a parameter</em>
+                (<tt>logger.info("lambda value is {}", () -> callExpensiveMethod())</tt>) creates a vararg array.
+                Logging a lambda expression by itself is garbage-free:
+                <tt>logger.debug(() -> callExpensiveMethod())</tt>.
+              </li>
+              <li>The <tt>Logger.traceEntry</tt> and <tt>Logger.traceExit</tt> methods create temporary objects.</li>
+            </ul>
+          </td></tr></table>
+        </subsubsection>
         <p>
         </p>
         <p>
