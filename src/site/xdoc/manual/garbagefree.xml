@@ -156,10 +156,10 @@
         <subsubsection name="Impact on Application Code: Autoboxing">
         <h4>Impact on Application Code: Autoboxing</h4>
         <p>
-          We made an effort to make existing application logging code garbage-free without requiring code changes,
+          We made an effort to make logging code garbage-free without requiring code changes in existing applications,
           but there is one area where this was not possible.
-          When logging primitive values (i.e. int, double, boolean, etc.),
-          autoboxing occurs and the JVM converts these primitive values to their Object wrapper equivalents.
+          When logging primitive values (i.e. int, double, boolean, etc.) the JVM
+          autoboxes these primitive values to their Object wrapper equivalents, creating garbage.
         </p>
         <p>
           Log4j provides an <tt>Unboxer</tt> utility to prevent autoboxing of primitive parameters.
@@ -216,6 +216,18 @@ public void garbageFree() {
           Custom Appenders that want to be garbage-free should provide their Layout with a
           <tt>ByteBufferDestination</tt> implementation that the Layout can directly write into.
         </p>
+        <p>
+          Custom Message implementations that implement <tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt>
+          can be converted to text by PatternLayout without creating temporary objects.
+          Other layouts that convert LogEvents to text will likely also look for this interface.
+        </p>
+        <!--
+        <p>
+          TODO Applications that wish to reuse custom Message instances with Async Loggers should let
+          their Message classes implement the <tt>org.apache.logging.log4j.message.ReusableMessage</tt> interface.
+          TODO This is not sufficient: see LOG4J2-1342, would be nice if we could solve this in a generic way.
+        </p>
+        -->
       </subsection>
     </section>
   </body>
