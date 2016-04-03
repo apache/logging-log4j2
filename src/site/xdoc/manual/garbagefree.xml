@@ -64,12 +64,12 @@
           <tr>
             <td>
         <a href="../images/log4j-2.5-FlightRecording.png"><img
-            src="../images/log4j-2.5-FlightRecording.png" /></a><br />
+            src="../images/log4j-2.5-FlightRecording-thumbnail40pct.png" /></a><br />
               With Log4j 2.5: memory allocation rate 809 MB/sec, 141 minor collections.
             </td>
             <td>
               <a href="../images/log4j-2.6-FlightRecording.png"><img
-                  src="../images/log4j-2.6-FlightRecording.png" /></a>
+                  src="../images/log4j-2.6-FlightRecording-thumbnail40pct.png" /></a>
               <br />
               Log4j 2.6 did not allocate temporary objects: 0 (zero) garbage collections.
             </td>
