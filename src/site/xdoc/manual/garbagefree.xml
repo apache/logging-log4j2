@@ -124,23 +124,26 @@
             but only when used with the following conversion patterns.
           </p>
           <ul>
-            <li>ClassNamePatternConverter</li>
+            <li>ClassNamePatternConverter (but including location is not garbage-free)</li>
             <li>DatePatternConverter</li>
-            <li>FileLocationPatternConverter</li>
+            <li>FileLocationPatternConverter (but including location is not garbage-free)</li>
             <li>LevelPatternConverter</li>
-            <li>LineLocationPatternConverter</li>
+            <li>LineLocationPatternConverter (but including location is not garbage-free)</li>
             <li>LineSeparatorPatternConverter</li>
             <li>LiteralPatternConverter (unless literal contains '${')</li>
             <li>LoggerPatternConverter</li>
             <li>MarkerSimpleNamePatternConverter</li>
-            <li>MessagePatternConverter</li>
-            <li>MethodLocationPatternConverter</li>
+            <li>MessagePatternConverter (unless message text contains '${')</li>
+            <li>MethodLocationPatternConverter (but including location is not garbage-free)</li>
             <li>NamePatternConverter</li>
             <li>NanoTimePatternConverter</li>
             <li>ThreadIdPatternConverter</li>
             <li>ThreadNamePatternConverter</li>
             <li>ThreadPriorityPatternConverter</li>
           </ul>
+          <p>
+            Logging Exceptions and stack traces will create temporary objects.
+          </p>
           <p>
             Other PatternLayout conversion patterns, and other Layouts may be updated
             to avoid creating temporary objects in future releases. (Patches welcome!)
