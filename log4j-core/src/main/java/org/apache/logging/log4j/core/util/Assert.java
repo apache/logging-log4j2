@@ -25,6 +25,13 @@ public final class Assert {
     private Assert() {
     }
 
+    public static int valueIsAtLeast(final int value, final int minValue) {
+        if (value < minValue) {
+            throw new IllegalArgumentException("Value should be at least " + minValue + " but was " + value);
+        }
+        return value;
+    }
+
     /**
      * Throws a {@code NullPointerException} if the specified parameter is
      * {@code null}, otherwise returns the specified parameter.
