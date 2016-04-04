@@ -79,38 +79,21 @@
 
       <a name="Enable" />
       <subsection name="Enabling Garbage-free Logging">
-      <a name="Config" />
-        <subsubsection name="Configuration">
-          <h4>Configuration</h4>
-          <p>
-            In Log4j 2.6, garbage-free logging is enabled by default, except in web applications.
-            Log4j will disable garbage-free logging if it detects that it is used in a web application
-            (either when the <tt>javax.servlet.Servlet</tt> class
-            is in the classpath or when the <tt>log4j2.is.webapp</tt> system property is set to "true").
-            This is because garbage-free logging uses a number of ThreadLocal fields, which can cause
-            memory leaks when a thread pool of the web application server continues to hold references
-            to these fields after the web application is undeployed.
-          </p>
-          <p>
-            It is possible to manually disable garbage-free logging by setting system property
-            <tt>log4j2.enable.threadlocals</tt> to "false" before Log4j is initialized.
-          </p>
-          <p>
-            Instead of system properties, the above properties can also be specified in a file named
-            <tt>log4j2.component.properties</tt> by including this file in the classpath of the application.
-          </p>
-          <table><tr><td><b>Caution:</b> as of version 2.6, a Log4j configuration containing a <tt>&lt;Properties&gt;</tt> section
-            will result in temporary objects being created during steady-state logging.
-          </td></tr></table>
-        </subsubsection>
         <a name="Appenders" />
         <subsubsection name="Supported Appenders">
           <h4>Supported Appenders</h4>
           <p>
             The following <a href="appenders.html">appenders</a> are garbage-free during steady-state logging:
-            Console, File, RollingFile, RandomAccessFile, RollingRandomAccessFile,
-            MemoryMappedFile, and Socket. Some temporary objects are created during file rollover.
           </p>
+          <ul>
+            <li>Console</li>
+            <li>File</li>
+            <li>RollingFile (some temporary objects are created during file rollover)</li>
+            <li>RandomAccessFile</li>
+            <li>RollingRandomAccessFile (some temporary objects are created during file rollover)</li>
+            <li>MemoryMappedFile</li>
+            <li>Socket</li>
+          </ul>
           <p>
             Any other appenders not in the above list (including Async) create temporary objects during steady-state
             logging. Use <a href="async.html">Async Loggers</a> to log asynchronously in a garbage-free manner.
@@ -120,27 +103,113 @@
         <subsubsection name="Supported Layouts">
           <h4>Supported Layouts</h4>
           <p>
-            From the built-in <a href="layouts.html">layouts</a>, currently only PatternLayout is garbage-free,
-            but only when used with the following conversion patterns.
+            From the built-in <a href="layouts.html">layouts</a>, currently only PatternLayout
+             with the following limited set of conversion patterns is garbage-free.
+            Format modifiers to control such things as field width, padding, left and right justification will not
+            generate garbage.
           </p>
-          <ul>
-            <li>ClassNamePatternConverter (but including location is not garbage-free)</li>
-            <li>DatePatternConverter</li>
-            <li>FileLocationPatternConverter (but including location is not garbage-free)</li>
-            <li>LevelPatternConverter</li>
-            <li>LineLocationPatternConverter (but including location is not garbage-free)</li>
-            <li>LineSeparatorPatternConverter</li>
-            <li>LiteralPatternConverter (unless literal contains '${')</li>
-            <li>LoggerPatternConverter</li>
-            <li>MarkerSimpleNamePatternConverter</li>
-            <li>MessagePatternConverter (unless message text contains '${')</li>
-            <li>MethodLocationPatternConverter (but including location is not garbage-free)</li>
-            <li>NamePatternConverter</li>
-            <li>NanoTimePatternConverter</li>
-            <li>ThreadIdPatternConverter</li>
-            <li>ThreadNamePatternConverter</li>
-            <li>ThreadPriorityPatternConverter</li>
-          </ul>
+          <table style="width: 60%">
+            <tr>
+              <th>Conversion Pattern</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>%c{precision}, %logger{precision}</td>
+              <td>Logger name</td>
+            </tr>
+            <tr>
+              <td>%d, %date</td>
+              <td>Caution: Only dates in the predefined formats are garbage-free: (millisecond separator may be either
+                a comma ',' or a period '.')
+                <table>
+                  <tr>
+                    <th>Pattern</th>
+                    <th>Example</th>
+                  </tr>
+                  <tr>
+                    <td>%d{DEFAULT}</td>
+                    <td>2012-11-02 14:34:02,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ISO8601}</td>
+                    <td>2012-11-02T14:34:02,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ISO8601_BASIC}</td>
+                    <td>20121102T143402,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ABSOLUTE}</td>
+                    <td>14:34:02,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{DATE}</td>
+                    <td>02 Nov 2012 14:34:02,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{COMPACT}</td>
+                    <td>20121102143402781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{HH:mm:ss,SSS}</td>
+                    <td>14:34:02,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{dd MMM yyyy HH:mm:ss,SSS}</td>
+                    <td>02 Nov 2012 14:34:02,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{HH:mm:ss}{GMT+0}</td>
+                    <td>18:34:02</td>
+                  </tr>
+                  <tr>
+                    <td>%d{UNIX}</td>
+                    <td>1351866842</td>
+                  </tr>
+                  <tr>
+                    <td>%d{UNIX_MILLIS}</td>
+                    <td>1351866842781</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>%m, %msg, %message</td>
+              <td>Log message (unless message text contains '${')</td>
+            </tr>
+            <tr>
+              <td>%markerSimpleName</td>
+              <td>The simple name of the marker (not including parents)</td>
+            </tr>
+            <tr>
+              <td>%n</td>
+              <td>The platform dependent line separator</td>
+            </tr>
+            <tr>
+              <td>%N, %nano</td>
+              <td>System.nanoTime() when the event was logged</td>
+            </tr>
+            <tr>
+              <td>%p, %level</td>
+              <td>The level of the logging event</td>
+            </tr>
+            <tr>
+              <td>%T, %tid, %threadId</td>
+              <td>The ID of the thread that generated the logging event</td>
+            </tr>
+            <tr>
+              <td>%t, %tn, %thread, %threadName</td>
+              <td>The name of the thread that generated the logging event</td>
+            </tr>
+            <tr>
+              <td>%tp</td>
+              <td>The priority of the thread that generated the logging event</td>
+            </tr>
+            <tr>
+              <td>literal text</td>
+              <td>unless literal contains '${' (variable substitution)</td>
+            </tr>
+          </table>
           <p>
             Logging Exceptions and stack traces will create temporary objects.
           </p>
@@ -150,6 +219,18 @@
           </p>
           <table><tr><td><b>Caution:</b> patterns containing regular expressions and lookups for property substitution
             will result in temporary objects being created during steady-state logging.
+            <p>
+              Including location information is done by walking the stacktrace of an exception, which creates temporary
+              objects, so the following patterns are not garbage-free:
+            </p>
+            <ul>
+              <li>%C, %class - Class Name</li>
+              <li>%F, %file - File Location</li>
+              <li>%l, %location - Location</li>
+              <li>%L, %line - Line Location</li>
+              <li>%M, %method - Method Location</li>
+            </ul>
+
           </td></tr></table>
         </subsubsection>
         <a name="codeImpact" />
@@ -199,6 +280,30 @@ public void garbageFree() {
         <p>
         </p>
       </subsection>
+      <a name="Config" />
+      <subsubsection name="Configuration">
+        <h4>Configuration</h4>
+        <p>
+          In Log4j 2.6, garbage-free logging is enabled by default, except in web applications.
+          Log4j will disable garbage-free logging if it detects that it is used in a web application
+          (either when the <tt>javax.servlet.Servlet</tt> class
+          is in the classpath or when the <tt>log4j2.is.webapp</tt> system property is set to "true").
+          This is because garbage-free logging uses a number of ThreadLocal fields, which can cause
+          memory leaks when a thread pool of the web application server continues to hold references
+          to these fields after the web application is undeployed.
+        </p>
+        <p>
+          It is possible to manually disable garbage-free logging by setting system property
+          <tt>log4j2.enable.threadlocals</tt> to "false" before Log4j is initialized.
+        </p>
+        <p>
+          Instead of system properties, the above properties can also be specified in a file named
+          <tt>log4j2.component.properties</tt> by including this file in the classpath of the application.
+        </p>
+        <table><tr><td><b>Caution:</b> as of version 2.6, a Log4j configuration containing a <tt>&lt;Properties&gt;</tt> section
+          will result in temporary objects being created during steady-state logging.
+        </td></tr></table>
+      </subsubsection>
       <a name="Performance" />
       <subsection name="Performance">
 
