@@ -3,6 +3,8 @@ package org.apache.logging.log4j;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Adds entries to the {@link ThreadContext stack or map} and them removes them when the object is closed, e.g. as part
  * of a try-with-resources.
@@ -105,7 +107,7 @@ public class CloseableThreadContext implements AutoCloseable {
         storeAndSet(firstKey, firstValue);
         for (int i = 0; i < subsequentKeyValuePairs.length; i += 2) {
             final String key = subsequentKeyValuePairs[i];
-            final String value = (i + 1) < subsequentKeyValuePairs.length ? subsequentKeyValuePairs[i + 1] : "";
+            final String value = (i + 1) < subsequentKeyValuePairs.length ? subsequentKeyValuePairs[i + 1] : Strings.EMPTY;
             storeAndSet(key, value);
         }
     }
