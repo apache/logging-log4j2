@@ -102,9 +102,14 @@
         <a name="Layouts" />
         <subsubsection name="Supported Layouts">
           <h4>Supported Layouts</h4>
+
           <p>
-            From the built-in <a href="layouts.html">layouts</a>, currently only PatternLayout
-             with the following limited set of conversion patterns is garbage-free.
+            <em>Note:</em>Logging Exceptions and stack traces will create temporary objects with any layout.
+          </p>
+
+          <h5>PatternLayout</h5>
+          <p>
+            PatternLayout with the following limited set of conversion patterns is garbage-free.
             Format modifiers to control such things as field width, padding, left and right justification will not
             generate garbage.
           </p>
@@ -211,9 +216,6 @@
             </tr>
           </table>
           <p>
-            Logging Exceptions and stack traces will create temporary objects.
-          </p>
-          <p>
             Other PatternLayout conversion patterns, and other Layouts may be updated
             to avoid creating temporary objects in future releases. (Patches welcome!)
           </p>
@@ -232,6 +234,10 @@
             </ul>
 
           </td></tr></table>
+
+          <h5>GelfLayout</h5>
+          <p>GelfLayout is garbage-free when used with compressionType="OFF".</p>
+
         </subsubsection>
         <a name="codeImpact" />
         <subsubsection name="Impact on Application Code: Autoboxing">
