@@ -86,12 +86,16 @@ public class WatchManager extends AbstractLifeCycle {
                 File file = entry.getKey();
                 FileMonitor fileMonitor = entry.getValue();
                 long lastModfied = file.lastModified();
-                if (lastModfied > fileMonitor.lastModified) {
+                if (fileChanged(fileMonitor, lastModfied)) {
                     logger.info("File {} was modified", file.toString());
                     fileMonitor.lastModified = lastModfied;
                     fileMonitor.fileWatcher.fileModified(file);
                 }
             }
+        }
+
+        private boolean fileChanged(FileMonitor fileMonitor, long lastModfied) {
+            return lastModfied > fileMonitor.lastModified;
         }
     }
 
