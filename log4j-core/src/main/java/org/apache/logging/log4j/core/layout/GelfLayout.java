@@ -28,7 +28,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.*;
@@ -135,7 +137,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        StringBuilder text = toText(event, getStringBuilder());
+        StringBuilder text = toText(event, getStringBuilder(), false);
         final byte[] bytes = getBytes(text.toString());
         return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
@@ -146,7 +148,7 @@ public final class GelfLayout extends AbstractStringLayout {
             super.encode(event, destination);
             return;
         }
-        final StringBuilder text = toText(event, getStringBuilder());
+        final StringBuilder text = toText(event, getStringBuilder(), true);
         final TextEncoderHelper helper = getCachedTextEncoderHelper();
         helper.encodeText(text, destination);
     }
@@ -170,44 +172,77 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder text = toText(event, getStringBuilder());
+        final StringBuilder text = toText(event, getStringBuilder(), false);
         return text.toString();
     }
 
-    private StringBuilder toText(LogEvent event, StringBuilder builder) {
+    private StringBuilder toText(LogEvent event, StringBuilder builder, boolean gcFree) {
         final JsonStringEncoder jsonEncoder = JsonStringEncoder.getInstance();
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
-        builder.append("\"host\":\"").append(jsonEncoder.quoteAsString(toNullSafeString(host))).append(QC);
+        builder.append("\"host\":\"");
+        jsonEncoder.quoteAsString(toNullSafeString(host), builder);
+        builder.append(QC);
         builder.append("\"timestamp\":").append(formatTimestamp(event.getTimeMillis())).append(C);
         builder.append("\"level\":").append(formatLevel(event.getLevel())).append(C);
         if (event.getThreadName() != null) {
-            builder.append("\"_thread\":\"").append(jsonEncoder.quoteAsString(event.getThreadName())).append(QC);
+            builder.append("\"_thread\":\"");
+            jsonEncoder.quoteAsString(event.getThreadName(), builder);
+            builder.append(QC);
         }
         if (event.getLoggerName() != null) {
-            builder.append("\"_logger\":\"").append(jsonEncoder.quoteAsString(event.getLoggerName())).append(QC);
+            builder.append("\"_logger\":\"");
+            jsonEncoder.quoteAsString(event.getLoggerName(), builder);
+            builder.append(QC);
         }
 
         for (final KeyValuePair additionalField : additionalFields) {
-            builder.append(QU).append(jsonEncoder.quoteAsString(additionalField.getKey())).append("\":\"")
-                    .append(jsonEncoder.quoteAsString(toNullSafeString(additionalField.getValue()))).append(QC);
+            builder.append(QU);
+            jsonEncoder.quoteAsString(additionalField.getKey(), builder);
+            builder.append("\":\"");
+            jsonEncoder.quoteAsString(toNullSafeString(additionalField.getValue()), builder);
+            builder.append(QC);
         }
         for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
-            builder.append(QU).append(jsonEncoder.quoteAsString(entry.getKey())).append("\":\"")
-                    .append(jsonEncoder.quoteAsString(toNullSafeString(entry.getValue()))).append(QC);
+            builder.append(QU);
+            jsonEncoder.quoteAsString(entry.getKey(), builder);
+            builder.append("\":\"");
+            jsonEncoder.quoteAsString(toNullSafeString(entry.getValue()), builder);
+            builder.append(QC);
         }
         if (event.getThrown() != null) {
-            builder.append("\"full_message\":\"").append(jsonEncoder.quoteAsString(formatThrowable(event.getThrown())))
-                    .append(QC);
+            builder.append("\"full_message\":\"");
+            jsonEncoder.quoteAsString(formatThrowable(event.getThrown()), builder);
+            builder.append(QC);
         }
 
-        builder.append("\"short_message\":\"").append(jsonEncoder.quoteAsString(toNullSafeString(event.getMessage().getFormattedMessage())))
-                .append(Q);
+        builder.append("\"short_message\":\"");
+        Message message = event.getMessage();
+        if (gcFree && message instanceof StringBuilderFormattable) {
+            StringBuilder messageBuffer = getMessageStringBuilder();
+            ((StringBuilderFormattable)message).formatTo(messageBuffer);
+            jsonEncoder.quoteAsString(messageBuffer, builder);
+        } else {
+            jsonEncoder.quoteAsString(toNullSafeString(message.getFormattedMessage()), builder);
+        }
+        builder.append(Q);
         builder.append('}');
         return builder;
     }
 
-    private String toNullSafeString(final String s) {
+    private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
+
+    private static StringBuilder getMessageStringBuilder() {
+        StringBuilder result = messageStringBuilder.get();
+        if (result == null) {
+            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+            messageStringBuilder.set(result);
+        }
+        result.setLength(0);
+        return result;
+    }
+
+    private CharSequence toNullSafeString(final CharSequence s) {
         return s == null ? Strings.EMPTY : s;
     }
 

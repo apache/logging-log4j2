@@ -6,16 +6,14 @@
         <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %ex%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
-<!--
     <RandomAccessFile name="RandomAccessFileGelf" fileName="gcfree.json" immediateFlush="false" append="false">
       <GelfLayout compressionType="OFF"/>
     </RandomAccessFile>
--->
   </Appenders>
   <Loggers>
     <Root level="info" includeLocation="false">
       <appender-ref ref="RandomAccessFilePattern"/>
-      <!-- <appender-ref ref="RandomAccessFileGelf"/> -->
+      <appender-ref ref="RandomAccessFileGelf"/>
     </Root>
   </Loggers>
 </Configuration>
