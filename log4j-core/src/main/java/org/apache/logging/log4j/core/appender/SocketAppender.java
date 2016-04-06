@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
@@ -74,7 +75,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
     /**
      * Creates a socket appender.
-     * 
+     *
      * @param host
      *            The name of the host to connect to.
      * @param port
@@ -122,10 +123,10 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
-            @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise, 
+            @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise,
             @PluginConfiguration final Configuration config) {
             // @formatter:on
-        
+
         if (layout == null) {
             layout = SerializedLayout.createLayout();
         }
@@ -149,7 +150,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
     /**
      * Creates a socket appender.
-     * 
+     *
      * @param host
      *            The name of the host to connect to.
      * @param portNum
@@ -200,7 +201,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             final String ignore,
             Layout<? extends Serializable> layout,
             final Filter filter,
-            final String advertise, 
+            final String advertise,
             final Configuration config) {
             // @formatter:on
         boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
@@ -216,7 +217,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
     /**
      * Creates an AbstractSocketManager for TCP, UDP, and SSL.
-     * 
+     *
      * @throws IllegalArgumentException
      *             if the protocol cannot be handled.
      */
@@ -242,5 +243,13 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         default:
             throw new IllegalArgumentException(protocol.toString());
         }
+    }
+
+    @Override
+    protected void directEncodeEvent(final LogEvent event) {
+        // Disable garbage-free logging for now:
+        // problem with TCP: synchronization on manager in Reconnector thread would give deadlock.
+        // problem with UDP: 8K buffer size means that largish messages get broken up into chunks
+        writeByteArrayToManager(event); // revert to classic (non-garbage free) logging
     }
 }
