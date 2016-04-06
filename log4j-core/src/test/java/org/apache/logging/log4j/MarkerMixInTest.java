@@ -19,7 +19,6 @@ package org.apache.logging.log4j;
 import java.io.IOException;
 
 import org.apache.logging.log4j.MarkerManager.Log4jMarker;
-import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
