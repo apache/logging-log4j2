@@ -49,13 +49,14 @@ public class RandomAccessFileManagerTest {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
                     RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
+            manager.setByteBufferDestination(manager.createByteBufferDestination(false));
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
             final byte[] data = new byte[size];
             manager.write(data); // no buffer overflow exception
 
-            // buffer is full but not flushed yet
-            assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 2, raf.length());
+            // all data is written if exceeds buffer size
+            assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
         }}
 
     /**
@@ -70,16 +71,18 @@ public class RandomAccessFileManagerTest {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
                     RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
+            manager.setByteBufferDestination(manager.createByteBufferDestination(false));
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             final byte[] data = new byte[size];
             manager.write(data); // no exception
-            assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
+            // all data is written if exceeds buffer size
+            assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1, raf.length());
 
             manager.flush();
             assertEquals(size, raf.length()); // all data written to file now
         }}
-    
+
     @Test
     public void testConfigurableBufferSize() throws IOException {
         final File file = folder.newFile();
@@ -103,11 +106,13 @@ public class RandomAccessFileManagerTest {
             final int bufferSize = 1;
             final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
                     bufferSize, null, null, true);
+            manager.setByteBufferDestination(manager.createByteBufferDestination(false));
 
             final int size = bufferSize * 3 + 1;
             final byte[] data = new byte[size];
             manager.write(data); // no exception
-            assertEquals(bufferSize * 3, raf.length());
+            // all data is written if exceeds buffer size
+            assertEquals(bufferSize * 3 + 1, raf.length());
 
             manager.flush();
             assertEquals(size, raf.length()); // all data written to file now
