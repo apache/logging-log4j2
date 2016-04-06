@@ -33,6 +33,9 @@
       <action issue="LOG4J2-1336" dev="ggregory" type="fix" due-to="Zbynek Vyskovsky">
         LoggerFactory in 1.2 API module is not compatible with 1.2.
       </action>
+      <action issue="LOG4J2-1354" dev="ggregory" type="fix" due-to="Arkadiusz Adolph">
+        No configuration reload is triggered under Windows when replacing the configuration file with one that has older last modified date.
+      </action>
       <action issue="LOG4J2-1346" type="fix">
         Exception from Log4jServletContextListener prevents jetty-maven-plugin run-forked.
       </action>
@@ -195,6 +198,9 @@
       </action>
       <action issue="LOG4J2-1352" dev="ggregory" type="update">
         Update javax.mail from 1.5.4 to 1.5.5.
+      </action>
+      <action issue="LOG4J2-1358" dev="ggregory" type="update">
+        Update Apache Commons Compress from 1.10 to 1.11.
       </action>
       <action issue="LOG4J2-1233" dev="ggregory" type="update" due-to="Bahri Gencsoy">
         Misleading Value In Properties Example.
