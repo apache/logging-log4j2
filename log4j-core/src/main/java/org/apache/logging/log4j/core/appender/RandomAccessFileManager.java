@@ -89,30 +89,36 @@ public class RandomAccessFileManager extends OutputStreamManager implements Byte
     protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
         super.write(bytes, offset, length, immediateFlush); // writes to dummy output stream
 
-        int chunk = 0;
-        do {
-            if (length > buffer.remaining()) {
-                flush();
-            }
-            chunk = Math.min(length, buffer.remaining());
-            buffer.put(bytes, offset, chunk);
-            offset += chunk;
-            length -= chunk;
-        } while (length > 0);
+        if (length >= buffer.capacity()) {
+            // if request length exceeds buffer capacity, flush the buffer and write the data directly
+            flush();
+            writeToRandomAccessFile(bytes, offset, length);
+            return;
+        }
+        if (length > buffer.remaining()) {
+            flush();
+        }
+        buffer.put(bytes, offset, length);
 
         if (immediateFlush || isImmediateFlush || isEndOfBatch.get() == Boolean.TRUE) {
             flush();
         }
     }
 
-    @Override
-    public synchronized void flush() {
-        buffer.flip();
+    private void writeToRandomAccessFile(final byte[] bytes, final int offset, final int length) {
         try {
-            randomAccessFile.write(buffer.array(), 0, buffer.limit());
+            randomAccessFile.write(bytes, offset, length);
         } catch (final IOException ex) {
             final String msg = "Error writing to RandomAccessFile " + getName();
             throw new AppenderLoggingException(msg, ex);
+        }
+    }
+
+    @Override
+    public synchronized void flush() {
+        buffer.flip();
+        if (buffer.limit() > 0) {
+            writeToRandomAccessFile(buffer.array(), 0, buffer.limit());
         }
         buffer.clear();
     }
@@ -158,6 +164,16 @@ public class RandomAccessFileManager extends OutputStreamManager implements Byte
                 super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;
+    }
+
+    /**
+     * Returns this {@code RandomAccessFileManager}.
+     * @param immediateFlush ignored
+     * @return this {@code RandomAccessFileManager}
+     */
+    @Override
+    protected ByteBufferDestination createByteBufferDestination(final boolean immediateFlush) {
+        return this;
     }
 
     @Override
