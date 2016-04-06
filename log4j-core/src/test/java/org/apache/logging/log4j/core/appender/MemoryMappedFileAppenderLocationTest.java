@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  * Tests that logged strings and their location appear in the file,
  * that the file size is the next power of two of the specified mapped region length
  * and that the file is shrunk to its actual usage when done.
- * 
+ *
  * @since 2.1
  */
 public class MemoryMappedFileAppenderLocationTest {
@@ -45,7 +45,7 @@ public class MemoryMappedFileAppenderLocationTest {
 
     @Before
     public void before() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, 
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "MemoryMappedFileAppenderLocationTest.xml");
     }
 
@@ -53,19 +53,19 @@ public class MemoryMappedFileAppenderLocationTest {
     public void testMemMapLocation() throws Exception {
         final File f = new File(LOGFILE);
         if (f.exists()) {
-            assertTrue(f.delete());
+            assertTrue("deleted ok", f.delete());
         }
         assertTrue(!f.exists());
-        
+
         final int expectedFileLength = Integers.ceilingNextPowerOfTwo(32000);
         assertEquals(32768, expectedFileLength);
-        
+
         final Logger log = LogManager.getLogger();
         try {
             log.warn("Test log1");
             assertTrue(f.exists());
             assertEquals("initial length", expectedFileLength, f.length());
-            
+
             log.warn("Test log2");
             assertEquals("not grown", expectedFileLength, f.length());
         } finally {
@@ -73,7 +73,7 @@ public class MemoryMappedFileAppenderLocationTest {
         }
         final int LINESEP = System.lineSeparator().length();
         assertEquals("Shrunk to actual used size", 474 + 2 * LINESEP, f.length());
-        
+
         String line1, line2, line3;
         try (final BufferedReader reader = new BufferedReader(new FileReader(LOGFILE))) {
             line1 = reader.readLine();
