@@ -57,7 +57,9 @@ public class GcFreeLoggingTest {
         process.exitValue();
 
         final String output = new String(Files.readAllBytes(tempFile.toPath()));
-        assertEquals("", output);
+        final String NEWLINE = System.getProperty("line.separator");
+        assertEquals("FATAL o.a.l.l.c.GcFreeLoggingTest [main]  This message is logged to the console"
+                + NEWLINE, output);
     }
 
     /**
@@ -76,6 +78,7 @@ public class GcFreeLoggingTest {
         // This is not steady-state logging and will allocate objects.
         final Logger logger = LogManager.getLogger(GcFreeLoggingTest.class.getName());
         logger.debug("debug not set");
+        logger.fatal("This message is logged to the console");
         logger.error("Sample error message");
         logger.error("Test parameterized message {}", "param");
 

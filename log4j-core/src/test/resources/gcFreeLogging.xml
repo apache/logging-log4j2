@@ -1,11 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
   <Appenders>
-    <RandomAccessFile name="RandomAccessFilePattern" fileName="gcfree.log" immediateFlush="false" append="false">
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%p %c{1.} [%t] %X{aKey} %m%ex%n" />
+    </Console>
+    <File name="File" fileName="target/gcfreefile.log" bufferedIO="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+    </File>
+    <RollingFile name="RollingFile" fileName="target/gcfreeRollingFile.log"
+        filePattern="target/gcfree-%d{MM-dd-yy-HH-mm-ss}.log.gz">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="50M" />
+      </Policies>
+    </RollingFile>
+    <RandomAccessFile name="RandomAccessFile" fileName="target/gcfreeRAF.log" immediateFlush="false" append="false">
       <PatternLayout>
         <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %ex%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
+    <RollingRandomAccessFile name="RollingRandomAccessFile"
+        fileName="target/gcfreeRRAF.log"
+        filePattern="target/afterRollover-%i.log" append="false"
+        immediateFlush="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="50 M"/>
+      </Policies>
+    </RollingRandomAccessFile>
+    <MemoryMappedFile name="MemoryMappedFile"
+        fileName="target/gcfreemmap.log"
+        immediateFlush="false" append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m%ex%n</Pattern>
+      </PatternLayout>
+    </MemoryMappedFile>
 <!--
     <RandomAccessFile name="RandomAccessFileGelf" fileName="gcfree.json" immediateFlush="false" append="false">
       <GelfLayout compressionType="OFF"/>
@@ -14,7 +49,13 @@
   </Appenders>
   <Loggers>
     <Root level="info" includeLocation="false">
-      <appender-ref ref="RandomAccessFilePattern"/>
+      <appender-ref ref="Console" level="FATAL" />
+      <appender-ref ref="File"/>
+      <appender-ref ref="RandomAccessFile"/>
+      <appender-ref ref="RollingRandomAccessFile"/>
+      <appender-ref ref="File"/>
+      <appender-ref ref="RollingFile"/>
+      <appender-ref ref="MemoryMappedFile"/>
       <!-- <appender-ref ref="RandomAccessFileGelf"/> -->
     </Root>
   </Loggers>
