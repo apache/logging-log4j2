@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
- * A Jackson {@link ObjectMapper} initialized for Log4j.
+ * A Jackson XML {@link ObjectMapper} initialized for Log4j.
  * <p>
  * <em>Consider this class private.</em>
  * </p>
