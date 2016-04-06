@@ -20,10 +20,12 @@ import java.io.Serializable;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.util.Constants;
 
 /**
  * Appends log events as bytes to a byte output stream. The stream encoding is defined in the layout.
- * 
+ *
  * @param <M> The kind of {@link OutputStreamManager} under management
  */
 public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager> extends AbstractAppender {
@@ -41,7 +43,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     /**
      * Instantiates a WriterAppender and set the output destination to a new {@link java.io.OutputStreamWriter}
      * initialized with <code>os</code> as its {@link java.io.OutputStream}.
-     * 
+     *
      * @param name The name of the Appender.
      * @param layout The layout to format the message.
      * @param manager The OutputStreamManager.
@@ -51,11 +53,16 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
         this.immediateFlush = immediateFlush;
+
+        if (Constants.ENABLE_DIRECT_ENCODERS) {
+            final ByteBufferDestination destination = manager.createByteBufferDestination(immediateFlush);
+            manager.setByteBufferDestination(destination);
+        }
     }
 
     /**
      * Gets the immediate flush setting.
-     * 
+     *
      * @return immediate flush.
      */
     public boolean getImmediateFlush() {
@@ -64,7 +71,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
 
     /**
      * Gets the manager.
-     * 
+     *
      * @return the manager.
      */
     public M getManager() {
@@ -93,20 +100,43 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      * <p>
      * Most subclasses of <code>AbstractOutputStreamAppender</code> will need to override this method.
      * </p>
-     * 
+     *
      * @param event The LogEvent.
      */
     @Override
     public void append(final LogEvent event) {
         try {
-            final byte[] bytes = getLayout().toByteArray(event);
-            if (bytes != null && bytes.length > 0) {
-                manager.write(bytes, this.immediateFlush || event.isEndOfBatch());
-            }
+            tryAppend(event);
         } catch (final AppenderLoggingException ex) {
-            error("Unable to write to stream " + manager.getName() + " for appender " + getName());
+            error("Unable to write to stream " + manager.getName() + " for appender " + getName() + ": " + ex);
             throw ex;
         }
     }
 
+    private void tryAppend(final LogEvent event) {
+        if (Constants.ENABLE_DIRECT_ENCODERS) {
+            directEncodeEvent(event);
+        } else {
+            writeByteArrayToManager(event);
+        }
+    }
+
+    protected void directEncodeEvent(final LogEvent event) {
+        synchronized (manager) {
+            getLayout().encode(event, manager.getByteBufferDestination());
+            if (!manager.isBufferedIO()) { // buffering was not requested by the user
+                manager.flushBuffer(); // we're not allowed to leave anything in the buffer: drain buffer into manager
+            }
+            if (this.immediateFlush || event.isEndOfBatch()) {
+                manager.flush();
+            }
+        }
+    }
+
+    protected void writeByteArrayToManager(final LogEvent event) {
+        final byte[] bytes = getLayout().toByteArray(event);
+        if (bytes != null && bytes.length > 0) {
+            manager.write(bytes, this.immediateFlush || event.isEndOfBatch());
+        }
+    }
 }
