@@ -72,7 +72,7 @@ public final class Constants {
             "log4j.format.msg.async", false);
 
     /**
-     * {@code true} if we think we are running in a web container, base on the boolean value of system property
+     * {@code true} if we think we are running in a web container, based on the boolean value of system property
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
      */
@@ -89,6 +89,18 @@ public final class Constants {
      */
     public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
             "log4j2.enable.threadlocals", true);
+
+    /**
+     * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into
+     * {@link org.apache.logging.log4j.core.layout.ByteBufferDestination}s without creating intermediate temporary
+     * Objects.
+     * <p>
+     * {@code True} by default, disable by setting system property "log4j2.enable.direct.encoders" to "false".
+     *
+     * @since 2.6
+     */
+    public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j2.enable.direct.encoders", true);
 
     /**
      * Prevent class instantiation.
