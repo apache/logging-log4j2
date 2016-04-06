@@ -95,17 +95,8 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         // of immediateFlush=true.
         manager.setEndOfBatch(event.isEndOfBatch());
 
-        // LOG4J2-1292 utilize gc-free Layout.encode() method
-        // super.append(event);
-        try {
-            getLayout().encode(event, getManager());
-            if (getImmediateFlush() || event.isEndOfBatch()) {
-                getManager().flush();
-            }
-        } catch (final AppenderLoggingException ex) {
-            error("Unable to write to stream " + getManager().getName() + " for appender " + getName());
-            throw ex;
-        }
+        // LOG4J2-1292 utilize gc-free Layout.encode() method: taken care of in superclass
+        super.append(event);
     }
 
     /**
