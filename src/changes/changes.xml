@@ -30,6 +30,12 @@
       <action issue="LOG4J2-1345" dev="rpopma" type="update">
         (Doc) Clarify documentation for properties that control Log4j behaviour.
       </action>
+      <action issue="LOG4J2-1344" dev="rpopma" type="add">
+        FileAppender, RollingFileAppender and MemoryMappedFileAppender are now also garbage-free by default.
+      </action>
+      <action issue="LOG4J2-1343" dev="rpopma" type="update">
+        ConsoleAppender is now garbage-free by default. This logic is reusable for all AbstractOutputStreamAppender subclasses.
+      </action>
       <action issue="LOG4J2-1336" dev="ggregory" type="fix" due-to="Zbynek Vyskovsky">
         LoggerFactory in 1.2 API module is not compatible with 1.2.
       </action>
