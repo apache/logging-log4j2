@@ -40,6 +40,9 @@ public class GcFreeLoggingTest {
 
     @Test
     public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
+        if (!Constants.ENABLE_THREADLOCALS || !Constants.ENABLE_DIRECT_ENCODERS) {
+            return;
+        }
         final String javaHome = System.getProperty("java.home");
         final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         final String classpath = System.getProperty("java.class.path");
