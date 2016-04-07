@@ -247,6 +247,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void debug(final Marker marker, final CharSequence message) {
+        logIfEnabled(FQCN, Level.DEBUG, marker, message, null);
+    }
+
+    @Override
+    public void debug(final Marker marker, final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.DEBUG, marker, message, t);
+    }
+
+    @Override
     public void debug(final Marker marker, final Message msg) {
         logIfEnabled(FQCN, Level.DEBUG, marker, msg, null);
     }
@@ -289,6 +299,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void debug(final Message msg, final Throwable t) {
         logIfEnabled(FQCN, Level.DEBUG, null, msg, t);
+    }
+
+    @Override
+    public void debug(final CharSequence message) {
+        logIfEnabled(FQCN, Level.DEBUG, null, message, null);
+    }
+
+    @Override
+    public void debug(final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.DEBUG, null, message, t);
     }
 
     @Override
@@ -649,6 +669,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void error(final Marker marker, final CharSequence message) {
+        logIfEnabled(FQCN, Level.ERROR, marker, message, null);
+    }
+
+    @Override
+    public void error(final Marker marker, final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.ERROR, marker, message, t);
+    }
+
+    @Override
     public void error(final Marker marker, final Object message) {
         logIfEnabled(FQCN, Level.ERROR, marker, message, null);
     }
@@ -681,6 +711,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void error(final Message msg, final Throwable t) {
         logIfEnabled(FQCN, Level.ERROR, null, msg, t);
+    }
+
+    @Override
+    public void error(final CharSequence message) {
+        logIfEnabled(FQCN, Level.ERROR, null, message, null);
+    }
+
+    @Override
+    public void error(final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.ERROR, null, message, t);
     }
 
     @Override
@@ -936,6 +976,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void fatal(final Marker marker, final CharSequence message) {
+        logIfEnabled(FQCN, Level.FATAL, marker, message, null);
+    }
+
+    @Override
+    public void fatal(final Marker marker, final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.FATAL, marker, message, t);
+    }
+
+    @Override
     public void fatal(final Marker marker, final Object message) {
         logIfEnabled(FQCN, Level.FATAL, marker, message, null);
     }
@@ -968,6 +1018,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void fatal(final Message msg, final Throwable t) {
         logIfEnabled(FQCN, Level.FATAL, null, msg, t);
+    }
+
+    @Override
+    public void fatal(final CharSequence message) {
+        logIfEnabled(FQCN, Level.FATAL, null, message, null);
+    }
+
+    @Override
+    public void fatal(final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.FATAL, null, message, t);
     }
 
     @Override
@@ -1182,6 +1242,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void info(final Marker marker, final CharSequence message) {
+        logIfEnabled(FQCN, Level.INFO, marker, message, null);
+    }
+
+    @Override
+    public void info(final Marker marker, final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.INFO, marker, message, t);
+    }
+
+    @Override
     public void info(final Marker marker, final Object message) {
         logIfEnabled(FQCN, Level.INFO, marker, message, null);
     }
@@ -1214,6 +1284,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void info(final Message msg, final Throwable t) {
         logIfEnabled(FQCN, Level.INFO, null, msg, t);
+    }
+
+    @Override
+    public void info(final CharSequence message) {
+        logIfEnabled(FQCN, Level.INFO, null, message, null);
+    }
+
+    @Override
+    public void info(final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.INFO, null, message, t);
     }
 
     @Override
@@ -1490,6 +1570,18 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void log(final Level level, final Marker marker, final CharSequence message) {
+        logIfEnabled(FQCN, level, marker, message, (Throwable) null);
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final CharSequence message, final Throwable t) {
+        if (isEnabled(level, marker, message, t)) {
+            logMessage(FQCN, level, marker, message, t);
+        }
+    }
+
+    @Override
     public void log(final Level level, final Marker marker, final Object message) {
         logIfEnabled(FQCN, level, marker, message, (Throwable) null);
     }
@@ -1524,6 +1616,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void log(final Level level, final Message msg, final Throwable t) {
         logIfEnabled(FQCN, level, null, msg, t);
+    }
+
+    @Override
+    public void log(final Level level, final CharSequence message) {
+        logIfEnabled(FQCN, level, null, message, null);
+    }
+
+    @Override
+    public void log(final Level level, final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, level, null, message, t);
     }
 
     @Override
@@ -1743,6 +1845,14 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final CharSequence message,
+            final Throwable t) {
+        if (isEnabled(level, marker, message, t)) {
+            logMessage(fqcn, level, marker, message, t);
+        }
+    }
+
+    @Override
     public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Supplier<?> msgSupplier,
             final Throwable t) {
         if (isEnabled(level, marker, msgSupplier, t)) {
@@ -1863,6 +1973,11 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         if (isEnabled(level, marker, message, t)) {
             logMessage(fqcn, level, marker, message, t);
         }
+    }
+
+    protected void logMessage(final String fqcn, final Level level, final Marker marker, final CharSequence message,
+            final Throwable t) {
+        logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final Object message,
@@ -2025,6 +2140,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void trace(final Marker marker, final CharSequence message) {
+        logIfEnabled(FQCN, Level.TRACE, marker, message, null);
+    }
+
+    @Override
+    public void trace(final Marker marker, final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.TRACE, marker, message, t);
+    }
+
+    @Override
     public void trace(final Marker marker, final Object message) {
         logIfEnabled(FQCN, Level.TRACE, marker, message, null);
     }
@@ -2057,6 +2182,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void trace(final Message msg, final Throwable t) {
         logIfEnabled(FQCN, Level.TRACE, null, msg, t);
+    }
+
+    @Override
+    public void trace(final CharSequence message) {
+        logIfEnabled(FQCN, Level.TRACE, null, message, null);
+    }
+
+    @Override
+    public void trace(final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.TRACE, null, message, t);
     }
 
     @Override
@@ -2326,6 +2461,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void warn(final Marker marker, final CharSequence message) {
+        logIfEnabled(FQCN, Level.WARN, marker, message, null);
+    }
+
+    @Override
+    public void warn(final Marker marker, final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.WARN, marker, message, t);
+    }
+
+    @Override
     public void warn(final Marker marker, final Object message) {
         logIfEnabled(FQCN, Level.WARN, marker, message, null);
     }
@@ -2358,6 +2503,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void warn(final Message msg, final Throwable t) {
         logIfEnabled(FQCN, Level.WARN, null, msg, t);
+    }
+
+    @Override
+    public void warn(final CharSequence message) {
+        logIfEnabled(FQCN, Level.WARN, null, message, null);
+    }
+
+    @Override
+    public void warn(final CharSequence message, final Throwable t) {
+        logIfEnabled(FQCN, Level.WARN, null, message, t);
     }
 
     @Override
