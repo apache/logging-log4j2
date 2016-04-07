@@ -127,16 +127,12 @@ public class SimpleMessage implements Message, StringBuilderFormattable {
     }
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
+        getFormattedMessage(); // initialize the message:String field
         out.defaultWriteObject();
-        if (charSequence instanceof Serializable) {
-            out.writeObject(charSequence);
-        } else {
-            out.writeObject(String.valueOf(charSequence));
-        }
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        charSequence = (CharSequence) in.readObject();
+        charSequence = message;
     }
 }
