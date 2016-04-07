@@ -343,6 +343,11 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     @Override
+    public boolean isEnabled(final Level level, final Marker marker, final CharSequence message, final Throwable t) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
         return isEnabled(level, marker);
     }

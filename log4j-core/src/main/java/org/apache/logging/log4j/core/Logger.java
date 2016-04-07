@@ -230,6 +230,11 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     @Override
+    public boolean isEnabled(final Level level, final Marker marker, final CharSequence message, final Throwable t) {
+        return privateConfig.filter(level, marker, message, t);
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
         return privateConfig.filter(level, marker, message, t);
     }
@@ -557,6 +562,17 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
             if (filter != null) {
                 final Filter.Result r = filter.filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6, p7, p8,
                         p9);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
+                }
+            }
+            return level != null && intLevel >= level.intLevel();
+        }
+
+        boolean filter(final Level level, final Marker marker, final CharSequence msg, final Throwable t) {
+            final Filter filter = config.getFilter();
+            if (filter != null) {
+                final Filter.Result r = filter.filter(logger, level, marker, msg, t);
                 if (r != Filter.Result.NEUTRAL) {
                     return r == Filter.Result.ACCEPT;
                 }

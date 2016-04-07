@@ -106,6 +106,11 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
+    public boolean isEnabled(final Level testLevel, final Marker marker, final CharSequence msg, final Throwable t) {
+        return this.level.intLevel() >= testLevel.intLevel();
+    }
+
+    @Override
     public boolean isEnabled(final Level testLevel, final Marker marker, final Object msg, final Throwable t) {
         return this.level.intLevel() >= testLevel.intLevel();
     }

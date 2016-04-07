@@ -169,6 +169,11 @@ public class TestLogger extends AbstractLogger {
     }
 
     @Override
+    public boolean isEnabled(final Level level, final Marker marker, final CharSequence msg, final Throwable t) {
+        return true;
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
         return true;
     }
