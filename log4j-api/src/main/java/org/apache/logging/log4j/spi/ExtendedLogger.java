@@ -49,6 +49,17 @@ public interface ExtendedLogger extends Logger {
      * @param t A Throwable.
      * @return True if logging is enabled, false otherwise.
      */
+    boolean isEnabled(Level level, Marker marker, CharSequence message, Throwable t);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param t A Throwable.
+     * @return True if logging is enabled, false otherwise.
+     */
     boolean isEnabled(Level level, Marker marker, Object message, Throwable t);
 
     /**
@@ -255,6 +266,18 @@ public interface ExtendedLogger extends Logger {
      * @param t the exception to log, including its stack trace.
      */
     void logIfEnabled(String fqcn, Level level, Marker marker, Message message, Throwable t);
+
+    /**
+     * Logs a CharSequence message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The CharSequence message.
+     * @param t the exception to log, including its stack trace.
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, CharSequence message, Throwable t);
 
     /**
      * Logs a message if the specified level is active.
