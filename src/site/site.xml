@@ -166,6 +166,16 @@
         <item name="Under The Hood" href="/manual/async.html#UnderTheHood"/>
       </item>
 
+      <item name="Garbage-free Logging" href="/manual/garbagefree.html" collapse="true">
+        <item name="Configuration" href="/manual/garbagefree.html#Config"/>
+        <item name="Supported Appenders" href="/manual/garbagefree.html#Appenders"/>
+        <item name="Supported Layouts" href="/manual/garbagefree.html#Layouts"/>
+        <item name="API Changes" href="/manual/garbagefree.html#api"/>
+        <item name="Impact on Application Code" href="/manual/garbagefree.html#codeImpact"/>
+        <item name="Performance" href="/manual/garbagefree.html#Performance"/>
+        <item name="Under the Hood" href="/manual/garbagefree.html#UnderTheHood"/>
+      </item>
+
       <item name="JMX" href="/manual/jmx.html"/>
       <item name="Logging Separation" href="/manual/logsep.html"/>
 
@@ -207,15 +217,6 @@
         <item name="Custom Loggers" href="/manual/customloglevels.html#CustomLoggers"/>
         <item name="Custom Logger Example" href="/manual/customloglevels.html#ExampleUsage"/>
         <item name="Code Generation Tool" href="/manual/customloglevels.html#CodeGen"/>
-      </item>
-
-      <item name="Garbage-free Logging" href="/manual/garbagefree.html" collapse="true">
-        <item name="Configuration" href="/manual/garbagefree.html#Config"/>
-        <item name="Supported Appenders" href="/manual/garbagefree.html#Appenders"/>
-        <item name="Supported Layouts" href="/manual/garbagefree.html#Layouts"/>
-        <item name="Impact on Application Code" href="/manual/garbagefree.html#codeImpact"/>
-        <item name="Performance" href="/manual/garbagefree.html#Performance"/>
-        <item name="Under the Hood" href="/manual/garbagefree.html#UnderTheHood"/>
       </item>
 
     </menu>
