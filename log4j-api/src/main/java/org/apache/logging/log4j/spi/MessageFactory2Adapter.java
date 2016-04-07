@@ -21,6 +21,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFactory2;
+import org.apache.logging.log4j.message.SimpleMessage;
 
 /**
  * Adapts a legacy MessageFactory to the new MessageFactory2 interface.
@@ -36,6 +37,11 @@ public class MessageFactory2Adapter implements MessageFactory2 {
 
     public MessageFactory getOriginal() {
         return wrapped;
+    }
+
+    @Override
+    public Message newMessage(final CharSequence charSequence) {
+        return new SimpleMessage(charSequence);
     }
 
     @Override
