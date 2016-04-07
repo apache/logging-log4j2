@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.util;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -95,12 +96,15 @@ public final class Constants {
      * {@link org.apache.logging.log4j.core.layout.ByteBufferDestination}s without creating intermediate temporary
      * Objects.
      * <p>
-     * {@code True} by default, disable by setting system property "log4j2.enable.direct.encoders" to "false".
+     * {@code True} by default iff all loggers are asynchronous because system property
+     * {@code Log4jContextSelector} is set to {@code org.apache.logging.log4j.core.async.AsyncLoggerContextSelector}.
+     * Disable by setting system property "log4j2.enable.direct.encoders" to "false".
      *
      * @since 2.6
      */
     public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.enable.direct.encoders", true);
+            "log4j2.enable.direct.encoders",
+            AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
 
     /**
      * Prevent class instantiation.
