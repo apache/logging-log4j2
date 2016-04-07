@@ -35,6 +35,9 @@ import static org.junit.Assert.*;
  *
  */
 public class AbstractLoggerTest extends AbstractLogger {
+    static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
+    private int charSeqCount;
+    private int objectCount;
 
     // TODO add proper tests for ReusableMessage
     @Before
@@ -75,6 +78,7 @@ public class AbstractLoggerTest extends AbstractLogger {
     private static String p1 = "Long Beach";
 
     private static String p2 = "California";
+    private static Message charSeq = new SimpleMessage(CHAR_SEQ);
     private static Message simple = new SimpleMessage("Hello");
     private static Message object = new ObjectMessage(obj);
 
@@ -102,6 +106,10 @@ public class AbstractLoggerTest extends AbstractLogger {
         new LogEvent(marker, simple, t),
         new LogEvent(marker, simple, null),
 
+        new LogEvent(null, charSeq, null),
+        new LogEvent(null, charSeq, t),
+        new LogEvent(marker, charSeq, null),
+        new LogEvent(marker, charSeq, t),
     };
 
     @Override
@@ -155,7 +163,14 @@ public class AbstractLoggerTest extends AbstractLogger {
     }
 
     @Override
+    public boolean isEnabled(final Level level, final Marker marker, final CharSequence data, final Throwable t) {
+        charSeqCount++;
+        return isEnabled(level, marker, new SimpleMessage(data), t);
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
+        objectCount++;
         return isEnabled(level, marker, new ObjectMessage(data), t);
     }
 
@@ -327,6 +342,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         debug(MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         debug(MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        debug(CHAR_SEQ);
+        currentEvent = events[16];
+        debug(CHAR_SEQ, t);
+        currentEvent = events[17];
+        debug(MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        debug(MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -369,6 +396,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         error(MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         error(MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        error(CHAR_SEQ);
+        currentEvent = events[16];
+        error(CHAR_SEQ, t);
+        currentEvent = events[17];
+        error(MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        error(MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -411,6 +450,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         fatal(MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         fatal(MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        fatal(CHAR_SEQ);
+        currentEvent = events[16];
+        fatal(CHAR_SEQ, t);
+        currentEvent = events[17];
+        fatal(MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        fatal(MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -453,6 +504,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         info(MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         info(MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        info(CHAR_SEQ);
+        currentEvent = events[16];
+        info(CHAR_SEQ, t);
+        currentEvent = events[17];
+        info(MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        info(MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -495,6 +558,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         log(Level.DEBUG, MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         log(Level.DEBUG, MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        log(Level.DEBUG, CHAR_SEQ);
+        currentEvent = events[16];
+        log(Level.DEBUG, CHAR_SEQ, t);
+        currentEvent = events[17];
+        log(Level.DEBUG, MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        log(Level.DEBUG, MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -537,6 +612,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         log(Level.ERROR, MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         log(Level.ERROR, MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        log(Level.ERROR, CHAR_SEQ);
+        currentEvent = events[16];
+        log(Level.ERROR, CHAR_SEQ, t);
+        currentEvent = events[17];
+        log(Level.ERROR, MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        log(Level.ERROR, MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -579,6 +666,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         log(Level.FATAL, MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         log(Level.FATAL, MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        log(Level.FATAL, CHAR_SEQ);
+        currentEvent = events[16];
+        log(Level.FATAL, CHAR_SEQ, t);
+        currentEvent = events[17];
+        log(Level.FATAL, MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        log(Level.FATAL, MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -621,6 +720,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         log(Level.INFO, MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         log(Level.INFO, MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        log(Level.INFO, CHAR_SEQ);
+        currentEvent = events[16];
+        log(Level.INFO, CHAR_SEQ, t);
+        currentEvent = events[17];
+        log(Level.INFO, MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        log(Level.INFO, MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -663,6 +774,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         log(Level.TRACE, MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         log(Level.TRACE, MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        log(Level.TRACE, CHAR_SEQ);
+        currentEvent = events[16];
+        log(Level.TRACE, CHAR_SEQ, t);
+        currentEvent = events[17];
+        log(Level.TRACE, MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        log(Level.TRACE, MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -705,6 +828,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         log(Level.WARN, MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         log(Level.WARN, MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        log(Level.WARN, CHAR_SEQ);
+        currentEvent = events[16];
+        log(Level.WARN, CHAR_SEQ, t);
+        currentEvent = events[17];
+        log(Level.WARN, MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        log(Level.WARN, MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -747,6 +882,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         trace(MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         trace(MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        trace(CHAR_SEQ);
+        currentEvent = events[16];
+        trace(CHAR_SEQ, t);
+        currentEvent = events[17];
+        trace(MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        trace(MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
     @Test
@@ -789,6 +936,18 @@ public class AbstractLoggerTest extends AbstractLogger {
         warn(MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         warn(MarkerManager.getMarker("TEST"), simple);
+
+        currentEvent = events[15];
+        warn(CHAR_SEQ);
+        currentEvent = events[16];
+        warn(CHAR_SEQ, t);
+        currentEvent = events[17];
+        warn(MarkerManager.getMarker("TEST"), CHAR_SEQ);
+        currentEvent = events[18];
+        warn(MarkerManager.getMarker("TEST"), CHAR_SEQ, t);
+
+        assertEquals("log(CharSeq) invocations", 4, charSeqCount);
+        assertEquals("log(Object) invocations", 5, objectCount);
     }
 
 }
