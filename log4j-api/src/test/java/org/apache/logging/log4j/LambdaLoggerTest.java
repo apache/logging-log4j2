@@ -63,6 +63,11 @@ public class LambdaLoggerTest {
         }
 
         @Override
+        public boolean isEnabled(final Level level, final Marker marker, final CharSequence message, final Throwable t) {
+            return enabled;
+        }
+
+        @Override
         public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
             return enabled;
         }
