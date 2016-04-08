@@ -54,7 +54,7 @@ public class RandomAccessFileManager extends OutputStreamManager implements Byte
         this.randomAccessFile = file;
         this.advertiseURI = advertiseURI;
         this.isEndOfBatch.set(Boolean.FALSE);
-        this.buffer = ByteBuffer.allocate(bufferSize);
+        this.buffer = ByteBuffer.wrap(new byte[bufferSize]);
     }
 
     /**
