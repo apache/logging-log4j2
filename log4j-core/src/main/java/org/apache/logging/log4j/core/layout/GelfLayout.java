@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -177,42 +177,41 @@ public final class GelfLayout extends AbstractStringLayout {
     }
 
     private StringBuilder toText(LogEvent event, StringBuilder builder, boolean gcFree) {
-        final JsonStringEncoder jsonEncoder = JsonStringEncoder.getInstance();
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
         builder.append("\"host\":\"");
-        jsonEncoder.quoteAsString(toNullSafeString(host), builder);
+        JsonUtils.quoteAsString(toNullSafeString(host), builder);
         builder.append(QC);
         builder.append("\"timestamp\":").append(formatTimestamp(event.getTimeMillis())).append(C);
         builder.append("\"level\":").append(formatLevel(event.getLevel())).append(C);
         if (event.getThreadName() != null) {
             builder.append("\"_thread\":\"");
-            jsonEncoder.quoteAsString(event.getThreadName(), builder);
+            JsonUtils.quoteAsString(event.getThreadName(), builder);
             builder.append(QC);
         }
         if (event.getLoggerName() != null) {
             builder.append("\"_logger\":\"");
-            jsonEncoder.quoteAsString(event.getLoggerName(), builder);
+            JsonUtils.quoteAsString(event.getLoggerName(), builder);
             builder.append(QC);
         }
 
         for (final KeyValuePair additionalField : additionalFields) {
             builder.append(QU);
-            jsonEncoder.quoteAsString(additionalField.getKey(), builder);
+            JsonUtils.quoteAsString(additionalField.getKey(), builder);
             builder.append("\":\"");
-            jsonEncoder.quoteAsString(toNullSafeString(additionalField.getValue()), builder);
+            JsonUtils.quoteAsString(toNullSafeString(additionalField.getValue()), builder);
             builder.append(QC);
         }
         for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
             builder.append(QU);
-            jsonEncoder.quoteAsString(entry.getKey(), builder);
+            JsonUtils.quoteAsString(entry.getKey(), builder);
             builder.append("\":\"");
-            jsonEncoder.quoteAsString(toNullSafeString(entry.getValue()), builder);
+            JsonUtils.quoteAsString(toNullSafeString(entry.getValue()), builder);
             builder.append(QC);
         }
         if (event.getThrown() != null) {
             builder.append("\"full_message\":\"");
-            jsonEncoder.quoteAsString(formatThrowable(event.getThrown()), builder);
+            JsonUtils.quoteAsString(formatThrowable(event.getThrown()), builder);
             builder.append(QC);
         }
 
@@ -221,9 +220,9 @@ public final class GelfLayout extends AbstractStringLayout {
         if (gcFree && message instanceof StringBuilderFormattable) {
             StringBuilder messageBuffer = getMessageStringBuilder();
             ((StringBuilderFormattable)message).formatTo(messageBuffer);
-            jsonEncoder.quoteAsString(messageBuffer, builder);
+            JsonUtils.quoteAsString(messageBuffer, builder);
         } else {
-            jsonEncoder.quoteAsString(toNullSafeString(message.getFormattedMessage()), builder);
+            JsonUtils.quoteAsString(toNullSafeString(message.getFormattedMessage()), builder);
         }
         builder.append(Q);
         builder.append('}');
