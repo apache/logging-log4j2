@@ -59,7 +59,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
-    private final TextEncoderHelper textEncoderHelper;
+    private TextEncoderHelper textEncoderHelper;
 
     /**
      * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
@@ -148,6 +148,9 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      * @return a {@code TextEncoderHelper}
      */
     protected TextEncoderHelper getCachedTextEncoderHelper() {
+        if (textEncoderHelper == null) {
+            textEncoderHelper = new TextEncoderHelper(getCharset());
+        }
         return textEncoderHelper;
     }
 
