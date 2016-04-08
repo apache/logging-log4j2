@@ -24,13 +24,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
  * Tests {@link LevelMixIn}.
  */
-public class LevelMixInTest {
+public abstract class LevelMixInTest {
 
     static class Fixture {
         @JsonProperty
@@ -66,7 +67,7 @@ public class LevelMixInTest {
             return result;
         }
     }
-    private Log4jJsonObjectMapper log4jObjectMapper;
+    private ObjectMapper log4jObjectMapper;
 
     private ObjectReader reader;
 
@@ -74,10 +75,12 @@ public class LevelMixInTest {
 
     @Before
     public void setUp() {
-        log4jObjectMapper = new Log4jJsonObjectMapper();
+        log4jObjectMapper = newObjectMapper();
         writer = log4jObjectMapper.writer();
         reader = log4jObjectMapper.readerFor(Level.class);
     }
+
+    protected abstract ObjectMapper newObjectMapper();
 
     @Test
     public void testContainer() throws IOException {

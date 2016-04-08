@@ -112,6 +112,11 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
+    public boolean isEnabled(final Level level, final Marker marker, final CharSequence data, final Throwable t) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
         return isEnabledFor(level, marker);
     }

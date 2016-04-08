@@ -33,8 +33,8 @@ public class ReusableSimpleMessageTest {
     }
 
     @Test
-    public void testGetFormattedMessage_InitiallyEmpty() throws Exception {
-        assertNull(new ReusableSimpleMessage().getFormattedMessage());
+    public void testGetFormattedMessage_InitiallyStringNull() throws Exception {
+        assertEquals("null", new ReusableSimpleMessage().getFormattedMessage());
     }
 
     @Test
@@ -49,8 +49,8 @@ public class ReusableSimpleMessageTest {
     }
 
     @Test
-    public void testGetFormat_InitiallyEmpty() throws Exception {
-        assertNull(new ReusableSimpleMessage().getFormat());
+    public void testGetFormat_InitiallyStringNull() throws Exception {
+        assertEquals("null", new ReusableSimpleMessage().getFormat());
     }
 
     @Test

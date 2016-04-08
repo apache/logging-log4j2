@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * Memory Mapped File Appender.
- * 
+ *
  * @since 2.1
  */
 @Plugin(name = "MemoryMappedFile", category = "Core", elementType = "appender", printObject = true)
@@ -102,7 +102,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
     /**
      * Returns the length of the memory mapped region.
-     * 
+     *
      * @return the length of the memory mapped region
      */
     public int getRegionLength() {
@@ -170,7 +170,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             return null;
         }
 
-        return new MemoryMappedFileAppender(name, layout, filter, manager, fileName, ignoreExceptions, isForce,
+        return new MemoryMappedFileAppender(name, layout, filter, manager, fileName, ignoreExceptions, false,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 

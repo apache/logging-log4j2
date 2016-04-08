@@ -23,6 +23,13 @@ package org.apache.logging.log4j.message;
  */
 public interface MessageFactory2 extends MessageFactory {
     /**
+     * Creates a new message for the specified CharSequence.
+     * @param charSequence the (potentially mutable) CharSequence
+     * @return a new message for the specified CharSequence
+     */
+    Message newMessage(CharSequence charSequence);
+
+    /**
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.

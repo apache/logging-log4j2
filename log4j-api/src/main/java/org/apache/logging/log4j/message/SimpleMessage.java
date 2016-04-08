@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
@@ -24,7 +29,8 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 public class SimpleMessage implements Message, StringBuilderFormattable {
     private static final long serialVersionUID = -8398002534962715992L;
 
-    private final String message;
+    private String message;
+    private transient CharSequence charSequence;
 
     /**
      * Basic constructor.
@@ -39,6 +45,16 @@ public class SimpleMessage implements Message, StringBuilderFormattable {
      */
     public SimpleMessage(final String message) {
         this.message = message;
+        this.charSequence = message;
+    }
+
+    /**
+     * Constructor that includes the message.
+     * @param charSequence The CharSequence message.
+     */
+    public SimpleMessage(final CharSequence charSequence) {
+        // this.message = String.valueOf(charSequence); // postponed until getFormattedMessage
+        this.charSequence = charSequence;
     }
 
     /**
@@ -47,12 +63,15 @@ public class SimpleMessage implements Message, StringBuilderFormattable {
      */
     @Override
     public String getFormattedMessage() {
+        if (message == null) {
+            message = String.valueOf(charSequence);
+        }
         return message;
     }
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-        buffer.append(message);
+        buffer.append(charSequence);
     }
 
     /**
@@ -61,7 +80,7 @@ public class SimpleMessage implements Message, StringBuilderFormattable {
      */
     @Override
     public String getFormat() {
-        return message;
+        return getFormattedMessage();
     }
 
     /**
@@ -84,12 +103,12 @@ public class SimpleMessage implements Message, StringBuilderFormattable {
 
         final SimpleMessage that = (SimpleMessage) o;
 
-        return !(message != null ? !message.equals(that.message) : that.message != null);
+        return !(charSequence != null ? !charSequence.equals(that.charSequence) : that.charSequence != null);
     }
 
     @Override
     public int hashCode() {
-        return message != null ? message.hashCode() : 0;
+        return charSequence != null ? charSequence.hashCode() : 0;
     }
 
     @Override
@@ -105,5 +124,15 @@ public class SimpleMessage implements Message, StringBuilderFormattable {
     @Override
     public Throwable getThrowable() {
         return null;
+    }
+
+    private void writeObject(final ObjectOutputStream out) throws IOException {
+        getFormattedMessage(); // initialize the message:String field
+        out.defaultWriteObject();
+    }
+
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        charSequence = message;
     }
 }

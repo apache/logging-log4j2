@@ -76,6 +76,13 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
         return result;
     }
 
+    @Override
+    public Message newMessage(final CharSequence charSequence) {
+        ReusableSimpleMessage result = getSimple();
+        result.set(charSequence);
+        return result;
+    }
+
     /**
      * Creates {@link ReusableParameterizedMessage} instances.
      *

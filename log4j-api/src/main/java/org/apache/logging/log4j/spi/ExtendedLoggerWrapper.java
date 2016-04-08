@@ -69,6 +69,20 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
      *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
+     * @param message The message CharSequence.
+     * @param t A Throwable.
+     * @return true if the event would be logged for the Level, Marker, Object and Throwable, false otherwise.
+     */
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final CharSequence message, final Throwable t) {
+        return logger.isEnabled(level, marker, message, t);
+    }
+
+    /**
+     * Detect if the event would be logged.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
      * @param message The message.
      * @param t A Throwable.
      * @return true if the event would be logged for the Level, Marker, Object and Throwable, false otherwise.

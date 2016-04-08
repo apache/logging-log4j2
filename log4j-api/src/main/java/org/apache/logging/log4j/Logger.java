@@ -132,6 +132,24 @@ public interface Logger {
     void debug(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
+     * Logs a message CharSequence with the {@link Level#DEBUG DEBUG} level.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     */
+    void debug(Marker marker, CharSequence message);
+
+    /**
+     * Logs a message CharSequence at the {@link Level#DEBUG DEBUG} level including the stack trace of the
+     * {@link Throwable} <code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void debug(Marker marker, CharSequence message, Throwable t);
+
+    /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement
@@ -249,6 +267,22 @@ public interface Logger {
      */
     @Deprecated
     void debug(MessageSupplier msgSupplier, Throwable t);
+
+    /**
+     * Logs a message CharSequence with the {@link Level#DEBUG DEBUG} level.
+     *
+     * @param message the message object to log.
+     */
+    void debug(CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void debug(CharSequence message, Throwable t);
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
@@ -660,6 +694,24 @@ public interface Logger {
     void error(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
+     * Logs a message CharSequence with the {@link Level#ERROR ERROR} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message CharSequence to log.
+     */
+    void error(Marker marker, CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void error(Marker marker, CharSequence message, Throwable t);
+
+    /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement.
@@ -777,6 +829,22 @@ public interface Logger {
      */
     @Deprecated
     void error(MessageSupplier msgSupplier, Throwable t);
+
+    /**
+     * Logs a message CharSequence with the {@link Level#ERROR ERROR} level.
+     *
+     * @param message the message CharSequence to log.
+     */
+    void error(CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void error(CharSequence message, Throwable t);
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
@@ -1182,6 +1250,24 @@ public interface Logger {
     void fatal(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
+     * Logs a message CharSequence with the {@link Level#FATAL FATAL} level.
+     *
+     * @param marker The marker data specific to this log statement.
+     * @param message the message CharSequence to log.
+     */
+    void fatal(Marker marker, CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param marker The marker data specific to this log statement.
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void fatal(Marker marker, CharSequence message, Throwable t);
+
+    /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
      * @param marker The marker data specific to this log statement.
@@ -1299,6 +1385,22 @@ public interface Logger {
      */
     @Deprecated
     void fatal(MessageSupplier msgSupplier, Throwable t);
+
+    /**
+     * Logs a message CharSequence with the {@link Level#FATAL FATAL} level.
+     *
+     * @param message the message CharSequence to log.
+     */
+    void fatal(CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void fatal(CharSequence message, Throwable t);
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
@@ -1703,6 +1805,24 @@ public interface Logger {
     void info(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
+     * Logs a message CharSequence with the {@link Level#INFO INFO} level.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     */
+    void info(Marker marker, CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void info(Marker marker, CharSequence message, Throwable t);
+
+    /**
      * Logs a message object with the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement
@@ -1820,6 +1940,22 @@ public interface Logger {
      */
     @Deprecated
     void info(MessageSupplier msgSupplier, Throwable t);
+
+    /**
+     * Logs a message CharSequence with the {@link Level#INFO INFO} level.
+     *
+     * @param message the message CharSequence to log.
+     */
+    void info(CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void info(CharSequence message, Throwable t);
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
@@ -2324,6 +2460,26 @@ public interface Logger {
     void log(Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
+     * Logs a message CharSequence with the given level.
+     *
+     * @param level the logging level
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     */
+    void log(Level level, Marker marker, CharSequence message);
+
+    /**
+     * Logs a CharSequence at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
+     * parameter.
+     *
+     * @param level the logging level
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void log(Level level, Marker marker, CharSequence message, Throwable t);
+
+    /**
      * Logs a message object with the given level.
      *
      * @param level the logging level
@@ -2451,6 +2607,24 @@ public interface Logger {
      */
     @Deprecated
     void log(Level level, MessageSupplier msgSupplier, Throwable t);
+
+    /**
+     * Logs a message CharSequence with the given level.
+     *
+     * @param level the logging level
+     * @param message the message CharSequence to log.
+     */
+    void log(Level level, CharSequence message);
+
+    /**
+     * Logs a CharSequence at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
+     * parameter.
+     *
+     * @param level the logging level
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void log(Level level, CharSequence message, Throwable t);
 
     /**
      * Logs a message object with the given level.
@@ -2887,6 +3061,25 @@ public interface Logger {
     void trace(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
+     * Logs a message CharSequence with the {@link Level#TRACE TRACE} level.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     */
+    void trace(Marker marker, CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     * @see #debug(String)
+     */
+    void trace(Marker marker, CharSequence message, Throwable t);
+
+    /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement
@@ -3006,6 +3199,23 @@ public interface Logger {
      */
     @Deprecated
     void trace(MessageSupplier msgSupplier, Throwable t);
+
+    /**
+     * Logs a message CharSequence with the {@link Level#TRACE TRACE} level.
+     *
+     * @param message the message CharSequence to log.
+     */
+    void trace(CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     * @see #debug(String)
+     */
+    void trace(CharSequence message, Throwable t);
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
@@ -3568,6 +3778,24 @@ public interface Logger {
     void warn(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
+     * Logs a message CharSequence with the {@link Level#WARN WARN} level.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     */
+    void warn(Marker marker, CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void warn(Marker marker, CharSequence message, Throwable t);
+
+    /**
      * Logs a message object with the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement
@@ -3685,6 +3913,22 @@ public interface Logger {
      */
     @Deprecated
     void warn(MessageSupplier msgSupplier, Throwable t);
+
+    /**
+     * Logs a message CharSequence with the {@link Level#WARN WARN} level.
+     *
+     * @param message the message CharSequence to log.
+     */
+    void warn(CharSequence message);
+
+    /**
+     * Logs a CharSequence at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     *
+     * @param message the message CharSequence to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void warn(CharSequence message, Throwable t);
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.

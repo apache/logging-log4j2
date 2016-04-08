@@ -24,6 +24,7 @@ import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.Ignore;
@@ -38,8 +39,36 @@ import static org.junit.Assert.*;
  */
 public class GcFreeLoggingTest {
 
+    private static class MyCharSeq implements CharSequence {
+        final String seq = GcFreeLoggingTest.class.toString();
+
+        @Override
+        public int length() {
+            return seq.length();
+        }
+
+        @Override
+        public char charAt(final int index) {
+            return seq.charAt(index);
+        }
+
+        @Override
+        public CharSequence subSequence(final int start, final int end) {
+            return seq.subSequence(start, end);
+        }
+
+        @Override
+        public String toString() {
+            System.err.println("TEMP OBJECT CREATED!");
+            throw new IllegalStateException("TEMP OBJECT CREATED!");
+        }
+    }
+
     @Test
     public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
+        if (!Constants.ENABLE_THREADLOCALS || !Constants.ENABLE_DIRECT_ENCODERS) {
+            return;
+        }
         final String javaHome = System.getProperty("java.home");
         final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         final String classpath = System.getProperty("java.class.path");
@@ -57,7 +86,9 @@ public class GcFreeLoggingTest {
         process.exitValue();
 
         final String output = new String(Files.readAllBytes(tempFile.toPath()));
-        assertEquals("", output);
+        final String NEWLINE = System.getProperty("line.separator");
+        assertEquals("FATAL o.a.l.l.c.GcFreeLoggingTest [main]  This message is logged to the console"
+                + NEWLINE, output);
     }
 
     /**
@@ -72,10 +103,14 @@ public class GcFreeLoggingTest {
         assertTrue("Constants.ENABLE_THREADLOCALS", Constants.ENABLE_THREADLOCALS);
         assertFalse("Constants.IS_WEB_APP", Constants.IS_WEB_APP);
 
+        MyCharSeq myCharSeq = new MyCharSeq();
+        MarkerManager.getMarker("test"); // initial creation, value is cached
+
         // initialize LoggerContext etc.
         // This is not steady-state logging and will allocate objects.
         final Logger logger = LogManager.getLogger(GcFreeLoggingTest.class.getName());
         logger.debug("debug not set");
+        logger.fatal("This message is logged to the console");
         logger.error("Sample error message");
         logger.error("Test parameterized message {}", "param");
 
@@ -107,6 +142,8 @@ public class GcFreeLoggingTest {
         // now do some steady-state logging
         final int ITERATIONS = 5;
         for (int i = 0; i < ITERATIONS; i++) {
+            logger.error(myCharSeq);
+            logger.error(MarkerManager.getMarker("test"), myCharSeq);
             logger.error("Test message");
             logger.error("Test parameterized message {}", "param");
             logger.error("Test parameterized message {}{}", "param", "param2");
@@ -114,6 +151,7 @@ public class GcFreeLoggingTest {
         }
         Thread.sleep(50);
         AllocationRecorder.removeSampler(sampler);
+        Thread.sleep(100);
     }
 
     private static File agentJar() {

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
@@ -99,6 +100,9 @@ public class RollingFileManager extends FileManager {
      * @return The size of the file in bytes.
      */
     public long getFileSize() {
+        if (Constants.ENABLE_DIRECT_ENCODERS) {
+            return size + getByteBufferDestination().getByteBuffer().position();
+        }
         return size;
     }
 
@@ -134,7 +138,10 @@ public class RollingFileManager extends FileManager {
 
     protected void createFileAfterRollover() throws IOException  {
         final OutputStream os = new FileOutputStream(getFileName(), isAppend());
-        if (getBufferSize() > 0) { // negative buffer size means no buffering
+
+        // when the garbage-free Layout encode mechanism is used
+        // we use a ByteBuffer instead of BufferedOutputStream
+        if (!Constants.ENABLE_DIRECT_ENCODERS && isBufferedIO()) {
             setOutputStream(new BufferedOutputStream(os, getBufferSize()));
         } else {
             setOutputStream(os);
@@ -402,7 +409,10 @@ public class RollingFileManager extends FileManager {
             try {
                 os = new FileOutputStream(name, data.append);
                 int bufferSize = data.bufferSize;
-                if (data.bufferedIO) {
+
+                // when the garbage-free Layout encode mechanism is used
+                // we use a ByteBuffer instead of BufferedOutputStream
+                if (!Constants.ENABLE_DIRECT_ENCODERS && data.bufferedIO) {
                     os = new BufferedOutputStream(os, bufferSize);
                 } else {
                     bufferSize = -1; // negative buffer size signals bufferedIO was configured false

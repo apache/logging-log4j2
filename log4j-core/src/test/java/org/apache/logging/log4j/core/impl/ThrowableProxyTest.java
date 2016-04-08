@@ -36,6 +36,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
+import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -72,9 +73,7 @@ public class ThrowableProxyTest {
         return arr.toByteArray();
     }
 
-    @Test
-    public void testJsonIoContainer() throws IOException {
-        final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
+    private void testIoContainer(ObjectMapper objectMapper ) throws IOException {
         final Fixture expected = new Fixture();
         final String s = objectMapper.writeValueAsString(expected);
         final Fixture actual = objectMapper.readValue(s, Fixture.class);
@@ -84,6 +83,16 @@ public class ThrowableProxyTest {
         assertEquals(expected.proxy.getCommonElementCount(), actual.proxy.getCommonElementCount());
         assertArrayEquals(expected.proxy.getExtendedStackTrace(), actual.proxy.getExtendedStackTrace());
         assertEquals(expected.proxy, actual.proxy);
+    }
+
+    @Test
+    public void testIoContainerAsJson() throws IOException {
+        testIoContainer(new Log4jJsonObjectMapper());
+    }
+
+    @Test
+    public void testIoContainerAsXml() throws IOException {
+        testIoContainer(new Log4jXmlObjectMapper());
     }
 
     /**

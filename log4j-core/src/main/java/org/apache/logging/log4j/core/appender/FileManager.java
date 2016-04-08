@@ -23,12 +23,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.util.Constants;
 
 
 /**
@@ -126,7 +129,7 @@ public class FileManager extends OutputStreamManager {
     public boolean isLocking() {
         return isLocking;
     }
-    
+
     /**
      * Returns the buffer size to use if the appender was configured with BufferedIO=true, otherwise returns a negative
      * number.
@@ -134,6 +137,29 @@ public class FileManager extends OutputStreamManager {
      */
     public int getBufferSize() {
         return bufferSize;
+    }
+
+    /**
+     * Returns whether the user requested IO to be buffered.
+     * @return whether the buffer size is larger than zero.
+     */
+    @Override
+    protected boolean isBufferedIO() {
+        return bufferSize > 0;
+    }
+
+    /**
+     * Returns a OutputStreamManagerDestination with the user-requested buffer size.
+     * @param immediateFlush the value to pass to the {@link #write(byte[], int, int, boolean)} method when the
+     *          ByteBufferDestination is {@link ByteBufferDestination#drain(ByteBuffer) drained}
+     * @return a OutputStreamManagerDestination with the user-requested buffer size
+     */
+    @Override
+    protected ByteBufferDestination createByteBufferDestination(final boolean immediateFlush) {
+        if (isBufferedIO()) {
+            return new OutputStreamManagerDestination(bufferSize, immediateFlush, this);
+        }
+        return new OutputStreamManagerDestination(immediateFlush, this);
     }
 
     /**
@@ -202,7 +228,10 @@ public class FileManager extends OutputStreamManager {
             try {
                 os = new FileOutputStream(name, data.append);
                 int bufferSize = data.bufferSize;
-                if (data.bufferedIO) {
+
+                // when the garbage-free Layout encode mechanism is used
+                // we use a ByteBuffer instead of BufferedOutputStream
+                if (!Constants.ENABLE_DIRECT_ENCODERS && data.bufferedIO) {
                     os = new BufferedOutputStream(os, bufferSize);
                 } else {
                     bufferSize = -1; // signals to RollingFileManager not to use BufferedOutputStream

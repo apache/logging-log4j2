@@ -79,6 +79,50 @@
 
       <a name="Enable" />
       <subsection name="Enabling Garbage-free Logging">
+        <a name="Config" />
+        <subsubsection name="Configuration">
+          <h4>Configuration</h4>
+          <p>
+            In Log4j 2.6, garbage-free logging is enabled by default, except in web applications.
+            Log4j will partially disable garbage-free logging if it detects that it is used in a web application
+            (when the <tt>javax.servlet.Servlet</tt> class is in the classpath,
+            or when system property <tt>log4j2.is.webapp</tt> is set to "true").
+            This is because garbage-free logging uses a number of ThreadLocal fields, which can cause
+            memory leaks when a thread pool of the web application server continues to hold references
+            to these fields after the web application is undeployed. Log4j will not use these ThreadLocals
+            to avoid memory leaks when used in web applications.
+          </p>
+          <p>
+            Some garbage-reducing functionality in Log4j is available for all applications:
+            in Log4j 2.6, converting log events to text and text to bytes can be done by directly encoding text
+            into a reused ByteBuffer without creating intermediary
+            Strings, char arrays and byte arrays. This functionality does not rely on ThreadLocals and is
+            enabled by default.
+            So while logging is not completely garbage-free for web applications yet,
+            the pressure on the garbage collector can still be significantly reduced.
+          </p>
+          <p>
+            There are two separate system properties for manually disabling the mechanisms Log4j uses to avoid
+            creating temporary objects:
+          </p>
+          <ul>
+            <li><tt>log4j2.enable.threadlocals</tt> - if "true" (the default for non-web applications)
+              objects are stored in ThreadLocal fields and reused, otherwise new
+              objects are created for each log event</li>
+            <li><tt>log4j2.enable.direct.encoders</tt> - if "true" (the default) log events are converted to text and this
+              text is converted to bytes without creating temporary objects. Caution: multi-threaded applications
+              that use synchronous logging may see worse performance: the lock that was previously only around the
+              IO operation is widened to include the text formatting and conversion to bytes.
+              </li>
+          </ul>
+          <p>
+            Instead of system properties, the above properties can also be specified in a file named
+            <tt>log4j2.component.properties</tt> by including this file in the classpath of the application.
+          </p>
+          <table><tr><td><b>Caution:</b> as of version 2.6, a Log4j configuration containing a <tt>&lt;Properties&gt;</tt> section
+            will result in temporary objects being created during steady-state logging.
+          </td></tr></table>
+        </subsubsection>
         <a name="Appenders" />
         <subsubsection name="Supported Appenders">
           <h4>Supported Appenders</h4>
@@ -92,7 +136,6 @@
             <li>RandomAccessFile</li>
             <li>RollingRandomAccessFile (some temporary objects are created during file rollover)</li>
             <li>MemoryMappedFile</li>
-            <li>Socket</li>
           </ul>
           <p>
             Any other appenders not in the above list (including Async) create temporary objects during steady-state
@@ -113,7 +156,7 @@
             Format modifiers to control such things as field width, padding, left and right justification will not
             generate garbage.
           </p>
-          <table style="width: 60%">
+          <table style="width: 80%">
             <tr>
               <th>Conversion Pattern</th>
               <th>Description</th>
@@ -219,6 +262,10 @@
             Other PatternLayout conversion patterns, and other Layouts may be updated
             to avoid creating temporary objects in future releases. (Patches welcome!)
           </p>
+          <p>
+            We haven't figured out a way to log Exceptions and stack traces without creating temporary objects.
+            That is unfortunate, but you probably still want to log them when they happen.
+          </p>
           <table><tr><td><b>Caution:</b> patterns containing regular expressions and lookups for property substitution
             will result in temporary objects being created during steady-state logging.
             <p>
@@ -238,6 +285,27 @@
           <h5>GelfLayout</h5>
           <p>GelfLayout is garbage-free when used with compressionType="OFF".</p>
 
+        </subsubsection>
+        <a name="api" />
+        <subsubsection name="API Changes">
+          <h4>API Changes</h4>
+          <p>
+            Methods have been added to the <tt>Logger</tt> interface so that no vararg array objects are created
+            when logging messages with up to ten parameters.
+          </p>
+          <p>
+            Also, methods have been added to the <tt>Logger</tt> interface to log <tt>CharSequence</tt> messages.
+            User-defined objects that implement the <tt>CharSequence</tt> interface can be logged without creating
+            temporary objects: Log4j will try to turn CharSequence messages,
+            Object messages and message parameters
+            into text by appending them to a StringBuilder as a CharSequence.
+            This avoids calling <tt>toString()</tt> on these objects.
+          </p>
+          <p>
+            (Note that Log4j may call <tt>toString()</tt> on message and parameter objects when
+            garbage-free logging is disabled
+            because system property <tt>log4j2.enable.threadlocals</tt> is set to "false".)
+          </p>
         </subsubsection>
         <a name="codeImpact" />
         <subsubsection name="Impact on Application Code: Autoboxing">
@@ -286,41 +354,26 @@ public void garbageFree() {
         <p>
         </p>
       </subsection>
-      <a name="Config" />
-      <subsubsection name="Configuration">
-        <h4>Configuration</h4>
-        <p>
-          In Log4j 2.6, garbage-free logging is enabled by default, except in web applications.
-          Log4j will disable garbage-free logging if it detects that it is used in a web application
-          (either when the <tt>javax.servlet.Servlet</tt> class
-          is in the classpath or when the <tt>log4j2.is.webapp</tt> system property is set to "true").
-          This is because garbage-free logging uses a number of ThreadLocal fields, which can cause
-          memory leaks when a thread pool of the web application server continues to hold references
-          to these fields after the web application is undeployed.
-        </p>
-        <p>
-          It is possible to manually disable garbage-free logging by setting system property
-          <tt>log4j2.enable.threadlocals</tt> to "false" before Log4j is initialized.
-        </p>
-        <p>
-          Instead of system properties, the above properties can also be specified in a file named
-          <tt>log4j2.component.properties</tt> by including this file in the classpath of the application.
-        </p>
-        <table><tr><td><b>Caution:</b> as of version 2.6, a Log4j configuration containing a <tt>&lt;Properties&gt;</tt> section
-          will result in temporary objects being created during steady-state logging.
-        </td></tr></table>
-      </subsubsection>
       <a name="Performance" />
       <subsection name="Performance">
 
         <a name="Latency" />
         <h4>TBD what to include here</h4>
+        <p>Async Loggers 2.5 vs 2.6 in garbage-free mode</p>
+        <p>Log4j 2.6 synchronous logging "classic" versus garbage-free mode - impact of adding threads</p>
+        <p>Comparison with other logging libraries?</p>
       </subsection>
       <a name="UnderTheHood" />
       <subsection name="Under the Hood">
         <p>
+          Custom Message implementations that implement <tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt>
+          can be converted to text by PatternLayout without creating temporary objects.
+          Other layouts that convert LogEvents to text will likely also look for this interface.
+        </p>
+        <p>
           Custom Layouts that want to be garbage-free should implement the <tt>Encoder&lt;LogEvent&gt;</tt> interface.
-          The <tt>TextEncoder</tt> class may be useful for custom Layouts that convert a LogEvent to a text
+          The <tt>org.apache.logging.log4j.core.layout.TextEncoder</tt> class may be useful for custom
+          Layouts that convert a LogEvent to a text
           representation.
         </p>
         <p>
@@ -328,9 +381,14 @@ public void garbageFree() {
           <tt>ByteBufferDestination</tt> implementation that the Layout can directly write into.
         </p>
         <p>
-          Custom Message implementations that implement <tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt>
-          can be converted to text by PatternLayout without creating temporary objects.
-          Other layouts that convert LogEvents to text will likely also look for this interface.
+          <tt>AbstractOutputStreamAppender</tt> has been modified to make the ConsoleAppender, (Rolling)FileAppender,
+          (Rolling)RandomAccessFileAppender and MemoryMappedFileAppender garbage-free.
+          An effort has been made to minimize impact on custom Appenders that extend
+          <tt>AbstractOutputStreamAppender</tt>, but it is impossible to guarantee that changing the superclass
+          will not impact any and all subclasses. Custom Appenders that extend
+          <tt>AbstractOutputStreamAppender</tt> should verify that they still function correctly.
+          In case there is a problem, system property <tt>log4j2.enable.direct.encoders</tt> can be set to "false"
+          to revert to the pre-Log4j 2.6 behaviour.
         </p>
         <!--
         <p>

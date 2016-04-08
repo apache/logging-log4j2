@@ -14,27 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.jackson;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * A Jackson JSON {@link ObjectMapper} initialized for Log4j.
- * <p>
- * <em>Consider this class private.</em>
- * </p>
- */
-public class Log4jJsonObjectMapper extends ObjectMapper {
+public class LevelMixInJsonTest extends LevelMixInTest {
 
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Create a new instance using the {@link Log4jJsonModule}.
-     */
-    public Log4jJsonObjectMapper() {
-        this.registerModule(new Log4jJsonModule());
-        this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+    protected ObjectMapper newObjectMapper() {
+        return new Log4jJsonObjectMapper();
     }
 
 }

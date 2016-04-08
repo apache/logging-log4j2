@@ -26,20 +26,24 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 public class ReusableSimpleMessage implements ReusableMessage {
     private static final long serialVersionUID = -9199974506498249809L;
     private static Object[] EMPTY_PARAMS = new Object[0];
-    private String message;
+    private CharSequence charSequence;
 
-    public void set(String message) {
-        this.message = message;
+    public void set(final String message) {
+        this.charSequence = message;
+    }
+
+    public void set(final CharSequence charSequence) {
+        this.charSequence = charSequence;
     }
 
     @Override
     public String getFormattedMessage() {
-        return message;
+        return String.valueOf(charSequence);
     }
 
     @Override
     public String getFormat() {
-        return message;
+        return getFormattedMessage();
     }
 
     @Override
@@ -54,7 +58,7 @@ public class ReusableSimpleMessage implements ReusableMessage {
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-        buffer.append(message);
+        buffer.append(charSequence);
     }
 }
 

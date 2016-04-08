@@ -18,8 +18,11 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.util.Constants;
 
 /**
  * Manages an OutputStream so that it can be shared by multiple Appenders and will
@@ -29,6 +32,7 @@ public class OutputStreamManager extends AbstractManager {
 
     private volatile OutputStream os;
     protected final Layout<?> layout;
+    private ByteBufferDestination byteBufferDestination;
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
@@ -118,6 +122,7 @@ public class OutputStreamManager extends AbstractManager {
      * @throws AppenderLoggingException if an error occurs.
      */
     protected void write(final byte[] bytes, final int offset, final int length) {
+        flushBuffer();
         write(bytes, offset, length, false);
     }
 
@@ -149,6 +154,7 @@ public class OutputStreamManager extends AbstractManager {
      * @throws AppenderLoggingException if an error occurs.
      */
     protected void write(final byte[] bytes)  {
+        flushBuffer();
         write(bytes, 0, bytes.length, false);
     }
 
@@ -159,10 +165,12 @@ public class OutputStreamManager extends AbstractManager {
      * @throws AppenderLoggingException if an error occurs.
      */
     protected void write(final byte[] bytes, boolean immediateFlush)  {
+        flushBuffer();
         write(bytes, 0, bytes.length, immediateFlush);
     }
 
     protected synchronized void close() {
+        flush();
         final OutputStream stream = os; // access volatile field only once per method
         if (stream == System.out || stream == System.err) {
             return;
@@ -179,10 +187,53 @@ public class OutputStreamManager extends AbstractManager {
      */
     public synchronized void flush() {
         try {
+            flushBuffer();
             os.flush();
         } catch (final IOException ex) {
             final String msg = "Error flushing stream " + getName();
             throw new AppenderLoggingException(msg, ex);
         }
+    }
+
+    /**
+     * Drains the ByteBufferDestination's buffer into the destination. By default this calls
+     * {@link OutputStreamManager#write(byte[], int, int, boolean)} with the buffer contents and the Appender's
+     * {@link AbstractOutputStreamAppender#immediateFlush} value.
+     * <p>
+     * This method has no effect if the garbage-free Layout encode mechanism is not enabled.
+     * </p>
+     */
+    protected void flushBuffer() {
+        if (Constants.ENABLE_DIRECT_ENCODERS) {
+            getByteBufferDestination().drain(getByteBufferDestination().getByteBuffer());
+        }
+    }
+
+    /**
+     * Subclasses that do buffered IO should override.
+     * @return this implementation always returns {@code false}
+     */
+    protected boolean isBufferedIO() {
+        return false;
+    }
+
+    public ByteBufferDestination getByteBufferDestination() {
+        return byteBufferDestination;
+    }
+
+    public void setByteBufferDestination(final ByteBufferDestination byteBufferDestination) {
+        this.byteBufferDestination = byteBufferDestination;
+    }
+
+    /**
+     * When the garbage-free Layout.encode mechanism is used, this method is called to create a ByteBufferDestination
+     * for this OutputStreamManager.
+     *
+     * @param immediateFlush the value to pass to the {@link #write(byte[], int, int, boolean)} method when the
+     *          ByteBufferDestination is {@link ByteBufferDestination#drain(ByteBuffer) drained}
+     * @return a new ByteBufferDestination that drains into this OutputStreamManager
+     */
+    protected ByteBufferDestination createByteBufferDestination(final boolean immediateFlush) {
+        return new OutputStreamManagerDestination(immediateFlush, this);
     }
 }

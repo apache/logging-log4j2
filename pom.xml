@@ -722,7 +722,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.10</version>
+        <version>1.11</version>
       </dependency>
       <!-- Used for the CSV layout -->
       <dependency>
