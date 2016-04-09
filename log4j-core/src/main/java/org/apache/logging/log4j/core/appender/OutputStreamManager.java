@@ -205,7 +205,10 @@ public class OutputStreamManager extends AbstractManager {
      */
     protected void flushBuffer() {
         if (Constants.ENABLE_DIRECT_ENCODERS) {
-            getByteBufferDestination().drain(getByteBufferDestination().getByteBuffer());
+            final ByteBufferDestination destination = getByteBufferDestination();
+            synchronized (destination) {
+                destination.drain(destination.getByteBuffer());
+            }
         }
     }
 

@@ -58,7 +58,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager implement
         this.isImmediateFlush = immediateFlush;
         this.randomAccessFile = raf;
         isEndOfBatch.set(Boolean.FALSE);
-        this.buffer = ByteBuffer.allocate(bufferSize);
+        this.buffer = ByteBuffer.wrap(new byte[bufferSize]);
         writeHeader();
     }
 

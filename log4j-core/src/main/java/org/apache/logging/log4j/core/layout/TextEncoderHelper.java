@@ -51,11 +51,13 @@ public class TextEncoderHelper {
     }
 
     public void encodeText(final StringBuilder text, final ByteBufferDestination destination) {
-        try {
-            encodeText0(text, destination);
-        } catch (final Exception ex) {
-            logEncodeTextException(ex, text, destination);
-            encodeTextFallBack(text, destination);
+        synchronized (destination) {
+            try {
+                encodeText0(text, destination);
+            } catch (final Exception ex) {
+                logEncodeTextException(ex, text, destination);
+                encodeTextFallBack(text, destination);
+            }
         }
     }
 
@@ -98,9 +100,11 @@ public class TextEncoderHelper {
     }
 
     public void encodeText(final CharBuffer charBuf, final ByteBufferDestination destination) {
-        charsetEncoder.reset();
-        final ByteBuffer byteBuf = destination.getByteBuffer();
-        encode(charBuf, true, destination, byteBuf);
+        synchronized (destination) {
+            charsetEncoder.reset();
+            final ByteBuffer byteBuf = destination.getByteBuffer();
+            encode(charBuf, true, destination, byteBuf);
+        }
     }
 
     private ByteBuffer encode(final CharBuffer charBuf, final boolean endOfInput,

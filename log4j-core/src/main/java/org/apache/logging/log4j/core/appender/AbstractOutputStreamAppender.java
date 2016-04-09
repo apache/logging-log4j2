@@ -122,14 +122,12 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     }
 
     protected void directEncodeEvent(final LogEvent event) {
-        synchronized (manager) {
-            getLayout().encode(event, manager.getByteBufferDestination());
-            if (!manager.isBufferedIO()) { // buffering was not requested by the user
-                manager.flushBuffer(); // we're not allowed to leave anything in the buffer: drain buffer into manager
-            }
-            if (this.immediateFlush || event.isEndOfBatch()) {
-                manager.flush();
-            }
+        getLayout().encode(event, manager.getByteBufferDestination());
+        if (!manager.isBufferedIO()) { // buffering was not requested by the user
+            manager.flushBuffer(); // we're not allowed to leave anything in the buffer: drain buffer into manager
+        }
+        if (this.immediateFlush || event.isEndOfBatch()) {
+            manager.flush();
         }
     }
 
