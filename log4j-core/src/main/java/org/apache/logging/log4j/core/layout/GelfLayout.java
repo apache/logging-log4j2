@@ -144,7 +144,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
-        if (!Constants.ENABLE_DIRECT_ENCODERS || !Constants.ENABLE_THREADLOCALS || compressionType != CompressionType.OFF) {
+        if (compressionType != CompressionType.OFF) {
             super.encode(event, destination);
             return;
         }
