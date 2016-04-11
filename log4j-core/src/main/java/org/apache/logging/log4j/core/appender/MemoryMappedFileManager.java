@@ -76,13 +76,14 @@ public class MemoryMappedFileManager extends OutputStreamManager implements Byte
     protected MemoryMappedFileManager(final RandomAccessFile file, final String fileName, final OutputStream os,
             final boolean force, final long position, final int regionLength, final String advertiseURI,
             final Layout<? extends Serializable> layout, final boolean writeHeader) throws IOException {
-        super(os, fileName, layout, writeHeader);
+        super(os, fileName, layout, writeHeader, ByteBuffer.wrap(new byte[0]));
         this.isForce = force;
         this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;
         this.advertiseURI = advertiseURI;
         this.isEndOfBatch.set(Boolean.FALSE);
         this.mappedBuffer = mmap(randomAccessFile.getChannel(), getFileName(), position, regionLength);
+        this.byteBuffer = mappedBuffer;
         this.mappingOffset = position;
     }
 
@@ -113,24 +114,7 @@ public class MemoryMappedFileManager extends OutputStreamManager implements Byte
     }
 
     @Override
-    protected void write(final byte[] bytes) {
-        write(bytes, 0, bytes.length, false);
-    }
-
-    @Override
-    protected void write(final byte[] bytes, final boolean immediateFlush) {
-        write(bytes, 0, bytes.length, immediateFlush);
-    }
-
-    @Override
-    protected void write(final byte[] bytes, final int offset, final int length) {
-        write(bytes, 0, bytes.length, false);
-    }
-
-    @Override
     protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
-        super.write(bytes, offset, length, immediateFlush); // writes to dummy output stream
-
         while (length > mappedBuffer.remaining()) {
             final int chunk = mappedBuffer.remaining();
             mappedBuffer.put(bytes, offset, chunk);
@@ -160,6 +144,7 @@ public class MemoryMappedFileManager extends OutputStreamManager implements Byte
                     millis);
 
             mappedBuffer = mmap(randomAccessFile.getChannel(), getFileName(), offset, length);
+            this.byteBuffer = mappedBuffer;
             mappingOffset = offset;
         } catch (final Exception ex) {
             logError("unable to remap", ex);
@@ -284,19 +269,9 @@ public class MemoryMappedFileManager extends OutputStreamManager implements Byte
         return result;
     }
 
-    /**
-     * Returns this {@code MemoryMappedFileManager}.
-     * @param immediateFlush ignored
-     * @return this {@code MemoryMappedFileManager}
-     */
     @Override
-    protected ByteBufferDestination createByteBufferDestination(final boolean immediateFlush) {
-        return this;
-    }
-
-    @Override
-    protected void flushBuffer() {
-        // do nothing (avoid spurious calls to remap())
+    protected void flushBuffer(final ByteBuffer buffer) {
+        // do nothing (do not call drain() to avoid spurious remapping)
     }
 
     @Override
