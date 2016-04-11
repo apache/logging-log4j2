@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,8 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-import org.apache.logging.log4j.core.util.Constants;
 
 
 /**
@@ -46,14 +43,22 @@ public class FileManager extends OutputStreamManager {
     private final String advertiseURI;
     private final int bufferSize;
 
+    @Deprecated
     protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
             final boolean writeHeader) {
-        super(os, fileName, layout, writeHeader);
+        this(fileName, os, append, locking, advertiseURI, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
+    }
+
+    /** @since 2.6 */
+    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
+            final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader,
+            final ByteBuffer buffer) {
+        super(os, fileName, layout, writeHeader, buffer);
         this.isAppend = append;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
-        this.bufferSize = bufferSize;
+        this.bufferSize = buffer.capacity();
     }
 
     /**
@@ -65,17 +70,18 @@ public class FileManager extends OutputStreamManager {
      * @param advertiseUri the URI to use when advertising the file
      * @param layout The layout
      * @param bufferSize buffer size for buffered IO
+     * @param immediateFlush true if the contents should be flushed on every write, false otherwise.
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
             final boolean bufferedIo, final String advertiseUri, final Layout<? extends Serializable> layout,
-            final int bufferSize) {
+            final int bufferSize, final boolean immediateFlush) {
 
         if (locking && bufferedIo) {
             locking = false;
         }
         return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
-                advertiseUri, layout), FACTORY);
+                immediateFlush, advertiseUri, layout), FACTORY);
     }
 
     @Override
@@ -140,29 +146,6 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * Returns whether the user requested IO to be buffered.
-     * @return whether the buffer size is larger than zero.
-     */
-    @Override
-    protected boolean isBufferedIO() {
-        return bufferSize > 0;
-    }
-
-    /**
-     * Returns a OutputStreamManagerDestination with the user-requested buffer size.
-     * @param immediateFlush the value to pass to the {@link #write(byte[], int, int, boolean)} method when the
-     *          ByteBufferDestination is {@link ByteBufferDestination#drain(ByteBuffer) drained}
-     * @return a OutputStreamManagerDestination with the user-requested buffer size
-     */
-    @Override
-    protected ByteBufferDestination createByteBufferDestination(final boolean immediateFlush) {
-        if (isBufferedIO()) {
-            return new OutputStreamManagerDestination(bufferSize, immediateFlush, this);
-        }
-        return new OutputStreamManagerDestination(immediateFlush, this);
-    }
-
-    /**
      * FileManager's content format is specified by: <code>Key: "fileURI" Value: provided "advertiseURI" param</code>.
      *
      * @return Map of content format keys supporting FileManager
@@ -182,6 +165,7 @@ public class FileManager extends OutputStreamManager {
         private final boolean locking;
         private final boolean bufferedIO;
         private final int bufferSize;
+        private final boolean immediateFlush;
         private final String advertiseURI;
         private final Layout<? extends Serializable> layout;
 
@@ -191,14 +175,16 @@ public class FileManager extends OutputStreamManager {
          * @param locking Locking status.
          * @param bufferedIO Buffering flag.
          * @param bufferSize Buffer size.
+         * @param immediateFlush flush on every write or not
          * @param advertiseURI the URI to use when advertising the file
          */
         public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO, final int bufferSize,
-                final String advertiseURI, final Layout<? extends Serializable> layout) {
+                final boolean immediateFlush, final String advertiseURI, final Layout<? extends Serializable> layout) {
             this.append = append;
             this.locking = locking;
             this.bufferedIO = bufferedIO;
             this.bufferSize = bufferSize;
+            this.immediateFlush = immediateFlush;
             this.advertiseURI = advertiseURI;
             this.layout = layout;
         }
@@ -227,17 +213,10 @@ public class FileManager extends OutputStreamManager {
             OutputStream os;
             try {
                 os = new FileOutputStream(name, data.append);
-                int bufferSize = data.bufferSize;
-
-                // when the garbage-free Layout encode mechanism is used
-                // we use a ByteBuffer instead of BufferedOutputStream
-                if (!Constants.ENABLE_DIRECT_ENCODERS && data.bufferedIO) {
-                    os = new BufferedOutputStream(os, bufferSize);
-                } else {
-                    bufferSize = -1; // signals to RollingFileManager not to use BufferedOutputStream
-                }
-                return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout, bufferSize,
-                        writeHeader);
+                final int actualSize = data.bufferedIO ? data.bufferSize : DEFAULT_BUFFER_SIZE;
+                final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
+                return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout,
+                        writeHeader, buffer);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);
             }
