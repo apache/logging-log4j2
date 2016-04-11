@@ -41,24 +41,17 @@ public class RollingRandomAccessFileManager extends RollingFileManager implement
 
     private static final RollingRandomAccessFileManagerFactory FACTORY = new RollingRandomAccessFileManagerFactory();
 
-    private final boolean isImmediateFlush;
     private RandomAccessFile randomAccessFile;
-    private final ByteBuffer buffer;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
-    private long drained;
-    private final long startSize;
 
     public RollingRandomAccessFileManager(final RandomAccessFile raf, final String fileName, final String pattern,
             final OutputStream os, final boolean append, final boolean immediateFlush, final int bufferSize,
             final long size, final long time, final TriggeringPolicy policy, final RolloverStrategy strategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader) {
-        super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout, bufferSize,
-                writeHeader);
-        this.startSize = size;
-        this.isImmediateFlush = immediateFlush;
+        super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout, writeHeader,
+                ByteBuffer.wrap(new byte[bufferSize]));
         this.randomAccessFile = raf;
         isEndOfBatch.set(Boolean.FALSE);
-        this.buffer = ByteBuffer.wrap(new byte[bufferSize]);
         writeHeader();
     }
 
@@ -97,40 +90,22 @@ public class RollingRandomAccessFileManager extends RollingFileManager implement
         this.isEndOfBatch.set(Boolean.valueOf(endOfBatch));
     }
 
+    // override to make visible for unit tests
     @Override
-    protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
-        if (length >= buffer.capacity()) {
-            // if request length exceeds buffer capacity, flush the buffer and write the data directly
-            flush();
-            writeToRandomAccessFile(bytes, offset, length);
-            return;
-        }
-        if (length > buffer.remaining()) {
-            flush();
-        }
-        buffer.put(bytes, offset, length);
-
-        if (immediateFlush || isImmediateFlush || isEndOfBatch.get() == Boolean.TRUE) {
-            flush();
-        }
+    protected synchronized void write(final byte[] bytes, final int offset, final int length,
+            final boolean immediateFlush) {
+        super.write(bytes, offset, length, immediateFlush);
     }
 
-    private void writeToRandomAccessFile(final byte[] bytes, final int offset, final int length) {
+    @Override
+    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
         try {
             randomAccessFile.write(bytes, offset, length);
-            drained += buffer.limit(); // track file size
+            size += length;
         } catch (final IOException ex) {
             final String msg = "Error writing to RandomAccessFile " + getName();
             throw new AppenderLoggingException(msg, ex);
         }
-    }
-
-    /**
-     * Returns the current size of the file.
-     * @return The size of the file in bytes.
-     */
-    public long getFileSize() {
-        return startSize + drained + getByteBufferDestination().getByteBuffer().position();
     }
 
     @Override
@@ -144,11 +119,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager implement
 
     @Override
     public synchronized void flush() {
-        buffer.flip();
-        if (buffer.limit() > 0) {
-            writeToRandomAccessFile(buffer.array(), 0, buffer.limit());
-        }
-        buffer.clear();
+        flushBuffer(byteBuffer);
     }
 
     @Override
@@ -168,28 +139,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager implement
      */
     @Override
     public int getBufferSize() {
-        return buffer.capacity();
-    }
-
-    /**
-     * Returns this {@code RollingRandomAccessFileManager}.
-     * @param immediateFlush ignored
-     * @return this {@code RollingRandomAccessFileManager}
-     */
-    @Override
-    protected ByteBufferDestination createByteBufferDestination(final boolean immediateFlush) {
-        return this;
-    }
-
-    @Override
-    public ByteBuffer getByteBuffer() {
-        return buffer;
-    }
-
-    @Override
-    public ByteBuffer drain(final ByteBuffer buf) {
-        flush();
-        return buffer;
+        return byteBuffer.capacity();
     }
 
     /**
@@ -298,8 +248,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager implement
     }
 
     @Override
-    public void updateData(final Object data)
-    {
+    public void updateData(final Object data) {
         final FactoryData factoryData = (FactoryData) data;
         setRolloverStrategy(factoryData.getRolloverStrategy());
         setTriggeringPolicy(factoryData.getTriggeringPolicy());
