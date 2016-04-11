@@ -17,10 +17,10 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Constants;
 
 /**
@@ -53,11 +53,6 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
         this.immediateFlush = immediateFlush;
-
-        if (Constants.ENABLE_DIRECT_ENCODERS) {
-            final ByteBufferDestination destination = manager.createByteBufferDestination(immediateFlush);
-            manager.setByteBufferDestination(destination);
-        }
     }
 
     /**
@@ -122,10 +117,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     }
 
     protected void directEncodeEvent(final LogEvent event) {
-        getLayout().encode(event, manager.getByteBufferDestination());
-        if (!manager.isBufferedIO()) { // buffering was not requested by the user
-            manager.flushBuffer(); // we're not allowed to leave anything in the buffer: drain buffer into manager
-        }
+        getLayout().encode(event, manager);
         if (this.immediateFlush || event.isEndOfBatch()) {
             manager.flush();
         }
