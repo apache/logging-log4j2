@@ -189,7 +189,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         }
 
         final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend,
-            isBuffered, policy, strategy, advertiseURI, layout, bufferSize);
+            isBuffered, policy, strategy, advertiseURI, layout, bufferSize, isFlush);
         if (manager == null) {
             return null;
         }
