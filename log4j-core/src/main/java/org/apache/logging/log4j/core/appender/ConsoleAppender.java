@@ -57,7 +57,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     private static final AtomicInteger COUNT = new AtomicInteger();
 
     private final Target target;
-    
+
     /**
      * Enumeration of console destinations.
      */
@@ -76,7 +76,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
     /**
      * Creates a Console Appender.
-     * 
+     *
      * @param layout The layout to use (required).
      * @param filter The Filter or null.
      * @param targetStr The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
@@ -85,7 +85,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
-     * @deprecated Use {@link #createAppender(Layout, Filter, Target, String, String, boolean)}.
+     * @deprecated Use {@link #createAppender(Layout, Filter, Target, String, boolean, boolean)}.
      */
     @Deprecated
     public static ConsoleAppender createAppender(Layout<? extends Serializable> layout,
@@ -109,7 +109,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
     /**
      * Creates a Console Appender.
-     * 
+     *
      * @param layout The layout to use (required).
      * @param filter The Filter or null.
      * @param target The target (SYSTEM_OUT or SYSTEM_ERR). The default is SYSTEM_OUT.
@@ -337,7 +337,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         /**
          * Constructor.
-         * 
+         *
          * @param os The OutputStream.
          * @param type The name of the target.
          * @param layout A Serializable layout
@@ -356,7 +356,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         /**
          * Create an OutputStreamManager.
-         * 
+         *
          * @param name The name of the entity to manage.
          * @param data The data required to create the entity.
          * @return The OutputStreamManager
