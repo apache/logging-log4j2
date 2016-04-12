@@ -103,8 +103,9 @@ public final class Constants {
      * @since 2.6
      */
     public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.enable.direct.encoders",
-            AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
+            "log4j2.enable.direct.encoders", true); // enable GC-free text encoding by default
+            // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
+            //AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
 
     /**
      * Prevent class instantiation.
