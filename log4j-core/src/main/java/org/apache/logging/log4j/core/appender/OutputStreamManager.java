@@ -172,6 +172,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     protected synchronized void write(final byte[] bytes, final int offset, final int length, boolean immediateFlush) {
         if (immediateFlush && byteBuffer.position() == 0) {
             writeToDestination(bytes, offset, length);
+            flushDestination();
             return;
         }
         if (length >= byteBuffer.capacity()) {
