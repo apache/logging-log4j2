@@ -64,6 +64,8 @@ final class DisruptorUtil {
                 return new YieldingWaitStrategy();
             } else if ("Block".equalsIgnoreCase(strategy)) {
                 return new BlockingWaitStrategy();
+            } else if ("BusySpin".equalsIgnoreCase(strategy)) {
+                return new BusySpinWaitStrategy();
             } else if ("Timeout".equalsIgnoreCase(strategy)) {
                 return new TimeoutBlockingWaitStrategy(timeoutMs, TimeUnit.MILLISECONDS);
             }
