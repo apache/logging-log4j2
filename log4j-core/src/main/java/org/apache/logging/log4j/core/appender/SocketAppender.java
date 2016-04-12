@@ -248,7 +248,6 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     @Override
     protected void directEncodeEvent(final LogEvent event) {
         // Disable garbage-free logging for now:
-        // problem with TCP: synchronization on manager in Reconnector thread would give deadlock.
         // problem with UDP: 8K buffer size means that largish messages get broken up into chunks
         writeByteArrayToManager(event); // revert to classic (non-garbage free) logging
     }
