@@ -50,8 +50,8 @@ final class DisruptorUtil {
         final String key = propertyName.startsWith("AsyncLogger.")
                 ? "AsyncLogger.Timeout"
                 : "AsyncLoggerConfig.Timeout";
-        final long timeout = DisruptorUtil.getTimeout(key, 10L);
-        return createWaitStrategy(propertyName, timeout);
+        final long timeoutMillis = DisruptorUtil.getTimeout(key, 10L);
+        return createWaitStrategy(propertyName, timeoutMillis);
     }
 
     static WaitStrategy createWaitStrategy(final String propertyName, final long timeoutMillis) {
