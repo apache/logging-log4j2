@@ -54,7 +54,7 @@ final class DisruptorUtil {
         return createWaitStrategy(propertyName, timeout);
     }
 
-    static WaitStrategy createWaitStrategy(final String propertyName, final long timeoutMs) {
+    static WaitStrategy createWaitStrategy(final String propertyName, final long timeoutMillis) {
         final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName);
         if (strategy != null) {
             LOGGER.trace("property {}={}", propertyName, strategy);
@@ -67,10 +67,10 @@ final class DisruptorUtil {
             } else if ("BusySpin".equalsIgnoreCase(strategy)) {
                 return new BusySpinWaitStrategy();
             } else if ("Timeout".equalsIgnoreCase(strategy)) {
-                return new TimeoutBlockingWaitStrategy(timeoutMs, TimeUnit.MILLISECONDS);
+                return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
             }
         }
-        return new TimeoutBlockingWaitStrategy(timeoutMs, TimeUnit.MILLISECONDS);
+        return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
     }
 
     static int calculateRingBufferSize(final String propertyName) {
