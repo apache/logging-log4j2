@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
@@ -148,6 +149,11 @@ public class SocketAppenderTest {
 
     @Test
     public void testUdpAppender() throws Exception {
+        try {
+            udpServer.latch.await();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
 
         final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, Protocol.UDP, null, 0, -1,
                 false, "Test", true, true, null, null, false, null);
@@ -207,6 +213,7 @@ public class SocketAppenderTest {
         private final DatagramSocket sock;
         private boolean shutdown = false;
         private Thread thread;
+        private CountDownLatch latch = new CountDownLatch(1);
 
         public UDPSocketServer() throws IOException {
             this.sock = new DatagramSocket(PORT);
@@ -224,12 +231,16 @@ public class SocketAppenderTest {
             final DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
             try {
                 while (!shutdown) {
+                    latch.countDown();
                     sock.receive(packet);
                     final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
                     ++udpCount;
-                    list.add((LogEvent) ois.readObject());
+                    final Object received = ois.readObject(); // separate lines for debugging
+                    final LogEvent event = (LogEvent) received;
+                    list.add(event);
                 }
-            } catch (final Exception ex) {
+            } catch (final Throwable ex) {
+                ex.printStackTrace();
                 if (!shutdown) {
                     throw new RuntimeException(ex);
                 }
