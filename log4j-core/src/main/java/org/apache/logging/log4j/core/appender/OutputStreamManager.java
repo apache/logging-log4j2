@@ -170,7 +170,10 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @throws AppenderLoggingException if an error occurs.
      */
     protected synchronized void write(final byte[] bytes, final int offset, final int length, boolean immediateFlush) {
-        // System.out.println("write " + count);
+        if (immediateFlush && byteBuffer.position() == 0) {
+            writeToDestination(bytes, offset, length);
+            return;
+        }
         if (length >= byteBuffer.capacity()) {
             // if request length exceeds buffer capacity, flush the buffer and write the data directly
             flush();
