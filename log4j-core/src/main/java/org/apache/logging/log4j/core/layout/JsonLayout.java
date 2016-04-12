@@ -895,7 +895,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     @PluginFactory
-    public static AbstractJacksonLayout createLayout(
+    public static JsonLayout createLayout(
             // @formatter:off
             @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
@@ -916,7 +916,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      *
      * @return A JSON Layout.
      */
-    public static AbstractJacksonLayout createDefaultLayout() {
+    public static JsonLayout createDefaultLayout() {
         return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8);
     }
 
