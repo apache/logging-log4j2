@@ -150,6 +150,9 @@
             <em>Note:</em>Logging Exceptions and stack traces will create temporary objects with any layout.
           </p>
 
+          <h5>GelfLayout</h5>
+          <p>GelfLayout is garbage-free when used with compressionType="OFF".</p>
+
           <h5>PatternLayout</h5>
           <p>
             PatternLayout with the following limited set of conversion patterns is garbage-free.
@@ -281,9 +284,6 @@
             </ul>
 
           </td></tr></table>
-
-          <h5>GelfLayout</h5>
-          <p>GelfLayout is garbage-free when used with compressionType="OFF".</p>
 
         </subsubsection>
         <a name="api" />
