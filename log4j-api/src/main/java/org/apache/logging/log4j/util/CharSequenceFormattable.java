@@ -14,21 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.message;
-
-import org.apache.logging.log4j.util.CharSequenceFormattable;
-import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
+package org.apache.logging.log4j.util;
 
 /**
- * Messages implementing this interface are reused between logging calls.
- * <p>
- * If a Message is reusable, downstream components should not hand over this instance to another thread, but extract its
- * content (via the {@link StringBuilderFormattable#formatTo(StringBuilder)} method) instead.
- * </p>
- * @see ReusableMessageFactory
+ * Objects that implement this interface can be converted to text, ideally without allocating temporary objects.
+ *
  * @since 2.6
  */
-@PerformanceSensitive("allocation")
-public interface ReusableMessage extends Message, StringBuilderFormattable, CharSequenceFormattable {
+public interface CharSequenceFormattable {
+
+    /**
+     * Return a text representation of this object, ideally without allocating temporary objects or copying strings.
+     *
+     * This may return a shared buffer (such as a {@link StringBuilder}). The caller should quickly consume
+     * the data and not keep any reference to the returned {@link CharSequence}.
+     */
+    CharSequence getFormattedCharSequence();
 }

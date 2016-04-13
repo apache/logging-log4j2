@@ -60,5 +60,10 @@ public class ReusableSimpleMessage implements ReusableMessage {
     public void formatTo(final StringBuilder buffer) {
         buffer.append(charSequence);
     }
+
+    @Override
+    public CharSequence getFormattedCharSequence() {
+        return charSequence;
+    }
 }
 

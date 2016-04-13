@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.CharSequenceFormattable;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
-import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
  */
-public class SimpleMessage implements Message, StringBuilderFormattable {
+public class SimpleMessage implements Message, StringBuilderFormattable, CharSequenceFormattable {
     private static final long serialVersionUID = -8398002534962715992L;
 
     private String message;
@@ -72,6 +72,11 @@ public class SimpleMessage implements Message, StringBuilderFormattable {
     @Override
     public void formatTo(final StringBuilder buffer) {
         buffer.append(charSequence);
+    }
+
+    @Override
+    public CharSequence getFormattedCharSequence() {
+        return charSequence;
     }
 
     /**

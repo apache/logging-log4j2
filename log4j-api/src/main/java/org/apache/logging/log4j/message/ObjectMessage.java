@@ -16,17 +16,18 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.CharSequenceFormattable;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-
 /**
  * Handles messages that contain an Object.
  */
-public class ObjectMessage implements Message, StringBuilderFormattable {
+public class ObjectMessage implements Message, StringBuilderFormattable, CharSequenceFormattable {
 
     private static final long serialVersionUID = -5903272448334166185L;
 
@@ -66,6 +67,15 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
             buffer.append((CharSequence) obj);
         } else {
             buffer.append(obj);
+        }
+    }
+
+    @Override
+    public CharSequence getFormattedCharSequence() {
+        if (obj instanceof CharSequence) {
+            return (CharSequence) obj;
+        } else {
+            return getFormattedMessage();
         }
     }
 

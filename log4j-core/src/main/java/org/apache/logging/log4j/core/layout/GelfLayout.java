@@ -25,11 +25,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Severity;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.CharSequenceFormattable;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
@@ -217,7 +217,9 @@ public final class GelfLayout extends AbstractStringLayout {
 
         builder.append("\"short_message\":\"");
         Message message = event.getMessage();
-        if (gcFree && message instanceof StringBuilderFormattable) {
+        if (message instanceof CharSequenceFormattable) {
+            JsonUtils.quoteAsString(toNullSafeString(((CharSequenceFormattable)message).getFormattedCharSequence()), builder);
+        } else if (gcFree && message instanceof StringBuilderFormattable) {
             StringBuilder messageBuffer = getMessageStringBuilder();
             ((StringBuilderFormattable)message).formatTo(messageBuffer);
             JsonUtils.quoteAsString(messageBuffer, builder);

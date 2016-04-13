@@ -16,10 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.lmax.disruptor.EventFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -36,7 +33,9 @@ import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
-import com.lmax.disruptor.EventFactory;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
@@ -240,6 +239,11 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage {
     @Override
     public void formatTo(final StringBuilder buffer) {
         buffer.append(messageText);
+    }
+
+    @Override
+    public CharSequence getFormattedCharSequence() {
+        return messageText;
     }
 
     private Message getNonNullImmutableMessage() {

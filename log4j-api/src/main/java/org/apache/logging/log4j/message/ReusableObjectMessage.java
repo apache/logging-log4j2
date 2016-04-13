@@ -57,6 +57,15 @@ public class ReusableObjectMessage implements ReusableMessage {
         }
     }
 
+    @Override
+    public CharSequence getFormattedCharSequence() {
+        if (obj instanceof CharSequence) {
+            return (CharSequence) obj;
+        } else {
+            return getFormattedMessage();
+        }
+    }
+
     /**
      * Returns the object formatted using its toString method.
      *

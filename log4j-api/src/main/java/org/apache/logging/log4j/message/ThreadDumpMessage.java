@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.CharSequenceFormattable;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.Strings;
+
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -26,13 +30,10 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
-
 /**
  * Captures information about all running Threads.
  */
-public class ThreadDumpMessage implements Message, StringBuilderFormattable {
+public class ThreadDumpMessage implements Message, StringBuilderFormattable, CharSequenceFormattable {
 
     private static final long serialVersionUID = -1103400781608841088L;
 
@@ -101,6 +102,16 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
             info.printStack(sb, entry.getValue());
             sb.append('\n');
         }
+    }
+
+    @Override
+    public CharSequence getFormattedCharSequence() {
+        if (formattedMessage != null) {
+            return formattedMessage;
+        }
+        final StringBuilder sb = new StringBuilder(255);
+        formatTo(sb);
+        return sb;
     }
 
     /**
