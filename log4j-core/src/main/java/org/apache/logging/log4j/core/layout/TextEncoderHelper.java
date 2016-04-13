@@ -22,7 +22,6 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
-import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
 
 import org.apache.logging.log4j.status.StatusLogger;
@@ -33,43 +32,46 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @since 2.6
  */
 public class TextEncoderHelper {
-    private static final int DEFAULT_BUFFER_SIZE = 2048;
+    static final int DEFAULT_CHAR_BUFFER_SIZE = 2048;
 
     private final Charset charset;
-    private final CharBuffer cachedCharBuffer;
-    private final CharsetEncoder charsetEncoder;
+//    private final CharBuffer cachedCharBuffer;
+//    private final CharsetEncoder charsetEncoder;
 
     public TextEncoderHelper(final Charset charset) {
-        this(charset, DEFAULT_BUFFER_SIZE);
+        this(charset, DEFAULT_CHAR_BUFFER_SIZE);
     }
 
     public TextEncoderHelper(final Charset charset, final int bufferSize) {
         this.charset = Objects.requireNonNull(charset, "charset");
-        this.charsetEncoder = charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
-                .onUnmappableCharacter(CodingErrorAction.REPLACE);
-        this.cachedCharBuffer = CharBuffer.wrap(new char[bufferSize]);
     }
 
-    public void encodeText(final StringBuilder text, final ByteBufferDestination destination) {
+    private void logEncodeTextException(final Exception ex, final StringBuilder text,
+                                        final ByteBufferDestination destination) {
+        StatusLogger.getLogger().error("Recovering from TextEncoderHelper.encodeText('{}') error", text, ex);
+    }
+
+    static void encodeTextWithCopy(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer temp,
+            final StringBuilder text, final ByteBufferDestination destination) {
+        encodeText(charsetEncoder, charBuf, temp, text, destination);
+
         synchronized (destination) {
-            try {
-                encodeText0(text, destination);
-            } catch (final Exception ex) {
-                logEncodeTextException(ex, text, destination);
-                encodeTextFallBack(text, destination);
+            ByteBuffer destinationBuffer = destination.getByteBuffer();
+            if (destinationBuffer != temp) { // still need to write to the destination
+                temp.flip();
+                if (temp.remaining() > destinationBuffer.remaining()) {
+                    destinationBuffer = destination.drain(destinationBuffer);
+                }
+                destinationBuffer.put(temp);
+                temp.clear();
             }
         }
     }
 
-    private void logEncodeTextException(final Exception ex, final StringBuilder text,
-            final ByteBufferDestination destination) {
-        StatusLogger.getLogger().error("Recovering from TextEncoderHelper.encodeText('{}') error", text, ex);
-    }
-
-    private void encodeText0(final StringBuilder text, final ByteBufferDestination destination) {
+    static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer byteBuf,
+            final StringBuilder text, final ByteBufferDestination destination) {
         charsetEncoder.reset();
-        ByteBuffer byteBuf = destination.getByteBuffer();
-        final CharBuffer charBuf = getCachedCharBuffer();
+        ByteBuffer temp = byteBuf; // may be the destination's buffer or a temporary buffer
         int start = 0;
         int todoChars = text.length();
         boolean endOfInput = true;
@@ -81,38 +83,46 @@ public class TextEncoderHelper {
             endOfInput = todoChars <= 0;
 
             charBuf.flip(); // prepare for reading: set limit to position, position to zero
-            byteBuf = encode(charBuf, endOfInput, destination, byteBuf);
+            temp = encode(charsetEncoder, charBuf, endOfInput, destination, temp);
         } while (!endOfInput);
     }
 
-    private void encodeTextFallBack(final StringBuilder text, final ByteBufferDestination destination) {
+    static void encodeTextFallBack(final Charset charset, final StringBuilder text,
+            final ByteBufferDestination destination) {
         final byte[] bytes = text.toString().getBytes(charset);
-        ByteBuffer buffer = destination.getByteBuffer();
-        int offset = 0;
-        do {
-            final int length = Math.min(bytes.length - offset, buffer.remaining());
-            buffer.put(bytes, offset, length);
-            offset += length;
-            if (offset < bytes.length) {
-                buffer = destination.drain(buffer);
-            }
-        } while (offset < bytes.length);
-    }
-
-    public void encodeText(final CharBuffer charBuf, final ByteBufferDestination destination) {
         synchronized (destination) {
-            charsetEncoder.reset();
-            final ByteBuffer byteBuf = destination.getByteBuffer();
-            encode(charBuf, true, destination, byteBuf);
+            ByteBuffer buffer = destination.getByteBuffer();
+            int offset = 0;
+            do {
+                final int length = Math.min(bytes.length - offset, buffer.remaining());
+                buffer.put(bytes, offset, length);
+                offset += length;
+                if (offset < bytes.length) {
+                    buffer = destination.drain(buffer);
+                }
+            } while (offset < bytes.length);
         }
     }
 
-    private ByteBuffer encode(final CharBuffer charBuf, final boolean endOfInput,
-            final ByteBufferDestination destination, ByteBuffer byteBuf) {
+    /**
+     * For testing purposes only.
+     */
+    @Deprecated
+    public void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
+            final ByteBufferDestination destination) {
+        synchronized (destination) {
+            charsetEncoder.reset();
+            final ByteBuffer byteBuf = destination.getByteBuffer();
+            encode(charsetEncoder, charBuf, true, destination, byteBuf);
+        }
+    }
+
+    private static ByteBuffer encode(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
+            final boolean endOfInput, final ByteBufferDestination destination, ByteBuffer byteBuf) {
         try {
-            byteBuf = encodeAsMuchAsPossible(charBuf, endOfInput, destination, byteBuf);
+            byteBuf = encodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf);
             if (endOfInput) {
-                byteBuf = flushRemainingBytes(destination, byteBuf);
+                byteBuf = flushRemainingBytes(charsetEncoder, destination, byteBuf);
             }
         } catch (final CharacterCodingException ex) {
             throw new IllegalStateException(ex);
@@ -120,39 +130,53 @@ public class TextEncoderHelper {
         return byteBuf;
     }
 
-    private ByteBuffer encodeAsMuchAsPossible(final CharBuffer charBuf, final boolean endOfInput,
-            final ByteBufferDestination destination, ByteBuffer byteBuf) throws CharacterCodingException {
+    private static ByteBuffer encodeAsMuchAsPossible(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
+            final boolean endOfInput, final ByteBufferDestination destination, ByteBuffer temp)
+            throws CharacterCodingException {
         CoderResult result;
         do {
-            result = charsetEncoder.encode(charBuf, byteBuf, endOfInput);
-            if (result.isOverflow()) { // byteBuf full
-                // destination consumes contents
-                // and returns byte buffer with more capacity
-                byteBuf = destination.drain(byteBuf);
-            }
-        } while (result.isOverflow()); // byteBuf has been drained: retry
+            result = charsetEncoder.encode(charBuf, temp, endOfInput);
+            temp = drainIfByteBufferFull(destination, temp, result);
+        } while (result.isOverflow()); // byte buffer has been drained: retry
         if (!result.isUnderflow()) { // we should have fully read the char buffer contents
             result.throwException();
         }
-        return byteBuf;
+        return temp;
     }
 
-    private ByteBuffer flushRemainingBytes(final ByteBufferDestination destination, ByteBuffer byteBuf)
+    private static ByteBuffer drainIfByteBufferFull(ByteBufferDestination destination, ByteBuffer temp, CoderResult result) {
+        if (result.isOverflow()) { // byte buffer full
+
+            // SHOULD NOT HAPPEN:
+            // CALLER SHOULD ONLY PASS TEMP ByteBuffer LARGE ENOUGH TO ENCODE ALL CHARACTERS,
+            // AND LOCK ON THE DESTINATION IF THIS IS NOT POSSIBLE
+            ByteBuffer destinationBuffer = destination.getByteBuffer();
+            if (destinationBuffer != temp) {
+                temp.flip();
+                destinationBuffer.put(temp);
+                temp.clear();
+            }
+            // destination consumes contents
+            // and returns byte buffer with more capacity
+            destinationBuffer = destination.drain(destinationBuffer);
+            temp = destinationBuffer;
+        }
+        return temp;
+    }
+
+    private static ByteBuffer flushRemainingBytes(final CharsetEncoder charsetEncoder,
+            final ByteBufferDestination destination, ByteBuffer temp)
             throws CharacterCodingException {
         CoderResult result;
         do {
             // write any final bytes to the output buffer once the overall input sequence has been read
-           result = charsetEncoder.flush(byteBuf);
-            if (result.isOverflow()) { // byteBuf full
-                // destination consumes contents
-                // and returns byte buffer with more capacity
-                byteBuf = destination.drain(byteBuf);
-            }
-        } while (result.isOverflow()); // byteBuf has been drained: retry
+            result = charsetEncoder.flush(temp);
+            temp = drainIfByteBufferFull(destination, temp, result);
+        } while (result.isOverflow()); // byte buffer has been drained: retry
         if (!result.isUnderflow()) { // we should have fully flushed the remaining bytes
             result.throwException();
         }
-        return byteBuf;
+        return temp;
     }
 
     /**
@@ -169,9 +193,5 @@ public class TextEncoderHelper {
         source.getChars(offset, offset + length, array, start);
         destination.position(start + length);
         return length;
-    }
-
-    CharBuffer getCachedCharBuffer() {
-        return cachedCharBuffer;
     }
 }

@@ -15,25 +15,25 @@ package org.apache.logging.log4j.core.layout;/*
  * limitations under the license.
  */
 
+import org.junit.Test;
+
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
-import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /**
  * Tests the {@code TextEncoderHelper} class.
  */
-public class TextEncoderHelperTest {
+public class StringBuilderEncoderTest {
 
     @Test
     public void testEncodeText_TextFitCharBuff_BytesFitByteBuff() throws Exception {
-        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 16);
+        final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 16, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(17, 17);
-        helper.encodeText(text, destination);
+        helper.encode(text, destination);
 
         assertEquals("drained", 0, destination.drainPoints.size());
         assertEquals("destination.buf.pos", text.length(), destination.buffer.position());
@@ -45,10 +45,10 @@ public class TextEncoderHelperTest {
 
     @Test
     public void testEncodeText_TextFitCharBuff_BytesDontFitByteBuff() throws Exception {
-        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 16);
+        final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 16, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(14, 15);
-        helper.encodeText(text, destination);
+        helper.encode(text, destination);
 
         assertEquals("drained", 1, destination.drainPoints.size());
         assertEquals("drained[0].from", 0, destination.drainPoints.get(0).position);
@@ -68,10 +68,10 @@ public class TextEncoderHelperTest {
 
     @Test
     public void testEncodeText_TextFitCharBuff_BytesDontFitByteBuff_MultiplePasses() throws Exception {
-        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 16);
+        final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 16, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(4, 20);
-        helper.encodeText(text, destination);
+        helper.encode(text, destination);
 
         assertEquals("drained", 3, destination.drainPoints.size());
         assertEquals("drained[0].from", 0, destination.drainPoints.get(0).position);
@@ -97,10 +97,10 @@ public class TextEncoderHelperTest {
 
     @Test
     public void testEncodeText_TextDoesntFitCharBuff_BytesFitByteBuff() throws Exception {
-        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 4);
+        final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(17, 17);
-        helper.encodeText(text, destination);
+        helper.encode(text, destination);
 
         assertEquals("drained", 0, destination.drainPoints.size());
         assertEquals("destination.buf.pos", text.length(), destination.buffer.position());
@@ -112,11 +112,11 @@ public class TextEncoderHelperTest {
 
     @Test
     public void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_BytesFitByteBuff() throws Exception {
-        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 4);
+        final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 8 * 1024);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章
                 "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(50, 50);
-        helper.encodeText(text, destination);
+        helper.encode(text, destination);
 
         assertEquals("drained", 0, destination.drainPoints.size());
         destination.drain(destination.getByteBuffer());
@@ -130,11 +130,11 @@ public class TextEncoderHelperTest {
     @Test
     public void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_BytesFitByteBuff() throws Exception {
         final Charset SHIFT_JIS = Charset.forName("Shift_JIS");
-        final TextEncoderHelper helper = new TextEncoderHelper(SHIFT_JIS, 4);
+        final StringBuilderEncoder helper = new StringBuilderEncoder(SHIFT_JIS, 4, 8 * 1024);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章
                 "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(50, 50);
-        helper.encodeText(text, destination);
+        helper.encode(text, destination);
 
         assertEquals("drained", 0, destination.drainPoints.size());
         destination.drain(destination.getByteBuffer());
@@ -147,10 +147,10 @@ public class TextEncoderHelperTest {
 
     @Test
     public void testEncodeText_TextDoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
-        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 4);
+        final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 17);
-        helper.encodeText(text, destination);
+        helper.encode(text, destination);
 
         assertEquals("drained", 4, destination.drainPoints.size());
         assertEquals("destination.buf.pos", 3, destination.buffer.position());
@@ -165,11 +165,11 @@ public class TextEncoderHelperTest {
 
     @Test
     public void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
-        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 4);
+        final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 8 * 1024);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章
                 "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
-        helper.encodeText(text, destination);
+        helper.encode(text, destination);
 
         assertEquals("drained", 7, destination.drainPoints.size());
         destination.drain(destination.getByteBuffer());
@@ -183,11 +183,11 @@ public class TextEncoderHelperTest {
     @Test
     public void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
         final Charset SHIFT_JIS = Charset.forName("Shift_JIS");
-        final TextEncoderHelper helper = new TextEncoderHelper(SHIFT_JIS, 4);
+        final StringBuilderEncoder helper = new StringBuilderEncoder(SHIFT_JIS, 4, 8 * 1024);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章
                 "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
-        helper.encodeText(text, destination);
+        helper.encode(text, destination);
 
         assertEquals("drained", 7, destination.drainPoints.size());
         destination.drain(destination.getByteBuffer());
@@ -251,6 +251,20 @@ public class TextEncoderHelperTest {
             assertEquals("char at " + i, text.charAt(i), buff.get(START_POSITION + i));
         }
         assertEquals("buffer position at end", buff.capacity(), buff.position());
+    }
+
+    @Test
+    public void testEncode_ALotWithoutErrors() throws Exception {
+        final StringBuilderEncoder helper = new StringBuilderEncoder(Charset.defaultCharset());
+        final StringBuilder text = new StringBuilder("2016-04-13 21:07:47,487 DEBUG [org.apache.logging.log4j.perf.jmh.FileAppenderBenchmark.log4j2ParameterizedString-jmh-worker-1] FileAppenderBenchmark  - This is a debug [2383178] message\r\n");
+        final int DESTINATION_SIZE = 1024 * 1024;
+        final SpyByteBufferDestination destination = new SpyByteBufferDestination(256 * 1024, DESTINATION_SIZE);
+
+        int max = DESTINATION_SIZE / text.length();
+        for (int i = 0; i < max; i++) {
+            helper.encode(text, destination);
+        }
+        // no error
     }
 
     private StringBuilder createText(final int length) {
