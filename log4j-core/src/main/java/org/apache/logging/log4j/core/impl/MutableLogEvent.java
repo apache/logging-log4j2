@@ -190,7 +190,6 @@ public class MutableLogEvent implements LogEvent {
      * @return a LogEventProxy.
      */
     protected Object writeReplace() {
-        getThrownProxy(); // ensure ThrowableProxy is initialized
         return new Log4jLogEvent.LogEventProxy(this, this.includeLocation);
     }
 
