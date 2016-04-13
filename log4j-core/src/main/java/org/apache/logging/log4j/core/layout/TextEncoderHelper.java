@@ -22,9 +22,6 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
-import java.util.Objects;
-
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Helper class to encode text to binary data without allocating temporary objects.
@@ -34,27 +31,34 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class TextEncoderHelper {
     static final int DEFAULT_CHAR_BUFFER_SIZE = 2048;
 
-    private final Charset charset;
-//    private final CharBuffer cachedCharBuffer;
-//    private final CharsetEncoder charsetEncoder;
-
-    public TextEncoderHelper(final Charset charset) {
-        this(charset, DEFAULT_CHAR_BUFFER_SIZE);
+    private TextEncoderHelper() {
     }
 
-    public TextEncoderHelper(final Charset charset, final int bufferSize) {
-        this.charset = Objects.requireNonNull(charset, "charset");
-    }
-
-    private void logEncodeTextException(final Exception ex, final StringBuilder text,
-                                        final ByteBufferDestination destination) {
-        StatusLogger.getLogger().error("Recovering from TextEncoderHelper.encodeText('{}') error", text, ex);
+    static void encodeTextFallBack(final Charset charset, final StringBuilder text,
+            final ByteBufferDestination destination) {
+        final byte[] bytes = text.toString().getBytes(charset);
+        synchronized (destination) {
+            ByteBuffer buffer = destination.getByteBuffer();
+            int offset = 0;
+            do {
+                final int length = Math.min(bytes.length - offset, buffer.remaining());
+                buffer.put(bytes, offset, length);
+                offset += length;
+                if (offset < bytes.length) {
+                    buffer = destination.drain(buffer);
+                }
+            } while (offset < bytes.length);
+        }
     }
 
     static void encodeTextWithCopy(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer temp,
             final StringBuilder text, final ByteBufferDestination destination) {
-        encodeText(charsetEncoder, charBuf, temp, text, destination);
 
+        encodeText(charsetEncoder, charBuf, temp, text, destination);
+        copyDataToDestination(temp, destination);
+    }
+
+    private static void copyDataToDestination(final ByteBuffer temp, final ByteBufferDestination destination) {
         synchronized (destination) {
             ByteBuffer destinationBuffer = destination.getByteBuffer();
             if (destinationBuffer != temp) { // still need to write to the destination
@@ -87,28 +91,11 @@ public class TextEncoderHelper {
         } while (!endOfInput);
     }
 
-    static void encodeTextFallBack(final Charset charset, final StringBuilder text,
-            final ByteBufferDestination destination) {
-        final byte[] bytes = text.toString().getBytes(charset);
-        synchronized (destination) {
-            ByteBuffer buffer = destination.getByteBuffer();
-            int offset = 0;
-            do {
-                final int length = Math.min(bytes.length - offset, buffer.remaining());
-                buffer.put(bytes, offset, length);
-                offset += length;
-                if (offset < bytes.length) {
-                    buffer = destination.drain(buffer);
-                }
-            } while (offset < bytes.length);
-        }
-    }
-
     /**
      * For testing purposes only.
      */
     @Deprecated
-    public void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
+    public static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
             final ByteBufferDestination destination) {
         synchronized (destination) {
             charsetEncoder.reset();
