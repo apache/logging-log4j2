@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.async;
 
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -55,22 +56,23 @@ final class DisruptorUtil {
     }
 
     static WaitStrategy createWaitStrategy(final String propertyName, final long timeoutMillis) {
-        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName);
-        if (strategy != null) {
-            LOGGER.trace("property {}={}", propertyName, strategy);
-            if ("Sleep".equalsIgnoreCase(strategy)) {
-                return new SleepingWaitStrategy();
-            } else if ("Yield".equalsIgnoreCase(strategy)) {
-                return new YieldingWaitStrategy();
-            } else if ("Block".equalsIgnoreCase(strategy)) {
-                return new BlockingWaitStrategy();
-            } else if ("BusySpin".equalsIgnoreCase(strategy)) {
-                return new BusySpinWaitStrategy();
-            } else if ("Timeout".equalsIgnoreCase(strategy)) {
-                return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
-            }
+        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName, "TIMEOUT");
+        LOGGER.trace("property {}={}", propertyName, strategy);
+        final String strategyUp = strategy.toUpperCase(Locale.ROOT); // TODO Refactor into Strings.toRootUpperCase(String)
+        switch (strategyUp) { // TODO Define a DisruptorWaitStrategy enum?
+        case "SLEEP":
+            return new SleepingWaitStrategy();
+        case "YIELD":
+            return new YieldingWaitStrategy();
+        case "BLOCK":
+            return new BlockingWaitStrategy();
+        case "BUSYSPIN":
+            return new BusySpinWaitStrategy();
+        case "TIMEOUT":
+            return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
+        default:
+            return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
         }
-        return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
     }
 
     static int calculateRingBufferSize(final String propertyName) {
