@@ -396,7 +396,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         this.nanoTime = nanoTime;
     }
 
-    private static Map<String, String> createMap(final List<Property> properties) {
+    static Map<String, String> createMap(final List<Property> properties) {
         final Map<String, String> contextMap = ThreadContext.getImmutableContext();
         if (properties == null || properties.isEmpty()) {
             return contextMap; // may be ThreadContext.EMPTY_MAP but not null
@@ -766,7 +766,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
     /**
      * Proxy pattern used to serialize the LogEvent.
      */
-    private static class LogEventProxy implements Serializable {
+    static class LogEventProxy implements Serializable {
 
         private static final long serialVersionUID = -8634075037355293699L;
         private final String loggerFQCN;
@@ -810,6 +810,30 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             this.isLocationRequired = includeLocation;
             this.isEndOfBatch = event.endOfBatch;
             this.nanoTime = event.nanoTime;
+        }
+
+        public LogEventProxy(final MutableLogEvent event, final boolean includeLocation) {
+            this.loggerFQCN = event.getLoggerFqcn();
+            this.marker = event.getMarker();
+            this.level = event.getLevel();
+            this.loggerName = event.getLoggerName();
+
+            final Message msg = event.getMessage();
+            this.message = msg instanceof ReusableMessage
+                    ? memento((ReusableMessage) msg)
+                    : msg;
+            this.timeMillis = event.getTimeMillis();
+            this.thrown = event.getThrown();
+            this.thrownProxy = event.getThrownProxy();
+            this.contextMap = event.getContextMap();
+            this.contextStack = event.getContextStack();
+            this.source = includeLocation ? event.getSource() : null;
+            this.threadId = event.getThreadId();
+            this.threadName = event.getThreadName();
+            this.threadPriority = event.getThreadPriority();
+            this.isLocationRequired = includeLocation;
+            this.isEndOfBatch = event.isEndOfBatch();
+            this.nanoTime = event.getNanoTime();
         }
 
         private Message memento(final ReusableMessage message) {
