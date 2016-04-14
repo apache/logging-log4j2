@@ -59,7 +59,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
-    private TextEncoderHelper textEncoderHelper;
+    private Encoder<StringBuilder> textEncoder;
 
     /**
      * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
@@ -120,7 +120,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         this.charsetName = this.charset.name();
         useCustomEncoding = isPreJava8()
                 && (StandardCharsets.ISO_8859_1.equals(aCharset) || StandardCharsets.US_ASCII.equals(aCharset));
-        textEncoderHelper = Constants.ENABLE_DIRECT_ENCODERS ? new TextEncoderHelper(charset) : null;
+        textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
     }
 
     /**
@@ -131,7 +131,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      * @param headerSerializer the header bytes serializer
      * @param footerSerializer the footer bytes serializer
      */
-    protected AbstractStringLayout(final Configuration config, final Charset aCharset, final Serializer headerSerializer, final Serializer footerSerializer) {
+    protected AbstractStringLayout(final Configuration config, final Charset aCharset,
+            final Serializer headerSerializer, final Serializer footerSerializer) {
         super(config, null, null);
         this.headerSerializer = headerSerializer;
         this.footerSerializer = footerSerializer;
@@ -139,19 +140,19 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         this.charsetName = this.charset.name();
         useCustomEncoding = isPreJava8()
                 && (StandardCharsets.ISO_8859_1.equals(aCharset) || StandardCharsets.US_ASCII.equals(aCharset));
-        textEncoderHelper = Constants.ENABLE_DIRECT_ENCODERS ? new TextEncoderHelper(charset) : null;
+        textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
     }
 
     /**
-     * Returns a {@code TextEncoderHelper} that this Layout implementation can use for encoding log events.
+     * Returns a {@code Encoder<StringBuilder>} that this Layout implementation can use for encoding log events.
      *
-     * @return a {@code TextEncoderHelper}
+     * @return a {@code Encoder<StringBuilder>}
      */
-    protected TextEncoderHelper getCachedTextEncoderHelper() {
-        if (textEncoderHelper == null) {
-            textEncoderHelper = new TextEncoderHelper(getCharset());
+    protected Encoder<StringBuilder> getStringBuilderEncoder() {
+        if (textEncoder == null) {
+            textEncoder = new StringBuilderEncoder(getCharset());
         }
-        return textEncoderHelper;
+        return textEncoder;
     }
 
     protected byte[] getBytes(final String s) {

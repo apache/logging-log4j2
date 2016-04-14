@@ -33,7 +33,11 @@ import org.apache.logging.log4j.util.CharSequenceFormattable;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
@@ -149,8 +153,8 @@ public final class GelfLayout extends AbstractStringLayout {
             return;
         }
         final StringBuilder text = toText(event, getStringBuilder(), true);
-        final TextEncoderHelper helper = getCachedTextEncoderHelper();
-        helper.encodeText(text, destination);
+        final Encoder<StringBuilder> helper = getStringBuilderEncoder();
+        helper.encode(text, destination);
     }
 
     private byte[] compress(final byte[] bytes) {

@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
+import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
 import org.apache.logging.log4j.core.layout.TextEncoderHelper;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
@@ -39,18 +40,18 @@ import java.util.Map;
 public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
     private final StringBuilder cachedStringBuilder = new StringBuilder(2048);
     private final PatternSerializer2 serializer = new PatternSerializer2();
-    private final TextEncoderHelper cachedHelper;
+    private final StringBuilderEncoder cachedHelper;
 
     public NoGcLayout(Charset charset) {
-        cachedHelper = new TextEncoderHelper(charset);
+        cachedHelper = new StringBuilderEncoder(charset);
     }
 
     @Override
     public void encode(LogEvent event, ByteBufferDestination destination) {
         StringBuilder text = toText(event, getCachedStringBuilder());
 
-        TextEncoderHelper helper = getCachedHelper();
-        helper.encodeText(text, destination);
+        Encoder<StringBuilder> helper = getCachedHelper();
+        helper.encode(text, destination);
     }
 
     /**
@@ -69,7 +70,7 @@ public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
         return cachedStringBuilder;
     }
 
-    public TextEncoderHelper getCachedHelper() {
+    public Encoder<StringBuilder> getCachedHelper() {
         return cachedHelper;
     }
 
