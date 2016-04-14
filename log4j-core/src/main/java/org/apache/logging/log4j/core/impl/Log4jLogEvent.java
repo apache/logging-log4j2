@@ -812,7 +812,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             this.nanoTime = event.nanoTime;
         }
 
-        public LogEventProxy(final MutableLogEvent event, final boolean includeLocation) {
+        public LogEventProxy(final LogEvent event, final boolean includeLocation) {
             this.loggerFQCN = event.getLoggerFqcn();
             this.marker = event.getMarker();
             this.level = event.getLevel();
