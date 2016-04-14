@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.CharSequenceFormattable;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
@@ -30,5 +29,5 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public interface ReusableMessage extends Message, StringBuilderFormattable, CharSequenceFormattable {
+public interface ReusableMessage extends Message, StringBuilderFormattable {
 }

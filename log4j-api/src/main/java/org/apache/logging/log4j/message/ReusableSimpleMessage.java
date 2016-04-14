@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.CharSequenceFormattable;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
@@ -23,7 +24,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableSimpleMessage implements ReusableMessage {
+public class ReusableSimpleMessage implements ReusableMessage, CharSequenceFormattable {
     private static final long serialVersionUID = -9199974506498249809L;
     private static Object[] EMPTY_PARAMS = new Object[0];
     private CharSequence charSequence;

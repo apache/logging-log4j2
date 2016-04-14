@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.CharSequenceFormattable;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
@@ -33,7 +32,7 @@ import java.util.Map;
 /**
  * Captures information about all running Threads.
  */
-public class ThreadDumpMessage implements Message, StringBuilderFormattable, CharSequenceFormattable {
+public class ThreadDumpMessage implements Message, StringBuilderFormattable {
 
     private static final long serialVersionUID = -1103400781608841088L;
 
@@ -102,16 +101,6 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable, Cha
             info.printStack(sb, entry.getValue());
             sb.append('\n');
         }
-    }
-
-    @Override
-    public CharSequence getFormattedCharSequence() {
-        if (formattedMessage != null) {
-            return formattedMessage;
-        }
-        final StringBuilder sb = new StringBuilder(255);
-        formatTo(sb);
-        return sb;
     }
 
     /**

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.CharSequenceFormattable;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 import java.util.Arrays;
@@ -28,7 +29,7 @@ import java.util.Arrays;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableParameterizedMessage implements ReusableMessage {
+public class ReusableParameterizedMessage implements ReusableMessage, CharSequenceFormattable {
 
     private static final long serialVersionUID = 7800075879295123856L;
     private static ThreadLocal<StringBuilder> buffer = new ThreadLocal<>();
