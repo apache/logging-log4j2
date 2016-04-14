@@ -17,44 +17,79 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.layout.GelfLayout;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.perf.util.DemoAppender;
 import org.openjdk.jmh.annotations.*;
 
-import java.io.File;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Benchmarks Log4j 2 GelfLayout with a FileAppender.
+ * Benchmarks Log4j 2 GelfLayout.
  */
 // HOW TO RUN THIS TEST
 // java -jar target/benchmarks.jar GelfLayoutBenchmark -f 1 -i 5 -wi 5 -bm sample -tu ns
 @State(Scope.Thread)
 public class GelfLayoutBenchmark {
-    public static final String MESSAGE =
+    private static final CharSequence MESSAGE =
             "This is rather long and chatty log message with quite some interesting information and a bit of fun in it which is suitable here";
+    private static final LogEvent EVENT = createLogEvent();
+    private static final KeyValuePair[] ADDITIONAL_FIELDS = new KeyValuePair[0];
 
-    Logger log4j2Logger;
-    org.apache.log4j.Logger log4j1Logger;
+    private static LogEvent createLogEvent() {
+        final Marker marker = null;
+        final String fqcn = "com.mycom.myproject.mypackage.MyClass";
+        final org.apache.logging.log4j.Level level = org.apache.logging.log4j.Level.DEBUG;
+        final Message message = new SimpleMessage(MESSAGE);
+        final Throwable t = null;
+        final Map<String, String> mdc = null;
+        final ThreadContext.ContextStack ndc = null;
+        final String threadName = null;
+        final StackTraceElement location = null;
+        final long timestamp = 12345678;
+
+        return Log4jLogEvent.newBuilder() //
+                .setLoggerName("name(ignored)") //
+                .setMarker(marker) //
+                .setLoggerFqcn(fqcn) //
+                .setLevel(level) //
+                .setMessage(message) //
+                .setThrown(t) //
+                .setContextMap(mdc) //
+                .setContextStack(ndc) //
+                .setThreadName(threadName) //
+                .setSource(location) //
+                .setTimeMillis(timestamp) //
+                .build();
+    }
+
+    Appender appender;
     int j;
 
     @Setup
     public void setUp() {
-        System.setProperty("log4j.configurationFile", "log4j2-gelf-perf.xml");
+        System.setProperty("log4j2.enable.direct.encoders", "true");
 
-        File log4j2File = new File("target/testlog4j2.json");
-        log4j2File.delete();
+        appender = new DemoAppender(new GelfLayout(
+                "host",
+                ADDITIONAL_FIELDS,
+                GelfLayout.CompressionType.OFF,
+                0));
 
-        log4j2Logger = LogManager.getLogger(GelfLayoutBenchmark.class);
         j = 0;
     }
 
     @TearDown
     public void tearDown() {
-        System.clearProperty("log4j.configurationFile");
-
-        File log4j2File = new File("target/testlog4j2.json");
-        log4j2File.delete();
+        System.clearProperty("log4j2.enable.direct.encoders");
     }
 
     @BenchmarkMode(Mode.Throughput)
@@ -69,7 +104,7 @@ public class GelfLayoutBenchmark {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
     public void log4j2Gelf() {
-        log4j2Logger.debug(MESSAGE);
+        appender.append(EVENT);
     }
 
 }
