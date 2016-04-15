@@ -18,17 +18,19 @@ package org.apache.logging.log4j.core;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.List;
 
-import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
-import com.google.monitoring.runtime.instrumentation.Sampler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
+import com.google.monitoring.runtime.instrumentation.Sampler;
 
 import static org.junit.Assert.*;
 
@@ -85,10 +87,14 @@ public class GcFreeLoggingTest {
         process.waitFor();
         process.exitValue();
 
-        final String output = new String(Files.readAllBytes(tempFile.toPath()));
-        final String NEWLINE = System.getProperty("line.separator");
-        assertEquals("FATAL o.a.l.l.c.GcFreeLoggingTest [main]  This message is logged to the console"
-                + NEWLINE, output);
+        final List<String> lines = Files.readAllLines(tempFile.toPath(), Charset.defaultCharset());
+        assertEquals("FATAL o.a.l.l.c.GcFreeLoggingTest [main]  This message is logged to the console",
+                lines.get(0));
+
+        for (int i = 1; i < lines.size(); i++) {
+            final String line = lines.get(i);
+            assertFalse(line, line.contains("allocated") || line.contains("array"));
+        }
     }
 
     /**
