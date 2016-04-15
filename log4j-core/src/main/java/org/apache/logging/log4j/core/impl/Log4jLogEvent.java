@@ -634,8 +634,16 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         return new LogEventProxy(this, this.includeLocation);
     }
 
-    public static Serializable serialize(final Log4jLogEvent event,
-            final boolean includeLocation) {
+    public static Serializable serialize(final LogEvent event, final boolean includeLocation) {
+        if (event instanceof Log4jLogEvent) {
+            event.getThrownProxy(); // ensure ThrowableProxy is initialized
+            return new LogEventProxy((Log4jLogEvent) event, includeLocation);
+        } else {
+            return new LogEventProxy(event, includeLocation);
+        }
+    }
+
+    public static Serializable serialize(final Log4jLogEvent event, final boolean includeLocation) {
         event.getThrownProxy(); // ensure ThrowableProxy is initialized
         return new LogEventProxy(event, includeLocation);
     }
@@ -812,7 +820,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             this.nanoTime = event.nanoTime;
         }
 
-        public LogEventProxy(final MutableLogEvent event, final boolean includeLocation) {
+        public LogEventProxy(final LogEvent event, final boolean includeLocation) {
             this.loggerFQCN = event.getLoggerFqcn();
             this.marker = event.getMarker();
             this.level = event.getLevel();
