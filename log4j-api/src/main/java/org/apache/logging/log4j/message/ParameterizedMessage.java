@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-
 import java.util.Arrays;
+
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * Handles messages that consist of a format string containing '{}' to represent each replaceable token, and

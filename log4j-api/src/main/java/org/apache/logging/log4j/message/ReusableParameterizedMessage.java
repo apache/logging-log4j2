@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.PerformanceSensitive;
-
 import java.util.Arrays;
+
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Reusable parameterized message. This message is mutable and is not safe to be accessed or modified by multiple
@@ -256,6 +256,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
             ParameterFormatter.formatMessage2(buffer, messagePattern, getParams(), usedCount, indices);
         }
     }
+
 
     @Override
     public String toString() {
