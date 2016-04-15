@@ -30,7 +30,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.util.CharSequenceFormattable;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -42,7 +41,7 @@ import java.util.Map;
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
  * the life of the RingBuffer.
  */
-public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequenceFormattable {
+public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence {
 
     /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
     public static final Factory FACTORY = new Factory();
@@ -242,10 +241,24 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         buffer.append(messageText);
     }
 
+
+    // CharSequence impl
+
     @Override
-    public CharSequence getFormattedCharSequence() {
-        return messageText;
+    public int length() {
+        return messageText.length();
     }
+
+    @Override
+    public char charAt(int index) {
+        return messageText.charAt(index);
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        return messageText.subSequence(start, end);
+    }
+
 
     private Message getNonNullImmutableMessage() {
         return message != null ? message : new SimpleMessage(String.valueOf(messageText));
