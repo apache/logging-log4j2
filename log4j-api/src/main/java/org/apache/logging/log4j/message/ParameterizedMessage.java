@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.CharSequenceFormattable;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 import java.util.Arrays;
@@ -29,7 +28,7 @@ import java.util.Arrays;
  * licensed under the LGPL. It has been relicensed here with his permission providing that this attribution remain.
  * </p>
  */
-public class ParameterizedMessage implements Message, StringBuilderFormattable, CharSequenceFormattable {
+public class ParameterizedMessage implements Message, StringBuilderFormattable {
     /**
      * Prefix for recursion.
      */
@@ -217,17 +216,6 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable, 
             } else {
                 ParameterFormatter.formatMessage2(buffer, messagePattern, argArray, usedCount, indices);
             }
-        }
-    }
-
-    @Override
-    public CharSequence getFormattedCharSequence() {
-        if (formattedMessage != null) {
-            return formattedMessage;
-        } else {
-            final StringBuilder buffer = getThreadLocalStringBuilder();
-            formatTo(buffer);
-            return buffer;
         }
     }
 
