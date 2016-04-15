@@ -78,6 +78,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         super(name, appenders, filter, level, additive, properties, config,
                 includeLocation);
         delegate = config.getAsyncLoggerConfigDelegate();
+        delegate.setLogEventFactory(getLogEventFactory());
     }
 
     /**
