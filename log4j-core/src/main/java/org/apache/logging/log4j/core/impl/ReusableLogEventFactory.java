@@ -24,11 +24,13 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.TimestampMessage;
 
 import java.util.List;
 
 /**
  * Garbage-free LogEventFactory that reuses a single mutable log event.
+ * @since 2.6
  */
 public class ReusableLogEventFactory implements LogEventFactory {
 
@@ -41,14 +43,14 @@ public class ReusableLogEventFactory implements LogEventFactory {
      * @param marker An optional Marker.
      * @param fqcn The fully qualified class name of the caller.
      * @param level The event Level.
-     * @param data The Message.
+     * @param message The Message.
      * @param properties Properties to be added to the log event.
      * @param t An optional Throwable.
      * @return The LogEvent.
      */
     @Override
     public LogEvent createEvent(final String loggerName, final Marker marker,
-                                final String fqcn, final Level level, final Message data,
+                                final String fqcn, final Level level, final Message message,
                                 final List<Property> properties, final Throwable t) {
         MutableLogEvent result = mutableLogEventThreadLocal.get();
         if (result == null) {
@@ -58,16 +60,19 @@ public class ReusableLogEventFactory implements LogEventFactory {
             result.setThreadPriority(Thread.currentThread().getPriority());
             mutableLogEventThreadLocal.set(result);
         }
+        result.clear();
 
         result.setLoggerName(loggerName);
         result.setMarker(marker);
         result.setLoggerFqcn(fqcn);
         result.setLevel(level == null ? Level.OFF : level);
-        result.setMessage(data);
+        result.setMessage(message);
         result.setThrown(t);
         result.setContextMap(Log4jLogEvent.createMap(properties));
         result.setContextStack(ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack());// mutable copy
-        result.setTimeMillis(CLOCK.currentTimeMillis());
+        result.setTimeMillis(message instanceof TimestampMessage
+                ? ((TimestampMessage) message).getTimestamp()
+                : CLOCK.currentTimeMillis());
         result.setNanoTime(Log4jLogEvent.getNanoClock().nanoTime());
 
         // TODO
