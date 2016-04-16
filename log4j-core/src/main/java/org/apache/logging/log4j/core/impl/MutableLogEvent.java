@@ -17,6 +17,7 @@ import java.util.Map;
 
 /**
  * Mutable implementation of the {@code LogEvent} interface.
+ * @since 2.6
  */
 public class MutableLogEvent implements LogEvent, ReusableMessage {
     private static final int INITIAL_REUSABLE_MESSAGE_SIZE = size("log4j.initialReusableMsgSize", 128);
@@ -29,18 +30,18 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private Level level;
     private String loggerName;
     private Message message;
-    private Throwable thrown;
     private long timeMillis;
+    private Throwable thrown;
+    private ThrowableProxy thrownProxy;
     private Map<String, String> contextMap;
     private ThreadContext.ContextStack contextStack;
     private long threadId;
     private String threadName;
     private int threadPriority;
+    private StackTraceElement source;
     private boolean includeLocation;
     private boolean endOfBatch = false;
     private long nanoTime;
-    private ThrowableProxy thrownProxy;
-    private StackTraceElement source;
     private StringBuilder messageText;
 
     private static int size(final String property, final int defaultValue) {
@@ -87,7 +88,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         source = null;
         contextMap = null;
         contextStack = null;
-        threadName = null;
+        // threadName = null; // THreadName should not be cleared
         // primitive fields that cannot be cleared:
         //timeMillis;
         //threadId;
@@ -143,7 +144,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
-            ((ReusableMessage) msg).formatTo(getMessageTextForWriting());
+            ((ReusableMessage) msg).formatTo(getMessageTextForWriting()); // init messageText
         } else {
             // if the Message instance is reused, there is no point in freezing its message here
             if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg != null) { // LOG4J2-898: user may choose
