@@ -119,6 +119,7 @@ public class UnboxTest {
         final StringBuilder[] probe = new StringBuilder[16 * 3];
         populate(0, probe);
         Thread t1 = new Thread() {
+            @Override
             public void run() {
                 populate(16, probe);
             }
@@ -126,6 +127,7 @@ public class UnboxTest {
         t1.start();
         t1.join();
         Thread t2 = new Thread() {
+            @Override
             public void run() {
                 populate(16, probe);
             }
