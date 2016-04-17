@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
-import org.apache.logging.log4j.core.layout.TextEncoderHelper;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 
