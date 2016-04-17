@@ -26,7 +26,6 @@ import java.nio.ByteBuffer;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**

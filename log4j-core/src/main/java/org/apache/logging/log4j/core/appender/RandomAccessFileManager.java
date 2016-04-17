@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
