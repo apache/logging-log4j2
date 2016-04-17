@@ -56,7 +56,7 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * @since 2.1
  */
 //CHECKSTYLE:ON
-public class MemoryMappedFileManager extends OutputStreamManager implements ByteBufferDestination {
+public class MemoryMappedFileManager extends OutputStreamManager {
     /**
      * Default length of region to map.
      */

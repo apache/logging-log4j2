@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * this class uses a {@code ByteBuffer} and a {@code RandomAccessFile} to do the
  * I/O.
  */
-public class RandomAccessFileManager extends OutputStreamManager implements ByteBufferDestination {
+public class RandomAccessFileManager extends OutputStreamManager {
     static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
 
     private static final RandomAccessFileManagerFactory FACTORY = new RandomAccessFileManagerFactory();
