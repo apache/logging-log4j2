@@ -32,27 +32,664 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Appends a series of YAML events as strings serialized as bytes.
  *
- * <h3>Complete well-formed YAML vs. fragment YAML</h3>
  * <p>
- * If you configure {@code complete="true"}, the appender outputs a well-formed YAML document. By default, with
- * {@code complete="false"}, you should include the output as an <em>external file</em> in a separate file to form a
- * well-formed YAML document.
- * </p>
- * <p>
- * A well-formed YAML event follows this pattern:
+ * A YAML log event follows this pattern:
  * </p>
  *
- * <pre>
- * 
- * </pre>
- * <p>
- * If {@code complete="false"}, the appender does not write the YAML open array character "[" at the start of the
- * document, "]" and the end, nor comma "," between records.
- * </p>
+ * <pre>---
+timeMillis: 1
+thread: "MyThreadName"
+level: "DEBUG"
+loggerName: "a.B"
+marker:
+  name: "Marker1"
+  parents:
+  - name: "ParentMarker1"
+    parents:
+    - name: "GrandMotherMarker"
+    - name: "GrandFatherMarker"
+  - name: "ParentMarker2"
+message: "Msg"
+thrown:
+  commonElementCount: 0
+  localizedMessage: "testIOEx"
+  message: "testIOEx"
+  name: "java.io.IOException"
+  cause:
+    commonElementCount: 27
+    localizedMessage: "testNPEx"
+    message: "testNPEx"
+    name: "java.lang.NullPointerException"
+    extendedStackTrace:
+    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+      method: "createLogEvent"
+      file: "LogEventFixtures.java"
+      line: 52
+      exact: false
+      location: "test-classes/"
+      version: "?"
+  extendedStackTrace:
+  - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+    method: "createLogEvent"
+    file: "LogEventFixtures.java"
+    line: 55
+    exact: true
+    location: "test-classes/"
+    version: "?"
+  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+    method: "testAllFeatures"
+    file: "YamlLayoutTest.java"
+    line: 109
+    exact: true
+    location: "test-classes/"
+    version: "?"
+  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+    method: "testLocationOnCompactOffEventEolOffMdcOn"
+    file: "YamlLayoutTest.java"
+    line: 280
+    exact: true
+    location: "test-classes/"
+    version: "?"
+  - class: "sun.reflect.NativeMethodAccessorImpl"
+    method: "invoke0"
+    file: "NativeMethodAccessorImpl.java"
+    line: -2
+    exact: false
+    location: "?"
+    version: "1.7.0_79"
+  - class: "sun.reflect.NativeMethodAccessorImpl"
+    method: "invoke"
+    file: "NativeMethodAccessorImpl.java"
+    line: 57
+    exact: false
+    location: "?"
+    version: "1.7.0_79"
+  - class: "sun.reflect.DelegatingMethodAccessorImpl"
+    method: "invoke"
+    file: "DelegatingMethodAccessorImpl.java"
+    line: 43
+    exact: false
+    location: "?"
+    version: "1.7.0_79"
+  - class: "java.lang.reflect.Method"
+    method: "invoke"
+    file: "Method.java"
+    line: 606
+    exact: false
+    location: "?"
+    version: "1.7.0_79"
+  - class: "org.junit.runners.model.FrameworkMethod$1"
+    method: "runReflectiveCall"
+    file: "FrameworkMethod.java"
+    line: 50
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.internal.runners.model.ReflectiveCallable"
+    method: "run"
+    file: "ReflectiveCallable.java"
+    line: 12
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.model.FrameworkMethod"
+    method: "invokeExplosively"
+    file: "FrameworkMethod.java"
+    line: 47
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.internal.runners.statements.InvokeMethod"
+    method: "evaluate"
+    file: "InvokeMethod.java"
+    line: 17
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.ParentRunner"
+    method: "runLeaf"
+    file: "ParentRunner.java"
+    line: 325
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.BlockJUnit4ClassRunner"
+    method: "runChild"
+    file: "BlockJUnit4ClassRunner.java"
+    line: 78
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.BlockJUnit4ClassRunner"
+    method: "runChild"
+    file: "BlockJUnit4ClassRunner.java"
+    line: 57
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.ParentRunner$3"
+    method: "run"
+    file: "ParentRunner.java"
+    line: 290
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.ParentRunner$1"
+    method: "schedule"
+    file: "ParentRunner.java"
+    line: 71
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.ParentRunner"
+    method: "runChildren"
+    file: "ParentRunner.java"
+    line: 288
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.ParentRunner"
+    method: "access$000"
+    file: "ParentRunner.java"
+    line: 58
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.ParentRunner$2"
+    method: "evaluate"
+    file: "ParentRunner.java"
+    line: 268
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.internal.runners.statements.RunBefores"
+    method: "evaluate"
+    file: "RunBefores.java"
+    line: 26
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.internal.runners.statements.RunAfters"
+    method: "evaluate"
+    file: "RunAfters.java"
+    line: 27
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.junit.runners.ParentRunner"
+    method: "run"
+    file: "ParentRunner.java"
+    line: 363
+    exact: true
+    location: "junit-4.12.jar"
+    version: "4.12"
+  - class: "org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference"
+    method: "run"
+    file: "JUnit4TestReference.java"
+    line: 86
+    exact: true
+    location: ".cp/"
+    version: "?"
+  - class: "org.eclipse.jdt.internal.junit.runner.TestExecution"
+    method: "run"
+    file: "TestExecution.java"
+    line: 38
+    exact: true
+    location: ".cp/"
+    version: "?"
+  - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+    method: "runTests"
+    file: "RemoteTestRunner.java"
+    line: 459
+    exact: true
+    location: ".cp/"
+    version: "?"
+  - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+    method: "runTests"
+    file: "RemoteTestRunner.java"
+    line: 675
+    exact: true
+    location: ".cp/"
+    version: "?"
+  - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+    method: "run"
+    file: "RemoteTestRunner.java"
+    line: 382
+    exact: true
+    location: ".cp/"
+    version: "?"
+  - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+    method: "main"
+    file: "RemoteTestRunner.java"
+    line: 192
+    exact: true
+    location: ".cp/"
+    version: "?"
+  suppressed:
+  - commonElementCount: 0
+    localizedMessage: "I am suppressed exception 1"
+    message: "I am suppressed exception 1"
+    name: "java.lang.IndexOutOfBoundsException"
+    extendedStackTrace:
+    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+      method: "createLogEvent"
+      file: "LogEventFixtures.java"
+      line: 56
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testAllFeatures"
+      file: "YamlLayoutTest.java"
+      line: 109
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testLocationOnCompactOffEventEolOffMdcOn"
+      file: "YamlLayoutTest.java"
+      line: 280
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "sun.reflect.NativeMethodAccessorImpl"
+      method: "invoke0"
+      file: "NativeMethodAccessorImpl.java"
+      line: -2
+      exact: false
+      location: "?"
+      version: "1.7.0_79"
+    - class: "sun.reflect.NativeMethodAccessorImpl"
+      method: "invoke"
+      file: "NativeMethodAccessorImpl.java"
+      line: 57
+      exact: false
+      location: "?"
+      version: "1.7.0_79"
+    - class: "sun.reflect.DelegatingMethodAccessorImpl"
+      method: "invoke"
+      file: "DelegatingMethodAccessorImpl.java"
+      line: 43
+      exact: false
+      location: "?"
+      version: "1.7.0_79"
+    - class: "java.lang.reflect.Method"
+      method: "invoke"
+      file: "Method.java"
+      line: 606
+      exact: false
+      location: "?"
+      version: "1.7.0_79"
+    - class: "org.junit.runners.model.FrameworkMethod$1"
+      method: "runReflectiveCall"
+      file: "FrameworkMethod.java"
+      line: 50
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.internal.runners.model.ReflectiveCallable"
+      method: "run"
+      file: "ReflectiveCallable.java"
+      line: 12
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.model.FrameworkMethod"
+      method: "invokeExplosively"
+      file: "FrameworkMethod.java"
+      line: 47
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.internal.runners.statements.InvokeMethod"
+      method: "evaluate"
+      file: "InvokeMethod.java"
+      line: 17
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner"
+      method: "runLeaf"
+      file: "ParentRunner.java"
+      line: 325
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.BlockJUnit4ClassRunner"
+      method: "runChild"
+      file: "BlockJUnit4ClassRunner.java"
+      line: 78
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.BlockJUnit4ClassRunner"
+      method: "runChild"
+      file: "BlockJUnit4ClassRunner.java"
+      line: 57
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner$3"
+      method: "run"
+      file: "ParentRunner.java"
+      line: 290
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner$1"
+      method: "schedule"
+      file: "ParentRunner.java"
+      line: 71
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner"
+      method: "runChildren"
+      file: "ParentRunner.java"
+      line: 288
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner"
+      method: "access$000"
+      file: "ParentRunner.java"
+      line: 58
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner$2"
+      method: "evaluate"
+      file: "ParentRunner.java"
+      line: 268
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.internal.runners.statements.RunBefores"
+      method: "evaluate"
+      file: "RunBefores.java"
+      line: 26
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.internal.runners.statements.RunAfters"
+      method: "evaluate"
+      file: "RunAfters.java"
+      line: 27
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner"
+      method: "run"
+      file: "ParentRunner.java"
+      line: 363
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference"
+      method: "run"
+      file: "JUnit4TestReference.java"
+      line: 86
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.TestExecution"
+      method: "run"
+      file: "TestExecution.java"
+      line: 38
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+      method: "runTests"
+      file: "RemoteTestRunner.java"
+      line: 459
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+      method: "runTests"
+      file: "RemoteTestRunner.java"
+      line: 675
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+      method: "run"
+      file: "RemoteTestRunner.java"
+      line: 382
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+      method: "main"
+      file: "RemoteTestRunner.java"
+      line: 192
+      exact: true
+      location: ".cp/"
+      version: "?"
+  - commonElementCount: 0
+    localizedMessage: "I am suppressed exception 2"
+    message: "I am suppressed exception 2"
+    name: "java.lang.IndexOutOfBoundsException"
+    extendedStackTrace:
+    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+      method: "createLogEvent"
+      file: "LogEventFixtures.java"
+      line: 57
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testAllFeatures"
+      file: "YamlLayoutTest.java"
+      line: 109
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testLocationOnCompactOffEventEolOffMdcOn"
+      file: "YamlLayoutTest.java"
+      line: 280
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "sun.reflect.NativeMethodAccessorImpl"
+      method: "invoke0"
+      file: "NativeMethodAccessorImpl.java"
+      line: -2
+      exact: false
+      location: "?"
+      version: "1.7.0_79"
+    - class: "sun.reflect.NativeMethodAccessorImpl"
+      method: "invoke"
+      file: "NativeMethodAccessorImpl.java"
+      line: 57
+      exact: false
+      location: "?"
+      version: "1.7.0_79"
+    - class: "sun.reflect.DelegatingMethodAccessorImpl"
+      method: "invoke"
+      file: "DelegatingMethodAccessorImpl.java"
+      line: 43
+      exact: false
+      location: "?"
+      version: "1.7.0_79"
+    - class: "java.lang.reflect.Method"
+      method: "invoke"
+      file: "Method.java"
+      line: 606
+      exact: false
+      location: "?"
+      version: "1.7.0_79"
+    - class: "org.junit.runners.model.FrameworkMethod$1"
+      method: "runReflectiveCall"
+      file: "FrameworkMethod.java"
+      line: 50
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.internal.runners.model.ReflectiveCallable"
+      method: "run"
+      file: "ReflectiveCallable.java"
+      line: 12
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.model.FrameworkMethod"
+      method: "invokeExplosively"
+      file: "FrameworkMethod.java"
+      line: 47
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.internal.runners.statements.InvokeMethod"
+      method: "evaluate"
+      file: "InvokeMethod.java"
+      line: 17
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner"
+      method: "runLeaf"
+      file: "ParentRunner.java"
+      line: 325
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.BlockJUnit4ClassRunner"
+      method: "runChild"
+      file: "BlockJUnit4ClassRunner.java"
+      line: 78
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.BlockJUnit4ClassRunner"
+      method: "runChild"
+      file: "BlockJUnit4ClassRunner.java"
+      line: 57
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner$3"
+      method: "run"
+      file: "ParentRunner.java"
+      line: 290
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner$1"
+      method: "schedule"
+      file: "ParentRunner.java"
+      line: 71
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner"
+      method: "runChildren"
+      file: "ParentRunner.java"
+      line: 288
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner"
+      method: "access$000"
+      file: "ParentRunner.java"
+      line: 58
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner$2"
+      method: "evaluate"
+      file: "ParentRunner.java"
+      line: 268
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.internal.runners.statements.RunBefores"
+      method: "evaluate"
+      file: "RunBefores.java"
+      line: 26
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.internal.runners.statements.RunAfters"
+      method: "evaluate"
+      file: "RunAfters.java"
+      line: 27
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.junit.runners.ParentRunner"
+      method: "run"
+      file: "ParentRunner.java"
+      line: 363
+      exact: true
+      location: "junit-4.12.jar"
+      version: "4.12"
+    - class: "org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference"
+      method: "run"
+      file: "JUnit4TestReference.java"
+      line: 86
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.TestExecution"
+      method: "run"
+      file: "TestExecution.java"
+      line: 38
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+      method: "runTests"
+      file: "RemoteTestRunner.java"
+      line: 459
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+      method: "runTests"
+      file: "RemoteTestRunner.java"
+      line: 675
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+      method: "run"
+      file: "RemoteTestRunner.java"
+      line: 382
+      exact: true
+      location: ".cp/"
+      version: "?"
+    - class: "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner"
+      method: "main"
+      file: "RemoteTestRunner.java"
+      line: 192
+      exact: true
+      location: ".cp/"
+      version: "?"
+contextStack:
+- "stack_msg1"
+- "stack_msg2"
+endOfBatch: false
+loggerFqcn: "f.q.c.n"
+contextMap:
+- key: "MDC.B"
+  value: "B_Value"
+- key: "MDC.A"
+  value: "A_Value"
+threadId: 1
+threadPriority: 5
+source:
+  class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+  method: "createLogEvent"
+  file: "LogEventFixtures.java"
+  line: 53</pre>
  * <p>
  * This approach enforces the independence of the YamlLayout and the appender where you embed it.
  * </p>
@@ -61,19 +698,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
  * events containing non ASCII characters could result in corrupted log files.
  * </p>
- * <h3>Pretty vs. compact YAML</h3>
- * <p>
- * By default, the YAML layout is not compact (a.k.a. "pretty") with {@code compact="false"}, which means the appender
- * uses end-of-line characters and indents lines to format the text. If {@code compact="true"}, then no end-of-line or
- * indentation is used. Message content may contain, of course, escaped end-of-lines.
- * </p>
  */
-@Plugin(name = "JsonLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin(name = "YamlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class YamlLayout extends AbstractJacksonLayout {
 
-    private static final String DEFAULT_FOOTER = ""; // TODO maybe
+    private static final String DEFAULT_FOOTER = Strings.EMPTY;
 
-    private static final String DEFAULT_HEADER = ""; // TODO maybe
+    private static final String DEFAULT_HEADER = Strings.EMPTY;
 
     static final String CONTENT_TYPE = "application/yaml";
 

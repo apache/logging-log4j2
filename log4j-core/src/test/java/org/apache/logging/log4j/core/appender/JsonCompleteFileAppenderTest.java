@@ -30,7 +30,7 @@ import org.junit.rules.RuleChain;
 import static org.junit.Assert.*;
 
 /**
- * Tests a "complete" XML file a.k.a. a well-formed XML file.
+ * Tests a "complete" JSON file.
  */
 public class JsonCompleteFileAppenderTest {
 
