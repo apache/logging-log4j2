@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import com.lmax.disruptor.collections.Histogram;
+import org.HdrHistogram.Histogram;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.async.AsyncLogger;
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 
 /**
  *
@@ -33,31 +32,38 @@ public class SimpleLatencyTest {
     private static final String LATENCY_MSG = new String(new char[64]);
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
-        System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
-        System.setProperty("log4j2.enable.threadlocals", "true");
-        System.setProperty("AsyncLogger.WaitStrategy", "Block");
+        //System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
+        //System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
 
         Logger logger = LogManager.getLogger();
-        if (!(logger instanceof AsyncLogger)) {
-            throw new IllegalStateException();
-        }
-        logger.info("Starting...");
+        logger.info("Starting..."); // initializes Log4j
         Thread.sleep(100);
 
-        System.out.println(PerfTest.calcNanoTimeCost());
         final long nanoTimeCost = PerfTest.calcNanoTimeCost();
-        final Histogram warmupHistogram = PerfTest.createHistogram();
-        final Histogram histogram = PerfTest.createHistogram();
+        System.out.println(nanoTimeCost);
+
+        long maxThroughput = 1000 * 1000; // just assume... TODO make parameter
+        double targetLoadLevel = 0.02; // TODO make parameter
+
+        long targetMsgPerSec = (long) (maxThroughput * targetLoadLevel);
+        long targetMsgCountPerIteration = 5 * 1000 * 1000;
+        long durationMillisPerIteration = (1000 * targetMsgCountPerIteration) / targetMsgPerSec;
+
+
         final int threadCount = 1;
+        List<Histogram> warmupHistograms = new ArrayList<>(threadCount);
 
         final int WARMUP_COUNT = 500000;
-        runLatencyTest(logger, WARMUP_COUNT, warmupHistogram, nanoTimeCost, threadCount);
+        final long interval = -1; // TODO calculate
+        final IdleStrategy idleStrategy = new NoOpIdleStrategy();
+        runLatencyTest(logger, WARMUP_COUNT, interval, idleStrategy, warmupHistograms, nanoTimeCost, threadCount);
         Thread.sleep(1000);
+
+        List<Histogram> histograms = new ArrayList<>(threadCount);
 
         for (int i = 0 ; i < 30; i++) {
             final int ITERATIONS = 100 * 1000;// * 30;
-            runLatencyTest(logger, ITERATIONS, histogram, nanoTimeCost, threadCount);
+            runLatencyTest(logger, ITERATIONS, interval, idleStrategy, histograms, nanoTimeCost, threadCount);
 
             // wait 10 microsec
             final long PAUSE_NANOS = 1000000 * threadCount;
@@ -66,22 +72,41 @@ public class SimpleLatencyTest {
                 // busy spin
                 Thread.yield();
             }
-
         }
-
-        System.out.println(histogram);
     }
 
-    public static void runLatencyTest(final Logger logger, final int samples, final Histogram histogram,
-            final long nanoTimeCost, final int threadCount) {
-        for (int i = 0; i < samples; i++) {
-            final long s1 = System.nanoTime();
-            logger.info(LATENCY_MSG);
-            final long s2 = System.nanoTime();
-            final long value = s2 - s1 - nanoTimeCost;
-            if (value > 0) {
-                histogram.addObservation(value);
-            }
+    public static void runLatencyTest(final Logger logger, final int samples, final long interval,
+            final IdleStrategy idleStrategy, final List<Histogram> histograms, final long nanoTimeCost,
+            final int threadCount) {
+
+        final CountDownLatch LATCH = new CountDownLatch(threadCount);
+        for (int i = 0; i < threadCount; i++) {
+            final Histogram hist = new Histogram(TimeUnit.SECONDS.toNanos(10), 3);
+            histograms.add(hist);
+            final Thread t = new Thread("latencytest-" + i) {
+                public void run() {
+                    LATCH.countDown();
+                    try {
+                        LATCH.await();
+                    } catch (InterruptedException e) {
+                        interrupt(); // restore interrupt status
+                        return;
+                    }
+                    for (int i = 0; i < samples; i++) {
+                        final long s1 = System.nanoTime();
+                        logger.info(LATENCY_MSG);
+                        final long s2 = System.nanoTime();
+                        final long value = s2 - s1 - nanoTimeCost;
+                        if (value > 0) {
+                            hist.recordValueWithExpectedInterval(value, interval);
+                        }
+                        while (System.nanoTime() - s2 < interval) {
+                            idleStrategy.idle();
+                        }
+                    }
+                }
+            };
+            t.start();
         }
     }
 }
