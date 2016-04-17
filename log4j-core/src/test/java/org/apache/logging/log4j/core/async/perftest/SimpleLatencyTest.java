@@ -26,7 +26,34 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * Latency test.
+ * <p>
+ * See <a href="https://groups.google.com/d/msg/mechanical-sympathy/0gaBXxFm4hE/O9QomwHIJAAJ">https://groups.google.com/d/msg/mechanical-sympathy/0gaBXxFm4hE/O9QomwHIJAAJ</a>:
+ * </p>
+ * <p>Gil Tene's rules of thumb for latency tests:</p>
+ * <ol>
+ * <li>DO measure max achievable throughput, but DON'T get focused on it as the main or single axis of measurement /
+ * comparison.</li>
+ * <li>DO measure response time / latency behaviors across a spectrum of attempted load levels (e.g. at attempted loads
+ * between 2% to 100%+ of max established thoughout).</li>
+ * <li>DO measure the response time / latency spectrum for each tested load (even for max throughout, for which response
+ * time should linearly grow with test length, or the test is wrong). HdrHistogram is one good way to capture this
+ * information.</li>
+ * <li>DO make sure you are measuring response time correctly and labeling it right. If you also measure and report
+ * service time, label it as such (don't call it "latency").
+ * <li>DO compare response time / latency spectrum at given loads.</li>
+ * <li>DO [repeatedly] sanity check and calibrate the benchmark setup to verify that it produces expected results for
+ * known forced scenarios. E.g. forced pauses of known size via ^Z or SIGSTOP/SIGCONT should produce expected response
+ * time percentile levels. Attempting to load at >100% than achieved throughput should result in response time / latency
+ * measurements that grow with benchmark run length, while service time (if measured) should remain fairly flat well
+ * past saturation.</li>
+ * <li>DON'T use or report standard deviation for latency. Ever. Except if you mean it as a joke.</li>
+ * <li>DON'T use average latency as a way to compare things with one another. [use median or 90%'ile instead, if what
+ * you want to compare is "common case" latencies]. Consider not reporting avg. at all.</li>
+ * <li>DON'T compare results of different setups or loads from short runs (< 20-30 minutes).</li>
+ * <li>DON'T include process warmup behavior (e.g. 1st minute and 1st 50K messages) in compared or reported results.
+ * </li>
+ * </ol>
  */
 public class SimpleLatencyTest {
     private static final String LATENCY_MSG = new String(new char[64]);
@@ -61,7 +88,7 @@ public class SimpleLatencyTest {
 
         List<Histogram> histograms = new ArrayList<>(threadCount);
 
-        for (int i = 0 ; i < 30; i++) {
+        for (int i = 0; i < 30; i++) {
             final int ITERATIONS = 100 * 1000;// * 30;
             runLatencyTest(logger, ITERATIONS, interval, idleStrategy, histograms, nanoTimeCost, threadCount);
 
