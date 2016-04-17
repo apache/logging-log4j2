@@ -1,5 +1,9 @@
 package org.apache.logging.log4j.core.impl;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -8,20 +12,13 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.util.Map;
 
 /**
  * Mutable implementation of the {@code LogEvent} interface.
  * @since 2.6
  */
 public class MutableLogEvent implements LogEvent, ReusableMessage {
-    private static final int INITIAL_REUSABLE_MESSAGE_SIZE = size("log4j.initialReusableMsgSize", 128);
-    private static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
     private static final Object[] PARAMS = new Object[0];
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
@@ -43,10 +40,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private boolean endOfBatch = false;
     private long nanoTime;
     private StringBuilder messageText;
-
-    private static int size(final String property, final int defaultValue) {
-        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
-    }
 
     /**
      * Initialize the fields of this {@code MutableLogEvent} from another event.
@@ -88,7 +81,13 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         source = null;
         contextMap = null;
         contextStack = null;
-        // threadName = null; // THreadName should not be cleared
+
+        // ThreadName should not be cleared: this field is set in the ReusableLogEventFactory
+        // where this instance is kept in a ThreadLocal, so it usually does not change.
+        // threadName = null; // no need to clear threadName
+
+        trimMessageText();
+
         // primitive fields that cannot be cleared:
         //timeMillis;
         //threadId;
@@ -96,6 +95,14 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         //includeLocation;
         //endOfBatch;
         //nanoTime;
+    }
+
+    // ensure that excessively long char[] arrays are not kept in memory forever
+    private void trimMessageText() {
+        if (messageText != null && messageText.length() > Constants.MAX_REUSABLE_MESSAGE_SIZE) {
+            messageText.setLength(Constants.MAX_REUSABLE_MESSAGE_SIZE);
+            messageText.trimToSize();
+        }
     }
 
     @Override
@@ -158,7 +165,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         if (messageText == null) {
             // Should never happen:
             // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
-            messageText = new StringBuilder(INITIAL_REUSABLE_MESSAGE_SIZE);
+            messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
         }
         messageText.setLength(0);
         return messageText;
