@@ -19,8 +19,6 @@ package org.apache.logging.log4j.message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**

@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.apache.logging.log4j.util.Unbox.box;
-
 /**
  * Utility for preventing primitive parameter values from being auto-boxed. Auto-boxing creates temporary objects
  * which contribute to pressure on the garbage collector. With this utility users can convert primitive values directly
