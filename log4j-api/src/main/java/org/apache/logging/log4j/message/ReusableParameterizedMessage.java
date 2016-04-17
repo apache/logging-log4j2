@@ -36,7 +36,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     private String messagePattern;
     private int argCount;
     private int usedCount;
-    private int[] indices = new int[256];
+    private final int[] indices = new int[256];
     private transient Object[] varargs;
     private transient Object[] params = new Object[10];
     private transient Throwable throwable;
