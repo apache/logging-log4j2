@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.JsonConstants;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
+import org.apache.logging.log4j.core.jackson.Log4jYamlObjectMapper;
 import org.apache.logging.log4j.core.jackson.XmlConstants;
 
 import com.fasterxml.jackson.core.PrettyPrinter;
@@ -100,6 +101,39 @@ abstract class JacksonFactory {
         @Override
         protected PrettyPrinter newPrettyPrinter() {
             return new DefaultXmlPrettyPrinter();
+        }
+    }
+
+    static class YAML extends JacksonFactory {
+
+        @Override
+        protected String getPropertNameForContextMap() {
+            return JsonConstants.ELT_CONTEXT_MAP;
+        }
+
+        @Override
+        protected String getPropertNameForSource() {
+            return JsonConstants.ELT_SOURCE;
+        }
+
+        @Override
+        protected String getPropertNameForNanoTime() {
+            return JsonConstants.ELT_NANO_TIME;
+        }
+
+        @Override
+        protected PrettyPrinter newCompactPrinter() {
+            return new MinimalPrettyPrinter();
+        }
+
+        @Override
+        protected ObjectMapper newObjectMapper() {
+            return new Log4jYamlObjectMapper();
+        }
+
+        @Override
+        protected PrettyPrinter newPrettyPrinter() {
+            return new DefaultPrettyPrinter();
         }
     }
 
