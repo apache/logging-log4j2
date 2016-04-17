@@ -56,7 +56,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
 
         @Override
         public void run() {
-            logger.entry();
+            logger.traceEntry();
             boolean closed = false;
             try {
                 try {
@@ -80,7 +80,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
             } finally {
                 handlers.remove(Long.valueOf(getId()));
             }
-            logger.exit();
+            logger.traceExit();
         }
 
         public void shutdown() {
@@ -218,7 +218,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      */
     @Override
     public void run() {
-        logger.entry();
+        logger.traceEntry();
         while (isActive()) {
             if (serverSocket.isClosed()) {
                 return;
@@ -240,7 +240,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
             } catch (final IOException e) {
                 if (serverSocket.isClosed()) {
                     // OK we're done.
-                    logger.exit();
+                    logger.traceExit();
                     return;
                 }
                 logger.error("Exception encountered on accept. Ignoring. Stack Trace :", e);
@@ -255,7 +255,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                 // Ignore the exception
             }
         }
-        logger.exit();
+        logger.traceExit();
     }
 
     /**
@@ -264,10 +264,10 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * @throws IOException if the server socket could not be closed
      */
     public void shutdown() throws IOException {
-        logger.entry();
+        logger.traceEntry();
         setActive(false);
         Thread.currentThread().interrupt();
         serverSocket.close();
-        logger.exit();
+        logger.traceExit();
     }
 }
