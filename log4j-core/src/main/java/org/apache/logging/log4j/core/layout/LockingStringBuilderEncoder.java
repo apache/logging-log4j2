@@ -1,5 +1,6 @@
 package org.apache.logging.log4j.core.layout;
 
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.nio.CharBuffer;
@@ -18,7 +19,7 @@ public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
     private final CharBuffer cachedCharBuffer;
 
     public LockingStringBuilderEncoder(final Charset charset) {
-        this(charset, TextEncoderHelper.DEFAULT_CHAR_BUFFER_SIZE);
+        this(charset, Constants.ENCODER_CHAR_BUFFER_SIZE);
     }
 
     public LockingStringBuilderEncoder(final Charset charset, final int charBufferSize) {

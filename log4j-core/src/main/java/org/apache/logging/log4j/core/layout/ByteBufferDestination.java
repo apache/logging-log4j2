@@ -19,9 +19,11 @@ package org.apache.logging.log4j.core.layout;
 import java.nio.ByteBuffer;
 
 /**
- * ByteBufferDestination addresses the problem a producer has when the destination ByteBuffer is not large enough to
- * fit all the data. This interface allows a producer to write arbitrary amounts of data to a destination.
- *
+ * ByteBufferDestination is the destination that {@link Encoder}s write binary data to. It encapsulates a
+ * {@code ByteBuffer} and a {@code drain()} method the producer can call when the {@code ByteBuffer} is full.
+ * <p>
+ * This interface allows a producer to write arbitrary amounts of data to a destination.
+ * </p>
  * @since 2.6
  */
 public interface ByteBufferDestination {

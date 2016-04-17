@@ -140,7 +140,7 @@ abstract class JacksonFactory {
     abstract protected String getPropertNameForContextMap();
 
     abstract protected String getPropertNameForSource();
-    
+
     abstract protected String getPropertNameForNanoTime();
 
     abstract protected PrettyPrinter newCompactPrinter();

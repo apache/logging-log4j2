@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
@@ -83,9 +84,11 @@ public class SmtpManager extends AbstractManager {
         this.buffer = new CyclicBuffer<>(LogEvent.class, data.numElements);
     }
 
-    public void add(final LogEvent event) {
+    public void add(LogEvent event) {
         if (event instanceof Log4jLogEvent && event.getMessage() instanceof ReusableMessage) {
             ((Log4jLogEvent) event).makeMessageImmutable();
+        } else if (event instanceof MutableLogEvent) {
+            event = Log4jLogEvent.deserialize(Log4jLogEvent.serialize(event, event.isIncludeLocation()));
         }
         buffer.add(event);
     }

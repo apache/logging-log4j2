@@ -31,6 +31,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 /**
@@ -81,7 +83,12 @@ public class ListAppender extends AbstractAppender {
     public synchronized void append(final LogEvent event) {
         final Layout<? extends Serializable> layout = getLayout();
         if (layout == null) {
-            events.add(event);
+            if (event instanceof MutableLogEvent) {
+                // must take snapshot or subsequent calls to logger.log() will modify this event
+                events.add(Log4jLogEvent.deserialize(Log4jLogEvent.serialize(event, event.isIncludeLocation())));
+            } else {
+                events.add(event);
+            }
         } else if (layout instanceof SerializedLayout) {
             final byte[] header = layout.getHeader();
             final byte[] content = layout.toByteArray(event);

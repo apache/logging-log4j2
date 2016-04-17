@@ -33,6 +33,41 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
     private static final long serialVersionUID = 5027639245636870500L;
 
     /**
+     * Message implementation that only keeps a reference to the error text and the error (if any), not to the
+     * message parameters, in order to avoid memory leaks. This addresses LOG4J2-1368.
+     * @since 2.6
+     */
+    static class StatusMessage implements Message {
+        private final String formattedMessage;
+        private final Throwable throwable;
+
+        public StatusMessage(final String formattedMessage, final Throwable throwable) {
+            this.formattedMessage = formattedMessage;
+            this.throwable = throwable;
+        }
+
+        @Override
+        public String getFormattedMessage() {
+            return formattedMessage;
+        }
+
+        @Override
+        public String getFormat() {
+            return formattedMessage;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            return null;
+        }
+
+        @Override
+        public Throwable getThrowable() {
+            return throwable;
+        }
+    }
+
+    /**
      * Constructs a message factory with default flow strings.
      */
     public ParameterizedNoReferenceMessageFactory() {
@@ -58,7 +93,7 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
         if (params == null) {
             return new SimpleMessage(message);
         }
-        final String formatted = new ParameterizedMessage(message, params).getFormattedMessage();
-        return new SimpleMessage(formatted);
+        final ParameterizedMessage msg = new ParameterizedMessage(message, params);
+        return new StatusMessage(msg.getFormattedMessage(), msg.getThrowable());
     }
 }

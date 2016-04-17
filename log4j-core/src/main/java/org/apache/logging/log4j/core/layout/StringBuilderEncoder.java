@@ -1,5 +1,6 @@
 package org.apache.logging.log4j.core.layout;
 
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.nio.ByteBuffer;
@@ -23,7 +24,7 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
     private final int byteBufferSize;
 
     public StringBuilderEncoder(final Charset charset) {
-        this(charset, TextEncoderHelper.DEFAULT_CHAR_BUFFER_SIZE, DEFAULT_BYTE_BUFFER_SIZE);
+        this(charset, Constants.ENCODER_CHAR_BUFFER_SIZE, DEFAULT_BYTE_BUFFER_SIZE);
     }
 
     public StringBuilderEncoder(final Charset charset, final int charBufferSize, final int byteBufferSize) {

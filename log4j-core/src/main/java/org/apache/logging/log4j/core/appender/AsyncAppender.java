@@ -24,7 +24,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -32,7 +31,6 @@ import org.apache.logging.log4j.core.async.AsyncEventRouter;
 import org.apache.logging.log4j.core.async.AsyncEventRouterFactory;
 import org.apache.logging.log4j.core.async.DiscardingAsyncEventRouter;
 import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -145,22 +143,10 @@ public final class AsyncAppender extends AbstractAppender {
         if (!isStarted()) {
             throw new IllegalStateException("AsyncAppender " + getName() + " is not active");
         }
-        if (!(logEvent instanceof Log4jLogEvent)) {
-            if (!(logEvent instanceof RingBufferLogEvent)) {
-                return; // only know how to Serialize Log4jLogEvents and RingBufferLogEvents
-            }
-            logEvent = ((RingBufferLogEvent) logEvent).createMemento();
-        }
         if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
             logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
-        final Log4jLogEvent coreEvent = (Log4jLogEvent) logEvent;
-        logEvent(coreEvent);
-    }
-
-    private void logEvent(final Log4jLogEvent logEvent) {
-        final Level logLevel = logEvent.getLevel();
-        final EventRoute route = asyncEventRouter.getRoute(thread.getId(), logLevel);
+        final EventRoute route = asyncEventRouter.getRoute(thread.getId(), logEvent.getLevel());
         route.logMessage(this, logEvent);
     }
 
@@ -169,7 +155,7 @@ public final class AsyncAppender extends AbstractAppender {
      *
      * @param logEvent the event to log
      */
-    public void logMessageInCurrentThread(final Log4jLogEvent logEvent) {
+    public void logMessageInCurrentThread(final LogEvent logEvent) {
         logEvent.setEndOfBatch(queue.isEmpty());
         final boolean appendSuccessful = thread.callAppenders(logEvent);
         logToErrorAppenderIfNecessary(appendSuccessful, logEvent);
@@ -180,12 +166,12 @@ public final class AsyncAppender extends AbstractAppender {
      *
      * @param logEvent the event to log
      */
-    public void logMessageInBackgroundThread(final Log4jLogEvent logEvent) {
+    public void logMessageInBackgroundThread(final LogEvent logEvent) {
         final boolean success = blocking ? enqueueOrBlockIfQueueFull(logEvent) : enqueueOrDropIfQueueFull(logEvent);
         logToErrorAppenderIfNecessary(success, logEvent);
     }
 
-    private boolean enqueueOrBlockIfQueueFull(final Log4jLogEvent logEvent) {
+    private boolean enqueueOrBlockIfQueueFull(final LogEvent logEvent) {
         boolean appendSuccessful;
         final Serializable serialized = Log4jLogEvent.serialize(logEvent, includeLocation);
         try {
@@ -198,7 +184,7 @@ public final class AsyncAppender extends AbstractAppender {
         return appendSuccessful;
     }
 
-    private boolean enqueueOrDropIfQueueFull(final Log4jLogEvent logEvent) {
+    private boolean enqueueOrDropIfQueueFull(final LogEvent logEvent) {
         final boolean appendSuccessful = queue.offer(Log4jLogEvent.serialize(logEvent, includeLocation));
         if (!appendSuccessful) {
             error("Appender " + getName() + " is unable to write primary appenders. queue is full");
@@ -228,7 +214,7 @@ public final class AsyncAppender extends AbstractAppender {
         return appendSuccessful;
     }
 
-    private void logToErrorAppenderIfNecessary(final boolean appendSuccessful, final Log4jLogEvent logEvent) {
+    private void logToErrorAppenderIfNecessary(final boolean appendSuccessful, final LogEvent logEvent) {
         if (!appendSuccessful && errorAppender != null) {
             errorAppender.callAppender(logEvent);
         }
@@ -350,7 +336,7 @@ public final class AsyncAppender extends AbstractAppender {
          * @param event the event to forward to the registered appenders
          * @return {@code true} if at least one appender call succeeded, {@code false} otherwise
          */
-        boolean callAppenders(final Log4jLogEvent event) {
+        boolean callAppenders(final LogEvent event) {
             boolean success = false;
             for (final AppenderControl control : appenders) {
                 try {

@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.util.Constants;
 
 
 /**
@@ -213,7 +214,7 @@ public class FileManager extends OutputStreamManager {
             OutputStream os;
             try {
                 os = new FileOutputStream(name, data.append);
-                final int actualSize = data.bufferedIO ? data.bufferSize : DEFAULT_BUFFER_SIZE;
+                final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
                 return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout,
                         writeHeader, buffer);
