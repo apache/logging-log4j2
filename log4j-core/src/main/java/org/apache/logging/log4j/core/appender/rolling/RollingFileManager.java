@@ -61,7 +61,7 @@ public class RollingFileManager extends FileManager {
             final RolloverStrategy rolloverStrategy, final String advertiseURI,
             final Layout<? extends Serializable> layout, final int bufferSize, final boolean writeHeader) {
         this(fileName, pattern, os, append, size, time, triggeringPolicy, rolloverStrategy, advertiseURI, layout,
-                writeHeader, ByteBuffer.wrap(new byte[DEFAULT_BUFFER_SIZE]));
+                writeHeader, ByteBuffer.wrap(new byte[Constants.ENCODER_BYTE_BUFFER_SIZE]));
     }
 
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
@@ -416,7 +416,7 @@ public class RollingFileManager extends FileManager {
             OutputStream os;
             try {
                 os = new FileOutputStream(name, data.append);
-                final int actualSize = data.bufferedIO ? data.bufferSize : DEFAULT_BUFFER_SIZE;
+                final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
 
                 final long time = file.lastModified(); // LOG4J2-531 create file first so time has valid value

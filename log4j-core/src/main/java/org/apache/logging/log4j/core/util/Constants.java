@@ -135,6 +135,17 @@ public final class Constants {
      */
     public static final int ENCODER_CHAR_BUFFER_SIZE = size("log4j.encoder.charBufferSize", 2048);
 
+    /**
+     * Default size of ByteBuffers used to encode LogEvents without allocating temporary objects.
+     * <p>
+     * The default value is {@value}, users can override with system property "log4j.encoder.byteBufferSize".
+     * </p>
+     * @see org.apache.logging.log4j.core.layout.ByteBufferDestination
+     * @since 2.6
+     */
+    public static final int ENCODER_BYTE_BUFFER_SIZE = size("log4j.encoder.byteBufferSize", 8 * 1024);
+
+
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
     }

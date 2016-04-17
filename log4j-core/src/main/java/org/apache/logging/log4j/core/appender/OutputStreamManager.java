@@ -23,21 +23,20 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.util.Constants;
 
 /**
  * Manages an OutputStream so that it can be shared by multiple Appenders and will
  * allow appenders to reconfigure without requiring a new stream.
  */
 public class OutputStreamManager extends AbstractManager implements ByteBufferDestination {
-    protected static final int DEFAULT_BUFFER_SIZE = 8 * 1024;
-
-    private volatile OutputStream os;
     protected final Layout<?> layout;
     protected ByteBuffer byteBuffer;
+    private volatile OutputStream os;
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
-        this(os, streamName, layout, writeHeader, ByteBuffer.wrap(new byte[DEFAULT_BUFFER_SIZE]));
+        this(os, streamName, layout, writeHeader, ByteBuffer.wrap(new byte[Constants.ENCODER_BYTE_BUFFER_SIZE]));
     }
 
     /**
