@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.util;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -106,6 +105,21 @@ public final class Constants {
             "log4j2.enable.direct.encoders", true); // enable GC-free text encoding by default
             // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
             //AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
+
+    /**
+     * Initial StringBuilder size used in RingBuffer LogEvents to store the contents of reusable Messages.
+     */
+    public static final int INITIAL_REUSABLE_MESSAGE_SIZE = size("log4j.initialReusableMsgSize", 128);
+
+    /**
+     * Maximum size of the StringBuilders used in RingBuffer LogEvents to store the contents of reusable Messages.
+     * After a large message has been delivered to the appenders, the StringBuilder is trimmed to this size.
+     */
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
+
+    private static int size(final String property, final int defaultValue) {
+        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    }
 
     /**
      * Prevent class instantiation.

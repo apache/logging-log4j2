@@ -33,7 +33,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import com.lmax.disruptor.EventFactory;
@@ -48,14 +47,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage {
     public static final Factory FACTORY = new Factory();
 
     private static final long serialVersionUID = 8462119088943934758L;
-    private static final int INITIAL_REUSABLE_MESSAGE_SIZE = size("log4j.initialReusableMsgSize", 128);
-    private static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
     private static final Object[] PARAMS = new Object[0];
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
-
-    private static int size(final String property, final int defaultValue) {
-        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
-    }
 
     /**
      * Creates the events that will be put in the RingBuffer.
@@ -66,7 +59,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage {
         public RingBufferLogEvent newInstance() {
             RingBufferLogEvent result = new RingBufferLogEvent();
             if (Constants.ENABLE_THREADLOCALS) {
-                result.messageText = new StringBuilder(INITIAL_REUSABLE_MESSAGE_SIZE);
+                result.messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
             }
             return result;
         }
@@ -130,7 +123,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage {
         if (messageText == null) {
             // Should never happen:
             // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
-            messageText = new StringBuilder(INITIAL_REUSABLE_MESSAGE_SIZE);
+            messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
         }
         messageText.setLength(0);
         return messageText;
@@ -356,8 +349,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage {
 
     // ensure that excessively long char[] arrays are not kept in memory forever
     private void trimMessageText() {
-        if (messageText != null && messageText.length() > MAX_REUSABLE_MESSAGE_SIZE) {
-            messageText.setLength(MAX_REUSABLE_MESSAGE_SIZE);
+        if (messageText != null && messageText.length() > Constants.MAX_REUSABLE_MESSAGE_SIZE) {
+            messageText.setLength(Constants.MAX_REUSABLE_MESSAGE_SIZE);
             messageText.trimToSize();
         }
     }
