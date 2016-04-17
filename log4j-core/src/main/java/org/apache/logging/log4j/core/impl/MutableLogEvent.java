@@ -70,6 +70,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         setMessage(event.getMessage());
     }
 
+    /**
+     * Clears all references this event has to other objects.
+     */
     public void clear() {
         loggerFqcn = null;
         marker = null;
