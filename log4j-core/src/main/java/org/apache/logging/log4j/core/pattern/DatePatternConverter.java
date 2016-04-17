@@ -175,9 +175,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         final FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported(options);
         if (fixedDateFormat != null) {
             return createFixedFormatter(fixedDateFormat);
-        } else {
-            return createNonFixedFormatter(options);
         }
+        return createNonFixedFormatter(options);
     }
 
     /**
