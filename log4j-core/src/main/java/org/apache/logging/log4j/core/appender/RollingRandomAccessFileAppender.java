@@ -84,7 +84,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
      */
     @Override
     public void append(final LogEvent event) {
-        final RollingRandomAccessFileManager manager = (RollingRandomAccessFileManager) getManager();
+        final RollingRandomAccessFileManager manager = getManager();
         manager.checkRollover(event);
 
         // Leverage the nice batching behaviour of async Loggers/Appenders:
