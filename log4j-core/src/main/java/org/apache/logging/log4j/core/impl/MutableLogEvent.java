@@ -66,6 +66,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         this.threadName = event.getThreadName();
         this.threadPriority = event.getThreadPriority();
         this.endOfBatch = event.isEndOfBatch();
+        this.includeLocation = event.isIncludeLocation();
         this.nanoTime = event.getNanoTime();
         setMessage(event.getMessage());
     }
