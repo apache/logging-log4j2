@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1365" dev="mikes" type="update">
+        (Log4j-internal) Provide message text as CharSequence for some message types to optimize some layouts.
+      </action>
+      <action issue="LOG4J2-1356" dev="mikes" type="update">
+        (GC) GelfLayout does now support garabage-free logging (with compressionType=OFF).
+      </action>
       <action issue="LOG4J2-1368" dev="rpopma" type="fix">
         (Log4j-internal) StatusLogger dropped exceptions when logging parameterized messages.
       </action>
