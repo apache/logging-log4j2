@@ -27,7 +27,7 @@
       <PatternLayout pattern="%m%n"/>
     </Console>
     <RollingFile name="RollingFile" fileName="${filename}"
-                 filePattern="target/rolling1/test1-$${date:MM-dd-yyyy}-%i.log.xy">
+                 filePattern="target/rolling1/test1-$${date:MM-dd-yyyy}-%i.log.xz">
       <PatternLayout>
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>

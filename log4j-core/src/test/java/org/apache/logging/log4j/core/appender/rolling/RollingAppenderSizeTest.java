@@ -64,7 +64,7 @@ public class RollingAppenderSizeTest {
                 {"log4j-rolling-bzip2.xml", ".bz2"}, //
                 {"log4j-rolling-deflate.xml", ".deflate"}, //
                 {"log4j-rolling-pack200.xml", ".pack200"}, //
-                {"log4j-rolling-xy.xml", ".xy"},});
+                {"log4j-rolling-xz.xml", ".xz"},});
                 // @formatter:on
     }
 
