@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.message.EntryMessage;
 
 /**
  * Listens for events over a socket connection.
@@ -56,7 +57,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
 
         @Override
         public void run() {
-            logger.traceEntry();
+            final EntryMessage entry = logger.traceEntry();
             boolean closed = false;
             try {
                 try {
@@ -80,7 +81,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
             } finally {
                 handlers.remove(Long.valueOf(getId()));
             }
-            logger.traceExit();
+            logger.traceExit(entry);
         }
 
         public void shutdown() {
@@ -218,7 +219,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      */
     @Override
     public void run() {
-        logger.traceEntry();
+        final EntryMessage entry = logger.traceEntry();
         while (isActive()) {
             if (serverSocket.isClosed()) {
                 return;
@@ -240,14 +241,14 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
             } catch (final IOException e) {
                 if (serverSocket.isClosed()) {
                     // OK we're done.
-                    logger.traceExit();
+                    logger.traceExit(entry);
                     return;
                 }
                 logger.error("Exception encountered on accept. Ignoring. Stack Trace :", e);
             }
         }
-        for (final Map.Entry<Long, SocketHandler> entry : handlers.entrySet()) {
-            final SocketHandler handler = entry.getValue();
+        for (final Map.Entry<Long, SocketHandler> handlerEntry : handlers.entrySet()) {
+            final SocketHandler handler = handlerEntry.getValue();
             handler.shutdown();
             try {
                 handler.join();
@@ -255,7 +256,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                 // Ignore the exception
             }
         }
-        logger.traceExit();
+        logger.traceExit(entry);
     }
 
     /**
@@ -264,10 +265,10 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * @throws IOException if the server socket could not be closed
      */
     public void shutdown() throws IOException {
-        logger.traceEntry();
+        final EntryMessage entry = logger.traceEntry();
         setActive(false);
         Thread.currentThread().interrupt();
         serverSocket.close();
-        logger.traceExit();
+        logger.traceExit(entry);
     }
 }
