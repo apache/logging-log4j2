@@ -21,6 +21,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.util.Constants;
@@ -66,9 +67,13 @@ public class GcFreeLoggingTestUtil {
                 "java/util/concurrent/locks/AbstractQueuedSynchronizer$Node", //
                 "com/google/monitoring/runtime/instrumentation/Sampler", //
         };
+        final AtomicBoolean samplingEnabled = new AtomicBoolean(true);
         final Sampler sampler = new Sampler() {
             @Override
             public void sampleAllocation(int count, String desc, Object newObj, long size) {
+                if (!samplingEnabled.get()) {
+                    return;
+                }
                 for (int i = 0; i < exclude.length; i++) {
                     if (exclude[i].equals(desc)) {
                         return; // exclude
@@ -98,6 +103,7 @@ public class GcFreeLoggingTestUtil {
             logger.error("Test parameterized message {}{}{}", "param", "param2", "abc");
         }
         Thread.sleep(50);
+        samplingEnabled.set(false); // reliably ignore all allocations from now on
         AllocationRecorder.removeSampler(sampler);
         Thread.sleep(100);
     }
