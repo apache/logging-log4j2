@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -67,7 +68,7 @@ public class TimestampMessageTest {
     @Test
     public void testTimestampMessage() {
         final Logger log = context.getLogger("TimestampMessageTest");
-        log.info(new TimeMsg("Message with embedded timestamp", 123456789000L));
+        log.info((Message) new TimeMsg("Message with embedded timestamp", 123456789000L));
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size());

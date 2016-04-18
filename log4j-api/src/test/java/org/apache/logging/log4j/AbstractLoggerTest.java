@@ -165,7 +165,7 @@ public class AbstractLoggerTest extends AbstractLogger {
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final CharSequence data, final Throwable t) {
         charSeqCount++;
-        return isEnabled(level, marker, new SimpleMessage(data), t);
+        return isEnabled(level, marker, (Message) new SimpleMessage(data), t);
     }
 
     @Override
@@ -176,7 +176,7 @@ public class AbstractLoggerTest extends AbstractLogger {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String data) {
-        return isEnabled(level, marker, new SimpleMessage(data), null);
+        return isEnabled(level, marker, (Message) new SimpleMessage(data), null);
     }
 
     @Override
@@ -255,7 +255,7 @@ public class AbstractLoggerTest extends AbstractLogger {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
-        return isEnabled(level, marker, new SimpleMessage(data), t);
+        return isEnabled(level, marker, (Message) new SimpleMessage(data), t);
     }
 
     @Override
