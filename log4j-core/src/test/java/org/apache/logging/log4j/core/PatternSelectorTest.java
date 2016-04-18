@@ -40,9 +40,9 @@ public class PatternSelectorTest {
     @Test
     public void testMarkerPatternSelector() throws Exception {
         org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestMarkerPatternSelector");
-        logger.entry();
+        logger.traceEntry();
         logger.info("Hello World");
-        logger.exit();
+        logger.traceExit();
         final ListAppender app = (ListAppender) context.getRequiredAppender("List");
         assertNotNull("No ListAppender", app);
         List<String> messages = app.getMessages();
@@ -59,10 +59,10 @@ public class PatternSelectorTest {
     public void testScriptPatternSelector() throws Exception {
         org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestScriptPatternSelector");
         org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("NoLocation");
-        logger.entry();
+        logger.traceEntry();
         logger.info("Hello World");
         logger2.info("No location information");
-        logger.exit();
+        logger.traceExit();
         final ListAppender app = (ListAppender) context.getRequiredAppender("List2");
         assertNotNull("No ListAppender", app);
         List<String> messages = app.getMessages();
@@ -82,10 +82,10 @@ public class PatternSelectorTest {
     public void testJavaScriptPatternSelector() throws Exception {
         org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestJavaScriptPatternSelector");
         org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("JavascriptNoLocation");
-        logger.entry();
+        logger.traceEntry();
         logger.info("Hello World");
         logger2.info("No location information");
-        logger.exit();
+        logger.traceExit();
         final ListAppender app = (ListAppender) context.getRequiredAppender("List3");
         assertNotNull("No ListAppender", app);
         List<String> messages = app.getMessages();

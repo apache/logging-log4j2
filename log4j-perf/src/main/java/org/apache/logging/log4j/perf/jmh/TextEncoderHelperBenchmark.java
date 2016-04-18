@@ -117,7 +117,7 @@ public class TextEncoderHelperBenchmark {
     }
 
     //private static final ThreadLocal<StringBuilderEncoder> textEncoderHelper = new ThreadLocal<>();
-    private StringBuilderEncoder textEncoderHelper = new StringBuilderEncoder(CHARSET_DEFAULT);
+    private final StringBuilderEncoder textEncoderHelper = new StringBuilderEncoder(CHARSET_DEFAULT);
     private StringBuilderEncoder getEncoder() {
         StringBuilderEncoder result = textEncoderHelper;
         return result;

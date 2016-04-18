@@ -256,12 +256,11 @@ public final class GelfLayout extends AbstractStringLayout {
     static CharSequence formatTimestamp(final long timeMillis) {
         if (timeMillis < 1000) {
             return "0";
-        } else {
-            StringBuilder builder = getTimestampStringBuilder();
-            builder.append(timeMillis);
-            builder.insert(builder.length() - 3, '.');
-            return builder;
         }
+        StringBuilder builder = getTimestampStringBuilder();
+        builder.append(timeMillis);
+        builder.insert(builder.length() - 3, '.');
+        return builder;
     }
 
     private static final ThreadLocal<StringBuilder> timestampStringBuilder = new ThreadLocal<>();

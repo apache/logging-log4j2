@@ -23,6 +23,7 @@ import java.util.Locale;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
@@ -51,8 +52,16 @@ public class StrictXmlConfigTest {
 
     @Test
     public void basicFlow() {
-        logger.entry();
-        logger.exit();
+        final EntryMessage entry = logger.traceEntry();
+        logger.traceExit(entry);
+        final List<LogEvent> events = app.getEvents();
+        assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
+    }
+
+    @Test
+    public void basicFlowDeprecated() {
+        logger.traceEntry();
+        logger.traceExit();
         final List<LogEvent> events = app.getEvents();
         assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
     }

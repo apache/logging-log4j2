@@ -16,6 +16,21 @@
  */
 package org.apache.logging.log4j.nosql.appender;
 
+import static org.easymock.EasyMock.anyInt;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
@@ -30,14 +45,11 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.message.Message;
 import org.easymock.Capture;
+import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.easymock.EasyMock.*;
-
-import static org.junit.Assert.*;
 
 public class NoSqlDatabaseManagerTest {
     private NoSqlConnection<Map<String, Object>, DefaultNoSqlObject> connection;
@@ -167,7 +179,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
 
-            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<>();
+            final Capture<NoSqlObject<Map<String, Object>>> capture = EasyMock.newCapture();
 
             final LogEvent event = createStrictMock(LogEvent.class);
             final Message message = createStrictMock(Message.class);
@@ -256,7 +268,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
 
-            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<>();
+            final Capture<NoSqlObject<Map<String, Object>>> capture = EasyMock.newCapture();
 
             final RuntimeException exception = new RuntimeException("This is something cool!");
             final Map<String, String> context = new HashMap<>();
@@ -393,7 +405,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
 
-            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<>();
+            final Capture<NoSqlObject<Map<String, Object>>> capture = EasyMock.newCapture();
 
             final IOException exception1 = new IOException("This is the cause.");
             final SQLException exception2 = new SQLException("This is the result.", exception1);

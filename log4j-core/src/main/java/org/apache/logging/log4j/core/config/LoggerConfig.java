@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
+import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Constants;
@@ -83,7 +84,9 @@ public class LoggerConfig extends AbstractFilterable {
             }
         }
         if (LOG_EVENT_FACTORY == null) {
-            LOG_EVENT_FACTORY = new DefaultLogEventFactory();
+            LOG_EVENT_FACTORY = false //Constants.ENABLE_THREADLOCALS
+                    ? new ReusableLogEventFactory()
+                    : new DefaultLogEventFactory();
         }
     }
 

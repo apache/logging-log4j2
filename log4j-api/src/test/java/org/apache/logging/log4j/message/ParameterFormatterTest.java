@@ -18,8 +18,6 @@ package org.apache.logging.log4j.message;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;

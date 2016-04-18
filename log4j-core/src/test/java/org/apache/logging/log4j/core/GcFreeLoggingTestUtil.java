@@ -18,89 +18,33 @@ package org.apache.logging.log4j.core;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.List;
+
+import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.core.util.Constants;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.util.Constants;
-import org.junit.Ignore;
-import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /**
- * Verifies steady state logging is GC-free.
- *
- * @see <a href="https://github.com/google/allocation-instrumenter">https://github.com/google/allocation-instrumenter</a>
+ * Utily methods for the GC-free logging tests.s.
  */
-public class GcFreeLoggingTest {
+public class GcFreeLoggingTestUtil {
 
-    private static class MyCharSeq implements CharSequence {
-        final String seq = GcFreeLoggingTest.class.toString();
+    public static void executeLogging(final String configurationFile,
+            final Class<?> testClass) throws Exception {
 
-        @Override
-        public int length() {
-            return seq.length();
-        }
-
-        @Override
-        public char charAt(final int index) {
-            return seq.charAt(index);
-        }
-
-        @Override
-        public CharSequence subSequence(final int start, final int end) {
-            return seq.subSequence(start, end);
-        }
-
-        @Override
-        public String toString() {
-            System.err.println("TEMP OBJECT CREATED!");
-            throw new IllegalStateException("TEMP OBJECT CREATED!");
-        }
-    }
-
-    @Test
-    public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
-        if (!Constants.ENABLE_THREADLOCALS || !Constants.ENABLE_DIRECT_ENCODERS) {
-            return;
-        }
-        final String javaHome = System.getProperty("java.home");
-        final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
-        final String classpath = System.getProperty("java.class.path");
-        final String javaagent = "-javaagent:" + agentJar();
-
-        final File tempFile = File.createTempFile("allocations", ".txt");
-        tempFile.deleteOnExit();
-
-        final ProcessBuilder builder = new ProcessBuilder( //
-                javaBin, javaagent, "-cp", classpath, GcFreeLoggingTest.class.getName());
-        builder.redirectError(ProcessBuilder.Redirect.to(tempFile));
-        builder.redirectOutput(ProcessBuilder.Redirect.to(tempFile));
-        final Process process = builder.start();
-        process.waitFor();
-        process.exitValue();
-
-        final String output = new String(Files.readAllBytes(tempFile.toPath()));
-        final String NEWLINE = System.getProperty("line.separator");
-        assertEquals("FATAL o.a.l.l.c.GcFreeLoggingTest [main]  This message is logged to the console"
-                + NEWLINE, output);
-    }
-
-    /**
-     * This code runs in a separate process, instrumented with the Google Allocation Instrumenter.
-     */
-    public static void main(String[] args) throws Exception {
         System.setProperty("log4j2.enable.threadlocals", "true");
+        System.setProperty("log4j2.enable.direct.encoders", "true");
         System.setProperty("log4j2.is.webapp", "false");
-        System.setProperty("log4j.configurationFile", "gcFreeLogging.xml");
-        System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
+        System.setProperty("log4j.configurationFile", configurationFile);
 
         assertTrue("Constants.ENABLE_THREADLOCALS", Constants.ENABLE_THREADLOCALS);
+        assertTrue("Constants.ENABLE_DIRECT_ENCODERS", Constants.ENABLE_DIRECT_ENCODERS);
         assertFalse("Constants.IS_WEB_APP", Constants.IS_WEB_APP);
 
         MyCharSeq myCharSeq = new MyCharSeq();
@@ -108,11 +52,14 @@ public class GcFreeLoggingTest {
 
         // initialize LoggerContext etc.
         // This is not steady-state logging and will allocate objects.
-        final Logger logger = LogManager.getLogger(GcFreeLoggingTest.class.getName());
+        final org.apache.logging.log4j.Logger logger = LogManager.getLogger(testClass.getName());
         logger.debug("debug not set");
         logger.fatal("This message is logged to the console");
         logger.error("Sample error message");
         logger.error("Test parameterized message {}", "param");
+        for (int i = 0; i < 128; i++) {
+            logger.debug("ensure all ringbuffer slots have been used once"); // allocate MutableLogEvent.messageText
+        }
 
         // BlockingWaitStrategy uses ReentrantLock which allocates Node objects. Ignore this.
         final String[] exclude = new String[] {
@@ -120,6 +67,7 @@ public class GcFreeLoggingTest {
                 "com/google/monitoring/runtime/instrumentation/Sampler", //
         };
         final Sampler sampler = new Sampler() {
+            @Override
             public void sampleAllocation(int count, String desc, Object newObj, long size) {
                 for (int i = 0; i < exclude.length; i++) {
                     if (exclude[i].equals(desc)) {
@@ -154,6 +102,36 @@ public class GcFreeLoggingTest {
         Thread.sleep(100);
     }
 
+    public static void runTest(Class<?> cls) throws Exception {
+        final String javaHome = System.getProperty("java.home");
+        final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
+        final String classpath = System.getProperty("java.class.path");
+        final String javaagent = "-javaagent:" + agentJar();
+
+        final File tempFile = File.createTempFile("allocations", ".txt");
+        tempFile.deleteOnExit();
+
+        final ProcessBuilder builder = new ProcessBuilder( //
+                javaBin, javaagent, "-cp", classpath, cls.getName());
+        builder.redirectError(ProcessBuilder.Redirect.to(tempFile));
+        builder.redirectOutput(ProcessBuilder.Redirect.to(tempFile));
+        final Process process = builder.start();
+        process.waitFor();
+        process.exitValue();
+
+        final String text = new String(Files.readAllBytes(tempFile.toPath()));
+        final List<String> lines = Files.readAllLines(tempFile.toPath(), Charset.defaultCharset());
+        final String className = cls.getSimpleName();
+        assertEquals(text, "FATAL o.a.l.l.c." + className + " [main]  This message is logged to the console",
+                lines.get(0));
+
+        final String LINESEP = System.getProperty("line.separator");
+        for (int i = 1; i < lines.size(); i++) {
+            final String line = lines.get(i);
+            assertFalse(i + ": " + line + LINESEP + text, line.contains("allocated") || line.contains("array"));
+        }
+    }
+
     private static File agentJar() {
         final String name = AllocationRecorder.class.getName();
         final URL url = AllocationRecorder.class.getResource("/" + name.replace('.', '/').concat(".class"));
@@ -163,5 +141,30 @@ public class GcFreeLoggingTest {
         final String temp = url.toString();
         final String path = temp.substring("jar:file:".length(), temp.indexOf('!'));
         return new File(path);
+    }
+
+    public static class MyCharSeq implements CharSequence {
+        final String seq = GcFreeLoggingTestUtil.class.toString();
+
+        @Override
+        public int length() {
+            return seq.length();
+        }
+
+        @Override
+        public char charAt(final int index) {
+            return seq.charAt(index);
+        }
+
+        @Override
+        public CharSequence subSequence(final int start, final int end) {
+            return seq.subSequence(start, end);
+        }
+
+        @Override
+        public String toString() {
+            System.err.println("TEMP OBJECT CREATED!");
+            throw new IllegalStateException("TEMP OBJECT CREATED!");
+        }
     }
 }

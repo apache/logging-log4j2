@@ -23,7 +23,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  * Strategy for deciding whether thread name should be cached or not.
  */
-enum ThreadNameCachingStrategy { // LOG4J2-467
+public enum ThreadNameCachingStrategy { // LOG4J2-467
     CACHED {
         @Override
         public String getThreadName() {
@@ -47,7 +47,7 @@ enum ThreadNameCachingStrategy { // LOG4J2-467
 
     abstract String getThreadName();
 
-    static ThreadNameCachingStrategy create() {
+    public static ThreadNameCachingStrategy create() {
         final String name = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ThreadNameStrategy",
                 CACHED.name());
         try {

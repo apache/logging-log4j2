@@ -29,7 +29,6 @@ import java.nio.charset.CoderResult;
  * @since 2.6
  */
 public class TextEncoderHelper {
-    static final int DEFAULT_CHAR_BUFFER_SIZE = 2048;
 
     private TextEncoderHelper() {
     }

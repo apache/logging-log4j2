@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
@@ -56,7 +55,7 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * @since 2.1
  */
 //CHECKSTYLE:ON
-public class MemoryMappedFileManager extends OutputStreamManager implements ByteBufferDestination {
+public class MemoryMappedFileManager extends OutputStreamManager {
     /**
      * Default length of region to map.
      */
