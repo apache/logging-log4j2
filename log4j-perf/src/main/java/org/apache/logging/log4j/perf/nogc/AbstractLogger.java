@@ -18,6 +18,7 @@ package org.apache.logging.log4j.perf.nogc;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -38,7 +39,8 @@ public abstract class AbstractLogger {
     }
 
     private LogEvent createLogEvent(Message message) {
-        return reusedLogEvent.setMessage(message);
+        reusedLogEvent.setMessage(message);
+        return reusedLogEvent;
     }
 
 }
