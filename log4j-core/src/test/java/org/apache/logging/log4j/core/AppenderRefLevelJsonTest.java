@@ -52,36 +52,36 @@ public class AppenderRefLevelJsonTest {
 
     @Test
     public void logger1() {
-        logger1.entry();
+        logger1.traceEntry();
         logger1.debug("debug message");
         logger1.error("Test Message");
         logger1.info("Info Message");
         logger1.warn("warn Message");
-        logger1.exit();
+        logger1.traceExit();
         assertThat(app1.getEvents(), hasSize(6));
         assertThat(app2.getEvents(), hasSize(1));
     }
 
     @Test
     public void logger2() {
-        logger2.entry();
+        logger2.traceEntry();
         logger2.debug("debug message");
         logger2.error("Test Message");
         logger2.info("Info Message");
         logger2.warn("warn Message");
-        logger2.exit();
+        logger2.traceExit();
         assertThat(app1.getEvents(), hasSize(2));
         assertThat(app2.getEvents(), hasSize(4));
     }
 
     @Test
     public void logger3() {
-        logger3.entry();
+        logger3.traceEntry();
         logger3.debug(testMarker, "debug message");
         logger3.error("Test Message");
         logger3.info(testMarker, "Info Message");
         logger3.warn("warn Message");
-        logger3.exit();
+        logger3.traceExit();
         assertThat(app1.getEvents(), hasSize(4));
     }
 }
