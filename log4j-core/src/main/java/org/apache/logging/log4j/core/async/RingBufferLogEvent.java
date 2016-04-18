@@ -16,10 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.lmax.disruptor.EventFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -35,13 +32,15 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.Strings;
 
-import com.lmax.disruptor.EventFactory;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
  * the life of the RingBuffer.
  */
-public class RingBufferLogEvent implements LogEvent, ReusableMessage {
+public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence {
 
     /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
     public static final Factory FACTORY = new Factory();
@@ -234,6 +233,25 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage {
     public void formatTo(final StringBuilder buffer) {
         buffer.append(messageText);
     }
+
+
+    // CharSequence impl
+
+    @Override
+    public int length() {
+        return messageText.length();
+    }
+
+    @Override
+    public char charAt(int index) {
+        return messageText.charAt(index);
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        return messageText.subSequence(start, end);
+    }
+
 
     private Message getNonNullImmutableMessage() {
         return message != null ? message : new SimpleMessage(String.valueOf(messageText));

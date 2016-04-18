@@ -16,23 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.File;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.util.Constants;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
-import com.google.monitoring.runtime.instrumentation.Sampler;
-
-import static org.junit.Assert.*;
 
 /**
  * Verifies steady state mixed synchronous and asynchronous logging is GC-free.

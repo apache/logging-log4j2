@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -69,7 +70,7 @@ public class AsyncLoggerTimestampMessageTest {
         file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         assertFalse(PoisonClock.called);
-        log.info(new TimeMsg("Async logger msg with embedded timestamp", 123456789000L));
+        log.info((Message) new TimeMsg("Async logger msg with embedded timestamp", 123456789000L));
         assertTrue(PoisonClock.called);
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 

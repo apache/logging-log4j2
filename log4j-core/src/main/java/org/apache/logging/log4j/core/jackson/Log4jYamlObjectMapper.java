@@ -14,29 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.jackson;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 /**
- * Verifies steady state synchronous logging is GC-free.
- *
- * @see <a href="https://github.com/google/allocation-instrumenter">https://github.com/google/allocation-instrumenter</a>
+ * A Jackson {@link ObjectMapper} initialized for Log4j.
+ * <p>
+ * <em>Consider this class private.</em>
+ * </p>
  */
-public class GcFreeSynchronousLoggingTest {
+public class Log4jYamlObjectMapper extends YAMLMapper {
 
-    // Ignore until synchronous logging is gc-free
-    @Ignore
-    @Test
-    public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
-        GcFreeLoggingTestUtil.runTest(getClass());
-    }
+    private static final long serialVersionUID = 1L;
 
     /**
-     * This code runs in a separate process, instrumented with the Google Allocation Instrumenter.
+     * Create a new instance using the {@link Log4jYamlModule}.
      */
-    public static void main(String[] args) throws Exception {
-        GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeSynchronousLoggingTest.class);
+    public Log4jYamlObjectMapper() {
+        this.registerModule(new Log4jYamlModule());
+        this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
+
 }

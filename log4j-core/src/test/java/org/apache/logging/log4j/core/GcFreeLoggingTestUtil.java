@@ -67,6 +67,7 @@ public class GcFreeLoggingTestUtil {
                 "com/google/monitoring/runtime/instrumentation/Sampler", //
         };
         final Sampler sampler = new Sampler() {
+            @Override
             public void sampleAllocation(int count, String desc, Object newObj, long size) {
                 for (int i = 0; i < exclude.length; i++) {
                     if (exclude[i].equals(desc)) {

@@ -51,7 +51,7 @@ import org.openjdk.jmh.infra.Blackhole;
 @State(Scope.Benchmark)
 public class LoggerConfigBenchmark {
 
-    private final CopyOnWriteArraySet<AppenderControl> appenderSet = new CopyOnWriteArraySet<AppenderControl>();
+    private final CopyOnWriteArraySet<AppenderControl> appenderSet = new CopyOnWriteArraySet<>();
     private volatile Filter filter = null;
     private final boolean additive = true;
     private final boolean includeLocation = true;

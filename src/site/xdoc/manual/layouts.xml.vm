@@ -1811,6 +1811,157 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           of course, end-of-lines.
           </p>
         </subsection>
+        <a name="YamlLayout"/>
+        <subsection name="YamlLayout">
+          <!-- From Javadoc of org.apache.logging.log4j.core.layout.YamlLayout -->
+          <p>
+            Appends a series of YAML events as strings serialized as bytes.
+          </p>
+          <p>
+            A YAML log event follows this pattern:
+          </p>
+          <pre>---
+timeMillis: 1
+thread: "MyThreadName"
+level: "DEBUG"
+loggerName: "a.B"
+marker:
+  name: "Marker1"
+  parents:
+  - name: "ParentMarker1"
+    parents:
+    - name: "GrandMotherMarker"
+    - name: "GrandFatherMarker"
+  - name: "ParentMarker2"
+message: "Msg"
+thrown:
+  commonElementCount: 0
+  localizedMessage: "testIOEx"
+  message: "testIOEx"
+  name: "java.io.IOException"
+  cause:
+    commonElementCount: 27
+    localizedMessage: "testNPEx"
+    message: "testNPEx"
+    name: "java.lang.NullPointerException"
+    extendedStackTrace:
+    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+      method: "createLogEvent"
+      file: "LogEventFixtures.java"
+      line: 52
+      exact: false
+      location: "test-classes/"
+      version: "?"
+  extendedStackTrace:
+  - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+    method: "createLogEvent"
+    file: "LogEventFixtures.java"
+    line: 55
+    exact: true
+    location: "test-classes/"
+    version: "?"
+  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+    method: "testAllFeatures"
+    file: "YamlLayoutTest.java"
+    line: 109
+    exact: true
+    location: "test-classes/"
+    version: "?"
+  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+    method: "testLocationOnCompactOffEventEolOffMdcOn"
+    file: "YamlLayoutTest.java"
+    line: 280
+    exact: true
+    location: "test-classes/"
+    version: "?"
+
+...
+
+  suppressed:
+  - commonElementCount: 0
+    localizedMessage: "I am suppressed exception 1"
+    message: "I am suppressed exception 1"
+    name: "java.lang.IndexOutOfBoundsException"
+    extendedStackTrace:
+    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+      method: "createLogEvent"
+      file: "LogEventFixtures.java"
+      line: 56
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testAllFeatures"
+      file: "YamlLayoutTest.java"
+      line: 109
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testLocationOnCompactOffEventEolOffMdcOn"
+      file: "YamlLayoutTest.java"
+      line: 280
+      exact: true
+      location: "test-classes/"
+      version: "?"
+
+...
+
+  - commonElementCount: 0
+    localizedMessage: "I am suppressed exception 2"
+    message: "I am suppressed exception 2"
+    name: "java.lang.IndexOutOfBoundsException"
+    extendedStackTrace:
+    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+      method: "createLogEvent"
+      file: "LogEventFixtures.java"
+      line: 57
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testAllFeatures"
+      file: "YamlLayoutTest.java"
+      line: 109
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testLocationOnCompactOffEventEolOffMdcOn"
+      file: "YamlLayoutTest.java"
+      line: 280
+      exact: true
+      location: "test-classes/"
+      version: "?"
+
+...
+
+contextStack:
+- "stack_msg1"
+- "stack_msg2"
+endOfBatch: false
+loggerFqcn: "f.q.c.n"
+contextMap:
+- key: "MDC.B"
+  value: "B_Value"
+- key: "MDC.A"
+  value: "A_Value"
+threadId: 1
+threadPriority: 5
+source:
+  class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+  method: "createLogEvent"
+  file: "LogEventFixtures.java"
+  line: 53</pre>
+        <p>
+          This approach enforces the independence of the YamlLayout and the appender where you embed it.
+        </p>
+        <h4>Encoding</h4>
+        <p>
+          Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
+          events containing non ASCII characters could result in corrupted log files.
+        </p>
+        </subsection>
         <a name="LocationInformation"/>
         <subsection name="Location Information">
         <p>

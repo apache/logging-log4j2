@@ -19,14 +19,12 @@ package org.apache.logging.log4j.message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
  */
-public class SimpleMessage implements Message, StringBuilderFormattable {
+public class SimpleMessage implements Message, StringBuilderFormattable, CharSequence {
     private static final long serialVersionUID = -8398002534962715992L;
 
     private String message;
@@ -125,6 +123,25 @@ public class SimpleMessage implements Message, StringBuilderFormattable {
     public Throwable getThrowable() {
         return null;
     }
+
+
+    // CharSequence impl
+
+    @Override
+    public int length() {
+        return charSequence == null ? 0 : charSequence.length();
+    }
+
+    @Override
+    public char charAt(int index) {
+        return charSequence.charAt(index);
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        return charSequence.subSequence(start, end);
+    }
+
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
         getFormattedMessage(); // initialize the message:String field

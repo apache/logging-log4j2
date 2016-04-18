@@ -638,9 +638,8 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         if (event instanceof Log4jLogEvent) {
             event.getThrownProxy(); // ensure ThrowableProxy is initialized
             return new LogEventProxy((Log4jLogEvent) event, includeLocation);
-        } else {
-            return new LogEventProxy(event, includeLocation);
         }
+        return new LogEventProxy(event, includeLocation);
     }
 
     public static Serializable serialize(final Log4jLogEvent event, final boolean includeLocation) {

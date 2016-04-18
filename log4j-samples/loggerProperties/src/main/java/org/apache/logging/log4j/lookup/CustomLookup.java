@@ -67,9 +67,8 @@ public class CustomLookup extends AbstractLookup {
                 }
                 sb.append("}");
                 return sb.toString();
-            } else {
-                return properties.get(key);
             }
+            return properties.get(key);
         } catch (final Exception ex) {
             LOGGER.warn(LOOKUP, "Error while getting property [{}].", key, ex);
             return null;

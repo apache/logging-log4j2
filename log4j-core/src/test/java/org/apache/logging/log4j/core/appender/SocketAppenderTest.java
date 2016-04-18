@@ -213,7 +213,7 @@ public class SocketAppenderTest {
         private final DatagramSocket sock;
         private boolean shutdown = false;
         private Thread thread;
-        private CountDownLatch latch = new CountDownLatch(1);
+        private final CountDownLatch latch = new CountDownLatch(1);
 
         public UDPSocketServer() throws IOException {
             this.sock = new DatagramSocket(PORT);

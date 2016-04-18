@@ -89,14 +89,22 @@ public class LoggerTest {
 
     @Test
     public void basicFlow() {
-        logger.entry();
-        logger.exit();
+        logger.traceEntry();
+        logger.traceExit();
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 2);
     }
 
     @Test
     public void simpleFlow() {
+        logger.entry(CONFIG);
+        logger.traceExit(0);
+        final List<LogEvent> events = app.getEvents();
+        assertEventCount(events, 2);
+    }
+
+    @Test
+    public void simpleFlowDepreacted() {
         logger.entry(CONFIG);
         logger.exit(0);
         final List<LogEvent> events = app.getEvents();

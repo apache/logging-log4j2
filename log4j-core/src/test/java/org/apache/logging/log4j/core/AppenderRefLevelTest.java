@@ -53,12 +53,12 @@ public class AppenderRefLevelTest {
 
     @Test
     public void logger1() {
-        logger1.entry();
+        logger1.traceEntry();
         logger1.debug("debug message");
         logger1.error("Test Message");
         logger1.info("Info Message");
         logger1.warn("warn Message");
-        logger1.exit();
+        logger1.traceExit();
         List<LogEvent> events = app1.getEvents();
         assertEquals("Incorrect number of events. Expected 6, actual " + events.size(), 6, events.size());
         events = app2.getEvents();
@@ -67,12 +67,12 @@ public class AppenderRefLevelTest {
 
     @Test
     public void logger2() {
-        logger2.entry();
+        logger2.traceEntry();
         logger2.debug("debug message");
         logger2.error("Test Message");
         logger2.info("Info Message");
         logger2.warn("warn Message");
-        logger2.exit();
+        logger2.traceExit();
         List<LogEvent> events = app1.getEvents();
         assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), events.size(), 2);
         events = app2.getEvents();
@@ -81,12 +81,12 @@ public class AppenderRefLevelTest {
 
     @Test
     public void logger3() {
-        logger3.entry();
+        logger3.traceEntry();
         logger3.debug(testMarker, "debug message");
         logger3.error("Test Message");
         logger3.info(testMarker, "Info Message");
         logger3.warn("warn Message");
-        logger3.exit();
+        logger3.traceExit();
         final List<LogEvent> events = app1.getEvents();
         assertEquals("Incorrect number of events. Expected 4, actual " + events.size(), 4, events.size());
     }

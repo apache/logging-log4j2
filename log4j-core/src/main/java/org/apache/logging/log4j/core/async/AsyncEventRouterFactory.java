@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.lang.reflect.Constructor;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;

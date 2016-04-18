@@ -91,7 +91,6 @@ public class CsvParameterLayout extends AbstractCsvLayout {
         final StringBuilder buffer = getStringBuilder();
         // Revisit when 1.3 is out so that we do not need to create a new
         // printer for each event.
-        // No need to close the printer.
         try (final CSVPrinter printer = new CSVPrinter(buffer, getFormat())) {
             printer.printRecord(parameters);
             return buffer.toString();

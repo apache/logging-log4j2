@@ -220,7 +220,9 @@ public final class GelfLayout extends AbstractStringLayout {
 
         builder.append("\"short_message\":\"");
         Message message = event.getMessage();
-        if (gcFree && message instanceof StringBuilderFormattable) {
+        if (message instanceof CharSequence) {
+            JsonUtils.quoteAsString(((CharSequence)message), builder);
+        } else if (gcFree && message instanceof StringBuilderFormattable) {
             StringBuilder messageBuffer = getMessageStringBuilder();
             ((StringBuilderFormattable)message).formatTo(messageBuffer);
             JsonUtils.quoteAsString(messageBuffer, builder);
@@ -254,12 +256,11 @@ public final class GelfLayout extends AbstractStringLayout {
     static CharSequence formatTimestamp(final long timeMillis) {
         if (timeMillis < 1000) {
             return "0";
-        } else {
-            StringBuilder builder = getTimestampStringBuilder();
-            builder.append(timeMillis);
-            builder.insert(builder.length() - 3, '.');
-            return builder;
         }
+        StringBuilder builder = getTimestampStringBuilder();
+        builder.append(timeMillis);
+        builder.insert(builder.length() - 3, '.');
+        return builder;
     }
 
     private static final ThreadLocal<StringBuilder> timestampStringBuilder = new ThreadLocal<>();

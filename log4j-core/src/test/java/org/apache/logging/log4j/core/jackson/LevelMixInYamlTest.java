@@ -19,11 +19,11 @@ package org.apache.logging.log4j.core.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class LevelMixInJsonTest extends LevelMixInTest {
+public class LevelMixInYamlTest extends LevelMixInTest {
 
     @Override
     protected ObjectMapper newObjectMapper() {
-        return new Log4jJsonObjectMapper();
+        return new Log4jYamlObjectMapper();
     }
 
 }

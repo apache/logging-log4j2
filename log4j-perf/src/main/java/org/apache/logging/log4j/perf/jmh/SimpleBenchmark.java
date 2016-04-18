@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -92,7 +93,7 @@ public class SimpleBenchmark {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
     public void testDebugMessageDisabledThroughput(final Blackhole bh) {
-        logger.debug(new SimpleMessage(msg));
+        logger.debug((Message) new SimpleMessage(msg));
     }
 
     @BenchmarkMode(Mode.SampleTime)
@@ -126,6 +127,6 @@ public class SimpleBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @Benchmark
     public void testDebugDisabledMessageResponseTime(final Blackhole bh) {
-        logger.debug(new SimpleMessage(msg));
+        logger.debug((Message) new SimpleMessage(msg));
     }
 }

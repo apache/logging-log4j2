@@ -43,7 +43,7 @@ import org.openjdk.jmh.annotations.State;
 public class ThreadLocalVsConcurrentHashMapBenchmark {
 
     private static final String VALUE = "value";
-    private static ConcurrentHashMap<Thread, StringBuilder> map = new ConcurrentHashMap<Thread, StringBuilder>();
+    private static ConcurrentHashMap<Thread, StringBuilder> map = new ConcurrentHashMap<>();
     private static ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
     @Benchmark

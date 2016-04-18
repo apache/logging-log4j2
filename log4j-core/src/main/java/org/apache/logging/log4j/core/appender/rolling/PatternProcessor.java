@@ -64,6 +64,7 @@ public class PatternProcessor {
         return pattern;
     }
 
+    @Override
     public String toString() {
         return pattern;
     }

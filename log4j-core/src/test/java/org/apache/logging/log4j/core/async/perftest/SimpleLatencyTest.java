@@ -111,6 +111,7 @@ public class SimpleLatencyTest {
             final Histogram hist = new Histogram(TimeUnit.SECONDS.toNanos(10), 3);
             histograms.add(hist);
             final Thread t = new Thread("latencytest-" + i) {
+                @Override
                 public void run() {
                     LATCH.countDown();
                     try {
