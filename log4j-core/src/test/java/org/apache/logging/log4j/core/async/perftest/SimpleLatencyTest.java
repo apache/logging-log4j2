@@ -22,9 +22,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.HdrHistogram.Histogram;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.async.DefaultAsyncEventRouter;
+import org.apache.logging.log4j.core.async.EventRoute;
 
 /**
  * Latency test.
@@ -56,10 +59,22 @@ import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
  * </li>
  * </ol>
  */
+// -DAsyncLogger.WaitStrategy=busywait
+//-XX:+UnlockDiagnosticVMOptions -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime
 public class SimpleLatencyTest {
     private static final String LATENCY_MSG = new String(new char[64]);
 
     public static void main(String[] args) throws Exception {
+        if (args.length < 2) {
+            System.out.println("Please specify thread count and interval (us)");
+            return;
+        }
+//        double targetLoadLevel = Double.parseDouble(args[0]);
+        final int threadCount = Integer.parseInt(args[0]);
+        final int intervalMicros = Integer.parseInt(args[1]);
+
+        System.setProperty("log4j2.AsyncEventRouter", PrintingDefaultAsyncEventRouter.class.getName());
+        System.setProperty("AsyncLogger.RingBufferSize", String.valueOf(256 * 1024));
         System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
         System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
 
@@ -68,53 +83,44 @@ public class SimpleLatencyTest {
         Thread.sleep(100);
 
         final long nanoTimeCost = PerfTest.calcNanoTimeCost();
-        System.out.println(nanoTimeCost);
+        System.out.println("nanoTimeCost=" + nanoTimeCost);
 
-        long maxOpsPerSec = 1000 * 1000; // just assume... TODO make parameter
-        double targetLoadLevel = 0.05; // TODO make parameter
+//        long maxOpsPerSec = 1000 * 1000; // just assume... TODO make parameter
+//
+//        long oneOpDurationNanos = TimeUnit.SECONDS.toNanos(1) / maxOpsPerSec;
+//        long idleTimeNanos = (long) ((1.0 - targetLoadLevel) * oneOpDurationNanos);
+//        idleTimeNanos *= 10;
+//        System.out.printf("Idle time is %d nanos at %,f load level%n", idleTimeNanos, targetLoadLevel);
 
-        long oneOpDurationNanos = TimeUnit.SECONDS.toNanos(1) / maxOpsPerSec;
-        long idleTimeNanos = (long) ((1.0 - targetLoadLevel) * oneOpDurationNanos);
-        System.out.printf("Idle time is %d nanos at %,f load level%n", idleTimeNanos, targetLoadLevel);
+        final long interval = TimeUnit.MICROSECONDS.toNanos(intervalMicros);// * threadCount;
+        System.out.printf("%d threads, interval is %d nanos%n", threadCount, interval);
 
-        final int WARMUP_ITERATIONS = 5;
-        final int threadCount = 8;
-        List<List<Histogram>> warmups = new ArrayList<>();
-        for (int i = 0; i < WARMUP_ITERATIONS; i++) {
-            List<Histogram> warmupHistograms = new ArrayList<>(threadCount);
+        final long WARMUP_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(1);
+        List<Histogram> warmupHistograms = new ArrayList<>(threadCount);
 
-            final int WARMUP_COUNT = 500000;
-            final long interval = idleTimeNanos;
-            final IdleStrategy idleStrategy = new NoOpIdleStrategy();
-            runLatencyTest(logger, WARMUP_COUNT, interval, idleStrategy, warmupHistograms, nanoTimeCost, threadCount);
-            warmups.add(warmupHistograms);
-        }
+        final int WARMUP_COUNT = 50000 / threadCount;
+        final IdleStrategy idleStrategy = new YieldIdleStrategy();
+        runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, interval, idleStrategy, warmupHistograms, nanoTimeCost, threadCount);
+        Thread.sleep(1000);
 
         long start = System.currentTimeMillis();
-        final int MEASURED_ITERATIONS = 5;
-        List<List<Histogram>> tests = new ArrayList<>();
-        for (int i = 0; i < MEASURED_ITERATIONS; i++) {
-            List<Histogram> histograms = new ArrayList<>(threadCount);
+        List<Histogram> histograms = new ArrayList<>(threadCount);
 
-            final int COUNT = 5000000;
-            final long interval = idleTimeNanos;
-            final IdleStrategy idleStrategy = new NoOpIdleStrategy();
-            runLatencyTest(logger, COUNT, interval, idleStrategy, histograms, nanoTimeCost, threadCount);
-            tests.add(histograms);
-        }
+        final long TEST_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(4);
+        final int COUNT = 5000000 / threadCount;
+        runLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, interval, idleStrategy, histograms, nanoTimeCost, threadCount);
         long end = System.currentTimeMillis();
 
         final Histogram result = new Histogram(TimeUnit.SECONDS.toNanos(10), 3);
-        for (List<Histogram> done : tests) {
-            for (Histogram hist : done) {
-                result.add(hist);
-            }
+        for (Histogram hist : histograms) {
+            result.add(hist);
         }
         result.outputPercentileDistribution(System.out, 1000.0);
         System.out.println("Test duration: " + (end - start) / 1000.0 + " seconds");
     }
 
-    public static void runLatencyTest(final Logger logger, final int samples, final long intervalNanos,
+    public static void runLatencyTest(final Logger logger, final long durationMillis, final int samples,
+            final long intervalNanos,
             final IdleStrategy idleStrategy, final List<Histogram> histograms, final long nanoTimeCost,
             final int threadCount) throws InterruptedException {
 
@@ -133,18 +139,10 @@ public class SimpleLatencyTest {
                         interrupt(); // restore interrupt status
                         return;
                     }
-                    for (int i = 0; i < samples; i++) {
-                        final long s1 = System.nanoTime();
-                        logger.info(LATENCY_MSG);
-                        final long s2 = System.nanoTime();
-                        final long value = s2 - s1 - nanoTimeCost;
-                        if (value > 0) {
-                            hist.recordValueWithExpectedInterval(value, intervalNanos);
-                        }
-                        while (System.nanoTime() - s2 < intervalNanos) {
-                            idleStrategy.idle();
-                        }
-                    }
+                    long start = System.currentTimeMillis();
+                    do {
+                        runLatencyTest(samples, logger, nanoTimeCost, hist, intervalNanos, idleStrategy);
+                    } while (System.currentTimeMillis() - start < durationMillis);
                 }
             };
             threads[i].start();
@@ -153,4 +151,28 @@ public class SimpleLatencyTest {
             threads[i].join();
         }
     }
+
+    private static void runLatencyTest(int samples, Logger logger, long nanoTimeCost, Histogram hist, long intervalNanos, IdleStrategy idleStrategy) {
+        for (int i = 0; i < samples; i++) {
+            final long s1 = System.nanoTime();
+            logger.info(LATENCY_MSG);
+            final long s2 = System.nanoTime();
+            final long value = s2 - s1 - nanoTimeCost;
+            if (value > 0) {
+                hist.recordValueWithExpectedInterval(value, intervalNanos);
+            }
+            while (System.nanoTime() - s2 < intervalNanos) {
+                idleStrategy.idle();
+            }
+        }
+    }
+
+    public static class PrintingDefaultAsyncEventRouter extends DefaultAsyncEventRouter {
+        @Override
+        public EventRoute getRoute(long backgroundThreadId, Level level) {
+            System.out.println("RINGBUFFER FULL!");
+            return super.getRoute(backgroundThreadId, level);
+        }
+    }
+
 }
