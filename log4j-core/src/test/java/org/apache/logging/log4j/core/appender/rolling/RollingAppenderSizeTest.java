@@ -94,7 +94,7 @@ public class RollingAppenderSizeTest {
 
         DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
         if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
-                || DefaultRolloverStrategy.FileExtensions.XY == ext
+                || DefaultRolloverStrategy.FileExtensions.XZ == ext
                 || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
             return; // commons compress cannot deflate zip and xy? TODO test decompressing these formats
         }
