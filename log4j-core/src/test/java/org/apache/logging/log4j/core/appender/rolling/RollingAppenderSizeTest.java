@@ -64,7 +64,7 @@ public class RollingAppenderSizeTest {
                 {"log4j-rolling-bzip2.xml", ".bz2"}, //
                 {"log4j-rolling-deflate.xml", ".deflate"}, //
                 {"log4j-rolling-pack200.xml", ".pack200"}, //
-                {"log4j-rolling-xy.xml", ".xy"},});
+                {"log4j-rolling-xz.xml", ".xz"},});
                 // @formatter:on
     }
 
@@ -94,9 +94,9 @@ public class RollingAppenderSizeTest {
 
         DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
         if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
-                || DefaultRolloverStrategy.FileExtensions.XY == ext
+                || DefaultRolloverStrategy.FileExtensions.XZ == ext
                 || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
-            return; // commons compress cannot deflate zip and xy? TODO test decompressing these formats
+            return; // commons compress cannot deflate zip and xz? TODO test decompressing these formats
         }
         for (File file : files) {
             if (file.getName().endsWith(fileExtension)) {

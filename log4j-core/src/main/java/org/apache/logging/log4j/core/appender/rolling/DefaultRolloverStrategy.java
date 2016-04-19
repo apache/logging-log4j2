@@ -122,12 +122,12 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 return new CommonsCompressAction("pack200", source(renameTo), target(compressedName), deleteSource);
             }
         },
-        XY(".xy") {
+        XZ(".xz") {
             @Override
             Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                     final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
-                return new CommonsCompressAction("xy", source(renameTo), target(compressedName), deleteSource);
+                return new CommonsCompressAction("xz", source(renameTo), target(compressedName), deleteSource);
             }
         };
 
