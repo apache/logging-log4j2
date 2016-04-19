@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationException;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
@@ -66,6 +67,11 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
 
     public PropertiesConfigurationBuilder setRootProperties(final Properties rootProperties) {
         this.rootProperties = rootProperties;
+        return this;
+    }
+
+    public PropertiesConfigurationBuilder setConfigurationSource(ConfigurationSource source) {
+        builder.setConfigurationSource(source);
         return this;
     }
 

@@ -31,9 +31,9 @@ import org.junit.Test;
 /**
  *
  */
-public class FileConfigTest {
+public class PropertiesFileConfigTest {
 
-    private static final String CONFIG = "target/test-classes/log4j-test2.xml";
+    private static final String CONFIG = "target/test-classes/log4j-test2.properties";
 
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);
