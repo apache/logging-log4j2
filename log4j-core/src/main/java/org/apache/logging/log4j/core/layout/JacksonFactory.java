@@ -144,12 +144,14 @@ abstract class JacksonFactory {
 
     /**
      * When &lt;Event&gt;s are written into a XML file; the "Event" object is not the root element, but an element named
-     * &lt;Events&gt; created using {@link #getHeader()} and {@link #getFooter()} methods.<br/>
+     * &lt;Events&gt; created using {@link XmlLayout#getHeader()} and {@link XmlLayout#getFooter()} methods.
+     * <p>
      * {@link com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter} is used to print the Event object into
      * XML; hence it assumes &lt;Event&gt; tag as the root element, so it prints the &lt;Event&gt; tag without any
      * indentation. To add an indentation to the &lt;Event&gt; tag; hence an additional indentation for any
      * sub-elements, this class is written. As an additional task, to avoid the blank line printed after the ending
      * &lt;/Event&gt; tag, {@link #writePrologLinefeed(XMLStreamWriter2)} method is also overridden.
+     * </p>
      */
     static class Log4jXmlPrettyPrinter extends DefaultXmlPrettyPrinter {
 
