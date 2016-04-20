@@ -128,12 +128,31 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      * Encodes the specified source LogEvent to some binary representation and writes the result to the specified
      * destination.
      * <p>
-     * Subclasses can override this method to provide a garbage-free implementation. The default implementation
-     * delegates to the {@link #toByteArray(LogEvent)} method which allocates temporary objects.
+     * The default implementation of this method delegates to the {@link #toByteArray(LogEvent)} method which allocates
+     * temporary objects.
+     * </p><p>
+     * Subclasses can override this method to provide a garbage-free implementation. For text-based layouts,
+     * {@code AbstractStringLayout} provides various convenience methods to help with this:
      * </p>
+     * <pre>@Plugin(name = "MyLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+     * public final class MyLayout extends AbstractStringLayout {
+     *     @Override
+     *     public void encode(LogEvent event, ByteBufferDestination destination) {
+     *         StringBuilder text = getStringBuilder();
+     *         convertLogEventToText(event, text);
+     *         getStringBuilderEncoder().encode(text, destination);
+     *     }
+     *
+     *     private void convertLogEventToText(LogEvent event, StringBuilder destination) {
+     *         ... // append a text representation of the log event to the StringBuilder
+     *     }
+     * }
+     * </pre>
      *
      * @param event the LogEvent to encode.
      * @param destination holds the ByteBuffer to write into.
+     * @see AbstractStringLayout#getStringBuilder()
+     * @see AbstractStringLayout#getStringBuilderEncoder()
      */
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
