@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
  * Creates a PropertiesConfiguration from a properties file.
- * 
+ *
  * @since 2.4
  */
 @Plugin(name = "PropertiesConfigurationFactory", category = ConfigurationFactory.CATEGORY)
@@ -49,6 +49,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         } catch (IOException ioe) {
             throw new ConfigurationException("Unable to load " + source.toString(), ioe);
         }
-        return new PropertiesConfigurationBuilder().setRootProperties(properties).build();
+        return new PropertiesConfigurationBuilder().setConfigurationSource(source)
+                .setRootProperties(properties).build();
     }
 }

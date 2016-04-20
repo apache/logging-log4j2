@@ -44,7 +44,7 @@ import org.apache.logging.log4j.core.util.Patterns;
 public class BuiltConfiguration extends AbstractConfiguration {
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private final StatusConfiguration statusConfig;
-    protected Component root;
+    protected Component rootComponent;
     private Component loggersComponent;
     private Component appendersComponent;
     private Component filtersComponent;
@@ -84,7 +84,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 }
             }
         }
-        root = rootComponent;
+        this.rootComponent = rootComponent;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 children.add(convertToNode(rootNode, filtersComponent));
             }
         }
-        root = null;
+        rootComponent = null;
     }
 
     public String getContentType() {
