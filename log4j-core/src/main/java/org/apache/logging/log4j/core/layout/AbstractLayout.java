@@ -127,6 +127,10 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     /**
      * Encodes the specified source LogEvent to some binary representation and writes the result to the specified
      * destination.
+     * <p>
+     * Subclasses can override this method to provide a garbage-free implementation. The default implementation
+     * delegates to the {@link #toByteArray(LogEvent)} method which allocates temporary objects.
+     * </p>
      *
      * @param event the LogEvent to encode.
      * @param destination holds the ByteBuffer to write into.
