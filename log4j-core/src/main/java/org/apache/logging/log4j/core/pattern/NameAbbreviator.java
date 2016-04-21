@@ -66,6 +66,28 @@ public abstract class NameAbbreviator {
                 return new MaxElementAbbreviator(Integer.parseInt(trimmed));
             }
 
+            //  if pattern is just spaces and negative numbers then
+            //     use DropFirstElementsAbbreviator
+
+            if (trimmed.length() > 1 && trimmed.charAt(0) == '-') {
+
+                final String numbers = trimmed.substring(1);
+
+                int j = 0;
+
+                while (j < numbers.length() && numbers.charAt(j) >= '0'
+                        && numbers.charAt(j) <= '9') {
+                    j++;
+                }
+
+                //
+                //  if all blanks and digits
+                //
+                if (j == numbers.length()) {
+                    return new DropFirstElementsAbbreviator(Integer.parseInt(numbers));
+                }
+            }
+
             final ArrayList<PatternAbbreviatorFragment> fragments = new ArrayList<>(5);
             char ellipsis;
             int charCount;
@@ -193,6 +215,109 @@ public abstract class NameAbbreviator {
                 }
             }
             destination.append(original, end + 1, original.length());
+        }
+    }
+
+    /**
+     * Abbreviator that drops first elements of the path elements.
+     *
+     * <p>This will be used in following pattern configurations.</p>
+     * <pre>
+     c{integer}
+     logger{integer}
+     C{integer}
+     class{integer}
+     * </pre>
+     *
+     * <p>Example results will be as follows.</p>
+     * <pre>
+     *     <b>Logger name:</b> org.apache.logging.log4j.core.pattern.LoggerName
+     *     <b>Caller's name:</b> org.apache.logging.log4j.core.pattern.CallerClass
+     *     <b>Log message:</b> This is a test message.
+     *
+     *     <table>
+     *          <thead>
+     *              <tr>
+     *              <th>Configuration</th>
+     *              <th>Output</th>
+     *              </tr>
+     *          </thead>
+     *          <tbody>
+     *          <tr>
+     *              <td>%c{-1} %m</td>
+     *              <td>apache.logging.log4j.core.pattern.LoggerName This is a test message.</td>
+     *          </tr>
+     *          <tr>
+     *              <td>%c{-3} %m</td>
+     *              <td>log4j.core.pattern.LoggerName This is a test message.</td>
+     *          </tr>
+     *          <tr>
+     *              <td>%c{-20} %m</td>
+     *              <td>org.apache.logging.log4j.core.pattern.LoggerName This is a test message.</td>
+     *          </tr>
+     *          <tr>
+     *              <td>%logger{-1} %m</td>
+     *              <td>apache.logging.log4j.core.pattern.LoggerName This is a test message.</td>
+     *          </tr>
+     *          <tr>
+     *              <td>%C{-1} %m</td>
+     *              <td>apache.logging.log4j.core.pattern.CallerClass This is a test message.</td>
+     *          </tr>
+     *          <tr>
+     *              <td>%C{-3} %m</td>
+     *              <td>log4j.core.pattern.CallerClass This is a test message.</td>
+     *          </tr>
+     *          <tr>
+     *              <td>%C{-20} %m</td>
+     *              <td>org.apache.logging.log4j.core.pattern.CallerClass This is a test message.</td>
+     *          </tr>
+     *          <tr>
+     *              <td>%class{-1} %m</td>
+     *              <td>apache.logging.log4j.core.pattern.CallerClass This is a test message.</td>
+     *          </tr>
+     *          </tbody>
+     *     </table>
+     * </pre>
+     * <p></p>
+     * <b>Note:</b> If a path does not contain enough path elements to drop, none will be dropped.
+     */
+    private static class DropFirstElementsAbbreviator extends NameAbbreviator {
+        /**
+         * Maximum number of path elements to drop.
+         */
+        private final int count;
+
+        /**
+         * Create new instance.
+         *
+         * @param count maximum number of path elements to drop.
+         */
+        public DropFirstElementsAbbreviator(final int count) {
+            this.count = count < 0 ? 0 : count;
+        }
+
+        /**
+         * Abbreviate name.
+         *
+         * @param original The String to abbreviate.
+         * @param destination
+         * @return the abbreviated String.
+         */
+        @Override
+        public void abbreviate(final String original, final StringBuilder destination) {
+
+            int start = 0;
+            int nextStart = 0;
+            for (int i = 0; i < count; i++) {
+                nextStart = original.indexOf('.', start);
+                if (nextStart == -1) {
+                    destination.append(original);
+                    return;
+                } else {
+                    start = nextStart + 1;
+                }
+            }
+            destination.append(original, start, original.length());
         }
     }
 
