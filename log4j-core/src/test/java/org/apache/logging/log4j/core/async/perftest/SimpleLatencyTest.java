@@ -85,13 +85,6 @@ public class SimpleLatencyTest {
         final long nanoTimeCost = PerfTest.calcNanoTimeCost();
         System.out.println("nanoTimeCost=" + nanoTimeCost);
 
-//        long maxOpsPerSec = 1000 * 1000; // just assume... TODO make parameter
-//
-//        long oneOpDurationNanos = TimeUnit.SECONDS.toNanos(1) / maxOpsPerSec;
-//        long idleTimeNanos = (long) ((1.0 - targetLoadLevel) * oneOpDurationNanos);
-//        idleTimeNanos *= 10;
-//        System.out.printf("Idle time is %d nanos at %,f load level%n", idleTimeNanos, targetLoadLevel);
-
         final long interval = TimeUnit.MICROSECONDS.toNanos(intervalMicros);// * threadCount;
         System.out.printf("%d threads, interval is %d nanos%n", threadCount, interval);
 
@@ -101,6 +94,7 @@ public class SimpleLatencyTest {
         final int WARMUP_COUNT = 50000 / threadCount;
         final IdleStrategy idleStrategy = new YieldIdleStrategy();
         runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, interval, idleStrategy, warmupHistograms, nanoTimeCost, threadCount);
+        System.out.println("Warmup done.");
         Thread.sleep(1000);
 
         long start = System.currentTimeMillis();
