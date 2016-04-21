@@ -45,6 +45,7 @@ public class SimpleLatencyTest {
         final int threadCount = Integer.parseInt(args[0]);
         final int intervalMicros = Integer.parseInt(args[1]);
 
+        // print to console if ringbuffer is full
         System.setProperty("log4j2.AsyncEventRouter", PrintingDefaultAsyncEventRouter.class.getName());
         System.setProperty("AsyncLogger.RingBufferSize", String.valueOf(256 * 1024));
         System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
@@ -60,6 +61,7 @@ public class SimpleLatencyTest {
         final long interval = TimeUnit.MICROSECONDS.toNanos(intervalMicros);// * threadCount;
         System.out.printf("%d threads, interval is %d nanos%n", threadCount, interval);
 
+        // Warmup: run as many iterations of 50,000 calls to logger.log as we can in 1 minute
         final long WARMUP_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(1);
         List<Histogram> warmupHistograms = new ArrayList<>(threadCount);
 
@@ -69,6 +71,7 @@ public class SimpleLatencyTest {
         System.out.println("Warmup done.");
         Thread.sleep(1000);
 
+        // Actual test: run as many iterations of 5,000,000 calls to logger.log as we can in 4 minutes.
         long start = System.currentTimeMillis();
         List<Histogram> histograms = new ArrayList<>(threadCount);
 
@@ -77,6 +80,7 @@ public class SimpleLatencyTest {
         runLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, interval, idleStrategy, histograms, nanoTimeCost, threadCount);
         long end = System.currentTimeMillis();
 
+        // ... and report the results
         final Histogram result = new Histogram(TimeUnit.SECONDS.toNanos(10), 3);
         for (Histogram hist : histograms) {
             result.add(hist);
@@ -86,9 +90,8 @@ public class SimpleLatencyTest {
     }
 
     public static void runLatencyTest(final Logger logger, final long durationMillis, final int samples,
-            final long intervalNanos,
-            final IdleStrategy idleStrategy, final List<Histogram> histograms, final long nanoTimeCost,
-            final int threadCount) throws InterruptedException {
+            final long intervalNanos, final IdleStrategy idleStrategy, final List<Histogram> histograms,
+            final long nanoTimeCost, final int threadCount) throws InterruptedException {
 
         Thread[] threads = new Thread[threadCount];
         final CountDownLatch LATCH = new CountDownLatch(threadCount);
@@ -100,9 +103,9 @@ public class SimpleLatencyTest {
                 public void run() {
                     LATCH.countDown();
                     try {
-                        LATCH.await();
+                        LATCH.await(); // wait until all threads are ready to go
                     } catch (InterruptedException e) {
-                        interrupt(); // restore interrupt status
+                        interrupt();
                         return;
                     }
                     long start = System.currentTimeMillis();
@@ -118,7 +121,9 @@ public class SimpleLatencyTest {
         }
     }
 
-    private static void runLatencyTest(int samples, Logger logger, long nanoTimeCost, Histogram hist, long intervalNanos, IdleStrategy idleStrategy) {
+    private static void runLatencyTest(int samples, Logger logger, long nanoTimeCost, Histogram hist,
+            long intervalNanos, IdleStrategy idleStrategy) {
+
         for (int i = 0; i < samples; i++) {
             final long s1 = System.nanoTime();
             logger.info(LATENCY_MSG);
