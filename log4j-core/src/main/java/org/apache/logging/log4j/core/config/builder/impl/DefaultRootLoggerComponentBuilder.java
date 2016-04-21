@@ -42,12 +42,39 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
      * Configure the root logger.
      * @param builder
      * @param level
+     * @param includeLocation
+     */
+    public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String level, final boolean includeLocation) {
+        super(builder, "", "Root");
+        addAttribute("level", level);
+        addAttribute("includeLocation", includeLocation);
+    }
+
+    /**
+     * Configure the root logger.
+     * @param builder
+     * @param level
      * @param type
      */
     public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
             final String level, final String type) {
         super(builder, "", type);
         addAttribute("level", level);
+    }
+
+
+    /**
+     * Configure the root logger.
+     * @param builder
+     * @param level
+     * @param type
+     */
+    public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String level, final String type, final boolean includeLocation) {
+        super(builder, "", type);
+        addAttribute("level", level);
+        addAttribute("includeLocation", includeLocation);
     }
 
     @Override

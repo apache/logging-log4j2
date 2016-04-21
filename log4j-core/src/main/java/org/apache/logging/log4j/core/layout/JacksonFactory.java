@@ -19,12 +19,15 @@ package org.apache.logging.log4j.core.layout;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.JsonConstants;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
 import org.apache.logging.log4j.core.jackson.Log4jYamlObjectMapper;
 import org.apache.logging.log4j.core.jackson.XmlConstants;
+import org.codehaus.stax2.XMLStreamWriter2;
 
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -72,6 +75,8 @@ abstract class JacksonFactory {
 
     static class XML extends JacksonFactory {
 
+        static final int DEFAULT_INDENT = 1;
+        
         @Override
         protected String getPropertNameForContextMap() {
             return XmlConstants.ELT_CONTEXT_MAP;
@@ -100,7 +105,7 @@ abstract class JacksonFactory {
 
         @Override
         protected PrettyPrinter newPrettyPrinter() {
-            return new DefaultXmlPrettyPrinter();
+            return new Log4jXmlPrettyPrinter(DEFAULT_INDENT);
         }
     }
 
@@ -135,6 +140,40 @@ abstract class JacksonFactory {
         protected PrettyPrinter newPrettyPrinter() {
             return new DefaultPrettyPrinter();
         }
+    }
+
+    /**
+     * When &lt;Event&gt;s are written into a XML file; the "Event" object is not the root element, but an element named
+     * &lt;Events&gt; created using {@link XmlLayout#getHeader()} and {@link XmlLayout#getFooter()} methods.
+     * <p>
+     * {@link com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter} is used to print the Event object into
+     * XML; hence it assumes &lt;Event&gt; tag as the root element, so it prints the &lt;Event&gt; tag without any
+     * indentation. To add an indentation to the &lt;Event&gt; tag; hence an additional indentation for any
+     * sub-elements, this class is written. As an additional task, to avoid the blank line printed after the ending
+     * &lt;/Event&gt; tag, {@link #writePrologLinefeed(XMLStreamWriter2)} method is also overridden.
+     * </p>
+     */
+    static class Log4jXmlPrettyPrinter extends DefaultXmlPrettyPrinter {
+
+        private static final long serialVersionUID = 1L;
+
+        Log4jXmlPrettyPrinter(int nesting) {
+            _nesting = nesting;
+        }
+
+        @Override
+        public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException {
+            // nothing
+        }
+
+        /**
+         * Sets the nesting level to 1 rather than 0, so the "Event" tag will get indentation of next level below root.
+         */
+        @Override
+        public DefaultXmlPrettyPrinter createInstance() {
+            return new Log4jXmlPrettyPrinter(XML.DEFAULT_INDENT);
+        }
+
     }
 
     abstract protected String getPropertNameForContextMap();

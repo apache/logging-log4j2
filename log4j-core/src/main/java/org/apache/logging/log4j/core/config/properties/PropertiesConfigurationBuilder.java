@@ -203,20 +203,32 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
 
     private LoggerComponentBuilder createLogger(final String key, final Properties properties) {
         final String name = (String) properties.remove(CONFIG_NAME);
+        final String location = (String) properties.remove("includeLocation");
         if (Strings.isEmpty(name)) {
             throw new ConfigurationException("No name attribute provided for Logger " + key);
         }
         final String level = (String) properties.remove("level");
         final String type = (String) properties.remove(CONFIG_TYPE);
         final LoggerComponentBuilder loggerBuilder;
+        boolean includeLocation;
         if (type != null) {
             if (type.equalsIgnoreCase("asyncLogger")) {
-                loggerBuilder = builder.newAsyncLogger(name, level);
+                if (location != null) {
+                    includeLocation = Boolean.parseBoolean(location);
+                    loggerBuilder = builder.newAsyncLogger(name, level, includeLocation);
+                } else {
+                    loggerBuilder = builder.newAsyncLogger(name, level);
+                }
             } else {
                 throw new ConfigurationException("Unknown Logger type " + type + " for Logger " + name);
             }
         } else {
-            loggerBuilder = builder.newLogger(name, level);
+            if (location != null) {
+                includeLocation = Boolean.parseBoolean(location);
+                loggerBuilder = builder.newLogger(name, level, includeLocation);
+            } else {
+                loggerBuilder = builder.newLogger(name, level);
+            }
         }
         addLoggersToComponent(loggerBuilder, properties);
         addFiltersToComponent(loggerBuilder, properties);
@@ -230,15 +242,27 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private RootLoggerComponentBuilder createRootLogger(final Properties properties) {
         final String level = (String) properties.remove("level");
         final String type = (String) properties.remove(CONFIG_TYPE);
+        final String location = (String) properties.remove("includeLocation");
+        final boolean includeLocation;
         final RootLoggerComponentBuilder loggerBuilder;
         if (type != null) {
             if (type.equalsIgnoreCase("asyncRoot")) {
-                loggerBuilder = builder.newAsyncRootLogger(level);
+                if (location != null) {
+                    includeLocation = Boolean.parseBoolean(location);
+                    loggerBuilder = builder.newAsyncRootLogger(level, includeLocation);
+                } else {
+                    loggerBuilder = builder.newAsyncRootLogger(level);
+                }
             } else {
                 throw new ConfigurationException("Unknown Logger type for root logger" + type);
             }
         } else {
-            loggerBuilder = builder.newRootLogger(level);
+            if (location != null) {
+                includeLocation = Boolean.parseBoolean(location);
+                loggerBuilder = builder.newRootLogger(level, includeLocation);
+            } else {
+                loggerBuilder = builder.newRootLogger(level);
+            }
         }
         addLoggersToComponent(loggerBuilder, properties);
         return addFiltersToComponent(loggerBuilder, properties);
