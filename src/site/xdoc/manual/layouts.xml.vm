@@ -541,7 +541,7 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>Outputs the fully qualified class name of the caller issuing the logging request.
-                  This conversion specifier can be optionally followed by<em>precision specifier</em>, that
+                  This conversion specifier can be optionally followed by <em>precision specifier</em>, that
                   follows the same rules as the logger name converter.
                 </p>
                 <p>Generating the class name of the caller (<a href="#LocationInformation">location information</a>)
