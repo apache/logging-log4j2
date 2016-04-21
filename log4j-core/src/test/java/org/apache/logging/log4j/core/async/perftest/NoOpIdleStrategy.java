@@ -17,8 +17,11 @@
 package org.apache.logging.log4j.core.async.perftest;
 
 /**
- * Low-latency idle strategy to be employed in loops that do significant work on each iteration such that any work in the
- * idle strategy would be wasteful.
+ * No operation idle strategy.
+ * <p>
+ * This idle strategy should be prevented from being inlined by using a Hotspot compiler command as a JVM argument e.g:
+ * <code>-XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle</code>
+ * </p>
  */
 class NoOpIdleStrategy implements IdleStrategy {
 
