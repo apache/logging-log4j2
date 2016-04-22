@@ -844,7 +844,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         }
 
         private Message memento(final ReusableMessage message) {
-            return new SimpleMessage(message.getFormattedMessage());
+            return message.memento();
         }
 
         /**
