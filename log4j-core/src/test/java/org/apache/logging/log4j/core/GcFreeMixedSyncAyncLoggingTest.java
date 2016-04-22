@@ -26,8 +26,6 @@ import org.junit.Test;
  */
 public class GcFreeMixedSyncAyncLoggingTest {
 
-    // Ignore until mixed synchronous/asynchronous logging is gc-free
-    @Ignore
     @Test
     public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
         GcFreeLoggingTestUtil.runTest(getClass());
