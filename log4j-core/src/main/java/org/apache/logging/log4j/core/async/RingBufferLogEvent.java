@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
@@ -265,6 +266,14 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return parameterCount;
     }
 
+    @Override
+    public Message memento() {
+        if (message != null) {
+            return message;
+        }
+        Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
+        return new ParameterizedMessage(messageText.toString(), params);
+    }
 
     // CharSequence impl
 
