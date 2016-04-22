@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -61,10 +62,10 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         Object[] result;
         if (varargs == null) {
             result = params;
-            params = emptyReplacement;
+            params = Objects.requireNonNull(emptyReplacement);
         } else {
             result = varargs;
-            varargs = emptyReplacement;
+            varargs = Objects.requireNonNull(emptyReplacement);
         }
         return result;
     }
