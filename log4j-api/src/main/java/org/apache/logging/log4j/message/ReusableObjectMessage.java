@@ -91,4 +91,23 @@ public class ReusableObjectMessage implements ReusableMessage {
     public Throwable getThrowable() {
         return obj instanceof Throwable ? (Throwable) obj : null;
     }
+
+    /**
+     * This message does not have any parameters, so this method returns the specified array.
+     * @param emptyReplacement the parameter array to return
+     * @return the specified array
+     */
+    @Override
+    public Object[] swapParameters(final Object[] emptyReplacement) {
+        return emptyReplacement;
+    }
+
+    /**
+     * This message does not have any parameters so this method always returns zero.
+     * @return 0 (zero)
+     */
+    @Override
+    public short getParameterCount() {
+        return 0;
+    }
 }

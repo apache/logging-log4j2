@@ -55,6 +55,26 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         return varargs == null ? params : varargs;
     }
 
+    // see interface javadoc
+    @Override
+    public Object[] swapParameters(final Object[] emptyReplacement) {
+        Object[] result;
+        if (varargs == null) {
+            result = params;
+            params = emptyReplacement;
+        } else {
+            result = varargs;
+            varargs = emptyReplacement;
+        }
+        return result;
+    }
+
+    // see interface javadoc
+    @Override
+    public short getParameterCount() {
+        return (short) argCount;
+    }
+
     private void init(final String messagePattern, final int argCount, final Object[] paramArray) {
         this.varargs = null;
         this.messagePattern = messagePattern;
