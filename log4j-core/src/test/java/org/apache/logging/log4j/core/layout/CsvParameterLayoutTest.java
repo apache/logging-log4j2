@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
@@ -97,6 +99,8 @@ public class CsvParameterLayoutTest {
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
+        appender.countDownLatch = new CountDownLatch(4);
+
         // set appender on root and set level to debug
         root.addAppender(appender);
         root.setLevel(Level.DEBUG);
@@ -109,10 +113,7 @@ public class CsvParameterLayoutTest {
         }
 
         // wait until background thread finished processing
-        int maxTries = 50;
-        while (appender.getMessages().size() < 4 && maxTries-- > 0) {
-            Thread.sleep(1L);
-        }
+        appender.countDownLatch.await(10, TimeUnit.SECONDS);
         assertEquals("Background thread did not finish processing: msg count", 4, appender.getMessages().size());
 
         // don't stop appender until background thread is done
