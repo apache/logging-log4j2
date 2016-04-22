@@ -26,8 +26,6 @@ import org.junit.Test;
  */
 public class GcFreeSynchronousLoggingTest {
 
-    // Ignore until synchronous logging is gc-free
-    @Ignore
     @Test
     public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
         GcFreeLoggingTestUtil.runTest(getClass());
