@@ -84,7 +84,7 @@ public class LoggerConfig extends AbstractFilterable {
             }
         }
         if (LOG_EVENT_FACTORY == null) {
-            LOG_EVENT_FACTORY = false //Constants.ENABLE_THREADLOCALS
+            LOG_EVENT_FACTORY = Constants.ENABLE_THREADLOCALS
                     ? new ReusableLogEventFactory()
                     : new DefaultLogEventFactory();
         }
