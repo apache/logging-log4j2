@@ -27,6 +27,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -60,10 +61,11 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private ThreadContext.ContextStack contextStack;
 
     public MutableLogEvent() {
-        this(null);
+        this(new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE), new Object[10]);
     }
 
-    public MutableLogEvent(final Object[] replacementParameters) {
+    public MutableLogEvent(final StringBuilder msgText, final Object[] replacementParameters) {
+        this.messageText = msgText;
         this.parameters = replacementParameters;
     }
 
@@ -270,6 +272,15 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     @Override
     public short getParameterCount() {
         return parameterCount;
+    }
+
+    @Override
+    public Message memento() {
+        if (message != null) {
+            return message;
+        }
+        Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
+        return new ParameterizedMessage(messageText.toString(), params);
     }
 
     @Override
