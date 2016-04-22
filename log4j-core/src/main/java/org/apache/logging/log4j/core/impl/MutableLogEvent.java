@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -35,27 +37,37 @@ import org.apache.logging.log4j.util.Strings;
  * @since 2.6
  */
 public class MutableLogEvent implements LogEvent, ReusableMessage {
-    private static final Object[] PARAMS = new Object[0];
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
-    private String loggerFqcn;
-    private Marker marker;
+    private int threadPriority;
+    private long threadId;
+    private long timeMillis;
+    private long nanoTime;
+    private short parameterCount;
+    private boolean includeLocation;
+    private boolean endOfBatch = false;
     private Level level;
+    private String threadName;
     private String loggerName;
     private Message message;
-    private long timeMillis;
+    private StringBuilder messageText;
+    private Object[] parameters;
     private Throwable thrown;
     private ThrowableProxy thrownProxy;
     private Map<String, String> contextMap;
-    private ThreadContext.ContextStack contextStack;
-    private long threadId;
-    private String threadName;
-    private int threadPriority;
+    private Marker marker;
+    private String loggerFqcn;
     private StackTraceElement source;
-    private boolean includeLocation;
-    private boolean endOfBatch = false;
-    private long nanoTime;
-    private StringBuilder messageText;
+    private ThreadContext.ContextStack contextStack;
+
+    public MutableLogEvent() {
+        this(new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE), new Object[10]);
+    }
+
+    public MutableLogEvent(final StringBuilder msgText, final Object[] replacementParameters) {
+        this.messageText = msgText;
+        this.parameters = replacementParameters;
+    }
 
     /**
      * Initialize the fields of this {@code MutableLogEvent} from another event.
@@ -107,6 +119,11 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         // threadName = null; // no need to clear threadName
 
         trimMessageText();
+        if (parameters != null) {
+            for (int i = 0; i < parameters.length; i++) {
+                parameters[i] = null;
+            }
+        }
 
         // primitive fields that cannot be cleared:
         //timeMillis;
@@ -171,7 +188,12 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
-            ((ReusableMessage) msg).formatTo(getMessageTextForWriting()); // init messageText
+            ReusableMessage reusable = (ReusableMessage) msg;
+            reusable.formatTo(getMessageTextForWriting());
+            if (parameters != null) {
+                parameters = reusable.swapParameters(parameters);
+                parameterCount = reusable.getParameterCount();
+            }
         } else {
             // if the Message instance is reused, there is no point in freezing its message here
             if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg != null) { // LOG4J2-898: user may choose
@@ -212,7 +234,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
      */
     @Override
     public Object[] getParameters() {
-        return PARAMS;
+        return parameters == null ? null : Arrays.copyOf(parameters, parameterCount);
     }
 
     /**
@@ -229,6 +251,36 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     @Override
     public void formatTo(final StringBuilder buffer) {
         buffer.append(messageText);
+    }
+
+    /**
+     * Replaces this ReusableMessage's parameter array with the specified value and return the original array
+     * @param emptyReplacement the parameter array that can be used for subsequent uses of this reusable message
+     * @return the original parameter array
+     * @see ReusableMessage#swapParameters(Object[])
+     */
+    @Override
+    public Object[] swapParameters(final Object[] emptyReplacement) {
+        final Object[] result = this.parameters;
+        this.parameters = emptyReplacement;
+        return result;
+    }
+
+    /*
+     * @see ReusableMessage#getParameterCount
+     */
+    @Override
+    public short getParameterCount() {
+        return parameterCount;
+    }
+
+    @Override
+    public Message memento() {
+        if (message != null) {
+            return message;
+        }
+        Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
+        return new ParameterizedMessage(messageText.toString(), params);
     }
 
     @Override

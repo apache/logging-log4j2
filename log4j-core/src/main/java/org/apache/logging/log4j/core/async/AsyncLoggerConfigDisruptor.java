@@ -324,8 +324,6 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         final LogEvent logEvent = ensureImmutable(event);
         if (logEvent instanceof Log4jLogEvent && logEvent.getMessage() instanceof ReusableMessage) {
             ((Log4jLogEvent) logEvent).makeMessageImmutable();
-        } else if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
-            logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
         return logEvent;
     }

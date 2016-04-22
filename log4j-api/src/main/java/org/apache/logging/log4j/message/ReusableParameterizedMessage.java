@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -53,6 +54,31 @@ public class ReusableParameterizedMessage implements ReusableMessage {
 
     private Object[] getParams() {
         return varargs == null ? params : varargs;
+    }
+
+    // see interface javadoc
+    @Override
+    public Object[] swapParameters(final Object[] emptyReplacement) {
+        Object[] result;
+        if (varargs == null) {
+            result = params;
+            params = Objects.requireNonNull(emptyReplacement);
+        } else {
+            result = varargs;
+            varargs = Objects.requireNonNull(emptyReplacement);
+        }
+        return result;
+    }
+
+    // see interface javadoc
+    @Override
+    public short getParameterCount() {
+        return (short) argCount;
+    }
+
+    @Override
+    public Message memento() {
+        return new ParameterizedMessage(messagePattern, getTrimmedParams());
     }
 
     private void init(final String messagePattern, final int argCount, final Object[] paramArray) {

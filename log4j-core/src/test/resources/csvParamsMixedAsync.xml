@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+  <Appenders>
+    <List name="List">
+      <PatternLayout pattern="[%-5level] %c{1.} %msg%n" />
+    </List>
+  </Appenders>
+  <Loggers>
+    <AsyncRoot level="debug" includeLocation="false">
+      <appender-ref ref="List"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>

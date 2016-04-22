@@ -102,7 +102,7 @@ public class MutableLogEventTest {
         assertNull("fqcn", mutable.getLoggerFqcn());
         assertNull("logger", mutable.getLoggerName());
         assertNull("marker", mutable.getMarker());
-        assertEquals("msg", new SimpleMessage(Strings.EMPTY), mutable.getMessage());
+        assertEquals("msg", mutable, mutable.getMessage());
         assertEquals("nanoTm", 0, mutable.getNanoTime());
         assertEquals("tid", 0, mutable.getThreadId());
         assertNull("tname", mutable.getThreadName());
@@ -155,7 +155,7 @@ public class MutableLogEventTest {
         assertNull("fqcn", mutable.getLoggerFqcn());
         assertNull("logger", mutable.getLoggerName());
         assertNull("marker", mutable.getMarker());
-        assertEquals("msg", new SimpleMessage(Strings.EMPTY), mutable.getMessage());
+        assertEquals("msg", mutable, mutable.getMessage());
         assertNull("thrwn", mutable.getThrown());
 
         assertNull("source", mutable.getSource());
