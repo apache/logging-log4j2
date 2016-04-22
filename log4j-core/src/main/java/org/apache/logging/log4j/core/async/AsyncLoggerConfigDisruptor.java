@@ -145,7 +145,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
     private static final EventFactory<Log4jEventWrapper> MUTABLE_FACTORY = new EventFactory<Log4jEventWrapper>() {
         @Override
         public Log4jEventWrapper newInstance() {
-            return new Log4jEventWrapper(new MutableLogEvent());
+            return new Log4jEventWrapper(new MutableLogEvent(new Object[10]));
         }
     };
 

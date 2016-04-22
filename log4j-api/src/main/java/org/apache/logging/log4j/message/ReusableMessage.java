@@ -30,4 +30,35 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  */
 @PerformanceSensitive("allocation")
 public interface ReusableMessage extends Message, StringBuilderFormattable {
+
+    /**
+     * Returns the parameter array that was used to initialize this reusable message and replaces it with the specified
+     * array. The returned parameter array will no longer be modified by this reusable message. The specified array is
+     * now "owned" by this reusable message and can be modified if necessary for the next log event.
+     * </p><p>
+     * ReusableMessages that have no parameters return the specified array.
+     * </p><p>
+     * This method is used by asynchronous loggers to pass the parameter array to a background thread without
+     * allocating new objects.
+     * The actual number of parameters in the returned array can be determined with {@link #getParameterCount()}.
+     * </p>
+     *
+     * @param emptyReplacement the parameter array that can be used for subsequent uses of this reusable message.
+     *         This replacement array must have at least 10 elements (the number of varargs supported by the Logger
+     *         API).
+     * @return the parameter array for the current message content. This may be a vararg array of any length, or it may
+     *         be a reusable array of 10 elements used to hold the unrolled vararg parameters.
+     * @see #getParameterCount()
+     */
+    Object[] swapParameters(Object[] emptyReplacement);
+
+    /**
+     * Returns the number of parameters that was used to initialize this reusable message for the current content.
+     * <p>
+     * The parameter array returned by {@link #swapParameters(Object[])} may be larger than the actual number of
+     * parameters. Callers should use this method to determine how many elements the array contains.
+     * </p>
+     * @return the current number of parameters
+     */
+    short getParameterCount();
 }

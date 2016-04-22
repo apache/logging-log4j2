@@ -61,6 +61,24 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence {
         buffer.append(charSequence);
     }
 
+    /**
+     * This message does not have any parameters, so this method returns the specified array.
+     * @param emptyReplacement the parameter array to return
+     * @return the specified array
+     */
+    @Override
+    public Object[] swapParameters(final Object[] emptyReplacement) {
+        return emptyReplacement;
+    }
+
+    /**
+     * This message does not have any parameters so this method always returns zero.
+     * @return 0 (zero)
+     */
+    @Override
+    public short getParameterCount() {
+        return 0;
+    }
 
     // CharSequence impl
 
