@@ -76,6 +76,11 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         return (short) argCount;
     }
 
+    @Override
+    public Message memento() {
+        return new ParameterizedMessage(messagePattern, getTrimmedParams());
+    }
+
     private void init(final String messagePattern, final int argCount, final Object[] paramArray) {
         this.varargs = null;
         this.messagePattern = messagePattern;

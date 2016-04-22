@@ -110,4 +110,9 @@ public class ReusableObjectMessage implements ReusableMessage {
     public short getParameterCount() {
         return 0;
     }
+
+    @Override
+    public Message memento() {
+        return new ObjectMessage(obj);
+    }
 }

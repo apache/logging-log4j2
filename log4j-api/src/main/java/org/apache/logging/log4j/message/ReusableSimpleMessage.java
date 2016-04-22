@@ -80,6 +80,11 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence {
         return 0;
     }
 
+    @Override
+    public Message memento() {
+        return new SimpleMessage(charSequence);
+    }
+
     // CharSequence impl
 
     @Override
