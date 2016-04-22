@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -60,6 +61,8 @@ public class ListAppender extends AbstractAppender {
 
     private static final String WINDOWS_LINE_SEP = "\r\n";
 
+    public CountDownLatch countDownLatch = null;
+
     public ListAppender(final String name) {
         super(name, null, null);
         newLine = false;
@@ -98,6 +101,9 @@ public class ListAppender extends AbstractAppender {
             data.add(record);
         } else {
             write(layout.toByteArray(event));
+        }
+        if (countDownLatch != null) {
+            countDownLatch.countDown();
         }
     }
 
