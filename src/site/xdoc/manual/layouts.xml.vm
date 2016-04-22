@@ -490,7 +490,7 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>Outputs the name of the logger that published the logging event. The logger conversion
-                  specifier can be optionally followed by<em>precision specifier</em>, which consists of a
+                  specifier can be optionally followed by <em>precision specifier</em>, which consists of a
                   decimal integer, or a pattern starting with a decimal integer.
                 </p>
                 <p>If a precision specifier is given and it is an integer value, then only the corresponding number
@@ -541,7 +541,7 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>Outputs the fully qualified class name of the caller issuing the logging request.
-                  This conversion specifier can be optionally followed by<em>precision specifier</em>, that
+                  This conversion specifier can be optionally followed by <em>precision specifier</em>, that
                   follows the same rules as the logger name converter.
                 </p>
                 <p>Generating the class name of the caller (<a href="#LocationInformation">location information</a>)
