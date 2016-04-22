@@ -61,4 +61,12 @@ public interface ReusableMessage extends Message, StringBuilderFormattable {
      * @return the current number of parameters
      */
     short getParameterCount();
+
+    /**
+     * Returns an immutable snapshot of the current internal state of this reusable message. The returned snapshot
+     * will not be affected by subsequent modifications of this reusable message.
+     *
+     * @return an immutable snapshot of this message
+     */
+    Message memento();
 }
