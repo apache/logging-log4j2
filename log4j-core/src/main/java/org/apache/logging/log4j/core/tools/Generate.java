@@ -44,6 +44,9 @@ import java.util.List;
  * DEFCON3=550}
  */
 public final class Generate {
+    // Implementation note:
+    // The generated code is in the user's namespace which has its own versioning scheme, so
+    // any @since tags in the generated code deliberately mention "Log4j-2.x" rather than just the log4j version number.
 
     static final String PACKAGE_DECLARATION = "package %s;%n%n";
 
