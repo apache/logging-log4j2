@@ -72,6 +72,7 @@ public final class Generate {
                         + "/**%n" //
                         + " * Custom Logger interface with convenience methods for%n" //
                         + " * %s%n" //
+                        + " * <p>Compatible with Log4j 2.6 or higher.</p>%n" //
                         + " */%n" //
                         + "public final class %s implements Serializable {%n" //
                         + "    private static final long serialVersionUID = " + System.nanoTime() + "L;%n" //
@@ -117,6 +118,7 @@ public final class Generate {
                         + "/**%n" //
                         + " * Extended Logger interface with convenience methods for%n" //
                         + " * %s%n" //
+                        + " * <p>Compatible with Log4j 2.6 or higher.</p>%n" //
                         + " */%n" //
                         + "public final class %s extends ExtendedLoggerWrapper {%n" //
                         + "    private static final long serialVersionUID = " + System.nanoTime() + "L;%n" //
@@ -190,8 +192,9 @@ public final class Generate {
             + "     *            a warning if mismatched.%n" //
             + "     * @return The custom Logger.%n" //
             + "     */%n" //
-            + "    public static CLASSNAME create(final Class<?> loggerName, final MessageFactory factory) {%n" //
-            + "        final Logger wrapped = LogManager.getLogger(loggerName, factory);%n" //
+            + "    public static CLASSNAME create(final Class<?> loggerName, final MessageFactory" //
+            + " messageFactory) {%n" //
+            + "        final Logger wrapped = LogManager.getLogger(loggerName, messageFactory);%n" //
             + "        return new CLASSNAME(wrapped);%n" //
             + "    }%n" //
             + "%n" //
@@ -221,8 +224,8 @@ public final class Generate {
             + "     *            a warning if mismatched.%n" //
             + "     * @return The custom Logger.%n" //
             + "     */%n" //
-            + "    public static CLASSNAME create(final Object value, final MessageFactory factory) {%n" //
-            + "        final Logger wrapped = LogManager.getLogger(value, factory);%n" //
+            + "    public static CLASSNAME create(final Object value, final MessageFactory messageFactory) {%n" //
+            + "        final Logger wrapped = LogManager.getLogger(value, messageFactory);%n" //
             + "        return new CLASSNAME(wrapped);%n" //
             + "    }%n" //
             + "%n" //
@@ -248,8 +251,8 @@ public final class Generate {
             + "     *            a warning if mismatched.%n" //
             + "     * @return The custom Logger.%n" //
             + "     */%n" //
-            + "    public static CLASSNAME create(final String name, final MessageFactory factory) {%n" //
-            + "        final Logger wrapped = LogManager.getLogger(name, factory);%n" //
+            + "    public static CLASSNAME create(final String name, final MessageFactory messageFactory) {%n" //
+            + "        final Logger wrapped = LogManager.getLogger(name, messageFactory);%n" //
             + "        return new CLASSNAME(wrapped);%n" //
             + "    }%n";
 
@@ -287,6 +290,17 @@ public final class Generate {
             + "    }%n" //
             + "%n" //
             + "    /**%n" //
+            + "     * Logs a message CharSequence with the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message CharSequence to log.%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final CharSequence message) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, (Throwable) null);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
             + "     * Logs a message at the {@code CUSTOM_LEVEL} level including the stack trace of%n" //
             + "     * the {@link Throwable} {@code t} passed as parameter.%n" //
             + "     * %n" //
@@ -295,6 +309,19 @@ public final class Generate {
             + "     * @param t the exception to log, including its stack trace.%n" //
             + "     */%n" //
             + "    public void methodName(final Marker marker, final Object message, final Throwable t) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, t);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message at the {@code CUSTOM_LEVEL} level including the stack trace of%n" //
+            + "     * the {@link Throwable} {@code t} passed as parameter.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the CharSequence to log.%n" //
+            + "     * @param t the exception to log, including its stack trace.%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final CharSequence message, final Throwable t) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, t);%n" //
             + "    }%n" //
             + "%n" //
@@ -318,6 +345,202 @@ public final class Generate {
             + "     */%n" //
             + "    public void methodName(final Marker marker, final String message, final Object... params) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, params);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0, " //
+            + "final Object p1) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0, p1);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0, " //
+            + "final Object p1, final Object p2) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0, p1, p2);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0, p1, p2, p3);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0, p1, p2, p3, p4);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0, p1, p2, p3, p4, p5);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @param p6 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5, final Object p6) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0, p1, p2, p3, p4, p5, p6);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @param p6 parameter to the message.%n" //
+            + "     * @param p7 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5, final Object p6,%n" //
+            + "            final Object p7) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @param p6 parameter to the message.%n" //
+            + "     * @param p7 parameter to the message.%n" //
+            + "     * @param p8 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5, final Object p6,%n" //
+            + "            final Object p7, final Object p8) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, " //
+            + "p8);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @param p6 parameter to the message.%n" //
+            + "     * @param p7 parameter to the message.%n" //
+            + "     * @param p8 parameter to the message.%n" //
+            + "     * @param p9 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5, final Object p6,%n" //
+            + "            final Object p7, final Object p8, final Object p9) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, " //
+            + "p8, p9);%n" //
             + "    }%n" //
             + "%n" //
             + "    /**%n" //
@@ -372,6 +595,28 @@ public final class Generate {
             + "    }%n" //
             + "%n" //
             + "    /**%n" //
+            + "     * Logs a message CharSequence with the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message CharSequence to log.%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final CharSequence message) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, (Throwable) null);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a CharSequence at the {@code CUSTOM_LEVEL} level including the stack trace of%n" //
+            + "     * the {@link Throwable} {@code t} passed as parameter.%n" //
+            + "     * %n" //
+            + "     * @param message the CharSequence to log.%n" //
+            + "     * @param t the exception to log, including its stack trace.%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final CharSequence message, final Throwable t) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, t);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
             + "     * Logs a message object with the {@code CUSTOM_LEVEL} level.%n" //
             + "     * %n" //
             + "     * @param message the message object to log.%n" //
@@ -392,6 +637,192 @@ public final class Generate {
             + "    }%n" //
             + "%n" //
             + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0, " //
+            + "final Object p1) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0, p1);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0, " //
+            + "final Object p1, final Object p2) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0, p1, p2);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0, p1, p2, p3);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0, p1, p2, p3, p4);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0, p1, p2, p3, p4, p5);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @param p6 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5, final Object p6) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0, p1, p2, p3, p4, p5, p6);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @param p6 parameter to the message.%n" //
+            + "     * @param p7 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5, final Object p6,%n" //
+            + "            final Object p7) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0, p1, p2, p3, p4, p5, p6, p7);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @param p6 parameter to the message.%n" //
+            + "     * @param p7 parameter to the message.%n" //
+            + "     * @param p8 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5, final Object p6,%n" //
+            + "            final Object p7, final Object p8) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0, p1, p2, p3, p4, p5, p6, p7, " //
+            + "p8);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters at the {@code CUSTOM_LEVEL} level.%n" //
+            + "     * %n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param p0 parameter to the message.%n" //
+            + "     * @param p1 parameter to the message.%n" //
+            + "     * @param p2 parameter to the message.%n" //
+            + "     * @param p3 parameter to the message.%n" //
+            + "     * @param p4 parameter to the message.%n" //
+            + "     * @param p5 parameter to the message.%n" //
+            + "     * @param p6 parameter to the message.%n" //
+            + "     * @param p7 parameter to the message.%n" //
+            + "     * @param p8 parameter to the message.%n" //
+            + "     * @param p9 parameter to the message.%n" //
+            + "     * @see #getMessageFactory()%n" //
+            + "     * @since Log4j-2.6%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Object p0, " //
+            + "final Object p1, final Object p2,%n" //
+            + "            final Object p3, final Object p4, final Object p5, final Object p6,%n" //
+            + "            final Object p7, final Object p8, final Object p9) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, p0, p1, p2, p3, p4, p5, p6, p7, " //
+            + "p8, p9);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
             + "     * Logs a message at the {@code CUSTOM_LEVEL} level including the stack trace of%n" //
             + "     * the {@link Throwable} {@code t} passed as parameter.%n" //
             + "     * %n" //
@@ -408,7 +839,7 @@ public final class Generate {
             + "     *%n" //
             + "     * @param msgSupplier A function, which when called, produces the desired log message;%n" //
             + "     *            the format depends on the message factory.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final Supplier<?> msgSupplier) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, msgSupplier, (Throwable) null);%n" //
@@ -421,7 +852,7 @@ public final class Generate {
             + "     * @param msgSupplier A function, which when called, produces the desired log message;%n" //
             + "     *            the format depends on the message factory.%n" //
             + "     * @param t the exception to log, including its stack trace.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final Supplier<?> msgSupplier, final Throwable t) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, msgSupplier, t);%n" //
@@ -434,7 +865,7 @@ public final class Generate {
             + "     * @param marker the marker data specific to this log statement%n" //
             + "     * @param msgSupplier A function, which when called, produces the desired log message;%n" //
             + "     *            the format depends on the message factory.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final Marker marker, final Supplier<?> msgSupplier) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, msgSupplier, (Throwable) null);%n" //
@@ -448,7 +879,7 @@ public final class Generate {
             + "     * @param message the message to log; the format depends on the message factory.%n" //
             + "     * @param paramSuppliers An array of functions, which when called, produce the desired log" //
             + " message parameters.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final Marker marker, final String message, final Supplier<?>..." //
             + " paramSuppliers) {%n" //
@@ -464,7 +895,7 @@ public final class Generate {
             + "     * @param msgSupplier A function, which when called, produces the desired log message;%n" //
             + "     *            the format depends on the message factory.%n" //
             + "     * @param t A Throwable or null.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final Marker marker, final Supplier<?> msgSupplier, final Throwable t) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, msgSupplier, t);%n" //
@@ -477,7 +908,7 @@ public final class Generate {
             + "     * @param message the message to log; the format depends on the message factory.%n" //
             + "     * @param paramSuppliers An array of functions, which when called, produce the desired log" //
             + " message parameters.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final String message, final Supplier<?>... paramSuppliers) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, paramSuppliers);%n" //
@@ -490,7 +921,7 @@ public final class Generate {
             + "     *%n" //
             + "     * @param marker the marker data specific to this log statement%n" //
             + "     * @param msgSupplier A function, which when called, produces the desired log message.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final Marker marker, final MessageSupplier msgSupplier) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, msgSupplier, (Throwable) null);%n" //
@@ -505,7 +936,7 @@ public final class Generate {
             + "     * @param marker the marker data specific to this log statement%n" //
             + "     * @param msgSupplier A function, which when called, produces the desired log message.%n" //
             + "     * @param t A Throwable or null.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final Marker marker, final MessageSupplier msgSupplier, final " //
             + "Throwable t) {%n" //
@@ -518,7 +949,7 @@ public final class Generate {
             + "     * {@link MessageFactory} to construct the {@code Message}.%n"
             + "     *%n" //
             + "     * @param msgSupplier A function, which when called, produces the desired log message.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final MessageSupplier msgSupplier) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, msgSupplier, (Throwable) null);%n" //
@@ -532,7 +963,7 @@ public final class Generate {
             + "     *%n" //
             + "     * @param msgSupplier A function, which when called, produces the desired log message.%n" //
             + "     * @param t the exception to log, including its stack trace.%n" //
-            + "     * @since 2.4%n" //
+            + "     * @since Log4j-2.4%n" //
             + "     */%n" //
             + "    public void methodName(final MessageSupplier msgSupplier, final Throwable t) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, msgSupplier, t);%n" //
@@ -549,7 +980,7 @@ public final class Generate {
         /**
          * Generates source code for custom logger wrappers that only provide convenience methods for the specified
          * custom levels, not for the standard built-in levels.
-         * 
+         *
          * @param args className of the custom logger to generate, followed by a NAME=intLevel pair for each custom log
          *            level to generate convenience methods for
          */
@@ -570,7 +1001,7 @@ public final class Generate {
         /**
          * Generates source code for extended logger wrappers that provide convenience methods for the specified custom
          * levels.
-         * 
+         *
          * @param args className of the custom logger to generate, followed by a NAME=intLevel pair for each custom log
          *            level to generate convenience methods for
          */
