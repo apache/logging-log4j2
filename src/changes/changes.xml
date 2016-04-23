@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1373" dev="rpopma" type="add">
+        (GC) Update Logger wrapper Generator tool to generate methods for the new Logger methods.
+      </action>
       <action issue="LOG4J2-1372" dev="rgoers" type="fix" due-to="Kamal Mettananda, Gary Gregory">
         XMLLayout indents, but not the first child tag (Event).
       </action>
