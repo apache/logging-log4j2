@@ -67,4 +67,13 @@ public class CleanFiles extends ExternalResource {
     protected void after() {
         this.clean();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("CleanFiles [");
+        builder.append(files);
+        builder.append("]");
+        return builder.toString();
+    }
 }
