@@ -361,8 +361,8 @@ public void garbageFree() {
         <h4>Throughput of Garbage-free Logging May Be Worse (But It's All Relative)</h4>
         <p>In our measurements, Log4j 2.6 in garbage-free mode had the highest throughput in single-threaded scenarios. In multi-threaded
           scenarios,  Log4j 2.6 "classic" had the highest throughput, with Log4j 2.6 in garbage-free mode and Log4j 2.5
-          not far behind. Our test results suggest that the throughput of all other logging frameworks rapidly
-          declines in multi-threaded applications.</p>
+          not far behind. Our test results suggest that the throughput of the other logging frameworks we tested
+          will rapidly decline in multi-threaded applications.</p>
         <p>The graph below compares Log4j 2.6 in garbage-free mode to Log4j 2.6 "classic" mode (which allocates
           temporary objects for every logging call), Log4j 2.5, Log4j 1.2.17, Logback 1.1.7 and
           Java util logging (JUL) on Oracle Java 1.8.0_45. All Log4j 2.x results use the RandomAccessFile appender.
