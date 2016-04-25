@@ -39,7 +39,10 @@ import org.slf4j.LoggerFactory;
  * for each uses a FileAppender
  */
 // HOW TO RUN THIS TEST
-// java -jar target/benchmarks.jar ".*FileAppenderBenchmark.*" -f 1 -i 5 -wi 5 -bm sample -tu ns
+// java -jar log4j-perf/target/benchmarks.jar ".*FileAppenderBenchmark.*" -f 1 -wi 10 -i 20
+//
+// RUNNING THIS TEST WITH 4 THREADS:
+// java -jar log4j-perf/target/benchmarks.jar ".*FileAppenderBenchmark.*" -f 1 -wi 10 -i 20 -t 4
 @State(Scope.Thread)
 public class FileAppenderBenchmark {
     public static final String MESSAGE = "This is a debug message";
