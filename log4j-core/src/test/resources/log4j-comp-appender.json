@@ -1,0 +1,34 @@
+{
+    "Configuration" : {
+        "status": "warn",
+        "name": "YAMLConfigTest",
+        "appenders": {
+            "Console": {
+                "name": "STDOUT",
+                "PatternLayout": {
+                    "Pattern": "%m%n"
+                }
+            },
+            "RollingFile": {
+                "name": "Override",
+                "fileName": "target/log4j-appender-override.log",
+                "filePattern": "target/log4j-appender-override-$${date:yyyy-MM}.log",
+                "PatternLayout": {
+                    "Pattern": "%m%n"
+                },
+                "SizeBasedTriggeringPolicy": {
+                    "size": "500"
+                }
+            }
+        },
+        "Loggers" : {
+            "Root" : {
+                "level" : "error",
+                "AppenderRef" : {
+                    "ref" : "STDOUT"
+                }
+
+            }
+        }
+    }
+}
