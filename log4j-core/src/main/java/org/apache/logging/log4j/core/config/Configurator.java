@@ -119,7 +119,7 @@ public final class Configurator {
             String scheme = null;
             List<URI> uris = new ArrayList<>(parts.length);
             for (String part : parts) {
-                URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part : part);
+                URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
                 if (scheme == null && uri.getScheme() != null) {
                     scheme = uri.getScheme();
                 }

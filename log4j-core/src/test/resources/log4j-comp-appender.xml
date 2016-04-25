@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="XMLConfigTest">
+<Configuration status="ERROR" name="XMLCompositeAppenderTest">
     <Appenders>
         <File name="File" fileName="target/log4j-comp-appender.log" bufferedIO="false">
             <PatternLayout>

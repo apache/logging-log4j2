@@ -43,7 +43,7 @@ public class PropertiesConfiguration extends BuiltConfiguration implements Recon
             }
             final PropertiesConfigurationFactory factory = new PropertiesConfigurationFactory();
             final PropertiesConfiguration config = factory.getConfiguration(source);
-            return config == null || config.getState() != State.INITIALIZED ? null : config;
+            return config == null || config.getState() != State.INITIALIZING ? null : config;
         } catch (final IOException ex) {
             LOGGER.error("Cannot locate file {}: {}", getConfigurationSource(), ex);
         }

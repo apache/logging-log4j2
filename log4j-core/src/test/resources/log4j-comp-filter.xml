@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="XMLConfigTest">
+<Configuration status="ERROR" name="XMLCompositeFilterTest">
   <BurstFilter level="INFO" rate="16" maxBurst="100"/>
 
   <Appenders>

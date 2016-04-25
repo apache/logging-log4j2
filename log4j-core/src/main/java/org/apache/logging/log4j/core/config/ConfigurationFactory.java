@@ -397,7 +397,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     if (sources.length > 1) {
                         List<AbstractConfiguration> configs = new ArrayList<>();
                         for (String sourceLocation : sources) {
-                            Configuration config = getConfiguration(sourceLocation);
+                            Configuration config = getConfiguration(sourceLocation.trim());
                             if (config != null && config instanceof AbstractConfiguration) {
                                 configs.add((AbstractConfiguration) config);
                             } else {

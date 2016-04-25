@@ -63,6 +63,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
      */
     public CompositeConfiguration(List<? extends AbstractConfiguration> configurations) {
         super(ConfigurationSource.NULL_SOURCE);
+        rootNode = configurations.get(0).getRootNode();
         this.configurations = configurations;
         String mergeStrategyClassName = PropertiesUtil.getProperties().getStringProperty(MERGE_STRATEGY_PROPERTY,
                 DefaultMergeStrategy.class.getName());
@@ -72,37 +73,8 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 InstantiationException ex) {
             mergeStrategy = new DefaultMergeStrategy();
         }
-    }
-
-    @Override
-    public void setup() {
-        AbstractConfiguration targetConfiguration = configurations.get(0);
-        staffChildConfiguration(targetConfiguration);
-        WatchManager watchManager = targetConfiguration.getWatchManager();
-        rootNode = targetConfiguration.getRootNode();
-        for (AbstractConfiguration sourceConfiguration : configurations.subList(1, configurations.size())) {
-            staffChildConfiguration(sourceConfiguration);
-            Node sourceRoot = sourceConfiguration.getRootNode();
-            mergeStrategy.mergConfigurations(rootNode, sourceRoot, getPluginManager());
-            if (LOGGER.isEnabled(Level.ALL)) {
-                StringBuilder sb = new StringBuilder();
-                printNodes("", rootNode, sb);
-                System.out.println(sb.toString());
-            }
-            int monitorInterval = sourceConfiguration.getWatchManager().getIntervalSeconds();
-            if (monitorInterval > 0) {
-                if (monitorInterval < watchManager.getIntervalSeconds()) {
-                    watchManager.setIntervalSeconds(monitorInterval);
-                }
-                WatchManager sourceWatchManager = sourceConfiguration.getWatchManager();
-                Map<File, FileWatcher> watchers = sourceWatchManager.getWatchers();
-                FileWatcher fileWatcher = new ConfiguratonFileWatcher(this, listeners);
-                for (Map.Entry<File, FileWatcher> entry : watchers.entrySet()) {
-                    if (entry.getValue() instanceof ConfiguratonFileWatcher) {
-                        watchManager.watchFile(entry.getKey(), fileWatcher);
-                    }
-                }
-            }
+        for (AbstractConfiguration config : configurations) {
+            mergeStrategy.mergeRootProperties(rootNode, config);
         }
         final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
                 .withStatus(getDefaultStatus());
@@ -110,7 +82,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             final String key = entry.getKey();
             final String value = getStrSubstitutor().replace(entry.getValue());
             if ("status".equalsIgnoreCase(key)) {
-                statusConfig.withStatus(value);
+                statusConfig.withStatus(value.toUpperCase());
             } else if ("dest".equalsIgnoreCase(key)) {
                 statusConfig.withDestination(value);
             } else if ("shutdownHook".equalsIgnoreCase(key)) {
@@ -127,7 +99,50 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     }
 
     @Override
+    public void setup() {
+        AbstractConfiguration targetConfiguration = configurations.get(0);
+        staffChildConfiguration(targetConfiguration);
+        WatchManager watchManager = getWatchManager();
+        WatchManager targetWatchManager = targetConfiguration.getWatchManager();
+        FileWatcher fileWatcher = new ConfiguratonFileWatcher(this, listeners);
+        if (targetWatchManager.getIntervalSeconds() > 0) {
+            watchManager.setIntervalSeconds(targetWatchManager.getIntervalSeconds());
+            Map<File, FileWatcher> watchers = targetWatchManager.getWatchers();
+            for (Map.Entry<File, FileWatcher> entry : watchers.entrySet()) {
+                if (entry.getValue() instanceof ConfiguratonFileWatcher) {
+                    watchManager.watchFile(entry.getKey(), fileWatcher);
+                }
+            }
+        }
+        for (AbstractConfiguration sourceConfiguration : configurations.subList(1, configurations.size())) {
+            staffChildConfiguration(sourceConfiguration);
+            Node sourceRoot = sourceConfiguration.getRootNode();
+            mergeStrategy.mergConfigurations(rootNode, sourceRoot, getPluginManager());
+            if (LOGGER.isEnabled(Level.ALL)) {
+                StringBuilder sb = new StringBuilder();
+                printNodes("", rootNode, sb);
+                System.out.println(sb.toString());
+            }
+            int monitorInterval = sourceConfiguration.getWatchManager().getIntervalSeconds();
+            if (monitorInterval > 0) {
+                int currentInterval = watchManager.getIntervalSeconds();
+                if (currentInterval <= 0 || monitorInterval < currentInterval) {
+                    watchManager.setIntervalSeconds(monitorInterval);
+                }
+                WatchManager sourceWatchManager = sourceConfiguration.getWatchManager();
+                Map<File, FileWatcher> watchers = sourceWatchManager.getWatchers();
+                for (Map.Entry<File, FileWatcher> entry : watchers.entrySet()) {
+                    if (entry.getValue() instanceof ConfiguratonFileWatcher) {
+                        watchManager.watchFile(entry.getKey(), fileWatcher);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public Configuration reconfigure() {
+        LOGGER.debug("Reconfiguring composite configuration");
         List<AbstractConfiguration> configs = new ArrayList<>();
         ConfigurationFactory factory = ConfigurationFactory.getInstance();
         for (AbstractConfiguration config : configurations) {

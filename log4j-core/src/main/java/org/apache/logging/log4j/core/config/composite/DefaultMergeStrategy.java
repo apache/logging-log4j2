@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
@@ -62,25 +63,27 @@ public class DefaultMergeStrategy implements MergeStrategy {
     private static final String REF = "ref";
 
     /**
-     * Merge the source Configuration into the target Configuration.
-     *
-     * @param target        The target node to merge into.
-     * @param source        The source node.
-     * @param pluginManager The PluginManager.
+     * Merge the root properties.
+     * @param rootNode The composite root node.
+     * @param configuration The configuration to merge.
      */
-    public void mergConfigurations(Node target, Node source, PluginManager pluginManager) {
-        for (Map.Entry<String, String> attribute : source.getAttributes().entrySet()) {
+    @Override
+    public void mergeRootProperties(Node rootNode, AbstractConfiguration configuration) {
+        for (Map.Entry<String, String> attribute : configuration.getRootNode().getAttributes().entrySet()) {
             boolean isFound = false;
-            for (Map.Entry<String, String> targetAttribute : target.getAttributes().entrySet()) {
+            for (Map.Entry<String, String> targetAttribute : rootNode.getAttributes().entrySet()) {
                 if (targetAttribute.getKey().equalsIgnoreCase(attribute.getKey())) {
                     if (attribute.getKey().equalsIgnoreCase(STATUS)) {
-                        Level targetLevel = Level.getLevel(targetAttribute.getValue());
-                        Level sourceLevel = Level.getLevel(attribute.getValue());
+                        Level targetLevel = Level.getLevel(targetAttribute.getValue().toUpperCase());
+                        Level sourceLevel = Level.getLevel(attribute.getValue().toUpperCase());
                         if (targetLevel != null && sourceLevel != null) {
                             if (sourceLevel.isLessSpecificThan(targetLevel)) {
                                 targetAttribute.setValue(attribute.getValue());
                             }
-                        }
+                        } else
+                            if (sourceLevel != null) {
+                                targetAttribute.setValue(attribute.getValue());
+                            }
                     } else {
                         if (attribute.getKey().equalsIgnoreCase("monitorInterval")) {
                             int sourceInterval = Integer.parseInt(attribute.getValue());
@@ -96,9 +99,20 @@ public class DefaultMergeStrategy implements MergeStrategy {
                 }
             }
             if (!isFound) {
-                target.getAttributes().put(attribute.getKey(), attribute.getValue());
+                rootNode.getAttributes().put(attribute.getKey(), attribute.getValue());
             }
         }
+    }
+
+    /**
+     * Merge the source Configuration into the target Configuration.
+     *
+     * @param target        The target node to merge into.
+     * @param source        The source node.
+     * @param pluginManager The PluginManager.
+     */
+    @Override
+    public void mergConfigurations(Node target, Node source, PluginManager pluginManager) {
         for (Node sourceChildNode : source.getChildren()) {
             boolean isFilter = isFilterNode(sourceChildNode);
             boolean isMerged = false;

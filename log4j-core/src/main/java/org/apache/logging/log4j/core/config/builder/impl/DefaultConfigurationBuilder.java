@@ -141,6 +141,11 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public T build() {
+        return build(true);
+    }
+
+    @Override
+    public T build(boolean initialize) {
         T configuration;
         try {
             if (source == null) {
@@ -149,6 +154,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             final Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
             configuration = constructor.newInstance(source, root);
             configuration.setMonitorInterval(monitorInterval);
+            configuration.getRootNode().getAttributes().putAll(root.getAttributes());
             if (name != null) {
                 configuration.setName(name);
             }
@@ -171,7 +177,9 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }
         configuration.getStatusConfiguration().initialize();
-        configuration.initialize();
+        if (initialize) {
+            configuration.initialize();
+        }
         return configuration;
     }
 
@@ -378,6 +386,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> setVerbosity(final String verbosity) {
         this.verbosity = verbosity;
+        return this;
+    }
+
+    @Override
+    public ConfigurationBuilder<T> addRootProperty(String key, String value) {
+        root.getAttributes().put(key, value);
         return this;
     }
 }

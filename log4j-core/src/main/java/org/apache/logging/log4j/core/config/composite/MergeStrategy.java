@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.composite;
 
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 
@@ -23,6 +24,13 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
  * Merges two configurations together
  */
 public interface MergeStrategy {
+
+    /**
+     * Merge the root node properties into the configuration.
+     * @param rootNode The composite root node.
+     * @param configuration The configuration to merge.
+     */
+    void mergeRootProperties(Node rootNode, AbstractConfiguration configuration);
 
     /**
      * Merge the soure node tree into the target node tree.

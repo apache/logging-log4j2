@@ -16,19 +16,24 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="XMLCompositePropertiesTest">
-  <Properties>
-    <Property name="propertyShared">xml</Property>
-    <Property name="propertyXml">xml</Property>
-  </Properties>
-  <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="STDOUT"/>
-    </Root>
-  </Loggers>
+<Configuration status="ERROR" name="XMLReconfigTest">
+    <Appenders>
+        <File name="File" fileName="target/log4j-comp-appender.log" bufferedIO="false">
+            <PatternLayout>
+                <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </File>
+        <File name="Override" fileName="target/log4j-comp-appender.log" bufferedIO="false">
+            <PatternLayout>
+                <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Root level="ERROR">
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+
 </Configuration>
