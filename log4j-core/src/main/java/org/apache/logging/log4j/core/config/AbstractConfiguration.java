@@ -98,6 +98,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected boolean isShutdownHookEnabled = true;
 
     /**
+     * The Script manager.
+     */
+    protected ScriptManager scriptManager;
+
+    /**
      * The Advertiser which exposes appender configurations to external systems.
      */
     private Advertiser advertiser = new DefaultAdvertiser();
@@ -113,7 +118,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
-    private ScriptManager scriptManager;
     private final ConfigurationScheduler configurationScheduler = new ConfigurationScheduler();
     private final WatchManager watchManager = new WatchManager(configurationScheduler);
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
@@ -151,6 +155,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return scriptManager;
     }
 
+    public void setScriptManager(ScriptManager scriptManager) {
+        this.scriptManager = scriptManager;
+    }
+
+    public PluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    public void setPluginManager(PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
     @Override
     public WatchManager getWatchManager() {
         return watchManager;
@@ -161,7 +177,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return configurationScheduler;
     }
 
-	@Override
+    public Node getRootNode() {
+        return rootNode;
+    }
+
+    @Override
 	public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
 	    // lazily instantiate only when requested by AsyncLoggers:
 	    // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
@@ -357,7 +377,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return isShutdownHookEnabled;
     }
 
-    protected void setup() {
+    public void setup() {
     }
 
     protected Level getDefaultStatus() {

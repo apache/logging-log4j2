@@ -1238,6 +1238,32 @@ rootLogger.appenderRef.stdout.ref = STDOUT
 </loggers>
 ]]></pre>
         </subsection>
+        <a name="CompositeConfiguration"/>
+        <subsection name="Composite Configuration">
+            <p>
+              Log4j allows multiple configuration files to be used by specifying them as a list of comma separated
+              file paths on log4j.configurationFile.  When this is done Log4j will merge the files using the following rules.
+              <ol>
+                <li>The global configuration attributes are aggregated with those in later configurations replacing
+                  those in previous configurations, with the exception that the highest status level and the lowest
+                  monitorInterval greater than 0 will be used.</li>
+                <li>Properties from all configurations are aggregated. Duplicate properties replace those in previous
+                  configurations.</li>
+                <li>Filters are aggregated under a CompositeFilter if more than one Filter is defined. Since Filters
+                  are not named duplicates may be present.</li>
+                <li>Scripts and ScriptFile references are aggregated. Duplicate definiations replace those in previous
+                  configurations.</li>
+                <li>Appenders are aggregated. Appenders with the same name are replaced by those in later
+                  configurations, including all of the Appender's subcomponents.</li>
+                <li>Loggers are all aggregated. Logger attributes are individually merged with duplicates being
+                  replaced by those in later configurations. Appender references on a Logger are aggregated with
+                  duplicates being replaced by those in later configurations. Filters on a Logger are aggregated
+                  under a CompositeFilter if more than one Filter is defined. Since Filters are not named
+                  duplicates may be present. Filters under Appender references included or discarded depending on
+                  whether their parent Appender reference is kept or discarded.</li>
+                </ol>
+            </p>
+        </subsection>
         <a name="StatusMessages"/>
         <subsection name="Status Messages">
           <table>
@@ -1499,12 +1525,15 @@ public class AwesomeTest {
         <a name="SystemProperties"/>
         <subsection name="System Properties">
         <p>
-          Below follows a number of system properties that can be used to control Log4j 2 behaviour.
+          The Log4j documentation references a number of System Properties that can be used to control various aspects
+          of Log4j 2 behavior. The table below lists these properties along with their default value and a
+          description of what they control.
           Any spaces present in the property name are for visual flow and should be removed.
         </p>
           <p>
-            The below properties can also be specified by creating a file named
-            <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
+            The properties listed below can also be specified by creating a file named
+            <tt>log4j2.component.properties</tt>, adding the desired keys and value to the file, and then including
+            the file in the classpath of the application.
           </p>
 <table>
   <caption align="top">Log4j 2 System Properties</caption>
@@ -1517,7 +1546,16 @@ public class AwesomeTest {
     <td>log4j.configurationFile</td>
     <td>&nbsp;</td>
     <td>
-      Path to an XML or JSON Log4j 2 configuration file.
+      Path to an XML or JSON Log4j 2 configuration file. May also contain a comma separated list of configuration
+      file names.
+    </td>
+  </tr>
+  <tr>
+    <td>log4j.mergeFactory</td>
+    <td>&nbsp;</td>
+    <td>
+      The name of the class that implements the MergeStrategy interface. If not specified
+      <code>DefaultMergeStrategy</code> will be used when creating a CompositeConfiguration..
     </td>
   </tr>
   <tr>

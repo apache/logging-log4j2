@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -379,4 +380,20 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setVerbosity(String verbosity);
+
+    /**
+     * Add the properties for the root node.
+     * @param key The property key.
+     * @param value The property value.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> addRootProperty(String key, String value);
+
+    /**
+     * Build the configuration and optionally initialize it.
+     * @param initialize true if the configuration should be initialized, false otherwise. Generally, Configurations
+     *                   should not be initialized when they are constructed.
+     * @return The constructed Configuration.
+     */
+    T build(boolean initialize);
 }

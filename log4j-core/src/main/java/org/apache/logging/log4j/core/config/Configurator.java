@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.config;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -109,8 +111,24 @@ public final class Configurator {
      */
     public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation,
             final Object externalContext) {
-        final URI uri = Strings.isBlank(configLocation) ? null : NetUtils.toURI(configLocation);
-        return initialize(name, loader, uri, externalContext);
+        if (Strings.isBlank(configLocation)) {
+            return initialize(name, loader, (URI) null, externalContext);
+        }
+        if (configLocation.contains(",")) {
+            String[] parts = configLocation.split(",");
+            String scheme = null;
+            List<URI> uris = new ArrayList<>(parts.length);
+            for (String part : parts) {
+                URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
+                if (scheme == null && uri.getScheme() != null) {
+                    scheme = uri.getScheme();
+                }
+                uris.add(uri);
+            }
+            return initialize(name, loader, uris, externalContext);
+        } else {
+            return initialize(name, loader, NetUtils.toURI(configLocation), externalContext);
+        }
     }
 
     /**
@@ -142,6 +160,20 @@ public final class Configurator {
         } catch (final Exception ex) {
             LOGGER.error("There was a problem initializing the LoggerContext [{}] using configuration at [{}].",
                     name, configLocation, ex);
+        }
+        return null;
+    }
+
+    public static LoggerContext initialize(final String name, final ClassLoader loader, final List<URI> configLocations,
+            final Object externalContext) {
+        try {
+            final Log4jContextFactory factory = getFactory();
+            return factory == null ?
+                    null :
+                    factory.getContext(FQCN, loader, externalContext, false, configLocations, name);
+        } catch (final Exception ex) {
+            LOGGER.error("There was a problem initializing the LoggerContext [{}] using configurations at [{}].", name,
+                    configLocations, ex);
         }
         return null;
     }
@@ -202,7 +234,7 @@ public final class Configurator {
     public static void setAllLevels(final String parentLogger, final Level level) {
         // 1) get logger config
         // 2) if exact match, use it, if not, create it.
-        // 3) set level on logger config 
+        // 3) set level on logger config
         // 4) update child logger configs with level
         // 5) update loggers
         final LoggerContext loggerContext = LoggerContext.getContext(false);
@@ -225,10 +257,10 @@ public final class Configurator {
         }
         return set;
     }
-    
+
     /**
      * Sets logger levels.
-     * 
+     *
      * @param levelMap
      *            a levelMap where keys are level names and values are new
      *            Levels.
@@ -249,7 +281,7 @@ public final class Configurator {
 
     /**
      * Sets a logger's level.
-     * 
+     *
      * @param loggerName
      *            the logger name
      * @param level
@@ -283,7 +315,7 @@ public final class Configurator {
 
     /**
      * Sets the root logger's level.
-     * 
+     *
      * @param level
      *            the new level
      */
