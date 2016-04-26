@@ -141,6 +141,12 @@ public final class StatusLogger extends AbstractLogger {
         }
     }
 
+    public void updateListenerLevel(final Level status) {
+        if (status.intLevel() > listenersLevel) {
+            listenersLevel = status.intLevel();
+        }
+    }
+
     /**
      * Returns a thread safe Iterable for the StatusListener.
      *

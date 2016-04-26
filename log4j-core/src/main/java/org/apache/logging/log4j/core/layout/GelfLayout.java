@@ -65,8 +65,7 @@ import java.util.zip.GZIPOutputStream;
  * &lt;/Appenders&gt;
  * </pre>
  *
- * @see <a href="http://graylog2.org/resources/gelf/specification">GELF
- *      specification</a>
+ * @see <a href="http://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a>
  */
 @Plugin(name = "GelfLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class GelfLayout extends AbstractStringLayout {
@@ -105,14 +104,16 @@ public final class GelfLayout extends AbstractStringLayout {
     private final int compressionThreshold;
     private final CompressionType compressionType;
     private final String host;
+    private final boolean includeStacktrace;
 
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
-            final int compressionThreshold) {
+                      final int compressionThreshold, boolean includeStacktrace) {
         super(StandardCharsets.UTF_8);
         this.host = host;
         this.additionalFields = additionalFields;
         this.compressionType = compressionType;
         this.compressionThreshold = compressionThreshold;
+        this.includeStacktrace = includeStacktrace;
     }
     
     @PluginFactory
@@ -123,9 +124,11 @@ public final class GelfLayout extends AbstractStringLayout {
             @PluginAttribute(value = "compressionType",
                 defaultString = "GZIP") final CompressionType compressionType,
             @PluginAttribute(value = "compressionThreshold",
-                defaultInt= COMPRESSION_THRESHOLD) final int compressionThreshold) {
+                defaultInt = COMPRESSION_THRESHOLD) final int compressionThreshold,
+            @PluginAttribute(value = "includeStacktrace",
+                defaultBoolean = true) final boolean includeStacktrace) {
             // @formatter:on
-        return new GelfLayout(host, additionalFields, compressionType, compressionThreshold);
+        return new GelfLayout(host, additionalFields, compressionType, compressionThreshold, includeStacktrace);
     }
 
     @Override
@@ -214,7 +217,11 @@ public final class GelfLayout extends AbstractStringLayout {
         }
         if (event.getThrown() != null) {
             builder.append("\"full_message\":\"");
-            JsonUtils.quoteAsString(formatThrowable(event.getThrown()), builder);
+            if (includeStacktrace) {
+                JsonUtils.quoteAsString(formatThrowable(event.getThrown()), builder);
+            } else {
+                JsonUtils.quoteAsString(event.getThrown().toString(), builder);
+            }
             builder.append(QC);
         }
 
@@ -285,12 +292,12 @@ public final class GelfLayout extends AbstractStringLayout {
     /**
      * Non-private to make it accessible from unit test.
      */
-    static String formatThrowable(final Throwable throwable) {
+    static CharSequence formatThrowable(final Throwable throwable) {
         // stack traces are big enough to provide a reasonably large initial capacity here
         final StringWriter sw = new StringWriter(2048);
         final PrintWriter pw = new PrintWriter(sw);
         throwable.printStackTrace(pw);
         pw.flush();
-        return sw.toString();
+        return sw.getBuffer();
     }
 }

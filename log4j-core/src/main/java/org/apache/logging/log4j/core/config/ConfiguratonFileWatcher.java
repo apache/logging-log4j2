@@ -35,6 +35,10 @@ public class ConfiguratonFileWatcher implements FileWatcher {
         this.listeners = listeners;
     }
 
+    public List<ConfigurationListener> getListeners() {
+        return listeners;
+    }
+
 
     @Override
     public void fileModified(File file) {

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.util;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -76,6 +77,14 @@ public class WatchManager extends AbstractLifeCycle {
     public void watchFile(File file, FileWatcher watcher) {
         watchers.put(file, new FileMonitor(file.lastModified(), watcher));
 
+    }
+
+    public Map<File, FileWatcher> getWatchers() {
+        Map<File, FileWatcher> map = new HashMap<>();
+        for (Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
+            map.put(entry.getKey(), entry.getValue().fileWatcher);
+        }
+        return map;
     }
 
     private class WatchWorker implements Runnable {

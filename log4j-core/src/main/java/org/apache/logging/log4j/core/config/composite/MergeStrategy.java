@@ -14,19 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.core.config.composite;
+
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 
 /**
- * Interface to be implemented by LoggerContext's that provide a shutdown method.
- * @since 2.6
+ * Merges two configurations together
  */
-public interface Terminable {
+public interface MergeStrategy {
 
     /**
-     * Requests that the logging implementation shut down.
-     *
-     * This call is synchronous and will block until shut down is complete.
-     * This may include flushing pending log events over network connections.
+     * Merge the root node properties into the configuration.
+     * @param rootNode The composite root node.
+     * @param configuration The configuration to merge.
      */
-    void terminate();
+    void mergeRootProperties(Node rootNode, AbstractConfiguration configuration);
+
+    /**
+     * Merge the soure node tree into the target node tree.
+     * @param target The target Node tree.
+     * @param source The source Node tree.
+     */
+    void mergConfigurations(Node target, Node source, PluginManager pluginManager);
 }

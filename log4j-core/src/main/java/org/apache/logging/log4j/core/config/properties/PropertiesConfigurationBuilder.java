@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.config.properties;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -77,6 +78,12 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
 
     @Override
     public PropertiesConfiguration build() {
+        Map<String, String> rootProps = new HashMap<>();
+        for (String key : rootProperties.stringPropertyNames()) {
+            if (!key.contains(".")) {
+                builder.addRootProperty(key, rootProperties.getProperty(key));
+            }
+        }
         builder
             .setStatusLevel(Level.toLevel(rootProperties.getProperty(STATUS_KEY), Level.ERROR))
             .setShutdownHook(rootProperties.getProperty(SHUTDOWN_HOOK))
@@ -139,7 +146,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             builder.add(createRootLogger(props));
         }
 
-        return builder.build();
+        return builder.build(false);
     }
 
     private ScriptComponentBuilder createScript(final Properties properties) {

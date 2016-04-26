@@ -14,19 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.spi;
 
 /**
- * Interface to be implemented by LoggerContext's that provide a shutdown method.
- * @since 2.6
+ * Support for composite configurations.
  */
-public interface Terminable {
-
-    /**
-     * Requests that the logging implementation shut down.
-     *
-     * This call is synchronous and will block until shut down is complete.
-     * This may include flushing pending log events over network connections.
-     */
-    void terminate();
-}
+package org.apache.logging.log4j.core.config.composite;

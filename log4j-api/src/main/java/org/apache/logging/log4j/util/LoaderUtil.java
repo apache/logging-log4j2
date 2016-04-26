@@ -28,7 +28,7 @@ import java.util.Objects;
 
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
- * 
+ *
  * @see ClassLoader
  * @see RuntimePermission
  * @see Thread#getContextClassLoader()
@@ -135,14 +135,14 @@ public final class LoaderUtil {
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @since 2.1
      */
-    public static Object newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
+    public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
             InstantiationException, NoSuchMethodException, InvocationTargetException {
         final Class<?> clazz = loadClass(className);
         try {
-            return clazz.getConstructor().newInstance();
+            return (T) clazz.getConstructor().newInstance();
         } catch (final NoSuchMethodException ignored) {
             // FIXME: looking at the code for Class.newInstance(), this seems to do the same thing as above
-            return clazz.newInstance();
+            return (T) clazz.newInstance();
         }
     }
 

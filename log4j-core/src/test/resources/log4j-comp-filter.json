@@ -1,0 +1,9 @@
+{
+    "Configuration" : {
+        "status": "warn",
+        "name": "YAMLConfigTest",
+        "thresholdFilter" : {
+            "level": "debug"
+        }
+    }
+}
