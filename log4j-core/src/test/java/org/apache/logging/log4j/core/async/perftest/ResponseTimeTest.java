@@ -165,6 +165,7 @@ public class ResponseTimeTest {
     private static void runLatencyTest(final int samples, final Logger logger, final Histogram serviceTmHist,
             final Histogram responseTmHist, final Pacer pacer) {
 
+        pacer.setInitialStartTime(System.nanoTime());
         for (int i = 0; i < samples; i++) {
             final long expectedStartTimeNanos = pacer.expectedNextOperationNanoTime();
             pacer.acquire(1);
