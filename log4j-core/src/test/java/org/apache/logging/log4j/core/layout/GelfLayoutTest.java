@@ -74,14 +74,14 @@ public class GelfLayoutTest {
 
     Logger root = ctx.getLogger("");
 
-    private void testCompressedLayout(final CompressionType compressionType) throws IOException {
+    private void testCompressedLayout(final CompressionType compressionType, boolean includeStacktrace) throws IOException {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up appenders
         final GelfLayout layout = GelfLayout.createLayout(HOSTNAME, new KeyValuePair[] {
                 new KeyValuePair(KEY1, VALUE1),
-                new KeyValuePair(KEY2, VALUE2), }, compressionType, 1024);
+                new KeyValuePair(KEY2, VALUE2), }, compressionType, 1024, includeStacktrace);
         final ListAppender eventAppender = new ListAppender("Events", null, null, true, false);
         final ListAppender rawAppender = new ListAppender("Raw", null, layout, true, true);
         final ListAppender formattedAppender = new ListAppender("Formatted", null, layout, true, false);
@@ -185,7 +185,7 @@ public class GelfLayoutTest {
                 "\"_logger\": \"\"," +
                 "\"short_message\": \"" + LINE3 + "\"," +
                 "\"full_message\": \"" + String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
-                GelfLayout.formatThrowable(exception))) + "\"," +
+                includeStacktrace ? GelfLayout.formatThrowable(exception).toString() : exception.toString())) + "\"," +
                 "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
                 "\"_" + KEY2 + "\": \"" + VALUE2 + "\"," +
                 "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
@@ -198,17 +198,22 @@ public class GelfLayoutTest {
 
     @Test
     public void testLayoutGzipCompression() throws Exception {
-        testCompressedLayout(CompressionType.GZIP);
+        testCompressedLayout(CompressionType.GZIP, true);
     }
 
     @Test
     public void testLayoutNoCompression() throws Exception {
-        testCompressedLayout(CompressionType.OFF);
+        testCompressedLayout(CompressionType.OFF, true);
     }
 
     @Test
     public void testLayoutZlibCompression() throws Exception {
-        testCompressedLayout(CompressionType.ZLIB);
+        testCompressedLayout(CompressionType.ZLIB, true);
+    }
+
+    @Test
+    public void testLayoutNoStacktrace() throws Exception {
+        testCompressedLayout(CompressionType.OFF, false);
     }
 
     @Test

@@ -196,7 +196,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           <p>
             Configure as follows to send to a Graylog2 server:
           </p>
-          <pre class="prettyprint linenums">[
+          <pre class="prettyprint linenums">
   &lt;Appenders&gt;
     &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
         &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
@@ -205,13 +205,40 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
         &lt;/GelfLayout&gt;
     &lt;/Socket&gt;
   &lt;/Appenders&gt;
-]
 </pre>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>host</td>
+              <td>String</td>
+              <td>The value of the <code>host</code> property (mandatory).</td>
+            </tr>
+            <tr>
+              <td>compressionType</td>
+              <td><code>GZIP</code>, <code>ZLIB</code> or <code>OFF</code></td>
+              <td>Compression to use (optional, defaults to <code>GZIP</code>)</td>
+            </tr>
+            <tr>
+              <td>compressionThreshold</td>
+              <td>int</td>
+              <td>compress if data is larger than this number of bytes (optional, defaults to 1024)</td>
+            </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>Whether to include full stacktrace of logged Throwables (optional, default to true)</td>
+            </tr>
+            <caption align="top">GELF Layout Parameters</caption>
+          </table>
            <p>
              See also:
            </p>
            <ul>
-             <li>The <a href="https://www.graylog.org/resources/gelf/">GELF specification</a></li>
+             <li>The <a href="http://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a></li>
            </ul>
         </subsection>
         <a name="HTMLLayout"/>
