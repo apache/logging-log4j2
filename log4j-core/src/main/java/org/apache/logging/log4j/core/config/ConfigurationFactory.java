@@ -36,6 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -392,32 +393,21 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 final String configLocationStr = this.substitutor.replace(PropertiesUtil.getProperties()
                         .getStringProperty(CONFIGURATION_FILE_PROPERTY));
                 if (configLocationStr != null) {
-                    ConfigurationSource source = null;
-                    try {
-                        source = getInputFromUri(NetUtils.toURI(configLocationStr));
-                    } catch (final Exception ex) {
-                        // Ignore the error and try as a String.
-                        LOGGER.catching(Level.DEBUG, ex);
-                    }
-                    if (source == null) {
-                        final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
-                        source = getInputFromString(configLocationStr, loader);
-                    }
-                    if (source != null) {
-                        for (final ConfigurationFactory factory : getFactories()) {
-                            final String[] types = factory.getSupportedTypes();
-                            if (types != null) {
-                                for (final String type : types) {
-                                    if (type.equals("*") || configLocationStr.endsWith(type)) {
-                                        final Configuration config = factory.getConfiguration(source);
-                                        if (config != null) {
-                                            return config;
-                                        }
-                                    }
-                                }
+                    String[] sources = configLocationStr.split(",");
+                    if (sources.length > 1) {
+                        List<AbstractConfiguration> configs = new ArrayList<>();
+                        for (String sourceLocation : sources) {
+                            Configuration config = getConfiguration(sourceLocation.trim());
+                            if (config != null && config instanceof AbstractConfiguration) {
+                                configs.add((AbstractConfiguration) config);
+                            } else {
+                                LOGGER.error("Failed to created configuration at {}", sourceLocation);
+                                return null;
                             }
                         }
+                        return new CompositeConfiguration(configs);
                     }
+                    return getConfiguration(configLocationStr);
                 } else {
                     for (final ConfigurationFactory factory : getFactories()) {
                         final String[] types = factory.getSupportedTypes();
@@ -466,6 +456,36 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             }
             LOGGER.error("No log4j2 configuration file found. Using default configuration: logging only errors to the console.");
             return new DefaultConfiguration();
+        }
+
+        private Configuration getConfiguration(String configLocationStr) {
+            ConfigurationSource source = null;
+            try {
+                source = getInputFromUri(NetUtils.toURI(configLocationStr));
+            } catch (final Exception ex) {
+                // Ignore the error and try as a String.
+                LOGGER.catching(Level.DEBUG, ex);
+            }
+            if (source == null) {
+                final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
+                source = getInputFromString(configLocationStr, loader);
+            }
+            if (source != null) {
+                for (final ConfigurationFactory factory : getFactories()) {
+                    final String[] types = factory.getSupportedTypes();
+                    if (types != null) {
+                        for (final String type : types) {
+                            if (type.equals("*") || configLocationStr.endsWith(type)) {
+                                final Configuration config = factory.getConfiguration(source);
+                                if (config != null) {
+                                    return config;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         private Configuration getConfiguration(final boolean isTest, final String name) {
