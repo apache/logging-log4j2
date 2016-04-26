@@ -82,7 +82,8 @@ public class GelfLayoutBenchmark {
                 "host",
                 ADDITIONAL_FIELDS,
                 GelfLayout.CompressionType.OFF,
-                0));
+                0,
+                true));
 
         j = 0;
     }
