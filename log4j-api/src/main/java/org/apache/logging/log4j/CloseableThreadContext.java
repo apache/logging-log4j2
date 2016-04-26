@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
 package org.apache.logging.log4j;
 
 import java.util.HashMap;
@@ -8,7 +24,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Adds entries to the {@link ThreadContext stack or map} and them removes them when the object is closed, e.g. as part
  * of a try-with-resources.
- * 
+ *
  * @since 2.6
  */
 public class CloseableThreadContext implements AutoCloseable {
@@ -16,7 +32,7 @@ public class CloseableThreadContext implements AutoCloseable {
     /**
      * Pushes new diagnostic context information on to the Thread Context Stack. The information will be popped off when
      * the instance is closed.
-     * 
+     *
      * @param message
      *            The new diagnostic context information.
      * @return a new instance that will back out the changes when closed.
@@ -28,7 +44,7 @@ public class CloseableThreadContext implements AutoCloseable {
     /**
      * Pushes new diagnostic context information on to the Thread Context Stack. The information will be popped off when
      * the instance is closed.
-     * 
+     *
      * @param message
      *            The new diagnostic context information.
      * @param args
@@ -65,7 +81,7 @@ public class CloseableThreadContext implements AutoCloseable {
     /**
      * Creates an instance of a {@code CloseableThreadContext} that pushes new diagnostic context information on to the
      * Thread Context Stack. The information will be popped off when the instance is closed.
-     * 
+     *
      * @param message
      *            The new diagnostic context information.
      */
@@ -77,7 +93,7 @@ public class CloseableThreadContext implements AutoCloseable {
     /**
      * Creates an instance of a {@code CloseableThreadContext} that pushes new diagnostic context information on to the
      * Thread Context Stack. The information will be popped off when the instance is closed.
-     * 
+     *
      * @param message
      *            The new diagnostic context information.
      * @param args
