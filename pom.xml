@@ -210,7 +210,7 @@
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.4</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
-    <clirr.plugin.version>2.7</clirr.plugin.version>
+    <clirr.plugin.version>2.6.1</clirr.plugin.version>
     <site.plugin.version>3.4</site.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.7</maven.compile.source>
