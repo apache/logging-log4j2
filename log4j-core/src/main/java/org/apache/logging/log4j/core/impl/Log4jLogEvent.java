@@ -670,6 +670,16 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         throw new InvalidObjectException("Proxy required");
     }
 
+    /**
+     * Creates and returns a new immutable copy of this {@code Log4jLogEvent}.
+     *
+     * @return a new immutable copy of the data in this {@code Log4jLogEvent}
+     */
+    public static Log4jLogEvent createMemento(LogEvent event, final boolean includeLocation) {
+        // TODO implement Log4jLogEvent.createMemento()
+        return deserialize(serialize(event, includeLocation));
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();

@@ -415,4 +415,15 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }
+
+    /**
+     * Creates and returns a new immutable copy of this {@code MutableLogEvent}.
+     *
+     * @return a new immutable copy of the data in this {@code MutableLogEvent}
+     */
+    public Log4jLogEvent createMemento() {
+        // TODO implement MutableLogEvent.createMemento()
+        return Log4jLogEvent.deserialize(Log4jLogEvent.serialize(this, includeLocation));
+    }
+
 }

@@ -75,7 +75,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         // TODO Need to set up the same filters for MutableLogEvent but don't know how...
         // This is a workaround.
         return event instanceof MutableLogEvent
-                ? Log4jLogEvent.deserialize(Log4jLogEvent.serialize(event, event.isIncludeLocation()))
+                ? ((MutableLogEvent) event).createMemento()
                 : event;
     }
 

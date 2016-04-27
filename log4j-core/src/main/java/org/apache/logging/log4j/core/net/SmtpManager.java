@@ -88,7 +88,7 @@ public class SmtpManager extends AbstractManager {
         if (event instanceof Log4jLogEvent && event.getMessage() instanceof ReusableMessage) {
             ((Log4jLogEvent) event).makeMessageImmutable();
         } else if (event instanceof MutableLogEvent) {
-            event = Log4jLogEvent.deserialize(Log4jLogEvent.serialize(event, event.isIncludeLocation()));
+            event = ((MutableLogEvent) event).createMemento();
         }
         buffer.add(event);
     }

@@ -16,14 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicLong;
-
+import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -35,14 +28,16 @@ import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.*;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Appends to one or more Appenders asynchronously. You can configure an AsyncAppender with one or more Appenders and an
@@ -53,11 +48,11 @@ import org.apache.logging.log4j.core.util.Constants;
 public final class AsyncAppender extends AbstractAppender {
 
     private static final int DEFAULT_QUEUE_SIZE = 128;
-    private static final String SHUTDOWN = "Shutdown";
+    private static final LogEvent SHUTDOWN = new AbstractLogEvent() { };
 
     private static final AtomicLong THREAD_SEQUENCE = new AtomicLong(1);
 
-    private final BlockingQueue<Serializable> queue;
+    private final BlockingQueue<LogEvent> queue;
     private final int queueSize;
     private final boolean blocking;
     private final long shutdownTimeout;
@@ -173,19 +168,19 @@ public final class AsyncAppender extends AbstractAppender {
 
     private boolean enqueueOrBlockIfQueueFull(final LogEvent logEvent) {
         boolean appendSuccessful;
-        final Serializable serialized = Log4jLogEvent.serialize(logEvent, includeLocation);
+        final Log4jLogEvent frozenLogEvent = Log4jLogEvent.createMemento(logEvent, includeLocation);
         try {
             // wait for free slots in the queue
-            queue.put(serialized);
+            queue.put(frozenLogEvent);
             appendSuccessful = true;
         } catch (final InterruptedException e) {
-            appendSuccessful = handleInterruptedException(serialized);
+            appendSuccessful = handleInterruptedException(frozenLogEvent);
         }
         return appendSuccessful;
     }
 
     private boolean enqueueOrDropIfQueueFull(final LogEvent logEvent) {
-        final boolean appendSuccessful = queue.offer(Log4jLogEvent.serialize(logEvent, includeLocation));
+        final boolean appendSuccessful = queue.offer(Log4jLogEvent.createMemento(logEvent, includeLocation));
         if (!appendSuccessful) {
             error("Appender " + getName() + " is unable to write primary appenders. queue is full");
         }
@@ -203,8 +198,8 @@ public final class AsyncAppender extends AbstractAppender {
     // This may interfere with the application's expectation of
     // being interrupted, so when we are done, we set the interrupted
     // flag again.
-    private boolean handleInterruptedException(final Serializable serialized) {
-        final boolean appendSuccessful = queue.offer(serialized);
+    private boolean handleInterruptedException(final Log4jLogEvent frozenLogEvent) {
+        final boolean appendSuccessful = queue.offer(frozenLogEvent);
         if (!appendSuccessful) {
             LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
                     getName());
@@ -269,9 +264,9 @@ public final class AsyncAppender extends AbstractAppender {
 
         private volatile boolean shutdown = false;
         private final List<AppenderControl> appenders;
-        private final BlockingQueue<Serializable> queue;
+        private final BlockingQueue<LogEvent> queue;
 
-        public AsyncThread(final List<AppenderControl> appenders, final BlockingQueue<Serializable> queue) {
+        public AsyncThread(final List<AppenderControl> appenders, final BlockingQueue<LogEvent> queue) {
             this.appenders = appenders;
             this.queue = queue;
             setDaemon(true);
@@ -281,17 +276,16 @@ public final class AsyncAppender extends AbstractAppender {
         @Override
         public void run() {
             while (!shutdown) {
-                Serializable s;
+                LogEvent event;
                 try {
-                    s = queue.take();
-                    if (s != null && s instanceof String && SHUTDOWN.equals(s.toString())) {
+                    event = queue.take();
+                    if (event == SHUTDOWN) {
                         shutdown = true;
                         continue;
                     }
                 } catch (final InterruptedException ex) {
                     break; // LOG4J2-830
                 }
-                final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
                 event.setEndOfBatch(queue.isEmpty());
                 final boolean success = callAppenders(event);
                 if (!success && errorAppender != null) {
@@ -309,15 +303,15 @@ public final class AsyncAppender extends AbstractAppender {
             int ignored = 0;
             while (!queue.isEmpty()) {
                 try {
-                    final Serializable s = queue.take();
-                    if (Log4jLogEvent.canDeserialize(s)) {
-                        final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
-                        event.setEndOfBatch(queue.isEmpty());
-                        callAppenders(event);
+                    final LogEvent event = queue.take();
+                    if (event instanceof Log4jLogEvent) {
+                        final Log4jLogEvent logEvent = (Log4jLogEvent) event;
+                        logEvent.setEndOfBatch(queue.isEmpty());
+                        callAppenders(logEvent);
                         count++;
                     } else {
                         ignored++;
-                        LOGGER.trace("Ignoring event of class {}", s.getClass().getName());
+                        LOGGER.trace("Ignoring event of class {}", event.getClass().getName());
                     }
                 } catch (final InterruptedException ex) {
                     // May have been interrupted to shut down.
