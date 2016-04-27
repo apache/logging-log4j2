@@ -35,6 +35,7 @@
         <section name="Requirements">
            <p>
              The Log4j 1.2 bridge is dependent on the Log4j 2 API and implementation.
+             For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
           </p>
         </section>
 

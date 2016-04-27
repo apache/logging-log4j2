@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
@@ -27,6 +24,7 @@ import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -36,6 +34,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -68,11 +68,11 @@ public class TimestampMessageTest {
     @Test
     public void testTimestampMessage() {
         final Logger log = context.getLogger("TimestampMessageTest");
-        log.info(new TimeMsg("Message with embedded timestamp", 123456789000L));
+        log.info((Message) new TimeMsg("Message with embedded timestamp", 123456789000L));
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size());
-        final String NL = System.getProperty("line.separator");
+        final String NL = System.lineSeparator();
         assertEquals("123456789000 Message with embedded timestamp" + NL, msgs.get(0));
     }
 

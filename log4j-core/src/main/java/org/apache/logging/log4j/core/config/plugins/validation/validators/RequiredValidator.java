@@ -48,33 +48,33 @@ public class RequiredValidator implements ConstraintValidator<Required> {
     }
 
     @Override
-    public boolean isValid(final Object value) {
+    public boolean isValid(final String name, final Object value) {
         if (value == null) {
-            return err();
+            return err(name);
         }
         if (value instanceof CharSequence) {
             final CharSequence sequence = (CharSequence) value;
-            return sequence.length() != 0 || err();
+            return sequence.length() != 0 || err(name);
         }
         final Class<?> clazz = value.getClass();
         if (clazz.isArray()) {
             final Object[] array = (Object[]) value;
-            return array.length != 0 || err();
+            return array.length != 0 || err(name);
         }
         if (Collection.class.isAssignableFrom(clazz)) {
             final Collection<?> collection = (Collection<?>) value;
-            return collection.size() != 0 || err();
+            return collection.size() != 0 || err(name);
         }
         if (Map.class.isAssignableFrom(clazz)) {
             final Map<?, ?> map = (Map<?, ?>) value;
-            return map.size() != 0 || err();
+            return map.size() != 0 || err(name);
         }
-        LOGGER.debug("Encountered type [{}] which can only be checked for null.", clazz.getName());
+        // LOGGER.debug("Encountered type [{}] which can only be checked for null.", clazz.getName());
         return true;
     }
 
-    private boolean err() {
-        LOGGER.error(annotation.message());
+    private boolean err(final String name) {
+        LOGGER.error(annotation.message() + ": " + name);
         return false;
     }
 }

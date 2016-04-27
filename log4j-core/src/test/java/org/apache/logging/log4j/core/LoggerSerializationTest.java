@@ -22,10 +22,8 @@ import java.util.Collection;
 
 import org.apache.logging.log4j.AbstractSerializationTest;
 import org.apache.logging.log4j.LogManager;
-import org.junit.Ignore;
 import org.junit.runners.Parameterized.Parameters;
 
-@Ignore("WIP: LOG4J2-801] org.apache.logging.log4j.core.Logger should be serializable")
 public class LoggerSerializationTest extends AbstractSerializationTest {
 
     @Parameters

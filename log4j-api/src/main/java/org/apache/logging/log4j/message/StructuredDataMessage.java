@@ -131,6 +131,18 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
+     * Add an item to the data Map in fluent style.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return {@code this}
+     */
+    @Override
+    public StructuredDataMessage with(final String key, final String value) {
+        put(key, value);
+        return this;
+    }
+
+    /**
      * Returns the supported formats.
      * @return An array of the supported format names.
      */

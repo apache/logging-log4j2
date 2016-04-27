@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug" name="MyApp">
+<Configuration status="error" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" ignoreExceptions="false" compress="true" type="embedded" dataDir="InMemory">
       <Agent host="localhost" port="${sys:primaryPort}"/>
@@ -14,7 +14,7 @@
     <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="eventLogger"/>
     </Logger>
-    <Root level="debug">
+    <Root level="warn">
       <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>

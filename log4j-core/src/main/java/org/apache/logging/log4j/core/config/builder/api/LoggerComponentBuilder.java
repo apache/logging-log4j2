@@ -20,19 +20,5 @@ package org.apache.logging.log4j.core.config.builder.api;
  * Assembler for constructing Logger Components.
  * @since 2.4
  */
-public interface LoggerComponentBuilder extends ComponentBuilder<LoggerComponentBuilder> {
-
-    /**
-     * Add an Appender reference to the Logger component.
-     * @param assembler The AppenderRefComponentBuilder with all of its attributes and sub-components set.
-     * @return this Assembler.
-     */
-    LoggerComponentBuilder add(AppenderRefComponentBuilder assembler);
-
-    /**
-     * Add a Filter to the Logger component.
-     * @param assembler The FilterComponentBuilder with all of its attributes and sub-components set.
-     * @return this Assembler.
-     */
-    LoggerComponentBuilder add(FilterComponentBuilder assembler);
+public interface LoggerComponentBuilder extends LoggableComponentBuilder<LoggerComponentBuilder> {
 }

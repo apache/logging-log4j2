@@ -125,7 +125,7 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
                     this.entityManager.close();
                 }
             } catch (final Exception e) {
-                LOGGER.warn("Failed to close entity manager while logging event or flushing buffer.", e);
+                logWarn("failed to close entity manager while logging event or flushing buffer", e);
             } finally {
                 this.entityManager = null;
             }

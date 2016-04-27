@@ -162,15 +162,6 @@ public interface LoggerContextAdminMBean {
     String getConfigFilter();
 
     /**
-     * Returns the class name of the object that is monitoring the configuration
-     * file for modifications.
-     * 
-     * @return the class name of the object that is monitoring the configuration
-     *         file for modifications
-     */
-    String getConfigMonitorClassName();
-
-    /**
      * Returns a map with configured properties.
      * 
      * @return a map with configured properties.

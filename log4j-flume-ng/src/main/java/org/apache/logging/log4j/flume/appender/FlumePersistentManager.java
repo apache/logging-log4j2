@@ -22,6 +22,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -44,6 +45,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.util.Strings;
 
@@ -68,7 +70,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
     /** Attribute name for the key provider. */
     public static final String KEY_PROVIDER = "keyProvider";
 
-    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
@@ -226,25 +228,25 @@ public class FlumePersistentManager extends FlumeAvroManager {
         threadPool.shutdown();
         try {
             threadPool.awaitTermination(SHUTDOWN_WAIT, TimeUnit.SECONDS);
-        } catch (final InterruptedException ie) {
-            LOGGER.warn("PersistentManager Thread pool failed to shut down");
+        } catch (final InterruptedException e) {
+            logWarn("PersistentManager Thread pool failed to shut down", e);
         }
         try {
             worker.join();
         } catch (final InterruptedException ex) {
-            LOGGER.debug("Interrupted while waiting for worker to complete");
+            logDebug("interrupted while waiting for worker to complete", ex);
         }
         try {
             LOGGER.debug("FlumePersistenceManager dataset status: {}", database.getStats(new StatsConfig()));
             database.close();
         } catch (final Exception ex) {
-            LOGGER.warn("Failed to close database", ex);
+            logWarn("failed to close database", ex);
         }
         try {
             environment.cleanLog();
             environment.close();
         } catch (final Exception ex) {
-            LOGGER.warn("Failed to close environment", ex);
+            logWarn("failed to close environment", ex);
         }
         super.releaseSub();
     }
@@ -841,7 +843,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
         @Override
         public Thread newThread(final Runnable r) {
-            final Thread thread = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+            final Thread thread = new Log4jThread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
             thread.setDaemon(true);
             if (thread.getPriority() != Thread.NORM_PRIORITY) {
                 thread.setPriority(Thread.NORM_PRIORITY);

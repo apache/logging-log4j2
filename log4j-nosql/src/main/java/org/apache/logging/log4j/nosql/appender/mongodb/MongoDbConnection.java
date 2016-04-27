@@ -81,9 +81,8 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<BasicDBObje
 
     @Override
     public void closeImpl() {
-        // there's no need to call this.mongo.close() since that literally closes the connection.
-        // MongoDBClient uses internal connection pooling.
-        // For more details, see LOG4J2-591.
+        // LOG4J2-1196
+        this.collection.getDB().getMongo().close();
     }
 
 }

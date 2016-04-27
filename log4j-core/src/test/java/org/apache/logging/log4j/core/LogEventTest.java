@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -104,7 +105,9 @@ public class LogEventTest {
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")) //
+                .setThreadId(1) // this must be initialized or the test fails
                 .setThreadName("this must be initialized or the test fails") //
+                .setThreadPriority(2) // this must be initialized or the test fails
                 .setNanoTime(0) //
                 .build();
         final LogEvent event2 = new Log4jLogEvent.Builder(event1).build();
@@ -120,6 +123,8 @@ public class LogEventTest {
         assertEquals("both zero nanoTime", event2, actual);
     }
 
+    @Test
+    @Ignore
     public void testEquals() {
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //

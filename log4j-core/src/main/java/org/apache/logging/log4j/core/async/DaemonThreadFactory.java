@@ -19,13 +19,15 @@ package org.apache.logging.log4j.core.async;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.logging.log4j.core.util.Log4jThread;
+
 /**
  * ThreadFactory that creates daemon threads for the async loggers.
  */
 public class DaemonThreadFactory implements ThreadFactory {
 
+    private static final AtomicInteger THREAD_NUMBER = new AtomicInteger(1);
     private final ThreadGroup group;
-    private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String threadNamePrefix;
 
     public DaemonThreadFactory(final String threadNamePrefix) {
@@ -37,8 +39,8 @@ public class DaemonThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(final Runnable runnable) {
-        final Thread thread = new Thread(group, runnable, threadNamePrefix
-                + threadNumber.getAndIncrement(), 0);
+        final Thread thread = new Log4jThread(group, runnable, threadNamePrefix
+                + THREAD_NUMBER.getAndIncrement(), 0);
         if (!thread.isDaemon()) {
             thread.setDaemon(true);
         }

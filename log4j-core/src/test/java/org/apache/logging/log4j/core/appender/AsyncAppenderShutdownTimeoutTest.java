@@ -19,28 +19,19 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 /**
  *
  */
 public class AsyncAppenderShutdownTimeoutTest {
-    private static final String CONFIG = "log4j-asynch-shutdownTimeout.xml";
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-    }
+    @ClassRule
+    public static LoggerContextRule init = new LoggerContextRule("log4j-asynch-shutdownTimeout.xml");
 
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-    }
-
-    @Test(timeout = 2000)
+    @Test(timeout = 5000)
     public void shutdownTest() throws Exception {
         final LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
         final Logger logger = ctx.getLogger("Logger");

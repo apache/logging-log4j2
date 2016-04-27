@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
-import java.util.Objects;
-
 import javax.management.ObjectName;
 
 import com.lmax.disruptor.RingBuffer;
@@ -45,7 +43,7 @@ public class RingBufferAdmin implements RingBufferAdminMBean {
     }
     
     protected RingBufferAdmin(final RingBuffer<?> ringBuffer, final String mbeanName) {
-        this.ringBuffer = Objects.requireNonNull(ringBuffer, "ringbuffer");        
+        this.ringBuffer = ringBuffer;        
         try {
             objectName = new ObjectName(mbeanName);
         } catch (final Exception e) {
@@ -55,12 +53,12 @@ public class RingBufferAdmin implements RingBufferAdminMBean {
     
     @Override
     public long getBufferSize() {
-        return ringBuffer.getBufferSize();
+        return ringBuffer == null ? 0 : ringBuffer.getBufferSize();
     }
     
     @Override
     public long getRemainingCapacity() {
-        return ringBuffer.remainingCapacity();
+        return ringBuffer == null ? 0 : ringBuffer.remainingCapacity();
     }
 
     /**

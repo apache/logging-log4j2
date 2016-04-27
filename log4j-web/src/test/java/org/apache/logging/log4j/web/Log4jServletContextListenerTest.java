@@ -96,15 +96,4 @@ public class Log4jServletContextListenerTest {
         }
     }
 
-    @Test
-    public void testDestroy() {
-        replay(this.event, this.servletContext, this.initializer);
-
-        try {
-            this.listener.contextDestroyed(this.event);
-            fail("Expected an IllegalStateException.");
-        } catch (final IllegalStateException ignore) {
-
-        }
-    }
 }

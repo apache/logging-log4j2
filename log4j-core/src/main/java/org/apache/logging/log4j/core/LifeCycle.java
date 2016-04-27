@@ -32,7 +32,7 @@ public interface LifeCycle {
     /**
      * Status of a life cycle like a {@link LoggerContext}.
      */
-    public enum State {
+    enum State {
         /** Object is in its initial state and not yet initialized. */
         INITIALIZING,
         /** Initialized but not yet started. */

@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.spi.StandardLevel;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
@@ -109,8 +110,8 @@ public final class Level implements Comparable<Level>, Serializable {
     private final StandardLevel standardLevel;
 
     private Level(final String name, final int intLevel) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Illegal null Level constant");
+        if (Strings.isEmpty(name)) {
+            throw new IllegalArgumentException("Illegal null or empty Level name.");
         }
         if (intLevel < 0) {
             throw new IllegalArgumentException("Illegal Level int less than zero.");
@@ -157,6 +158,11 @@ public final class Level implements Comparable<Level>, Serializable {
     /**
      * Compares this level against the level passed as an argument and returns true if this level is the same or is less
      * specific.
+     * <p>
+     * Concretely, {@link #TRACE} is less specific than {@link #DEBUG}, which is less specific than {@link #INFO},
+     * etc., until {@link #FATAL}, and finally {@link #OFF}, which is the most specific standard level.
+     * The least specific level is {@link #ALL}.
+     * </p>
      *
      * @param level The level to test.
      * @return True if this level Level is less specific or the same as the given Level.
@@ -168,6 +174,11 @@ public final class Level implements Comparable<Level>, Serializable {
     /**
      * Compares this level against the level passed as an argument and returns true if this level is the same or is more
      * specific.
+     * <p>
+     * Concretely, {@link #FATAL} is more specific than {@link #ERROR}, which is more specific than {@link #WARN},
+     * etc., until {@link #TRACE}, and finally {@link #ALL}, which is the least specific standard level.
+     * The most specific level is {@link #OFF}.
+     * </p>
      *
      * @param level The level to test.
      * @return True if this level Level is more specific or the same as the given Level.
@@ -219,7 +230,7 @@ public final class Level implements Comparable<Level>, Serializable {
 
     /**
      * Retrieves an existing Level or creates on if it didn't previously exist.
-     * 
+     *
      * @param name The name of the level.
      * @param intValue The integer value for the Level. If the level was previously created this value is ignored.
      * @return The Level.
@@ -240,7 +251,7 @@ public final class Level implements Comparable<Level>, Serializable {
 
     /**
      * Return the Level associated with the name or null if the Level cannot be found.
-     * 
+     *
      * @param name The name of the Level.
      * @return The Level or null.
      */
@@ -277,7 +288,7 @@ public final class Level implements Comparable<Level>, Serializable {
 
     /**
      * Return an array of all the Levels that have been registered.
-     * 
+     *
      * @return An array of Levels.
      */
     public static Level[] values() {
@@ -287,7 +298,7 @@ public final class Level implements Comparable<Level>, Serializable {
 
     /**
      * Return the Level associated with the name.
-     * 
+     *
      * @param name The name of the Level to return.
      * @return The Level.
      * @throws java.lang.NullPointerException if the Level name is {@code null}.

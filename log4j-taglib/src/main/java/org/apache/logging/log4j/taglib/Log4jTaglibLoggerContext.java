@@ -23,8 +23,9 @@ import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerRegistry;
 
 /**
  * This bridge between the tag library and the Log4j API ensures that instances of {@link Log4jTaglibLogger} are
@@ -35,11 +36,10 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 final class Log4jTaglibLoggerContext implements LoggerContext {
     // These were change to WeakHashMaps to avoid ClassLoader (memory) leak, something that's particularly
     // important in Servlet containers.
-    private static final WeakHashMap<ServletContext, Log4jTaglibLoggerContext> CONTEXTS =
-            new WeakHashMap<>();
+    private static final WeakHashMap<ServletContext, Log4jTaglibLoggerContext> CONTEXTS = new WeakHashMap<>();
 
-    private final WeakHashMap<String, Log4jTaglibLogger> loggers =
-            new WeakHashMap<>();
+    private final LoggerRegistry<Log4jTaglibLogger> loggerRegistry = new LoggerRegistry<>(
+            new LoggerRegistry.WeakMapFactory<Log4jTaglibLogger>());
 
     private final ServletContext servletContext;
 
@@ -58,22 +58,23 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     }
 
     @Override
-    public Log4jTaglibLogger getLogger(final String name, final MessageFactory factory) {
-        Log4jTaglibLogger logger = this.loggers.get(name);
+    public Log4jTaglibLogger getLogger(final String name, final MessageFactory messageFactory) {
+        // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
+        Log4jTaglibLogger logger = this.loggerRegistry.getLogger(name, messageFactory);
         if (logger != null) {
-            AbstractLogger.checkMessageFactory(logger, factory);
+            AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 
-        synchronized (this.loggers) {
-            logger = this.loggers.get(name);
+        synchronized (this.loggerRegistry) {
+            logger = this.loggerRegistry.getLogger(name, messageFactory);
             if (logger == null) {
                 final LoggerContext context = LogManager.getContext(false);
-                final ExtendedLogger original = factory == null ?
-                        context.getLogger(name) : context.getLogger(name, factory);
+                final ExtendedLogger original = messageFactory == null ?
+                        context.getLogger(name) : context.getLogger(name, messageFactory);
                 // wrap a logger from an underlying implementation
                 logger = new Log4jTaglibLogger(original, name, original.getMessageFactory());
-                this.loggers.put(name, logger);
+                this.loggerRegistry.putIfAbsent(name, messageFactory, logger);
             }
         }
 
@@ -82,7 +83,17 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
 
     @Override
     public boolean hasLogger(final String name) {
-        return this.loggers.containsKey(name);
+        return loggerRegistry.hasLogger(name);
+    }
+
+    @Override
+    public boolean hasLogger(String name, MessageFactory messageFactory) {
+        return loggerRegistry.hasLogger(name, messageFactory);
+    }
+
+    @Override
+    public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
+        return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 
     static synchronized Log4jTaglibLoggerContext getInstance(final ServletContext servletContext) {

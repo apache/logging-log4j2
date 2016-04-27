@@ -38,7 +38,7 @@ class BasicThreadInformation implements ThreadInformation {
      * The Constructor.
      * @param thread The Thread to capture.
      */
-    public BasicThreadInformation(final Thread thread) {
+    BasicThreadInformation(final Thread thread) {
         this.id = thread.getId();
         this.name = thread.getName();
         this.longName = thread.toString();

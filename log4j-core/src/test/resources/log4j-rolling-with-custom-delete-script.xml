@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<Configuration status="WARN" name="RollingWithCustomDeleteScriptTest">
+  <Properties>
+    <Property name="base">target/rolling-with-delete-script/</Property>
+  </Properties>
+
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="${base}/rollingtest.log" 
+                   filePattern="${base}/test/test-%i.log">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="50" />
+      </Policies>
+      <DefaultRolloverStrategy max="100" stopCustomActionsOnError="true">
+        <Delete basePath="${base}/test" maxDepth="1" followLinks="false">
+          <ScriptCondition>
+            <Script name="GroovyCondition" language="groovy"><![CDATA[
+                import java.nio.file.*;
+                
+                def pattern = ~/test-(\d*)\.log/;
+                assert pattern.getClass() == java.util.regex.Pattern;
+                
+                def copy = pathList.collect{it};
+                pathList.each { pathWithAttributes ->
+                  def relative = basePath.relativize pathWithAttributes.path
+                  def str = relative.toString();
+                  statusLogger.trace 'SCRIPT: relative path is ' + str + " (base=$basePath)";
+                  
+                  // keep only files with odd indexes
+                  
+                  def m = pattern.matcher(str);
+                  if (m.find()) {
+                    def index = m.group(1) as int;
+                    def isOdd = (index % 2) == 1;
+                    if (isOdd) {
+                      copy.remove pathWithAttributes; // remove path with odd index from list to delete
+                      statusLogger.trace 'SCRIPT: not deleting path ' + pathWithAttributes;
+                    }
+                  }
+                }
+                statusLogger.trace 'SCRIPT: returning ' + copy;
+                copy;
+              ]]>
+            </Script>
+          </ScriptCondition>
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+
+  <Loggers>
+    <Root level="trace">
+      <AppenderRef ref="RollingFile" />
+    </Root>
+  </Loggers>
+
+</Configuration>

@@ -16,9 +16,15 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.FileConfigurationMonitor;
+import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.builder.api.Component;
@@ -26,28 +32,25 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Patterns;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * This is the general version of the Configuration created by the Builder. It may be extended to
  * enhance its functionality.
+ *
+ * @since 2.4
  */
 public class BuiltConfiguration extends AbstractConfiguration {
-    private static final long serialVersionUID = -3071897330997405132L;
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private final StatusConfiguration statusConfig;
-    protected Component root;
+    protected Component rootComponent;
     private Component loggersComponent;
     private Component appendersComponent;
     private Component filtersComponent;
     private Component propertiesComponent;
     private Component customLevelsComponent;
+    private Component scriptsComponent;
     private String contentType = "text";
 
     public BuiltConfiguration(final ConfigurationSource source, final Component rootComponent) {
@@ -55,6 +58,10 @@ public class BuiltConfiguration extends AbstractConfiguration {
         statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
+                case "Scripts": {
+                    scriptsComponent = component;
+                    break;
+                }
                 case "Loggers": {
                     loggersComponent = component;
                     break;
@@ -77,7 +84,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 }
             }
         }
-        root = rootComponent;
+        this.rootComponent = rootComponent;
     }
 
     @Override
@@ -85,6 +92,9 @@ public class BuiltConfiguration extends AbstractConfiguration {
         final List<Node> children = rootNode.getChildren();
         if (propertiesComponent.getComponents().size() > 0) {
             children.add(convertToNode(rootNode, propertiesComponent));
+        }
+        if (scriptsComponent.getComponents().size() > 0) {
+            children.add(convertToNode(rootNode, scriptsComponent));
         }
         if (customLevelsComponent.getComponents().size() > 0) {
             children.add(convertToNode(rootNode, customLevelsComponent));
@@ -98,14 +108,14 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 children.add(convertToNode(rootNode, filtersComponent));
             }
         }
-        root = null;
+        rootComponent = null;
     }
 
     public String getContentType() {
         return this.contentType;
     }
 
-    public void setContentType(String contentType) {
+    public void setContentType(final String contentType) {
         this.contentType = contentType;
     }
 
@@ -141,8 +151,12 @@ public class BuiltConfiguration extends AbstractConfiguration {
             final ConfigurationSource configSource = getConfigurationSource();
             if (configSource != null) {
                 final File configFile = configSource.getFile();
-                if (intervalSeconds > 0 && configFile != null) {
-                    monitor = new FileConfigurationMonitor((Reconfigurable)this, configFile, listeners, intervalSeconds);
+                if (intervalSeconds > 0) {
+                    getWatchManager().setIntervalSeconds(intervalSeconds);
+                    if (configFile != null) {
+                        FileWatcher watcher = new ConfiguratonFileWatcher((Reconfigurable) this, listeners);
+                        getWatchManager().watchFile(configFile, watcher);
+                    }
                 }
             }
         }

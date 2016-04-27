@@ -206,10 +206,8 @@ public class ResolverUtil {
                         loadImplementationsInJar(test, packageName, file);
                     }
                 }
-            } catch (final IOException ioe) {
+            } catch (final IOException | URISyntaxException ioe) {
                 LOGGER.warn("could not read entries", ioe);
-            } catch (final URISyntaxException e) {
-                LOGGER.warn("could not read entries", e);
             }
         }
     }

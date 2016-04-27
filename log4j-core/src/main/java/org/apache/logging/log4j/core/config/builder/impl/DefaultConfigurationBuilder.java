@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import java.lang.reflect.Constructor;
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -32,13 +35,12 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
-
-import java.lang.reflect.Constructor;
-import java.util.List;
+import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 
 /**
  * @param <T> The BuiltConfiguration type.
- *
+ * @since 2.4
  */
 public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
 
@@ -48,6 +50,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component filters;
     private Component properties;
     private Component customLevels;
+    private Component scripts;
     private final Class<T> clazz;
     private ConfigurationSource source;
     private int monitorInterval = 0;
@@ -59,6 +62,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     private String name = null;
 
+    @SuppressWarnings("unchecked")
     public DefaultConfigurationBuilder() {
         this((Class<T>) BuiltConfiguration.class);
         root.addAttribute("name", "Built");
@@ -72,6 +76,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         final List<Component> components = root.getComponents();
         properties = new Component("Properties");
         components.add(properties);
+        scripts = new Component("Scripts");
+        components.add(scripts);
         customLevels = new Component("CustomLevels");
         components.add(customLevels);
         filters = new Component("Filters");
@@ -81,7 +87,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         loggers = new Component("Loggers");
         components.add(loggers);
     }
-    
+
     protected ConfigurationBuilder<T> add(final Component parent, final ComponentBuilder<?> builder) {
         parent.getComponents().add(builder.build());
         return this;
@@ -100,6 +106,16 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> add(final FilterComponentBuilder builder) {
         return add(filters, builder);
+    }
+
+    @Override
+    public ConfigurationBuilder<T> add(final ScriptComponentBuilder builder) {
+        return add(scripts, builder);
+    }
+
+    @Override
+    public ConfigurationBuilder<T> add(final ScriptFileComponentBuilder builder) {
+        return add(scripts, builder);
     }
 
     @Override
@@ -125,6 +141,11 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public T build() {
+        return build(true);
+    }
+
+    @Override
+    public T build(boolean initialize) {
         T configuration;
         try {
             if (source == null) {
@@ -133,6 +154,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             final Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
             configuration = constructor.newInstance(source, root);
             configuration.setMonitorInterval(monitorInterval);
+            configuration.getRootNode().getAttributes().putAll(root.getAttributes());
             if (name != null) {
                 configuration.setName(name);
             }
@@ -155,8 +177,26 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }
         configuration.getStatusConfiguration().initialize();
-        configuration.initialize();
+        if (initialize) {
+            configuration.initialize();
+        }
         return configuration;
+    }
+
+    @Override
+    public ScriptComponentBuilder newScript(final String name, final String language, final String text) {
+        return new DefaultScriptComponentBuilder(this, name, language, text);
+    }
+
+
+    @Override
+    public ScriptFileComponentBuilder newScriptFile(final String path) {
+        return new DefaultScriptFileComponentBuilder(this, path, path);
+    }
+
+    @Override
+    public ScriptFileComponentBuilder newScriptFile(final String name, final String path) {
+        return new DefaultScriptFileComponentBuilder(this, name, path);
     }
 
     @Override
@@ -171,22 +211,48 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger");
+        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger", false);
+    }
+
+    @Override
+    public LoggerComponentBuilder newAsyncLogger(final String name, final Level level, boolean includeLocation) {
+        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger", includeLocation);
     }
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final String level) {
+        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger", false);
+    }
+
+    @Override
+    public LoggerComponentBuilder newAsyncLogger(final String name, final String level, boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
     }
 
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot");
+        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot", false);
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newAsyncRootLogger(final Level level, boolean includeLocation) {
+        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot", includeLocation);
     }
 
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot");
+        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot", false);
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newAsyncRootLogger(final String level, boolean includeLocation) {
+        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot", includeLocation);
+    }
+
+
+    @Override
+    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String type) {
+        return new DefaultComponentBuilder<>(this, type);
     }
 
     @Override
@@ -195,7 +261,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String name, final String type, final String value) {
+    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String name, final String type,
+                                                                            final String value) {
         return new DefaultComponentBuilder<>(this, name, type, value);
     }
 
@@ -206,7 +273,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public FilterComponentBuilder newFilter(final String type, final Filter.Result onMatch, final Filter.Result onMisMatch) {
+    public FilterComponentBuilder newFilter(final String type, final Filter.Result onMatch,
+                                            final Filter.Result onMisMatch) {
         return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMisMatch.name());
     }
 
@@ -223,22 +291,42 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newLogger(final String name, final Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString());
+        return new DefaultLoggerComponentBuilder(this, name, level.toString(), true);
+    }
+
+    @Override
+    public LoggerComponentBuilder newLogger(final String name, final Level level, boolean includeLocation) {
+        return new DefaultLoggerComponentBuilder(this, name, level.toString(), includeLocation);
     }
 
     @Override
     public LoggerComponentBuilder newLogger(final String name, final String level) {
-        return new DefaultLoggerComponentBuilder(this, name, level);
+        return new DefaultLoggerComponentBuilder(this, name, level, true);
+    }
+
+    @Override
+    public LoggerComponentBuilder newLogger(final String name, final String level, boolean includeLocation) {
+        return new DefaultLoggerComponentBuilder(this, name, level, includeLocation);
     }
 
     @Override
     public RootLoggerComponentBuilder newRootLogger(final Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString());
+        return new DefaultRootLoggerComponentBuilder(this, level.toString(), true);
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newRootLogger(final Level level, boolean includeLocation) {
+        return new DefaultRootLoggerComponentBuilder(this, level.toString(), includeLocation);
     }
 
     @Override
     public RootLoggerComponentBuilder newRootLogger(final String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level);
+        return new DefaultRootLoggerComponentBuilder(this, level, true);
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newRootLogger(final String level, boolean includeLocation) {
+        return new DefaultRootLoggerComponentBuilder(this, level, includeLocation);
     }
 
     @Override
@@ -298,6 +386,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> setVerbosity(final String verbosity) {
         this.verbosity = verbosity;
+        return this;
+    }
+
+    @Override
+    public ConfigurationBuilder<T> addRootProperty(String key, String value) {
+        root.getAttributes().put(key, value);
         return this;
     }
 }

@@ -21,7 +21,9 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -74,12 +76,17 @@ public abstract class AbstractManager {
                             + name + "] with data [" + data + "]");
                 }
                 MAP.put(name, manager);
+            } else {
+                manager.updateData(data);
             }
             manager.count++;
             return manager;
         } finally {
             LOCK.unlock();
         }
+    }
+
+    public void updateData(final Object data) {
     }
 
     /**
@@ -142,4 +149,23 @@ public abstract class AbstractManager {
     public Map<String, String> getContentFormat() {
         return new HashMap<>();
     }
+
+    protected void log(Level level, String message, Throwable throwable) {
+        Message m = LOGGER.getMessageFactory().newMessage("{} {} {}: {}",
+                getClass().getSimpleName(), getName(), message, throwable);
+        LOGGER.log(level, m, throwable);
+    }
+
+    protected void logDebug(String message, Throwable throwable) {
+        log(Level.DEBUG, message, throwable);
+    }
+
+    protected void logError(String message, Throwable throwable) {
+        log(Level.ERROR, message, throwable);
+    }
+
+    protected void logWarn(String message, Throwable throwable) {
+        log(Level.WARN, message, throwable);
+    }
+
 }

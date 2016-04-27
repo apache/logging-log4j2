@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -136,7 +138,7 @@ import org.apache.logging.log4j.util.Strings;
  * property to <b>true</b>.
  * </p>
  */
-public class StrSubstitutor {
+public class StrSubstitutor implements ConfigurationAware {
 
     /**
      * Constant for the default escape character.
@@ -184,6 +186,10 @@ public class StrSubstitutor {
      * The flag whether substitution in variable names is enabled.
      */
     private boolean enableSubstitutionInVariables;
+    /**
+     * The currently active Configuration for use by ConfigurationAware StrLookup implementations.
+     */
+    private Configuration configuration;
 
     //-----------------------------------------------------------------------
     /**
@@ -1294,6 +1300,9 @@ public class StrSubstitutor {
      * @param variableResolver  the VariableResolver
      */
     public void setVariableResolver(final StrLookup variableResolver) {
+        if (variableResolver instanceof ConfigurationAware && this.configuration != null) {
+            ((ConfigurationAware) variableResolver).setConfiguration(this.configuration);
+        }
         this.variableResolver = variableResolver;
     }
 
@@ -1351,5 +1360,13 @@ public class StrSubstitutor {
     @Override
     public String toString() {
         return "StrSubstitutor(" + variableResolver.toString() + ')';
+    }
+
+    @Override
+    public void setConfiguration(final Configuration configuration) {
+        this.configuration = configuration;
+        if (this.variableResolver instanceof ConfigurationAware) {
+            ((ConfigurationAware) this.variableResolver).setConfiguration(this.configuration);
+        }
     }
 }

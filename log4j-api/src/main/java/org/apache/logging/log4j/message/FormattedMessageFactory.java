@@ -22,6 +22,13 @@ package org.apache.logging.log4j.message;
  */
 public class FormattedMessageFactory extends AbstractMessageFactory {
 
+    /**
+     * Constructs a message factory with default flow strings.
+     */
+    public FormattedMessageFactory() {
+        super();
+    }
+
     private static final long serialVersionUID = 1L;
 
     /**

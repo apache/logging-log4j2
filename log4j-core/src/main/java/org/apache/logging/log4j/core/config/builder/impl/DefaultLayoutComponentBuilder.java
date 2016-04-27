@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 
 /**
- *
+ * @since 2.4
  */
 class DefaultLayoutComponentBuilder extends DefaultComponentAndConfigurationBuilder<LayoutComponentBuilder>
         implements LayoutComponentBuilder {

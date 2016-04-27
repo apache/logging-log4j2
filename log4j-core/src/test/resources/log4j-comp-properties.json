@@ -1,0 +1,16 @@
+{
+    "Configuration" : {
+        "status": "warn",
+        "name": "YAMLConfigTest",
+
+        "properties" : {
+            "property" : [{
+                "name" : "propertyShared",
+                "value": "json"
+            },{
+                "name" : "propertyJson",
+                "value": "json"
+            }]
+        }
+    }
+}

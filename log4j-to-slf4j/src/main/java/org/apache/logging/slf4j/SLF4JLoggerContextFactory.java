@@ -21,6 +21,7 @@ import java.net.URI;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  *
@@ -33,7 +34,7 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
         // LOG4J2-230, LOG4J2-204 (improve error reporting when misconfigured)
         boolean misconfigured = false;
         try {
-            Class.forName("org.slf4j.helpers.Log4jLoggerFactory");
+            LoaderUtil.loadClass("org.slf4j.helpers.Log4jLoggerFactory");
             misconfigured = true;
         } catch (final ClassNotFoundException classNotFoundIsGood) {
             LOGGER.debug("org.slf4j.helpers.Log4jLoggerFactory is not on classpath. Good!");
@@ -57,6 +58,6 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
     }
 
     @Override
-    public void removeContext(final LoggerContext context) {
+    public void removeContext(final LoggerContext ignored) {
     }
 }

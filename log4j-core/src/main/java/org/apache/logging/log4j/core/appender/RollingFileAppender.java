@@ -46,13 +46,11 @@ import org.apache.logging.log4j.core.util.Integers;
 public final class RollingFileAppender extends AbstractOutputStreamAppender<RollingFileManager> {
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
-    private static final long serialVersionUID = 1L;
 
     private final String fileName;
     private final String filePattern;
     private Object advertisement;
     private final Advertiser advertiser;
-
 
     private RollingFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final RollingFileManager manager, final String fileName, final String filePattern,
@@ -183,7 +181,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
         if (strategy == null) {
             strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
-                    String.valueOf(Deflater.DEFAULT_COMPRESSION), config);
+                    String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, config);
         }
 
         if (layout == null) {
@@ -191,7 +189,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         }
 
         final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend,
-            isBuffered, policy, strategy, advertiseURI, layout, bufferSize);
+            isBuffered, policy, strategy, advertiseURI, layout, bufferSize, isFlush);
         if (manager == null) {
             return null;
         }

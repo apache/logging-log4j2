@@ -23,23 +23,23 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.*;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.*;
-import static org.hamcrest.Matchers.*;
-
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;
 
 /**
@@ -64,7 +64,7 @@ public class RollingAppenderSizeTest {
                 {"log4j-rolling-bzip2.xml", ".bz2"}, //
                 {"log4j-rolling-deflate.xml", ".deflate"}, //
                 {"log4j-rolling-pack200.xml", ".pack200"}, //
-                {"log4j-rolling-xy.xml", ".xy"},});
+                {"log4j-rolling-xz.xml", ".xz"},});
                 // @formatter:on
     }
 
@@ -81,11 +81,6 @@ public class RollingAppenderSizeTest {
         this.logger = this.init.getLogger(RollingAppenderSizeTest.class.getName());
     }
 
-    @After
-    public void tearDown() throws Exception {
-        deleteDir();
-    }
-
     @Test
     public void testAppender() throws Exception {
         for (int i = 0; i < 100; ++i) {
@@ -99,15 +94,20 @@ public class RollingAppenderSizeTest {
 
         DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
         if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
-                || DefaultRolloverStrategy.FileExtensions.XY == ext
+                || DefaultRolloverStrategy.FileExtensions.XZ == ext
                 || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
-            return; // commons compress cannot deflate zip and xy? TODO test decompressing these formats
+            return; // commons compress cannot deflate zip and xz? TODO test decompressing these formats
         }
         for (File file : files) {
             if (file.getName().endsWith(fileExtension)) {
                 CompressorInputStream in = null;
                 try (FileInputStream fis = new FileInputStream(file)) {
-                    in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
+                    try {
+                        in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
+                    } catch (CompressorException ce) {
+                        ce.printStackTrace();
+                        fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
+                    }
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     IOUtils.copy(in, baos);
                     String text = new String(baos.toByteArray(), Charset.defaultCharset());
@@ -121,6 +121,7 @@ public class RollingAppenderSizeTest {
                 }
             }
         }
+        deleteDir();
     }
 
     private static void deleteDir() {

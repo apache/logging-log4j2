@@ -54,7 +54,7 @@ public final class ProviderUtil {
     protected static final Lock STARTUP_LOCK = new ReentrantLock();
 
     private static final String API_VERSION = "Log4jAPIVersion";
-    private static final String[] COMPATIBLE_API_VERSIONS = {"2.0.0", "2.1.0"};
+    private static final String[] COMPATIBLE_API_VERSIONS = {"2.0.0", "2.1.0", "2.2.0", "2.3.0", "2.4.0", "2.5.0", "2.6.0"};
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     // STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause the startup and
@@ -78,7 +78,9 @@ public final class ProviderUtil {
         try {
             final Properties props = PropertiesUtil.loadClose(url.openStream(), url);
             if (validVersion(props.getProperty(API_VERSION))) {
-                PROVIDERS.add(new Provider(props, url, cl));
+                final Provider provider = new Provider(props, url, cl);
+                PROVIDERS.add(provider);
+                LOGGER.debug("Loaded Provider {}", provider);
             }
         } catch (final IOException e) {
             LOGGER.error("Unable to open {}", url, e);

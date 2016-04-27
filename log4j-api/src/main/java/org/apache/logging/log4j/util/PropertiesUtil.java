@@ -21,10 +21,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <em>Consider this class private.</em>
@@ -36,8 +35,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class PropertiesUtil {
 
     private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil("log4j2.component.properties");
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Properties props;
 
@@ -57,23 +54,12 @@ public final class PropertiesUtil {
      * @param propertiesFileName the location of properties file to load
      */
     public PropertiesUtil(final String propertiesFileName) {
-        @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
         final Properties properties = new Properties();
         for (final URL url : LoaderUtil.findResources(propertiesFileName)) {
-            InputStream in = null;
-            try {
-                in = url.openStream();
+            try (final InputStream in = url.openStream()) {
                 properties.load(in);
             } catch (final IOException ioe) {
-                LOGGER.error("Unable to read {}", url.toString(), ioe);
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (final IOException ioe) {
-                        LOGGER.error("Unable to close {}", url.toString(), ioe);
-                    }
-                }
+                LowLevelLogUtil.logException("Unable to read " + url.toString(), ioe);
             }
         }
         this.props = properties;
@@ -92,12 +78,12 @@ public final class PropertiesUtil {
             try {
                 props.load(in);
             } catch (final IOException e) {
-                LOGGER.error("Unable to read {}", source, e);
+                LowLevelLogUtil.logException("Unable to read " + source, e);
             } finally {
                 try {
                     in.close();
                 } catch (final IOException e) {
-                    LOGGER.error("Unable to close {}", source, e);
+                    LowLevelLogUtil.logException("Unable to close " + source, e);
                 }
             }
         }
@@ -111,89 +97,6 @@ public final class PropertiesUtil {
      */
     public static PropertiesUtil getProperties() {
         return LOG4J_PROPERTIES;
-    }
-
-    /**
-     * Gets the named property as a String.
-     *
-     * @param name the name of the property to look up
-     * @return the String value of the property or {@code null} if undefined.
-     */
-    public String getStringProperty(final String name) {
-        String prop = null;
-        try {
-            prop = System.getProperty(name);
-        } catch (final SecurityException ignored) {
-            // Ignore
-        }
-        return prop == null ? props.getProperty(name) : prop;
-    }
-
-    /**
-     * Gets the named property as an integer.
-     *
-     * @param name the name of the property to look up
-     * @param defaultValue the default value to use if the property is undefined
-     * @return the parsed integer value of the property or {@code defaultValue} if it was undefined or could not be
-     *         parsed.
-     */
-    public int getIntegerProperty(final String name, final int defaultValue) {
-        String prop = null;
-        try {
-            prop = System.getProperty(name);
-        } catch (final SecurityException ignored) {
-            // Ignore
-        }
-        if (prop == null) {
-            prop = props.getProperty(name);
-        }
-        if (prop != null) {
-            try {
-                return Integer.parseInt(prop);
-            } catch (final Exception ignored) {
-                return defaultValue;
-            }
-        }
-        return defaultValue;
-    }
-
-    /**
-     * Gets the named property as a long.
-     *
-     * @param name the name of the property to look up
-     * @param defaultValue the default value to use if the property is undefined
-     * @return the parsed long value of the property or {@code defaultValue} if it was undefined or could not be parsed.
-     */
-    public long getLongProperty(final String name, final long defaultValue) {
-        String prop = null;
-        try {
-            prop = System.getProperty(name);
-        } catch (final SecurityException ignored) {
-            // Ignore
-        }
-        if (prop == null) {
-            prop = props.getProperty(name);
-        }
-        if (prop != null) {
-            try {
-                return Long.parseLong(prop);
-            } catch (final Exception ignored) {
-                return defaultValue;
-            }
-        }
-        return defaultValue;
-    }
-
-    /**
-     * Gets the named property as a String.
-     *
-     * @param name the name of the property to look up
-     * @param defaultValue the default value to use if the property is undefined
-     * @return the String value of the property or {@code defaultValue} if undefined.
-     */
-    public String getStringProperty(final String name, final String defaultValue) {
-        final String prop = getStringProperty(name);
-        return (prop == null) ? defaultValue : prop;
     }
 
     /**
@@ -221,15 +124,101 @@ public final class PropertiesUtil {
     }
 
     /**
+     * Gets the named property as a double.
+     *
+     * @param name the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the parsed double value of the property or {@code defaultValue} if it was undefined or could not be parsed.
+     */
+    public double getDoubleProperty(final String name, final double defaultValue) {
+        final String prop = getStringProperty(name);
+        if (prop != null) {
+            try {
+                return Double.parseDouble(prop);
+            } catch (final Exception ignored) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    /**
+     * Gets the named property as an integer.
+     *
+     * @param name the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the parsed integer value of the property or {@code defaultValue} if it was undefined or could not be
+     *         parsed.
+     */
+    public int getIntegerProperty(final String name, final int defaultValue) {
+        final String prop = getStringProperty(name);
+        if (prop != null) {
+            try {
+                return Integer.parseInt(prop);
+            } catch (final Exception ignored) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    /**
+     * Gets the named property as a long.
+     *
+     * @param name the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the parsed long value of the property or {@code defaultValue} if it was undefined or could not be parsed.
+     */
+    public long getLongProperty(final String name, final long defaultValue) {
+        final String prop = getStringProperty(name);
+        if (prop != null) {
+            try {
+                return Long.parseLong(prop);
+            } catch (final Exception ignored) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    /**
+     * Gets the named property as a String.
+     *
+     * @param name the name of the property to look up
+     * @return the String value of the property or {@code null} if undefined.
+     */
+    public String getStringProperty(final String name) {
+        String prop = null;
+        try {
+            prop = System.getProperty(name);
+        } catch (final SecurityException ignored) {
+            // Ignore
+        }
+        return prop == null ? props.getProperty(name) : prop;
+    }
+
+    /**
+     * Gets the named property as a String.
+     *
+     * @param name the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the String value of the property or {@code defaultValue} if undefined.
+     */
+    public String getStringProperty(final String name, final String defaultValue) {
+        final String prop = getStringProperty(name);
+        return (prop == null) ? defaultValue : prop;
+    }
+
+    /**
      * Return the system properties or an empty Properties object if an error occurs.
-     * 
+     *
      * @return The system properties.
      */
     public static Properties getSystemProperties() {
         try {
             return new Properties(System.getProperties());
         } catch (final SecurityException ex) {
-            LOGGER.error("Unable to access system properties.", ex);
+            LowLevelLogUtil.logException("Unable to access system properties.", ex);
             // Sandboxed - can't read System Properties
             return new Properties();
         }
@@ -238,32 +227,61 @@ public final class PropertiesUtil {
     /**
      * Extracts properties that start with or are equals to the specific prefix and returns them in a new Properties
      * object with the prefix removed.
-     * 
+     *
      * @param properties The Properties to evaluate.
      * @param prefix The prefix to extract.
      * @return The subset of properties.
      */
-    public static Properties extractSubset(Properties properties, String prefix) {
-        Properties subset = new Properties();
+    public static Properties extractSubset(final Properties properties, final String prefix) {
+        final Properties subset = new Properties();
 
         if (prefix == null || prefix.length() == 0) {
             return subset;
         }
 
-        String prefixToMatch = prefix.charAt(prefix.length() - 1) != '.' ? prefix + '.' : prefix;
+        final String prefixToMatch = prefix.charAt(prefix.length() - 1) != '.' ? prefix + '.' : prefix;
 
-        List<String> keys = new ArrayList<>();
+        final List<String> keys = new ArrayList<>();
 
-        for (String key : properties.stringPropertyNames()) {
+        for (final String key : properties.stringPropertyNames()) {
             if (key.startsWith(prefixToMatch)) {
                 subset.setProperty(key.substring(prefixToMatch.length()), properties.getProperty(key));
                 keys.add(key);
             }
         }
-        for (String key : keys) {
+        for (final String key : keys) {
             properties.remove(key);
         }
 
         return subset;
     }
+
+    /**
+     * Partitions a properties map based on common key prefixes up to the first period.
+     *
+     * @param properties properties to partition
+     * @return the partitioned properties where each key is the common prefix (minus the period) and the values are
+     * new property maps without the prefix and period in the key
+     * @since 2.6
+     */
+    public static Map<String, Properties> partitionOnCommonPrefixes(final Properties properties) {
+        final Map<String, Properties> parts = new ConcurrentHashMap<>();
+        for (final String key : properties.stringPropertyNames()) {
+            final String prefix = key.substring(0, key.indexOf('.'));
+            if (!parts.containsKey(prefix)) {
+                parts.put(prefix, new Properties());
+            }
+            parts.get(prefix).setProperty(key.substring(key.indexOf('.') + 1), properties.getProperty(key));
+        }
+        return parts;
+    }
+
+    /**
+     * Returns true if system properties tell us we are running on Windows.
+     * @return true if system properties tell us we are running on Windows.
+     */
+    public boolean isOsWindows() {
+        return getStringProperty("os.name").startsWith("Windows");
+    }
+
 }

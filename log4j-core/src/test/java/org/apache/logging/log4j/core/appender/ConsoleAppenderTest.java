@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expectLastCall;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -37,9 +36,11 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.easymock.EasyMockSupport;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 
 /**
  *
@@ -89,7 +90,7 @@ public class ConsoleAppenderTest {
         abstract void systemSet(PrintStream printStream);
     }
 
-    private void testConsoleStreamManagerDoesNotClose(final PrintStream ps, final String targetName, final SystemSetter systemSetter) {
+    private void testConsoleStreamManagerDoesNotClose(final PrintStream ps, final Target targetName, final SystemSetter systemSetter) {
         try {
             psMock.write((byte[]) anyObject(), anyInt(), anyInt());
             expectLastCall().anyTimes();
@@ -99,8 +100,8 @@ public class ConsoleAppenderTest {
             mocks.replayAll();
             systemSetter.systemSet(psMock);
             final Layout<String> layout = PatternLayout.createLayout(null, null, null, null, null, false, false, null, null);
-            final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, targetName, "Console", "false",
-                    "false");
+            final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, targetName, "Console", false,
+                    false);
             app.start();
             assertTrue("Appender did not start", app.isStarted());
 
@@ -133,6 +134,7 @@ public class ConsoleAppenderTest {
     private void testFollowSystemPrintStream(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
         final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true)
                 .setIgnoreExceptions(false).build();
+        Assert.assertEquals(target, app.getTarget());
         app.start();
         try {
             final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -160,12 +162,12 @@ public class ConsoleAppenderTest {
 
     @Test
     public void testSystemErrStreamManagerDoesNotClose() {
-        testConsoleStreamManagerDoesNotClose(System.err, "SYSTEM_ERR", SystemSetter.SYSTEM_ERR);
+        testConsoleStreamManagerDoesNotClose(System.err, Target.SYSTEM_ERR, SystemSetter.SYSTEM_ERR);
     }
 
     @Test
     public void testSystemOutStreamManagerDoesNotClose() {
-        testConsoleStreamManagerDoesNotClose(System.out, "SYSTEM_OUT", SystemSetter.SYSTEM_OUT);
+        testConsoleStreamManagerDoesNotClose(System.out, Target.SYSTEM_OUT, SystemSetter.SYSTEM_OUT);
     }
 
 }

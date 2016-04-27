@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<Configuration status="WARN" name="RollingWithCustomDeleteScriptTest">
+  <Properties>
+    <Property name="base">target/rolling-with-delete-script-fri13th/</Property>
+  </Properties>
+
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="${base}/rollingtest.log" 
+                   filePattern="${base}/test/test-%d{yyyyMMdd}-%i.log">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="50" />
+      </Policies>
+      <DefaultRolloverStrategy max="100" stopCustomActionsOnError="true">
+        <Delete basePath="${base}/test" maxDepth="1" followLinks="false">
+          <ScriptCondition>
+            <Script name="superstitious" language="groovy"><![CDATA[
+                import java.nio.file.*;
+                
+                def result = [];
+                def pattern = ~/test-(\d*)-(\d*)\.log/;
+                
+                pathList.each { pathWithAttributes ->
+                  def relative = basePath.relativize pathWithAttributes.path
+                  statusLogger.trace 'SCRIPT: relative path=' + relative + " (base=$basePath)";
+                  
+                  // remove files dated Friday the 13th
+                  
+                  def matcher = pattern.matcher(relative.toString());
+                  if (matcher.find()) {
+                    def dateString = matcher.group(1);
+                    def calendar = Date.parse("yyyyMMdd", dateString).toCalendar();
+                    def friday13th = calendar.get(Calendar.DAY_OF_MONTH) == 13 \
+                                  && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;
+                    if (friday13th) {
+                      result.add pathWithAttributes
+                      statusLogger.trace 'SCRIPT: deleting path ' + pathWithAttributes;
+                    }
+                  }
+                }
+                statusLogger.trace 'SCRIPT: returning' + result;
+                result;
+              ]]>
+            </Script>
+          </ScriptCondition>
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+
+  <Loggers>
+    <Root level="trace">
+      <AppenderRef ref="RollingFile" />
+    </Root>
+  </Loggers>
+
+</Configuration>

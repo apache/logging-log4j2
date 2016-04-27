@@ -23,7 +23,9 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 
 import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.*;
 
@@ -32,6 +34,9 @@ import static org.junit.Assert.*;
  */
 public class RandomAccessFileManagerTest {
 
+    @ClassRule
+    public static TemporaryFolder folder = new TemporaryFolder();
+
     /**
      * Test method for
      * {@link org.apache.logging.log4j.core.appender.RandomAccessFileManager#write(byte[], int, int)}
@@ -39,19 +44,18 @@ public class RandomAccessFileManagerTest {
      */
     @Test
     public void testWrite_multiplesOfBufferSize() throws IOException {
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
-            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
+            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
                     RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
             final byte[] data = new byte[size];
             manager.write(data); // no buffer overflow exception
 
-            // buffer is full but not flushed yet
-            assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 2, raf.length());
+            // all data is written if exceeds buffer size
+            assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
         }}
 
     /**
@@ -61,32 +65,31 @@ public class RandomAccessFileManagerTest {
      */
     @Test
     public void testWrite_dataExceedingBufferSize() throws IOException {
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
-            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
+            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
                     RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             final byte[] data = new byte[size];
             manager.write(data); // no exception
-            assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
+            // all data is written if exceeds buffer size
+            assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1, raf.length());
 
             manager.flush();
             assertEquals(size, raf.length()); // all data written to file now
         }}
-    
+
     @Test
     public void testConfigurableBufferSize() throws IOException {
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final int bufferSize = 4 * 1024;
             assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
-            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
+            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
                     bufferSize, null, null, true);
 
             // check the resulting buffer size is what was requested
@@ -95,18 +98,18 @@ public class RandomAccessFileManagerTest {
 
     @Test
     public void testWrite_dataExceedingMinBufferSize() throws IOException {
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final int bufferSize = 1;
-            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
+            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
                     bufferSize, null, null, true);
 
             final int size = bufferSize * 3 + 1;
             final byte[] data = new byte[size];
             manager.write(data); // no exception
-            assertEquals(bufferSize * 3, raf.length());
+            // all data is written if exceeds buffer size
+            assertEquals(bufferSize * 3 + 1, raf.length());
 
             manager.flush();
             assertEquals(size, raf.length()); // all data written to file now
@@ -115,8 +118,7 @@ public class RandomAccessFileManagerTest {
     @Test
     public void testAppendDoesNotOverwriteExistingFile() throws IOException {
         final boolean isAppend = true;
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         assertEquals(0, file.length());
 
         final byte[] bytes = new byte[4 * 1024];
@@ -130,7 +132,7 @@ public class RandomAccessFileManagerTest {
 
         final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
                 file.getAbsolutePath(), isAppend, true, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null);
-        manager.write(bytes, 0, bytes.length);
+        manager.write(bytes, 0, bytes.length, true);
         final int expected = bytes.length * 2;
         assertEquals("appended, not overwritten", expected, file.length());
     }

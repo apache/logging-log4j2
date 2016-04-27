@@ -16,21 +16,33 @@
  */
 package org.apache.logging.log4j;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.logging.log4j.message.EntryMessage;
+import org.apache.logging.log4j.message.JsonMessage;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-
-import static org.junit.Assert.*;
-
 /**
  *
  */
@@ -44,17 +56,133 @@ public class LoggerTest {
         // empty
     }
 
-    TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
-    List<String> results = logger.getEntries();
+    private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
+    private final List<String> results = logger.getEntries();
 
     @Test
     public void basicFlow() {
         logger.entry();
         logger.exit();
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
-        assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Incorrect Entry", results.get(0), equalTo("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("incorrect Exit", results.get(1), equalTo("EXIT[ FLOW ] TRACE Exit"));
 
+    }
+
+    @Test
+    public void flowTracingMessage() {
+        logger.traceEntry(new JsonMessage(System.getProperties()));
+        final Response response = new Response(-1, "Generic error");
+        logger.traceExit(new JsonMessage(response),  response);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", results.get(0), containsString("\"java.runtime.name\":"));
+        assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat("Missing exit data", results.get(1), containsString("\"message\":\"Generic error\""));
+    }
+
+    @Test
+    public void flowTracingString_ObjectArray1() {
+        logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        logger.traceExit("doFoo(a=1, b=2): {}", 3);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    public void flowTracingExitValueOnly() {
+        logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        logger.traceExit(3);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat("Missing exit data", results.get(1), containsString("3"));
+    }
+
+    @Test
+    public void flowTracingString_ObjectArray2() {
+        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        logger.traceExit(msg, 3);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    public void flowTracingVoidReturn() {
+        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        logger.traceExit(msg);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat("Missing exit data", results.get(1), endsWith("doFoo(a=1, b=2)"));
+    }
+
+    @Test
+    public void flowTracingNoExitArgs() {
+        logger.traceEntry();
+        logger.traceExit();
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+    }
+
+    @Test
+    public void flowTracingNoArgs() {
+        final EntryMessage message = logger.traceEntry();
+        logger.traceExit(message);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+    }
+
+    @Test
+    public void flowTracingString_SupplierOfObjectMessages() {
+        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<Message>() {
+            @Override
+            public Message get() {
+                return new ObjectMessage(1);
+            }
+        }, new Supplier<Message>() {
+            @Override
+            public Message get() {
+                return new ObjectMessage(2);
+            }
+        });
+        logger.traceExit(msg, 3);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    public void flowTracingString_SupplierOfStrings() {
+        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<String>() {
+            @Override
+            public String get() {
+                return "1";
+            }
+        }, new Supplier<String>() {
+            @Override
+            public String get() {
+                return "2";
+            }
+        });
+        logger.traceExit(msg, 3);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
     }
 
     @Test
@@ -65,7 +193,7 @@ public class LoggerTest {
             logger.catching(e);
             assertEquals(1, results.size());
             assertThat("Incorrect Catching",
-                    results.get(0), startsWith("CATCHING[ EXCEPTION ] ERROR catching java.lang.NullPointerException"));
+                    results.get(0), startsWith("CATCHING[ EXCEPTION ] ERROR Catching java.lang.NullPointerException"));
         }
     }
 
@@ -106,8 +234,8 @@ public class LoggerTest {
         final TestLogger altLogger = (TestLogger) LogManager.getFormatterLogger(getClass());
         assertEquals(testLogger.getName(), altLogger.getName());
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
+        assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -119,11 +247,18 @@ public class LoggerTest {
         // The message factory is only used when the logger is created.
         final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(TestStringFormatterMessageFactory.class);
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
+        assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
+    }
+
+    private static void assertMessageFactoryInstanceOf(MessageFactory factory, Class cls) {
+        if (factory instanceof MessageFactory2Adapter) {
+            factory = ((MessageFactory2Adapter) factory).getOriginal();
+        }
+        assertTrue(factory.getClass().isAssignableFrom(cls));
     }
 
     @Test
@@ -132,8 +267,8 @@ public class LoggerTest {
         // The message factory is only used when the logger is created.
         final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(new TestStringFormatterMessageFactory());
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
+        assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -144,8 +279,8 @@ public class LoggerTest {
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger("getLogger_String_StringFormatterMessageFactory");
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -159,7 +294,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(TestParameterizedMessageFactory.class,
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(" DEBUG " + Integer.MAX_VALUE, testLogger.getEntries().get(0));
@@ -172,7 +307,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(TestStringFormatterMessageFactory.class,
                 StringFormatterMessageFactory.INSTANCE);
         assertNotNull(testLogger);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -186,10 +321,18 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestParameterizedMessageFactory(),
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(" DEBUG " + Integer.MAX_VALUE, testLogger.getEntries().get(0));
+    }
+
+    private void assertEqualMessageFactory(final MessageFactory messageFactory, final TestLogger testLogger) {
+        MessageFactory actual = testLogger.getMessageFactory();
+        if (actual instanceof MessageFactory2Adapter) {
+            actual = ((MessageFactory2Adapter) actual).getOriginal();
+        }
+        assertEquals(messageFactory, actual);
     }
 
     @Test
@@ -200,7 +343,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestStringFormatterMessageFactory(),
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -212,9 +355,10 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         final TestLogger testLogger2 = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
                 ParameterizedMessageFactory.INSTANCE);
+        assertNotNull(testLogger2);
         //TODO: How to test?
         //This test context always creates new loggers, other test context impls I tried fail other tests.
         //assertEquals(messageFactory, testLogger2.getMessageFactory());
@@ -229,10 +373,22 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_ParameterizedMessageFactory",
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(" DEBUG " + Integer.MAX_VALUE, testLogger.getEntries().get(0));
+    }
+
+    @Test
+    public void getLogger_String_SimpleMessageFactory() {
+        final SimpleMessageFactory messageFactory = SimpleMessageFactory.INSTANCE;
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory",
+                messageFactory);
+        assertNotNull(testLogger);
+        assertEqualMessageFactory(messageFactory, testLogger);
+        testLogger.debug("{} %,d {foo}", Integer.MAX_VALUE);
+        assertEquals(1, testLogger.getEntries().size());
+        assertEquals(" DEBUG {} %,d {foo}", testLogger.getEntries().get(0));
     }
 
     @Test
@@ -241,7 +397,7 @@ public class LoggerTest {
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory",
                 messageFactory);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -382,6 +538,33 @@ public class LoggerTest {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         assertEquals(1, results.size());
         assertThat("Incorrect Throwing",
-                results.get(0), startsWith("THROWING[ EXCEPTION ] ERROR throwing java.lang.IllegalArgumentException: Test Exception"));
+                results.get(0), startsWith("THROWING[ EXCEPTION ] ERROR Throwing java.lang.IllegalArgumentException: Test Exception"));
+    }
+
+
+    private class Response {
+        int status;
+        String message;
+
+        public Response(int status, String message) {
+            this.status = status;
+            this.message = message;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
     }
 }

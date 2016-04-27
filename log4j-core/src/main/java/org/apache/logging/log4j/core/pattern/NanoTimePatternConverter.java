@@ -27,6 +27,16 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 public final class NanoTimePatternConverter extends LogEventPatternConverter {
 
     /**
+     * Private constructor.
+     *
+     * @param options
+     *            options, may be null.
+     */
+    private NanoTimePatternConverter(final String[] options) {
+        super("Nanotime", "nanotime");
+    }
+
+    /**
      * Obtains an instance of pattern converter.
      *
      * @param options
@@ -35,16 +45,6 @@ public final class NanoTimePatternConverter extends LogEventPatternConverter {
      */
     public static NanoTimePatternConverter newInstance(final String[] options) {
         return new NanoTimePatternConverter(options);
-    }
-
-    /**
-     * Private constructor.
-     *
-     * @param options
-     *            options, may be null.
-     */
-    private NanoTimePatternConverter(final String[] options) {
-        super("Nanotime", "nanotime");
     }
 
     /**

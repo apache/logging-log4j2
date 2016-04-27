@@ -31,6 +31,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.message.EntryMessage;
 
 /**
  * Listens for events over a socket connection.
@@ -55,6 +57,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
 
         @Override
         public void run() {
+            final EntryMessage entry = logger.traceEntry();
             boolean closed = false;
             try {
                 try {
@@ -78,94 +81,13 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
             } finally {
                 handlers.remove(Long.valueOf(getId()));
             }
+            logger.traceExit(entry);
         }
 
         public void shutdown() {
             this.shutdown = true;
             interrupt();
         }
-    }
-
-    /**
-     * Creates a socket server that reads JSON log events.
-     * 
-     * @param port
-     *        the port to listen
-     * @return a new a socket server
-     * @throws IOException
-     *         if an I/O error occurs when opening the socket.
-     */
-    public static TcpSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<>(port, new JsonInputStreamLogEventBridge());
-    }
-
-    /**
-     * Creates a socket server that reads serialized log events.
-     * 
-     * @param port
-     *        the port to listen
-     * @return a new a socket server
-     * @throws IOException
-     *         if an I/O error occurs when opening the socket.
-     */
-    public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<>(port, new ObjectInputStreamLogEventBridge());
-    }
-
-    /**
-     * Creates a socket server that reads XML log events.
-     * 
-     * @param port
-     *        the port to listen
-     * @return a new a socket server
-     * @throws IOException
-     *         if an I/O error occurs when opening the socket.
-     */
-    public static TcpSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<>(port, new XmlInputStreamLogEventBridge());
-    }
-
-    /**
-     * Main startup for the server.
-     * 
-     * @param args
-     *        The command line arguments.
-     * @throws Exception
-     *         if an error occurs.
-     */
-    public static void main(final String[] args) throws Exception {
-        if (args.length < 1 || args.length > 2) {
-            System.err.println("Incorrect number of arguments");
-            printUsage();
-            return;
-        }
-        final int port = Integer.parseInt(args[0]);
-        if (port <= 0 || port >= MAX_PORT) {
-            System.err.println("Invalid port number");
-            printUsage();
-            return;
-        }
-        if (args.length == 2 && args[1].length() > 0) {
-            ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
-        }
-        final TcpSocketServer<ObjectInputStream> socketServer = TcpSocketServer.createSerializedSocketServer(port);
-        final Thread serverThread = new Thread(socketServer);
-        serverThread.start();
-        final Charset enc = Charset.defaultCharset();
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));
-        while (true) {
-            final String line = reader.readLine();
-            if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop")
-                    || line.equalsIgnoreCase("Exit")) {
-                socketServer.shutdown();
-                serverThread.join();
-                break;
-            }
-        }
-    }
-
-    private static void printUsage() {
-        System.out.println("Usage: ServerSocket port configFilePath");
     }
 
     private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<>();
@@ -205,17 +127,108 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
     }
 
     /**
+     * Creates a socket server that reads JSON log events.
+     * 
+     * @param port
+     *        the port to listen
+     * @return a new a socket server
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     */
+    public static TcpSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
+        LOGGER.entry("createJsonSocketServer", port);
+        final TcpSocketServer<InputStream> socketServer = new TcpSocketServer<>(port, new JsonInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
+    }
+
+    /**
+     * Creates a socket server that reads serialized log events.
+     * 
+     * @param port
+     *        the port to listen
+     * @return a new a socket server
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     */
+    public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
+        LOGGER.entry(port);
+        final TcpSocketServer<ObjectInputStream> socketServer = new TcpSocketServer<>(port, new ObjectInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
+    }
+
+    /**
+     * Creates a socket server that reads XML log events.
+     * 
+     * @param port
+     *        the port to listen
+     * @return a new a socket server
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     */
+    public static TcpSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
+        LOGGER.entry(port);
+        final TcpSocketServer<InputStream> socketServer = new TcpSocketServer<>(port, new XmlInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
+    }
+
+    /**
+     * Main startup for the server.
+     * 
+     * @param args
+     *        The command line arguments.
+     * @throws Exception
+     *         if an error occurs.
+     */
+    public static void main(final String[] args) throws Exception {
+        if (args.length < 1 || args.length > 2) {
+            System.err.println("Incorrect number of arguments");
+            printUsage();
+            return;
+        }
+        final int port = Integer.parseInt(args[0]);
+        if (port <= 0 || port >= MAX_PORT) {
+            System.err.println("Invalid port number");
+            printUsage();
+            return;
+        }
+        if (args.length == 2 && args[1].length() > 0) {
+            ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
+        }
+        final TcpSocketServer<ObjectInputStream> socketServer = TcpSocketServer.createSerializedSocketServer(port);
+        final Thread serverThread = new Log4jThread(socketServer);
+        serverThread.start();
+        final Charset enc = Charset.defaultCharset();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));
+        while (true) {
+            final String line = reader.readLine();
+            if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop")
+                    || line.equalsIgnoreCase("Exit")) {
+                socketServer.shutdown();
+                serverThread.join();
+                break;
+            }
+        }
+    }
+
+    private static void printUsage() {
+        System.out.println("Usage: ServerSocket port configFilePath");
+    }
+
+    /**
      * Accept incoming events and processes them.
      */
     @Override
     public void run() {
+        final EntryMessage entry = logger.traceEntry();
         while (isActive()) {
             if (serverSocket.isClosed()) {
                 return;
             }
             try {
                 // Accept incoming connections.
+                logger.debug("Socket accept()...");
                 final Socket clientSocket = serverSocket.accept();
+                logger.debug("Socket accepted: {}", clientSocket);
                 clientSocket.setSoLinger(true, 0);
 
                 // accept() will block until a client connects to the server.
@@ -225,17 +238,17 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                 final SocketHandler handler = new SocketHandler(clientSocket);
                 handlers.put(Long.valueOf(handler.getId()), handler);
                 handler.start();
-            } catch (final IOException ioe) {
+            } catch (final IOException e) {
                 if (serverSocket.isClosed()) {
                     // OK we're done.
+                    logger.traceExit(entry);
                     return;
                 }
-                System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
-                ioe.printStackTrace();
+                logger.error("Exception encountered on accept. Ignoring. Stack Trace :", e);
             }
         }
-        for (final Map.Entry<Long, SocketHandler> entry : handlers.entrySet()) {
-            final SocketHandler handler = entry.getValue();
+        for (final Map.Entry<Long, SocketHandler> handlerEntry : handlers.entrySet()) {
+            final SocketHandler handler = handlerEntry.getValue();
             handler.shutdown();
             try {
                 handler.join();
@@ -243,16 +256,19 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                 // Ignore the exception
             }
         }
+        logger.traceExit(entry);
     }
 
     /**
      * Shutdown the server.
      * 
-     * @throws IOException
+     * @throws IOException if the server socket could not be closed
      */
     public void shutdown() throws IOException {
+        final EntryMessage entry = logger.traceEntry();
         setActive(false);
         Thread.currentThread().interrupt();
         serverSocket.close();
+        logger.traceExit(entry);
     }
 }

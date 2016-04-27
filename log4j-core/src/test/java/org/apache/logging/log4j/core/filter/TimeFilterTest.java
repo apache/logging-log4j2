@@ -41,7 +41,7 @@ public class TimeFilterTest {
         cal.set(Calendar.HOUR_OF_DAY, 2);
         long tod = cal.getTimeInMillis();
         LogEvent event = Log4jLogEvent.newBuilder().setTimeMillis(tod).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, null, (Throwable) null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         cal.roll(Calendar.DAY_OF_MONTH, true);
         tod = cal.getTimeInMillis();

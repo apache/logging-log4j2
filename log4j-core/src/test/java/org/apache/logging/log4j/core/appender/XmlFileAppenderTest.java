@@ -50,16 +50,15 @@ public class XmlFileAppenderTest {
         log.info(logMsg);
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
         String line1;
         String line2;
         String line3;
-        try {
+        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            reader.readLine(); // first line is empty, so ignore it
             line1 = reader.readLine();
             line2 = reader.readLine();
             line3 = reader.readLine();
         } finally {
-            reader.close();
             file.delete();
         }
         assertNotNull("line1", line1);

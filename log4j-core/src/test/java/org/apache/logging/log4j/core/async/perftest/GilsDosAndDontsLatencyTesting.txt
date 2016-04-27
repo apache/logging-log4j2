@@ -1,0 +1,29 @@
+https://groups.google.com/d/msg/mechanical-sympathy/0gaBXxFm4hE/O9QomwHIJAAJ
+
+If you are looking at the set of "stacks" below (all of which are queues/transports), I would strongly encourage you to avoid repeating the mistakes of testing methodologies that focus entirely on max achievable throughput and then report some (usually bogus) latency stats at those max throughout modes. The tech empower numbers are a classic example of this in play, and while they do provide some basis for comparing a small aspect of behavior (what I call the "how fast can this thing drive off a cliff" comparison, or "peddle to the metal" testing), those results are not very useful for comparing load carrying capacities for anything that actually needs to maintain some form of responsiveness SLA or latency spectrum requirements.
+
+Rules of thumb I'd start with (some simple DOs and DON'Ts):
+
+1. DO measure max achievable throughput, but DON'T get focused on it as the main or single axis of measurement / comparison.
+2. DO measure response time / latency behaviors across a spectrum of attempted load levels (e.g. at attempted loads between 2% to 100%+ of max established thoughout).
+3. DO measure the response time / latency spectrum for each tested load (even for max throughout, for which response time should linearly grow with test length, or the test is wrong). HdrHistogram is one good way to capture this information.
+4. DO make sure you are measuring response time correctly and labeling it right. If you also measure and report service time, label it as such (don't call it "latency").
+5. DO compare response time / latency spectrum at given loads.
+6. DO [repeatedly] sanity check and calibrate the benchmark setup to verify that it produces expected results for known forced scenarios. E.g. forced pauses of known size via ^Z or SIGSTOP/SIGCONT should produce expected response time percentile levels. Attempting to load at >100% than achieved throughput should result in response time / latency measurements that grow with benchmark run length, while service time (if measured) should remain fairly flat well past saturation.
+7. DON'T use or report standard deviation for latency. Ever. Except if you mean it as a joke.
+8. DON'T use average latency as a way to compare things with one another. [use median or 90%'ile instead, if what you want to compare is "common case" latencies]. Consider not reporting avg. at all.
+9. DON'T compare results of different setups or loads from short runs (< 20-30 minutes).
+10. DON'T include process warmup behavior (e.g. 1st minute and 1st 50K messages) in compared or reported results.
+
+For some concrete visual examples of how one might actually compare the behaviors of different stack and load setups, I'm attaching some example charts (meant purely as a an exercise in plotting and comparing results under varying setups and loads) that you could similarly plot if you choose to log your results using HdrHistogram logs.
+
+As an example for #4 and #5, I'd look to plot the behavior of one stack under varying loads like this (comparing latency behavior of same Setup under varying loads):
+
+
+And to compare two stack under varying loads like this (comparing Setup A and Setup B latency behaviors at same load):
+
+
+Or like this (comparing Setup A and Setup B under varying loads):
+
+
+-- Gil.

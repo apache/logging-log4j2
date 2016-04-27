@@ -37,14 +37,20 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableParameterizedMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  *
@@ -52,6 +58,9 @@ import org.junit.Test;
 public class LoggerTest {
 
     private static final String CONFIG = "log4j-test2.xml";
+
+    @Rule
+    public final TestName testName = new TestName();
     private ListAppender app;
     private ListAppender host;
     private ListAppender noThrown;
@@ -62,7 +71,7 @@ public class LoggerTest {
     private void assertEventCount(final List<LogEvent> events, final int expected) {
         assertEquals("Incorrect number of events.", expected, events.size());
     }
-    
+
     @Before
     public void before() {
         logger = context.getLogger("LoggerTest");
@@ -80,14 +89,22 @@ public class LoggerTest {
 
     @Test
     public void basicFlow() {
-        logger.entry();
-        logger.exit();
+        logger.traceEntry();
+        logger.traceExit();
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 2);
     }
 
     @Test
     public void simpleFlow() {
+        logger.entry(CONFIG);
+        logger.traceExit(0);
+        final List<LogEvent> events = app.getEvents();
+        assertEventCount(events, 2);
+    }
+
+    @Test
+    public void simpleFlowDepreacted() {
         logger.entry(CONFIG);
         logger.exit(0);
         final List<LogEvent> events = app.getEvents();
@@ -248,7 +265,7 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatch() {
-        final Logger testLogger = testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatch",
+        final Logger testLogger = testMessageFactoryMismatch(testName.getMethodName(),
                 StringFormatterMessageFactory.INSTANCE, ParameterizedMessageFactory.INSTANCE);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
@@ -258,7 +275,7 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatchNull() {
-        final Logger testLogger =  testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatchNull", StringFormatterMessageFactory.INSTANCE, null);
+        final Logger testLogger =  testMessageFactoryMismatch(testName.getMethodName(), StringFormatterMessageFactory.INSTANCE, null);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
@@ -267,13 +284,26 @@ public class LoggerTest {
 
     private static Logger testMessageFactoryMismatch(final String name,
                                                      final MessageFactory messageFactory1,
-                                                     final MessageFactory messageFactory2) {
-        final Logger testLogger = (Logger) LogManager.getLogger(name, messageFactory1);
-        assertNotNull(testLogger);
-        assertEquals(messageFactory1, testLogger.getMessageFactory());
+            final MessageFactory messageFactory2) {
+        final Logger testLogger1 = (Logger) LogManager.getLogger(name, messageFactory1);
+        assertNotNull(testLogger1);
+        checkMessageFactory(messageFactory1, testLogger1);
         final Logger testLogger2 = (Logger) LogManager.getLogger(name, messageFactory2);
-        assertEquals(messageFactory1, testLogger2.getMessageFactory());
-        return testLogger;
+        assertNotNull(testLogger2);
+        checkMessageFactory(messageFactory2, testLogger2);
+        return testLogger1;
+    }
+
+    private static void checkMessageFactory(final MessageFactory messageFactory1, final Logger testLogger1) {
+        if (messageFactory1 == null) {
+            assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger1.getMessageFactory().getClass());
+        } else {
+            MessageFactory actual = testLogger1.getMessageFactory();
+            if (actual instanceof MessageFactory2Adapter) {
+                actual = ((MessageFactory2Adapter) actual).getOriginal();
+            }
+            assertEquals(messageFactory1, actual);
+        }
     }
 
     @Test
@@ -378,6 +408,21 @@ public class LoggerTest {
         assertEquals(loggerConfig.getLevel(), Level.DEBUG);
         final Logger localLogger = context.getLogger("org.apache.logging.log4j.core.LoggerTest");
         assertTrue("Incorrect level - expected DEBUG, actual " + localLogger.getLevel(), localLogger.getLevel() == Level.DEBUG);
+    }
+
+    @Test
+    public void paramWithExceptionTest() throws Exception {
+        logger.error("Throwing with parameters {}", "TestParam", new NullPointerException("Test Exception"));
+        List<LogEvent> events = app.getEvents();
+        assertNotNull("Log event list not returned", events);
+        assertTrue("Incorrect number of log events: expected 1, actual " + events.size(), events.size() == 1);
+        LogEvent event = events.get(0);
+        Throwable thrown = event.getThrown();
+        assertNotNull("No throwable present in log event", thrown);
+        Message msg = event.getMessage();
+        assertTrue("Incorrect message type. Expected ParameterizedMessage/ReusableParameterizedMessage, actual " + msg.getClass().getSimpleName(),
+                msg instanceof ParameterizedMessage || msg instanceof ReusableParameterizedMessage);
+
     }
 }
 

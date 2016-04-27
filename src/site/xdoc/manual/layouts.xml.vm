@@ -46,17 +46,22 @@
         </p>
         <p>
           The root class for layouts that use a Charset is <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
-          where the default there is UTF-8. Each layout that extends <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
+          where the default is UTF-8. Each layout that extends <code>AbstractStringLayout</code> 
           can provide its own default. See each layout below.
+        </p>
+        <p>
+          A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1 and US-ASCII charsets,
+          to bring some of the performance improvements built-in to Java 8 to Log4j for use on Java 7.
+          For applications that log only ISO-8859-1 characters, specifying this charset will improve performance significantly.
         </p>
         <a name="CSVLayouts"/>
         <subsection name="CSV Layouts">
           <p>
-            This layout creates <a href="https://en.wikipedia.org/wiki/Comma-separated_values">Comma Separated Value (CSV)</a> 
+            This layout creates <a href="https://en.wikipedia.org/wiki/Comma-separated_values">Comma Separated Value (CSV)</a>
             records and requires <a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a> 1.2.
           </p>
           <p>
-            The CSV layout can be used in two ways: First, using <code>CsvParameterLayout</code> to log event parameters 
+            The CSV layout can be used in two ways: First, using <code>CsvParameterLayout</code> to log event parameters
             to create a custom database, usually to a logger and file appender uniquely configured for this purpose. 
             Second, using <code>CsvLogEventLayout</code> to log events to create a database, as an alternative to using a 
             full DBMS or using a JDBC driver that supports the CSV format.
@@ -161,7 +166,9 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <li>Time Nanos</li>
             <li>Time Millis</li>
             <li>Level</li>
+            <li>Thread ID</li>
             <li>Thread Name</li>
+            <li>Thread Priority</li>
             <li>Formatted Message</li>
             <li>Logger FQCN</li>
             <li>Logger Name</li>
@@ -189,7 +196,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           <p>
             Configure as follows to send to a Graylog2 server:
           </p>
-          <pre class="prettyprint linenums">[
+          <pre class="prettyprint linenums">
   &lt;Appenders&gt;
     &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
         &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
@@ -198,13 +205,40 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
         &lt;/GelfLayout&gt;
     &lt;/Socket&gt;
   &lt;/Appenders&gt;
-]
 </pre>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>host</td>
+              <td>String</td>
+              <td>The value of the <code>host</code> property (mandatory).</td>
+            </tr>
+            <tr>
+              <td>compressionType</td>
+              <td><code>GZIP</code>, <code>ZLIB</code> or <code>OFF</code></td>
+              <td>Compression to use (optional, defaults to <code>GZIP</code>)</td>
+            </tr>
+            <tr>
+              <td>compressionThreshold</td>
+              <td>int</td>
+              <td>compress if data is larger than this number of bytes (optional, defaults to 1024)</td>
+            </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>Whether to include full stacktrace of logged Throwables (optional, default to true)</td>
+            </tr>
+            <caption align="top">GELF Layout Parameters</caption>
+          </table>
            <p>
              See also:
            </p>
            <ul>
-             <li>The <a href="https://www.graylog.org/resources/gelf/">GELF specification</a></li>
+             <li>The <a href="http://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a></li>
            </ul>
         </subsection>
         <a name="HTMLLayout"/>
@@ -268,14 +302,18 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
     "logger":"com.foo.Bar",
     "timestamp":"1376681196470",
     "level":"INFO",
+    "threadId":1,
     "thread":"main",
+    "threadPriority":1,
     "message":"Message flushed with immediate flush=true"
   },
   {
     "logger":"com.foo.Bar",
     "timestamp":"1376681196471",
     "level":"ERROR",
+    "threadId":1,
     "thread":"main",
+    "threadPriority":1,
     "message":"Message flushed with immediate flush=true",
     "throwable":"java.lang.IllegalArgumentException: badarg\\n\\tat org.apache.logging.log4j.core.appender.JSONCompleteFileAppenderTest.testFlushAtEndOfBatch(JSONCompleteFileAppenderTest.java:54)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)\\n\\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\\n\\tat java.lang.reflect.Method.invoke(Method.java:606)\\n\\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)\\n\\tat org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)\\n\\tat org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)\\n\\tat org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)\\n\\tat org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)\\n\\tat org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)\\n\\tat org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)\\n\\tat org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)\\n\\tat org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)\\n\\tat org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)\\n\\tat org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)\\n\\tat org.junit.runners.ParentRunner.run(ParentRunner.java:309)\\n\\tat org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)\\n\\tat org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)\\n"
   }
@@ -283,7 +321,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
 </pre>
           <p>
           If <code>complete="false"</code>, the appender does not write the JSON open array character "[" at the start
-          of the document. and "]" and the end.
+          of the document, "]" and the end, nor comma "," between records.
           </p>
           <p>
           This approach enforces the independence of the JSONLayout and the appender where you embed it.
@@ -329,7 +367,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>complete</td>
               <td>boolean</td>
-              <td>If true, the appender includes the JSON header and footer. Defaults to false.</td>
+              <td>If true, the appender includes the JSON header and footer, and comma between records. Defaults to false.</td>
             </tr>
             <tr>
               <td>properties</td>
@@ -395,13 +433,20 @@ WARN  [main]: Message 2</pre>
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the syslog String to a byte array. The String must be
-                a valid ${Charset}. If not specified, this layout uses UTF-8.
+                a valid ${Charset}. If not specified, this layout uses the platform default character set.
               </td>
             </tr>
             <tr>
               <td>pattern</td>
               <td>String</td>
-              <td>A composite pattern string of one or more conversion patterns from the table below.</td>
+              <td>A composite pattern string of one or more conversion patterns from the table below. Cannot be
+                specified with a PatternSelector.</td>
+            </tr>
+            <tr>
+              <td>patternSelector</td>
+              <td>PatternSelector</td>
+              <td>A component that analyzes information in the LogEvent and determines which pattern should be
+                  used to format the event. The pattern and patternSelector parameters are mutually exclusive.</td>
             </tr>
             <tr>
               <td>replace</td>
@@ -472,7 +517,7 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>Outputs the name of the logger that published the logging event. The logger conversion
-                  specifier can be optionally followed by<em>precision specifier</em>, which consists of a
+                  specifier can be optionally followed by <em>precision specifier</em>, which consists of a
                   decimal integer, or a pattern starting with a decimal integer.
                 </p>
                 <p>If a precision specifier is given and it is an integer value, then only the corresponding number
@@ -523,7 +568,7 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>Outputs the fully qualified class name of the caller issuing the logging request.
-                  This conversion specifier can be optionally followed by<em>precision specifier</em>, that
+                  This conversion specifier can be optionally followed by <em>precision specifier</em>, that
                   follows the same rules as the logger name converter.
                 </p>
                 <p>Generating the class name of the caller (<a href="#LocationInformation">location information</a>)
@@ -551,7 +596,7 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <p>You can also use a set of braces containing a time zone id per
                   <a class="javadoc" href="${javadocRoot}/java/util/TimeZone.html${sharp}getTimeZone(java.lang.String)">
-                    java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then ISO8601 format is assumed.
+                    java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then the DEFAULT format is used.
                   <table>
                     <tr>
                       <th>Pattern</th>
@@ -617,18 +662,7 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <b>enc</b>{pattern}<br />
-                <b>encode</b>{pattern>
-              </td>
-              <td>
-                <p>Escape newlines and HTML special characters in the specified pattern.
-                </p>
-                <p>Allows HTML to be safely logged.</p>
-              </td>
-            </tr>
-            <tr>
-              <td align="center">
-                <b>enc{pattern}</b><br />
-                <b>encode{pattern}</b>
+                <b>encode</b>{pattern}
               </td>
               <td>
                 <p>
@@ -657,6 +691,20 @@ WARN  [main]: Message 2</pre>
                      <td>Replaced with the corresponding HTML entity</td>
                    </tr>
                  </table>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <b>equals</b>{pattern}{test}{substitution}<br />
+                <b>equalsIgnoreCase</b>{pattern}{test}{substitution}
+              </td>
+              <td>
+                <p>Replaces occurrences of 'test', a string, with its replacement 'substitution' in the
+                  string resulting from evaluation of the pattern. For example, "%equals{[%marker]}{[]}{}" will
+                  replace '[]' strings produces by events without markers with an empty string.
+                </p>
+                <p>The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.
                 </p>
               </td>
             </tr>
@@ -889,6 +937,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMap"/>
                 <b>K</b>{key}<br />
                 <b>map</b>{key}<br />
                 <b>MAP</b>{key}
@@ -936,6 +985,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMessage"/>
                 <b>m</b><br />
                 <b>msg</b><br />
                 <b>message</b>
@@ -956,12 +1006,40 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMarker"/>
                 <b>marker</b>
               </td>
-              <td>The name of the marker, if one is present.</td>
+              <td>The full name of the marker, including parents, if one is present.</td>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMarkerSimpleName"/>
+                <b>markerSimpleName</b>
+              </td>
+              <td>The simple name of the marker (not including parents), if one is present.</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <a name="PatternMaxLength"/>
+                <b>maxLen</b><br/>
+                <b>maxLength</b>
+              </td>
+              <td>
+                <p>
+                  Outputs the result of evaluating the pattern and truncating the result. If the length is greater
+                  than 20, then the output will contain a trailing ellipsis. If the provided length is invalid, a
+                  default value of 100 is used.
+                </p>
+                <p>
+                  Example syntax: <code>%maxLen{%p: %c{1} - %m%notEmpty{ =>%ex{short}}}{160}</code> will be limited to
+                  160 characters with a trailing ellipsis. Another example: <code>%maxLen{%m}{20}</code> will be
+                  limited to 20 characters and no trailing ellipsis.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <a name="PatternNewLine"/>
                 <b>n</b>
               </td>
               <td>
@@ -985,6 +1063,24 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+              <a name="VariablesNotEmpty" />
+                <b>variablesNotEmpty</b>{pattern}<br />
+                <b>varsNotEmpty</b>{pattern}<br />
+                <b>notEmpty</b>{pattern}
+              </td>
+              <td>
+                <p>
+                  Outputs the result of evaluating the pattern if and only if all variables in the pattern are not empty.
+                </p>
+                <p>
+                  For example:
+                  <pre>%notEmpty{[%marker]}</pre>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <a name="PatternLevel"/>
                 <b>p</b>|<b>level</b>{<em>level</em>=<em>label</em>, <em>level</em>=<em>label</em>, ...}
                 <b>p</b>|<b>level</b>{length=<em>n</em>}
                 <b>p</b>|<b>level</b>{lowerCase=<em>true</em>|<em>false</em>}
@@ -1021,6 +1117,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternRelative"/>
                 <b>r</b><br />
                 <b>relative</b>
               </td>
@@ -1030,6 +1127,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternReplace"/>
                 <b>replace</b>{pattern}{regex}{substitution}
               </td>
               <td>
@@ -1045,6 +1143,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternException"/>
                 <b>rEx</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
                 <b>rException</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
                 <b>rThrowable</b>["none"|"short"|"full"|depth],[filters(packages)}
@@ -1065,6 +1164,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternSequenceNumber"/>
                 <b>sn</b><br />
                 <b>sequenceNumber</b>
               </td>
@@ -1074,6 +1174,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternStyle"/>
                 <b>style</b>{pattern}{ANSI style}
               </td>
               <td>
@@ -1195,13 +1296,34 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternThreadId"/>
+                <b>T</b><br />
+                <b>tid</b><br />
+                <b>threadId</b>
+              </td>
+              <td>Outputs the ID of the thread that generated the logging event.</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <a name="PatternThreadName"/>
                 <b>t</b><br />
-                <b>thread</b>
+                <b>tn</b><br />
+                <b>thread</b><br />
+                <b>threadName</b>
               </td>
               <td>Outputs the name of the thread that generated the logging event.</td>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternThreadPriority"/>
+                <b>tp</b><br />
+                <b>threadPriority</b>
+              </td>
+              <td>Outputs the priority of the thread that generated the logging event.</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <a name="PatternNDC"/>
                 <b>x</b><br />
                 <b>NDC</b>
               </td>
@@ -1211,6 +1333,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMDC"/>
                 <b>X</b>{key[,key2...]}<br />
                 <b>mdc</b>{key[,key2...]}<br />
                 <b>MDC</b>{key[,key2...]}
@@ -1240,6 +1363,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternUUID"/>
                 <b>u</b>{"RANDOM" | "TIME"}<br />
                 <b>uuid</b>
               </td>
@@ -1254,6 +1378,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternExtendedException"/>
                 <b>xEx</b>{"none"|"short"|"full"|depth],[filters(packages)}<br />
                 <b>xException</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
                 <b>xThrowable</b>["none"|"short"|"full"|depth],[filters(packages)}
@@ -1278,6 +1403,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternPercentLiteral"/>
                 <b>%</b>
               </td>
               <td>The sequence %% outputs a single percent sign.
@@ -1440,7 +1566,49 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <pre class="prettyprint linenums"><![CDATA[<PatternLayout>
   <pattern>%d %highlight{%p} %style{%C{1.} [%t] %m}{bold,green}%n</pattern>
 </PatternLayout>]]></pre>
-        </subsection>
+
+        <h4>Pattern Selectors</h4>
+        <p>
+          The PatternLayout can be configured with a PatternSelector to allow it to choose a pattern to use based on
+          attributes of the log event or other factors. A PatternSelector will normally be configured with a defaultPattern
+          attribute, which is used when other criteria don't match, and a set of PatternMatch elements that identify
+          the various patterns that can be selected.
+        </p>
+          <h5>MarkerPatternSelector</h5>
+          <p>
+            The MarkerPatternSelector selects patterns based on the Marker included in the log event. If the Marker in
+            the log event is equal to or is an ancestor of the name specified on the PatternMatch key attribute, then the
+            pattern specified on that PatternMatch element will be used.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<PatternLayout>
+  <MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n">
+    <PatternMatch key="FLOW" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+  </MarkerPatternSelector>
+</PatternLayout>]]></pre>
+          <h5>ScriptPatternSelector</h5>
+          <p>
+            The ScriptPatternSelector executes a script as descibed in the <a href="../configuration.html#Scripts">Scripts</a> section of the
+            Configuration chapter. The script is passed all the properties configured in the Properties section of the
+            configuration, the StrSubstitutor used by the Confguration in the "substitutor" vairables, and the
+            log event in the "logEvent" variable, and is expected to return the value of the PatternMatch key that
+            should be used, or null if the default pattern should be used.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<PatternLayout>
+  <ScriptPatternSelector defaultPattern="[%-5level] %c{1.} %C{1.}.%M.%L %msg%n">
+    <Script name="BeanShellSelector" language="bsh"><![CDATA[
+      if (logEvent.getLoggerName().equals("NoLocation")) {
+        return "NoLocation";
+      } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+        return "Flow";
+      } else {
+        return null;
+      }]]]]><![CDATA[>
+    </Script>
+    <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
+    <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+  </ScriptPatternSelector>
+</PatternLayout>]]></pre>
+      </subsection>
         <a name="RFC5424Layout"/>
         <subsection name="RFC5424Layout">
           <p>As the name implies, the RFC5424Layout formats LogEvents in accordance with
@@ -1634,11 +1802,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           </p>
           <pre class="prettyprint linenums">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;Events xmlns=&quot;http://logging.apache.org/log4j/2.0/events&quot;&gt;
-  &lt;Event logger=&quot;com.foo.Bar&quot; timestamp=&quot;1373436580419&quot; level=&quot;INFO&quot; thread=&quot;main&quot;&gt;
+  &lt;Event logger=&quot;com.foo.Bar&quot; timestamp=&quot;1373436580419&quot; level=&quot;INFO&quot; threadId=&quot;1&quot; thread=&quot;main&quot; threadPriority=&quot;1&quot;&gt;
     &lt;Message&gt;&lt;![CDATA[This is a log message 1]]&gt;&lt;/Message&gt;
     &lt;Marker parent=&quot;Parent Marker&quot;&gt;&lt;Child Marker&gt;&lt;/Marker&gt;
   &lt;/Event&gt;
-  &lt;Event logger=&quot;com.foo.Baz&quot; timestamp=&quot;1373436580420&quot; level=&quot;INFO&quot; thread=&quot;main&quot;&gt;
+  &lt;Event logger=&quot;com.foo.Baz&quot; timestamp=&quot;1373436580420&quot; level=&quot;INFO&quot; threadId=&quot;1&quot; thread=&quot;main&quot; threadPriority=&quot;1&quot;&gt;
     &lt;Message&gt;&lt;![CDATA[This is a log message 2]]&gt;&lt;/Message&gt;
     &lt;Marker&gt;&lt;The Marker Name&gt;&lt;/Marker&gt;
   &lt;/Event&gt;
@@ -1669,6 +1837,157 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain,
           of course, end-of-lines.
           </p>
+        </subsection>
+        <a name="YamlLayout"/>
+        <subsection name="YamlLayout">
+          <!-- From Javadoc of org.apache.logging.log4j.core.layout.YamlLayout -->
+          <p>
+            Appends a series of YAML events as strings serialized as bytes.
+          </p>
+          <p>
+            A YAML log event follows this pattern:
+          </p>
+          <pre>---
+timeMillis: 1
+thread: "MyThreadName"
+level: "DEBUG"
+loggerName: "a.B"
+marker:
+  name: "Marker1"
+  parents:
+  - name: "ParentMarker1"
+    parents:
+    - name: "GrandMotherMarker"
+    - name: "GrandFatherMarker"
+  - name: "ParentMarker2"
+message: "Msg"
+thrown:
+  commonElementCount: 0
+  localizedMessage: "testIOEx"
+  message: "testIOEx"
+  name: "java.io.IOException"
+  cause:
+    commonElementCount: 27
+    localizedMessage: "testNPEx"
+    message: "testNPEx"
+    name: "java.lang.NullPointerException"
+    extendedStackTrace:
+    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+      method: "createLogEvent"
+      file: "LogEventFixtures.java"
+      line: 52
+      exact: false
+      location: "test-classes/"
+      version: "?"
+  extendedStackTrace:
+  - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+    method: "createLogEvent"
+    file: "LogEventFixtures.java"
+    line: 55
+    exact: true
+    location: "test-classes/"
+    version: "?"
+  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+    method: "testAllFeatures"
+    file: "YamlLayoutTest.java"
+    line: 109
+    exact: true
+    location: "test-classes/"
+    version: "?"
+  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+    method: "testLocationOnCompactOffEventEolOffMdcOn"
+    file: "YamlLayoutTest.java"
+    line: 280
+    exact: true
+    location: "test-classes/"
+    version: "?"
+
+...
+
+  suppressed:
+  - commonElementCount: 0
+    localizedMessage: "I am suppressed exception 1"
+    message: "I am suppressed exception 1"
+    name: "java.lang.IndexOutOfBoundsException"
+    extendedStackTrace:
+    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+      method: "createLogEvent"
+      file: "LogEventFixtures.java"
+      line: 56
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testAllFeatures"
+      file: "YamlLayoutTest.java"
+      line: 109
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testLocationOnCompactOffEventEolOffMdcOn"
+      file: "YamlLayoutTest.java"
+      line: 280
+      exact: true
+      location: "test-classes/"
+      version: "?"
+
+...
+
+  - commonElementCount: 0
+    localizedMessage: "I am suppressed exception 2"
+    message: "I am suppressed exception 2"
+    name: "java.lang.IndexOutOfBoundsException"
+    extendedStackTrace:
+    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+      method: "createLogEvent"
+      file: "LogEventFixtures.java"
+      line: 57
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testAllFeatures"
+      file: "YamlLayoutTest.java"
+      line: 109
+      exact: true
+      location: "test-classes/"
+      version: "?"
+    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
+      method: "testLocationOnCompactOffEventEolOffMdcOn"
+      file: "YamlLayoutTest.java"
+      line: 280
+      exact: true
+      location: "test-classes/"
+      version: "?"
+
+...
+
+contextStack:
+- "stack_msg1"
+- "stack_msg2"
+endOfBatch: false
+loggerFqcn: "f.q.c.n"
+contextMap:
+- key: "MDC.B"
+  value: "B_Value"
+- key: "MDC.A"
+  value: "A_Value"
+threadId: 1
+threadPriority: 5
+source:
+  class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
+  method: "createLogEvent"
+  file: "LogEventFixtures.java"
+  line: 53</pre>
+        <p>
+          This approach enforces the independence of the YamlLayout and the appender where you embed it.
+        </p>
+        <h4>Encoding</h4>
+        <p>
+          Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
+          events containing non ASCII characters could result in corrupted log files.
+        </p>
         </subsection>
         <a name="LocationInformation"/>
         <subsection name="Location Information">

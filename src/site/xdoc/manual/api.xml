@@ -78,7 +78,7 @@ public class HelloWorld {
             </p>
             <h4>Formatting Parameters</h4>
             <p>
-              Substituting parameters leaves formatting up to you if <code>toString()</code> is not what you want.
+              Formatter Loggers leave formatting up to you if <code>toString()</code> is not what you want.
               To facilitate formatting, you can use the same format strings as Java's
               <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax">Formatter</a>.
               For example:
@@ -93,7 +93,7 @@ logger.debug("Long.MAX_VALUE = %,d", Long.MAX_VALUE);
             <p>
               To use a formatter Logger, you must call one of the LogManager
               <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html#getFormatterLogger(java.lang.Class)">getFormatterLogger</a>
-              method. The output for this example shows that Calendar toString() is verbose compared to custom formatting:
+              methods. The output for this example shows that Calendar toString() is verbose compared to custom formatting:
             </p>
             <pre class="prettyprint linenums">2012-12-12 11:56:19,633 [main] DEBUG: User John Smith with birthday java.util.GregorianCalendar[time=?,areFieldsSet=false,areAllFieldsSet=false,lenient=true,zone=sun.util.calendar.ZoneInfo[id="America/New_York",offset=-18000000,dstSavings=3600000,useDaylight=true,transitions=235,lastRule=java.util.SimpleTimeZone[id=America/New_York,offset=-18000000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=?,YEAR=1995,MONTH=4,WEEK_OF_YEAR=?,WEEK_OF_MONTH=?,DAY_OF_MONTH=23,DAY_OF_YEAR=?,DAY_OF_WEEK=?,DAY_OF_WEEK_IN_MONTH=?,AM_PM=0,HOUR=0,HOUR_OF_DAY=0,MINUTE=0,SECOND=0,MILLISECOND=?,ZONE_OFFSET=?,DST_OFFSET=?]
 2012-12-12 11:56:19,643 [main] DEBUG: User John Smith with birthday 05 23, 1995
@@ -118,7 +118,7 @@ logger.printf(Level.INFO, "Logging in user %1$s with birthday %2$tm %2$te,%2$tY"
           <a name="LambdaSupport"/>
             <h4>Java 8 lambda support for lazy logging</h4>
             <p>
-              In release 2.4, the <code>Logger</code> interface adds support for lambda expressions.
+              In release 2.4, the <code>Logger</code> interface added support for lambda expressions.
               This allows client code to lazily log messages without explicitly checking if the requested log
               level is enabled. For example, previously you would write:
             </p>
@@ -143,21 +143,24 @@ logger.trace(&quot;Some long-running operation returned {}&quot;, () -> expensiv
               org.apache.logging.appender and org.apache.logging.filter both have org.apache.logging as their parent.
               In most cases, applications name their loggers by passing the current class's name to
               LogManager.getLogger.  Because this usage is so common, Log4j 2 provides that as the default when
-              the logger name parameter is either omitted or is null. For example, in both examples below the Logger will
+              the logger name parameter is either omitted or is null. For example, in all examples below the Logger will
               have a name of "org.apache.test.MyTest".
             </p>
             <pre class="prettyprint linenums">package org.apache.test;
 
 public class MyTest {
+    private static final Logger logger = LogManager.getLogger(MyTest.class);
+}</pre>
+            <pre class="prettyprint linenums">package org.apache.test;
+
+public class MyTest {
     private static final Logger logger = LogManager.getLogger(MyTest.class.getName());
-}
-            </pre>
+}</pre>
             <pre class="prettyprint linenums">package org.apache.test;
 
 public class MyTest {
     private static final Logger logger = LogManager.getLogger();
-}
-            </pre>
+}</pre>
           </subsection>
         </section>
     </body>

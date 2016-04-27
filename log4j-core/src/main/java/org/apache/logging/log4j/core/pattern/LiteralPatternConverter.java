@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.util.OptionConverter;
  * Formats a string literal.
  */
 public final class LiteralPatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
+    
     /**
      * String literal.
      */
@@ -76,4 +77,15 @@ public final class LiteralPatternConverter extends LogEventPatternConverter impl
     public String getLiteral() {
         return literal;
     }
+
+    @Override
+    public boolean isVariable() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "LiteralPatternConverter[literal=" + literal + ", config=" + config + ", substitute=" + substitute + "]";
+    }
+    
 }

@@ -17,10 +17,14 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -29,10 +33,10 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -89,29 +93,28 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     private static ContextSelector createContextSelector() {
-        final String sel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR);
-        if (sel != null) {
-            try {
-                return Loader.newCheckedInstanceOf(sel, ContextSelector.class);
-            } catch (final Exception ex) {
-                LOGGER.error("Unable to create context {}", sel, ex);
+        try {
+            final ContextSelector selector = LoaderUtil.newCheckedInstanceOfProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+                ContextSelector.class);
+            if (selector != null) {
+                return selector;
             }
+        } catch (final Exception e) {
+            LOGGER.error("Unable to create custom ContextSelector. Falling back to default.", e);
         }
         return new ClassLoaderContextSelector();
     }
 
     private static ShutdownCallbackRegistry createShutdownCallbackRegistry() {
-        // TODO: this is such a common idiom it really deserves a utility method somewhere
-        final String registry = PropertiesUtil.getProperties().getStringProperty(
-            ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY);
-        if (registry != null) {
-            try {
-                return Loader.newCheckedInstanceOf(registry, ShutdownCallbackRegistry.class);
-            } catch (final Exception e) {
-                LOGGER.error(SHUTDOWN_HOOK_MARKER,
-                    "There was an error loading the ShutdownCallbackRegistry [{}]. "
-                        + "Falling back to DefaultShutdownCallbackRegistry.", registry, e);
+        try {
+            final ShutdownCallbackRegistry registry = LoaderUtil.newCheckedInstanceOfProperty(
+                ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY, ShutdownCallbackRegistry.class
+            );
+            if (registry != null) {
+                return registry;
             }
+        } catch (final Exception e) {
+            LOGGER.error("Unable to create custom ShutdownCallbackRegistry. Falling back to default.", e);
         }
         return new DefaultShutdownCallbackRegistry();
     }
@@ -120,7 +123,10 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (SHUTDOWN_HOOK_ENABLED && this.shutdownCallbackRegistry instanceof LifeCycle) {
             try {
                 ((LifeCycle) this.shutdownCallbackRegistry).start();
-            } catch (final Exception e) {
+            } catch (final IllegalStateException e) {
+                LOGGER.error("Cannot start ShutdownCallbackRegistry, already shutting down.");
+                throw e;
+            } catch (final RuntimeException e) {
                 LOGGER.error("There was an error starting the ShutdownCallbackRegistry.", e);
             }
         }
@@ -222,12 +228,52 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
+        if (name != null) {
+        	ctx.setName(name);
+        }
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
                 LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(), configLocation);
                 ctx.start(config);
+                ContextAnchor.THREAD_CONTEXT.remove();
+            } else {
+                ctx.start();
+            }
+        }
+        return ctx;
+    }
+
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
+            final boolean currentContext, final List<URI> configLocations, final String name) {
+        final LoggerContext ctx = selector
+                .getContext(fqcn, loader, currentContext, null/*this probably needs to change*/);
+        if (externalContext != null && ctx.getExternalContext() == null) {
+            ctx.setExternalContext(externalContext);
+        }
+        if (name != null) {
+            ctx.setName(name);
+        }
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
+            if ((configLocations != null && !configLocations.isEmpty())) {
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
+                List<AbstractConfiguration> configurations = new ArrayList<>(configLocations.size());
+                for (URI configLocation : configLocations) {
+                    Configuration currentReadConfiguration = ConfigurationFactory.getInstance()
+                            .getConfiguration(name, configLocation);
+                    if (currentReadConfiguration instanceof AbstractConfiguration) {
+                        configurations.add((AbstractConfiguration) currentReadConfiguration);
+                    } else {
+                        LOGGER.error(
+                                "Found configuration {}, which is not an AbstractConfiguration and can't be handled by CompositeConfiguration",
+                                configLocation);
+                    }
+                }
+                CompositeConfiguration compositeConfiguration = new CompositeConfiguration(configurations);
+                LOGGER.debug("Starting LoggerContext[name={}] from configurations at {}", ctx.getName(),
+                        configLocations);
+                ctx.start(compositeConfiguration);
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
                 ctx.start();
@@ -246,7 +292,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
 	/**
 	 * Returns the ShutdownCallbackRegistry
-	 * 
+	 *
 	 * @return the ShutdownCallbackRegistry
 	 * @since 2.4
 	 */

@@ -43,10 +43,6 @@ import org.apache.logging.log4j.util.Chars;
 @Plugin(name = "SyslogLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class SyslogLayout extends AbstractStringLayout {
 
-    private static final long serialVersionUID = 1L;
-
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
-
     /**
      * Match newlines in a platform-independent manner.
      */
@@ -80,7 +76,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = prepareStringBuilder(strBuilder);
+        final StringBuilder buf = getStringBuilder();
 
         buf.append('<');
         buf.append(Priority.getPriority(facility, event.getLevel()));

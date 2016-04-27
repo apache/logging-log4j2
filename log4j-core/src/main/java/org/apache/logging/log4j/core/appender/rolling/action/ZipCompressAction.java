@@ -135,4 +135,20 @@ public final class ZipCompressAction extends AbstractAction {
         return ZipCompressAction.class.getSimpleName() + '[' + source + " to " + destination //
                 + ", level=" + level + ", deleteSource=" + deleteSource + ']';
     }
+
+    public File getSource() {
+        return source;
+    }
+
+    public File getDestination() {
+        return destination;
+    }
+
+    public boolean isDeleteSource() {
+        return deleteSource;
+    }
+
+    public int getLevel() {
+        return level;
+    }
 }

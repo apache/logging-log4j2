@@ -38,8 +38,6 @@ import org.apache.logging.log4j.web.WebLoggerContextUtils;
 @Plugin(name = "Servlet", category = "Core", elementType = "appender", printObject = true)
 public class ServletAppender extends AbstractAppender {
 
-    private static final long serialVersionUID = 1L;
-
     private final ServletContext servletContext;
 
     private ServletAppender(final String name, final AbstractStringLayout layout, final Filter filter,
@@ -66,9 +64,7 @@ public class ServletAppender extends AbstractAppender {
     public static ServletAppender createAppender(
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("name")
-            @Required(message = "No name provided for ServletAppender")
-            final String name,
+            @PluginAttribute("name") @Required(message = "No name provided for ServletAppender") final String name,
             @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions) {
         final ServletContext servletContext = WebLoggerContextUtils.getServletContext();
         if (servletContext == null) {

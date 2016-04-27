@@ -32,6 +32,32 @@ import org.apache.logging.log4j.core.util.Patterns;
 @ConverterKeys({ "style" })
 public final class StyleConverter extends LogEventPatternConverter implements AnsiConverter {
 
+    private final List<PatternFormatter> patternFormatters;
+
+    private final boolean noAnsi;
+
+    private final String style;
+
+    private final String defaultStyle;
+
+    /**
+     * Constructs the converter.
+     *
+     * @param patternFormatters
+     *            The PatternFormatters to generate the text to manipulate.
+     * @param style
+     *            The style that should encapsulate the pattern.
+     * @param noAnsi
+     *            If true, do not output ANSI escape codes.
+     */
+    private StyleConverter(final List<PatternFormatter> patternFormatters, final String style, final boolean noAnsi) {
+        super("style", "style");
+        this.patternFormatters = patternFormatters;
+        this.style = style;
+        this.defaultStyle = AnsiEscape.getDefaultStyle();
+        this.noAnsi = noAnsi;
+    }
+
     /**
      * Gets an instance of the class.
      *
@@ -61,32 +87,6 @@ public final class StyleConverter extends LogEventPatternConverter implements An
         final boolean noConsoleNoAnsi = Arrays.toString(options).contains(PatternParser.NO_CONSOLE_NO_ANSI + "=true");
         final boolean hideAnsi = noConsoleNoAnsi && System.console() == null;
         return new StyleConverter(formatters, style, hideAnsi);
-    }
-
-    private final List<PatternFormatter> patternFormatters;
-
-    private final boolean noAnsi;
-
-    private final String style;
-
-    private final String defaultStyle;
-
-    /**
-     * Constructs the converter.
-     *
-     * @param patternFormatters
-     *            The PatternFormatters to generate the text to manipulate.
-     * @param style
-     *            The style that should encapsulate the pattern.
-     * @param noAnsi
-     *            If true, do not output ANSI escape codes.
-     */
-    private StyleConverter(final List<PatternFormatter> patternFormatters, final String style, final boolean noAnsi) {
-        super("style", "style");
-        this.patternFormatters = patternFormatters;
-        this.style = style;
-        this.defaultStyle = AnsiEscape.getDefaultStyle();
-        this.noAnsi = noAnsi;
     }
 
     /**

@@ -105,26 +105,34 @@ public class FileAppenderTest {
     @Test
     public void testMultipleAppenders() throws Exception {
         final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
-        final int count = 10;
-        final Runnable runnable = new FileWriterRunnable(false, count);
+        final Exception[] error = new Exception[1];
+        final int count = 100;
+        final Runnable runnable = new FileWriterRunnable(false, count, error);
         for (int i = 0; i < THREADS; ++i) {
             pool.execute(runnable);
         }
         pool.shutdown();
         pool.awaitTermination(10, TimeUnit.SECONDS);
+        if (error[0] != null) {
+            throw error[0];
+        }
         verifyFile(THREADS * count);
     }
 
     @Test
     public void testMultipleLockedAppenders() throws Exception {
         final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
-        final int count = 10;
-        final Runnable runnable = new FileWriterRunnable(true, count);
+        final Exception[] error = new Exception[1];
+        final int count = 100;
+        final Runnable runnable = new FileWriterRunnable(true, count, error);
         for (int i = 0; i < THREADS; ++i) {
             pool.execute(runnable);
         }
         pool.shutdown();
         pool.awaitTermination(10, TimeUnit.SECONDS);
+        if (error[0] != null) {
+            throw error[0];
+        }
         verifyFile(THREADS * count);
     }
 
@@ -207,10 +215,12 @@ public class FileAppenderTest {
     public class FileWriterRunnable implements Runnable {
         private final boolean lock;
         private final int count;
+        private final Exception[] error;
 
-        public FileWriterRunnable(final boolean lock, final int count) {
+        public FileWriterRunnable(final boolean lock, final int count, final Exception[] error) {
             this.lock = lock;
             this.count = count;
+            this.error = error;
         }
 
         @Override
@@ -221,6 +231,7 @@ public class FileAppenderTest {
                 writer(lock, count, thread.getName());
 
             } catch (final Exception ex) {
+                error[0] = ex;
                 throw new RuntimeException(ex);
             }
         }

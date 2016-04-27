@@ -16,16 +16,26 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
 
+@RunWith(Parameterized.class)
 public class DatePatternConverterTest {
 
     /**
@@ -38,7 +48,26 @@ public class DatePatternConverterTest {
      */
     private static final String ISO8601_FORMAT = FixedDateFormat.FixedFormat.ISO8601.name();
 
-    private static final String[] ISO8601_FORMAT_OPTIONS = { ISO8601_FORMAT };
+    private static final String[] ISO8601_FORMAT_OPTIONS = {ISO8601_FORMAT};
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{{Boolean.TRUE}, {Boolean.FALSE}});
+    }
+
+    public DatePatternConverterTest(Boolean threadLocalEnabled) throws Exception {
+        // Setting the system property does not work: the Constant field has already been initialized...
+        //System.setProperty("log4j2.enable.threadlocals", threadLocalEnabled.toString());
+
+        final Field field = Constants.class.getDeclaredField("ENABLE_THREADLOCALS");
+        field.setAccessible(true); // make non-private
+
+        final Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL); // make non-final
+
+        field.setBoolean(null, threadLocalEnabled.booleanValue());
+    }
 
     @Test
     public void testNewInstanceAllowsNullParameter() {
@@ -67,13 +96,65 @@ public class DatePatternConverterTest {
         assertEquals(expected, sb.toString());
     }
 
+    @Test
+    public void testFormatLogEventStringBuilderIso8601TimezoneUTC() {
+        final LogEvent event = new MyLogEvent();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(new String[] {"ISO8601", "UTC"});
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+
+        final TimeZone tz = TimeZone.getTimeZone("UTC");
+        final SimpleDateFormat sdf = new SimpleDateFormat(converter.getPattern());
+        sdf.setTimeZone(tz);
+        final long adjusted = event.getTimeMillis() + tz.getDSTSavings();
+        final String expected = sdf.format(new Date(adjusted));
+        // final String expected = "2011-12-30T09:56:35,987";
+        assertEquals(expected, sb.toString());
+    }
+
+    @Test
+    public void testFormatLogEventStringBuilderIso8601TimezoneJST() {
+        final LogEvent event = new MyLogEvent();
+        final String[] optionsWithTimezone = {ISO8601_FORMAT, "JST"};
+        final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+
+        // JST=Japan Standard Time: UTC+9:00
+        final TimeZone tz = TimeZone.getTimeZone("JST");
+        final SimpleDateFormat sdf = new SimpleDateFormat(converter.getPattern());
+        sdf.setTimeZone(tz);
+        final long adjusted = event.getTimeMillis() + tz.getDSTSavings();
+        final String expected = sdf.format(new Date(adjusted));
+        // final String expected = "2011-12-30T18:56:35,987"; // in CET (Central Eastern Time: Amsterdam)
+        assertEquals(expected, sb.toString());
+    }
+
+    @Test
+    public void testPredefinedFormatWithTimezone() {
+        for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
+            final String[] options = {format.name(), "PDT"}; // Pacific Daylight Time=UTC-8:00
+            final DatePatternConverter converter = DatePatternConverter.newInstance(options);
+            assertEquals(format.getPattern(), converter.getPattern());
+        }
+    }
+
+    @Test
+    public void testPredefinedFormatWithoutTimezone() {
+        for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
+            final String[] options = {format.name()};
+            final DatePatternConverter converter = DatePatternConverter.newInstance(options);
+            assertEquals(format.getPattern(), converter.getPattern());
+        }
+    }
+
     private class MyLogEvent extends AbstractLogEvent {
         private static final long serialVersionUID = 0;
 
         @Override
         public long getTimeMillis() {
             final Calendar cal = Calendar.getInstance();
-            cal.set(2011, 11, 30, 10, 56, 35);
+            cal.set(2011, Calendar.DECEMBER, 30, 10, 56, 35);
             cal.set(Calendar.MILLISECOND, 987);
             return cal.getTimeInMillis();
         }
@@ -111,7 +192,7 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatDateStringBuilderOriginalPattern() {
-        final String[] pattern = { "yyyy/MM/dd HH-mm-ss.SSS" };
+        final String[] pattern = {"yyyy/MM/dd HH-mm-ss.SSS"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
         final StringBuilder sb = new StringBuilder();
         converter.format(date(2001, 1, 1), sb);
@@ -169,19 +250,19 @@ public class DatePatternConverterTest {
 
     @Test
     public void testGetPatternReturnsDefaultForInvalidPattern() {
-        final String[] invalid = { "ABC I am not a valid date pattern" };
+        final String[] invalid = {"ABC I am not a valid date pattern"};
         assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(invalid).getPattern());
     }
 
     @Test
     public void testGetPatternReturnsNullForUnix() {
-        final String[] options = { "UNIX" };
+        final String[] options = {"UNIX"};
         assertNull(DatePatternConverter.newInstance(options).getPattern());
     }
 
     @Test
     public void testGetPatternReturnsNullForUnixMillis() {
-        final String[] options = { "UNIX_MILLIS" };
+        final String[] options = {"UNIX_MILLIS"};
         assertNull(DatePatternConverter.newInstance(options).getPattern());
     }
 

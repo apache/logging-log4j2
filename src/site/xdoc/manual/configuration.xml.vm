@@ -44,7 +44,7 @@
           Configuration of Log4j 2 can be accomplished in 1 of 4 ways:
         </p>
           <ol>
-            <li>Through a configuration file written in XML, JSON, or YAML.</li>
+            <li>Through a configuration file written in XML, JSON, YAML, or properties format.</li>
             <li>Programmatically, by creating a ConfigurationFactory and Configuration implementation.</li>
             <li>Programmatically, by calling the APIs exposed in the Configuration interface to add
               components to the default configuration.</li>
@@ -52,7 +52,8 @@
           </ol>
         <p>
           This page focuses primarily on configuring Log4j through a configuration file. Information on
-          programmatically configuring Log4j can be found at <a href="./extending.html">Extending Log4j 2</a>.
+          programmatically configuring Log4j can be found at <a href="./extending.html">Extending Log4j 2</a>
+          and <a href="customconfig.html">Programmatic Log4j Configuration</a>.
         </p>
         <p>
           Note that unlike Log4j 1.x, the public Log4j 2 API does not expose methods to add, modify or remove
@@ -62,21 +63,25 @@
         <subsection name="Automatic Configuration">
           <p>
             Log4j has the ability to automatically configure itself during initialization.
-            When Log4j starts it will locate all the ConfigurationFactory plugins and arrange then in weighted
-            order from highest to lowest. As delivered, Log4j contains three ConfigurationFactory implementations:
-            one for JSON, one for YAML, and one for XML.
+            When Log4j starts it will locate all the ConfigurationFactory plugins and arrange them in weighted
+            order from highest to lowest. As delivered, Log4j contains four ConfigurationFactory implementations:
+            one for JSON, one for YAML, one for properties, and one for XML.
           </p>
             <ol>
               <li>Log4j will inspect the <code>"log4j.configurationFile"</code> system property and, if set,  will attempt to
                 load the configuration using the <code>ConfigurationFactory</code> that matches the file
                 extension.</li>
-              <li>If no system property is set the YAML ConfigurationFactory will look for 
+              <li>If no system property is set the properties ConfigurationFactory will look for
+                <code>log4j2-test.properties</code> in the classpath.</li>
+              <li>If no such file is found the YAML ConfigurationFactory will look for
                 <code>log4j2-test.yaml</code> or <code>log4j2-test.yml</code> in the classpath.</li>
               <li>If no such file is found the JSON ConfigurationFactory will look for
                 <code>log4j2-test.json</code> or <code>log4j2-test.jsn</code> in the classpath.</li>
               <li>If no such file is found the XML ConfigurationFactory will look for
                 <code>log4j2-test.xml</code> in the classpath.</li>
-              <li>If a test file cannot be located the YAML ConfigurationFactory will look for
+              <li>If a test file cannot be located the properties ConfigurationFactory will look for
+                <code>log4j2.properties</code> on the classpath.</li>
+              <li>If a properties file cannot be located the YAML ConfigurationFactory will look for
                 <code>log4j2.yaml</code> or <code>log4j2.yml</code> on the classpath.</li>
               <li>If a YAML file cannot be located the JSON ConfigurationFactory will look for
                 <code>log4j2.json</code> or <code>log4j2.jsn</code> on the classpath.</li>
@@ -190,6 +195,9 @@ public class Bar {
           <p>
             Note that status logging is disabled when the default configuration is used.
           </p>
+        </subsection>
+        <a name="Additivity"/>
+        <subsection name="Additivity">
           <p>
             Perhaps it is desired to eliminate all the TRACE output from everything except <code>com.foo.Bar</code>.
             Simply changing the log level would not accomplish the task. Instead, the solution is to
@@ -205,9 +213,6 @@ public class Bar {
             With this configuration all log events from <code>com.foo.Bar</code> will be recorded while only error
             events will be recorded from all other components.
           </p>
-        </subsection>
-        <a name="Additivity"/>
-        <subsection name="Additivity">
           <p>
             In the previous example all the events from <code>com.foo.Bar</code> were still written to the Console. This is
             because the logger for <code>com.foo.Bar</code> did not have any appenders configured while its parent did. In fact,
@@ -275,7 +280,7 @@ public class Bar {
         <subsection name="Automatic Reconfiguration">
           <p>
             When configured from a File, Log4j has the ability to automatically detect changes to the configuration
-            file and reconfigure itself. If the <code>monitorInterval</code> attribute is specified on the configuration 
+            file and reconfigure itself. If the <code>monitorInterval</code> attribute is specified on the configuration
             element and is set to a non-zero value then the file will be checked the next time a log event is evaluated
             and/or logged and the monitorInterval has elapsed since the last check. The example below shows how
             to configure the attribute so that the configuration file will be checked for changes only after at
@@ -813,12 +818,17 @@ public class Bar {
               configurations define the configuration in terms of plugins and attributes to the plugins.
             </p>
             <p>
-              The properties configuration requires that you list the identifiers of the appenders, filters and loggers,
+              Prior to version 2.6,
+              the properties configuration requires that you list the identifiers of the appenders, filters and loggers,
               in a comma separated list in properties with those names. Each of those components will then be expected
               to be defined in sets of properties that begin with <i>component.identifier</i>. The identifier does not
               have to match the name of the component being defined but must uniquely identify all the attributes and
               subcomponents that are part of the component. Each individual component MUST have a "type" attribute
               specified that identifies the component's Plugin type.
+            </p>
+            <p>
+              As of version 2.6, this list of identifiers is no longer required as names are inferred upon first usage.
+              The list of identifiers used in a 2.4/2.5 format will be safely ignored in 2.6+.
             </p>
             <p>
               Unlike the base components, when creating subcomponents you cannot specify an element containing a list of
@@ -837,12 +847,8 @@ name = PropertiesConfig
 
 property.filename = target/rolling/rollingtest.log
 
-filters = threshold
-
 filter.threshold.type = ThresholdFilter
 filter.threshold.level = debug
-
-appenders = console, rolling, list
 
 appender.console.type = Console
 appender.console.name = STDOUT
@@ -861,23 +867,20 @@ appender.rolling.policies.time.interval = 2
 appender.rolling.policies.time.modulate = true
 appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
 appender.rolling.policies.size.size=100MB
+appender.rolling.strategy.type = DefaultRolloverStrategy
+appender.rolling.strategy.max = 5
 
 appender.list.type = List
 appender.list.name = List
-appender.list.filters = threshold
 appender.list.filter.threshold.type = ThresholdFilter
 appender.list.filter.threshold.level = error
 
-loggers = rolling
-
-logger.rolling.name = org.apache.logging.log4j.core.appender.rolling
+logger.rolling.name = com.example.my.app
 logger.rolling.level = debug
 logger.rolling.additivity = false
-logger.rolling.appenderRefs = rolling
 logger.rolling.appenderRef.rolling.ref = RollingFile
 
 rootLogger.level = info
-rootLogger.appenderRefs = stdout
 rootLogger.appenderRef.stdout.ref = STDOUT
           </pre>
         </subsection>
@@ -941,8 +944,9 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           <p>
             While this is useful, there are many more places properties can originate from. To accommodate this,
             Log4j also supports the syntax <code>${dollar}{prefix:name}</code> where the prefix identifies tells Log4j
-            that variable name should be evaluated in a specific context. The contexts that are built in to Logj4
-            are:
+            that variable name should be evaluated in a specific context.
+            See the <a href="lookups.html">Lookups</a> manual page for more details.
+            The contexts that are built in to Logj4 are:
           </p>
             <table>
               <tr>
@@ -968,6 +972,10 @@ rootLogger.appenderRef.stdout.ref = STDOUT
               <tr>
                 <td>env</td>
                 <td>System environment variables</td>
+              </tr>
+              <tr>
+                <td>jndi</td>
+                <td>A value set in the default JNDI Context.</td>
               </tr>
               <tr>
                 <td>jvmrunargs</td>
@@ -1007,6 +1015,9 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             pre-populated with a value for "hostName" that is the current system's host name or IP address and
             the "contextName" with is the value of the current logging context.
           </p>
+        </subsection>
+        <a name="RuntimeLookup"/>
+        <subsection name="Lookup Variables with Multiple Leading '$' Characters">
           <p>
             An interesting feature of StrLookup processing is that when a variable reference is declared with
             multiple leading '$' characters each time the variable is resolved the leading '$' is simply removed.
@@ -1039,6 +1050,140 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             of the whole RollingFile element is deferred until a match occurs.
             See <a href="appenders.html#RoutingAppender">RoutingAppender</a> for more information.</i>
           </p>
+        </subsection>
+        <a name="Scripts"/>
+        <subsection name="Scripts">
+          <p>
+            Log4j provides support for <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/scripting/">JSR 223</a>
+            scripting languages to be used in some of its components. Any language that provides support for the JSR
+            223 scripting engine may be used. A list of the languages and bindings for them can be found at the
+            <a href="https://java.net/projects/scripting/sources/svn/show/trunk/engines">Scripting Engine</a> web site.
+            However, some of the languages listed there, such as JavaScript, Groovy and Beanshell, directly support the
+            JSR 223 scripting framework and only require that the jars for that language be installed.
+          </p>
+          <p>
+            The components that support using scripts do so by allowing a &lt;script&gt;, &lt;scriptFile&gt;, or
+            &lt;scriptRef&gt; element to be configured on
+            them. The script element contains a name for the script, the language of the script, and the script text.
+            The scriptFile element contains the name of the script, its location, its language, its charset, and
+            whether the file should be watched for changes. The scriptRef element contains the name of the
+            script that is defined in the &lt;scripts&gt; configuration element.
+            The name of the script is used to store the script, along with its ScriptEngine, so it can quickly be
+            located each time the script needs to be run. While the name is not required, providing it will help in
+            debugging problems when the script is running. The language must be provided on the script element and must
+            specify one of the language names that appear in the Configuration status log as described in the next
+            section. If the language is not specified on the scriptFile element the language will be determined by
+            the file extension of the script path. If file monitoring is requested it will only be enabled if
+            a non-zero monitorInterval is specified on the configuration element. That interval will be used to
+            check for changes in the file.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="RoutingTest">
+  <Scripts>
+    <Script name="selector" language="javascript"><![CDATA[
+            var result;
+            if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+                result = "NoLocation";
+            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                result = "Flow";
+            }
+            result;
+            ]]]]><![CDATA[></Script>
+    <ScriptFile name="groovy.filter" path="scripts/filter.groovy"/>
+  </Scripts>
+
+  <Appenders>
+    <Console name="STDOUT">
+      <ScriptPatternSelector defaultPattern="%d %p %m%n">
+        <ScriptRef ref="selector"/>
+          <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
+          <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+      </ScriptPatternSelector>
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <Script name="GroovyFilter" language="groovy"><![CDATA[
+            if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                return true;
+            } else if (logEvent.getContextMap().containsKey("UserId")) {
+                return true;
+            }
+            return false;
+            ]]]]><![CDATA[>
+          </Script>
+        </ScriptFilter>
+      <AppenderRef ref="STDOUT"/>
+    </Logger>
+
+    <Root level="error">
+      <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+        <ScriptRef ref="groovy.filter"/>
+      </ScriptFilter>
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>]]>
+          </pre>
+          <p>
+            If the status attribute on the Configuration element is set to DEBUG the list of script engines currently
+            installed and their attributes will be listed. Although some engines may say they are not thread safe,
+            Log4j takes steps to insure that the scripts will run in a thread-safe manner if the engine advertises
+            that it is not thread safe.
+          </p>
+          <pre>
+2015-09-27 16:13:22,925 main DEBUG Installed script engines
+2015-09-27 16:13:22,963 main DEBUG AppleScriptEngine Version: 1.1, Language: AppleScript, Threading: Not Thread Safe,
+            Compile: false, Names: {AppleScriptEngine, AppleScript, OSA}
+2015-09-27 16:13:22,983 main DEBUG Groovy Scripting Engine Version: 2.0, Language: Groovy, Threading: MULTITHREADED,
+            Compile: true, Names: {groovy, Groovy}
+2015-09-27 16:13:23,030 main DEBUG BeanShell Engine Version: 1.0, Language: BeanShell, Threading: MULTITHREADED,
+            Compile: true, Names: {beanshell, bsh, java}
+2015-09-27 16:13:23,039 main DEBUG Mozilla Rhino Version: 1.7 release 3 PRERELEASE, Language: ECMAScript, Threading: MULTITHREADED,
+            Compile: true, Names: {js, rhino, JavaScript, javascript, ECMAScript, ecmascript}
+          </pre>
+          <p>
+            When the scripts are executed they will be provided with a set of variables that should allow them to
+            accomplish whatever task they are expected to perform. See the documentation for the individual components
+            for the list of variables that are available to the script.
+          </p>
+          <p>
+            The components that support scripting expect a return value to be passed back to the calling Java code.
+            This is not a problem for several of the scripting languages, but Javascript does not allow a
+            return statement unless it is within a function. However, Javascript will return the value of the last
+            statement executed in the script. As a consequence, code such as that shown below will result in the
+            desired behavior.
+          </p>
+          <pre><![CDATA[
+            var result;
+            if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+                result = "NoLocation";
+            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                result = "Flow";
+            }
+            result;
+          ]]></pre>
+          <h4>A special note on Beanshell</h4>
+          <p>
+            JSR 223 scripting engines are supposed to identify that they support the Compilable interface if they
+            support compiling their scripts. Beanshell does this. However, whenever the compile method is called it
+            throws an Error (not an Exception). Log4j catches this but will log the warning shown below for each
+            Beanshell script when it tries to compile them. All Beanshell scripts will then be interpreted on each
+            execution.
+          </p>
+          <pre><![CDATA[
+2015-09-27 16:13:23,095 main DEBUG Script BeanShellSelector is compilable
+2015-09-27 16:13:23,096 main WARN Error compiling script java.lang.Error: unimplemented
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:175)
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:154)
+            at org.apache.logging.log4j.core.script.ScriptManager$MainScriptRunner.<init>(ScriptManager.java:125)
+            at org.apache.logging.log4j.core.script.ScriptManager.addScript(ScriptManager.java:94)
+          ]]></pre>
         </subsection>
         <a name="XInclude"/>
         <subsection name="XInclude">
@@ -1092,6 +1237,34 @@ rootLogger.appenderRef.stdout.ref = STDOUT
   </root>
 </loggers>
 ]]></pre>
+        </subsection>
+        <a name="CompositeConfiguration"/>
+        <subsection name="Composite Configuration">
+            <p>
+              Log4j allows multiple configuration files to be used by specifying them as a list of comma separated
+              file paths on log4j.configurationFile.  The merge logic can be controlled by specifying a class
+                that implements the MergeStrategy interface on the log4j.mergeStrategy property. The default
+                merge strategy will merge the files using the following rules:
+              <ol>
+                <li>The global configuration attributes are aggregated with those in later configurations replacing
+                  those in previous configurations, with the exception that the highest status level and the lowest
+                  monitorInterval greater than 0 will be used.</li>
+                <li>Properties from all configurations are aggregated. Duplicate properties replace those in previous
+                  configurations.</li>
+                <li>Filters are aggregated under a CompositeFilter if more than one Filter is defined. Since Filters
+                  are not named duplicates may be present.</li>
+                <li>Scripts and ScriptFile references are aggregated. Duplicate definiations replace those in previous
+                  configurations.</li>
+                <li>Appenders are aggregated. Appenders with the same name are replaced by those in later
+                  configurations, including all of the Appender's subcomponents.</li>
+                <li>Loggers are all aggregated. Logger attributes are individually merged with duplicates being
+                  replaced by those in later configurations. Appender references on a Logger are aggregated with
+                  duplicates being replaced by those in later configurations. Filters on a Logger are aggregated
+                  under a CompositeFilter if more than one Filter is defined. Since Filters are not named
+                  duplicates may be present. Filters under Appender references included or discarded depending on
+                  whether their parent Appender reference is kept or discarded.</li>
+                </ol>
+            </p>
         </subsection>
         <a name="StatusMessages"/>
         <subsection name="Status Messages">
@@ -1329,14 +1502,14 @@ StatusLogger.getLogger().registerListener(listener);
           named file to be used during the test.
         </p>
           <p>
-            A third approach, also used extensively by Log4j 2, is to use the <code>InitialLoggerContext</code>
+            A third approach, also used extensively by Log4j 2, is to use the <code>LoggerContextRule</code>
             JUnit test rule which provides additional convenience methods for testing. This requires adding the
             <code>log4j-core</code> <code>test-jar</code> dependency to your test scope dependencies. For example:
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 public class AwesomeTest {
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("MyTestConfig.xml");
+    public LoggerContextRule init = new LoggerContextRule("MyTestConfig.xml");
 
     @Test
     public void testSomeAwesomeFeature() {
@@ -1354,9 +1527,16 @@ public class AwesomeTest {
         <a name="SystemProperties"/>
         <subsection name="System Properties">
         <p>
-          Below follows a number of system properties that can be used to control Log4j 2 behaviour.
+          The Log4j documentation references a number of System Properties that can be used to control various aspects
+          of Log4j 2 behavior. The table below lists these properties along with their default value and a
+          description of what they control.
           Any spaces present in the property name are for visual flow and should be removed.
         </p>
+          <p>
+            The properties listed below can also be specified by creating a file named
+            <tt>log4j2.component.properties</tt>, adding the desired keys and value to the file, and then including
+            the file in the classpath of the application.
+          </p>
 <table>
   <caption align="top">Log4j 2 System Properties</caption>
   <tr>
@@ -1368,7 +1548,16 @@ public class AwesomeTest {
     <td>log4j.configurationFile</td>
     <td>&nbsp;</td>
     <td>
-      Path to an XML or JSON Log4j 2 configuration file.
+      Path to an XML or JSON Log4j 2 configuration file. May also contain a comma separated list of configuration
+      file names.
+    </td>
+  </tr>
+  <tr>
+    <td>log4j.mergeFactory</td>
+    <td>&nbsp;</td>
+    <td>
+      The name of the class that implements the MergeStrategy interface. If not specified
+      <code>DefaultMergeStrategy</code> will be used when creating a CompositeConfiguration..
     </td>
   </tr>
   <tr>
@@ -1653,8 +1842,7 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td>AsyncLogger.ExceptionHandler</td>
-    <td>&nbsp;
-    </td>
+    <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
     </td>
@@ -1686,7 +1874,7 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td>AsyncLoggerConfig.ExceptionHandler</td>
-    <td>&nbsp;    </td>
+    <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
     </td>
@@ -1716,6 +1904,59 @@ public class AwesomeTest {
       <code>org.apache.logging.log4j.jul .CoreLoggerAdapter</code> will be used. Otherwise, the
       <code>ApiLogggerAdapter</code> will be used. Custom implementations must provide a public default constructor.
     </td>
+  </tr>
+  <tr>
+    <td>log4j.format.msg.async</td>
+    <td>
+      false
+    </td>
+    <td>
+      If <tt>false</tt> (the default), Log4j will make sure the message is formatted in the caller thread, to ensure
+      the value at the time of the call to the logger is the value that is logged.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="AsyncEventRouter"/>log4j2.AsyncEventRouter</td>
+    <td>&nbsp;</td>
+    <td>
+      <p>Used by Async Loggers and the AsyncAppender to maintain application throughput even when
+        the underlying appender cannot keep up with the logging rate and the queue is filling up.</p>
+      <p>If no value is specified (the default) events are never discarded. If the queue is full, the
+        logger call blocks until the event can be added to the queue.</p>
+      <p>Specify <tt>Discard</tt> to drop events whose level is equal or less than the threshold level
+        (INFO by default) when the queue is full.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>log4j2.DiscardThreshold</td>
+    <td>INFO</td>
+    <td>Used by the DiscardingAsyncEventRouter to determine which events to drop when the queue
+      becomes full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
+      events are discarded when the queue is full.
+      This property only has effect if <tt>Discard</tt> is specified as the
+      <tt>log4j2.AsyncEventRouter</tt>.</td>
+  </tr>
+  <tr>
+    <td>log4j2.messageFactory</td>
+    <td>org.apache.logging.log4j.message. ParameterizedMessageFactory</td>
+    <td>Default message factory used by Loggers if no factory was specified.</td>
+  </tr>
+  <tr>
+    <td>log4j2.flowMessageFactory</td>
+    <td>org.apache.logging.log4j.message. DefaultFlowMessageFactory</td>
+    <td>Default flow message factory used by Loggers.</td>
+  </tr>
+  <tr>
+    <td>log4j.initialReusableMsgSize</td>
+    <td>128</td>
+    <td>In GC-free mode, this property determines the initial size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
+  </tr>
+  <tr>
+    <td>log4j.maxReusableMsgSize</td>
+    <td>518</td>
+    <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
   </tr>
 </table>
 

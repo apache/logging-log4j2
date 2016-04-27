@@ -50,8 +50,8 @@ public class RoutingAppenderWithJndiTest {
     @Before
     public void before() throws NamingException {
         MockContextFactory.setAsInitial();
-        listAppender1 = (ListAppender) RoutingAppenderWithJndiTest.init.getAppender("List1");
-        listAppender2 = (ListAppender) RoutingAppenderWithJndiTest.init.getAppender("List2");
+        listAppender1 = RoutingAppenderWithJndiTest.init.getListAppender("List1");
+        listAppender2 = RoutingAppenderWithJndiTest.init.getListAppender("List2");
     }
 
     @After

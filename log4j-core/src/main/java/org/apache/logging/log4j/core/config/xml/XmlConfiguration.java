@@ -38,13 +38,14 @@ import javax.xml.validation.Validator;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.FileConfigurationMonitor;
+import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.Throwables;
@@ -61,8 +62,6 @@ import org.xml.sax.SAXException;
  * Creates a Node hierarchy from an XML file.
  */
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
-
-    private static final long serialVersionUID = 1L;
 
     private static final String XINCLUDE_FIXUP_LANGUAGE =
             "http://apache.org/xml/features/xinclude/fixup-language";
@@ -132,20 +131,20 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                     schemaResource = value;
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
                     final int intervalSeconds = Integer.parseInt(value);
-                    if (intervalSeconds > 0 && configFile != null) {
-                        monitor = new FileConfigurationMonitor(this, configFile, listeners, intervalSeconds);
+                    if (intervalSeconds > 0) {
+                        getWatchManager().setIntervalSeconds(intervalSeconds);
+                        if (configFile != null) {
+                            FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
+                            getWatchManager().watchFile(configFile, watcher);
+                        }
                     }
                 } else if ("advertiser".equalsIgnoreCase(key)) {
                     createAdvertiser(value, configSource, buffer, "text/xml");
                 }
             }
             statusConfig.initialize();
-        } catch (final SAXException domEx) {
-            LOGGER.error("Error parsing {}", configSource.getLocation(), domEx);
-        } catch (final IOException ioe) {
-            LOGGER.error("Error parsing {}", configSource.getLocation(), ioe);
-        } catch (final ParserConfigurationException pex) {
-            LOGGER.error("Error parsing {}", configSource.getLocation(), pex);
+        } catch (final SAXException | IOException | ParserConfigurationException e) {
+            LOGGER.error("Error parsing " + configSource.getLocation(), e);
         }
         if (strict && schemaResource != null && buffer != null) {
             InputStream is = null;
@@ -209,11 +208,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             factory.setXIncludeAware(true);
         } catch (final UnsupportedOperationException e) {
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
-        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory,
-                    err);
-        } catch (final NoSuchMethodError err) {
-            // LOG4J2-919
+        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError | NoSuchMethodError err) {
             LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory,
                     err);
         }

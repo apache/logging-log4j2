@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * A Jackson {@link ObjectMapper} initialized for Log4j.
+ * A Jackson JSON {@link ObjectMapper} initialized for Log4j.
  * <p>
  * <em>Consider this class private.</em>
  * </p>

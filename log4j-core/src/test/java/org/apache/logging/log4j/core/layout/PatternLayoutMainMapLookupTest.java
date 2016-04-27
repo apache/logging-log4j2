@@ -55,9 +55,10 @@ public class PatternLayoutMainMapLookupTest {
         logger.info("Hello World");
         final List<String> messages = listApp.getMessages();
         Assert.assertFalse(messages.isEmpty());
-        Assert.assertEquals("Header: value0", messages.get(0));
+        final String messagesStr = messages.toString();
+        Assert.assertEquals(messagesStr, "Header: value0", messages.get(0));
         listApp.stop();
-        Assert.assertEquals("Footer: value1", messages.get(2));
+        Assert.assertEquals(messagesStr, "Footer: value1", messages.get(2));
     }
 
 }

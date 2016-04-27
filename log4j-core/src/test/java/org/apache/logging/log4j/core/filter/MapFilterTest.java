@@ -23,16 +23,13 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.After;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -42,12 +39,8 @@ import static org.junit.Assert.*;
  */
 public class MapFilterTest {
 
-    @After
-    public void cleanup() {
-        final LoggerContext ctx = LoggerContext.getContext(false);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-mapfilter.xml");
 
     @Test
     public void testFilter() {
@@ -77,8 +70,7 @@ public class MapFilterTest {
 
     @Test
     public void testConfig() {
-        final LoggerContext ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-mapfilter.xml");
-        final Configuration config = ctx.getConfiguration();
+        final Configuration config = context.getConfiguration();
         final Filter filter = config.getFilter();
         assertNotNull("No MapFilter", filter);
         assertTrue("Not a MapFilter", filter instanceof  MapFilter);
@@ -94,9 +86,8 @@ public class MapFilterTest {
         final Map<String, String> eventMap = new HashMap<>();
         eventMap.put("eventId", "Login");
         logger.debug(new MapMessage(eventMap));
-        final Appender app = config.getAppender("LIST");
-        assertNotNull("No List appender", app);
-        final List<String> msgs = ((ListAppender) app).getMessages();
+        final ListAppender app = context.getListAppender("LIST");
+        final List<String> msgs = app.getMessages();
         assertNotNull("No messages", msgs);
         assertFalse("No messages", msgs.isEmpty());
 

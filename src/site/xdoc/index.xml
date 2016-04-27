@@ -96,6 +96,11 @@
               support</a>. Since Log4j will not evaluate a lambda
               expression if the requested log level is not enabled, the same effect can be achieved with less code.
             </dd>
+            <dt>Custom Log Levels</dt>
+            <dd>
+              In Log4j 2, <a href="manual/customloglevels.html">custom log levels</a> can easily be defined in code
+              or in configuration. No subclassing is required.
+            </dd>
           </dl>
 
           <subsection name="Documentation">

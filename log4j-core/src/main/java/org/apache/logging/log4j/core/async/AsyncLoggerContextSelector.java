@@ -17,42 +17,43 @@
 package org.apache.logging.log4j.core.async;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * {@code ContextSelector} that returns the singleton {@code AsyncLoggerContext}.
+ * {@code ContextSelector} that manages {@code AsyncLoggerContext} instances.
+ * <p>
+ * As of version 2.5, this class extends ClassLoaderContextSelector for better web app support.
  */
-public class AsyncLoggerContextSelector implements ContextSelector {
+public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
 
-    // LOG4J2-666 ensure unique name across separate instances created by webapp classloaders
-    private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncLoggerContext@"
-            + AsyncLoggerContext.class.hashCode());
-
-    @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
-        return CONTEXT;
+    /**
+     * Returns {@code true} if the user specified this selector as the Log4jContextSelector, to make all loggers
+     * asynchronous.
+     * 
+     * @return {@code true} if all loggers are asynchronous, {@code false} otherwise.
+     */
+    public static boolean isSelected() {
+        return AsyncLoggerContextSelector.class.getName().equals(
+                PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR));
     }
 
     @Override
-    public List<LoggerContext> getLoggerContexts() {
-        final List<LoggerContext> list = new ArrayList<>();
-        list.add(CONTEXT);
-        return Collections.unmodifiableList(list);
+    protected LoggerContext createContext(final String name, final URI configLocation) {
+        return new AsyncLoggerContext(name, null, configLocation);
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-            final URI configLocation) {
-        return CONTEXT;
+    protected String toContextMapKey(final ClassLoader loader) {
+        // LOG4J2-666 ensure unique name across separate instances created by webapp classloaders
+        return "AsyncContext@" + Integer.toHexString(System.identityHashCode(loader));
     }
 
     @Override
-    public void removeContext(final LoggerContext context) {
+    protected String defaultContextName() {
+        return "DefaultAsyncContext@" + Thread.currentThread().getName();
     }
-
 }

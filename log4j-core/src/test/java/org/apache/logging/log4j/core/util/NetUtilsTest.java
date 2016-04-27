@@ -23,12 +23,13 @@ import static org.junit.Assert.assertNotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.Assume;
 import org.junit.Test;
 
 public class NetUtilsTest {
 
-    private static final boolean IS_WINDOWS = System.getProperty("os.name").startsWith("Windows");
+    private static final boolean IS_WINDOWS = PropertiesUtil.getProperties().isOsWindows();
 
     @Test
     public void testToUriWithoutBackslashes() throws URISyntaxException {

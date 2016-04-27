@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
@@ -11,8 +11,8 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 
 package org.apache.logging.log4j.core.config;
@@ -81,7 +81,8 @@ public class ConfigurationTest {
                 new Object[][]{
                         {"classpath:log4j-test1.xml", "target/test-xml.log"},
                         {"classpath:log4j-test1.json", "target/test-json.log"},
-                        {"classpath:log4j-test1.yaml", "target/test-yaml.log"}
+                        {"classpath:log4j-test1.yaml", "target/test-yaml.log"},
+                        {"classpath:log4j-test1.properties", "target/test-properties.log"}
                 }
         );
     }
@@ -137,14 +138,11 @@ public class ConfigurationTest {
         logger.debug("This is test message number {}", random);
         int count = 0;
         String line = Strings.EMPTY;
-        final BufferedReader in = new BufferedReader(new FileReader(this.logFileName));
-        try {
+        try (final BufferedReader in = new BufferedReader(new FileReader(this.logFileName))) {
             while (in.ready()) {
                 ++count;
                 line = in.readLine();
             }
-        } finally {
-            in.close();
         }
         assertThat(count, is(equalTo(1)));
         assertThat(line, endsWith(Long.toString(random)));

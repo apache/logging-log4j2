@@ -42,7 +42,7 @@ public class JndiLookup extends AbstractLookup {
      * Looks up the value of the JNDI resource.
      * @param event The current LogEvent (is ignored by this StrLookup).
      * @param key  the JNDI resource name to be looked up, may be null
-     * @return The value of the JNDI resource.
+     * @return The String value of the JNDI resource.
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
@@ -52,7 +52,8 @@ public class JndiLookup extends AbstractLookup {
         final String jndiName = convertJndiName(key);
         final JndiManager jndiManager = JndiManager.getDefaultManager();
         try {
-            return jndiManager.lookup(jndiName);
+            final Object value = jndiManager.lookup(jndiName);
+            return value == null ? null : String.valueOf(value);
         } catch (final NamingException e) {
             LOGGER.warn(LOOKUP, "Error looking up JNDI resource [{}].", jndiName, e);
             return null;

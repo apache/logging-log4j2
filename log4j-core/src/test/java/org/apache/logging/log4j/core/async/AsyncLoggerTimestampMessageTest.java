@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -31,12 +28,15 @@ import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -69,8 +69,10 @@ public class AsyncLoggerTimestampMessageTest {
         // System.out.println(f.getAbsolutePath());
         file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
-        log.info(new TimeMsg("Async logger msg with embedded timestamp", 123456789000L));
-        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
+        assertFalse(PoisonClock.called);
+        log.info((Message) new TimeMsg("Async logger msg with embedded timestamp", 123456789000L));
+        assertTrue(PoisonClock.called);
+        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
@@ -81,9 +83,12 @@ public class AsyncLoggerTimestampMessageTest {
     }
 
     public static class PoisonClock implements Clock {
+        public static boolean called = false;
         @Override
         public long currentTimeMillis() {
-            throw new RuntimeException("This should not have been called");
+            //throw new RuntimeException("This should not have been called");
+            called = true;
+            return 987654321L;
         }
     }
 

@@ -79,7 +79,7 @@ public class PluginManagerPackagesTest {
         // with the packages element pointing to our custom plugin
         ctx = Configurator.initialize("Test1", "customplugin/log4j2-741.xml");
         config = ctx.getConfiguration();
-        listAppender = (ListAppender) config.getAppender("List");
+        listAppender = config.getAppender("List");
 
         final Logger logger = LogManager.getLogger(PluginManagerPackagesTest.class);
         logger.info("this message is ignored");

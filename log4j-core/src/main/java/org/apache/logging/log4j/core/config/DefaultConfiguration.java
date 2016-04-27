@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.Serializable;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 /**
  * The default configuration writes all output to the Console using the default logging level. You configure default
  * logging level by setting the system property "org.apache.logging.log4j.level" to a level name. If you do not
@@ -33,16 +24,16 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class DefaultConfiguration extends AbstractConfiguration {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * The name of the default configuration.
      */
     public static final String DEFAULT_NAME = "Default";
+    
     /**
      * The System Property used to specify the logging level.
      */
     public static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
+    
     /**
      * The default Pattern used for the default Layout.
      */
@@ -53,22 +44,7 @@ public class DefaultConfiguration extends AbstractConfiguration {
      */
     public DefaultConfiguration() {
         super(ConfigurationSource.NULL_SOURCE);
-        
-        setName(DEFAULT_NAME);
-        final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-            .withPattern(DEFAULT_PATTERN)
-            .withConfiguration(this)
-            .build();
-        final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
-        appender.start();
-        addAppender(appender);
-        final LoggerConfig root = getRootLogger();
-        root.addAppender(appender, null, null);
-
-        final String levelName = PropertiesUtil.getProperties().getStringProperty(DEFAULT_LEVEL);
-        final Level level = levelName != null && Level.valueOf(levelName) != null ?
-            Level.valueOf(levelName) : Level.ERROR;
-        root.setLevel(level);
+        setToDefault();
     }
 
     @Override

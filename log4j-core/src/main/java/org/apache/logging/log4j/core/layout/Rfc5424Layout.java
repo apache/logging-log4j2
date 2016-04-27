@@ -56,7 +56,6 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
-
 /**
  * Formats a log event in accordance with RFC 5424.
  *
@@ -64,10 +63,6 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Plugin(name = "Rfc5424Layout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class Rfc5424Layout extends AbstractStringLayout {
-
-    private static final long serialVersionUID = 1L;
-
-    private static final String LF = "\n";
 
     /**
      * Not a very good default - it is the Apache Software Foundation's enterprise number.
@@ -82,20 +77,22 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     public static final Pattern NEWLINE_PATTERN = Pattern.compile("\\r?\\n");
     /**
-     * Match characters which require escaping
+     * Match characters which require escaping.
      */
     public static final Pattern PARAM_VALUE_ESCAPE_PATTERN = Pattern.compile("[\\\"\\]\\\\]");
 
+    /**
+     * Default MDC ID: {@value} .
+     */
     public static final String DEFAULT_MDCID = "mdc";
+
+    private static final String LF = "\n";
     private static final int TWO_DIGITS = 10;
     private static final int THREE_DIGITS = 100;
     private static final int MILLIS_PER_MINUTE = 60000;
     private static final int MINUTES_PER_HOUR = 60;
-
     private static final String COMPONENT_KEY = "RFC5424-Converter";
 
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
-    
     private final Facility facility;
     private final String defaultId;
     private final int enterpriseNumber;
@@ -111,7 +108,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final List<String> mdcExcludes;
     private final List<String> mdcIncludes;
     private final List<String> mdcRequired;
-    private final ListChecker checker;
+    private final ListChecker listChecker;
     private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
     private final String escapeNewLine;
@@ -121,14 +118,13 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private String timestamppStr;
 
     private final List<PatternFormatter> exceptionFormatters;
-    private final Map<String,  FieldFormatter> fieldFormatters;
+    private final Map<String, FieldFormatter> fieldFormatters;
 
     private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
-                          final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
-                          final String mdcPrefix, final String eventPrefix,
-                          final String appName, final String messageId, final String excludes, final String includes,
-                          final String required, final Charset charset, final String exceptionPattern,
-                          final boolean useTLSMessageFormat, final LoggerFields[] loggerFields) {
+            final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
+            final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
+            final String excludes, final String includes, final String required, final Charset charset,
+            final String exceptionPattern, final boolean useTLSMessageFormat, final LoggerFields[] loggerFields) {
         super(charset);
         final PatternParser exceptionParser = createPatternParser(config, ThrowablePatternConverter.class);
         exceptionFormatters = exceptionPattern == null ? null : exceptionParser.parse(exceptionPattern, false, false);
@@ -189,7 +185,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         } else {
             mdcRequired = null;
         }
-        this.checker = c != null ? c : noopChecker;
+        this.listChecker = c != null ? c : noopChecker;
         final String name = config == null ? null : config.getName();
         configName = Strings.isNotEmpty(name) ? name : null;
         this.fieldFormatters = createFieldFormatters(loggerFields, config);
@@ -236,7 +232,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         if (parser == null) {
             parser = new PatternParser(config, PatternLayout.KEY, ThrowablePatternConverter.class);
             config.addComponent(COMPONENT_KEY, parser);
-            parser = (PatternParser) config.getComponent(COMPONENT_KEY);
+            parser = config.getComponent(COMPONENT_KEY);
         }
         return parser;
     }
@@ -266,7 +262,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = prepareStringBuilder(strBuilder);
+        final StringBuilder buf = getStringBuilder();
         appendPriority(buf, event.getLevel());
         appendTimestamp(buf, event.getTimeMillis());
         appendSpace(buf);
@@ -292,7 +288,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         buffer.append(">1 ");
     }
 
-    private void appendTimestamp(final StringBuilder buffer, final long milliseconds)  {
+    private void appendTimestamp(final StringBuilder buffer, final long milliseconds) {
         buffer.append(computeTimeStampString(milliseconds));
     }
 
@@ -333,7 +329,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private void appendMessage(final StringBuilder buffer, final LogEvent event) {
         final Message message = event.getMessage();
         // This layout formats StructuredDataMessages instead of delegating to the Message itself.
-        final String text = (message instanceof StructuredDataMessage) ? message.getFormat() : message.getFormattedMessage();
+        final String text = (message instanceof StructuredDataMessage) ? message.getFormat() : message
+                .getFormattedMessage();
 
         if (text != null && text.length() > 0) {
             buffer.append(' ').append(escapeNewlines(text, escapeNewLine));
@@ -355,7 +352,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final Message message = event.getMessage();
         final boolean isStructured = message instanceof StructuredDataMessage;
 
-        if (!isStructured && (fieldFormatters!= null && fieldFormatters.isEmpty()) && !includeMdc) {
+        if (!isStructured && (fieldFormatters != null && fieldFormatters.isEmpty()) && !includeMdc) {
             buffer.append('-');
             return;
         }
@@ -368,7 +365,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         if (fieldFormatters != null) {
-            for (final Map.Entry<String, FieldFormatter> sdElement: fieldFormatters.entrySet()) {
+            for (final Map.Entry<String, FieldFormatter> sdElement : fieldFormatters.entrySet()) {
                 final String sdId = sdElement.getKey();
                 final StructuredDataElement elem = sdElement.getValue().format(event);
                 sdElements.put(sdId, elem);
@@ -408,16 +405,16 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return;
         }
 
-        for (final Map.Entry<String, StructuredDataElement> entry: sdElements.entrySet()) {
-            formatStructuredElement(entry.getKey(), mdcPrefix, entry.getValue(), buffer, checker);
+        for (final Map.Entry<String, StructuredDataElement> entry : sdElements.entrySet()) {
+            formatStructuredElement(entry.getKey(), mdcPrefix, entry.getValue(), buffer, listChecker);
         }
     }
 
-    private String escapeNewlines(final String text, final String escapeNewLine) {
-        if (null == escapeNewLine) {
+    private String escapeNewlines(final String text, final String replacement) {
+        if (null == replacement) {
             return text;
         }
-        return NEWLINE_PATTERN.matcher(text).replaceAll(escapeNewLine);
+        return NEWLINE_PATTERN.matcher(text).replaceAll(replacement);
     }
 
     protected String getProcId() {
@@ -494,7 +491,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     }
 
     private void formatStructuredElement(final String id, final String prefix, final StructuredDataElement data,
-                                         final StringBuilder sb, final ListChecker checker) {
+            final StringBuilder sb, final ListChecker checker) {
         if ((id == null && defaultId == null) || data.discard()) {
             return;
         }
@@ -608,32 +605,34 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     /**
      * Create the RFC 5424 Layout.
      *
-     * @param facility         The Facility is used to try to classify the message.
-     * @param id               The default structured data id to use when formatting according to RFC 5424.
+     * @param facility The Facility is used to try to classify the message.
+     * @param id The default structured data id to use when formatting according to RFC 5424.
      * @param enterpriseNumber The IANA enterprise number.
-     * @param includeMDC       Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
-     *                         record. Defaults to "true:.
-     * @param mdcId            The id to use for the MDC Structured Data Element.
-     * @param mdcPrefix        The prefix to add to MDC key names.
-     * @param eventPrefix      The prefix to add to event key names.
-     * @param newLine          If true, a newline will be appended to the end of the syslog record. The default is false.
-     * @param escapeNL         String that should be used to replace newlines within the message text.
-     * @param appName          The value to use as the APP-NAME in the RFC 5424 syslog record.
-     * @param msgId            The default value to be used in the MSGID field of RFC 5424 syslog records.
-     * @param excludes         A comma separated list of MDC keys that should be excluded from the LogEvent.
-     * @param includes         A comma separated list of MDC keys that should be included in the FlumeEvent.
-     * @param required         A comma separated list of MDC keys that must be present in the MDC.
+     * @param includeMDC Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
+     *            record. Defaults to "true:.
+     * @param mdcId The id to use for the MDC Structured Data Element.
+     * @param mdcPrefix The prefix to add to MDC key names.
+     * @param eventPrefix The prefix to add to event key names.
+     * @param newLine If true, a newline will be appended to the end of the syslog record. The default is false.
+     * @param escapeNL String that should be used to replace newlines within the message text.
+     * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
+     * @param msgId The default value to be used in the MSGID field of RFC 5424 syslog records.
+     * @param excludes A comma separated list of MDC keys that should be excluded from the LogEvent.
+     * @param includes A comma separated list of MDC keys that should be included in the FlumeEvent.
+     * @param required A comma separated list of MDC keys that must be present in the MDC.
      * @param exceptionPattern The pattern for formatting exceptions.
      * @param useTlsMessageFormat If true the message will be formatted according to RFC 5425.
-     * @param loggerFields     Container for the KeyValuePairs containing the patterns
-     * @param config           The Configuration. Some Converters require access to the Interpolator.
+     * @param loggerFields Container for the KeyValuePairs containing the patterns
+     * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An Rfc5424Layout.
      */
     @PluginFactory
     public static Rfc5424Layout createLayout(
+            // @formatter:off
             @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
-            @PluginAttribute(value = "enterpriseNumber", defaultInt = DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
+            @PluginAttribute(value = "enterpriseNumber", defaultInt = DEFAULT_ENTERPRISE_NUMBER)
+            final int enterpriseNumber,
             @PluginAttribute(value = "includeMDC", defaultBoolean = true) final boolean includeMDC,
             @PluginAttribute(value = "mdcId", defaultString = DEFAULT_MDCID) final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
@@ -646,17 +645,19 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             @PluginAttribute("mdcIncludes") String includes,
             @PluginAttribute("mdcRequired") final String required,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginAttribute(value = "useTlsMessageFormat", defaultBoolean = false) final boolean useTlsMessageFormat, // RFC 5425
+            // RFC 5425
+            @PluginAttribute(value = "useTlsMessageFormat", defaultBoolean = false) final boolean useTlsMessageFormat,
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
             @PluginConfiguration final Configuration config) {
+        // @formatter:on
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;
         }
 
-        return new Rfc5424Layout(config, facility, id, enterpriseNumber, includeMDC, newLine, escapeNL, mdcId, mdcPrefix,
-                eventPrefix, appName, msgId, excludes, includes, required, StandardCharsets.UTF_8, exceptionPattern,
-                useTlsMessageFormat, loggerFields);
+        return new Rfc5424Layout(config, facility, id, enterpriseNumber, includeMDC, newLine, escapeNL, mdcId,
+                mdcPrefix, eventPrefix, appName, msgId, excludes, includes, required, StandardCharsets.UTF_8,
+                exceptionPattern, useTlsMessageFormat, loggerFields);
     }
 
     private class FieldFormatter {
@@ -707,8 +708,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return !foundNotEmptyValue;
         }
 
-        void union(final Map<String, String> fields) {
-            this.fields.putAll(fields);
+        void union(final Map<String, String> addFields) {
+            this.fields.putAll(addFields);
         }
 
         Map<String, String> getFields() {

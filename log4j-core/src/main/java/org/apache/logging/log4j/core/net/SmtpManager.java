@@ -41,9 +41,15 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -61,6 +67,14 @@ public class SmtpManager extends AbstractManager {
 
     private final FactoryData data;
 
+    private static MimeMessage createMimeMessage(final FactoryData data, final Session session, LogEvent appendEvent)
+            throws MessagingException {
+        return new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
+                .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
+                .setRecipients(Message.RecipientType.BCC, data.bcc).setSubject(data.subject.toSerializable(appendEvent))
+                .build();
+    }
+
     protected SmtpManager(final String name, final Session session, final MimeMessage message,
                           final FactoryData data) {
         super(name);
@@ -70,11 +84,18 @@ public class SmtpManager extends AbstractManager {
         this.buffer = new CyclicBuffer<>(LogEvent.class, data.numElements);
     }
 
-    public void add(final LogEvent event) {
+    public void add(LogEvent event) {
+        if (event instanceof Log4jLogEvent && event.getMessage() instanceof ReusableMessage) {
+            ((Log4jLogEvent) event).makeMessageImmutable();
+        } else if (event instanceof MutableLogEvent) {
+            event = Log4jLogEvent.deserialize(Log4jLogEvent.serialize(event, event.isIncludeLocation()));
+        }
         buffer.add(event);
     }
 
-    public static SmtpManager getSMTPManager(final String to, final String cc, final String bcc,
+    public static SmtpManager getSmtpManager(
+                                             final Configuration config,
+                                             final String to, final String cc, final String bcc,
                                              final String from, final String replyTo,
                                              final String subject, String protocol, final String host,
                                              final int port, final String username, final String password,
@@ -120,8 +141,9 @@ public class SmtpManager extends AbstractManager {
         sb.append(filterName);
 
         final String name = "SMTP:" + NameUtil.md5(sb.toString());
+        final Serializer subjectSerializer = PatternLayout.createSerializer(config, null, subject, null, null, false, false);
 
-        return getManager(name, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subject,
+        return getManager(name, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
             protocol, host, port, username, password, isDebug, numElements));
     }
 
@@ -132,7 +154,7 @@ public class SmtpManager extends AbstractManager {
      */
     public void sendEvents(final Layout<?> layout, final LogEvent appendEvent) {
         if (message == null) {
-            connect();
+            connect(appendEvent);
         }
         try {
             final LogEvent[] priorEvents = buffer.removeAll();
@@ -148,14 +170,8 @@ public class SmtpManager extends AbstractManager {
             final MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
 
             sendMultipartMessage(message, mp);
-        } catch (final MessagingException e) {
-            LOGGER.error("Error occurred while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final IOException e) {
-            LOGGER.error("Error occurred while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final RuntimeException e) {
-            LOGGER.error("Error occurred while sending e-mail notification.", e);
+        } catch (final MessagingException | IOException | RuntimeException e) {
+            logError("caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }
     }
@@ -234,11 +250,11 @@ public class SmtpManager extends AbstractManager {
         return mp;
     }
 
-    protected void sendMultipartMessage(final MimeMessage message, final MimeMultipart mp) throws MessagingException {
-        synchronized (message) {
-            message.setContent(mp);
-            message.setSentDate(new Date());
-            Transport.send(message);
+    protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp) throws MessagingException {
+        synchronized (msg) {
+            msg.setContent(mp);
+            msg.setSentDate(new Date());
+            Transport.send(msg);
         }
     }
 
@@ -251,7 +267,7 @@ public class SmtpManager extends AbstractManager {
         private final String bcc;
         private final String from;
         private final String replyto;
-        private final String subject;
+        private final Serializer subject;
         private final String protocol;
         private final String host;
         private final int port;
@@ -261,14 +277,14 @@ public class SmtpManager extends AbstractManager {
         private final int numElements;
 
         public FactoryData(final String to, final String cc, final String bcc, final String from, final String replyTo,
-                           final String subject, final String protocol, final String host, final int port,
+                           final Serializer subjectSerializer, final String protocol, final String host, final int port,
                            final String username, final String password, final boolean isDebug, final int numElements) {
             this.to = to;
             this.cc = cc;
             this.bcc = bcc;
             this.from = from;
             this.replyto = replyTo;
-            this.subject = subject;
+            this.subject = subjectSerializer;
             this.protocol = protocol;
             this.host = host;
             this.port = port;
@@ -279,16 +295,14 @@ public class SmtpManager extends AbstractManager {
         }
     }
 
-    private synchronized void connect() {
+    private synchronized void connect(LogEvent appendEvent) {
         if (message != null) {
             return;
         }
         try {
-            message = new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
-                .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
-                .setRecipients(Message.RecipientType.BCC, data.bcc).setSubject(data.subject).getMimeMessage();
+            message = createMimeMessage(data, session, appendEvent);
         } catch (final MessagingException e) {
-            LOGGER.error("Could not set SmtpAppender message options.", e);
+            logError("Could not set SmtpAppender message options", e);
             message = null;
         }
     }
@@ -324,18 +338,7 @@ public class SmtpManager extends AbstractManager {
             final Session session = Session.getInstance(properties, authenticator);
             session.setProtocolForAddress("rfc822", data.protocol);
             session.setDebug(data.isDebug);
-            MimeMessage message;
-
-            try {
-                message = new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
-                    .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
-                    .setRecipients(Message.RecipientType.BCC, data.bcc).setSubject(data.subject).getMimeMessage();
-            } catch (final MessagingException e) {
-                LOGGER.error("Could not set SmtpAppender message options.", e);
-                message = null;
-            }
-
-            return new SmtpManager(name, session, message, data);
+            return new SmtpManager(name, session, null, data);
         }
 
         private Authenticator buildAuthenticator(final String username, final String password) {

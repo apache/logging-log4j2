@@ -16,7 +16,19 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.*;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.test.appender.EncodingListAppender;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,23 +37,8 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.BasicConfigurationFactory;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static org.junit.Assert.assertEquals;
 
 public class GelfLayoutTest {
     static ConfigurationFactory configFactory = new BasicConfigurationFactory();
@@ -77,26 +74,28 @@ public class GelfLayoutTest {
 
     Logger root = ctx.getLogger("");
 
-    private void testCompressedLayout(final CompressionType compressionType) throws IOException {
+    private void testCompressedLayout(final CompressionType compressionType, boolean includeStacktrace) throws IOException {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up appenders
         final GelfLayout layout = GelfLayout.createLayout(HOSTNAME, new KeyValuePair[] {
                 new KeyValuePair(KEY1, VALUE1),
-                new KeyValuePair(KEY2, VALUE2), }, compressionType, 1024);
-        // ConsoleAppender appender = new ConsoleAppender("Console", layout);
+                new KeyValuePair(KEY2, VALUE2), }, compressionType, 1024, includeStacktrace);
         final ListAppender eventAppender = new ListAppender("Events", null, null, true, false);
         final ListAppender rawAppender = new ListAppender("Raw", null, layout, true, true);
         final ListAppender formattedAppender = new ListAppender("Formatted", null, layout, true, false);
+        final EncodingListAppender encodedAppender = new EncodingListAppender("Encoded", null, layout, false, true);
         eventAppender.start();
         rawAppender.start();
         formattedAppender.start();
+        encodedAppender.start();
 
         // set appenders on root and set level to debug
         root.addAppender(eventAppender);
         root.addAppender(rawAppender);
         root.addAppender(formattedAppender);
+        root.addAppender(encodedAppender);
         root.setLevel(Level.DEBUG);
 
         root.debug(LINE1);
@@ -116,6 +115,7 @@ public class GelfLayoutTest {
         final List<LogEvent> events = eventAppender.getEvents();
         final List<byte[]> raw = rawAppender.getData();
         final List<String> messages = formattedAppender.getMessages();
+        final List<byte[]> raw2 = encodedAppender.getData();
         final String threadName = Thread.currentThread().getName();
 
         //@formatter:off
@@ -148,56 +148,82 @@ public class GelfLayoutTest {
                 messages.get(1));
         //@formatter:on
         final byte[] compressed = raw.get(2);
+        final byte[] compressed2 = raw2.get(2);
         final ByteArrayInputStream bais = new ByteArrayInputStream(compressed);
-        InputStream inflaterStream = null;
+        final ByteArrayInputStream bais2 = new ByteArrayInputStream(compressed2);
+        InputStream inflaterStream;
+        InputStream inflaterStream2;
         switch (compressionType) {
         case GZIP:
             inflaterStream = new GZIPInputStream(bais);
+            inflaterStream2 = new GZIPInputStream(bais2);
             break;
         case ZLIB:
             inflaterStream = new InflaterInputStream(bais);
+            inflaterStream2 = new InflaterInputStream(bais2);
             break;
         case OFF:
             inflaterStream = bais;
+            inflaterStream2 = bais2;
             break;
         default:
             throw new IllegalStateException("Missing test case clause");
         }
         final byte[] uncompressed = IOUtils.toByteArray(inflaterStream);
+        final byte[] uncompressed2 = IOUtils.toByteArray(inflaterStream2);
         inflaterStream.close();
+        inflaterStream2.close();
         final String uncompressedString = new String(uncompressed, layout.getCharset());
+        final String uncompressedString2 = new String(uncompressed2, layout.getCharset());
         //@formatter:off
-        assertJsonEquals("{" +
-                        "\"version\": \"1.1\"," +
-                        "\"host\": \"" + HOSTNAME + "\"," +
-                        "\"timestamp\": " + GelfLayout.formatTimestamp(events.get(2).getTimeMillis()) + "," +
-                        "\"level\": 3," +
-                        "\"_thread\": \"" + threadName + "\"," +
-                        "\"_logger\": \"\"," +
-                        "\"short_message\": \"" + LINE3 + "\"," +
-                        "\"full_message\": \"" + String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
-                                GelfLayout.formatThrowable(exception))) + "\"," +
-                        "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
-                        "\"_" + KEY2 + "\": \"" + VALUE2 + "\"," +
-                        "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
-                        "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\"" +
-                        "}",
-                uncompressedString);
+        String expected = "{" +
+                "\"version\": \"1.1\"," +
+                "\"host\": \"" + HOSTNAME + "\"," +
+                "\"timestamp\": " + GelfLayout.formatTimestamp(events.get(2).getTimeMillis()) + "," +
+                "\"level\": 3," +
+                "\"_thread\": \"" + threadName + "\"," +
+                "\"_logger\": \"\"," +
+                "\"short_message\": \"" + LINE3 + "\"," +
+                "\"full_message\": \"" + String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
+                includeStacktrace ? GelfLayout.formatThrowable(exception).toString() : exception.toString())) + "\"," +
+                "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
+                "\"_" + KEY2 + "\": \"" + VALUE2 + "\"," +
+                "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
+                "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\"" +
+                "}";
         //@formatter:on
+        assertJsonEquals(expected, uncompressedString);
+        assertJsonEquals(expected, uncompressedString2);
     }
 
     @Test
     public void testLayoutGzipCompression() throws Exception {
-        testCompressedLayout(CompressionType.GZIP);
+        testCompressedLayout(CompressionType.GZIP, true);
     }
 
     @Test
     public void testLayoutNoCompression() throws Exception {
-        testCompressedLayout(CompressionType.OFF);
+        testCompressedLayout(CompressionType.OFF, true);
     }
 
     @Test
     public void testLayoutZlibCompression() throws Exception {
-        testCompressedLayout(CompressionType.ZLIB);
+        testCompressedLayout(CompressionType.ZLIB, true);
+    }
+
+    @Test
+    public void testLayoutNoStacktrace() throws Exception {
+        testCompressedLayout(CompressionType.OFF, false);
+    }
+
+    @Test
+    public void testFormatTimestamp() {
+        assertEquals("0", GelfLayout.formatTimestamp(0L).toString());
+        assertEquals("1.000", GelfLayout.formatTimestamp(1000L).toString());
+        assertEquals("1.001", GelfLayout.formatTimestamp(1001L).toString());
+        assertEquals("1.010", GelfLayout.formatTimestamp(1010L).toString());
+        assertEquals("1.100", GelfLayout.formatTimestamp(1100L).toString());
+        assertEquals("1458741206.653", GelfLayout.formatTimestamp(1458741206653L).toString());
+        assertEquals("9223372036854775.807", GelfLayout.formatTimestamp(Long.MAX_VALUE).toString());
     }
 }

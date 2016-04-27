@@ -68,28 +68,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "asyncLogger", category = Node.CATEGORY, printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
-    private static final long serialVersionUID = 1L;
-
-    private AsyncLoggerConfigHelper helper;
-
-    /**
-     * Default constructor.
-     */
-    public AsyncLoggerConfig() {
-        super();
-    }
-
-    /**
-     * Constructor that sets the name, level and additive values.
-     *
-     * @param name The Logger name.
-     * @param level The Level.
-     * @param additive true if the Logger is additive, false otherwise.
-     */
-    public AsyncLoggerConfig(final String name, final Level level,
-            final boolean additive) {
-        super(name, level, additive);
-    }
+    private final AsyncLoggerConfigDelegate delegate;
 
     protected AsyncLoggerConfig(final String name,
             final List<AppenderRef> appenders, final Filter filter,
@@ -98,6 +77,8 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final boolean includeLocation) {
         super(name, appenders, filter, level, additive, properties, config,
                 includeLocation);
+        delegate = config.getAsyncLoggerConfigDelegate();
+        delegate.setLogEventFactory(getLogEventFactory());
     }
 
     /**
@@ -106,14 +87,25 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @Override
     protected void callAppenders(final LogEvent event) {
-        // populate lazily initialized fields
+        populateLazilyInitializedFields(event);
+
+        if (!delegate.tryEnqueue(event, this)) {
+            final EventRoute eventRoute = delegate.getEventRoute(event.getLevel());
+            eventRoute.logMessage(this, event);
+        }
+    }
+
+    private void populateLazilyInitializedFields(final LogEvent event) {
         event.getSource();
         event.getThreadName();
+    }
 
-        // pass on the event to a separate thread
-        if (!helper.callAppendersFromAnotherThread(event)) {
-            super.callAppenders(event);
-        }
+    void callAppendersInCurrentThread(final LogEvent event) {
+        super.callAppenders(event);
+    }
+
+    void callAppendersInBackgroundThread(final LogEvent event) {
+        delegate.enqueueEvent(event, this);
     }
 
     /** Called by AsyncLoggerConfigHelper.RingBufferLog4jEventHandler. */
@@ -128,20 +120,12 @@ public class AsyncLoggerConfig extends LoggerConfig {
     @Override
     public void start() {
         LOGGER.trace("AsyncLoggerConfig[{}] starting...", displayName());
-        this.setStarting();
-        if (helper == null) {
-            helper = new AsyncLoggerConfigHelper(this);
-        } else {
-            AsyncLoggerConfigHelper.claim(); // LOG4J2-336
-        }
         super.start();
     }
 
     @Override
     public void stop() {
         LOGGER.trace("AsyncLoggerConfig[{}] stopping...", displayName());
-        this.setStopping();
-        AsyncLoggerConfigHelper.release();
         super.stop();
     }
 
@@ -153,7 +137,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
      * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
      */
     public RingBufferAdmin createRingBufferAdmin(final String contextName) {
-        return helper.createRingBufferAdmin(contextName, getName());
+        return delegate.createRingBufferAdmin(contextName, getName());
     }
 
     /**
@@ -211,8 +195,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @Plugin(name = "asyncRoot", category = "Core", printObject = true)
     public static class RootLogger extends LoggerConfig {
-
-        private static final long serialVersionUID = 1L;
 
         @PluginFactory
         public static LoggerConfig createLogger(

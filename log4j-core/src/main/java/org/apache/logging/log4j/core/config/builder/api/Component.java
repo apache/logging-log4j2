@@ -55,8 +55,8 @@ public class Component {
     }
 
 
-    public String addAttribute(final String key, final String value) {
-        return attributes.put(key, value);
+    public String addAttribute(final String key, final String newValue) {
+        return attributes.put(key, newValue);
     }
 
     public void addComponent(final Component component) {

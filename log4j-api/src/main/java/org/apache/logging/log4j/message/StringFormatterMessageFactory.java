@@ -31,8 +31,14 @@ public final class StringFormatterMessageFactory extends AbstractMessageFactory 
      * Instance of StringFormatterMessageFactory.
      */
     public static final StringFormatterMessageFactory INSTANCE = new StringFormatterMessageFactory();
+    private static final long serialVersionUID = -1626332412176965642L;
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * Constructs a message factory with default flow strings.
+     */
+    public StringFormatterMessageFactory() {
+        super();
+    }
 
     /**
      * Creates {@link StringFormattedMessage} instances.

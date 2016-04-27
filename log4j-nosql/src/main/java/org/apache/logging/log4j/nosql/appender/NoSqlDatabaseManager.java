@@ -90,7 +90,9 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
             entity.set("marker", buildMarkerEntity(marker));
         }
 
+        entity.set("threadId", event.getThreadId());
         entity.set("threadName", event.getThreadName());
+        entity.set("threadPriority", event.getThreadPriority());
         entity.set("millis", event.getTimeMillis());
         entity.set("date", new java.util.Date(event.getTimeMillis()));
 

@@ -32,8 +32,10 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -89,7 +91,6 @@ public class TestConfigurator {
             ctx = null;
         }
     }
-
 
     @Test
     public void testFromFile() throws Exception {
@@ -239,22 +240,22 @@ public class TestConfigurator {
         assertNotNull("Appenders map should not be null.", map);
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
-        
+
         // Sleep and check
         Thread.sleep(50);
         if (!file.setLastModified(System.currentTimeMillis())) {
             Thread.sleep(500);
         }
         assertTrue("setLastModified should have succeeded.", file.setLastModified(System.currentTimeMillis()));
-        TimeUnit.SECONDS.sleep(FileConfigurationMonitor.MIN_INTERVAL + 1);
+        TimeUnit.SECONDS.sleep(config.getWatchManager().getIntervalSeconds()+1);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Test message " + i);
         }
-        
-        // Sleep and check        
-        Thread.sleep(50);            
+
+        // Sleep and check
+        Thread.sleep(50);
         if (is(theInstance(config)).matches(ctx.getConfiguration())) {
-            Thread.sleep(500);            
+            Thread.sleep(500);
         }
         final Configuration newConfig = ctx.getConfiguration();
         assertThat("Configuration not reset", newConfig, is(not(theInstance(config))));
@@ -290,7 +291,8 @@ public class TestConfigurator {
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration.", DefaultConfiguration.DEFAULT_NAME, config.getName());
+        final String name = DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(config.hashCode());
+        assertEquals("Unexpected Configuration.", name, config.getName());
     }
 
     @Test
@@ -383,6 +385,88 @@ public class TestConfigurator {
         assertNotNull("No configuration", config);
         assertEquals("Unexpected Configuration", "BuilderTest", config.getName());
         assertThat(config.getAppenders(), hasSize(equalTo(1)));
+    }
+
+    @Test
+    public void testRolling() throws Exception {
+        ConfigurationBuilder< BuiltConfiguration > builder =
+                ConfigurationBuilderFactory.newConfigurationBuilder();
+
+        builder.setStatusLevel( Level.ERROR);
+        builder.setConfigurationName("RollingBuilder");
+        // create the console appender
+        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+                ConsoleAppender.Target.SYSTEM_OUT);
+        appenderBuilder.add(builder.newLayout("PatternLayout").
+                addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+        builder.add( appenderBuilder );
+
+        LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+                .addAttribute("pattern", "%d [%t] %-5level: %msg%n");
+        ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
+                .addComponent(builder.newComponent("CronTriggeringPolicy").addAttribute("schedule", "0 0 0 * * ?"))
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "100M"));
+        appenderBuilder = builder.newAppender("rolling", "RollingFile")
+                .addAttribute("fileName", "target/rolling.log")
+                .addAttribute("filePattern", "target/archive/rolling-%d{MM-dd-yy}.log.gz")
+                .add(layoutBuilder)
+                .addComponent(triggeringPolicy);
+        builder.add(appenderBuilder);
+
+        // create the new logger
+        builder.add( builder.newLogger( "TestLogger", Level.DEBUG )
+                .add( builder.newAppenderRef( "rolling" ) )
+                .addAttribute( "additivity", false ) );
+
+        builder.add( builder.newRootLogger( Level.DEBUG )
+                .add( builder.newAppenderRef( "rolling" ) ) );
+        Configuration config = builder.build();
+        config.initialize();
+        assertNotNull("No rolling file appender", config.getAppender("rolling"));
+        assertEquals("Unexpected Configuration", "RollingBuilder", config.getName());
+        // Initialize the new configuration
+        LoggerContext ctx = Configurator.initialize( config );
+        Configurator.shutdown(ctx);
+
+    }
+
+    @Test
+    public void testBuilderWithScripts() throws Exception {
+        String script = "if (logEvent.getLoggerName().equals(\"NoLocation\")) {\n" +
+                "                return \"NoLocation\";\n" +
+                "            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf(\"FLOW\")) {\n" +
+                "                return \"Flow\";\n" +
+                "            } else {\n" +
+                "                return null;\n" +
+                "            }";
+        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        builder.setStatusLevel(Level.ERROR);
+        builder.setConfigurationName("BuilderTest");
+        builder.add(builder.newScriptFile("filter.groovy", "target/test-classes/scripts/filter.groovy").addIsWatched(true));
+        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+                ConsoleAppender.Target.SYSTEM_OUT);
+        appenderBuilder.add(builder.newLayout("PatternLayout").
+                addComponent(builder.newComponent("ScriptPatternSelector")
+                        .addAttribute("defaultPattern", "[%-5level] %c{1.} %C{1.}.%M.%L %msg%n")
+                        .addComponent(builder.newComponent("PatternMatch").addAttribute("key", "NoLocation")
+                                .addAttribute("pattern", "[%-5level] %c{1.} %msg%n"))
+                        .addComponent(builder.newComponent("PatternMatch").addAttribute("key", "FLOW")
+                                .addAttribute("pattern", "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"))
+                        .addComponent(builder.newComponent("selectorScript", "Script", script).addAttribute("language", "beanshell"))));
+        appenderBuilder.add(builder.newFilter("ScriptFilter", Filter.Result.DENY,
+                Filter.Result.NEUTRAL).addComponent(builder.newComponent("ScriptRef").addAttribute("ref", "filter.groovy")));
+        builder.add(appenderBuilder);
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
+                add(builder.newAppenderRef("Stdout")).
+                addAttribute("additivity", false));
+        builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+        ctx = Configurator.initialize(builder.build());
+        final Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertEquals("Unexpected Configuration", "BuilderTest", config.getName());
+        assertThat(config.getAppenders(), hasSize(equalTo(1)));
+        assertNotNull("Filter script not found", config.getScriptManager().getScript("filter.groovy"));
+        assertNotNull("pattern selector script not found", config.getScriptManager().getScript("selectorScript"));
     }
 
 }

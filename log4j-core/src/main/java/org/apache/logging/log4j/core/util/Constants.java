@@ -36,6 +36,9 @@ public final class Constants {
      */
     public static final String LOG4J_CONTEXT_SELECTOR = "Log4jContextSelector";
 
+    /**
+     * Property name for the default status (internal log4j logging) level to use if not specified in configuration.
+     */
     public static final String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
 
     /**
@@ -46,20 +49,106 @@ public final class Constants {
     /**
      * Line separator.
      */
-    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator", "\n");
+    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
+            "\n");
 
     /**
      * Number of milliseconds in a second.
      */
     public static final int MILLIS_IN_SECONDS = 1000;
-    
+
     /**
      * Equivalent to StandardCharsets.UTF_8.
-     * 
+     *
      * @deprecated Use {@link StandardCharsets#UTF_8}. Will be removed in 2.5.
      */
     @Deprecated
     public static final Charset UTF_8 = StandardCharsets.UTF_8;
+
+    /**
+     * Supports user request LOG4J2-898 to have the option to format a message in the background thread.
+     */
+    public static final boolean FORMAT_MESSAGES_IN_BACKGROUND = PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j.format.msg.async", false);
+
+    /**
+     * {@code true} if we think we are running in a web container, based on the boolean value of system property
+     * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
+     * is present in the classpath.
+     */
+    public static final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j2.is.webapp", Loader.isClassAvailable("javax.servlet.Servlet"));
+
+    /**
+     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
+     * <p>
+     * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
+     * "log4j2.enable.threadlocals" to "false".
+     *
+     * @since 2.6
+     */
+    public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j2.enable.threadlocals", true);
+
+    /**
+     * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into
+     * {@link org.apache.logging.log4j.core.layout.ByteBufferDestination}s without creating intermediate temporary
+     * Objects.
+     * <p>
+     * {@code True} by default iff all loggers are asynchronous because system property
+     * {@code Log4jContextSelector} is set to {@code org.apache.logging.log4j.core.async.AsyncLoggerContextSelector}.
+     * Disable by setting system property "log4j2.enable.direct.encoders" to "false".
+     *
+     * @since 2.6
+     */
+    public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j2.enable.direct.encoders", true); // enable GC-free text encoding by default
+            // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
+            //AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
+
+    /**
+     * Initial StringBuilder size used in RingBuffer LogEvents to store the contents of reusable Messages.
+     * <p>
+     * The default value is {@value}, users can override with system property "log4j.initialReusableMsgSize".
+     * </p>
+     * @since 2.6
+     */
+    public static final int INITIAL_REUSABLE_MESSAGE_SIZE = size("log4j.initialReusableMsgSize", 128);
+
+    /**
+     * Maximum size of the StringBuilders used in RingBuffer LogEvents to store the contents of reusable Messages.
+     * After a large message has been delivered to the appenders, the StringBuilder is trimmed to this size.
+     * <p>
+     * The default value is {@value}, which allows the StringBuilder to resize three times from its initial size.
+     * Users can override with system property "log4j.maxReusableMsgSize".
+     * </p>
+     * @since 2.6
+     */
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
+
+    /**
+     * Size of CharBuffers used by text encoders.
+     * <p>
+     * The default value is {@value}, users can override with system property "log4j.encoder.charBufferSize".
+     * </p>
+     * @since 2.6
+     */
+    public static final int ENCODER_CHAR_BUFFER_SIZE = size("log4j.encoder.charBufferSize", 2048);
+
+    /**
+     * Default size of ByteBuffers used to encode LogEvents without allocating temporary objects.
+     * <p>
+     * The default value is {@value}, users can override with system property "log4j.encoder.byteBufferSize".
+     * </p>
+     * @see org.apache.logging.log4j.core.layout.ByteBufferDestination
+     * @since 2.6
+     */
+    public static final int ENCODER_BYTE_BUFFER_SIZE = size("log4j.encoder.byteBufferSize", 8 * 1024);
+
+
+    private static int size(final String property, final int defaultValue) {
+        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    }
 
     /**
      * Prevent class instantiation.

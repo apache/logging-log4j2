@@ -88,10 +88,10 @@
           </p>
           <ol>
             <li>Log4j 2 is designed to be usable as an audit logging framework. Both Log4j
-              1.x and Logback will lose events while reconfiguring. Log4j 2 will not. in
-              Logback exceptions in Appenders are never visible to the application. In
+              1.x and Logback will lose events while reconfiguring. Log4j 2 will not. In
+              Logback, exceptions in Appenders are never visible to the application. In
               Log4j 2 Appenders can be configured to allow the exception to percolate
-              to the application</li>
+              to the application.</li>
             <li>Log4j 2 contains next-generation lock-free <a href="async.html">Asynchronous Loggers</a> based
               on the <a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor library</a>.
               In multi-threaded scenarios Asynchronous Loggers have 10 times higher throughput and
@@ -122,7 +122,7 @@
               be transported in any format desired.</li>
             <li>Layouts in Log4j 1.x and Logback return a String. This resulted in the problems
               discussed at <a href="http://logback.qos.ch/manual/encoders.html">Logback Encoders</a>.
-              Log4j 2 takes the simpler approach that Layouts always return a byte array. This has
+              Log4j 2 takes the simpler approach that <a href="layouts.html">Layouts</a> always return a byte array. This has
               the advantage that it means they can be used in virtually any Appender, not just
               the ones that write to an OutputStream.</li>
             <!-- and coming up: ByteBuffers, too! -->

@@ -33,11 +33,11 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
 /**
- * This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers
- * assigned to static variables to be released along with the classes that own then. Other ContextSelectors
- * will generally cause Loggers associated with classes loaded from different ClassLoaders to be co-mingled.
- * This is a problem if, for example, a web application is undeployed as some of the Loggers being released may be
- * associated with a Class in a parent ClassLoader, which will generally have negative consequences.
+ * This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers assigned
+ * to static variables to be released along with the classes that own then. Other ContextSelectors will generally cause
+ * Loggers associated with classes loaded from different ClassLoaders to be co-mingled. This is a problem if, for
+ * example, a web application is undeployed as some of the Loggers being released may be associated with a Class in a
+ * parent ClassLoader, which will generally have negative consequences.
  *
  * The main downside to this ContextSelector is that Configuration is more challenging.
  *
@@ -45,12 +45,12 @@ import org.apache.logging.log4j.util.ReflectionUtil;
  */
 public class ClassLoaderContextSelector implements ContextSelector {
 
-    private static final AtomicReference<LoggerContext> CONTEXT = new AtomicReference<>();
+    private static final AtomicReference<LoggerContext> DEFAULT_CONTEXT = new AtomicReference<>();
 
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
-        new ConcurrentHashMap<>();
+            new ConcurrentHashMap<>();
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
@@ -59,7 +59,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    final URI configLocation) {
+            final URI configLocation) {
         if (currentContext) {
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             if (ctx != null) {
@@ -142,9 +142,8 @@ public class ClassLoaderContextSelector implements ContextSelector {
                     } */
                 }
             }
-            LoggerContext ctx = new LoggerContext(name, null, configLocation);
-            final AtomicReference<WeakReference<LoggerContext>> r =
-                new AtomicReference<>();
+            LoggerContext ctx = createContext(name, configLocation);
+            final AtomicReference<WeakReference<LoggerContext>> r = new AtomicReference<>();
             r.set(new WeakReference<>(ctx));
             CONTEXT_MAP.putIfAbsent(name, r);
             ctx = CONTEXT_MAP.get(name).get().get();
@@ -156,29 +155,36 @@ public class ClassLoaderContextSelector implements ContextSelector {
             if (ctx.getConfigLocation() == null && configLocation != null) {
                 LOGGER.debug("Setting configuration to {}", configLocation);
                 ctx.setConfigLocation(configLocation);
-            } else if (ctx.getConfigLocation() != null && configLocation != null &&
-                !ctx.getConfigLocation().equals(configLocation)) {
+            } else if (ctx.getConfigLocation() != null && configLocation != null
+                    && !ctx.getConfigLocation().equals(configLocation)) {
                 LOGGER.warn("locateContext called with URI {}. Existing LoggerContext has URI {}", configLocation,
-                    ctx.getConfigLocation());
+                        ctx.getConfigLocation());
             }
             return ctx;
         }
-        ctx = new LoggerContext(name, null, configLocation);
+        ctx = createContext(name, configLocation);
         ref.compareAndSet(weakRef, new WeakReference<>(ctx));
         return ctx;
     }
 
-    private String toContextMapKey(final ClassLoader loader) {
-        return String.valueOf(System.identityHashCode(loader));
+    protected LoggerContext createContext(final String name, final URI configLocation) {
+        return new LoggerContext(name, null, configLocation);
+    }
+
+    protected String toContextMapKey(final ClassLoader loader) {
+        return Integer.toHexString(System.identityHashCode(loader));
     }
 
     protected LoggerContext getDefault() {
-        final LoggerContext ctx = CONTEXT.get();
+        final LoggerContext ctx = DEFAULT_CONTEXT.get();
         if (ctx != null) {
             return ctx;
         }
-        CONTEXT.compareAndSet(null, new LoggerContext("Default"));
-        return CONTEXT.get();
+        DEFAULT_CONTEXT.compareAndSet(null, createContext(defaultContextName(), null));
+        return DEFAULT_CONTEXT.get();
     }
 
+    protected String defaultContextName() {
+        return "Default";
+    }
 }

@@ -23,11 +23,15 @@ The ${developmentTeam} is pleased to announce the Log4j ${relVersion} release!
 
 Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
 Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
-many other modern features such as support for Markers, property substitution using Lookups, and asynchronous
-Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
+many other modern features such as support for Markers, property substitution using Lookups, multiple patterns on
+a PatternLayout and asynchronous Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This is the ${relCount} GA release. It contains several bugfixes and new features. As of this release
-Log4j now requires a minimum of Java 7.
+This is the ${relCount} GA release. It contains several bugfixes and new features. The new features include
+the ability to specify delete actions during file rollover, a CRON-based triggering policy for file rollover,
+Support for JSR 223 scripts in filters, pattern selectors and delete actions, and a policy for removing
+idle appenders from the RoutingAppender. More details on the features and bugfixes are itemized below.
+
+Log4j 2 requires a minimum of Java 7.
 
 ## Hack to improve layout: replace all pairs of spaces with a single new-line
 $release.description.replaceAll("  ", "
@@ -132,8 +136,8 @@ o#if($!issue != "") $issue. #end ${action} #if($!dueto != "")Thanks to $dueto. #
 ## End of main loop
 #end
 
-Apache Log4j ${relVersion} requires a minimum of Java 7 to build and run. Log4j 2.4 and greater requires Java 7,
-version 2.3 required Java 6.
+Apache Log4j ${relVersion} requires a minimum of Java 7 to build and run. Log4j 2.3 was the last release that
+supported Java 6.
 
 Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to

@@ -60,7 +60,7 @@ public class AsyncLoggerThreadContextTest {
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Async logger msg";
         log.info(msg, new InternalError("this is not a real error"));
-        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();

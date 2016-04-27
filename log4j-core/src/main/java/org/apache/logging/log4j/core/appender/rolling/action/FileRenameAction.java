@@ -17,8 +17,10 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.channels.FileChannel;
 
 /**
  * File rename action.
@@ -43,8 +45,8 @@ public class FileRenameAction extends AbstractAction {
     /**
      * Creates an FileRenameAction.
      *
-     * @param src              current file name.
-     * @param dst              new file name.
+     * @param src current file name.
+     * @param dst new file name.
      * @param renameEmptyFiles if true, rename file even if empty, otherwise delete empty files.
      */
     public FileRenameAction(final File src, final File dst, final boolean renameEmptyFiles) {
@@ -64,10 +66,37 @@ public class FileRenameAction extends AbstractAction {
     }
 
     /**
+     * Gets the destination.
+     * 
+     * @return the destination.
+     */
+    public File getDestination() {
+        return this.destination;
+    }
+
+    /**
+     * Gets the source.
+     * 
+     * @return the source.
+     */
+    public File getSource() {
+        return this.source;
+    }
+
+    /**
+     * Whether to rename empty files. If true, rename empty files, otherwise delete empty files.
+     * 
+     * @return Whether to rename empty files.
+     */
+    public boolean isRenameEmptyFiles() {
+        return renameEmptyFiles;
+    }
+
+    /**
      * Rename file.
      *
-     * @param source           current file name.
-     * @param destination      new file name.
+     * @param source current file name.
+     * @param destination new file name.
      * @param renameEmptyFiles if true, rename file even if empty, otherwise delete empty files.
      * @return true if successfully renamed.
      */
@@ -91,7 +120,7 @@ public class FileRenameAction extends AbstractAction {
                         return source.delete();
                     } catch (final IOException iex) {
                         LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
-                            destination.getAbsolutePath(), iex.getMessage());
+                                destination.getAbsolutePath(), iex.getMessage());
                     }
                 }
                 return true;
@@ -101,7 +130,7 @@ public class FileRenameAction extends AbstractAction {
                     return source.delete();
                 } catch (final IOException iex) {
                     LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
-                        destination.getAbsolutePath(), iex.getMessage());
+                            destination.getAbsolutePath(), iex.getMessage());
                 }
             }
         } else {
@@ -119,7 +148,17 @@ public class FileRenameAction extends AbstractAction {
         if (!destination.exists()) {
             destination.createNewFile();
         }
-        Files.copy(source.toPath(), destination.toPath());
+
+        // LOG4J2-1173: Files.copy(source.toPath(), destination.toPath()) throws IOException
+        // when copying to a directory mapped to a remote Linux host
+
+        try (FileInputStream srcStream = new FileInputStream(source);
+                FileOutputStream destStream = new FileOutputStream(destination);
+                FileChannel srcChannel = srcStream.getChannel();
+                FileChannel destChannel = destStream.getChannel();) {
+
+            destChannel.transferFrom(srcChannel, 0, srcChannel.size());
+        }
     }
 
     @Override
@@ -127,4 +166,5 @@ public class FileRenameAction extends AbstractAction {
         return FileRenameAction.class.getSimpleName() + '[' + source + " to " + destination //
                 + ", renameEmptyFiles=" + renameEmptyFiles + ']';
     }
+
 }

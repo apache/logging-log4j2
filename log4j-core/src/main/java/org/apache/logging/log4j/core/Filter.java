@@ -103,6 +103,177 @@ public interface Filter extends LifeCycle {
 
     /**
      * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0);
+
+    /**
+     * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0, Object p1);
+
+    /**
+     * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0, Object p1, Object p2);
+
+    /**
+     * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
+
+    /**
+     * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4);
+
+    /**
+     * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5);
+
+    /**
+     * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5, Object p6);
+
+    /**
+     * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5, Object p6, Object p7);
+
+    /**
+     * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5, Object p6, Object p7, Object p8);
+
+    /**
+     * Filter an event.
+     *
+     * @param logger The Logger.
+     * @param level the event logging level.
+     * @param marker The Marker for the event or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @param p9 the message parameters
+     * @return the Result.
+     */
+    Result filter(Logger logger, Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5, Object p6, Object p7, Object p8, Object p9);
+
+    /**
+     * Filter an event.
      * @param logger The Logger.
      * @param level The event logging Level.
      * @param marker The Marker for the event or null.

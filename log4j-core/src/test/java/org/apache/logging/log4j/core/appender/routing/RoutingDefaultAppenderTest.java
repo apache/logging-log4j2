@@ -48,7 +48,7 @@ public class RoutingDefaultAppenderTest {
 
     @Before
     public void setUp() throws Exception {
-        app = (ListAppender) this.init.getAppender("List");
+        app = this.init.getListAppender("List");
     }
 
     @After
@@ -56,6 +56,7 @@ public class RoutingDefaultAppenderTest {
         if (app != null) {
             app.clear();
         }
+        this.init.getContext().stop();
     }
 
     @Test

@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
 
@@ -30,6 +32,9 @@ import java.util.Objects;
  * Represents the source for the logging configuration.
  */
 public class ConfigurationSource {
+    /**
+     * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
+     */
     public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(new byte[0]);
 
     private final File file;
@@ -39,8 +44,57 @@ public class ConfigurationSource {
     private final byte[] data;
 
     /**
+     * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
+     * file.
+     *
+     * @param stream the input stream
+     * @param file the file where the input stream originated
+     */
+    public ConfigurationSource(final InputStream stream, final File file) {
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.file = Objects.requireNonNull(file, "file is null");
+        this.location = file.getAbsolutePath();
+        this.url = null;
+        this.data = null;
+    }
+
+    /**
+     * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
+     * url.
+     *
+     * @param stream the input stream
+     * @param url the URL where the input stream originated
+     */
+    public ConfigurationSource(final InputStream stream, final URL url) {
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.url = Objects.requireNonNull(url, "URL is null");
+        this.location = url.toString();
+        this.file = null;
+        this.data = null;
+    }
+
+    /**
+     * Constructs a new {@code ConfigurationSource} with the specified input stream. Since the stream is the only source
+     * of data, this constructor makes a copy of the stream contents.
+     *
+     * @param stream the input stream
+     * @throws IOException if an exception occurred reading from the specified stream
+     */
+    public ConfigurationSource(final InputStream stream) throws IOException {
+        this(toByteArray(stream));
+    }
+
+    private ConfigurationSource(final byte[] data) {
+        this.data = Objects.requireNonNull(data, "data is null");
+        this.stream = new ByteArrayInputStream(data);
+        this.file = null;
+        this.url = null;
+        this.location = null;
+    }
+
+    /**
      * Returns the contents of the specified {@code InputStream} as a byte array.
-     * 
+     *
      * @param inputStream the stream to read
      * @return the contents of the specified stream
      * @throws IOException if a problem occurred reading from the stream
@@ -59,58 +113,9 @@ public class ConfigurationSource {
     }
 
     /**
-     * Constructs a new {@code ConfigurationSource} with the specified input stream. Since the stream is the only source
-     * of data, this constructor makes a copy of the stream contents.
-     * 
-     * @param stream the input stream
-     * @throws IOException if an exception occurred reading from the specified stream
-     */
-    public ConfigurationSource(final InputStream stream) throws IOException {
-        this(toByteArray(stream));
-    }
-
-    private ConfigurationSource(final byte[] data) {
-        this.data = Objects.requireNonNull(data, "data is null");
-        this.stream = new ByteArrayInputStream(data);
-        this.file = null;
-        this.url = null;
-        this.location = null;
-    }
-
-    /**
-     * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
-     * file.
-     * 
-     * @param stream the input stream
-     * @param file the file where the input stream originated
-     */
-    public ConfigurationSource(final InputStream stream, final File file) {
-        this.stream = Objects.requireNonNull(stream, "stream is null");
-        this.file = Objects.requireNonNull(file, "file is null");
-        this.location = file.getAbsolutePath();
-        this.url = null;
-        this.data = null;
-    }
-
-    /**
-     * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
-     * url.
-     * 
-     * @param stream the input stream
-     * @param url the URL where the input stream originated
-     */
-    public ConfigurationSource(final InputStream stream, final URL url) {
-        this.stream = Objects.requireNonNull(stream, "stream is null");
-        this.url = Objects.requireNonNull(url, "URL is null");
-        this.location = url.toString();
-        this.file = null;
-        this.data = null;
-    }
-
-    /**
      * Returns the file configuration source, or {@code null} if this configuration source is based on an URL or has
      * neither a file nor an URL.
-     * 
+     *
      * @return the configuration source file, or {@code null}
      */
     public File getFile() {
@@ -120,7 +125,7 @@ public class ConfigurationSource {
     /**
      * Returns the configuration source URL, or {@code null} if this configuration source is based on a file or has
      * neither a file nor an URL.
-     * 
+     *
      * @return the configuration source URL, or {@code null}
      */
     public URL getURL() {
@@ -128,9 +133,40 @@ public class ConfigurationSource {
     }
 
     /**
+     * Returns a URI representing the configuration resource or null if it cannot be determined.
+     * @return The URI.
+     */
+    public URI getURI() {
+        URI sourceURI = null;
+        if (url != null) {
+            try {
+                sourceURI = url.toURI();
+            } catch (URISyntaxException ex) {
+                    /* Ignore the exception */
+            }
+        }
+        if (sourceURI == null && file != null) {
+            sourceURI = file.toURI();
+        }
+        if (sourceURI == null && location != null) {
+            try {
+                sourceURI = new URI(location);
+            } catch (URISyntaxException ex) {
+                // Assume the scheme was missing.
+                try {
+                    sourceURI = new URI("file://" + location);
+                } catch (URISyntaxException uriEx) {
+                    /* Ignore the exception */
+                }
+            }
+        }
+        return sourceURI;
+    }
+
+    /**
      * Returns a string describing the configuration source file or URL, or {@code null} if this configuration source
      * has neither a file nor an URL.
-     * 
+     *
      * @return a string describing the configuration source file or URL, or {@code null}
      */
     public String getLocation() {
@@ -139,7 +175,7 @@ public class ConfigurationSource {
 
     /**
      * Returns the input stream that this configuration source was constructed with.
-     * 
+     *
      * @return the input stream that this configuration source was constructed with.
      */
     public InputStream getInputStream() {
@@ -148,7 +184,7 @@ public class ConfigurationSource {
 
     /**
      * Returns a new {@code ConfigurationSource} whose input stream is reset to the beginning.
-     * 
+     *
      * @return a new {@code ConfigurationSource}
      * @throws IOException if a problem occurred while opening the new input stream
      */

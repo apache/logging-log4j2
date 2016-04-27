@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
   <Appenders>
-    <File name="XmlFile" fileName="target/JsonCompleteFileAppenderTest.log" immediateFlush="true" append="false">
+    <File name="JsonFile" fileName="target/JsonCompleteFileAppenderTest.log" immediateFlush="true" append="false">
       <JSONLayout complete="true" charset="UTF-8"/>
     </File>
   </Appenders>
 
   <Loggers>
     <Root level="info" includeLocation="false">
-      <AppenderRef ref="XmlFile"/>
+      <AppenderRef ref="JsonFile"/>
     </Root>
   </Loggers>
 </Configuration>

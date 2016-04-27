@@ -21,8 +21,14 @@ package org.apache.logging.log4j.message;
  * {@link #newMessage(String, Object...)}.
  */
 public class MessageFormatMessageFactory extends AbstractMessageFactory {
+    private static final long serialVersionUID = 3584821740584192453L;
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * Constructs a message factory with default flow strings.
+     */
+    public MessageFormatMessageFactory() {
+        super();
+    }
 
     /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.

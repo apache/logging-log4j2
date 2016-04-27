@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
@@ -11,13 +11,11 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 
 package org.apache.logging.log4j.core.config.plugins.processor;
-
-import org.apache.logging.log4j.core.util.Closer;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -69,8 +67,7 @@ public class PluginCache {
      */
     // NOTE: if this file format is to be changed, the filename should change and this format should still be readable
     public void writeCache(final OutputStream os) throws IOException {
-        final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(os));
-        try {
+        try (final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(os))) {
             // See PluginManager.readFromCacheFiles for the corresponding decoder. Format may not be changed
             // without breaking existing Log4j2Plugins.dat files.
             out.writeInt(categories.size());
@@ -87,8 +84,6 @@ public class PluginCache {
                     out.writeBoolean(plugin.isDefer());
                 }
             }
-        } finally {
-            Closer.closeSilently(out);
         }
     }
 
@@ -102,8 +97,7 @@ public class PluginCache {
         categories.clear();
         while (resources.hasMoreElements()) {
             final URL url = resources.nextElement();
-            final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()));
-            try {
+            try (final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()))) {
                 final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
                     final String category = in.readUTF();
@@ -122,8 +116,6 @@ public class PluginCache {
                         }
                     }
                 }
-            } finally {
-                Closer.closeSilently(in);
             }
         }
     }

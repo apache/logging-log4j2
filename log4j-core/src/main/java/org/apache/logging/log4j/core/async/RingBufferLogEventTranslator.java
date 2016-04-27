@@ -36,14 +36,16 @@ public class RingBufferLogEventTranslator implements
 
     private AsyncLogger asyncLogger;
     private String loggerName;
-    private Marker marker;
-    private String fqcn;
-    private Level level;
-    private Message message;
-    private Throwable thrown;
+    protected Marker marker;
+    protected String fqcn;
+    protected Level level;
+    protected Message message;
+    protected Throwable thrown;
     private Map<String, String> contextMap;
     private ContextStack contextStack;
-    private String threadName;
+    private long threadId = Thread.currentThread().getId();
+    private String threadName = Thread.currentThread().getName();
+    private int threadPriority = Thread.currentThread().getPriority();
     private StackTraceElement location;
     private long currentTimeMillis;
     private long nanoTime;
@@ -51,18 +53,16 @@ public class RingBufferLogEventTranslator implements
     // @Override
     @Override
     public void translateTo(final RingBufferLogEvent event, final long sequence) {
-        event.setValues(asyncLogger, loggerName, marker, fqcn, level, message,
-                thrown, contextMap, contextStack, threadName, location,
-                currentTimeMillis, nanoTime);
+        event.setValues(asyncLogger, loggerName, marker, fqcn, level, message, thrown, contextMap, contextStack,
+                threadId, threadName, threadPriority, location, currentTimeMillis, nanoTime);
         clear();
     }
 
     /**
-     * Release references held by this object to allow objects to be
-     * garbage-collected.
+     * Release references held by this object to allow objects to be garbage-collected.
      */
     private void clear() {
-        setValues(null, // asyncLogger
+        setBasicValues(null, // asyncLogger
                 null, // loggerName
                 null, // marker
                 null, // fqcn
@@ -71,30 +71,34 @@ public class RingBufferLogEventTranslator implements
                 null, // t
                 null, // map
                 null, // contextStack
-                null, // threadName
                 null, // location
                 0, // currentTimeMillis
                 0 // nanoTime
         );
     }
 
-    public void setValues(final AsyncLogger asyncLogger, final String loggerName,
-            final Marker marker, final String fqcn, final Level level, final Message message,
-            final Throwable thrown, final Map<String, String> contextMap,
-            final ContextStack contextStack, final String threadName,
-            final StackTraceElement location, final long currentTimeMillis, final long nanoTime) {
-        this.asyncLogger = asyncLogger;
-        this.loggerName = loggerName;
-        this.marker = marker;
-        this.fqcn = fqcn;
-        this.level = level;
-        this.message = message;
-        this.thrown = thrown;
-        this.contextMap = contextMap;
-        this.contextStack = contextStack;
-        this.threadName = threadName;
-        this.location = location;
-        this.currentTimeMillis = currentTimeMillis;
-        this.nanoTime = nanoTime;
+    public void setBasicValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
+            final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
+            final Map<String, String> aMap, final ContextStack aContextStack, final StackTraceElement aLocation,
+            final long aCurrentTimeMillis, final long aNanoTime) {
+        this.asyncLogger = anAsyncLogger;
+        this.loggerName = aLoggerName;
+        this.marker = aMarker;
+        this.fqcn = theFqcn;
+        this.level = aLevel;
+        this.message = msg;
+        this.thrown = aThrowable;
+        this.contextMap = aMap;
+        this.contextStack = aContextStack;
+        this.location = aLocation;
+        this.currentTimeMillis = aCurrentTimeMillis;
+        this.nanoTime = aNanoTime;
+    }
+
+    public void updateThreadValues() {
+        final Thread currentThread = Thread.currentThread();
+        this.threadId = currentThread.getId();
+        this.threadName = currentThread.getName();
+        this.threadPriority = currentThread.getPriority();
     }
 }

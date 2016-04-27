@@ -16,21 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.json;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.core.config.AbstractConfiguration;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.FileConfigurationMonitor;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
-import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.util.Patterns;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -41,12 +26,27 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
+import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.util.FileWatcher;
+import org.apache.logging.log4j.core.util.Patterns;
+
 /**
  * Creates a Node hierarchy from a JSON file.
  */
 public class JsonConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final long serialVersionUID = 1L;
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private final List<Status> status = new ArrayList<>();
     private JsonNode root;
@@ -87,8 +87,12 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     setName(value);
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
                     final int intervalSeconds = Integer.parseInt(value);
-                    if (intervalSeconds > 0 && configFile != null) {
-                        monitor = new FileConfigurationMonitor(this, configFile, listeners, intervalSeconds);
+                    if (intervalSeconds > 0) {
+                        getWatchManager().setIntervalSeconds(intervalSeconds);
+                        if (configFile != null) {
+                            FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
+                            getWatchManager().watchFile(configFile, watcher);
+                        }
                     }
                 } else if ("advertiser".equalsIgnoreCase(key)) {
                     createAdvertiser(value, configSource, buffer, "application/json");
@@ -99,7 +103,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 setName(configSource.getLocation());
             }
         } catch (final Exception ex) {
-            LOGGER.error("Error parsing {}", configSource.getLocation(), ex);
+            LOGGER.error("Error parsing " + configSource.getLocation(), ex);
         }
     }
 

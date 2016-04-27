@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBui
  * Provides methods to create ConfigurationBuilders.
  * @since 2.4
  */
-public class ConfigurationBuilderFactory {
+public abstract class ConfigurationBuilderFactory {
 
     /**
      * Returns a new default ConfigurationBuilder to construct Log4j configurations.

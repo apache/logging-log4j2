@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -59,10 +57,10 @@ public class CustomLevelsWithFiltersTest {
         assertNotNull(appender);
         final CompositeFilter compFilter = (CompositeFilter) appender.getFilter();
         assertNotNull(compFilter);
-        final List<Filter> filterList = compFilter.getFilters();
-        assertNotNull(filterList);
+        final Filter[] filters = compFilter.getFiltersArray();
+        assertNotNull(filters);
         boolean foundLevel = false;
-        for (final Filter filter : filterList) {
+        for (final Filter filter : filters) {
             final ThresholdFilter tFilter = (ThresholdFilter) filter;
             if (infom1Level.equals(tFilter.getLevel())) {
                 foundLevel = true;

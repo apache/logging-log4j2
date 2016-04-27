@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!DOCTYPE doctypeName [
+   <!ENTITY nbsp "&#160;">
+]>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+  <properties>
+    <title>Log4j 2 Project Thanks</title>
+  </properties>
+
+  <body>
+    <section name="Log4j 2 Project Thanks">
+      <p>
+        Log4j 2 is a successful project because of the large and diverse community that contributes
+        to it.
+      </p>
+      <p>
+        There are a handful of tools that developers in the community use;
+        some are open-source and
+        some are commercial.
+        We'd like to extend a special thanks to these communities/companies:
+      </p>
+      <p>
+      </p>
+      <div>
+        <table>
+          <tbody>
+            <tr>
+              <td colspan="1" rowspan="1">
+                <a shape="rect" class="external-link" href="https://www.yourkit.com/features/">
+                  <span>
+                    <img src="images/YourKitLogo.png" alt="YourKit Logo" />
+                  </span>
+                </a>
+              </td>
+              <td colspan="1" rowspan="1">
+                <span style="color: rgb(34,34,34);">YourKit supports the Log4j 2 project with its full-featured Java
+                  Profiler.</span>
+                <br clear="none" />
+                <span style="color: rgb(34,34,34);">YourKit, LLC is the creator of innovative and intelligent tools
+                  for profiling</span>
+                <br clear="none" />
+                <span style="color: rgb(34,34,34);">
+                  Java and .NET applications.
+                  <a shape="rect" class="external-link" href="https://www.yourkit.com/features/">Take a look at YourKit's leading
+                    software products</a>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="1" rowspan="1">
+                <span>
+                  <img src="http://www.apache.org/images/feather-small.gif" alt="Apache Feather Logo" />
+                </span>
+              </td>
+              <td colspan="1" rowspan="1">
+                All of the
+                <a shape="rect" class="external-link" href="http://www.apache.org/foundation/thanks.html">Platinum/Gold/Silver/Bronze sponsors of
+                  the ASF</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+
+    <subsection name="Individual Donations to the Apache Software Foundation">
+      <p>
+        The Apache Software Foundation receives many smaller donations from individuals via our
+        PayPal and Amazon Payments
+        services (details
+        <a href="http://www.apache.org/foundation/contributing.html">here</a>
+        ).
+      </p>
+      <p>We would like to thank all of our individual donors for their support of our work,
+        and for their willingness to contribute with only this as recognition for their generosity.
+      </p>
+    </subsection>
+    </section>
+  </body>
+</document>

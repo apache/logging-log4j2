@@ -34,14 +34,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
-import org.apache.logging.log4j.core.async.AsyncLogger;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -55,7 +54,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public final class Server {
 
     /**
-     * The domain part, or prefix ({@value} ) of the {@code ObjectName} of all MBeans that instrument Log4J2 components.
+     * The domain part, or prefix ({@value}) of the {@code ObjectName} of all MBeans that instrument Log4J2 components.
      */
     public static final String DOMAIN = "org.apache.logging.log4j2";
     private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
@@ -75,17 +74,9 @@ public final class Server {
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-938">LOG4J2-938</a>
      */
     private static ExecutorService createExecutor() {
-        final boolean defaultAsync = !isWebApp();
+        final boolean defaultAsync = !Constants.IS_WEB_APP;
         final boolean async = PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_ASYNC_NOTIF, defaultAsync);
         return async ? Executors.newFixedThreadPool(1, new DaemonThreadFactory(THREAD_NAME_PREFIX)) : null;
-    }
-
-    /**
-     * Returns {@code true} if we think we are running in a web container, based on the presence of the
-     * {@code javax.servlet.Servlet} class in the classpath.
-     */
-    private static boolean isWebApp() {
-        return Loader.isClassAvailable("javax.servlet.Servlet");
     }
 
     /**
@@ -161,8 +152,11 @@ public final class Server {
                 LOGGER.debug("Could not register MBeans: no ContextSelector found.");
                 return;
             }
+            LOGGER.trace("Reregistering MBeans after reconfigure. Selector={}", selector);
             final List<LoggerContext> contexts = selector.getLoggerContexts();
+            int i = 0;
             for (final LoggerContext ctx : contexts) {
+                LOGGER.trace("Reregistering context ({}/{}): '{}' {}", ++i, contexts.size(), ctx.getName(), ctx);
                 // first unregister the context and all nested loggers,
                 // appenders, statusLogger, contextSelector, ringbuffers...
                 unregisterLoggerContext(ctx.getName(), mbs);
@@ -171,8 +165,11 @@ public final class Server {
                 register(mbs, mbean, mbean.getObjectName());
 
                 if (ctx instanceof AsyncLoggerContext) {
-                    final RingBufferAdmin rbmbean = AsyncLogger.createRingBufferAdmin(ctx.getName());
-                    register(mbs, rbmbean, rbmbean.getObjectName());
+                    final RingBufferAdmin rbmbean = ((AsyncLoggerContext) ctx).createRingBufferAdmin();
+                    if (rbmbean.getBufferSize() > 0) {
+                    	// don't register if Disruptor not started (DefaultConfiguration: config not found)
+                    	register(mbs, rbmbean, rbmbean.getObjectName());
+                    }
                 }
 
                 // register the status logger and the context selector
@@ -329,8 +326,12 @@ public final class Server {
         try {
             final ObjectName pattern = new ObjectName(search);
             final Set<ObjectName> found = mbs.queryNames(pattern, null);
+            if (found.isEmpty()) {
+            	LOGGER.trace("Unregistering but no MBeans found matching '{}'", search);
+            } else {
+            	LOGGER.trace("Unregistering {} MBeans: {}", found.size(), found);
+            }
             for (final ObjectName objectName : found) {
-                LOGGER.debug("Unregistering MBean {}", objectName);
                 mbs.unregisterMBean(objectName);
             }
         } catch (final Exception ex) {

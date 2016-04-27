@@ -28,6 +28,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
  * Listens for events over a socket connection.
@@ -36,6 +37,25 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
  *            The kind of input stream read
  */
 public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer<T> {
+
+    private final DatagramSocket datagramSocket;
+
+    // max size so we only have to deal with one packet
+    private final int maxBufferSize = 1024 * 65 + 1024;
+
+    /**
+     * Constructor.
+     * 
+     * @param port
+     *            to listen on.
+     * @param logEventInput
+     * @throws IOException
+     *             If an error occurs.
+     */
+    public UdpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
+        super(port, logEventInput);
+        this.datagramSocket = new DatagramSocket(port);
+    }
 
     /**
      * Creates a socket server that reads JSON log events.
@@ -100,7 +120,7 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
         final UdpSocketServer<ObjectInputStream> socketServer = UdpSocketServer.createSerializedSocketServer(port);
-        final Thread server = new Thread(socketServer);
+        final Thread server = new Log4jThread(socketServer);
         server.start();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
@@ -116,25 +136,6 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
 
     private static void printUsage() {
         System.out.println("Usage: ServerSocket port configFilePath");
-    }
-
-    private final DatagramSocket datagramSocket;
-
-    // max size so we only have to deal with one packet
-    private final int maxBufferSize = 1024 * 65 + 1024;
-
-    /**
-     * Constructor.
-     * 
-     * @param port
-     *            to listen on.
-     * @param logEventInput
-     * @throws IOException
-     *             If an error occurs.
-     */
-    public UdpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
-        super(port, logEventInput);
-        this.datagramSocket = new DatagramSocket(port);
     }
 
     /**

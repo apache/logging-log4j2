@@ -17,22 +17,23 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Abstract base class for Layouts.
- * 
+ *
  * @param <T>
- *        The Class that the Layout will format the LogEvent into.
+ *            The Class that the Layout will format the LogEvent into.
  */
-public abstract class AbstractLayout<T extends Serializable> implements Layout<T>, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public abstract class AbstractLayout<T extends Serializable> implements Layout<T> {
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -40,9 +41,14 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
-     * The header to include when the stream is opened. May be null.
+     * The current Configuration.
      */
-    protected final byte[] header;
+    protected final Configuration configuration;
+
+    /**
+     * The number of events successfully processed by this layout.
+     */
+    protected long eventCount;
 
     /**
      * The footer to add when the stream is closed. May be null.
@@ -50,17 +56,43 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     protected final byte[] footer;
 
     /**
-     * Constructs a layout with an optional header and footer.
-     * 
-     * @param header
-     *        The header to include when the stream is opened. May be null.
-     * @param footer
-     *        The footer to add when the stream is closed. May be null.
+     * The header to include when the stream is opened. May be null.
      */
+    protected final byte[] header;
+
+    /**
+     * Constructs a layout with an optional header and footer.
+     *
+     * @param header
+     *            The header to include when the stream is opened. May be null.
+     * @param footer
+     *            The footer to add when the stream is closed. May be null.
+     * @deprecated Use {@link #AbstractLayout(Configuration, byte[], byte[])}
+     */
+    @Deprecated
     public AbstractLayout(final byte[] header, final byte[] footer) {
+        this(null, header, footer);
+    }
+
+    /**
+     * Constructs a layout with an optional header and footer.
+     *
+     * @param configuration
+     *            The configuration
+     * @param header
+     *            The header to include when the stream is opened. May be null.
+     * @param footer
+     *            The footer to add when the stream is closed. May be null.
+     */
+    public AbstractLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
         super();
+        this.configuration = configuration;
         this.header = header;
         this.footer = footer;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
     @Override
@@ -70,7 +102,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
 
     /**
      * Returns the footer, if one is available.
-     * 
+     *
      * @return A byte array containing the footer.
      */
     @Override
@@ -80,11 +112,73 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
 
     /**
      * Returns the header, if one is available.
-     * 
+     *
      * @return A byte array containing the header.
      */
     @Override
     public byte[] getHeader() {
         return header;
+    }
+
+    protected void markEvent() {
+        eventCount++;
+    }
+
+    /**
+     * Encodes the specified source LogEvent to some binary representation and writes the result to the specified
+     * destination.
+     * <p>
+     * The default implementation of this method delegates to the {@link #toByteArray(LogEvent)} method which allocates
+     * temporary objects.
+     * </p><p>
+     * Subclasses can override this method to provide a garbage-free implementation. For text-based layouts,
+     * {@code AbstractStringLayout} provides various convenience methods to help with this:
+     * </p>
+     * <pre>@Plugin(name = "MyLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+     * public final class MyLayout extends AbstractStringLayout {
+     *     @Override
+     *     public void encode(LogEvent event, ByteBufferDestination destination) {
+     *         StringBuilder text = getStringBuilder();
+     *         convertLogEventToText(event, text);
+     *         getStringBuilderEncoder().encode(text, destination);
+     *     }
+     *
+     *     private void convertLogEventToText(LogEvent event, StringBuilder destination) {
+     *         ... // append a text representation of the log event to the StringBuilder
+     *     }
+     * }
+     * </pre>
+     *
+     * @param event the LogEvent to encode.
+     * @param destination holds the ByteBuffer to write into.
+     * @see AbstractStringLayout#getStringBuilder()
+     * @see AbstractStringLayout#getStringBuilderEncoder()
+     */
+    @Override
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
+        final byte[] data = toByteArray(event);
+        writeTo(data, 0, data.length, destination);
+    }
+
+    /**
+     * Writes the specified data to the specified destination.
+     *
+     * @param data the data to write
+     * @param offset where to start in the specified data array
+     * @param length the number of bytes to write
+     * @param destination the {@code ByteBufferDestination} to write to
+     */
+    public static void writeTo(final byte[] data, int offset, int length, final ByteBufferDestination destination) {
+        int chunk = 0;
+        ByteBuffer buffer = destination.getByteBuffer();
+        do {
+            if (length > buffer.remaining()) {
+                buffer = destination.drain(buffer);
+            }
+            chunk = Math.min(length, buffer.remaining());
+            buffer.put(data, offset, chunk);
+            offset += chunk;
+            length -= chunk;
+        } while (length > 0);
     }
 }

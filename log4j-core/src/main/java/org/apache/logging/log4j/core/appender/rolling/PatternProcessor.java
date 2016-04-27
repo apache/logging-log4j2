@@ -57,12 +57,24 @@ public class PatternProcessor {
     private long nextFileTime = 0;
 
     private RolloverFrequency frequency = null;
+    
+    private final String pattern;
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    @Override
+    public String toString() {
+        return pattern;
+    }
 
     /**
      * Constructor.
      * @param pattern The file pattern.
      */
     public PatternProcessor(final String pattern) {
+        this.pattern = pattern;
         final PatternParser parser = createPatternParser();
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
@@ -88,6 +100,10 @@ public class PatternProcessor {
      * @return the next potential rollover time and the timestamp for the target file.
      */
     public long getNextTime(final long currentMillis, final int increment, final boolean modulus) {
+        //
+        // https://issues.apache.org/jira/browse/LOG4J2-1232
+        // Call setMinimalDaysInFirstWeek(7);
+        //
         prevFileTime = nextFileTime;
         long nextTime;
 
@@ -97,6 +113,8 @@ public class PatternProcessor {
         final Calendar currentCal = Calendar.getInstance();
         currentCal.setTimeInMillis(currentMillis);
         final Calendar cal = Calendar.getInstance();
+        currentCal.setMinimalDaysInFirstWeek(7);
+        cal.setMinimalDaysInFirstWeek(7);
         cal.set(currentCal.get(Calendar.YEAR), 0, 1, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 0);
         if (frequency == RolloverFrequency.ANNUALLY) {
@@ -271,5 +289,13 @@ public class PatternProcessor {
 
     private boolean patternContains(final String pattern, final char character) {
         return pattern.indexOf(character) >= 0;
+    }
+
+    public RolloverFrequency getFrequency() {
+        return frequency;
+    }
+
+    public long getNextFileTime() {
+        return nextFileTime;
     }
 }

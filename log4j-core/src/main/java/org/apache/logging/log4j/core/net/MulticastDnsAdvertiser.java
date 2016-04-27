@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 package org.apache.logging.log4j.core.net;
 
@@ -38,13 +38,11 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "multicastdns", category = "Core", elementType = "advertiser", printObject = false)
 public class MulticastDnsAdvertiser implements Advertiser {
     /**
-     * 
-     */
-    private static final int MAX_LENGTH = 255;
-    /**
      * Status logger.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static final int MAX_LENGTH = 255;
     private static final int DEFAULT_PORT = 4555;
 
     private static Object jmDNS = initializeJmDns();
@@ -104,12 +102,10 @@ public class MulticastDnsAdvertiser implements Advertiser {
             try {
                 final Method method = jmDNSClass.getMethod("registerService", serviceInfoClass);
                 method.invoke(jmDNS, serviceInfo);
-            } catch (final IllegalAccessException e) {
+            } catch (final IllegalAccessException | InvocationTargetException e) {
                 LOGGER.warn("Unable to invoke registerService method", e);
             } catch (final NoSuchMethodException e) {
                 LOGGER.warn("No registerService method", e);
-            } catch (final InvocationTargetException e) {
-                LOGGER.warn("Unable to invoke registerService method", e);
             }
             return serviceInfo;
         }
@@ -118,7 +114,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
     }
 
     /**
-     * Unadvertise the previously advertised entity
+     * Unadvertise the previously advertised entity.
      * 
      * @param serviceInfo
      */
@@ -128,12 +124,10 @@ public class MulticastDnsAdvertiser implements Advertiser {
             try {
                 final Method method = jmDNSClass.getMethod("unregisterService", serviceInfoClass);
                 method.invoke(jmDNS, serviceInfo);
-            } catch (final IllegalAccessException e) {
+            } catch (final IllegalAccessException | InvocationTargetException e) {
                 LOGGER.warn("Unable to invoke unregisterService method", e);
             } catch (final NoSuchMethodException e) {
                 LOGGER.warn("No unregisterService method", e);
-            } catch (final InvocationTargetException e) {
-                LOGGER.warn("Unable to invoke unregisterService method", e);
             }
         }
     }
@@ -141,13 +135,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
     private static Object createJmDnsVersion1() {
         try {
             return jmDNSClass.getConstructor().newInstance();
-        } catch (final InstantiationException e) {
-            LOGGER.warn("Unable to instantiate JMDNS", e);
-        } catch (final IllegalAccessException e) {
-            LOGGER.warn("Unable to instantiate JMDNS", e);
-        } catch (final NoSuchMethodException e) {
-            LOGGER.warn("Unable to instantiate JMDNS", e);
-        } catch (final InvocationTargetException e) {
+        } catch (final InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             LOGGER.warn("Unable to instantiate JMDNS", e);
         }
         return null;
@@ -157,12 +145,10 @@ public class MulticastDnsAdvertiser implements Advertiser {
         try {
             final Method jmDNSCreateMethod = jmDNSClass.getMethod("create");
             return jmDNSCreateMethod.invoke(null, (Object[]) null);
-        } catch (final IllegalAccessException e) {
+        } catch (final IllegalAccessException | InvocationTargetException e) {
             LOGGER.warn("Unable to invoke create method", e);
         } catch (final NoSuchMethodException e) {
             LOGGER.warn("Unable to get create method", e);
-        } catch (final InvocationTargetException e) {
-            LOGGER.warn("Unable to invoke create method", e);
         }
         return null;
     }
@@ -175,14 +161,10 @@ public class MulticastDnsAdvertiser implements Advertiser {
         try {
             return serviceInfoClass.getConstructor(String.class, String.class, int.class, int.class, int.class,
                     Hashtable.class).newInstance(zone, name, port, 0, 0, hashtableProperties);
-        } catch (final IllegalAccessException e) {
+        } catch (final IllegalAccessException | InstantiationException | InvocationTargetException e) {
             LOGGER.warn("Unable to construct ServiceInfo instance", e);
         } catch (final NoSuchMethodException e) {
             LOGGER.warn("Unable to get ServiceInfo constructor", e);
-        } catch (final InstantiationException e) {
-            LOGGER.warn("Unable to construct ServiceInfo instance", e);
-        } catch (final InvocationTargetException e) {
-            LOGGER.warn("Unable to construct ServiceInfo instance", e);
         }
         return null;
     }
@@ -194,12 +176,10 @@ public class MulticastDnsAdvertiser implements Advertiser {
                     // zone/type display name port weight priority properties
                     .getMethod("create", String.class, String.class, int.class, int.class, int.class, Map.class)
                     .invoke(null, zone, name, port, 0, 0, properties);
-        } catch (final IllegalAccessException e) {
+        } catch (final IllegalAccessException | InvocationTargetException e) {
             LOGGER.warn("Unable to invoke create method", e);
         } catch (final NoSuchMethodException e) {
             LOGGER.warn("Unable to find create method", e);
-        } catch (final InvocationTargetException e) {
-            LOGGER.warn("Unable to invoke create method", e);
         }
         return null;
     }
@@ -222,10 +202,8 @@ public class MulticastDnsAdvertiser implements Advertiser {
                 return createJmDnsVersion3();
             }
             return createJmDnsVersion1();
-        } catch (final ClassNotFoundException e) {
+        } catch (final ClassNotFoundException | ExceptionInInitializerError e) {
             LOGGER.warn("JmDNS or serviceInfo class not found", e);
-        } catch (final ExceptionInInitializerError e2) {
-            LOGGER.warn("JmDNS or serviceInfo class not found", e2);
         }
         return null;
     }

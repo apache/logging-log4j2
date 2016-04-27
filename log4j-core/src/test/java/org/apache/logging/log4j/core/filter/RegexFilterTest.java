@@ -48,8 +48,9 @@ public class RegexFilterTest {
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.NEUTRAL,
-                filter.filter(null, Level.DEBUG, null, "This is a test message", (Throwable) null));
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, "This is not a test", (Throwable) null));
+                filter.filter(null, Level.DEBUG, null, (Object) "This is a test message", (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, (Object) "This is not a test",
+                (Throwable) null));
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Another test message")) //
@@ -70,8 +71,8 @@ public class RegexFilterTest {
         final String multiLine = "test multi line matches\nsome more lines";
         final RegexFilter filter = RegexFilter.createFilter(".*line.*", new String[] { "DOTALL", "COMMENTS" }, false,
                 Filter.Result.DENY, Filter.Result.ACCEPT);
-        final Result singleLineResult = filter.filter(null, null, null, singleLine, (Throwable) null);
-        final Result multiLineResult = filter.filter(null, null, null, multiLine, (Throwable) null);
+        final Result singleLineResult = filter.filter(null, null, null, (Object) singleLine, (Throwable) null);
+        final Result multiLineResult = filter.filter(null, null, null, (Object) multiLine, (Throwable) null);
         assertThat(singleLineResult, equalTo(Result.DENY));
         assertThat(multiLineResult, equalTo(Result.DENY));
     }
@@ -81,7 +82,7 @@ public class RegexFilterTest {
         final RegexFilter filter = RegexFilter.createFilter(".* test .*", null, false, null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (String) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Message) null, (Throwable) null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, null, (Object[]) null));
     }

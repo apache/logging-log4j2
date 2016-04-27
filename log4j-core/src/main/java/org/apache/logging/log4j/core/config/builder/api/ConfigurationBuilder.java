@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -28,6 +29,21 @@ import org.apache.logging.log4j.core.util.Builder;
  * @since 2.4
  */
 public interface ConfigurationBuilder<T extends Configuration> extends Builder<T> {
+
+
+    /**
+     * Adds a ScriptComponent.
+     * @param builder The ScriptComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> add(ScriptComponentBuilder builder);
+
+    /**
+     * Adds a ScriptFileComponent.
+     * @param builder The ScriptFileComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> add(ScriptFileComponentBuilder builder);
 
     /**
      * Adds an AppenderComponent.
@@ -72,6 +88,33 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      */
     ConfigurationBuilder<T> addProperty(String key, String value);
 
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the Logger.
+     * @param language The script language
+     * @param text The script to execute.
+     * @return A new ScriptComponentBuilder.
+     */
+    ScriptComponentBuilder newScript(String name, String language, String text);
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param path The location of the script file.
+     * @return A new ScriptFileComponentBuilder.
+     */
+    ScriptFileComponentBuilder newScriptFile(String path);
+
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the script file.
+     * @param path The location of the script file.
+     * @return A new ScriptFileComponentBuilder.
+     */
+    ScriptFileComponentBuilder newScriptFile(String name, String path);
+
+
     /**
      * Returns a builder for creating Appenders.
      * @param name The name of the Appender.
@@ -99,9 +142,27 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating Async Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
+     * @param includeLocation If true include location information.
+     * @return A new LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newAsyncLogger(String name, Level level, boolean includeLocation);
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the Logger.
+     * @param level The logging Level to be assigned to the Logger.
      * @return A new LoggerComponentBuilder.
      */
     LoggerComponentBuilder newAsyncLogger(String name, String level);
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the Logger.
+     * @param level The logging Level to be assigned to the Logger.
+     * @param includeLocation If true include location information.
+     * @return A new LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newAsyncLogger(String name, String level, boolean includeLocation);
 
     /**
      * Returns a builder for creating the async root Logger.
@@ -110,12 +171,38 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      */
     RootLoggerComponentBuilder newAsyncRootLogger(Level level);
 
+
+    /**
+     * Returns a builder for creating the async root Logger.
+     * @param level The logging Level to be assigned to the root Logger.
+     * @param includeLocation If true include location information.
+     * @return A new RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newAsyncRootLogger(Level level, boolean includeLocation);
+
     /**
      * Returns a builder for creating the async root Logger.
      * @param level The logging Level to be assigned to the root Logger.
      * @return A new RootLoggerComponentBuilder.
      */
     RootLoggerComponentBuilder newAsyncRootLogger(String level);
+
+
+    /**
+     * Returns a builder for creating the async root Logger.
+     * @param level The logging Level to be assigned to the root Logger.
+     * @param includeLocation If true include location information.
+     * @return A new RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newAsyncRootLogger(String level, boolean includeLocation);
+
+    /**
+     * Returns a builder for creating generic components.
+     * @param <B> ComponentBuilder target type
+     * @param pluginName The Plugin type of the component.
+     * @return A new ComponentBuilder.
+     */
+    <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(String pluginName);
 
     /**
      * Returns a builder for creating generic components.
@@ -182,9 +269,27 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
+     * @param includeLocation If true include location information.
+     * @return A new LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newLogger(String name, Level level, boolean includeLocation);
+
+    /**
+     * Returns a builder for creating Loggers.
+     * @param name The name of the Logger.
+     * @param level The logging Level to be assigned to the Logger.
      * @return A new LoggerComponentBuilder.
      */
     LoggerComponentBuilder newLogger(String name, String level);
+
+    /**
+     * Returns a builder for creating Loggers.
+     * @param name The name of the Logger.
+     * @param level The logging Level to be assigned to the Logger.
+     * @param includeLocation If true include location information.
+     * @return A new LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newLogger(String name, String level, boolean includeLocation);
 
     /**
      * Returns a builder for creating the root Logger.
@@ -196,13 +301,31 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     /**
      * Returns a builder for creating the root Logger.
      * @param level The logging Level to be assigned to the root Logger.
+     * @param includeLocation If true include location information.
+     * @return A new RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newRootLogger(Level level, boolean includeLocation);
+
+    /**
+     * Returns a builder for creating the root Logger.
+     * @param level The logging Level to be assigned to the root Logger.
+     *
      * @return A new RootLoggerComponentBuilder.
      */
     RootLoggerComponentBuilder newRootLogger(String level);
 
     /**
+     * Returns a builder for creating the root Logger.
+     * @param level The logging Level to be assigned to the root Logger.
+     *
+     * @return A new RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newRootLogger(String level, boolean includeLocation);
+
+    /**
      * Set the Advertiser Plugin name.
      * @param advertiser The Advertiser Plugin name.
+     * @param includeLocation If true include location information.
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setAdvertiser(String advertiser);
@@ -257,4 +380,20 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setVerbosity(String verbosity);
+
+    /**
+     * Add the properties for the root node.
+     * @param key The property key.
+     * @param value The property value.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> addRootProperty(String key, String value);
+
+    /**
+     * Build the configuration and optionally initialize it.
+     * @param initialize true if the configuration should be initialized, false otherwise. Generally, Configurations
+     *                   should not be initialized when they are constructed.
+     * @return The constructed Configuration.
+     */
+    T build(boolean initialize);
 }

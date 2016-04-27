@@ -18,12 +18,15 @@ package org.apache.logging.log4j.core;
 
 import java.util.EventListener;
 
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  * Base class for server classes that listen to {@link LogEvent}s.
  * TODO (MS) How is this class any different from Appender?
  */
 public class LogEventListener implements EventListener {
 
+    protected static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final LoggerContext context;
 
     protected LogEventListener() {

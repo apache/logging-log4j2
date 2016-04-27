@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="WARN">
+<Configuration status="ERROR">
   <Appenders>
     <List name="List">
       <PatternLayout>
@@ -24,8 +24,55 @@
         </MarkerPatternSelector>
       </PatternLayout>
     </List>
+    <List name="List2">
+      <PatternLayout>
+        <ScriptPatternSelector defaultPattern="[%-5level] %c{1.} %C{1.}.%M.%L %msg%n">
+          <Script name="BeanShellSelector" language="bsh"><![CDATA[
+            if (logEvent.getLoggerName().equals("NoLocation")) {
+                return "NoLocation";
+            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                return "Flow";
+            } else {
+                return null;
+            }]]>
+          </Script>
+          <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
+          <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+        </ScriptPatternSelector>
+      </PatternLayout>
+    </List>
+    <List name="List3">
+      <PatternLayout>
+        <ScriptPatternSelector defaultPattern="[%-5level] %c{1.} %C{1.}.%M.%L %msg%n">
+          <Script name="JavaScriptSelector" language="JavaScript"><![CDATA[
+            var result;
+            if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+                result = "NoLocation";
+            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                result = "Flow";
+            }
+            result;
+            ]]>
+          </Script>
+          <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
+          <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+        </ScriptPatternSelector>
+      </PatternLayout>
+    </List>
   </Appenders>
   <Loggers>
+    <Logger name="TestJavaScriptPatternSelector" level="trace" additivity="false">
+      <AppenderRef ref="List3"/>
+    </Logger>
+    <Logger name="JavascriptNoLocation" level="trace" additivity="false">
+      <AppenderRef ref="List3"/>
+    </Logger>
+    <Logger name="TestScriptPatternSelector" level="trace" additivity="false">
+      <AppenderRef ref="List2"/>
+    </Logger>
+    <Logger name="NoLocation" level="trace" additivity="false">
+      <AppenderRef ref="List2"/>
+    </Logger>
     <Root level="trace">
       <AppenderRef ref="List" />
     </Root>

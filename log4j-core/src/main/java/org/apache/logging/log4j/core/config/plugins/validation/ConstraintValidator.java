@@ -36,8 +36,9 @@ public interface ConstraintValidator<A extends Annotation> {
     /**
      * Indicates if the given value is valid.
      *
-     * @param value the value to validate.
+     * @param name the name to use for error reporting
+     * @param value the value to validate. 
      * @return {@code true} if the given value is valid.
      */
-    boolean isValid(Object value);
+    boolean isValid(String name, Object value);
 }

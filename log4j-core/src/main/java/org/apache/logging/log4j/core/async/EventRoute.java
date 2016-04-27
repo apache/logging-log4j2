@@ -1,0 +1,96 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+package org.apache.logging.log4j.core.async;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AsyncAppender;
+import org.apache.logging.log4j.message.Message;
+
+/**
+ * Enumeration over the different destinations where a log event can be sent.
+ *
+ * @since 2.6
+ */
+public enum EventRoute {
+    /**
+     * Enqueues the event for asynchronous logging in the background thread.
+     */
+    ENQUEUE {
+        @Override
+        public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
+                final Marker marker, final Message message, final Throwable thrown) {
+        }
+
+        @Override
+        public void logMessage(final AsyncLoggerConfig asyncLoggerConfig, final LogEvent event) {
+            asyncLoggerConfig.callAppendersInBackgroundThread(event);
+        }
+
+        @Override
+        public void logMessage(final AsyncAppender asyncAppender, final LogEvent logEvent) {
+            asyncAppender.logMessageInBackgroundThread(logEvent);
+        }
+    },
+    /**
+     * Logs the event synchronously: sends the event directly to the appender (in the current thread).
+     */
+    SYNCHRONOUS {
+        @Override
+        public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
+                final Marker marker, final Message message, final Throwable thrown) {
+        }
+
+        @Override
+        public void logMessage(final AsyncLoggerConfig asyncLoggerConfig, final LogEvent event) {
+            asyncLoggerConfig.callAppendersInCurrentThread(event);
+        }
+
+        @Override
+        public void logMessage(final AsyncAppender asyncAppender, final LogEvent logEvent) {
+            asyncAppender.logMessageInCurrentThread(logEvent);
+        }
+    },
+    /**
+     * Discards the event (so it is not logged at all).
+     */
+    DISCARD {
+        @Override
+        public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
+                final Marker marker, final Message message, final Throwable thrown) {
+            // do nothing: drop the event
+        }
+
+        @Override
+        public void logMessage(final AsyncLoggerConfig asyncLoggerConfig, final LogEvent event) {
+            // do nothing: drop the event
+        }
+
+        @Override
+        public void logMessage(final AsyncAppender asyncAppender, final LogEvent coreEvent) {
+            // do nothing: drop the event
+        }
+    };
+
+    public abstract void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
+            final Marker marker, final Message message, final Throwable thrown);
+
+    public abstract void logMessage(final AsyncLoggerConfig asyncLoggerConfig, final LogEvent event);
+
+    public abstract void logMessage(final AsyncAppender asyncAppender, final LogEvent coreEvent);
+}

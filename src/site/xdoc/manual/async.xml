@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
-  license agreements. See the NOTICE file distributed with this work for additional 
-  information regarding copyright ownership. The ASF licenses this file to 
-  You under the Apache License, Version 2.0 (the "License"); you may not use 
-  this file except in compliance with the License. You may obtain a copy of 
-  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
-  by applicable law or agreed to in writing, software distributed under the 
-  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
-  OF ANY KIND, either express or implied. See the License for the specific 
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
   language governing permissions and limitations under the License. -->
 <document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
@@ -174,6 +174,10 @@
           There are a few system properties you can use to control aspects of the asynchronous logging subsystem.
           Some of these can be used to tune logging performance.
         </p>
+        <p>
+          The below properties can also be specified by creating a file named
+          <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
+        </p>
         <a name="SysPropsAllAsync" />
         <table>
           <caption align="top">System Properties to configure all asynchronous loggers
@@ -186,12 +190,16 @@
           <tr>
             <td>AsyncLogger.ExceptionHandler</td>
             <td>
-              <tt>null</tt>
+              <tt>default handler</tt>
             </td>
             <td>
               Fully qualified name of a class that implements the <tt>com.lmax.disruptor.ExceptionHandler</tt>
               interface. The class needs to have a public zero-argument constructor.
               If specified, this class will be notified when an exception occurs while logging the messages.
+              <p>
+                If not specified, the default exception handler will print a message and stack trace to the standard
+                error output stream.
+              </p>
             </td>
           </tr>
           <tr>
@@ -207,19 +215,23 @@
           <tr>
             <td>AsyncLogger.WaitStrategy</td>
             <td>
-              <tt>Sleep</tt>
+              <tt>Timeout</tt>
             </td>
             <td>
-              Valid values: Block, Sleep, Yield.
+              Valid values: Block, Timeout, Sleep, Yield.
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
               Recommended for resource constrained/virtualised environments.
               <br />
+              <tt>Timeout</tt> is a variation of the <tt>Block</tt> strategy that will periodically
+              wake up from the lock condition await() call. This ensures that if a notification is missed somehow
+              the consumer thread is not stuck but will recover with a small latency delay (default 10ms).
+              <br />
               <tt>Sleep</tt> is a strategy that initially spins, then uses a Thread.yield(), and
               eventually parks for the minimum number of nanos the OS and JVM will allow
               while the I/O thread is waiting for log events. Sleep is a good compromise between performance
-              and CPU resource. 
+              and CPU resource.
               This strategy has very low impact on the application thread, in exchange for some additional
               latency for actually getting the message logged.
               <br />
@@ -265,12 +277,19 @@
                 of applications.
               </p>
               <p>
-                You can also specify a fully qualified class name of a custom class that implements the
+                You can also specify the fully qualified class name of a custom class that implements the
                 <tt>Clock</tt> interface.
               </p>
             </td>
           </tr>
         </table>
+        <p>
+          There are also a few system properties that can be used to maintain application throughput even when
+          the underlying appender cannot keep up with the logging rate and the queue is filling up.
+          See the details for system properties
+          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt> and
+            <tt>log4j2.DiscardThreshold</tt></a>.
+        </p>
       </subsection>
       <a name="MixedSync-Async" />
       <subsection name="Mixing Synchronous and Asynchronous Loggers">
@@ -325,6 +344,10 @@
           There are a few system properties you can use to control aspects of the asynchronous logging subsystem.
           Some of these can be used to tune logging performance.
         </p>
+        <p>
+          The below properties can also be specified by creating a file named
+          <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
+        </p>
         <a name="SysPropsMixedSync-Async" />
         <table>
           <caption align="top">System Properties to configure mixed asynchronous and normal loggers</caption>
@@ -336,12 +359,16 @@
           <tr>
             <td>AsyncLoggerConfig.ExceptionHandler</td>
             <td>
-              <tt>null</tt>
+              <tt>default handler</tt>
             </td>
             <td>
               Fully qualified name of a class that implements the <tt>com.lmax.disruptor.ExceptionHandler</tt>
               interface. The class needs to have a public zero-argument constructor.
               If specified, this class will be notified when an exception occurs while logging the messages.
+              <p>
+                If not specified, the default exception handler will print a message and stack trace to the standard
+                error output stream.
+              </p>
             </td>
           </tr>
           <tr>
@@ -357,14 +384,18 @@
           <tr>
             <td>AsyncLoggerConfig.WaitStrategy</td>
             <td>
-              <tt>Sleep</tt>
+              <tt>Timeout</tt>
             </td>
             <td>
-              Valid values: Block, Sleep, Yield.
+              Valid values: Block, Timeout, Sleep, Yield.
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
               Recommended for resource constrained/virtualised environments.
+              <br />
+              <tt>Timeout</tt> is a variation of the <tt>Block</tt> strategy that will periodically
+              wake up from the lock condition await() call. This ensures that if a notification is missed somehow
+              the consumer thread is not stuck but will recover with a small latency delay (default 10ms).
               <br />
               <tt>Sleep</tt> is a strategy that initially spins, then uses a Thread.yield(), and
               eventually parks for the minimum number of nanos the OS and JVM will allow
@@ -379,6 +410,13 @@
             </td>
           </tr>
         </table>
+        <p>
+          There are also a few system properties that can be used to maintain application throughput even when
+          the underlying appender cannot keep up with the logging rate and the queue is filling up.
+          See the details for system properties
+          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt> and
+            <tt>log4j2.DiscardThreshold</tt></a>.
+        </p>
       </subsection>
       <a name="Location" />
       <subsection name="Location, location, location...">
@@ -890,50 +928,50 @@
           </tr>
         </table>
       </subsection>
-      <!-- <a name="PerformanceTuning" /> <subsection name="Async Logger 
-        Performance Tuning"> <p>While the default settings should give good results 
-        out of the box, you may want to change settings to improve your logging throughput 
-        and/or latency. We suggest the following steps for tuning your logging performance:</p> 
-        <ol> <li>Create a base line by running the performance tests in your environment.</li> 
-        <li>Change a parameter (e.g. WaitStrategy or RingBufferSize) and run the 
-        tests again. Check performance results.</li> <li>Repeat (2) until you find 
-        a parameter combination that gives acceptable performance.</li> </ol> <p>Use 
-        the following command to run the performance tests:</p> <blockquote> <tt>java 
-        -cp log4j-async-2.0-tests.jar:log4j-async-2.0.jar:disruptor-3.0.0.jar:log4j-api-2.0.jar:log4j-core-2.0.jar 
-        \<br /> [-DWaitStrategy=Sleep] [-DRingBufferSize=262144] org.apache.logging.log4j.async.perftest.PerfTestDriver 
-        [path-to-java] [repeats]</tt> <br /><br /> [<b>WaitStrategy</b>] is an optional 
-        system property with valid values "Block", "Sleep", or "Yield". Details are 
-        documented under "System Properties to configure ... loggers". <br /> [<b>RingBufferSize</b>] 
-        is an optional system property with an integer value of at least 128. Details 
-        are documented under "System Properties to configure ... loggers". <br /> 
-        [<b>path-to-java</b>] is an optional parameter that is the full path to the 
-        "java" executable. Specify this if just running "java" in the current directory 
-        does not specify the version of java that you want to test with. <br /> [<b>repeats</b>] 
-        is an optional parameter that specifies how often each test is repeated. 
-        The default is 5. </blockquote> <p>For reference, below are some of the numbers 
-        we used to determine the default settings. (Solaris 10 (64bit), 2.93GHz Xeon 
-        X5570 with JDK1.7.0_06):</p> <table> <caption align="top">Throughput in log 
-        messages/second per thread</caption> <tr> <th>Logger</th> <th>WaitStrategy</th> 
-        <th>1 thread</th> <th>2 threads</th> <th>4 threads</th> <th>8 threads</th> 
-        </tr> <tr> <td rowspan="3" valign="top">All Async System Clock</td> <td align="center">Block</td> 
-        <td align="right">1,717,261</td> <td align="right">727,075</td> <td align="right">263,760</td> 
-        <td align="right">150,533</td> </tr> <tr> <td align="center">Sleep</td> <td 
-        align="right">1,568,623</td> <td align="right">948,653</td> <td align="right">629,951</td> 
-        <td align="right">651,340</td> </tr> <tr> <td align="center">Yield</td> <td 
-        align="right">1,618,103</td> <td align="right">884,314</td> <td align="right">628,008</td> 
-        <td align="right">675,879</td> </tr> <tr> <td rowspan="3" valign="top">All 
-        Async Cached Clock</td> <td align="center">Block</td> <td align="right">2,771,734</td> 
-        <td align="right">642,899</td> <td align="right">331,003</td> <td align="right">172,877</td> 
-        </tr> <tr> <td align="center">Sleep</td> <td align="right">2,393,901</td> 
-        <td align="right">1,211,425</td> <td align="right">770,416</td> <td align="right">632,361</td> 
-        </tr> <tr> <td align="center">Yield</td> <td align="right">2,331,763</td> 
-        <td align="right">1,132,529</td> <td align="right">684,109</td> <td align="right">671,957</td> 
-        </tr> <tr> <td rowspan="3" valign="top">Mixed Async</td> <td align="center">Block</td> 
-        <td align="right">1,347,853</td> <td align="right">443,652</td> <td align="right">251,433</td> 
-        <td align="right">136,152</td> </tr> <tr> <td align="center">Sleep</td> <td 
-        align="right">1,371,511</td> <td align="right">567,829</td> <td align="right">407,676</td> 
-        <td align="right">408,071</td> </tr> <tr> <td align="center">Yield</td> <td 
-        align="right">1,360,267</td> <td align="right">675,570</td> <td align="right">389,609</td> 
+      <!-- <a name="PerformanceTuning" /> <subsection name="Async Logger
+        Performance Tuning"> <p>While the default settings should give good results
+        out of the box, you may want to change settings to improve your logging throughput
+        and/or latency. We suggest the following steps for tuning your logging performance:</p>
+        <ol> <li>Create a base line by running the performance tests in your environment.</li>
+        <li>Change a parameter (e.g. WaitStrategy or RingBufferSize) and run the
+        tests again. Check performance results.</li> <li>Repeat (2) until you find
+        a parameter combination that gives acceptable performance.</li> </ol> <p>Use
+        the following command to run the performance tests:</p> <blockquote> <tt>java
+        -cp log4j-async-2.0-tests.jar:log4j-async-2.0.jar:disruptor-3.0.0.jar:log4j-api-2.0.jar:log4j-core-2.0.jar
+        \<br /> [-DWaitStrategy=Sleep] [-DRingBufferSize=262144] org.apache.logging.log4j.async.perftest.PerfTestDriver
+        [path-to-java] [repeats]</tt> <br /><br /> [<b>WaitStrategy</b>] is an optional
+        system property with valid values "Block", "Sleep", or "Yield". Details are
+        documented under "System Properties to configure ... loggers". <br /> [<b>RingBufferSize</b>]
+        is an optional system property with an integer value of at least 128. Details
+        are documented under "System Properties to configure ... loggers". <br />
+        [<b>path-to-java</b>] is an optional parameter that is the full path to the
+        "java" executable. Specify this if just running "java" in the current directory
+        does not specify the version of java that you want to test with. <br /> [<b>repeats</b>]
+        is an optional parameter that specifies how often each test is repeated.
+        The default is 5. </blockquote> <p>For reference, below are some of the numbers
+        we used to determine the default settings. (Solaris 10 (64bit), 2.93GHz Xeon
+        X5570 with JDK1.7.0_06):</p> <table> <caption align="top">Throughput in log
+        messages/second per thread</caption> <tr> <th>Logger</th> <th>WaitStrategy</th>
+        <th>1 thread</th> <th>2 threads</th> <th>4 threads</th> <th>8 threads</th>
+        </tr> <tr> <td rowspan="3" valign="top">All Async System Clock</td> <td align="center">Block</td>
+        <td align="right">1,717,261</td> <td align="right">727,075</td> <td align="right">263,760</td>
+        <td align="right">150,533</td> </tr> <tr> <td align="center">Sleep</td> <td
+        align="right">1,568,623</td> <td align="right">948,653</td> <td align="right">629,951</td>
+        <td align="right">651,340</td> </tr> <tr> <td align="center">Yield</td> <td
+        align="right">1,618,103</td> <td align="right">884,314</td> <td align="right">628,008</td>
+        <td align="right">675,879</td> </tr> <tr> <td rowspan="3" valign="top">All
+        Async Cached Clock</td> <td align="center">Block</td> <td align="right">2,771,734</td>
+        <td align="right">642,899</td> <td align="right">331,003</td> <td align="right">172,877</td>
+        </tr> <tr> <td align="center">Sleep</td> <td align="right">2,393,901</td>
+        <td align="right">1,211,425</td> <td align="right">770,416</td> <td align="right">632,361</td>
+        </tr> <tr> <td align="center">Yield</td> <td align="right">2,331,763</td>
+        <td align="right">1,132,529</td> <td align="right">684,109</td> <td align="right">671,957</td>
+        </tr> <tr> <td rowspan="3" valign="top">Mixed Async</td> <td align="center">Block</td>
+        <td align="right">1,347,853</td> <td align="right">443,652</td> <td align="right">251,433</td>
+        <td align="right">136,152</td> </tr> <tr> <td align="center">Sleep</td> <td
+        align="right">1,371,511</td> <td align="right">567,829</td> <td align="right">407,676</td>
+        <td align="right">408,071</td> </tr> <tr> <td align="center">Yield</td> <td
+        align="right">1,360,267</td> <td align="right">675,570</td> <td align="right">389,609</td>
         <td align="right">391,969</td> </tr> </table> </subsection> -->
       <a name="UnderTheHood" />
       <subsection name="Under The Hood">

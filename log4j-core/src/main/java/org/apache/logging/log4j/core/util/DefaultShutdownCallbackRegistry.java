@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.util;
 
-import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -37,9 +36,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.1
  */
-public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry, LifeCycle, Runnable, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry, LifeCycle, Runnable {
+    /** Status logger. */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
     private final AtomicReference<State> state = new AtomicReference<>(State.INITIALIZED);
@@ -95,9 +93,9 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
 
                 @Override
                 public void run() {
-                    final Runnable hook = this.hook.get();
-                    if (hook != null) {
-                        hook.run();
+                    final Runnable runnableHook = this.hook.get();
+                    if (runnableHook != null) {
+                        runnableHook.run();
                         this.hook.clear();
                     }
                 }
@@ -127,6 +125,9 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
             try {
                 addShutdownHook(threadFactory.newThread(this));
                 state.set(State.STARTED);
+            } catch (final IllegalStateException ex) {
+                state.set(State.STOPPED);
+                throw ex;
             } catch (final Exception e) {
                 LOGGER.catching(e);
                 state.set(State.STOPPED);

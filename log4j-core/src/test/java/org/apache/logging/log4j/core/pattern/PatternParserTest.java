@@ -26,9 +26,12 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.NanoClockFactory;
+import org.apache.logging.log4j.core.util.DummyNanoClock;
+import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,7 +114,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :97  ] - Hello, world" + Constants.LINE_SEPARATOR;
+        final String expected = "INFO  [PatternParserTest        :100 ] - Hello, world" + Constants.LINE_SEPARATOR;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
@@ -157,14 +160,14 @@ public class PatternParserTest {
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
-    
+
     @Test
     public void testBadPattern() {
         final Calendar cal = Calendar.getInstance();
         cal.set(2001, Calendar.FEBRUARY, 3, 4, 5, 6);
         cal.set(Calendar.MILLISECOND, 789);
         final long timestamp = cal.getTimeInMillis();
-        
+
         final List<PatternFormatter> formatters = parser.parse(badPattern);
         assertNotNull(formatters);
         final Throwable t = new Throwable();
@@ -183,7 +186,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        
+
         // eats all characters until the closing '}' character
         final String expected = "[2001-02-03 04:05:06,789] - Hello, world";
         assertTrue("Expected to start with: " + expected + ". Actual: " + str, str.startsWith(expected));
@@ -223,7 +226,7 @@ public class PatternParserTest {
         assertTrue("Expected to start with: " + expectedStart + ". Actual: " + str, str.startsWith(expectedStart));
         assertTrue("Expected to end with: \"" + expectedEnd + "\". Actual: \"" + str, str.endsWith(expectedEnd));
     }
-    
+
     @Test
     public void testNanoPatternShort() {
         final List<PatternFormatter> formatters = parser.parse("%N");
@@ -231,7 +234,7 @@ public class PatternParserTest {
         assertEquals(1, formatters.size());
         assertTrue(formatters.get(0).getConverter() instanceof NanoTimePatternConverter);
     }
-    
+
     @Test
     public void testNanoPatternLong() {
         final List<PatternFormatter> formatters = parser.parse("%nano");
@@ -239,20 +242,94 @@ public class PatternParserTest {
         assertEquals(1, formatters.size());
         assertTrue(formatters.get(0).getConverter() instanceof NanoTimePatternConverter);
     }
-    
+
     @Test
-    public void testNanoPatternShortChangesNanoClockFactoryMode() {
-        parser.parse("%m");
-        assertEquals(NanoClockFactory.Mode.Dummy, NanoClockFactory.getMode());
-        parser.parse("%nano");
-        assertEquals(NanoClockFactory.Mode.System, NanoClockFactory.getMode());
+    public void testThreadNamePattern() {
+        testThreadNamePattern("%thread");
     }
-    
+
+    @Test
+    public void testThreadNameFullPattern() {
+        testThreadNamePattern("%threadName");
+    }
+
+    @Test
+    public void testThreadIdFullPattern() {
+        testThreadIdPattern("%threadId");
+    }
+
+    @Test
+    public void testThreadIdShortPattern1() {
+        testThreadIdPattern("%tid");
+    }
+
+    @Test
+    public void testThreadIdShortPattern2() {
+        testThreadIdPattern("%T");
+    }
+
+    @Test
+    public void testThreadPriorityShortPattern() {
+        testThreadPriorityPattern("%tp");
+    }
+
+    @Test
+    public void testThreadPriorityFullPattern() {
+        testThreadPriorityPattern("%threadPriority");
+    }
+
+    private void testThreadIdPattern(final String pattern) {
+        testFirstConverter(pattern, ThreadIdPatternConverter.class);
+    }
+
+    private void testThreadNamePattern(final String pattern) {
+        testFirstConverter(pattern, ThreadNamePatternConverter.class);
+    }
+
+    private void testThreadPriorityPattern(final String pattern) {
+        testFirstConverter(pattern, ThreadPriorityPatternConverter.class);
+    }
+
+    private void testFirstConverter(final String pattern, Class<?> checkClass) {
+        final List<PatternFormatter> formatters = parser.parse(pattern);
+        assertNotNull(formatters);
+        final String msg = formatters.toString();
+        assertEquals(msg, 1, formatters.size());
+        assertTrue(msg, checkClass.isInstance(formatters.get(0).getConverter()));
+    }
+
+    @Test
+    public void testThreadNameShortPattern() {
+        testThreadNamePattern("%t");
+    }
+
+    @Test
+    public void testNanoPatternShortChangesConfigurationNanoClock() {
+        Configuration config = new NullConfiguration();
+        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+
+        PatternParser pp = new PatternParser(config, KEY, null);
+        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+
+        pp.parse("%m");
+        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+
+        pp.parse("%nano"); // this changes the config clock
+        assertTrue(config.getNanoClock() instanceof SystemNanoClock);
+    }
+
     @Test
     public void testNanoPatternLongChangesNanoClockFactoryMode() {
-        parser.parse("%m");
-        assertEquals(NanoClockFactory.Mode.Dummy, NanoClockFactory.getMode());
-        parser.parse("%N");
-        assertEquals(NanoClockFactory.Mode.System, NanoClockFactory.getMode());
+        Configuration config = new NullConfiguration();
+        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+
+        PatternParser pp = new PatternParser(config, KEY, null);
+        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+
+        pp.parse("%m");
+        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+
+        pp.parse("%N");
+        assertTrue(config.getNanoClock() instanceof SystemNanoClock);
     }
 }

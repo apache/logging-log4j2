@@ -19,16 +19,11 @@ package org.apache.logging.log4j.taglib;
 import java.util.List;
 import javax.servlet.jsp.tagext.Tag;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.mock.web.MockPageContext;
 
@@ -40,22 +35,10 @@ import static org.junit.Assert.*;
 public class ExitTagTest {
     private static final String CONFIG = "log4j-test1.xml";
 
-    @BeforeClass
-    public static void setUpClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext context = LoggerContext.getContext(false);
-        context.getConfiguration();
-    }
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
-    @AfterClass
-    public static void cleanUpClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext context = LoggerContext.getContext(false);
-        context.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
-
-    private final Logger logger = LogManager.getLogger("LoggingMessageTagSupportTestLogger");
+    private final Logger logger = context.getLogger("LoggingMessageTagSupportTestLogger");
     private ExitTag tag;
 
     @Before
@@ -68,7 +51,7 @@ public class ExitTagTest {
     @Test
     public void testDoEndTag() throws Exception {
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("exit TRACE M-EXIT[ FLOW ] E");
+        verify("Exit TRACE M-EXIT[ FLOW ] E");
     }
 
     @Test
@@ -76,7 +59,7 @@ public class ExitTagTest {
         this.tag.setResult(CONFIG);
 
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("exit with(log4j-test1.xml) TRACE M-EXIT[ FLOW ] E");
+        verify("Exit with(log4j-test1.xml) TRACE M-EXIT[ FLOW ] E");
     }
 
     @Test
@@ -84,15 +67,12 @@ public class ExitTagTest {
         this.tag.setResult(5792);
 
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("exit with(5792) TRACE M-EXIT[ FLOW ] E");
+        verify("Exit with(5792) TRACE M-EXIT[ FLOW ] E");
     }
 
     private void verify(final String expected) {
-        final LoggerContext ctx = LoggerContext.getContext(false);
-        final Appender listApp = ctx.getConfiguration().getAppender("List");
-        assertNotNull("Missing Appender", listApp);
-        assertTrue("Not a ListAppender", listApp instanceof ListAppender);
-        final List<String> events = ((ListAppender) listApp).getMessages();
+        final ListAppender listApp = context.getListAppender("List");
+        final List<String> events = listApp.getMessages();
         try
         {
             assertEquals("Incorrect number of messages.", 1, events.size());
@@ -100,7 +80,7 @@ public class ExitTagTest {
         }
         finally
         {
-            ((ListAppender) listApp).clear();
+            listApp.clear();
         }
     }
 }

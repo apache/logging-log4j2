@@ -61,7 +61,7 @@ public final class ClassNamePatternConverter extends NamePatternConverter {
         if (element == null) {
             toAppendTo.append(NA);
         } else {
-            toAppendTo.append(abbreviate(element.getClassName()));
+            abbreviate(element.getClassName(), toAppendTo);
         }
     }
 }

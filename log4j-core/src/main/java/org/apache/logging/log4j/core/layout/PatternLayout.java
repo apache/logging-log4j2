@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A flexible layout configurable with pattern string.
@@ -55,116 +57,79 @@ import org.apache.logging.log4j.core.pattern.RegexReplacement;
 @Plugin(name = "PatternLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class PatternLayout extends AbstractStringLayout {
 
-    private static final long serialVersionUID = 1L;
-
     /**
-     * Default pattern string for log output. Currently set to the
-     * string <b>"%m%n"</b> which just prints the application supplied
-     * message.
+     * Default pattern string for log output. Currently set to the string <b>"%m%n"</b> which just prints the
+     * application supplied message.
      */
     public static final String DEFAULT_CONVERSION_PATTERN = "%m%n";
 
     /**
-     * A conversion pattern equivalent to the TTCCCLayout.
-     * Current value is <b>%r [%t] %p %c %x - %m%n</b>.
+     * A conversion pattern equivalent to the TTCCCLayout. Current value is <b>%r [%t] %p %c %x - %m%n</b>.
      */
-    public static final String TTCC_CONVERSION_PATTERN =
-        "%r [%t] %p %c %x - %m%n";
+    public static final String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %x - %m%n";
 
     /**
-     * A simple pattern.
-     * Current value is <b>%d [%t] %p %c - %m%n</b>.
+     * A simple pattern. Current value is <b>%d [%t] %p %c - %m%n</b>.
      */
-    public static final String SIMPLE_CONVERSION_PATTERN =
-        "%d [%t] %p %c - %m%n";
+    public static final String SIMPLE_CONVERSION_PATTERN = "%d [%t] %p %c - %m%n";
 
     /** Key to identify pattern converters. */
     public static final String KEY = "Converter";
-
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
-
-    /**
-     * Initial converter for pattern.
-     */
-    private final PatternFormatter[] formatters;
 
     /**
      * Conversion pattern.
      */
     private final String conversionPattern;
-
     private final PatternSelector patternSelector;
-
-    private final Serializer serializer;
-
-
-    /**
-     * The current Configuration.
-     */
-    private final Configuration config;
-
-    private final RegexReplacement replace;
-
-    private final boolean alwaysWriteExceptions;
-
-    private final boolean noConsoleNoAnsi;
+    private final Serializer eventSerializer;
 
     /**
      * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
      *
      * @param config The Configuration.
      * @param replace The regular expression to match.
-     * @param pattern conversion pattern.
+     * @param eventPattern conversion pattern.
      * @param patternSelector The PatternSelector.
      * @param charset The character set.
      * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
      *                         exceptions will be written even if the pattern does not specify so).
      * @param noConsoleNoAnsi
      *            If {@code "true"} (default) and {@link System#console()} is null, do not output ANSI escape codes
-     * @param header
+     * @param headerPattern header conversion pattern.
+     * @param footerPattern footer conversion pattern.
      */
-    private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
-                          final PatternSelector patternSelector, final Charset charset,
-                          final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
-                          final String header, final String footer) {
-        super(charset, toBytes(header, charset), toBytes(footer, charset));
-        this.replace = replace;
-        this.conversionPattern = pattern;
+    private PatternLayout(final Configuration config, final RegexReplacement replace, final String eventPattern,
+            final PatternSelector patternSelector, final Charset charset, final boolean alwaysWriteExceptions,
+            final boolean noConsoleNoAnsi, final String headerPattern, final String footerPattern) {
+        super(config, charset,
+                createSerializer(config, replace, headerPattern, null, patternSelector, alwaysWriteExceptions,
+                        noConsoleNoAnsi),
+                createSerializer(config, replace, footerPattern, null, patternSelector, alwaysWriteExceptions,
+                        noConsoleNoAnsi));
+        this.conversionPattern = eventPattern;
         this.patternSelector = patternSelector;
-        this.config = config;
-        this.alwaysWriteExceptions = alwaysWriteExceptions;
-        this.noConsoleNoAnsi = noConsoleNoAnsi;
+        this.eventSerializer = createSerializer(config, replace, eventPattern, DEFAULT_CONVERSION_PATTERN,
+                patternSelector, alwaysWriteExceptions, noConsoleNoAnsi);
+    }
+
+    public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
+            final String pattern, final String defaultPattern, final PatternSelector patternSelector,
+            final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
+        if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
+            return null;
+        }
         if (patternSelector == null) {
-            serializer = new PatternSerializer();
-            final PatternParser parser = createPatternParser(config);
             try {
-                List<PatternFormatter> list = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern,
-                        this.alwaysWriteExceptions, this.noConsoleNoAnsi);
-                this.formatters = list.toArray(new PatternFormatter[0]);
-            } catch (RuntimeException ex) {
+                final PatternParser parser = createPatternParser(configuration);
+                final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
+                        alwaysWriteExceptions, noConsoleNoAnsi);
+                final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
+                return new PatternSerializer(formatters, replace);
+            } catch (final RuntimeException ex) {
                 throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
             }
-        } else {
-            this.formatters = null;
-            serializer = new PatternSelectorSerializer();
         }
-    }
-
-    private byte[] strSubstitutorReplace(final byte... b) {
-        if (b != null && config != null) {
-            return getBytes(config.getStrSubstitutor().replace(new String(b, getCharset())));
-        }
-        return b;
-    }
-
-    @Override
-    public byte[] getHeader() {
-        return strSubstitutorReplace(super.getHeader());
-    }
-
-    @Override
-    public byte[] getFooter() {
-        return strSubstitutorReplace(super.getFooter());
+        return new PatternSelectorSerializer(patternSelector, replace);
     }
 
     /**
@@ -183,12 +148,11 @@ public final class PatternLayout extends AbstractStringLayout {
      * <li>Key: "formatType" Value: "conversion" (format uses the keywords supported by OptionConverter)</li>
      * <li>Key: "format" Value: provided "conversionPattern" param</li>
      * </ul>
-     * 
+     *
      * @return Map of content format keys supporting PatternLayout
      */
     @Override
-    public Map<String, String> getContentFormat()
-    {
+    public Map<String, String> getContentFormat() {
         final Map<String, String> result = new HashMap<>();
         result.put("structured", "false");
         result.put("formatType", "conversion");
@@ -204,7 +168,30 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        return serializer.toSerializable(event);
+        return eventSerializer.toSerializable(event);
+    }
+
+    @Override
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
+        if (!(eventSerializer instanceof Serializer2)) {
+            super.encode(event, destination);
+            return;
+        }
+        final StringBuilder text = toText((Serializer2) eventSerializer, event, getStringBuilder());
+        final Encoder<StringBuilder> encoder = getStringBuilderEncoder();
+        encoder.encode(text, destination);
+    }
+
+    /**
+     * Creates a text representation of the specified log event
+     * and writes it into the specified StringBuilder.
+     * <p>
+     * Implementations are free to return a new StringBuilder if they can
+     * detect in advance that the specified StringBuilder is too small.
+     */
+    private StringBuilder toText(final Serializer2 serializer, final LogEvent event,
+            final StringBuilder destination) {
+        return serializer.toSerializable(event, destination);
     }
 
     /**
@@ -220,7 +207,7 @@ public final class PatternLayout extends AbstractStringLayout {
         if (parser == null) {
             parser = new PatternParser(config, KEY, LogEventPatternConverter.class);
             config.addComponent(KEY, parser);
-            parser = (PatternParser) config.getComponent(KEY);
+            parser = config.getComponent(KEY);
         }
         return parser;
     }
@@ -235,19 +222,21 @@ public final class PatternLayout extends AbstractStringLayout {
      *
      * @param pattern
      *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
+     * @param patternSelector
+     *        Allows different patterns to be used based on some selection criteria.
      * @param config
      *        The Configuration. Some Converters require access to the Interpolator.
      * @param replace
      *        A Regex replacement String.
      * @param charset
-     *        The character set.
+     *        The character set. The platform default is used if not specified.
      * @param alwaysWriteExceptions
      *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
      * @param noConsoleNoAnsi
      *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
-     * @param header
+     * @param headerPattern
      *        The footer to place at the top of the document, once.
-     * @param footer
+     * @param footerPattern
      *        The footer to place at the bottom of the document, once.
      * @return The PatternLayout.
      */
@@ -257,11 +246,12 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginElement("PatternSelector") final PatternSelector patternSelector,
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
+            // LOG4J2-783 use platform default by default, so do not specify defaultString for charset
+            @PluginAttribute(value = "charset") final Charset charset,
             @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
             @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
-            @PluginAttribute("header") final String header,
-            @PluginAttribute("footer") final String footer) {
+            @PluginAttribute("header") final String headerPattern,
+            @PluginAttribute("footer") final String footerPattern) {
         return newBuilder()
             .withPattern(pattern)
             .withPatternSelector(patternSelector)
@@ -270,49 +260,97 @@ public final class PatternLayout extends AbstractStringLayout {
             .withCharset(charset)
             .withAlwaysWriteExceptions(alwaysWriteExceptions)
             .withNoConsoleNoAnsi(noConsoleNoAnsi)
-            .withHeader(header)
-            .withFooter(footer)
+            .withHeader(headerPattern)
+            .withFooter(footerPattern)
             .build();
     }
 
+    private static class PatternSerializer implements Serializer, Serializer2 {
 
-    private interface Serializer {
+        private final PatternFormatter[] formatters;
+        private final RegexReplacement replace;
 
-        String toSerializable(final LogEvent event);
-    }
+        private PatternSerializer(final PatternFormatter[] formatters, final RegexReplacement replace) {
+            super();
+            this.formatters = formatters;
+            this.replace = replace;
+        }
 
-    private class PatternSerializer implements Serializer {
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = strBuilder.get();
-            buf.setLength(0);
+            return toSerializable(event, getStringBuilder()).toString();
+        }
+
+        @Override
+        public StringBuilder toSerializable(final LogEvent event, final StringBuilder buffer) {
             final int len = formatters.length;
             for (int i = 0; i < len; i++) {
-                formatters[i].format(event, buf);
+                formatters[i].format(event, buffer);
             }
-            String str = buf.toString();
-            if (replace != null) {
+            if (replace != null) { // creates temporary objects
+                String str = buffer.toString();
                 str = replace.format(str);
+                buffer.setLength(0);
+                buffer.append(str);
             }
-            return str;
+            return buffer;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append(super.toString());
+            builder.append("[formatters=");
+            builder.append(Arrays.toString(formatters));
+            builder.append(", replace=");
+            builder.append(replace);
+            builder.append("]");
+            return builder.toString();
         }
     }
 
-    private class PatternSelectorSerializer implements Serializer {
+    private static class PatternSelectorSerializer implements Serializer, Serializer2 {
+
+        private final PatternSelector patternSelector;
+        private final RegexReplacement replace;
+
+        private PatternSelectorSerializer(final PatternSelector patternSelector, final RegexReplacement replace) {
+            super();
+            this.patternSelector = patternSelector;
+            this.replace = replace;
+        }
+
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = strBuilder.get();
-            buf.setLength(0);
-            PatternFormatter[] formatters = patternSelector.getFormatters(event);
+            return toSerializable(event, getStringBuilder()).toString();
+        }
+
+        @Override
+        public StringBuilder toSerializable(final LogEvent event, final StringBuilder buffer) {
+            final PatternFormatter[] formatters = patternSelector.getFormatters(event);
             final int len = formatters.length;
             for (int i = 0; i < len; i++) {
-                formatters[i].format(event, buf);
+                formatters[i].format(event, buffer);
             }
-            String str = buf.toString();
-            if (replace != null) {
+            if (replace != null) { // creates temporary objects
+                String str = buffer.toString();
                 str = replace.format(str);
+                buffer.setLength(0);
+                buffer.append(str);
             }
-            return str;
+            return buffer;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append(super.toString());
+            builder.append("[patternSelector=");
+            builder.append(patternSelector);
+            builder.append(", replace=");
+            builder.append(replace);
+            builder.append("]");
+            return builder.toString();
         }
     }
 
@@ -328,7 +366,21 @@ public final class PatternLayout extends AbstractStringLayout {
     }
 
     /**
+     * Creates a PatternLayout using the default options and the given configuration. These options include using UTF-8,
+     * the default conversion pattern, exceptions being written, and with ANSI escape codes.
+     *
+     * @param configuration The Configuration.
+     *
+     * @return the PatternLayout.
+     * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
+     */
+    public static PatternLayout createDefaultLayout(final Configuration configuration) {
+        return newBuilder().withConfiguration(configuration).build();
+    }
+
+    /**
      * Creates a builder for a custom PatternLayout.
+     *
      * @return a PatternLayout builder.
      */
     @PluginBuilderFactory
@@ -340,9 +392,6 @@ public final class PatternLayout extends AbstractStringLayout {
      * Custom PatternLayout builder. Use the {@link PatternLayout#newBuilder() builder factory method} to create this.
      */
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<PatternLayout> {
-
-        // FIXME: it seems rather redundant to repeat default values (same goes for field names)
-        // perhaps introduce a @PluginBuilderAttribute that has no values of its own and uses reflection?
 
         @PluginBuilderAttribute
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
@@ -387,7 +436,6 @@ public final class PatternLayout extends AbstractStringLayout {
             return this;
         }
 
-
         public Builder withConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
@@ -399,7 +447,10 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         public Builder withCharset(final Charset charset) {
-            this.charset = charset;
+            // LOG4J2-783 if null, use platform default by default
+            if (charset != null) {
+                this.charset = charset;
+            }
             return this;
         }
 

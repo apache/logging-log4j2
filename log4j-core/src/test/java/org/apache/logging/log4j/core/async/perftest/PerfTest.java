@@ -124,7 +124,7 @@ public class PerfTest {
         Thread.sleep(7000);
 
         println("Starting the main test...");
-        runSingleThreadedTest(runner, LINES * iterations, name, resultFile);
+        runSingleThreadedTest(runner, LINES, name, resultFile);
         Thread.sleep(1000);
     }
 
@@ -132,11 +132,11 @@ public class PerfTest {
      * Log some extra bytes to fill the memory mapped buffer to force it to remap.
      */
     private void forceRemap(final int linesPerIteration, final int iterations, final IPerfTestRunner runner) {
-        final int LINESEP = System.getProperty("line.separator").getBytes(Charset.defaultCharset()).length;
+        final int LINESEP = System.lineSeparator().getBytes(Charset.defaultCharset()).length;
         final int bytesPerLine = 0 + IPerfTestRunner.THROUGHPUT_MSG.getBytes().length;
         final int bytesWritten = bytesPerLine * linesPerIteration * iterations;
         final int threshold = 1073741824; // magic number: defined in perf9MMapLocation.xml
-        
+
         int todo = threshold - bytesWritten;
         if (todo <= 0) {
             return;
@@ -162,12 +162,9 @@ public class PerfTest {
         println(result);
 
         if (file != null) {
-            final FileWriter writer = new FileWriter(file, true);
-            try {
+            try (final FileWriter writer = new FileWriter(file, true)) {
                 writer.write(result);
-                writer.write(System.getProperty("line.separator"));
-            } finally {
-                writer.close();
+                writer.write(System.lineSeparator());
             }
         }
     }

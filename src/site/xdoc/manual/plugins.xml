@@ -32,8 +32,8 @@
           <p>
             Log4j 1.x allowed for extension by requiring class attributes on most of the configuration
             declarations. In the case of some elements, notably the PatternLayout, the only way to add
-            new pattern converters was to extend the PatternLayout class and add them via code. One of
-            goals of Log4j 2 is to make extending it extremely easy through the use of plugins.
+            new pattern converters was to extend the PatternLayout class and add them via code. One
+            goal of Log4j 2 is to make extending it extremely easy through the use of plugins.
           </p>
           <p>
             In Log4j 2 a plugin is declared by adding a
@@ -148,21 +148,24 @@
           <p>
             Converters are used by
             <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
-            to render the elements identified by the conversion pattern. Every converter must specify its type as
-            "Converter" on the Plugin attribute, have a static newInstance method that accepts an array of Strings as
-            its only parameter and returns an instance of the Converter, and must have a ConverterKeys annotation
-            present that contains the array of converter patterns that will cause the Converter to be selected.
-            Converters that are meant to handle LogEvents must extend the LogEventPatternConverter class and
-            must implement a format method that accepts a LogEvent and a StringBuilder as arguments. The Converter
-            should append the result of its operation to the StringBuilder.
+            to render the elements identified by the conversion pattern. Every converter must specify its category as
+            "Converter" on the <code>@Plugin</code> annotation, have a static <code>newInstance</code> method that
+            accepts an array of <code>String</code>s as its only parameter and returns an instance of the Converter, and
+            must have a <code>@ConverterKeys</code> annotation present that contains the array of converter patterns
+            that will cause the Converter to be selected. Converters that are meant to handle <code>LogEvent</code>s
+            must extend the
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/LogEventPatternConverter.html">LogEventPatternConverter</a>
+            class and must implement a format method that accepts a <code>LogEvent</code> and a <code>StringBuilder</code>
+            as arguments. The Converter should append the result of its operation to the <code>StringBuilder</code>.
           </p>
           <p>
             A second type of Converter is the FileConverter - which must have "FileConverter" specified in the
-            type attribute of the Plugin annotation. While similar to a LogEventPatternConverter, instead
-            of a single format method these Converters will have two variations; one that takes an Object and
-            one that takes an array of Objects instead of the LogEvent. Both append to the provided StringBuilder
-            in the same fashion as a LogEventPatternConverter. These Converters are typically used by the
-            RollingFileAppender to construct the name of the file to log to.
+            category attribute of the <code>@Plugin</code> annotation. While similar to a <code>LogEventPatternConverter</code>,
+            instead of a single format method these Converters will have two variations; one that takes an
+            <code>Object</code> and one that takes an array of <code>Object</code>s instead of the <code>LogEvent</code>.
+            Both append to the provided <code>StringBuilder</code> in the same fashion as a <code>LogEventPatternConverter</code>.
+            These Converters are typically used by the <code>RollingFileAppender</code> to construct the name of the
+            file to log to.
           </p>
           <p>
             If multiple Converters specify the same <code>ConverterKeys</code>, then the load order above determines

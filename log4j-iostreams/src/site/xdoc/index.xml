@@ -38,6 +38,7 @@
     <section name="Requirements">
       <p>
         The Log4j IOStreams API extension requires the Log4j 2 API. This component was introduced in Log4j 2.1.
+        For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
       </p>
     </section>
     <section name="Usage">

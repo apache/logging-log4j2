@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -35,6 +36,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -49,15 +51,17 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Plugin(name = "Console", category = "Core", elementType = "appender", printObject = true)
 public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
-    private static final long serialVersionUID = 1L;
     private static final String JANSI_CLASS = "org.fusesource.jansi.WindowsAnsiOutputStream";
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
     private static final Target DEFAULT_TARGET = Target.SYSTEM_OUT;
+    private static final AtomicInteger COUNT = new AtomicInteger();
+
+    private final Target target;
 
     /**
      * Enumeration of console destinations.
      */
-    public static enum Target {
+    public enum Target {
         /** Standard output. */
         SYSTEM_OUT,
         /** Standard error output. */
@@ -65,13 +69,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions) {
+            final OutputStreamManager manager, final boolean ignoreExceptions, Target target) {
         super(name, layout, filter, ignoreExceptions, true, manager);
+        this.target = target;
     }
 
     /**
      * Creates a Console Appender.
-     * 
+     *
      * @param layout The layout to use (required).
      * @param filter The Filter or null.
      * @param targetStr The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
@@ -80,14 +85,15 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
+     * @deprecated Use {@link #createAppender(Layout, Filter, Target, String, boolean, boolean)}.
      */
-    @PluginFactory
-    public static ConsoleAppender createAppender(@PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute(value = "target", defaultString = "SYSTEM_OUT") final String targetStr,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "follow", defaultBoolean = false) final String follow,
-            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore) {
+    @Deprecated
+    public static ConsoleAppender createAppender(Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String targetStr,
+            final String name,
+            final String follow,
+            final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;
@@ -98,12 +104,46 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = targetStr == null ? DEFAULT_TARGET : Target.valueOf(targetStr);
-        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, layout), ignoreExceptions);
+        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, layout), ignoreExceptions, target);
+    }
+
+    /**
+     * Creates a Console Appender.
+     *
+     * @param layout The layout to use (required).
+     * @param filter The Filter or null.
+     * @param target The target (SYSTEM_OUT or SYSTEM_ERR). The default is SYSTEM_OUT.
+     * @param follow If true will follow changes to the underlying output stream.
+     * @param name The name of the Appender (required).
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
+     *            are propagated to the caller.
+     * @return The ConsoleAppender.
+     */
+    @PluginFactory
+    public static ConsoleAppender createAppender(
+            // @formatter:off
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filter") final Filter filter,
+            @PluginAttribute(value = "target") Target target,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute(value = "follow", defaultBoolean = false) final boolean follow,
+            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions) {
+            // @formatter:on
+        if (name == null) {
+            LOGGER.error("No name provided for ConsoleAppender");
+            return null;
+        }
+        if (layout == null) {
+            layout = PatternLayout.createDefaultLayout();
+        }
+        target = target == null ? Target.SYSTEM_OUT : target;
+        return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions, target);
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
-        return new ConsoleAppender("Console", layout, null, getManager(DEFAULT_TARGET, false, layout), true);
+        return new ConsoleAppender("DefaultConsole-" + COUNT.incrementAndGet(), layout, null,
+                getDefaultManager(DEFAULT_TARGET, false, layout), true, DEFAULT_TARGET);
     }
 
     @PluginBuilderFactory
@@ -169,8 +209,17 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @Override
         public ConsoleAppender build() {
-            return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions);
+            return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions, target);
         }
+    }
+
+    private static OutputStreamManager getDefaultManager(final Target target, final boolean follow,
+            final Layout<? extends Serializable> layout) {
+        final OutputStream os = getOutputStream(follow, target);
+
+        // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
+        final String managerName = target.name() + '.' + follow + "-" + COUNT.get();
+        return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
     private static OutputStreamManager getManager(final Target target, final boolean follow,
@@ -194,8 +243,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
         final PropertiesUtil propsUtil = PropertiesUtil.getProperties();
-        if (!propsUtil.getStringProperty("os.name").startsWith("Windows")
-                || propsUtil.getBooleanProperty("log4j.skipJansi")) {
+        if (!propsUtil.isOsWindows() || propsUtil.getBooleanProperty("log4j.skipJansi")) {
             return outputStream;
         }
         try {
@@ -280,60 +328,23 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     /**
-     * A delegating OutputStream that does not close its delegate.
-     */
-    private static class CloseShieldOutputStream extends OutputStream {
-
-        private final OutputStream delegate;
-
-        public CloseShieldOutputStream(final OutputStream delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public void close() {
-            // do not close delegate
-        }
-
-        @Override
-        public void flush() throws IOException {
-            delegate.flush();
-        }
-
-        @Override
-        public void write(final byte[] b) throws IOException {
-            delegate.write(b);
-        }
-
-        @Override
-        public void write(final byte[] b, final int off, final int len) throws IOException {
-            delegate.write(b, off, len);
-        }
-
-        @Override
-        public void write(final int b) throws IOException {
-            delegate.write(b);
-        }
-    }
-
-    /**
      * Data to pass to factory method.
      */
     private static class FactoryData {
         private final OutputStream os;
-        private final String type;
+        private final String name;
         private final Layout<? extends Serializable> layout;
 
         /**
          * Constructor.
-         * 
+         *
          * @param os The OutputStream.
          * @param type The name of the target.
          * @param layout A Serializable layout
          */
         public FactoryData(final OutputStream os, final String type, final Layout<? extends Serializable> layout) {
             this.os = os;
-            this.type = type;
+            this.name = type;
             this.layout = layout;
         }
     }
@@ -345,15 +356,19 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         /**
          * Create an OutputStreamManager.
-         * 
+         *
          * @param name The name of the entity to manage.
          * @param data The data required to create the entity.
          * @return The OutputStreamManager
          */
         @Override
         public OutputStreamManager createManager(final String name, final FactoryData data) {
-            return new OutputStreamManager(data.os, data.type, data.layout, true);
+            return new OutputStreamManager(data.os, data.name, data.layout, true);
         }
+    }
+
+    public Target getTarget() {
+        return target;
     }
 
 }

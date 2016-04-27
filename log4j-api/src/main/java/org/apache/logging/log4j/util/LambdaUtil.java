@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 
 
 /**
@@ -32,7 +33,7 @@ public final class LambdaUtil {
 
     /**
      * Converts an array of lambda expressions into an array of their evaluation results.
-     * 
+     *
      * @param suppliers an array of lambda expressions or {@code null}
      * @return an array containing the results of evaluating the lambda expressions (or {@code null} if the suppliers
      *         array was {@code null}
@@ -49,7 +50,8 @@ public final class LambdaUtil {
     }
 
     /**
-     * Returns the result of evaluating the specified function.
+     * Returns the result of evaluating the specified function. If the supplied value is of type Message, this method
+     * returns the result of calling {@code #getFormattedMessage} on that Message.
      * @param supplier a lambda expression or {@code null}
      * @return the results of evaluating the lambda expression (or {@code null} if the supplier
      *         was {@code null}
@@ -58,7 +60,8 @@ public final class LambdaUtil {
         if (supplier == null) {
             return null;
         }
-        return supplier.get();
+        final Object result = supplier.get();
+        return result instanceof Message ? ((Message) result).getFormattedMessage() : result;
     }
 
     /**
@@ -72,5 +75,20 @@ public final class LambdaUtil {
             return null;
         }
         return supplier.get();
+    }
+
+    /**
+     * Returns a Message, either the value supplied by the specified function, or a new Message created by the specified
+     * Factory.
+     * @param supplier a lambda expression or {@code null}
+     * @return the Message resulting from evaluating the lambda expression or the Message created by the factory for
+     * supplied values that are not of type Message
+     */
+    public static Message getMessage(Supplier<?> supplier, MessageFactory messageFactory) {
+        if (supplier == null) {
+            return null;
+        }
+        final Object result = supplier.get();
+        return result instanceof Message ? (Message) result : messageFactory.newMessage(result);
     }
 }

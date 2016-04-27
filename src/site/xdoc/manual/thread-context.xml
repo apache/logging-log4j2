@@ -85,7 +85,7 @@ ThreadContext.pop();</pre>
             as follows:
           </p>
           <pre class="prettyprint linenums">
-ThreadContext.put("id", UUID.randomUUID().toString(); // Add the fishtag;
+ThreadContext.put("id", UUID.randomUUID().toString()); // Add the fishtag;
 ThreadContext.put("ipAddress", request.getRemoteAddr());
 ThreadContext.put("loginId", session.getAttribute("loginId"));
 ThreadContext.put("hostName", request.getServerName());
@@ -97,6 +97,39 @@ logger.debug("Message 2");
 .
 .
 ThreadContext.clear();</pre>
+
+          <h4>CloseableThreadContext</h4>
+		  <p>When placing items on the stack or map, it's necessary to remove then again when appropriate. To assist with
+		  this, the <tt>CloseableThreadContext</tt> implements the <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoCloseable.html">AutoCloseable 
+		  interface</a>. This allows items to be pushed to the stack or put in the map, and removed when the <tt>close()</tt> method is called - 
+		  or automatically as part of a try-with-resources. For example, to temporarily push something on to the stack and then remove it: 
+          </p>
+		  <pre class="prettyprint linenums">
+// Add to the ThreadContext stack for this try block only;
+try (final CloseableThreadContext ctc = CloseableThreadContext.push(UUID.randomUUID().toString())) { 
+
+    logger.debug("Message 1");
+.
+.
+    logger.debug("Message 2");
+.
+.
+}</pre>
+          <p>
+          Or, to temporarily put something in the map:
+          </p>
+		  <pre class="prettyprint linenums">
+// Add to the ThreadContext map for this try block only;
+try (final CloseableThreadContext ctc = CloseableThreadContext.put("id", UUID.randomUUID().toString(), "loginId", session.getAttribute("loginId"))) { 
+
+    logger.debug("Message 1");
+.
+.
+    logger.debug("Message 2");
+.
+.
+}</pre>
+		  <h4>Implementation details</h4>
           <p>The Stack and the Map are managed per thread and are based on
             <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a>
             by default. The Map can be configured to use an

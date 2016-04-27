@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -124,7 +125,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
      * @return the new thread that running this server.
      */
     public Thread startNewThread() {
-        final Thread thread = new Thread(this);
+        final Thread thread = new Log4jThread(this);
         thread.start();
         return thread;
     }

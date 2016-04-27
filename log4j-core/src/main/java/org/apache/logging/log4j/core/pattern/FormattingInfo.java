@@ -60,6 +60,8 @@ public final class FormattingInfo {
      *            minimum length.
      * @param maxLength
      *            maximum length.
+     * @param leftTruncate
+     *            truncates to the left if true
      */
     public FormattingInfo(final boolean leftAlign, final int minLength, final int maxLength, final boolean leftTruncate) {
         this.leftAlign = leftAlign;

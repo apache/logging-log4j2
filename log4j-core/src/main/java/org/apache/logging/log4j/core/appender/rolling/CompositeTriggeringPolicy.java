@@ -29,14 +29,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "Policies", category = "Core", printObject = true)
 public final class CompositeTriggeringPolicy implements TriggeringPolicy {
 
-    private final TriggeringPolicy[] policies;
+    private final TriggeringPolicy[] triggeringPolicy;
 
     private CompositeTriggeringPolicy(final TriggeringPolicy... policies) {
-        this.policies = policies;
+        this.triggeringPolicy = policies;
     }
 
     public TriggeringPolicy[] getTriggeringPolicies() {
-        return policies;
+        return triggeringPolicy;
     }
 
     /**
@@ -45,7 +45,7 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
      */
     @Override
     public void initialize(final RollingFileManager manager) {
-        for (final TriggeringPolicy policy : policies) {
+        for (final TriggeringPolicy policy : triggeringPolicy) {
             policy.initialize(manager);
         }
     }
@@ -57,7 +57,7 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
      */
     @Override
     public boolean isTriggeringEvent(final LogEvent event) {
-        for (final TriggeringPolicy policy : policies) {
+        for (final TriggeringPolicy policy : triggeringPolicy) {
             if (policy.isTriggeringEvent(event)) {
                 return true;
             }
@@ -78,7 +78,7 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
 
     @Override
     public String toString() {
-        return "CompositeTriggeringPolicy(policies=" + Arrays.toString(policies) + ")";
+        return "CompositeTriggeringPolicy(policies=" + Arrays.toString(triggeringPolicy) + ")";
     }
 
 }
