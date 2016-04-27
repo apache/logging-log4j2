@@ -17,4 +17,7 @@ Some features require optional dependencies; the documentation for these feature
 
 Apache Log4j 2 is distributed under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
+## Download
 
+[How to download Log4j](http://logging.apache.org/log4j/2.x/download.html),
+and [how to use it from Maven, Ivy and Gradle](http://logging.apache.org/log4j/2.x/maven-artifacts.html).
