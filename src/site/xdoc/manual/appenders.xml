@@ -2232,7 +2232,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <h5>TimeBased Triggering Policy</h5>
               <p>
                 The <code>TimeBasedTriggeringPolicy</code> causes a rollover once the date/time pattern no longer
-                applies to the active file. This policy accepts an <code>increment</code> attribute which indicates how
+                applies to the active file. This policy accepts an <code>interval</code> attribute which indicates how
                 frequently the rollover should occur based on the time pattern and a <code>modulate</code> boolean
                 attribute.
               </p>
@@ -2256,7 +2256,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     <td>boolean</td>
                     <td>Indicates whether the interval should be adjusted to cause the next rollover to occur on
                       the interval boundary. For example, if the item is hours, the current hour is 3 am and the
-                      interval is 4 then then the first rollover will occur at 4 am and then next ones will occur at
+                      interval is 4 then the first rollover will occur at 4 am and then next ones will occur at
                       8 am, noon, 4pm, etc.</td>
                   </tr>
                 </table>
