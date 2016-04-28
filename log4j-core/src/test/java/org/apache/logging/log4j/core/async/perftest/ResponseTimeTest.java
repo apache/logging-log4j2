@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
+import org.HdrHistogram.Histogram;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.async.DefaultAsyncEventRouter;
+import org.apache.logging.log4j.core.async.EventRoute;
+import org.apache.logging.log4j.core.util.Constants;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -24,24 +32,18 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.HdrHistogram.Histogram;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.async.DefaultAsyncEventRouter;
-import org.apache.logging.log4j.core.async.EventRoute;
-
 /**
  * Latency test showing both service time and response time.
  * <p>Service time = time to perform the desired operation, response time = service time + queueing time.</p>
  */
 // RUN
 // java -XX:+UnlockDiagnosticVMOptions -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution
-// -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime
+// -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:GuaranteedSafepointInterval=500000
 // -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
 // -cp HdrHistogram-2.1.8.jar:disruptor-3.3.4.jar:log4j-api-2.6-SNAPSHOT.jar:log4j-core-2.6-SNAPSHOT.jar:log4j-core-2.6-SNAPSHOT-tests.jar
-// -DAsyncLogger.WaitStrategy=yield org.apache.logging.log4j.core.async.perftest.ResponseTimeTest 1 50000
+// -DAsyncLogger.WaitStrategy=busyspin -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+// -Dlog4j2.enable.threadlocals=true -Dlog4j2.enable.direct.encoders=true
+//  -Xms1G -Xmx1G org.apache.logging.log4j.core.async.perftest.ResponseTimeTest 1 100000
 //
 // RUN recording in Java Flight Recorder:
 // %JAVA_HOME%\bin\java -XX:+UnlockCommercialFeatures -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -XX:+FlightRecorder -XX:StartFlightRecording=duration=10m,filename=replayStats-2.6-latency.jfr -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle -DAsyncLogger.WaitStrategy=yield  -Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE -cp .;HdrHistogram-2.1.8.jar;disruptor-3.3.4.jar;log4j-api-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT-tests.jar org.apache.logging.log4j.core.async.perftest.ResponseTimeTest 1 50000
@@ -59,8 +61,11 @@ public class ResponseTimeTest {
         // print to console if ringbuffer is full
         System.setProperty("log4j2.AsyncEventRouter", PrintingDefaultAsyncEventRouter.class.getName());
         System.setProperty("AsyncLogger.RingBufferSize", String.valueOf(256 * 1024));
-        System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
+        //System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
         System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
+        if (System.getProperty("AsyncLogger.WaitStrategy") == null) {
+            System.setProperty("AsyncLogger.WaitStrategy", "Yield");
+        }
 
         Logger logger = LogManager.getLogger();
         logger.info("Starting..."); // initializes Log4j
@@ -80,20 +85,32 @@ public class ResponseTimeTest {
         List<Histogram> warmupResponseTmHistograms = new ArrayList<>(threadCount);
 
         final int WARMUP_COUNT = 50000 / threadCount;
-        runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, loadMessagesPerSec, idleStrategy,
-                warmupServiceTmHistograms, warmupResponseTmHistograms, threadCount);
-        System.out.println("Warmup done.");
-        Thread.sleep(1000);
+        final CountDownLatch warmupLatch = new CountDownLatch(threadCount + 1);
+        Thread[] warmup = createLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, warmupLatch, loadMessagesPerSec,
+                idleStrategy, warmupServiceTmHistograms, warmupResponseTmHistograms, threadCount);
 
-        // Actual test: run as many iterations of 5,000,000 calls to logger.log as we can in 4 minutes.
-        long start = System.currentTimeMillis();
         List<Histogram> serviceTmHistograms = new ArrayList<>(threadCount);
         List<Histogram> responseTmHistograms = new ArrayList<>(threadCount);
 
         final long TEST_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(4);
-        final int COUNT = (5000 * 1000) / threadCount;
-        runLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, loadMessagesPerSec, idleStrategy, serviceTmHistograms,
-                responseTmHistograms, threadCount);
+        final int COUNT = (1000 * 1000) / threadCount;
+        final CountDownLatch actualLatch = new CountDownLatch(threadCount + 1);
+        Thread[] actual = createLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, actualLatch, loadMessagesPerSec, idleStrategy,
+                serviceTmHistograms, responseTmHistograms, threadCount);
+
+        warmupLatch.countDown();
+        await(warmup);
+        System.out.println("Warmup done.");
+        if (!Constants.ENABLE_DIRECT_ENCODERS || !Constants.ENABLE_THREADLOCALS) {
+            System.gc();
+            Thread.sleep(5000);
+        }
+        System.out.println("Starting measured run.");
+
+        // Actual test: run as many iterations of 5,000,000 calls to logger.log as we can in 4 minutes.
+        long start = System.currentTimeMillis();
+        actualLatch.countDown(); // start the actual test threads
+        await(actual);
         long end = System.currentTimeMillis();
 
         // ... and report the results
@@ -125,13 +142,12 @@ public class ResponseTimeTest {
         return result;
     }
 
-    public static void runLatencyTest(final Logger logger, final long durationMillis, final int samples,
-            final double loadMessagesPerSec, final IdleStrategy idleStrategy,
+    public static Thread[] createLatencyTest(final Logger logger, final long durationMillis, final int samples,
+            final CountDownLatch latch, final double loadMessagesPerSec, final IdleStrategy idleStrategy,
             final List<Histogram> serviceTmHistograms, final List<Histogram> responseTmHistograms,
             final int threadCount) throws InterruptedException {
 
         final Thread[] threads = new Thread[threadCount];
-        final CountDownLatch LATCH = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             final Histogram serviceTmHist = new Histogram(TimeUnit.SECONDS.toNanos(10), 3);
             final Histogram responseTmHist = new Histogram(TimeUnit.SECONDS.toNanos(10), 3);
@@ -142,9 +158,9 @@ public class ResponseTimeTest {
             threads[i] = new Thread("latencytest-" + i) {
                 @Override
                 public void run() {
-                    LATCH.countDown();
+                    latch.countDown();
                     try {
-                        LATCH.await(); // wait until all threads are ready to go
+                        latch.await(); // wait until all threads are ready to go
                     } catch (InterruptedException e) {
                         interrupt();
                         return;
@@ -157,7 +173,11 @@ public class ResponseTimeTest {
             };
             threads[i].start();
         }
-        for (int i = 0; i < threadCount; i++) {
+        return threads;
+    }
+
+    private static void await(final Thread[] threads) throws InterruptedException {
+        for (int i = 0; i < threads.length; i++) {
             threads[i].join();
         }
     }
