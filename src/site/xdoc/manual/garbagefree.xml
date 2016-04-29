@@ -53,7 +53,7 @@
         </p>
         <p>
           The application was configured to use Async Loggers, a RandomAccessFile appender and a
-          "%d %p %c{1.} [%t] %m %ex%n" pattern layout.
+          "%d %p %c{1.} [%t] %m %ex%n" pattern layout. (Async Loggers used the Yield WaitStrategy.)
         </p>
         <p>
           Mission Control shows that with Log4j 2.5 this application allocates memory at a rate of about 809 MB/sec,
@@ -99,8 +99,17 @@
             So while logging is not completely garbage-free for web applications yet,
             the pressure on the garbage collector can still be significantly reduced.
           </p>
-          <table><tr><td><b>Caution:</b> as of version 2.6, a Log4j configuration containing a <tt>&lt;Properties&gt;</tt> section
+          <table><tr><td><p>
+            <b>Note 1:</b> as of version 2.6, a Log4j configuration containing a <tt>&lt;Properties&gt;</tt> section
             will result in temporary objects being created during steady-state logging.
+            </p>
+            <p>
+              <b>Note 2:</b> the Async Logger Timeout wait strategy (the default) and the Block wait strategy
+              cause <tt>java.util.concurrent.locks.AbstractQueuedSynchronizer$Node</tt> objects to be created.
+              The Yield and Sleep wait strategies are garbage-free. (See
+              <a href="async.html#SysPropsAllAsync">here</a> and
+              <a href="async.html#SysPropsMixedSync-Async">here</a>.)
+            </p>
           </td></tr></table>
           <h4>Disabling Garbage-free Logging</h4>
           <p>
@@ -112,7 +121,7 @@
               objects are stored in ThreadLocal fields and reused, otherwise new
               objects are created for each log event.</li>
             <li><tt>log4j2.enable.direct.encoders</tt> - if "true" (the default) log events are converted to text and this
-              text is converted to bytes without creating temporary objects. Caution:
+              text is converted to bytes without creating temporary objects. Note:
               <em>synchronous</em> logging performance may be worse for multi-threaded applications in this mode due to
               synchronization on the shared buffer. If your application is multi-threaded and logging performance
               is important, consider using Async Loggers.
@@ -165,7 +174,7 @@
             </tr>
             <tr>
               <td>%d, %date</td>
-              <td>Caution: Only the predefined date formats are garbage-free: (millisecond separator may be either
+              <td>Note: Only the predefined date formats are garbage-free: (millisecond separator may be either
                 a comma ',' or a period '.')
                 <table>
                   <tr>
@@ -266,7 +275,7 @@
             We haven't figured out a way to log exceptions and stack traces without creating temporary objects.
             That is unfortunate, but you probably still want to log them when they happen.
           </p>
-          <table><tr><td><b>Caution:</b> patterns containing regular expressions and lookups for property substitution
+          <table><tr><td><b>Note:</b> patterns containing regular expressions and lookups for property substitution
             will result in temporary objects being created during steady-state logging.
             <p>
               Including location information is done by walking the stacktrace of an exception, which creates temporary
@@ -327,7 +336,7 @@ public void garbageFree() {
 </pre>
           <table><tr><td>
             <p>
-              <b>Caution:</b> not all logging is garbage free. Specifically:
+              <b>Note:</b> not all logging is garbage free. Specifically:
             </p>
             <ul>
               <li>The ThreadContext map and stack are not garbage-free yet.</li>
@@ -353,13 +362,63 @@ public void garbageFree() {
       <a name="Performance" />
       <subsection name="Performance">
         <a name="Latency" />
-        <h4>Response Time of Garbage-free Logging is Consistently Better with Fewer Spikes</h4>
-        <p>TODO: add latency histogram: Response time distribution of Async Loggers 2.5 vs 2.6 in garbage-free mode under various loads.</p>
-        <p>TODO: add latency histogram: Response time distribution of synchronous logging vs 2.6 in garbage-free mode under various loads.</p>
+        <h4>Response Time Latency</h4>
+        <p>Response time is how long it takes to log a message under a certain load.
+          When measuring, each messsage has its own response time. Typically the vast majority of measurements
+          are in a certain low range, with a small number of large outliers. When talking about latency,
+          we are usually interested in the outliers: how many there are and how large they are.
+          "Average latency" is meaningless.
+        </p>
+        <p>Commonly what is reported as latency is <em>service time</em>: how long it took to perform the operation.
+          This omits the queueing effect: we were trying to log at a certain rate, say 100,000 messages per second.
+          A single spike in service time can delay many of the subsequent messages.
+          <em>Response time</em> includes the effect of spikes.
+        </p>
+        <h4>Async Loggers</h4>
+        <p>The graph below compares "classic" logging to
+          garbage-free logging response time behaviour for Log4j's Async Loggers.
+          In the graph, "100k" means logging at a sustained load of 100,000 messages/second, "800k" is
+          800,000 messages/second.
+        </p>
+        <p>In classic mode we see numerous minor garbage collections which pause the application threads
+          for 3 milliseconds or more. This quickly adds up to response time delays of almost 10
+          milliseconds.
+          As you can see in the graph, increasing the load shifts the curve to the left (there are more spikes).
+          This makes sense: logging more means more pressure on the garbage collector resulting in more minor GC pauses.
+          We experimented a little with reducing the load to 50,000 or even 5000 messages/second,
+          but this did not eliminate the 3 millisecond pauses, it just made them occur less frequently.
+          Note that all GC pauses in this test are minor GC pauses. We did not see any full garbage collections.</p>
+        <p>In garbage-free mode, maximum response time remains well below 1 millisecond under a wide range of loads.
+          (Max 780 us at 800,000 messages/sec, max 407 us at 600,000 messages/sec, with the 99% around 5 us for
+          all loads up to 800,000 messages/sec.) Increasing or decreasing the load does not change the response time
+          behaviour. We did not investigate the cause of the 200-300 microsecond pauses we saw in these tests.
+        </p>
+        <p>
+          TODO title should include "lower is better".
+          TODO legend should be "microseconds" (full)
+        </p>
+
+        <p><img src="../images/ResponseTimeAsyncClassicVsGcFree-label.png" /></p>
+        <p>
+          When we increased the load further we begin to see larger response time pauses for both classic and
+          garbage-free logging.
+          At sustained loads of 1 million messages/second or more we start to approach the maximum throughput of
+          the underlying RandomAccessFile Appender (see the synchronous logging throughput chart below).
+          At these loads the ringbuffer starts to fill up and backpressure kicks in: attempting to add another message
+          when the ringbuffer is full will block until a free slot becomes available. We start to see 20 millisecond
+          response times or more; and attempting to increase the load even more results in larger and larger
+          response time spikes.
+        </p>
+        <h4>Synchronous Logging</h4>
+        <p>For both classic and garbage-free logging, synchronous logging showed response times of 3-5 milliseconds
+        even at loads of 100,000 messages/second. It may be possible to improve on this, we did not investigate
+        further yet.</p>
+        <p><img src="../images/ResponseTimeSyncClassicVsGcFree.png" /></p>
 
         <a name="Throughput" />
-        <h4>Throughput of Garbage-free Logging May Be Worse (But It's All Relative)</h4>
-        <p>In our measurements, Log4j 2.6 in garbage-free mode had the highest throughput in single-threaded scenarios. In multi-threaded
+        <h4>Throughput of Garbage-free and Classic Logging is Similar</h4>
+        <p>Throughput is roughly similar for garbage-free and classic logging.
+          In our measurements, Log4j 2.6 in garbage-free mode had the highest throughput in single-threaded scenarios. In multi-threaded
           scenarios,  Log4j 2.6 "classic" had the highest throughput, with Log4j 2.6 in garbage-free mode and Log4j 2.5
           not far behind. Our test results suggest that the throughput of the other logging frameworks we tested
           will rapidly decline in multi-threaded applications.</p>
