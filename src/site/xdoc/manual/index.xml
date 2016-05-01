@@ -99,6 +99,9 @@
               on the <a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor library</a>.
               In multi-threaded scenarios Asynchronous Loggers have 10 times higher throughput and
               orders of magnitude lower latency than Log4j 1.x and Logback.</li>
+            <li>Log4j 2 is <a href="garbagefree.html">garbage free</a> for
+              stand-alone applications, and low garbage for web applications during steady state logging.
+              This reduces pressure on the garbage collector and can give better response time performance.</li>
             <li>Log4j 2 uses a <a href="plugins.html">Plugin system</a> that makes it extremely easy to
               <a href="extending.html">extend the framework</a> by adding new <a href="appenders.html">Appenders</a>,
               <a href="filters.html">Filters</a>, <a href="layouts.html">Layouts</a>, <a href="lookups.html">Lookups</a>,
