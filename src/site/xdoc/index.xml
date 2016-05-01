@@ -101,6 +101,12 @@
               In Log4j 2, <a href="manual/customloglevels.html">custom log levels</a> can easily be defined in code
               or in configuration. No subclassing is required.
             </dd>
+            <dt>Garbage-free</dt>
+            <dd>
+              During steady state logging, Log4j 2 is <a href="manual/garbagefree.html">garbage-free</a>
+              in stand-alone applications, and low garbage in web applications.
+              This reduces pressure on the garbage collector and can give better response time performance.
+            </dd>
           </dl>
 
           <subsection name="Documentation">
