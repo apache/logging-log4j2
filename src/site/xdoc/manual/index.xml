@@ -83,7 +83,10 @@
           Log4j 1.x has been widely adopted and used in many applications. However,
           through the years development on it has slowed down. It has become more
           difficult to maintain due to its need to be compliant with very old versions
-          of Java.  Its alternative, SLF4J/Logback made many needed improvements to the
+          of Java and became
+          <a href="https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces">End
+            of Life</a> in August 2015.
+          Its alternative, SLF4J/Logback made many needed improvements to the
           framework. So why bother with Log4j 2? Here are a few of the reasons.
           </p>
           <ol>
@@ -136,7 +139,7 @@
             <li>It is an Apache Software Foundation project following the community and support
               model used by all ASF projects. If you want to contribute or gain the right to
               commit changes just follow the path outlined at
-              <a href="http://jakarta.apache.org/site/contributing.html">Contributing</a></li>
+              <a href="http://jakarta.apache.org/site/contributing.html">Contributing</a>.</li>
           </ol>
         </subsection>
       </section>
