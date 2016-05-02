@@ -520,11 +520,15 @@ WARN  [main]: Message 2</pre>
                   specifier can be optionally followed by <em>precision specifier</em>, which consists of a
                   decimal integer, or a pattern starting with a decimal integer.
                 </p>
-                <p>If a precision specifier is given and it is an integer value, then only the corresponding number
-                  of right most components of the logger name will be printed. If the precision contains
-                  other non-integer characters then the name will be abbreviated based on the pattern. If the
-                  precision integer is less than one the right-most token will still be printed in full.
-                  By default the logger name is printed in full.
+                <p>When the precision specifier is an integer value, it reduces the size of the logger name. 
+                  If the number is positive, the layout prints the corresponding number of rightmost logger 
+                  name components. If negative, the layout removes the corresponding number of leftmost logger 
+                  name components.
+                </p>
+                <p>
+                   If the precision contains any non-integer characters, then the layout abbreviates the name 
+                   based on the pattern. If the precision integer is less than one, the layout still prints 
+                   the right-most token in full. By default, the layout prints the logger name in full.
                 </p>
                 <table>
                   <tr>
@@ -541,6 +545,26 @@ WARN  [main]: Message 2</pre>
                     <td>%c{2}</td>
                     <td>org.apache.${break}commons.Foo</td>
                     <td>commons.Foo</td>
+                  </tr>
+                  <tr>
+                    <td>%c{10}</td>
+                    <td>org.apache.${break}commons.Foo</td>
+                    <td>org.apache.${break}commons.Foo</td>
+                  </tr>
+                  <tr>
+                    <td>%c{-1}</td>
+                    <td>org.apache.${break}commons.Foo</td>
+                    <td>apache.${break}commons.Foo</td>
+                  </tr>
+                  <tr>
+                    <td>%c{-2}</td>
+                    <td>org.apache.${break}commons.Foo</td>
+                    <td>${break}commons.Foo</td>
+                  </tr>
+                  <tr>
+                    <td>%c{-10}</td>
+                    <td>org.apache.${break}commons.Foo</td>
+                    <td>org.apache.${break}commons.Foo</td>
                   </tr>
                   <tr>
                     <td>%c{1.}</td>
