@@ -31,7 +31,7 @@
         Support merging configurations to for a composite configuration.
       </action>
       <action issue="LOG4J2-1357" dev="mikes" type="add">
-        Option to not log stacktraces for logged Throwables in GelfLayout.
+        Option to not log stack traces for logged Throwables in GelfLayout.
       </action>
       <action issue="LOG4J2-1375" dev="rpopma" type="update">
         Update SLF4J from 1.7.13 to 1.7.21.
