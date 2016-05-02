@@ -25,7 +25,7 @@
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
       <action issue="LOG4J2-494" dev="rgoers" type="add" due-to="Philipp Knobel">
-        Support mergiing configurations to for a composite configuration.
+        Support merging configurations to for a composite configuration.
       </action>
       <action issue="LOG4J2-1357" dev="mikes" type="add">
         Option to not log stacktraces for logged Throwables in GelfLayout.
