@@ -119,6 +119,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private final List<PatternFormatter> exceptionFormatters;
     private final Map<String, FieldFormatter> fieldFormatters;
+    private final String procId;
 
     private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
             final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
@@ -189,6 +190,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final String name = config == null ? null : config.getName();
         configName = Strings.isNotEmpty(name) ? name : null;
         this.fieldFormatters = createFieldFormatters(loggerFields, config);
+        // TODO Java 9: ProcessHandle.current().getPid();
+        this.procId = "-";
     }
 
     private Map<String, FieldFormatter> createFieldFormatters(final LoggerFields[] loggerFields,
@@ -418,7 +421,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     }
 
     protected String getProcId() {
-        return "-";
+        return procId;
     }
 
     protected List<String> getMdcExcludes() {
