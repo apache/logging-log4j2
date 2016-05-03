@@ -52,18 +52,31 @@ public abstract class NameAbbreviator {
                 return DEFAULT;
             }
 
+            boolean isNegativeNumber;
+            final String number;
+
+            // check if number is a negative number
+            if (trimmed.length() > 1 && trimmed.charAt(0) == '-') {
+                isNegativeNumber = true;
+                number = trimmed.substring(1);
+            } else {
+                isNegativeNumber = false;
+                number = trimmed;
+            }
+
             int i = 0;
 
-            while (i < trimmed.length() && trimmed.charAt(i) >= '0'
-                    && trimmed.charAt(i) <= '9') {
+            while (i < number.length() && number.charAt(i) >= '0'
+                    && number.charAt(i) <= '9') {
                 i++;
             }
 
             //
             //  if all blanks and digits
             //
-            if (i == trimmed.length()) {
-                return new MaxElementAbbreviator(Integer.parseInt(trimmed));
+            if (i == number.length()) {
+                return new MaxElementAbbreviator(Integer.parseInt(number),
+                        isNegativeNumber? MaxElementAbbreviator.Strategy.DROP : MaxElementAbbreviator.Strategy.RETAIN);
             }
 
             final ArrayList<PatternAbbreviatorFragment> fragments = new ArrayList<>(5);
@@ -156,18 +169,45 @@ public abstract class NameAbbreviator {
      * Abbreviator that drops starting path elements.
      */
     private static class MaxElementAbbreviator extends NameAbbreviator {
+
+        /**
+         * <p>When the name is reduced in length by cutting parts, there can be two ways to do it.</p>
+         * 1. Remove a given number of parts starting from front - called DROP <br/>
+         * 2. Retain a given number of parts starting from the end - called RETAIN
+         */
+        private enum Strategy {
+            DROP,
+            RETAIN
+        };
+
         /**
          * Maximum number of path elements to output.
          */
         private final int count;
 
         /**
+         * Strategy used for cutting down the size of the name
+         */
+        private final Strategy strategy;
+
+        /**
          * Create new instance.
          *
-         * @param count maximum number of path elements to output.
+         * @param count maximum number of path elements to drop or output.
+         * @param strategy drop or retain
          */
-        public MaxElementAbbreviator(final int count) {
-            this.count = count < 1 ? 1 : count;
+        public MaxElementAbbreviator(final int count, final Strategy strategy) {
+            final int minCount = getMinCount(strategy);
+            this.count = count < minCount ? minCount : count;
+            this.strategy = strategy;
+        }
+
+        private int getMinCount(final Strategy strategy) {
+            if (Strategy.DROP == strategy) {
+                return 0;
+            } else { // Strategy.RETAIN
+                return 1;
+            }
         }
 
         /**
@@ -179,7 +219,30 @@ public abstract class NameAbbreviator {
          */
         @Override
         public void abbreviate(final String original, final StringBuilder destination) {
+            if (Strategy.DROP == strategy) {
+                abbreviateForDrop(original, destination);
+            } else { // Strategy.RETAIN
+                abbreviateForRetain(original, destination);
+            }
+        }
 
+        private void abbreviateForDrop(String original, StringBuilder destination) {
+            // If a path does not contain enough path elements to drop, none will be dropped.
+            int start = 0;
+            int nextStart = 0;
+            for (int i = 0; i < count; i++) {
+                nextStart = original.indexOf('.', start);
+                if (nextStart == -1) {
+                    destination.append(original);
+                    return;
+                } else {
+                    start = nextStart + 1;
+                }
+            }
+            destination.append(original, start, original.length());
+        }
+
+        private void abbreviateForRetain(String original, StringBuilder destination) {
             // We subtract 1 from 'len' when assigning to 'end' to avoid out of
             // bounds exception in return r.substring(end+1, len). This can happen if
             // precision is 1 and the category name ends with a dot.
