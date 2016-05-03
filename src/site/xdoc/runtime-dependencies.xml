@@ -53,6 +53,22 @@
           <th>Requirements</th>
         </tr>
         <tr>
+          <td>XML configuration</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Properties configuration</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>JSON configuration</td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></td>
+        </tr>
+        <tr>
+          <td>YAML configuration</td>
+          <td><a href="https://github.com/FasterXML/jackson-dataformat-yaml">Jackson YAML data format</a></td>
+        </tr>
+        <tr>
           <td>CSV Layout</td>
           <td><a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a></td>
         </tr>
@@ -65,16 +81,8 @@
           <td><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></td>
         </tr>
         <tr>
-          <td>XML configuration</td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td>JSON configuration</td>
+          <td>XML Layout</td>
           <td><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></td>
-        </tr>
-        <tr>
-          <td>YAML configuration</td>
-          <td><a href="https://github.com/FasterXML/jackson-dataformat-yaml">Jackson YAML data format</a></td>
         </tr>
         <tr>
           <td>Async Loggers</td>
@@ -123,9 +131,9 @@
         <tr>
           <td>ZeroMQ Appender</td>
           <td>
-            The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library which is 
-            licensed under the terms of the GNU Lesser General Public License (LGPL). For details see the 
-            files <code>COPYING</code> and <code>COPYING.LESSER</code> included with the JeroMQ distribution.  
+            The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library which is
+            licensed under the terms of the GNU Lesser General Public License (LGPL). For details see the
+            files <code>COPYING</code> and <code>COPYING.LESSER</code> included with the JeroMQ distribution.
           </td>
         </tr>
       </table>
