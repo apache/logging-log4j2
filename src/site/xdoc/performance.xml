@@ -70,6 +70,14 @@
           <p>
             What is often measured and reported as <em>latency</em> is actually <em>service time</em>,
             which unfortunately hides the wait time.
+            The below graph shows response time and service time of the same system under a load of 100,000 messages
+            per second. Out of 25 million measurements, only ~50 are more than 200 microseconds, less than 0.001%.
+            In a service time-only graph this would hardly be visible.
+            However, the wait time adds up and the response time graph shows that in reality many more events are impacted
+            by these delays.
+          </p>
+          <p><img src="images/ResponseTimeVsServiceTimeAsyncLoggers.png" /></p>
+          <p>
             To learn more, watch Gil Tene's
             <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure latency</a>
             (and prepare to be shocked).
