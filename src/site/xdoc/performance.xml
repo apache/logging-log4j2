@@ -21,20 +21,109 @@
           xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
     <title>Performance</title>
+    <author email="rpopma@apache.org">Remko Popma</author>
     <author email="rgoers@apache.org">Ralph Goers</author>
   </properties>
 
   <body>
     <section name="Performance">
+      <!--
       <p>One of the often-cited arguments against logging is its
         computational cost. This is a legitimate concern as even moderately
         sized applications can generate thousands of log requests. Much
         effort was spent measuring and tweaking logging performance. Log4j
         claims to be fast and flexible: speed first, flexibility second.
       </p>
+      -->
+      <p>Apart from functional requirements, an important reason for selecting a logging library is often how well it
+        fulfills non-functional requirements like reliability and performance.</p>
+      <p>On this page we will compare the performance of a number of logging frameworks
+        (java.util.logging "JUL", Logback, Log4j 1.2 and Log4j 2.6),
+        and document some performance trade-offs for Log4j 2 functionality.
+      </p>
+      <h2>Benchmarks</h2>
+      <p>Performance can mean different things to different people. Common terms in this context are
+        throughput and latency: <em>Throughput</em> is a measure of capacity and can be expressed in a single number:
+        how many messages can be logged in a certain period of time.
+        <em>Response time latency</em> is how long it takes to log a message.
+        This cannot be expressed in a single number because each measurement has its own
+        response time and we are often most interested in the outliers: how many there were and how large they were.</p>
+      <p>We will measure and compare three performance indicators: </p>
+      <ul>
+        <li><b>Peak throughput</b> is the maximum throughput measured over a short period of time.
+          This number is useful for systems that need to log bursts of messages followed by periods of
+          relative quiet. Many systems that react to external events behave like this,
+          but for systems that need to log a lot at a constant high rate (for example, batch jobs)
+          this is less likely to be a useful measure of performance.</li>
+        <li><b>Maximum sustained throughput</b> is the throughput averaged over a long time.
+          This is a useful measure of the "upper limit" of the capacity of the logging library.
+          It is not recommended that reactive applications actually log at this rate since under this load
+          they will likely experience jitter and large response time spikes.</li>
+        <li><p>
+          <b>Response time</b> is the total amount of time it takes to log a message and is the sum of the
+          service time and wait time. The service time is the time it takes to do the work to log the message.
+          As the workload increases, the service time often varies little:
+          to do X amount of work it always takes X amount of time.
+          The wait time is how long the request had to wait in a queue before being serviced.
+          <em>As the workload increases, wait time often grows to many times the service time.</em>
+          </p>
+          <p>
+            What is often measured and reported as <em>latency</em> is actually <em>service time</em>,
+            which unfortunately hides the wait time.
+            To learn more, watch Gil Tene's
+            <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure latency</a>
+            (and prepare to be shocked).
+          </p>
+          </li>
+      </ul>
+      <h2>Logging Library Performance Comparison</h2>
+
+      <h3>Asynchronous Logging - Peak Throughput Comparison</h3>
+      <p>Asynchronous Logging is useful to deal with bursts of events. How this works is that
+        a minimum amount of work is done by the application thread to capture all required information in a log event,
+        and this log event is then put on a queue for later processing by a background thread.
+        As long as the queue is sized large enough, the application threads should be able to spend
+        very little time on the logging call and return to the business logic very quickly.
+      </p>
+      <p>It turns out that the choice of queue is extremely important for peak throughput.
+        Log4j 2's Async Loggers use a
+        <a href="http://lmax-exchange.github.com/disruptor/">lock-free data structure</a>, whereas
+        Logback, Log4j 1.2 and Log4j 2's Asynchronous Appenders use an ArrayBlockingQueue.
+        With a blocking queue, multi-threaded applications often experience lock contention when trying to
+        enqueue the log event.
+      </p>
+      <p>The graph below illustrates the difference in peak throughput.
+        For details, see the <a href="manual/async.html">Async
+        Loggers</a> manual page.</p>
+      <p><img src="images/async-throughput-comparison.png" alt="Peak throughput comparison" />
+      </p>
+      <p>The results above were obtained with log4j-2.0-beta5, disruptor-3.0.0.beta3,
+        log4j-1.2.17 and logback-1.0.10.
+      </p>
+
+      <h3>Synchronous File Logging - Sustained Throughput Comparison</h3>
+      <p>The graph below compares Log4j 2.6 in garbage-free mode to Log4j 2.6 "classic" mode (which allocates
+        temporary objects for every logging call), Log4j 1.2.17, Logback 1.1.7 and
+        Java util logging (JUL) on Oracle Java 1.8.0_45. The Log4j 2.x results use the RandomAccessFile appender.
+        Log4j 1.2.17, Logback and JUL use their respective File appenders. ImmediateFlush was set to <tt>false</tt> for all
+        loggers that support this. The JUL results are for the <tt>XMLFormatter</tt> (which in our measurements was
+        about twice as fast as the <tt>SimpleFormatter</tt>).</p>
+      <p>Our test results suggest that the throughput of the other logging frameworks we tested
+        will rapidly decline in multi-threaded applications.</p>
+      <p><img src="images/SyncThroughputLoggerComparisonLinux.png" /></p>
+      <p>The synchronous logging throughput results above are obtained with the
+        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        See the <tt>org.apache.logging.log4j.perf.jmh.FileAppenderBenchmark</tt> source code in the log4j-perf module.</p>
+
+      <h3>Synchronous File Logging - Response Time Comparison</h3>
+
+      <h3>Synchronous Socket Sustained Throughput Comparison</h3>
+      <h3>Synchronous Syslog Sustained Throughput Comparison</h3>
+
+      <h2>Trade-offs</h2>
+
+      <!--
       <p>The user should be aware of the following performance issues.</p>
-      <ol>
-        <li>
           <h3>Logging performance when logging is turned off.</h3>
           <p>When logging is turned off entirely or just for a set of Levels, the cost of a log request consists of
             two method invocations plus an integer comparison. On a 2.53 GHz Intel Core 2 Duo MacBook Pro
@@ -116,16 +205,12 @@
             a disproportionate price to pay in exchange for a small performance
             gain.
           </p>
-        </li>
-        <li>
           <h3>The performance of deciding whether to log or not to log when logging is turned on.</h3>
           <p>
             Unlike Log4j, Log4j 2 Loggers don't "walk a hierarchy". Loggers point directly to the
             Logger configuration that best matches the Logger's name. This incurs extra overhead when the Logger
             is first created but reduces the overhead every time the Logger is used.
           </p>
-        </li>
-        <li>
           <h3>Actually outputting log messages</h3>
           <p>This is the cost of formatting the log output and sending it to its target destination. Here again,
             a serious effort was made to make layouts (formatters) perform as quickly as possible. The same
@@ -147,8 +232,7 @@
             times more expensive than when they are disabled, so it is always recommended to take advantage of
             Log4j 2's fine-grained filtering capabilities.
           </p>
-        </li>
-        <li>
+        -->
           <h3>Advanced Filtering</h3>
           <p>
             Both Logback and Log4j 2 support advanced filtering. Logback calls them TurboFilters while
@@ -206,8 +290,7 @@
               <td>92</td>
             </tr>
           </table>
-        </li>
-        <li>
+
           <h3>Client vs Server</h3>
           <p>
             Java supports a "client" and a "server" mode of operation. By default, applications that are
@@ -216,38 +299,8 @@
             Testing has shown that Log4j 2 benefits greatly from running in server mode and user's are
             strongly encouraged to configure their applications to run in server mode when using Log4j 2.
           </p>
-        </li>
-		<li>
-		<h3>Asynchronous Logging Performance Improvements</h3>
-		<p>
-		Log4j 2 offers Asynchronous Loggers for high throughput and low latency logging.
-		Asynchronous Loggers are implemented using the
-		<a href="http://lmax-exchange.github.com/disruptor/">LMAX Disruptor</a>
-		inter-thread messaging library instead of the ArrayBlockingQueue used by Asynchronous Appenders.
-		</p><p>
-		Asynchronous Appenders already offered about 5 - 10 times more throughput than
-		synchronous loggers, but this advantage remained more or less constant
-		when more threads are logging. That is, if you double the number of threads
-		that are logging you would expect your total throughput to increase, but
-		this is not the case: the throughput per thread is roughly halved so your
-		total throughput remains more or less the same.
-		(Note that this happens even if the appender queue size is large enough to hold
-		all messages logged during the test, so this is not caused by disk I/O.)
-		</p><p>
-		Asynchronous Loggers have significantly higher throughput than the legacy Asynchronous Appenders,
-		especially in multi-threaded scenarios. In one test with 64 threads,
-		Asynchronous Loggers were 12 times faster than the fastest Asynchronous Appender,
-		and 68 times faster than the fastest synchronous logger.
-		In addition to throughput, Asynchronous Loggers have attractive latency characteristics.
-		Not only is average latency lower compared to Asynchronous Appenders,
-		but when increasing the number of application threads that do logging,
-		worst-case latency remained almost constant (10 - 20 microseconds)
-		where Asynchronous Appenders start experiencing worst-case
-		latency spikes in the 100 millisecond range, a difference of four orders of magnitude.
-		See <a href="manual/async.html#Performance">Asynchronous Logging Performance</a> for details.
-		</p>
-		</li>
-      </ol>
+
+
       <p>
         The performance results above were all derived from running the DebugDisabledPerformanceComparison,
         FilterPerformanceComparison, and PerformanceComparison junit tests which can be found in the
