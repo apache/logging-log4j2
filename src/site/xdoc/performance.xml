@@ -84,7 +84,7 @@
               </p><p>
                 The graph on the right illustrates how much more optimistic service time is than response time.
                 The graph shows response time and service time for the same system under a load of 100,000 messages
-                per second. Out of 25 million measurements, only ~50 are more than 21 microseconds, less than 0.001%.
+                per second. Out of 24 million measurements, only ~50 are more than 250 microseconds, less than 0.001%.
                 In a service time-only graph this would hardly be visible.
                 However, the wait time adds up and the response time graph shows that in reality many more events are
                 impacted by these delays.
@@ -92,7 +92,7 @@
                 <p>
                   To learn more, watch Gil Tene's eye-opening presentation
                   <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure
-                    latency</a>..
+                    latency</a>.
                 </p>
               </td>
               <td width="50%" style="border: 0"><a href="images/ResponseTimeVsServiceTimeAsyncLoggers.png"><img
@@ -105,7 +105,7 @@
       <h3>Logging Library Performance Comparison</h3>
 
       <h4>Asynchronous Logging - Peak Throughput Comparison</h4>
-      <p>Asynchronous Logging is useful to deal with bursts of events. How this works is that
+      <p>Asynchronous logging is useful to deal with bursts of events. How this works is that
         a minimum amount of work is done by the application thread to capture all required information in a log event,
         and this log event is then put on a queue for later processing by a background thread.
         As long as the queue is sized large enough, the application threads should be able to spend
@@ -118,8 +118,16 @@
         With a blocking queue, multi-threaded applications often experience lock contention when trying to
         enqueue the log event.
       </p>
-      <p>The graph below illustrates the difference a lock-free data structure can make to peak throughput.
-        For details, see the <a href="manual/async.html">Async
+      <p>The graph below illustrates the difference a lock-free data structure can make to throughput
+        in multi-threaded scenarios. <em>Log4j 2 scales better with the number of threads:
+        an application with more threads can log more. The other logging libraries suffer
+        from lock contention and total throughput stays constant or drops when more threads are logging.
+        This means that with the other logging libraries, each individual thread will be able to log less.</em></p>
+      <p>Bear in mind that this is <em>peak</em> throughput: Log4j 2 gives better throughput up to a point, but
+        once the queue is full, the appender thread needs to wait until a slot becomes available in the queue,
+        and throughput will drop to the maximum sustained throughput of the underlying appenders at best.
+      </p>
+      <p>For details, see the <a href="manual/async.html">Async
         Loggers</a> manual page.</p>
       <p><img src="images/async-throughput-comparison.png" alt="Peak throughput comparison" />
       </p>
@@ -130,15 +138,19 @@
 
       <h4>Synchronous File Logging - Sustained Throughput Comparison</h4>
       <p>Here we look at the maximum sustained throughput of logging to a file.
-        The graph below compares Log4j 2.6 in garbage-free mode to Log4j 2.6 "classic" mode (which allocates
-        temporary objects for every logging call), Log4j 1.2.17, Logback 1.1.7 and
-        Java util logging (JUL) on Oracle Java 1.8.0_45.</p>
-      <p>The Log4j 2.x results are for the RandomAccessFile appender.
-        Log4j 1.2.17, Logback and JUL use their respective File appenders. ImmediateFlush was set to <tt>false</tt> for all
-        loggers that support this. The JUL results are for the <tt>XMLFormatter</tt> (which in our measurements was
-        about twice as fast as the <tt>SimpleFormatter</tt>).</p>
-      <p>Our test results suggest that the throughput of the other logging frameworks we tested
-        will rapidly decline in multi-threaded applications.</p>
+        This is is synchronous logging, so there is no background thread; the message formatting and disk I/O
+        takes place in the application thread that calls the logger. </p>
+      <p>The graph below compares Log4j 2.6's RandomAccessFile appender
+        to the respective File appenders of Log4j 1.2.17, Logback 1.1.7 and
+        Java util logging (JUL) on Oracle Java 1.8.0_45. ImmediateFlush was set to false for all
+        loggers that support this. The JUL results are for the XMLFormatter (which in our measurements was
+        about twice as fast as the SimpleFormatter).</p>
+      <p><em>Log4j 2's sustained throughput drops a little when more threads are logging simultaneously,
+        but its fine-grained locking pays off and throughput stays relatively high.
+        The other logging frameworks' throughput drops dramatically in multi-threaded applications:
+        Log4j 1.2 has 1/4th of its single-threaded capacity,
+        Logback has 1/10th of its single-threaded capacity, and JUL steadily drops from 1/4th to 1/10th of its
+        single-threaded throughput as more threads are added.</em></p>
       <p><img src="images/SyncThroughputLoggerComparisonLinux.png" /></p>
       <p>The synchronous logging throughput results above are obtained with the
         <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
