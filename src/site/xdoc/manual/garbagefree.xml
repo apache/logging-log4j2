@@ -382,10 +382,9 @@ public void garbageFree() {
         </p>
         -->
         <table>
-          <tr><td>I encourage everyone to take the red pill and watch Gil Tene's presentation
+          <tr><td>For more information on this topic please watch Gil Tene's eye-opening presentation
             <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure latency</a>.
-            Be warned, this talk is about removing the wool from your eyes.
-            You will learn a lot but may not always like what you've learnt.</td></tr>
+          </td></tr>
         </table>
         <p>The response time test results below were all derived from running the ResponseTimeTest class
           which can be found in the Log4j 2 unit test source directory. If you want to run these tests yourself,
@@ -393,12 +392,15 @@ public void garbageFree() {
         </p>
         <ul>
           <li>-Xms1G -Xmx1G (prevent heap resizing during the test)</li>
+          <!--
           <li>-XX:+UnlockDiagnosticVMOptions -XX:GuaranteedSafepointInterval=500000 (by default Hotspot schedules a
             safepoint pause every second. Reduce jitter by postponing this for the duration of the test.)</li>
+            -->
           <li>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
             -DAsyncLogger.WaitStrategy=busyspin (to use Async Loggers. The BusySpin wait strategy reduces some jitter.)</li>
           <li><b>classic mode: </b>-Dlog4j2.enable.threadlocals=false -Dlog4j2.enable.direct.encoders=false<br />
             <b>garbage-free mode: </b>-Dlog4j2.enable.threadlocals=true -Dlog4j2.enable.direct.encoders=true</li>
+          <li>-XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle</li>
           <li>-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution
             -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime (to eyeball GC and safepoint pauses)</li>
         </ul>
