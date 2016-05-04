@@ -422,9 +422,8 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
      * @return a new immutable copy of the data in this {@code MutableLogEvent}
      */
     public Log4jLogEvent createMemento() {
-        Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder(this);
-        builder.setMessage(memento());
-        return builder.build();
+        // TODO implement MutableLogEvent.createMemento()
+        return Log4jLogEvent.deserialize(Log4jLogEvent.serialize(this, includeLocation));
     }
 
 }
