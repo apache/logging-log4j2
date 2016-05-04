@@ -83,7 +83,10 @@
           Log4j 1.x has been widely adopted and used in many applications. However,
           through the years development on it has slowed down. It has become more
           difficult to maintain due to its need to be compliant with very old versions
-          of Java.  Its alternative, SLF4J/Logback made many needed improvements to the
+          of Java and became
+          <a href="https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces">End
+            of Life</a> in August 2015.
+          Its alternative, SLF4J/Logback made many needed improvements to the
           framework. So why bother with Log4j 2? Here are a few of the reasons.
           </p>
           <ol>
@@ -96,6 +99,9 @@
               on the <a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor library</a>.
               In multi-threaded scenarios Asynchronous Loggers have 10 times higher throughput and
               orders of magnitude lower latency than Log4j 1.x and Logback.</li>
+            <li>Log4j 2 is <a href="garbagefree.html">garbage free</a> for
+              stand-alone applications, and low garbage for web applications during steady state logging.
+              This reduces pressure on the garbage collector and can give better response time performance.</li>
             <li>Log4j 2 uses a <a href="plugins.html">Plugin system</a> that makes it extremely easy to
               <a href="extending.html">extend the framework</a> by adding new <a href="appenders.html">Appenders</a>,
               <a href="filters.html">Filters</a>, <a href="layouts.html">Layouts</a>, <a href="lookups.html">Lookups</a>,
@@ -136,7 +142,7 @@
             <li>It is an Apache Software Foundation project following the community and support
               model used by all ASF projects. If you want to contribute or gain the right to
               commit changes just follow the path outlined at
-              <a href="http://jakarta.apache.org/site/contributing.html">Contributing</a></li>
+              <a href="http://jakarta.apache.org/site/contributing.html">Contributing</a>.</li>
           </ol>
         </subsection>
       </section>
