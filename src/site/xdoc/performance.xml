@@ -41,52 +41,70 @@
         (java.util.logging "JUL", Logback, Log4j 1.2 and Log4j 2.6),
         and document some performance trade-offs for Log4j 2 functionality.
       </p>
-      <h2>Benchmarks</h2>
+      <h3>Benchmarks</h3>
       <p>Performance can mean different things to different people. Common terms in this context are
         throughput and latency: <em>Throughput</em> is a measure of capacity and can be expressed in a single number:
         how many messages can be logged in a certain period of time.
         <em>Response time latency</em> is how long it takes to log a message.
         This cannot be expressed in a single number because each measurement has its own
         response time and we are often most interested in the outliers: how many there were and how large they were.</p>
-      <p>We will measure and compare three performance indicators: </p>
+      <p>When evaluating a logging framework's performance these may be useful questions to ask:</p>
       <ul>
-        <li><b>Peak throughput</b> is the maximum throughput measured over a short period of time.
-          This number is useful for systems that need to log bursts of messages followed by periods of
-          relative quiet. Many systems that react to external events behave like this,
-          but for systems that need to log a lot at a constant high rate (for example, batch jobs)
+        <li>What is its <b>peak throughput</b>?
+          Many systems that react to external events need to log bursts of messages followed by periods of
+          relative quiet.
+          This number is the maximum throughput measured over a short period of time and gives some idea
+          of how well the logging library deals with bursts.
+          For systems that need to log a lot at a constant high rate (for example, batch jobs)
           this is less likely to be a useful measure of performance.</li>
-        <li><b>Maximum sustained throughput</b> is the throughput averaged over a long time.
+        <li>What is the <b>maximum sustained throughput</b>? This is the throughput averaged over a long time.
           This is a useful measure of the "upper limit" of the capacity of the logging library.
           It is not recommended that reactive applications actually log at this rate since under this load
           they will likely experience jitter and large response time spikes.</li>
-        <li><p>
-          <b>Response time</b> is the total amount of time it takes to log a message and is the sum of the
-          service time and wait time. The service time is the time it takes to do the work to log the message.
+        <li><p>What is its <b>response time</b> behaviour under various loads?
+          Response time is the total amount of time it takes to log a message and is the sum of the
+          service time and wait time.
+          The <b>service time</b> is the time it takes to do the work to log the message.
           As the workload increases, the service time often varies little:
           to do X amount of work it always takes X amount of time.
-          The wait time is how long the request had to wait in a queue before being serviced.
+          The <b>wait time</b> is how long the request had to wait in a queue before being serviced.
           <em>As the workload increases, wait time often grows to many times the service time.</em>
-          </p>
-          <p>
-            What is often measured and reported as <em>latency</em> is actually <em>service time</em>,
-            which unfortunately hides the wait time.
-            The below graph shows response time and service time of the same system under a load of 100,000 messages
-            per second. Out of 25 million measurements, only ~50 are more than 200 microseconds, less than 0.001%.
-            In a service time-only graph this would hardly be visible.
-            However, the wait time adds up and the response time graph shows that in reality many more events are impacted
-            by these delays.
-          </p>
-          <p><img src="images/ResponseTimeVsServiceTimeAsyncLoggers.png" /></p>
-          <p>
-            To learn more, watch Gil Tene's
-            <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure latency</a>
-            (and prepare to be shocked).
           </p>
           </li>
       </ul>
-      <h2>Logging Library Performance Comparison</h2>
+      <table>
+        <tr><td>
+          <h5>Sidebar: Why Care About Response Time Latency?</h5>
+          <table border="0" style="border: 0">
+            <tr style="border: 0">
+              <td width="50%" style="border: 0"><p>
+                What is often measured and reported as <em>latency</em> is actually <em>service time</em>,
+                which unfortunately hides the wait time. This may present results that are more optimistic than what
+                users experience.
+              </p><p>
+                The graph on the right illustrates how much more optimistic service time is than response time.
+                The graph shows response time and service time for the same system under a load of 100,000 messages
+                per second. Out of 25 million measurements, only ~50 are more than 21 microseconds, less than 0.001%.
+                In a service time-only graph this would hardly be visible.
+                However, the wait time adds up and the response time graph shows that in reality many more events are
+                impacted by these delays.
+              </p>
+                <p>
+                  To learn more, watch Gil Tene's eye-opening presentation
+                  <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure
+                    latency</a>..
+                </p>
+              </td>
+              <td width="50%" style="border: 0"><a href="images/ResponseTimeVsServiceTimeAsyncLoggers.png"><img
+                  src="images/ResponseTimeVsServiceTimeAsyncLoggers.png" width="480" height="288"/></a>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
+      </table>
+      <h3>Logging Library Performance Comparison</h3>
 
-      <h3>Asynchronous Logging - Peak Throughput Comparison</h3>
+      <h4>Asynchronous Logging - Peak Throughput Comparison</h4>
       <p>Asynchronous Logging is useful to deal with bursts of events. How this works is that
         a minimum amount of work is done by the application thread to capture all required information in a log event,
         and this log event is then put on a queue for later processing by a background thread.
@@ -100,19 +118,22 @@
         With a blocking queue, multi-threaded applications often experience lock contention when trying to
         enqueue the log event.
       </p>
-      <p>The graph below illustrates the difference in peak throughput.
+      <p>The graph below illustrates the difference a lock-free data structure can make to peak throughput.
         For details, see the <a href="manual/async.html">Async
         Loggers</a> manual page.</p>
       <p><img src="images/async-throughput-comparison.png" alt="Peak throughput comparison" />
       </p>
       <p>The results above were obtained with log4j-2.0-beta5, disruptor-3.0.0.beta3,
-        log4j-1.2.17 and logback-1.0.10.
+        log4j-1.2.17 and logback-1.0.10. The PerfTest, MTPerfTest and PerfTestDriver
+        classes that generated these results can be found in the Log4j 2 unit test source directory.
       </p>
 
-      <h3>Synchronous File Logging - Sustained Throughput Comparison</h3>
-      <p>The graph below compares Log4j 2.6 in garbage-free mode to Log4j 2.6 "classic" mode (which allocates
+      <h4>Synchronous File Logging - Sustained Throughput Comparison</h4>
+      <p>Here we look at the maximum sustained throughput of logging to a file.
+        The graph below compares Log4j 2.6 in garbage-free mode to Log4j 2.6 "classic" mode (which allocates
         temporary objects for every logging call), Log4j 1.2.17, Logback 1.1.7 and
-        Java util logging (JUL) on Oracle Java 1.8.0_45. The Log4j 2.x results use the RandomAccessFile appender.
+        Java util logging (JUL) on Oracle Java 1.8.0_45.</p>
+      <p>The Log4j 2.x results are for the RandomAccessFile appender.
         Log4j 1.2.17, Logback and JUL use their respective File appenders. ImmediateFlush was set to <tt>false</tt> for all
         loggers that support this. The JUL results are for the <tt>XMLFormatter</tt> (which in our measurements was
         about twice as fast as the <tt>SimpleFormatter</tt>).</p>
@@ -123,12 +144,12 @@
         <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
         See the <tt>org.apache.logging.log4j.perf.jmh.FileAppenderBenchmark</tt> source code in the log4j-perf module.</p>
 
-      <h3>Synchronous File Logging - Response Time Comparison</h3>
+      <h4>Synchronous File Logging - Response Time Comparison</h4>
 
-      <h3>Synchronous Socket Sustained Throughput Comparison</h3>
-      <h3>Synchronous Syslog Sustained Throughput Comparison</h3>
+      <h4>Synchronous Socket Sustained Throughput Comparison</h4>
+      <h4>Synchronous Syslog Sustained Throughput Comparison</h4>
 
-      <h2>Trade-offs</h2>
+      <h3>Trade-offs</h3>
 
       <!--
       <p>The user should be aware of the following performance issues.</p>
@@ -241,7 +262,7 @@
             Log4j 2's fine-grained filtering capabilities.
           </p>
         -->
-          <h3>Advanced Filtering</h3>
+          <h4>Advanced Filtering</h4>
           <p>
             Both Logback and Log4j 2 support advanced filtering. Logback calls them TurboFilters while
             Log4j 2 has a single Filter object. Advanced filtering provides the capability to filter
@@ -299,7 +320,7 @@
             </tr>
           </table>
 
-          <h3>Client vs Server</h3>
+          <h4>Client vs Server</h4>
           <p>
             Java supports a "client" and a "server" mode of operation. By default, applications that are
             run in Java 5 on machines with 2 CPUs or more and 2GB of memory or more on operating systems
