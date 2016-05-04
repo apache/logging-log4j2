@@ -82,7 +82,8 @@
         </tr>
         <tr>
           <td>XML Layout</td>
-          <td><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core, databind and dataformat XML</a><br />
+              And <code>com.fasterxml.woodstox:woodstox-core:5.0.2</code></td>
         </tr>
         <tr>
           <td>Async Loggers</td>
