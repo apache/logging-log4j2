@@ -368,24 +368,9 @@ public void garbageFree() {
           This hides the fact that a single spike in service time adds queueing delay for many of the subsequent operations.
           Service time is easy to measure (and often looks good on paper) but is irrelevant for users since it
           omits the time spent waiting for service.
-          For this reason we report
-          <a href="https://en.wikipedia.org/wiki/Response_time_(technology)">response time</a>:
-          service time plus wait time.
+          For this reason we report response time: service time plus wait time.
+          See the <a href="../performance.html#responseTime">response time section</a> of the performance page for more detail.
         </p>
-        <!--
-        <p>Response time cannot be expressed in a single number: each message has its own response time.
-          Typically the vast majority of measurements
-          are in a certain (low) range, with a small number of large outliers. When talking about latency,
-          we are usually interested in the outliers: how many there are and how large they are.
-          There is no bell curve, so "average latency" and "standard deviation" are meaningless terms
-          when talking about latency. The graphs below shows a histogram with the entire percentile spectrum.
-        </p>
-        -->
-        <table>
-          <tr><td>For more information on this topic please watch Gil Tene's eye-opening presentation
-            <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure latency</a>.
-          </td></tr>
-        </table>
         <p>The response time test results below were all derived from running the ResponseTimeTest class
           which can be found in the Log4j 2 unit test source directory. If you want to run these tests yourself,
           here are the command line options we used:

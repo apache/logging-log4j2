@@ -41,6 +41,7 @@
         (java.util.logging "JUL", Logback, Log4j 1.2 and Log4j 2.6),
         and document some performance trade-offs for Log4j 2 functionality.
       </p>
+      <a name="benchmarks" />
       <h3>Benchmarks</h3>
       <p>Performance can mean different things to different people. Common terms in this context are
         throughput and latency: <em>Throughput</em> is a measure of capacity and can be expressed in a single number:
@@ -61,6 +62,7 @@
           This is a useful measure of the "upper limit" of the capacity of the logging library.
           It is not recommended that reactive applications actually log at this rate since under this load
           they will likely experience jitter and large response time spikes.</li>
+        <a name="responseTime" />
         <li><p>What is its <b>response time</b> behaviour under various loads?
           Response time is the total amount of time it takes to log a message and is the sum of the
           service time and wait time.
