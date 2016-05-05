@@ -125,7 +125,7 @@
         an application with more threads can log more. The other logging libraries suffer
         from lock contention and total throughput stays constant or drops when more threads are logging.
         This means that with the other logging libraries, each individual thread will be able to log less.</em></p>
-      <p>Bear in mind that this is <em>peak</em> throughput: Log4j 2 gives better throughput up to a point, but
+      <p>Bear in mind that this is <em>peak</em> throughput: Log4j 2's Async Loggers give better throughput up to a point, but
         once the queue is full, the appender thread needs to wait until a slot becomes available in the queue,
         and throughput will drop to the maximum sustained throughput of the underlying appenders at best.
       </p>
