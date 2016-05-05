@@ -14,13 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.core.appender;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -31,15 +31,19 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "CountingNoOp", category = "Core", elementType = "appender", printObject = true)
 public class CountingNoOpAppender extends AbstractAppender  {
 
-    public static long total;
+    private AtomicLong total = new AtomicLong();
 
     public CountingNoOpAppender(String name, Layout<?> layout) {
         super(name, null, layout);
     }
 
+    public long getCount() {
+        return total.get();
+    }
+
     @Override
     public void append(LogEvent event) {
-        total++;
+        total.incrementAndGet();
     }
 
     /**

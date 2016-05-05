@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+import java.util.logging.MemoryHandler;
 
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
+import org.apache.logging.log4j.perf.util.NoOpJULHandler;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
@@ -29,129 +30,135 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
 
-import ch.qos.logback.core.spi.LifeCycle;
-
 /**
- * Tests Logback Async Appender performance.
+ * Tests JUL (java.util.logging) Memory Handler performance.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*Async.*Benchmark.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*MemoryHandlerJULBenchmark.*" -f 1 -wi 5 -i 5
 //
 // multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*Async.*Benchmark.*" -f 1 -wi 5 -i 5 -t 4 -si true
+// java -jar log4j-perf/target/benchmarks.jar ".*MemoryHandlerJULBenchmark.*" -f 1 -wi 5 -i 5 -t 4 -si true
 //
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Benchmark)
-public class AsyncAppenderLogbackBenchmark {
+public class MemoryHandlerJULBenchmark {
 
-    private Logger logger;
+    Logger logger;
+    MemoryHandler memoryHandler;
 
     @Setup(Level.Trial)
     public void up() {
-        System.setProperty("logback.configurationFile", "perf-logback-async-noOpAppender.xml");
-        logger = LoggerFactory.getLogger(getClass());
-    }
-
-    @TearDown(Level.Trial)
-    public void down() {
-        ((LifeCycle) LoggerFactory.getILoggerFactory()).stop();
-        new File("perftest.log").delete();
+        memoryHandler = new MemoryHandler(new NoOpJULHandler(), 262144, java.util.logging.Level.SEVERE);
+        logger = java.util.logging.Logger.getLogger(getClass().getName());
+        logger.setUseParentHandlers(false);
+        logger.addHandler(memoryHandler);
+        logger.setLevel(java.util.logging.Level.ALL);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughputSimple() {
-        logger.info(BenchmarkMessageParams.TEST);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName", BenchmarkMessageParams.TEST);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput1Param() {
-        logger.info("p1={}", one);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName", "p1={}", one);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput2Params() {
-        logger.info("p1={}, p2={}", one, two);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName", "p1={}, p2={}",
+                new Object[]{one, two});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput3Params() {
-        logger.info("p1={}, p2={}, p3={}", one, two, three);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName","p1={}, p2={}, p3={}",
+                new Object[]{one, two, three});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput4Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}", one, two, three, four);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+                "p1={}, p2={}, p3={}, p4={}", new Object[]{one, two, three, four,});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput5Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}", one, two, three, four, five);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+                "p1={}, p2={}, p3={}, p4={}, p5={}", new Object[]{one, two, three, four, five,});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput6Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}", one, two, three, four, five, six);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}",
+                new Object[]{one, two, three, four, five, six,});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput7Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", one, two, three, four, five, six, seven);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}",
+                new Object[]{one, two, three, four, five, six, seven,});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput8Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}", one, two, three, four, five, six, seven,
-                eight);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}",
+                new Object[]{one, two, three, four, five, six, seven, eight,});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput9Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", one, two, three, four, five, six,
-                seven, eight, nine);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}",
+                new Object[]{one, two, three, four, five, six, seven, eight, nine,});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput10Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}", one, two, three, four,
-                five, six, seven, eight, nine, ten);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}",
+                new Object[]{one, two, three, four, five, six, seven, eight, nine, ten});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput11Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}, p11={}", one, two, three,
-                four, five, six, seven, eight, nine, ten, eleven);
+        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}, p11={}",
+                new Object[]{one, two, three, four, five, six, seven, eight, nine, ten, eleven});
     }
 }
