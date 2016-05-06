@@ -137,6 +137,39 @@
         log4j-1.2.17 and logback-1.0.10. The PerfTest, MTPerfTest and PerfTestDriver
         classes that generated these results can be found in the Log4j 2 unit test source directory.
       </p>
+      <h4>Asynchronous Logging Parameterized Messages</h4>
+      <p>Many logging libraries offer an API for logging parameterized messages.
+        This enables application code to look something like this:<pre>
+logger.debug("Entry number: {} is {}", i, entry[i]);</pre>
+        In the above example, the fully formatted message text is not created unless the DEBUG level is enabled for the logger.
+        Without this API, you would need three lines of code to accomplish the same:
+        <pre>
+if (logger.isDebugEnabled()) {
+    logger.debug("Entry number: " + i + " is " + entry[i].toString());
+}</pre>
+      </p>
+      <p>If the DEBUG level <em>is</em> enabled, then at some point the message needs to be formatted.
+        When logging asynchronously, the message parameters may be changed
+        by the application thread before the background thread had a chance to log the message.
+        This would show the wrong values in the log file.
+        To prevent this, one solution is to format the message text in the application thread
+        <em>before</em> passing off the log event to the background thread.</p>
+      <p>This is the safe thing to do, but the formatting has a performance cost.
+        The graph below compares the throughput of logging messages with parameters using various logging libraries.
+        In absolute numbers, Log4j 2's Async Loggers perform well compared to the other logging
+        frameworks, but notice that the cost increases with the number of parameters.
+        In this area, Log4j 2 still has work to do to improve.</p>
+      <p>Note that the java.util.logging MemoryHandler does <em>not</em> do the safe thing of taking a snapshot
+        of the current parameter state (it just keeps a reference to the original parameter objects),
+        and as a result it is very fast when single-threaded.
+        However, when more threads are added, the cost of lock contention outweighs this gain.</p>
+      <p><img src="images/ParamMsgThrpt1-4T.png" /></p>
+      <p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6, Log4j 1.2.17 and Logback 1.1.7,
+        and were obtained with the
+        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        See the AsyncAppenderLog4j1Benchmark, AsyncAppenderLog4j2Benchmark, AsyncAppenderLogbackBenchmark,
+        AsyncLoggersBenchmark and the MemoryHandlerJULBenchmark source code in the log4j-perf module.
+      </p>
 
       <h4>Synchronous File Logging - Sustained Throughput Comparison</h4>
       <p>Here we look at the maximum sustained throughput of logging to a file.
