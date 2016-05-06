@@ -148,8 +148,17 @@ public final class AsyncAppender extends AbstractAppender {
         if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
             logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
-        final EventRoute route = asyncEventRouter.getRoute(thread.getId(), logEvent.getLevel());
-        route.logMessage(this, logEvent);
+        final Log4jLogEvent memento = Log4jLogEvent.createMemento(logEvent, includeLocation);
+        if (!queue.offer(memento)) {
+            if (blocking) {
+                // delegate to the event router (which may discard, enqueue and block, or log in current thread)
+                final EventRoute route = asyncEventRouter.getRoute(thread.getId(), memento.getLevel());
+                route.logMessage(this, memento);
+            } else {
+                error("Appender " + getName() + " is unable to write primary appenders. queue is full");
+                logToErrorAppenderIfNecessary(false, memento);
+            }
+        }
     }
 
     /**
@@ -169,29 +178,13 @@ public final class AsyncAppender extends AbstractAppender {
      * @param logEvent the event to log
      */
     public void logMessageInBackgroundThread(final LogEvent logEvent) {
-        final boolean success = blocking ? enqueueOrBlockIfQueueFull(logEvent) : enqueueOrDropIfQueueFull(logEvent);
-        logToErrorAppenderIfNecessary(success, logEvent);
-    }
-
-    private boolean enqueueOrBlockIfQueueFull(final LogEvent logEvent) {
-        boolean appendSuccessful;
-        final Log4jLogEvent frozenLogEvent = Log4jLogEvent.createMemento(logEvent, includeLocation);
         try {
             // wait for free slots in the queue
-            queue.put(frozenLogEvent);
-            appendSuccessful = true;
+            queue.put(logEvent);
         } catch (final InterruptedException e) {
-            appendSuccessful = handleInterruptedException(frozenLogEvent);
+            final boolean appendSuccessful = handleInterruptedException(logEvent);
+            logToErrorAppenderIfNecessary(appendSuccessful, logEvent);
         }
-        return appendSuccessful;
-    }
-
-    private boolean enqueueOrDropIfQueueFull(final LogEvent logEvent) {
-        final boolean appendSuccessful = queue.offer(Log4jLogEvent.createMemento(logEvent, includeLocation));
-        if (!appendSuccessful) {
-            error("Appender " + getName() + " is unable to write primary appenders. queue is full");
-        }
-        return appendSuccessful;
     }
 
     // LOG4J2-1049: Some applications use Thread.interrupt() to send
@@ -205,8 +198,8 @@ public final class AsyncAppender extends AbstractAppender {
     // This may interfere with the application's expectation of
     // being interrupted, so when we are done, we set the interrupted
     // flag again.
-    private boolean handleInterruptedException(final Log4jLogEvent frozenLogEvent) {
-        final boolean appendSuccessful = queue.offer(frozenLogEvent);
+    private boolean handleInterruptedException(final LogEvent memento) {
+        final boolean appendSuccessful = queue.offer(memento);
         if (!appendSuccessful) {
             LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
                 getName());
