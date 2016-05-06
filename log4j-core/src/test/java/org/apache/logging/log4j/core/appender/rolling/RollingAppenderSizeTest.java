@@ -94,9 +94,8 @@ public class RollingAppenderSizeTest {
 
         DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
         if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
-                || DefaultRolloverStrategy.FileExtensions.XZ == ext
                 || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
-            return; // commons compress cannot deflate zip and xz? TODO test decompressing these formats
+            return; // commons compress cannot deflate zip? TODO test decompressing these formats
         }
         for (File file : files) {
             if (file.getName().endsWith(fileExtension)) {
