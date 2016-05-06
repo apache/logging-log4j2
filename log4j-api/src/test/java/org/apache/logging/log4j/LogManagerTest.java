@@ -17,6 +17,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -52,5 +53,11 @@ public class LogManagerTest {
         logger = LogManager.getLogger((Object) null, ParameterizedMessageFactory.INSTANCE);
         assertNotNull("No Logger returned", logger);
         assertTrue("Incorrect Logger name: " + logger.getName(),LogManagerTest.class.getName().equals(logger.getName()));
+    }
+
+    @Test
+    public void testShutdown() {
+        LoggerContext loggerContext = LogManager.getContext(false);
+        LogManager.shutdown(loggerContext);
     }
 }

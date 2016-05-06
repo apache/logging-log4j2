@@ -52,18 +52,31 @@ public abstract class NameAbbreviator {
                 return DEFAULT;
             }
 
+            boolean isNegativeNumber;
+            final String number;
+
+            // check if number is a negative number
+            if (trimmed.length() > 1 && trimmed.charAt(0) == '-') {
+                isNegativeNumber = true;
+                number = trimmed.substring(1);
+            } else {
+                isNegativeNumber = false;
+                number = trimmed;
+            }
+
             int i = 0;
 
-            while (i < trimmed.length() && trimmed.charAt(i) >= '0'
-                    && trimmed.charAt(i) <= '9') {
+            while (i < number.length() && number.charAt(i) >= '0'
+                    && number.charAt(i) <= '9') {
                 i++;
             }
 
             //
             //  if all blanks and digits
             //
-            if (i == trimmed.length()) {
-                return new MaxElementAbbreviator(Integer.parseInt(trimmed));
+            if (i == number.length()) {
+                return new MaxElementAbbreviator(Integer.parseInt(number),
+                        isNegativeNumber? MaxElementAbbreviator.Strategy.DROP : MaxElementAbbreviator.Strategy.RETAIN);
             }
 
             final ArrayList<PatternAbbreviatorFragment> fragments = new ArrayList<>(5);
@@ -127,10 +140,11 @@ public abstract class NameAbbreviator {
     /**
      * Abbreviates a name in a String.
      *
-     * @param buf       buffer, may not be null.
+     * @param original the text to abbreviate, may not be null.
+     * @param destination StringBuilder to write the result to
      * @return The abbreviated String.
      */
-    public abstract String abbreviate(final String buf);
+    public abstract void abbreviate(final String original, final StringBuilder destination);
 
     /**
      * Abbreviator that simply appends full name to buffer.
@@ -146,8 +160,8 @@ public abstract class NameAbbreviator {
          * {@inheritDoc}
          */
         @Override
-        public String abbreviate(final String buf) {
-            return buf;
+        public void abbreviate(final String original, final StringBuilder destination) {
+            destination.append(original);
         }
     }
 
@@ -155,42 +169,93 @@ public abstract class NameAbbreviator {
      * Abbreviator that drops starting path elements.
      */
     private static class MaxElementAbbreviator extends NameAbbreviator {
+
+        /**
+         * <p>When the name is reduced in length by cutting parts, there can be two ways to do it.</p>
+         * 1. Remove a given number of parts starting from front - called DROP <br/>
+         * 2. Retain a given number of parts starting from the end - called RETAIN
+         */
+        private enum Strategy {
+            DROP,
+            RETAIN
+        };
+
         /**
          * Maximum number of path elements to output.
          */
         private final int count;
 
         /**
+         * Strategy used for cutting down the size of the name
+         */
+        private final Strategy strategy;
+
+        /**
          * Create new instance.
          *
-         * @param count maximum number of path elements to output.
+         * @param count maximum number of path elements to drop or output.
+         * @param strategy drop or retain
          */
-        public MaxElementAbbreviator(final int count) {
-            this.count = count < 1 ? 1 : count;
+        public MaxElementAbbreviator(final int count, final Strategy strategy) {
+            final int minCount = getMinCount(strategy);
+            this.count = count < minCount ? minCount : count;
+            this.strategy = strategy;
+        }
+
+        private int getMinCount(final Strategy strategy) {
+            if (Strategy.DROP == strategy) {
+                return 0;
+            } else { // Strategy.RETAIN
+                return 1;
+            }
         }
 
         /**
          * Abbreviate name.
          *
-         * @param buf The String to abbreviate.
+         * @param original The String to abbreviate.
+         * @param destination
          * @return the abbreviated String.
          */
         @Override
-        public String abbreviate(final String buf) {
+        public void abbreviate(final String original, final StringBuilder destination) {
+            if (Strategy.DROP == strategy) {
+                abbreviateForDrop(original, destination);
+            } else { // Strategy.RETAIN
+                abbreviateForRetain(original, destination);
+            }
+        }
 
+        private void abbreviateForDrop(String original, StringBuilder destination) {
+            // If a path does not contain enough path elements to drop, none will be dropped.
+            int start = 0;
+            int nextStart = 0;
+            for (int i = 0; i < count; i++) {
+                nextStart = original.indexOf('.', start);
+                if (nextStart == -1) {
+                    destination.append(original);
+                    return;
+                } else {
+                    start = nextStart + 1;
+                }
+            }
+            destination.append(original, start, original.length());
+        }
+
+        private void abbreviateForRetain(String original, StringBuilder destination) {
             // We subtract 1 from 'len' when assigning to 'end' to avoid out of
             // bounds exception in return r.substring(end+1, len). This can happen if
             // precision is 1 and the category name ends with a dot.
-            int end = buf.length() - 1;
+            int end = original.length() - 1;
 
             for (int i = count; i > 0; i--) {
-                end = buf.lastIndexOf('.', end - 1);
+                end = original.lastIndexOf('.', end - 1);
                 if (end == -1) {
-                    return buf;
+                    destination.append(original);
+                    return;
                 }
             }
-
-            return buf.substring(end + 1);
+            destination.append(original, end + 1, original.length());
         }
     }
 
@@ -230,8 +295,15 @@ public abstract class NameAbbreviator {
          * @return starting index of next element.
          */
         public int abbreviate(final StringBuilder buf, final int startPos) {
-            int nextDot = buf.toString().indexOf('.', startPos);
-
+            final int start = (startPos < 0) ? 0 : startPos;
+            final int max = buf.length();
+            int nextDot = -1;
+            for (int i = start; i < max; i++) {
+                if (buf.charAt(i) == '.') {
+                    nextDot = i;
+                    break;
+                }
+            }
             if (nextDot != -1) {
                 if (nextDot - startPos > charCount) {
                     buf.delete(startPos + charCount, nextDot);
@@ -242,10 +314,8 @@ public abstract class NameAbbreviator {
                         nextDot++;
                     }
                 }
-
                 nextDot++;
             }
-
             return nextDot;
         }
     }
@@ -277,18 +347,19 @@ public abstract class NameAbbreviator {
         /**
          * Abbreviates name.
          *
-         * @param buf       buffer that abbreviated name is appended.
+         * @param original       buffer that abbreviated name is appended.
+         * @param destination
          */
         @Override
-        public String abbreviate(final String buf) {
+        public void abbreviate(final String original, final StringBuilder destination) {
             //
             //  all non-terminal patterns are executed once
             //
-            int pos = 0;
-            final StringBuilder sb = new StringBuilder(buf);
+            int pos = destination.length();
+            final int max = pos + original.length();
+            final StringBuilder sb = destination.append(original);//new StringBuilder(original);
 
-            for (int i = 0; i < fragments.length - 1 && pos < buf.length();
-                 i++) {
+            for (int i = 0; i < fragments.length - 1 && pos < original.length(); i++) {
                 pos = fragments[i].abbreviate(sb, pos);
             }
 
@@ -297,10 +368,9 @@ public abstract class NameAbbreviator {
             //
             final PatternAbbreviatorFragment terminalFragment = fragments[fragments.length - 1];
 
-            while (pos < buf.length() && pos >= 0) {
+            while (pos < max && pos >= 0) {
                 pos = terminalFragment.abbreviate(sb, pos);
             }
-            return sb.toString();
         }
     }
 }

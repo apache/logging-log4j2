@@ -61,7 +61,7 @@ public class ScriptConditionTest {
 
         Script script = new Script("test", "javascript", "pathList;"); // script that returns pathList
         ScriptCondition condition = new ScriptCondition(script, config);
-        List<PathWithAttributes> pathList = new ArrayList<PathWithAttributes>();
+        List<PathWithAttributes> pathList = new ArrayList<>();
         Path base = Paths.get("baseDirectory");
         List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
         assertSame(result, pathList);
@@ -72,7 +72,7 @@ public class ScriptConditionTest {
         Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
 
-        List<PathWithAttributes> pathList = new ArrayList<PathWithAttributes>();
+        List<PathWithAttributes> pathList = new ArrayList<>();
         pathList.add(new PathWithAttributes(Paths.get("/path/1"), new DummyFileAttributes()));
         pathList.add(new PathWithAttributes(Paths.get("/path/2"), new DummyFileAttributes()));
         pathList.add(new PathWithAttributes(Paths.get("/path/3"), new DummyFileAttributes()));
@@ -94,7 +94,7 @@ public class ScriptConditionTest {
         Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
 
-        List<PathWithAttributes> pathList = new ArrayList<PathWithAttributes>();
+        List<PathWithAttributes> pathList = new ArrayList<>();
         pathList.add(new PathWithAttributes(Paths.get("/path/1/abc/a.txt"), new DummyFileAttributes()));
         pathList.add(new PathWithAttributes(Paths.get("/path/2/abc/bbb.txt"), new DummyFileAttributes()));
         pathList.add(new PathWithAttributes(Paths.get("/path/3/abc/c.txt"), new DummyFileAttributes()));

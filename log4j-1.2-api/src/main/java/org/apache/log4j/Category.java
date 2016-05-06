@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.util.Strings;
 
 
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class Category {
 
-    private static LoggerFactory loggerFactory = new PrivateFactory();
+    private static PrivateAdapter adapter = new PrivateAdapter();
 
     private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP =
         new WeakHashMap<>();
@@ -75,11 +76,11 @@ public class Category {
     }
 
     public static Category getInstance(final String name) {
-        return getInstance(PrivateManager.getContext(), name, loggerFactory);
+        return getInstance(PrivateManager.getContext(), name, adapter);
     }
 
     static Logger getInstance(final LoggerContext context, final String name) {
-        return getInstance(context, name, loggerFactory);
+        return getInstance(context, name, adapter);
     }
 
     static Logger getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
@@ -88,7 +89,18 @@ public class Category {
         if (logger != null) {
             return logger;
         }
-        logger = factory.makeNewLoggerInstance(context, name);
+        logger = factory.makeNewLoggerInstance(name);
+        final Logger prev = loggers.putIfAbsent(name, logger);
+        return prev == null ? logger : prev;
+    }
+
+    static Logger getInstance(final LoggerContext context, final String name, final PrivateAdapter factory) {
+        final ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
+        Logger logger = loggers.get(name);
+        if (logger != null) {
+            return logger;
+        }
+        logger = factory.newLogger(name, context);
         final Logger prev = loggers.putIfAbsent(name, logger);
         return prev == null ? logger : prev;
     }
@@ -441,14 +453,16 @@ public class Category {
         }
     }
 
-    /**
-     * Private logger factory.
-     */
-    private static class PrivateFactory implements LoggerFactory {
+    private static class PrivateAdapter extends AbstractLoggerAdapter<Logger> {
 
         @Override
-        public Logger makeNewLoggerInstance(final LoggerContext context, final String name) {
-            return new Logger(context, name);
+        protected Logger newLogger(final String name, final org.apache.logging.log4j.spi.LoggerContext context) {
+            return new Logger((LoggerContext) context, name);
+        }
+
+        @Override
+        protected org.apache.logging.log4j.spi.LoggerContext getContext() {
+            return PrivateManager.getContext();
         }
     }
 

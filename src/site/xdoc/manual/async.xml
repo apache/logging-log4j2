@@ -174,6 +174,10 @@
           There are a few system properties you can use to control aspects of the asynchronous logging subsystem.
           Some of these can be used to tune logging performance.
         </p>
+        <p>
+          The below properties can also be specified by creating a file named
+          <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
+        </p>
         <a name="SysPropsAllAsync" />
         <table>
           <caption align="top">System Properties to configure all asynchronous loggers
@@ -186,12 +190,16 @@
           <tr>
             <td>AsyncLogger.ExceptionHandler</td>
             <td>
-              <tt>null</tt>
+              <tt>default handler</tt>
             </td>
             <td>
               Fully qualified name of a class that implements the <tt>com.lmax.disruptor.ExceptionHandler</tt>
               interface. The class needs to have a public zero-argument constructor.
               If specified, this class will be notified when an exception occurs while logging the messages.
+              <p>
+                If not specified, the default exception handler will print a message and stack trace to the standard
+                error output stream.
+              </p>
             </td>
           </tr>
           <tr>
@@ -207,14 +215,18 @@
           <tr>
             <td>AsyncLogger.WaitStrategy</td>
             <td>
-              <tt>Block</tt>
+              <tt>Timeout</tt>
             </td>
             <td>
-              Valid values: Block, Sleep, Yield.
+              Valid values: Block, Timeout, Sleep, Yield.
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
               Recommended for resource constrained/virtualised environments.
+              <br />
+              <tt>Timeout</tt> is a variation of the <tt>Block</tt> strategy that will periodically
+              wake up from the lock condition await() call. This ensures that if a notification is missed somehow
+              the consumer thread is not stuck but will recover with a small latency delay (default 10ms).
               <br />
               <tt>Sleep</tt> is a strategy that initially spins, then uses a Thread.yield(), and
               eventually parks for the minimum number of nanos the OS and JVM will allow
@@ -275,8 +287,8 @@
           There are also a few system properties that can be used to maintain application throughput even when
           the underlying appender cannot keep up with the logging rate and the queue is filling up.
           See the details for system properties
-          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt>,
-            <tt>log4j2.DiscardThreshold</tt> and <tt>log4j2.DiscardQueueRatio</tt></a>.
+          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt> and
+            <tt>log4j2.DiscardThreshold</tt></a>.
         </p>
       </subsection>
       <a name="MixedSync-Async" />
@@ -332,6 +344,10 @@
           There are a few system properties you can use to control aspects of the asynchronous logging subsystem.
           Some of these can be used to tune logging performance.
         </p>
+        <p>
+          The below properties can also be specified by creating a file named
+          <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
+        </p>
         <a name="SysPropsMixedSync-Async" />
         <table>
           <caption align="top">System Properties to configure mixed asynchronous and normal loggers</caption>
@@ -343,12 +359,16 @@
           <tr>
             <td>AsyncLoggerConfig.ExceptionHandler</td>
             <td>
-              <tt>null</tt>
+              <tt>default handler</tt>
             </td>
             <td>
               Fully qualified name of a class that implements the <tt>com.lmax.disruptor.ExceptionHandler</tt>
               interface. The class needs to have a public zero-argument constructor.
               If specified, this class will be notified when an exception occurs while logging the messages.
+              <p>
+                If not specified, the default exception handler will print a message and stack trace to the standard
+                error output stream.
+              </p>
             </td>
           </tr>
           <tr>
@@ -364,14 +384,18 @@
           <tr>
             <td>AsyncLoggerConfig.WaitStrategy</td>
             <td>
-              <tt>Block</tt>
+              <tt>Timeout</tt>
             </td>
             <td>
-              Valid values: Block, Sleep, Yield.
+              Valid values: Block, Timeout, Sleep, Yield.
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
               Recommended for resource constrained/virtualised environments.
+              <br />
+              <tt>Timeout</tt> is a variation of the <tt>Block</tt> strategy that will periodically
+              wake up from the lock condition await() call. This ensures that if a notification is missed somehow
+              the consumer thread is not stuck but will recover with a small latency delay (default 10ms).
               <br />
               <tt>Sleep</tt> is a strategy that initially spins, then uses a Thread.yield(), and
               eventually parks for the minimum number of nanos the OS and JVM will allow
@@ -390,8 +414,8 @@
           There are also a few system properties that can be used to maintain application throughput even when
           the underlying appender cannot keep up with the logging rate and the queue is filling up.
           See the details for system properties
-          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt>,
-            <tt>log4j2.DiscardThreshold</tt> and <tt>log4j2.DiscardQueueRatio</tt></a>.
+          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt> and
+            <tt>log4j2.DiscardThreshold</tt></a>.
         </p>
       </subsection>
       <a name="Location" />

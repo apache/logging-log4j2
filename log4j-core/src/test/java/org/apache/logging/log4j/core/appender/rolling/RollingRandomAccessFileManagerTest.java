@@ -69,8 +69,7 @@ public class RollingRandomAccessFileManagerTest {
         manager.write(data, 0, data.length, flushNow); // no buffer overflow exception
 
         // buffer is full but not flushed yet
-        assertEquals(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 2,
-                raf.length());
+        assertEquals(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
     }
 
     /**
@@ -98,8 +97,7 @@ public class RollingRandomAccessFileManagerTest {
         final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
         final byte[] data = new byte[size];
         manager.write(data, 0, data.length, flushNow); // no exception
-        assertEquals(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3,
-                raf.length());
+        assertEquals(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1, raf.length());
 
         manager.flush();
         assertEquals(size, raf.length()); // all data written to file now

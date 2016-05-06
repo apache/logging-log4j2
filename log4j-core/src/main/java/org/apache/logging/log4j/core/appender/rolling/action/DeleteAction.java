@@ -78,11 +78,7 @@ public class DeleteAction extends AbstractPathAction {
      */
     @Override
     public boolean execute() throws IOException {
-        if (scriptCondition != null) {
-            return executeScript();
-        } else {
-            return super.execute();
-        }
+        return scriptCondition != null ? executeScript() : super.execute();
     }
 
     private boolean executeScript() throws IOException {

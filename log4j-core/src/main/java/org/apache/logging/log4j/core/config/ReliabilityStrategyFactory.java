@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -57,8 +58,8 @@ public final class ReliabilityStrategyFactory {
             return new LockingReliabilityStrategy(loggerConfig);
         }
         try {
-            @SuppressWarnings("unchecked")
-            Class<? extends ReliabilityStrategy> cls = (Class<? extends ReliabilityStrategy>) Class.forName(strategy);
+            final Class<? extends ReliabilityStrategy> cls = LoaderUtil.loadClass(strategy).asSubclass(
+                ReliabilityStrategy.class);
             return cls.getConstructor(LoggerConfig.class).newInstance(loggerConfig);
         } catch (Exception dynamicFailed) {
             StatusLogger.getLogger().warn(

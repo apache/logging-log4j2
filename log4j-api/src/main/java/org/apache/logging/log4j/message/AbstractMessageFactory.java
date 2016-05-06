@@ -25,14 +25,13 @@ import java.io.Serializable;
  * </p>
  */
 public abstract class AbstractMessageFactory implements MessageFactory, Serializable {
-
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1307891137684031187L;
 
     /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.Object)
-     */
+         * (non-Javadoc)
+         *
+         * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.Object)
+         */
     @Override
     public Message newMessage(final Object message) {
         return new ObjectMessage(message);
@@ -55,4 +54,5 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
      */
     @Override
     public abstract Message newMessage(String message, Object... params);
+
 }

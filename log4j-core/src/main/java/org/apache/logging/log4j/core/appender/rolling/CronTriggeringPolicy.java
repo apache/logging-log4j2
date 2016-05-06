@@ -123,6 +123,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
 
     private class CronTrigger implements Runnable {
 
+        @Override
         public void run() {
             manager.rollover();
         }

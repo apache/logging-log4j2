@@ -17,11 +17,6 @@
 
 package org.apache.logging.log4j.core.util;
 
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -30,13 +25,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 /**
  * Key/Value pair configuration item.
  *
- * @since 2.1 implements {@link Serializable}
  * @since 2.1 implements {@link #hashCode()} and {@link #equals(Object)}
  */
 @Plugin(name = "KeyValuePair", category = Node.CATEGORY, printObject = true)
-public final class KeyValuePair implements Serializable {
-
-    private static final long serialVersionUID = 4331228262821046866L;
+public final class KeyValuePair {
 
     private final String key;
     private final String value;
@@ -77,17 +69,7 @@ public final class KeyValuePair implements Serializable {
         return new Builder();
     }
 
-    protected Object writeReplace() throws ObjectStreamException {
-        return newBuilder().setKey(this.key).setValue(this.value);
-    }
-
-    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException("Builder proxy required");
-    }
-
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<KeyValuePair>, Serializable {
-
-        private static final long serialVersionUID = 1L;
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<KeyValuePair> {
 
         @PluginBuilderAttribute
         private String key;
@@ -110,9 +92,6 @@ public final class KeyValuePair implements Serializable {
             return new KeyValuePair(key, value);
         }
 
-        protected Object readResolve() throws ObjectStreamException {
-            return new KeyValuePair(key, value);
-        }
     }
 
     @Override

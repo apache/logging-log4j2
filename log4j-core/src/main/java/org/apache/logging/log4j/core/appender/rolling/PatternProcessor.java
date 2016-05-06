@@ -57,12 +57,24 @@ public class PatternProcessor {
     private long nextFileTime = 0;
 
     private RolloverFrequency frequency = null;
+    
+    private final String pattern;
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    @Override
+    public String toString() {
+        return pattern;
+    }
 
     /**
      * Constructor.
      * @param pattern The file pattern.
      */
     public PatternProcessor(final String pattern) {
+        this.pattern = pattern;
         final PatternParser parser = createPatternParser();
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
@@ -277,5 +289,13 @@ public class PatternProcessor {
 
     private boolean patternContains(final String pattern, final char character) {
         return pattern.indexOf(character) >= 0;
+    }
+
+    public RolloverFrequency getFrequency() {
+        return frequency;
+    }
+
+    public long getNextFileTime() {
+        return nextFileTime;
     }
 }

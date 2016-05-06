@@ -33,10 +33,8 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
     /**
      * Gets an instance of the class.
      *
-     * @param config
-     *            The current Configuration.
-     * @param options
-     *            pattern options, an array of three elements: pattern, testString, and substitution.
+     * @param config  The current Configuration.
+     * @param options pattern options, an array of three elements: pattern, testString, and substitution.
      * @return instance of class.
      */
     public static EqualsReplacementConverter newInstance(final Configuration config, final String[] options) {
@@ -59,7 +57,7 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
         final String p = options[1];
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
-        return new EqualsReplacementConverter(formatters, p, options[2]);
+        return new EqualsReplacementConverter(formatters, p, options[2], parser);
     }
 
     private final List<PatternFormatter> formatters;
@@ -68,22 +66,23 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
 
     private final String testString;
 
+    private final PatternParser parser;
+
     /**
      * Construct the converter.
-     * 
-     * @param formatters
-     *            The PatternFormatters to generate the text to manipulate.
-     * @param testString
-     *            The test string.
-     * @param substitution
-     *            The substitution string.
+     *
+     * @param formatters   The PatternFormatters to generate the text to manipulate.
+     * @param testString   The test string.
+     * @param substitution The substitution string.
+     * @param parser       The PatternParser.
      */
     private EqualsReplacementConverter(final List<PatternFormatter> formatters, final String testString,
-            final String substitution) {
+                                       final String substitution, PatternParser parser) {
         super("equals", "equals");
         this.testString = testString;
         this.substitution = substitution;
         this.formatters = formatters;
+        this.parser = parser;
     }
 
     /**
@@ -96,6 +95,27 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
             formatter.format(event, buf);
         }
         final String string = buf.toString();
-        toAppendTo.append(testString.equals(string) ? substitution : string);
+        toAppendTo.append(testString.equals(string) ? parseSubstitution(event) : string);
+    }
+
+    /**
+     * Returns the parsed substitution text.
+     *
+     * @param event the current log event
+     * @return the parsed substitution text
+     */
+    String parseSubstitution(final LogEvent event) {
+        final StringBuilder substitutionBuffer = new StringBuilder();
+        // check if substitution needs to be parsed
+        if (substitution.contains("%")) {
+            // parse substitution pattern
+            final List<PatternFormatter> substitutionFormatters = parser.parse(substitution);
+            for (final PatternFormatter formatter : substitutionFormatters) {
+                formatter.format(event, substitutionBuffer);
+            }
+        } else {
+            substitutionBuffer.append(substitution);
+        }
+        return substitutionBuffer.toString();
     }
 }

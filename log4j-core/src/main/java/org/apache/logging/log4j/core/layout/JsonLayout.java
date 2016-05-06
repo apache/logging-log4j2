@@ -780,8 +780,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 }
  * </pre>
  * <p>
- * If {@code complete="false"}, the appender does not write the JSON open array character "[" at the start of the
- * document. and "]" and the end.
+ * If {@code complete="false"}, the appender does not write the JSON open array character "[" at the start
+ * of the document, "]" and the end, nor comma "," between records.
  * </p>
  * <p>
  * This approach enforces the independence of the JsonLayout and the appender where you embed it.
@@ -806,8 +806,6 @@ public final class JsonLayout extends AbstractJacksonLayout {
     private static final String DEFAULT_HEADER = "[";
 
     static final String CONTENT_TYPE = "application/json";
-
-    private static final long serialVersionUID = 1L;
 
     protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
@@ -881,7 +879,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @param properties
      *            If "true", includes the thread context in the generated JSON.
      * @param complete
-     *            If "true", includes the JSON header and footer, defaults to "false".
+     *            If "true", includes the JSON header and footer, and comma between records.
      * @param compact
      *            If "true", does not use end-of-lines and indentation, defaults to "false".
      * @param eventEol
@@ -897,7 +895,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     @PluginFactory
-    public static AbstractJacksonLayout createLayout(
+    public static JsonLayout createLayout(
             // @formatter:off
             @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
@@ -918,7 +916,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      *
      * @return A JSON Layout.
      */
-    public static AbstractJacksonLayout createDefaultLayout() {
+    public static JsonLayout createDefaultLayout() {
         return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8);
     }
 

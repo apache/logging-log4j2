@@ -17,15 +17,13 @@
 
 package org.apache.logging.log4j.core.layout;
 
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 
 /**
  * PatternMatch configuration item.
@@ -33,9 +31,7 @@ import java.io.Serializable;
  * @since 2.4.1 implements {@link Serializable}
  */
 @Plugin(name = "PatternMatch", category = Node.CATEGORY, printObject = true)
-public final class PatternMatch implements Serializable {
-
-    private static final long serialVersionUID = 4331228262821046877L;
+public final class PatternMatch {
 
     private final String key;
     private final String pattern;
@@ -74,14 +70,6 @@ public final class PatternMatch implements Serializable {
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    protected Object writeReplace() throws ObjectStreamException {
-        return newBuilder().setKey(this.key).setPattern(this.pattern);
-    }
-
-    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException("Builder proxy required");
     }
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<PatternMatch>, Serializable {

@@ -37,6 +37,7 @@
         <section name="Requirements">
            <p>
              The Log4j 2 to SLF4J adapter is dependent on the Log4j 2 API and the SLF4J API.
+             For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
           </p>
         </section>
 
@@ -46,8 +47,8 @@
           the logging implementation as required.
         </p>
            <p>
-             <b><em>Use of the SLF4J adapter (log4j-to-slf4j-2.0.jar) together with 
-             the SLF4J bridge (log4j-slf4j-impl-2.0.jar) should 
+             <b><em>Use of the SLF4J adapter (log4j-to-slf4j-2.x.jar) together with
+             the SLF4J bridge (log4j-slf4j-impl-2.x.jar) should
              never be attempted as it will cause events to endlessly be routed between
              SLF4J and Log4j 2.</em></b>
           </p>

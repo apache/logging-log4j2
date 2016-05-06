@@ -42,9 +42,9 @@ public class MarkerFilterTest {
         MarkerFilter filter = MarkerFilter.createFilter("Parent", null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, null, stranger, null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, child, null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, grandChild, null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, null, stranger, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, child, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, grandChild, (Object) null, (Throwable) null));
         filter.stop();
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setMarker(grandChild) //

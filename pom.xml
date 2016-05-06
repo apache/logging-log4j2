@@ -22,7 +22,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.5.1-SNAPSHOT</version>
+  <version>2.6-SNAPSHOT</version>
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
@@ -35,8 +35,8 @@
     <url>https://issues.apache.org/jira/browse/LOG4J2</url>
   </issueManagement>
   <ciManagement>
-    <system>Buildbot</system>
-    <url>http://ci.apache.org/builders/log4j2-nightly/</url>
+    <system>Jenkins</system>
+    <url>https://builds.apache.org/job/Log4j%202.x/</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
@@ -187,17 +187,17 @@
     <!-- <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
     <Log4jReleaseKey>FA1C814D</Log4jReleaseKey> -->
     <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4jVersion>1.7.13</slf4jVersion>
-    <logbackVersion>1.1.3</logbackVersion>
+    <slf4jVersion>1.7.21</slf4jVersion>
+    <logbackVersion>1.1.7</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.7.0</jackson2Version>
+    <jackson2Version>2.7.4</jackson2Version>
     <springVersion>3.2.13.RELEASE</springVersion>
     <flumeVersion>1.6.0</flumeVersion>
-    <disruptorVersion>3.3.2</disruptorVersion>
-    <compiler.plugin.version>3.3</compiler.plugin.version>
-    <pmd.plugin.version>3.5</pmd.plugin.version>
+    <disruptorVersion>3.3.4</disruptorVersion>
+    <compiler.plugin.version>3.5.1</compiler.plugin.version>
+    <pmd.plugin.version>3.6</pmd.plugin.version>
     <findbugs.plugin.version>3.0.3</findbugs.plugin.version>
-    <changes.plugin.version>2.11</changes.plugin.version>
+    <changes.plugin.version>2.12</changes.plugin.version>
     <javadoc.plugin.version>2.10.3</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
@@ -210,7 +210,7 @@
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.4</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
-    <clirr.plugin.version>2.7</clirr.plugin.version>
+    <clirr.plugin.version>2.6.1</clirr.plugin.version>
     <site.plugin.version>3.4</site.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.7</maven.compile.source>
@@ -219,7 +219,7 @@
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <osgi.api.version>4.3.1</osgi.api.version>
-    <activemq.version>5.13.0</activemq.version>
+    <activemq.version>5.13.2</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
   </properties>
@@ -275,7 +275,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.2.5</version>
+        <version>3.3.9</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -561,7 +561,7 @@
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
-        <version>1.5.4</version>
+        <version>1.5.5</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.jms</groupId>
@@ -589,7 +589,7 @@
       <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
-        <version>0.9.0.0</version>
+        <version>0.9.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.zeromq</groupId>
@@ -610,7 +610,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.11</version>
+        <version>4.12</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -622,7 +622,7 @@
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>3.3.1</version>
+        <version>3.4</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -715,20 +715,31 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.4</version>
+        <version>2.5</version>
         <scope>test</scope>
       </dependency>
       <!-- Used for compressing to formats other than zip and gz -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.10</version>
+        <version>1.11</version>
       </dependency>
       <!-- Used for the CSV layout -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
         <version>1.2</version>
+      </dependency>
+      <!-- GC-free -->
+      <dependency>
+        <groupId>com.google.code.java-allocation-instrumenter</groupId>
+        <artifactId>java-allocation-instrumenter</artifactId>
+        <version>3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hdrhistogram</groupId>
+        <artifactId>HdrHistogram</artifactId>
+        <version>2.1.8</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -819,7 +830,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.4</version>
+          <version>3.0.0</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -964,7 +975,7 @@
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
-            <version>2.9</version>
+            <version>2.10</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -1375,9 +1386,9 @@
       </build>
     </profile>
     <profile>
-      <id>jdk-pre-8</id>
+      <id>jdk7</id>
       <activation>
-        <jdk>[1.6,1.8)</jdk>
+        <jdk>1.7</jdk>
       </activation>
       <build>
         <plugins>

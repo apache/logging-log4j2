@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.test.SomethingThatUsesLogging;
 
 /**
@@ -31,8 +32,6 @@ import org.apache.logging.log4j.test.SomethingThatUsesLogging;
  */
 @Plugin(name = "UsesLoggingAppender", category = "Core", elementType = "appender", printObject = true)
 public final class UsesLoggingAppender extends AbstractAppender {
-
-    private static final long serialVersionUID = 1L;
 
     private final SomethingThatUsesLogging thing;
 
@@ -42,19 +41,12 @@ public final class UsesLoggingAppender extends AbstractAppender {
     }
 
     @PluginFactory
-    public static UsesLoggingAppender createAppender(@PluginAttribute("name") final String name,
-                                            @PluginAttribute("ignoreExceptions") final String ignore,
-                                            @PluginElement("Layout") final Layout<?> layout,
-                                            @PluginElement("Filter") final Filter filter) {
-
-        final boolean ignoreExceptions = Boolean.parseBoolean(ignore);
-
-        if (name == null) {
-            LOGGER.error("No name provided for MyAppender");
-            return null;
-        }
-
-        return new UsesLoggingAppender(name, filter, layout, ignoreExceptions);
+    public static UsesLoggingAppender createAppender(
+        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name,
+        @PluginAttribute("ignoreExceptions") final boolean ignore,
+        @PluginElement("Layout") final Layout<?> layout,
+        @PluginElement("Filter") final Filter filter) {
+        return new UsesLoggingAppender(name, filter, layout, ignore);
     }
 
     @Override

@@ -240,7 +240,7 @@ public class TestConfigurator {
         assertNotNull("Appenders map should not be null.", map);
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
-        
+
         // Sleep and check
         Thread.sleep(50);
         if (!file.setLastModified(System.currentTimeMillis())) {
@@ -251,11 +251,11 @@ public class TestConfigurator {
         for (int i = 0; i < 17; ++i) {
             logger.debug("Test message " + i);
         }
-        
-        // Sleep and check        
-        Thread.sleep(50);            
+
+        // Sleep and check
+        Thread.sleep(50);
         if (is(theInstance(config)).matches(ctx.getConfiguration())) {
-            Thread.sleep(500);            
+            Thread.sleep(500);
         }
         final Configuration newConfig = ctx.getConfiguration();
         assertThat("Configuration not reset", newConfig, is(not(theInstance(config))));
@@ -421,6 +421,7 @@ public class TestConfigurator {
         builder.add( builder.newRootLogger( Level.DEBUG )
                 .add( builder.newAppenderRef( "rolling" ) ) );
         Configuration config = builder.build();
+        config.initialize();
         assertNotNull("No rolling file appender", config.getAppender("rolling"));
         assertEquals("Unexpected Configuration", "RollingBuilder", config.getName());
         // Initialize the new configuration

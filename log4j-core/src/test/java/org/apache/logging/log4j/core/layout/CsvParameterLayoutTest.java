@@ -16,52 +16,60 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.junit.Assert.assertEquals;
-
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ObjectArrayMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests {@link AbstractCsvLayout}.
  *
  * @since 2.4
  */
+@RunWith(value = Parameterized.class)
 public class CsvParameterLayoutTest {
-    static ConfigurationFactory cf = new BasicConfigurationFactory();
+    @Parameterized.Parameters(name = "{0}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(
+                new Object[][]{
+                        { new LoggerContextRule("csvParamsSync.xml"), },
+                        { new LoggerContextRule("csvParamsMixedAsync.xml"), },
+                }
+        );
+    }
+
+    @Rule
+    public final LoggerContextRule init;
+
+    public CsvParameterLayoutTest(final LoggerContextRule contextRule) {
+        this.init = contextRule;
+    }
 
     @AfterClass
     public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
+//        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, null);
         ThreadContext.clearAll();
     }
-
-    @BeforeClass
-    public static void setupClass() {
-        ThreadContext.clearAll();
-        ConfigurationFactory.setConfigurationFactory(cf);
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.reconfigure();
-    }
-
-    private final LoggerContext ctx = LoggerContext.getContext();
-
-    private final Logger root = ctx.getLogger("");
 
     @Test
     public void testCustomCharset() {
@@ -82,7 +90,7 @@ public class CsvParameterLayoutTest {
         assertEquals("text/csv; charset=UTF-8", layout.getContentType());
     }
 
-    private void testLayoutNormalApi(final AbstractCsvLayout layout, boolean messageApi) throws Exception {
+    static void testLayoutNormalApi(final Logger root, final AbstractCsvLayout layout, boolean messageApi) throws Exception {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);
@@ -91,17 +99,24 @@ public class CsvParameterLayoutTest {
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
+        appender.countDownLatch = new CountDownLatch(4);
+
         // set appender on root and set level to debug
         root.addAppender(appender);
         root.setLevel(Level.DEBUG);
 
         // output messages
         if (messageApi) {
-            logDebugObjectArrayMessage();
+            logDebugObjectArrayMessage(root);
         } else {
-            logDebugNormalApi();
+            logDebugNormalApi(root);
         }
 
+        // wait until background thread finished processing
+        appender.countDownLatch.await(10, TimeUnit.SECONDS);
+        assertEquals("Background thread did not finish processing: msg count", 4, appender.getMessages().size());
+
+        // don't stop appender until background thread is done
         appender.stop();
 
         final List<String> list = appender.getMessages();
@@ -112,14 +127,14 @@ public class CsvParameterLayoutTest {
         Assert.assertEquals("7" + d + "8" + d + "9" + d + "10", list.get(3));
     }
 
-    private void logDebugNormalApi() {
-        root.debug(null, 1, 2, 3);
-        root.debug(null, 2, 3);
+    private static void logDebugNormalApi(final Logger root) {
+        root.debug("with placeholders: {}{}{}", 1, 2, 3);
+        root.debug("without placeholders", 2, 3);
         root.debug(null, 5, 6);
-        root.debug(null, 7, 8, 9, 10);
+        root.debug("invalid placeholder count {}", 7, 8, 9, 10);
     }
 
-    private void logDebugObjectArrayMessage() {
+    private static void logDebugObjectArrayMessage(final Logger root) {
         root.debug(new ObjectArrayMessage(1, 2, 3));
         root.debug(new ObjectArrayMessage(2, 3));
         root.debug(new ObjectArrayMessage(5, 6));
@@ -128,16 +143,19 @@ public class CsvParameterLayoutTest {
 
     @Test
     public void testLayoutDefaultNormal() throws Exception {
-        testLayoutNormalApi(CsvParameterLayout.createDefaultLayout(), false);
+        Logger root = this.init.getLogger("");
+        testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), false);
     }
 
     @Test
     public void testLayoutDefaultObjectArrayMessage() throws Exception {
-        testLayoutNormalApi(CsvParameterLayout.createDefaultLayout(), true);
+        Logger root = this.init.getLogger("");
+        testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), true);
     }
 
     @Test
     public void testLayoutTab() throws Exception {
-        testLayoutNormalApi(CsvParameterLayout.createLayout(CSVFormat.TDF), true);
+        Logger root = this.init.getLogger("");
+        testLayoutNormalApi(root, CsvParameterLayout.createLayout(CSVFormat.TDF), true);
     }
 }

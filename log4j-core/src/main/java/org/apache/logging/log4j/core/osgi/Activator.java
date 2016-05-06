@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.osgi;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
 import org.apache.logging.log4j.core.util.Constants;
@@ -38,7 +39,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final AtomicReference<BundleContext> context = new AtomicReference<>();
+    private final AtomicReference<BundleContext> contextRef = new AtomicReference<>();
 
     @Override
     public void start(final BundleContext context) throws Exception {
@@ -46,7 +47,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
         if (PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR) == null) {
             System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BundleContextSelector.class.getName());
         }
-        if (this.context.compareAndSet(null, context)) {
+        if (this.contextRef.compareAndSet(null, context)) {
             context.addBundleListener(this);
             // done after the BundleListener as to not miss any new bundle installs in the interim
             scanInstalledBundlesForPlugins(context);
@@ -56,7 +57,8 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     private static void scanInstalledBundlesForPlugins(final BundleContext context) {
         final Bundle[] bundles = context.getBundles();
         for (final Bundle bundle : bundles) {
-            if (bundle.getState() == Bundle.ACTIVE) {
+            // LOG4J2-920: don't scan system bundle for plugins
+            if (bundle.getState() == Bundle.ACTIVE && bundle.getBundleId() != 0) {
                 // TODO: bundle state can change during this
                 scanBundleForPlugins(bundle);
             }
@@ -77,9 +79,8 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-        // not much can be done that isn't already automated by the framework
-        this.context.compareAndSet(context, null);
-        // TODO: shut down log4j
+        this.contextRef.compareAndSet(context, null);
+        LogManager.shutdown();
     }
 
     @Override

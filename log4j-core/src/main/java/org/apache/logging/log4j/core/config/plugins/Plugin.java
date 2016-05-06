@@ -54,6 +54,9 @@ public @interface Plugin {
      */
     String elementType() default EMPTY;
 
+    /**
+     * Indicates if the plugin class implements a useful {@link Object#toString()} method for use in log messages.
+     */
     boolean printObject() default false;
 
     boolean deferChildren() default false;

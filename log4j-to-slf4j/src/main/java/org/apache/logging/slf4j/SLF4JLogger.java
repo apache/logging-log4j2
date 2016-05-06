@@ -45,7 +45,7 @@ public class SLF4JLogger extends AbstractLogger {
         this.logger = logger;
         this.locationAwareLogger = logger instanceof LocationAwareLogger ? (LocationAwareLogger) logger : null;
     }
-    
+
     private int convertLevel(final Level level) {
         switch (level.getStandardLevel()) {
             case DEBUG :
@@ -84,7 +84,7 @@ public class SLF4JLogger extends AbstractLogger {
         // Option: return Level.ALL;
         return Level.OFF;
     }
-    
+
     public org.slf4j.Logger getLogger() {
         return locationAwareLogger != null ? locationAwareLogger : logger;
     }
@@ -112,6 +112,11 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
+    public boolean isEnabled(final Level level, final Marker marker, final CharSequence data, final Throwable t) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
         return isEnabledFor(level, marker);
     }
@@ -123,6 +128,74 @@ public class SLF4JLogger extends AbstractLogger {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
         return isEnabledFor(level, marker);
     }
 

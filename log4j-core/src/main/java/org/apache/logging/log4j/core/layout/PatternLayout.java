@@ -76,15 +76,11 @@ public final class PatternLayout extends AbstractStringLayout {
     /** Key to identify pattern converters. */
     public static final String KEY = "Converter";
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Conversion pattern.
      */
     private final String conversionPattern;
-
     private final PatternSelector patternSelector;
-
     private final Serializer eventSerializer;
 
     /**
@@ -152,7 +148,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * <li>Key: "formatType" Value: "conversion" (format uses the keywords supported by OptionConverter)</li>
      * <li>Key: "format" Value: provided "conversionPattern" param</li>
      * </ul>
-     * 
+     *
      * @return Map of content format keys supporting PatternLayout
      */
     @Override
@@ -173,6 +169,29 @@ public final class PatternLayout extends AbstractStringLayout {
     @Override
     public String toSerializable(final LogEvent event) {
         return eventSerializer.toSerializable(event);
+    }
+
+    @Override
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
+        if (!(eventSerializer instanceof Serializer2)) {
+            super.encode(event, destination);
+            return;
+        }
+        final StringBuilder text = toText((Serializer2) eventSerializer, event, getStringBuilder());
+        final Encoder<StringBuilder> encoder = getStringBuilderEncoder();
+        encoder.encode(text, destination);
+    }
+
+    /**
+     * Creates a text representation of the specified log event
+     * and writes it into the specified StringBuilder.
+     * <p>
+     * Implementations are free to return a new StringBuilder if they can
+     * detect in advance that the specified StringBuilder is too small.
+     */
+    private StringBuilder toText(final Serializer2 serializer, final LogEvent event,
+            final StringBuilder destination) {
+        return serializer.toSerializable(event, destination);
     }
 
     /**
@@ -203,7 +222,7 @@ public final class PatternLayout extends AbstractStringLayout {
      *
      * @param pattern
      *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
-     * @param patternSelector 
+     * @param patternSelector
      *        Allows different patterns to be used based on some selection criteria.
      * @param config
      *        The Configuration. Some Converters require access to the Interpolator.
@@ -246,7 +265,7 @@ public final class PatternLayout extends AbstractStringLayout {
             .build();
     }
 
-    private static class PatternSerializer implements Serializer {
+    private static class PatternSerializer implements Serializer, Serializer2 {
 
         private final PatternFormatter[] formatters;
         private final RegexReplacement replace;
@@ -259,16 +278,22 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = getStringBuilder();
+            return toSerializable(event, getStringBuilder()).toString();
+        }
+
+        @Override
+        public StringBuilder toSerializable(final LogEvent event, final StringBuilder buffer) {
             final int len = formatters.length;
             for (int i = 0; i < len; i++) {
-                formatters[i].format(event, buf);
+                formatters[i].format(event, buffer);
             }
-            String str = buf.toString();
-            if (replace != null) {
+            if (replace != null) { // creates temporary objects
+                String str = buffer.toString();
                 str = replace.format(str);
+                buffer.setLength(0);
+                buffer.append(str);
             }
-            return str;
+            return buffer;
         }
 
         @Override
@@ -284,7 +309,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
     }
 
-    private static class PatternSelectorSerializer implements Serializer {
+    private static class PatternSelectorSerializer implements Serializer, Serializer2 {
 
         private final PatternSelector patternSelector;
         private final RegexReplacement replace;
@@ -297,17 +322,23 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = getStringBuilder();
+            return toSerializable(event, getStringBuilder()).toString();
+        }
+
+        @Override
+        public StringBuilder toSerializable(final LogEvent event, final StringBuilder buffer) {
             final PatternFormatter[] formatters = patternSelector.getFormatters(event);
             final int len = formatters.length;
             for (int i = 0; i < len; i++) {
-                formatters[i].format(event, buf);
+                formatters[i].format(event, buffer);
             }
-            String str = buf.toString();
-            if (replace != null) {
+            if (replace != null) { // creates temporary objects
+                String str = buffer.toString();
                 str = replace.format(str);
+                buffer.setLength(0);
+                buffer.append(str);
             }
-            return str;
+            return buffer;
         }
 
         @Override
@@ -337,7 +368,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Creates a PatternLayout using the default options and the given configuration. These options include using UTF-8,
      * the default conversion pattern, exceptions being written, and with ANSI escape codes.
-     * 
+     *
      * @param configuration The Configuration.
      *
      * @return the PatternLayout.
@@ -349,7 +380,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
     /**
      * Creates a builder for a custom PatternLayout.
-     * 
+     *
      * @return a PatternLayout builder.
      */
     @PluginBuilderFactory

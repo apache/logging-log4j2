@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -42,7 +43,7 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * Extends OutputStreamManager but instead of using a buffered output stream, this class maps a region of a file into
  * memory and writes to this memory region.
  * <p>
- * 
+ *
  * @see <a href="http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java">
  *      http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java</a>
  * @see <a href="http://bugs.java.com/view_bug.do?bug_id=6893654">http://bugs.java.com/view_bug.do?bug_id=6893654</a>
@@ -50,7 +51,7 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * @see <a
  *      href="http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation">
  *      http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation</a>
- * 
+ *
  * @since 2.1
  */
 //CHECKSTYLE:ON
@@ -74,13 +75,14 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     protected MemoryMappedFileManager(final RandomAccessFile file, final String fileName, final OutputStream os,
             final boolean force, final long position, final int regionLength, final String advertiseURI,
             final Layout<? extends Serializable> layout, final boolean writeHeader) throws IOException {
-        super(os, fileName, layout, writeHeader);
+        super(os, fileName, layout, writeHeader, ByteBuffer.wrap(new byte[0]));
         this.isForce = force;
         this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;
         this.advertiseURI = advertiseURI;
         this.isEndOfBatch.set(Boolean.FALSE);
         this.mappedBuffer = mmap(randomAccessFile.getChannel(), getFileName(), position, regionLength);
+        this.byteBuffer = mappedBuffer;
         this.mappingOffset = position;
     }
 
@@ -112,8 +114,6 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     @Override
     protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
-        super.write(bytes, offset, length, immediateFlush); // writes to dummy output stream
-
         while (length > mappedBuffer.remaining()) {
             final int chunk = mappedBuffer.remaining();
             mappedBuffer.put(bytes, offset, chunk);
@@ -141,8 +141,9 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final float millis = (float) ((System.nanoTime() - startNanos) / NANOS_PER_MILLISEC);
             LOGGER.debug("{} {} extended {} OK in {} millis", getClass().getSimpleName(), getName(), getFileName(),
                     millis);
-            
+
             mappedBuffer = mmap(randomAccessFile.getChannel(), getFileName(), offset, length);
+            this.byteBuffer = mappedBuffer;
             mappingOffset = offset;
         } catch (final Exception ex) {
             logError("unable to remap", ex);
@@ -235,7 +236,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     /**
      * Returns the length of the memory mapped region.
-     * 
+     *
      * @return the length of the mapped region
      */
     public int getRegionLength() {
@@ -245,7 +246,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     /**
      * Returns {@code true} if the content of the buffer should be forced to the storage device on every write,
      * {@code false} otherwise.
-     * 
+     *
      * @return whether each write should be force-sync'ed
      */
     public boolean isImmediateFlush() {
@@ -257,7 +258,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      * <p>
      * Key: "fileURI" Value: provided "advertiseURI" param.
      * </p>
-     * 
+     *
      * @return Map of content format keys supporting FileManager
      */
     @Override
@@ -265,6 +266,22 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         final Map<String, String> result = new HashMap<>(super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;
+    }
+
+    @Override
+    protected void flushBuffer(final ByteBuffer buffer) {
+        // do nothing (do not call drain() to avoid spurious remapping)
+    }
+
+    @Override
+    public ByteBuffer getByteBuffer() {
+        return mappedBuffer;
+    }
+
+    @Override
+    public ByteBuffer drain(final ByteBuffer buf) {
+        remap();
+        return mappedBuffer;
     }
 
     /**

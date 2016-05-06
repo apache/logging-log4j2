@@ -21,6 +21,9 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 
+/**
+ * TODO Should use thread name cache?
+ */
 public class ThreadNameFilter extends AbstractFilter {
 
     private static final long serialVersionUID = 1L;

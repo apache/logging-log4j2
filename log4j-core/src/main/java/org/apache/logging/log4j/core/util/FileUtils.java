@@ -24,9 +24,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -100,9 +97,8 @@ public final class FileUtils {
         String fileName = file.getName();
         if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

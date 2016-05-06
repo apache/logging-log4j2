@@ -46,14 +46,13 @@ import org.apache.logging.log4j.core.util.Booleans;
  */
 @Plugin(name = "Routing", category = "Core", elementType = "appender", printObject = true)
 public final class RoutingAppender extends AbstractAppender {
-    private static final long serialVersionUID = 1L;
     private static final String DEFAULT_KEY = "ROUTING_APPENDER_DEFAULT";
     private final Routes routes;
     private final Route defaultRoute;
     private final Configuration config;
     private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
-	private final PurgePolicy purgePolicy;
+	  private final PurgePolicy purgePolicy;
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
                             final RewritePolicy rewritePolicy, final Configuration config, PurgePolicy purgePolicy) {

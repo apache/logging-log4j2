@@ -56,6 +56,7 @@ public class RoutingDefaultAppenderTest {
         if (app != null) {
             app.clear();
         }
+        this.init.getContext().stop();
     }
 
     @Test

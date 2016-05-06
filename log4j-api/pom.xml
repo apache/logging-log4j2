@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.5.1-SNAPSHOT</version>
+    <version>2.6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-api</artifactId>
@@ -33,6 +33,12 @@
     <projectDir>/api</projectDir>
   </properties>
   <dependencies>
+    <!-- Place Felix before Equinox because Felix is signed. / also place it before org.osgi.core so that its versions of the OSGi classes are used -->
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.framework</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
@@ -41,12 +47,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Place Felix before Equinox because Felix is signed. -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -62,6 +62,18 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Required for JSON support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Required for JSON support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -109,6 +121,7 @@
             <Export-Package>org.apache.logging.log4j.*</Export-Package>
             <Import-Package>
               sun.reflect;resolution:=optional,
+              org.apache.logging.log4j.core.osgi;resolution:=optional,
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>

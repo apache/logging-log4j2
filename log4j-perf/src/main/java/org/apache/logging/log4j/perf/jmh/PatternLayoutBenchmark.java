@@ -42,7 +42,9 @@ import org.openjdk.jmh.annotations.State;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*PatternLayout.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*PatternLayoutBench.*" -f 1 -wi 5 -i 10
+// java -Dfile.encoding=UTF8       -jar log4j-perf/target/benchmarks.jar ".*PatternLayoutBench.*" -f 1 -wi 5 -i 10
+// java -Dfile.encoding=ISO-8859-1 -jar log4j-perf/target/benchmarks.jar ".*PatternLayoutBench.*" -f 1 -wi 5 -i 10
 //
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
@@ -63,6 +65,10 @@ public class PatternLayoutBenchmark {
     private final PatternLayout PATTERN_M_C = PatternLayout.createLayout("%c %m%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
     private final PatternLayout PATTERN_M_C_D = PatternLayout.createLayout("%d %c %m%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
     private final PatternLayout PATTERN_M_D = PatternLayout.createLayout("%d %m%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
+    private final PatternLayout PATTERN_C = PatternLayout.createLayout("%c%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
+    private final PatternLayout PATTERN_D = PatternLayout.createLayout("%d%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
+    private final PatternLayout PATTERN_M_D_NOSPACE = PatternLayout.createLayout("%d%m%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
+    private final PatternLayout PATTERN_M_C_NOSPACE = PatternLayout.createLayout("%c%m%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
     private final PatternLayout PATTERN_M_EX = PatternLayout.createLayout("%m %ex%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
     private final PatternLayout PATTERN_M_D_EX = PatternLayout.createLayout("%d %m%ex%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
     private final PatternLayout PATTERN_M_C_D_EX = PatternLayout.createLayout("%d %c %m%ex%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
@@ -95,66 +101,179 @@ public class PatternLayoutBenchmark {
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputStringGetBytes() {
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytes() {
         return STR.getBytes();
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputPatternM() {
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayM() {
         return PATTERN_M.toByteArray(EVENT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputPatternSpace() {
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArraySpace() {
         return PATTERN_SPACE.toByteArray(EVENT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputPatternMC() {
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayMC() {
         return PATTERN_M_C.toByteArray(EVENT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputPatternMCD() {
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayMCD() {
         return PATTERN_M_C_D.toByteArray(EVENT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputPatternMD() {
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayMD() {
         return PATTERN_M_D.toByteArray(EVENT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputPatternMDEx() {
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayMDEx() {
         return PATTERN_M_D_EX.toByteArray(EVENT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputPatternMEx() {
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayMEx() {
         return PATTERN_M_EX.toByteArray(EVENT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputPatternMCDEx() {
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayMCDEx() {
         return PATTERN_M_C_D_EX.toByteArray(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayC() {
+        return PATTERN_C.toByteArray(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayD() {
+        return PATTERN_D.toByteArray(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayMDNoSpace() {
+        return PATTERN_M_D_NOSPACE.toByteArray(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] byteArrayMCNoSpace() {
+        return PATTERN_M_C_NOSPACE.toByteArray(EVENT);
+    }
+//---
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableM() {
+        return PATTERN_M.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableSpace() {
+        return PATTERN_SPACE.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableMC() {
+        return PATTERN_M_C.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableMCD() {
+        return PATTERN_M_C_D.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableMD() {
+        return PATTERN_M_D.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableMDEx() {
+        return PATTERN_M_D_EX.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableMEx() {
+        return PATTERN_M_EX.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableMCDEx() {
+        return PATTERN_M_C_D_EX.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableC() {
+        return PATTERN_C.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableD() {
+        return PATTERN_D.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableMDNoSpace() {
+        return PATTERN_M_D_NOSPACE.toSerializable(EVENT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String serializableMCNoSpace() {
+        return PATTERN_M_C_NOSPACE.toSerializable(EVENT);
     }
 
 }

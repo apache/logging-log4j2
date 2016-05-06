@@ -32,48 +32,31 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DiscardingAsyncEventRouter extends DefaultAsyncEventRouter {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final int thresholdQueueRemainingCapacity;
     private final Level thresholdLevel;
     private final AtomicLong discardCount = new AtomicLong();
 
     /**
      * Constructs a router that will discard events {@linkplain Level#isLessSpecificThan(Level) equal or less specific}
-     * than the specified threshold level when the queue is fuller than the specified threshold ratio.
+     * than the specified threshold level when the queue is full.
      *
-     * @param queueSize size of the queue
-     * @param thresholdQueueFilledRatio threshold ratio: if queue is fuller than this, start discarding events
      * @param thresholdLevel level of events to discard
      */
-    public DiscardingAsyncEventRouter(final int queueSize, final float thresholdQueueFilledRatio,
-            final Level thresholdLevel) {
-        thresholdQueueRemainingCapacity = calcThresholdQueueRemainingCapacity(queueSize, thresholdQueueFilledRatio);
+    public DiscardingAsyncEventRouter(final Level thresholdLevel) {
         this.thresholdLevel = Objects.requireNonNull(thresholdLevel, "thresholdLevel");
     }
 
-    private static int calcThresholdQueueRemainingCapacity(final int queueSize,
-            final float thresholdQueueFilledRatio) {
-        if (thresholdQueueFilledRatio >= 1F) {
-            return 0;
-        }
-        if (thresholdQueueFilledRatio <= 0F) {
-            return queueSize;
-        }
-        return (int) ((1 - thresholdQueueFilledRatio) * queueSize);
-    }
-
     @Override
-    public EventRoute getRoute(final long backgroundThreadId, final Level level, final int queueSize,
-            final int queueRemainingCapacity) {
-        if (queueRemainingCapacity <= thresholdQueueRemainingCapacity && level.isLessSpecificThan(thresholdLevel)) {
+    public EventRoute getRoute(final long backgroundThreadId, final Level level) {
+        if (level.isLessSpecificThan(thresholdLevel)) {
             if (discardCount.getAndIncrement() == 0) {
-                LOGGER.warn("Async remaining queue capacity is {}, discarding event with level {}. " +
+                LOGGER.warn("Async queue is full, discarding event with level {}. " +
                         "This message will only appear once; future events from {} " +
                         "are silently discarded until queue capacity becomes available.",
-                        queueRemainingCapacity, level, thresholdLevel);
+                        level, thresholdLevel);
             }
             return EventRoute.DISCARD;
         }
-        return super.getRoute(backgroundThreadId, level, queueSize, queueRemainingCapacity);
+        return super.getRoute(backgroundThreadId, level);
     }
 
     public static long getDiscardCount(final AsyncEventRouter router) {
@@ -81,10 +64,6 @@ public class DiscardingAsyncEventRouter extends DefaultAsyncEventRouter {
             return ((DiscardingAsyncEventRouter) router).discardCount.get();
         }
         return 0;
-    }
-
-    public int getThresholdQueueRemainingCapacity() {
-        return thresholdQueueRemainingCapacity;
     }
 
     public Level getThresholdLevel() {

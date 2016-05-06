@@ -30,7 +30,7 @@ import org.junit.Test;
 
 /**
  * Tests the MemoryMappedFileManager class.
- * 
+ *
  * @since 2.1
  */
 public class MemoryMappedFileManagerTest {
@@ -51,7 +51,7 @@ public class MemoryMappedFileManagerTest {
 
         for (int i = 0; i < 1000; i++) {
             msg = ("Message " + i + "\n").getBytes();
-            manager.write(msg, 0, msg.length);
+            manager.write(msg, 0, msg.length, false);
         }
 
         manager.release();

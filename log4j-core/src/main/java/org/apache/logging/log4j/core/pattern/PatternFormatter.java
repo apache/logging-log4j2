@@ -25,13 +25,22 @@ import org.apache.logging.log4j.core.LogEvent;
 public class PatternFormatter {
     private final LogEventPatternConverter converter;
     private final FormattingInfo field;
+    private final boolean skipFormattingInfo;
 
     public PatternFormatter(final LogEventPatternConverter converter, final FormattingInfo field) {
         this.converter = converter;
         this.field = field;
+        this.skipFormattingInfo = field == FormattingInfo.getDefault();
     }
 
     public void format(final LogEvent event, final StringBuilder buf) {
+        if (skipFormattingInfo) {
+            converter.format(event, buf);
+        } else {
+            formatWithInfo(event, buf);
+        }
+    }
+    private void formatWithInfo(final LogEvent event, final StringBuilder buf) {
         final int startField = buf.length();
         converter.format(event, buf);
         field.format(startField, buf);

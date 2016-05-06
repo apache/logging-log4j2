@@ -154,11 +154,11 @@ public class ScriptManager implements FileWatcher, Serializable {
 
     private interface ScriptRunner {
 
-        public Object execute(Bindings bindings);
+        Object execute(Bindings bindings);
 
-        public AbstractScript getScript();
+        AbstractScript getScript();
 
-        public ScriptEngine getScriptEngine();
+        ScriptEngine getScriptEngine();
     }
 
     private class MainScriptRunner implements ScriptRunner {

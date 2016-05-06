@@ -77,6 +77,7 @@
         <item name="Lookup Variables" href="/manual/configuration.html#RuntimeLookup"/>
         <item name="Scripts" href="/manual/configuration.html#Scripts"/>
         <item name="XInclude" href="/manual/configuration.html#XInclude"/>
+        <item name="Composite Configurations" href="/manual/configuration.html#CompositeConfiguration"/>
         <item name="Status Messages" href="/manual/configuration.html#StatusMessages"/>
         <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>
         <item name="System Properties" href="/manual/configuration.html#SystemProperties"/>
@@ -128,7 +129,7 @@
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
-        <item name="ZeroMQ/JeroMQ" href="/manual/appenders.html#JeroMQAppender"/>        
+        <item name="ZeroMQ/JeroMQ" href="/manual/appenders.html#JeroMQAppender"/>
       </item>
 
       <item name="Layouts" href="/manual/layouts.html" collapse="true">
@@ -141,6 +142,7 @@
         <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
         <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>
         <item name="XML" href="/manual/layouts.html#XMLLayout"/>
+        <item name="YAML" href="/manual/layouts.html#YamlLayout"/>
         <item name="Location Information" href="/manual/layouts.html#LocationInformation"/>
       </item>
 
@@ -165,6 +167,16 @@
         <item name="Location" href="/manual/async.html#Location"/>
         <item name="Performance" href="/manual/async.html#Performance"/>
         <item name="Under The Hood" href="/manual/async.html#UnderTheHood"/>
+      </item>
+
+      <item name="Garbage-free Logging" href="/manual/garbagefree.html" collapse="true">
+        <item name="Configuration" href="/manual/garbagefree.html#Config"/>
+        <item name="Supported Appenders" href="/manual/garbagefree.html#Appenders"/>
+        <item name="Supported Layouts" href="/manual/garbagefree.html#Layouts"/>
+        <item name="API Changes" href="/manual/garbagefree.html#api"/>
+        <item name="Impact on Application Code" href="/manual/garbagefree.html#codeImpact"/>
+        <item name="Performance" href="/manual/garbagefree.html#Performance"/>
+        <item name="Under the Hood" href="/manual/garbagefree.html#UnderTheHood"/>
       </item>
 
       <item name="JMX" href="/manual/jmx.html"/>
@@ -198,7 +210,7 @@
         <item name="Using Configurator" href="/manual/customconfig.html#Configurator"/>
         <item name="Config File and Code" href="/manual/customconfig.html#Hybrid"/>
         <item name="After Initialization" href="/manual/customconfig.html#AddingToCurrent"/>
-        <item name="Appending to Writers &amp; OutputStreams" href="/manual/customconfig.html#AppendingToWritersAndOutputStreams"/>        
+        <item name="Appending to Writers &amp; OutputStreams" href="/manual/customconfig.html#AppendingToWritersAndOutputStreams"/>
       </item>
 
       <item name="Custom Log Levels" href="/manual/customloglevels.html" collapse="true">
@@ -209,6 +221,7 @@
         <item name="Custom Logger Example" href="/manual/customloglevels.html#ExampleUsage"/>
         <item name="Code Generation Tool" href="/manual/customloglevels.html#CodeGen"/>
       </item>
+
     </menu>
 
     <menu name="Components" inherit="top" img="icon-cog">

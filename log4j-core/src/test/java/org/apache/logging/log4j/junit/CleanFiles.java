@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.junit;
 
 import java.io.File;
-import java.sql.Date;
-import java.text.DateFormat;
+import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +31,7 @@ import static org.junit.Assert.*;
  * A JUnit test rule to automatically delete certain files after a test is run.
  */
 public class CleanFiles extends ExternalResource {
+    private static final int MAX_TRIES = 10;
     private final List<File> files;
 
     public CleanFiles(final File... files) {
@@ -46,14 +47,18 @@ public class CleanFiles extends ExternalResource {
 
     private void clean() {
         for (final File file : files) {
-            if (file.exists()) {
-                final boolean deleted = file.delete();
-                if (!deleted) {
-                    file.deleteOnExit();
+            for (int i = 0; i < MAX_TRIES; i++) {
+                if (file.exists()) {
+                    try {
+                        FileSystems.getDefault().provider().delete(file.toPath());
+                    } catch (IOException e) {
+                        fail(e.toString());
+                    }
                 }
-                assertTrue(
-                        "Could not delete " + file.toString() + ", last modified "
-                                + DateFormat.getInstance().format(new Date(file.lastModified())), deleted);
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ignored) {
+                }
             }
         }
     }
@@ -61,5 +66,14 @@ public class CleanFiles extends ExternalResource {
     @Override
     protected void after() {
         this.clean();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("CleanFiles [");
+        builder.append(files);
+        builder.append("]");
+        return builder.toString();
     }
 }

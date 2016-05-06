@@ -34,6 +34,11 @@ public class StackTraceElementMixInTest {
         this.roundtrip(new Log4jJsonObjectMapper());
     }
 
+    @Test
+    public void testLog4jYamlObjectMapper() throws Exception {
+        this.roundtrip(new Log4jYamlObjectMapper());
+    }
+
     /**
      * @param mapper
      * @throws JsonProcessingException

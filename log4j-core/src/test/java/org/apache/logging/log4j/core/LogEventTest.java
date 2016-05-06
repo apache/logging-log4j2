@@ -105,7 +105,9 @@ public class LogEventTest {
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")) //
+                .setThreadId(1) // this must be initialized or the test fails
                 .setThreadName("this must be initialized or the test fails") //
+                .setThreadPriority(2) // this must be initialized or the test fails
                 .setNanoTime(0) //
                 .build();
         final LogEvent event2 = new Log4jLogEvent.Builder(event1).build();

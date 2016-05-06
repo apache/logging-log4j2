@@ -19,6 +19,9 @@ package org.apache.logging.log4j.core;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.Encoder;
+
 /**
  * Lays out a {@linkplain LogEvent} in different formats.
  *
@@ -33,19 +36,19 @@ import java.util.Map;
  * <li>
  * {@linkplain LogEvent}</li>
  * </ul>
+ * <p>
+ * Since 2.6, Layouts can {@linkplain Encoder#encode(Object, ByteBufferDestination) encode} a {@code LogEvent} directly
+ * to a {@link ByteBufferDestination} without creating temporary intermediary objects.
+ * </p>
  *
  * @param <T>
  *            The {@link Serializable} type returned by {@link #toSerializable(LogEvent)}
- *
- * TODO There is still a need for a character-based layout for character based event sinks (databases, etc). Would
- * introduce an EventEncoder, EventRenderer or something similar for the logging event to byte encoding. (RG) A layout
- * can be configured with a Charset and then Strings can be converted to byte arrays. OTOH, it isn't possible to write
- * byte arrays as character streams.
  */
-public interface Layout<T extends Serializable> {
+public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
 
     /**
-     * Main plugin element type for Layout plugins.
+     * Main {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#elementType() plugin element type} for
+     * Layout plugins.
      *
      * @since 2.1
      */
@@ -68,13 +71,8 @@ public interface Layout<T extends Serializable> {
      *
      * @param event The Logging Event.
      * @return The formatted event.
-     * TODO Likely better to write to a OutputStream instead of return a byte[]. (RG) That limits how the
-     * Appender can use the Layout. For example, it might concatenate information in front or behind the
-     * data and then write it all to the OutputStream in one call.
      */
     byte[] toByteArray(LogEvent event);
-
-    // TODO: it would be nice to provide ByteBuffers alongside the byte[]s
 
     /**
      * Formats the event as an Object that can be serialized.

@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
-import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
@@ -45,17 +44,15 @@ import org.apache.logging.log4j.core.util.Integers;
  * intervals.
  */
 @Plugin(name = "RollingRandomAccessFile", category = "Core", elementType = "appender", printObject = true)
-public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingFileManager> {
-
-    private static final long serialVersionUID = 1L;
+public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
 
     private final String fileName;
     private final String filePattern;
-    private Object advertisement;
+    private final Object advertisement;
     private final Advertiser advertiser;
 
     private RollingRandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
-            final Filter filter, final RollingFileManager manager, final String fileName,
+            final Filter filter, final RollingRandomAccessFileManager manager, final String fileName,
             final String filePattern, final boolean ignoreExceptions,
             final boolean immediateFlush, final int bufferSize, final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
@@ -64,6 +61,8 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
             advertisement = advertiser.advertise(configuration);
+        } else {
+            advertisement = null;
         }
         this.fileName = fileName;
         this.filePattern = filePattern;
@@ -85,7 +84,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
      */
     @Override
     public void append(final LogEvent event) {
-        final RollingRandomAccessFileManager manager = (RollingRandomAccessFileManager) getManager();
+        final RollingRandomAccessFileManager manager = getManager();
         manager.checkRollover(event);
 
         // Leverage the nice batching behaviour of async Loggers/Appenders:
@@ -94,7 +93,9 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         // From a user's point of view, this means that all log events are
         // _always_ available in the log file, without incurring the overhead
         // of immediateFlush=true.
-        manager.setEndOfBatch(event.isEndOfBatch());
+        manager.setEndOfBatch(event.isEndOfBatch()); // FIXME manager's EndOfBatch threadlocal can be deleted
+
+        // LOG4J2-1292 utilize gc-free Layout.encode() method: taken care of in superclass
         super.append(event);
     }
 
@@ -115,7 +116,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     public String getFilePattern() {
         return filePattern;
     }
-    
+
     /**
      * Returns the size of the file manager's buffer.
      * @return the buffer size

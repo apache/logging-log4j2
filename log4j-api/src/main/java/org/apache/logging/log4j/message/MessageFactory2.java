@@ -1,0 +1,179 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+package org.apache.logging.log4j.message;
+
+/**
+ * Creates messages. Implementations can provide different message format syntaxes.
+ *
+ * @see ParameterizedMessageFactory
+ */
+public interface MessageFactory2 extends MessageFactory {
+    /**
+     * Creates a new message for the specified CharSequence.
+     * @param charSequence the (potentially mutable) CharSequence
+     * @return a new message for the specified CharSequence
+     */
+    Message newMessage(CharSequence charSequence);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0, Object p1);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0, Object p1, Object p2);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+            Object p7);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+            Object p7, Object p8);
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @param p9 the message parameters
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+            Object p7, Object p8, Object p9);
+}

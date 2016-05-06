@@ -52,7 +52,7 @@ public final class ObjectArrayMessage implements Message {
     }
 
     private boolean equalObjectsOrStrings(final Object[] left, final Object[] right) {
-        return left.equals(right) || String.valueOf(left).equals(String.valueOf(right));
+        return Arrays.equals(left, right) || Arrays.toString(left).equals(Arrays.toString(right));
     }
 
     @Override
@@ -114,7 +114,7 @@ public final class ObjectArrayMessage implements Message {
 
     @Override
     public int hashCode() {
-        return array.hashCode();
+        return Arrays.hashCode(array);
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -124,7 +124,7 @@ public final class ObjectArrayMessage implements Message {
 
     @Override
     public String toString() {
-        return "ObjectArrayMessage[obj=" + getFormattedMessage() + ']';
+        return getFormattedMessage();
     }
 
     private void writeObject(final ObjectOutputStream out) throws IOException {

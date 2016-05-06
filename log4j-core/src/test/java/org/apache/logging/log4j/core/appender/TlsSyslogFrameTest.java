@@ -16,57 +16,36 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.util.Chars;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TlsSyslogFrameTest {
-    private static final String TESTMESSAGE = "The quick brown fox jumps over the lazy dog";
-
-    @Test
-    public void messageSetByConstructor() {
-        final TlsSyslogFrame frame = new TlsSyslogFrame(TESTMESSAGE);
-        final byte[] representation = frame.getBytes();
-        final byte[] expected = getByteRepresentation(TESTMESSAGE);
-        Assert.assertTrue(Arrays.equals(representation, expected));
-    }
-
-    @Test
-    public void messageSetBySetter() {
-        final TlsSyslogFrame frame = new TlsSyslogFrame("Some text");
-        frame.setMessage(TESTMESSAGE);
-        final byte[] representation = frame.getBytes();
-        final byte[] expected = getByteRepresentation(TESTMESSAGE);
-        Assert.assertTrue(Arrays.equals(representation, expected));
-    }
-
-    @Test
-    public void checkGetBytes() {
-        final TlsSyslogFrame frame = new TlsSyslogFrame(TESTMESSAGE);
-        final byte[] representation = frame.getBytes();
-        final byte[] expected = getByteRepresentation(TESTMESSAGE);
-        Assert.assertTrue(Arrays.equals(representation, expected));
-    }
-
-    private byte[] getByteRepresentation(final String message) {
-        final String frame = message.length() + Character.toString(Chars.SPACE) + message;
-        final byte[] representation = frame.getBytes();
-        return representation;
-    }
+    private static final String TEST_MESSAGE = "The quick brown fox jumps over the lazy dog";
 
     @Test
     public void equals() {
-        final TlsSyslogFrame first = new TlsSyslogFrame("A message");
-        final TlsSyslogFrame second = new TlsSyslogFrame("A message");
-        Assert.assertTrue(first.equals(second));
+        final TlsSyslogFrame first = new TlsSyslogFrame(TEST_MESSAGE);
+        final TlsSyslogFrame second = new TlsSyslogFrame(TEST_MESSAGE);
+        Assert.assertEquals(first, second);
+        Assert.assertEquals(first.hashCode(), second.hashCode());
     }
 
     @Test
     public void notEquals() {
         final TlsSyslogFrame first = new TlsSyslogFrame("A message");
         final TlsSyslogFrame second = new TlsSyslogFrame("B message");
-        Assert.assertFalse(first.equals(second));
+        Assert.assertNotEquals(first, second);
+        Assert.assertNotEquals(first.hashCode(), second.hashCode());
+    }
+
+    @Test
+    public void testToString() {
+        final TlsSyslogFrame frame = new TlsSyslogFrame(TEST_MESSAGE);
+        final int length = TEST_MESSAGE.getBytes(StandardCharsets.UTF_8).length;
+        final String expected = Integer.toString(length) + Chars.SPACE + TEST_MESSAGE;
+        Assert.assertEquals(expected, frame.toString());
     }
 }

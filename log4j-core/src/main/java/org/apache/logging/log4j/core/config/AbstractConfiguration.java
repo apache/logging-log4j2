@@ -16,6 +16,24 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -47,30 +65,10 @@ import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
  * The base Configuration. Many configuration implementations will extend this class.
  */
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
-
-    private static final long serialVersionUID = 1L;
 
     private static final int BUF_SIZE = 16384;
 
@@ -100,6 +98,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected boolean isShutdownHookEnabled = true;
 
     /**
+     * The Script manager.
+     */
+    protected ScriptManager scriptManager;
+
+    /**
      * The Advertiser which exposes appender configurations to external systems.
      */
     private Advertiser advertiser = new DefaultAdvertiser();
@@ -115,8 +118,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
-    private ScriptManager scriptManager;
-    private ConfigurationScheduler configurationScheduler = new ConfigurationScheduler();
+    private final ConfigurationScheduler configurationScheduler = new ConfigurationScheduler();
     private final WatchManager watchManager = new WatchManager(configurationScheduler);
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
     private NanoClock nanoClock = new DummyNanoClock();
@@ -153,6 +155,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return scriptManager;
     }
 
+    public void setScriptManager(ScriptManager scriptManager) {
+        this.scriptManager = scriptManager;
+    }
+
+    public PluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    public void setPluginManager(PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
+    @Override
     public WatchManager getWatchManager() {
         return watchManager;
     }
@@ -162,7 +177,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return configurationScheduler;
     }
 
-	@Override
+    public Node getRootNode() {
+        return rootNode;
+    }
+
+    @Override
 	public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
 	    // lazily instantiate only when requested by AsyncLoggers:
 	    // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
@@ -178,6 +197,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
+        subst.setConfiguration(this);
         scriptManager = new ScriptManager(watchManager);
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
@@ -357,7 +377,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return isShutdownHookEnabled;
     }
 
-    protected void setup() {
+    public void setup() {
     }
 
     protected Level getDefaultStatus() {

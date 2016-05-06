@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
@@ -41,7 +42,7 @@ public class RollingFileManager extends FileManager {
 
     private static RollingFileManagerFactory factory = new RollingFileManagerFactory();
 
-    private long size;
+    protected long size;
     private long initialTime;
     private final PatternProcessor patternProcessor;
     private final Semaphore semaphore = new Semaphore(1);
@@ -54,11 +55,20 @@ public class RollingFileManager extends FileManager {
     private static final AtomicReferenceFieldUpdater<RollingFileManager, RolloverStrategy> rolloverStrategyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, RolloverStrategy.class, "rolloverStrategy");
 
+    @Deprecated
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
             final boolean append, final long size, final long time, final TriggeringPolicy triggeringPolicy,
             final RolloverStrategy rolloverStrategy, final String advertiseURI,
             final Layout<? extends Serializable> layout, final int bufferSize, final boolean writeHeader) {
-        super(fileName, os, append, false, advertiseURI, layout, bufferSize, writeHeader);
+        this(fileName, pattern, os, append, size, time, triggeringPolicy, rolloverStrategy, advertiseURI, layout,
+                writeHeader, ByteBuffer.wrap(new byte[Constants.ENCODER_BYTE_BUFFER_SIZE]));
+    }
+
+    protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
+            final boolean append, final long size, final long time, final TriggeringPolicy triggeringPolicy,
+            final RolloverStrategy rolloverStrategy, final String advertiseURI,
+            final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
+        super(fileName, os, append, false, advertiseURI, layout, writeHeader, buffer);
         this.size = size;
         this.initialTime = time;
         this.triggeringPolicy = triggeringPolicy;
@@ -82,16 +92,24 @@ public class RollingFileManager extends FileManager {
      */
     public static RollingFileManager getFileManager(final String fileName, final String pattern, final boolean append,
             final boolean bufferedIO, final TriggeringPolicy policy, final RolloverStrategy strategy,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize) {
+            final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
+            final boolean immediateFlush) {
 
         return (RollingFileManager) getManager(fileName, new FactoryData(pattern, append,
-            bufferedIO, policy, strategy, advertiseURI, layout, bufferSize), factory);
+            bufferedIO, policy, strategy, advertiseURI, layout, bufferSize, immediateFlush), factory);
+    }
+
+    // override to make visible for unit tests
+    @Override
+    protected synchronized void write(final byte[] bytes, final int offset, final int length,
+            final boolean immediateFlush) {
+        super.write(bytes, offset, length, immediateFlush);
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
+    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
         size += length;
-        super.write(bytes, offset, length, immediateFlush);
+        super.writeToDestination(bytes, offset, length);
     }
 
     /**
@@ -99,7 +117,7 @@ public class RollingFileManager extends FileManager {
      * @return The size of the file in bytes.
      */
     public long getFileSize() {
-        return size;
+        return size + byteBuffer.position();
     }
 
     /**
@@ -134,11 +152,7 @@ public class RollingFileManager extends FileManager {
 
     protected void createFileAfterRollover() throws IOException  {
         final OutputStream os = new FileOutputStream(getFileName(), isAppend());
-        if (getBufferSize() > 0) { // negative buffer size means no buffering
-            setOutputStream(new BufferedOutputStream(os, getBufferSize()));
-        } else {
-            setOutputStream(os);
-        }
+        setOutputStream(os);
     }
 
     /**
@@ -149,14 +163,12 @@ public class RollingFileManager extends FileManager {
         return patternProcessor;
     }
 
-    public void setTriggeringPolicy(final TriggeringPolicy triggeringPolicy)
-    {
+    public void setTriggeringPolicy(final TriggeringPolicy triggeringPolicy) {
         triggeringPolicy.initialize(this);
         triggeringPolicyUpdater.compareAndSet(this, this.triggeringPolicy, triggeringPolicy);
     }
 
-    public void setRolloverStrategy(final RolloverStrategy rolloverStrategy)
-    {
+    public void setRolloverStrategy(final RolloverStrategy rolloverStrategy) {
         rolloverStrategyUpdater.compareAndSet(this, this.rolloverStrategy, rolloverStrategy);
     }
 
@@ -300,6 +312,7 @@ public class RollingFileManager extends FileManager {
         private final boolean append;
         private final boolean bufferedIO;
         private final int bufferSize;
+        private final boolean immediateFlush;
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
         private final String advertiseURI;
@@ -313,10 +326,11 @@ public class RollingFileManager extends FileManager {
          * @param advertiseURI
          * @param layout The Layout.
          * @param bufferSize the buffer size
+         * @param immediateFlush flush on every write or not
          */
         public FactoryData(final String pattern, final boolean append, final boolean bufferedIO,
                 final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-                final Layout<? extends Serializable> layout, final int bufferSize) {
+                final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush) {
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;
@@ -325,6 +339,7 @@ public class RollingFileManager extends FileManager {
             this.strategy = strategy;
             this.advertiseURI = advertiseURI;
             this.layout = layout;
+            this.immediateFlush = immediateFlush;
         }
 
         public TriggeringPolicy getTriggeringPolicy()
@@ -376,7 +391,7 @@ public class RollingFileManager extends FileManager {
     private static class RollingFileManagerFactory implements ManagerFactory<RollingFileManager, FactoryData> {
 
         /**
-         * Create the RollingFileManager.
+         * Creates a RollingFileManager.
          * @param name The name of the entity to manage.
          * @param data The data required to create the entity.
          * @return a RollingFileManager.
@@ -401,15 +416,12 @@ public class RollingFileManager extends FileManager {
             OutputStream os;
             try {
                 os = new FileOutputStream(name, data.append);
-                int bufferSize = data.bufferSize;
-                if (data.bufferedIO) {
-                    os = new BufferedOutputStream(os, bufferSize);
-                } else {
-                    bufferSize = -1; // negative buffer size signals bufferedIO was configured false
-                }
+                final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
+                final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
+
                 final long time = file.lastModified(); // LOG4J2-531 create file first so time has valid value
                 return new RollingFileManager(name, data.pattern, os, data.append, size, time, data.policy,
-                    data.strategy, data.advertiseURI, data.layout, bufferSize, writeHeader);
+                    data.strategy, data.advertiseURI, data.layout, writeHeader, buffer);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);
             }

@@ -21,9 +21,11 @@ import org.apache.logging.log4j.message.MessageFactory;
 
 /**
  * Creates keys used in maps for use in LoggerContext implementations.
- * 
+ *
+ * @deprecated with no replacement - no longer used
  * @since 2.5
  */
+@Deprecated
 public class LoggerContextKey {
 
     public static String create(final String name) {

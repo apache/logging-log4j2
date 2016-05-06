@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.core.net.server;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -24,14 +28,12 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.appender.mom.JmsManager;
 import org.apache.logging.log4j.core.net.JndiManager;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * LogEventListener server that receives LogEvents over a JMS {@link javax.jms.Destination}.
@@ -111,6 +113,26 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
     @Override
     public boolean isStopped() {
         return state.get() == State.STOPPED;
+    }
+
+    /**
+     * Starts and runs this server until the user types "exit" into standard input.
+     *
+     * @throws IOException
+     * @since 2.6
+     */
+    public void run() throws IOException {
+        this.start();
+        System.out.println("Type \"exit\" to quit.");
+        final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, Charset.defaultCharset()));
+        while (true) {
+            final String line = stdin.readLine();
+            if (line == null || line.equalsIgnoreCase("exit")) {
+                System.out.println("Exiting. Kill the application if it does not exit due to daemon threads.");
+                this.stop();
+                return;
+            }
+        }
     }
 
 }

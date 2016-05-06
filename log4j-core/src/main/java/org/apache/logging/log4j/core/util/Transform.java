@@ -58,11 +58,10 @@ public final class Transform {
         //much more efficient this way.
 
         final StringBuilder buf = new StringBuilder(input.length() + 6);
-        char ch = ' ';
 
         final int len = input.length();
         for (int i = 0; i < len; i++) {
-            ch = input.charAt(i);
+            final char ch = input.charAt(i);
             if (ch > '>') {
                 buf.append(ch);
             } else if (ch == '<') {

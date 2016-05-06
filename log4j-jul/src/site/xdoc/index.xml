@@ -36,6 +36,7 @@
     <section name="Requirements">
       <p>
         The JDK Logging Adapter is dependent on the Log4j API and optionally Log4j Core.
+        For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
       </p>
     </section>
     <section name="Usage">

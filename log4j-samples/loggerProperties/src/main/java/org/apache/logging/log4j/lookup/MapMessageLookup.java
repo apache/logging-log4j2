@@ -70,16 +70,14 @@ public class MapMessageLookup extends AbstractLookup {
                     }
                     sb.append("}");
                     return sb.toString();
-                } else {
-                    return properties.get(key);
                 }
+                return properties.get(key);
             } catch (final Exception ex) {
                 LOGGER.warn(LOOKUP, "Error while getting property [{}].", key, ex);
                 return null;
             }
-        } else {
-            return null;
         }
+        return null;
     }
 
     public static void setLoggerProperties(String loggerName, Map<String, String> properties) {

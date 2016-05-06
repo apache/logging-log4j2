@@ -144,7 +144,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
      */
     protected List<Rule> parsePattern() {
         final DateFormatSymbols symbols = new DateFormatSymbols(mLocale);
-        final List<Rule> rules = new ArrayList<Rule>();
+        final List<Rule> rules = new ArrayList<>();
 
         final String[] ERAs = symbols.getEras();
         final String[] months = symbols.getMonths();
@@ -1117,7 +1117,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
 
     // -----------------------------------------------------------------------
 
-    private static final ConcurrentMap<TimeZoneDisplayKey, String> cTimeZoneDisplayCache = new ConcurrentHashMap<TimeZoneDisplayKey, String>(
+    private static final ConcurrentMap<TimeZoneDisplayKey, String> cTimeZoneDisplayCache = new ConcurrentHashMap<>(
             7);
 
     /**

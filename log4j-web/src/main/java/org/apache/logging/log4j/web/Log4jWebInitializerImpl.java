@@ -41,6 +41,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.SetUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * This class initializes and deinitializes Log4j no matter how the initialization occurs.
@@ -48,8 +49,6 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWebLifeCycle {
 
     private static final String WEB_INF = "/WEB-INF/";
-
-    private static final long serialVersionUID = 1L;
 
     static {
         if (Loader.isClassAvailable("org.apache.logging.log4j.core.web.JNDIContextFilter")) {
@@ -267,8 +266,8 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             // we compile against 3.0 to support Log4jServletContainerInitializer, but we don't require 3.0
             return this.servletContext.getClassLoader();
         } catch (final Throwable ignore) {
-            // otherwise, use this class's class loader
-            return Log4jWebInitializerImpl.class.getClassLoader();
+            // LOG4J2-248: use TCCL if possible
+            return LoaderUtil.getThreadContextClassLoader();
         }
     }
 

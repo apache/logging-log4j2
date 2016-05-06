@@ -80,7 +80,7 @@ public enum Severity {
 
     private final int code;
 
-    private Severity(final int code) {
+    Severity(final int code) {
         this.code = code;
     }
 

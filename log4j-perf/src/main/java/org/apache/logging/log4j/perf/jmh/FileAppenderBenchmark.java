@@ -17,6 +17,11 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -29,43 +34,44 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.util.concurrent.TimeUnit;
-
 /**
- * Benchmarks Log4j 2, Log4j 1, and Logback using the DEBUG level which is enabled for this test. The configuration
+ * Benchmarks Log4j 2, Log4j 1, Logback and JUL using the DEBUG level which is enabled for this test. The configuration
  * for each uses a FileAppender
  */
 // HOW TO RUN THIS TEST
-// java -jar target/benchmarks.jar ".*FileAppenderBenchmark.*" -f 1 -i 5 -wi 5 -bm sample -tu ns
+// java -jar log4j-perf/target/benchmarks.jar ".*FileAppenderBenchmark.*" -f 1 -wi 10 -i 20
+//
+// RUNNING THIS TEST WITH 4 THREADS:
+// java -jar log4j-perf/target/benchmarks.jar ".*FileAppenderBenchmark.*" -f 1 -wi 10 -i 20 -t 4
 @State(Scope.Thread)
 public class FileAppenderBenchmark {
+    public static final String MESSAGE = "This is a debug message";
+    private FileHandler julFileHandler;
+
     Logger log4j2Logger;
     Logger log4j2RandomLogger;
     org.slf4j.Logger slf4jLogger;
     org.apache.log4j.Logger log4j1Logger;
-    int j;
+    java.util.logging.Logger julLogger;
 
     @Setup
-    public void setUp() {
+    public void setUp() throws Exception {
         System.setProperty("log4j.configurationFile", "log4j2-perf.xml");
         System.setProperty("log4j.configuration", "log4j12-perf.xml");
         System.setProperty("logback.configurationFile", "logback-perf.xml");
 
-        File logbackFile = new File("target/testlogback.log");
-        logbackFile.delete();
-        File log4jFile = new File ("target/testlog4j.log");
-        log4jFile.delete();
-        File log4j2File = new File ("target/testlog4j2.log");
-        log4j2File.delete();
-        File log4j2RAF = new File ("target/testRandomlog4j2.log");
-        log4j2RAF.delete();
+        deleteLogFiles();
 
         log4j2Logger = LogManager.getLogger(FileAppenderBenchmark.class);
         log4j2RandomLogger = LogManager.getLogger("TestRandom");
         slf4jLogger = LoggerFactory.getLogger(FileAppenderBenchmark.class);
         log4j1Logger = org.apache.log4j.Logger.getLogger(FileAppenderBenchmark.class);
-        j = 0;
+
+        julFileHandler = new FileHandler("target/testJulLog.log");
+        julLogger = java.util.logging.Logger.getLogger(getClass().getName());
+        julLogger.setUseParentHandlers(false);
+        julLogger.addHandler(julFileHandler);
+        julLogger.setLevel(Level.ALL);
     }
 
     @TearDown
@@ -74,6 +80,10 @@ public class FileAppenderBenchmark {
         System.clearProperty("log4j.configuration");
         System.clearProperty("logback.configurationFile");
 
+        deleteLogFiles();
+    }
+
+    private void deleteLogFiles() {
         File logbackFile = new File("target/testlogback.log");
         logbackFile.delete();
         File log4jFile = new File ("target/testlog4j.log");
@@ -82,63 +92,44 @@ public class FileAppenderBenchmark {
         log4jRandomFile.delete();
         File log4j2File = new File ("target/testlog4j2.log");
         log4j2File.delete();
+        File julFile = new File("target/testJulLog.log");
+        julFile.delete();
     }
 
     @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public boolean baseline() {
-        ++j;
-        return true;
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    @Benchmark
-    public void log4j2RAFStringConcatenation() {
-        log4j2RandomLogger.debug("This is a debug [" + ++j + "] message");
+    public void log4j2RAF() {
+        log4j2RandomLogger.debug(MESSAGE);
     }
 
 
     @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void log4j2StringConcatenation() {
-        log4j2Logger.debug("This is a debug [" + ++j + "] message");
+    public void log4j2File() {
+        log4j2Logger.debug(MESSAGE);
     }
 
     @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void slf4jStringConcatenation() {
-        slf4jLogger.debug("This is a debug [" + ++j + "] message");
+    public void logbackFile() {
+        slf4jLogger.debug(MESSAGE);
     }
 
     @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void log4j1StringConcatenation() {
-        log4j1Logger.debug("This is a debug [" + ++j + "] message");
+    public void log4j1File() {
+        log4j1Logger.debug(MESSAGE);
     }
 
     @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void log4j2RAFParameterizedString() {
-        log4j2RandomLogger.debug("This is a debug [{}] message", ++j);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    @Benchmark
-    public void log4j2ParameterizedString() {
-        log4j2Logger.debug("This is a debug [{}] message", ++j);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    @Benchmark
-    public void slf4jParameterizedString() {
-        slf4jLogger.debug("This is a debug [{}] message", ++j);
+    public void julFile() {
+        // must specify sourceClass or JUL will look it up by walking the stack trace!
+        julLogger.logp(Level.INFO, getClass().getName(), "julFile", MESSAGE);
     }
 }

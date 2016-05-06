@@ -39,7 +39,6 @@ import org.apache.logging.log4j.core.util.Integers;
 @Plugin(name = "File", category = "Core", elementType = "appender", printObject = true)
 public final class FileAppender extends AbstractOutputStreamAppender<FileManager> {
 
-    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_BUFFER_SIZE = 8192;
     private final String fileName;
     private final Advertiser advertiser;
@@ -48,7 +47,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
     private FileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final FileManager manager, final String filename, final boolean ignoreExceptions,
             final boolean immediateFlush, final Advertiser advertiser) {
-        
+
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
@@ -146,12 +145,12 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         }
 
         final FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered, advertiseUri,
-            layout, bufferSize);
+                layout, bufferSize, isFlush);
         if (manager == null) {
             return null;
         }
 
-        return new FileAppender(name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
+        return new FileAppender(name, layout, filter, manager, fileName, ignoreExceptions, !isBuffered || isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 }

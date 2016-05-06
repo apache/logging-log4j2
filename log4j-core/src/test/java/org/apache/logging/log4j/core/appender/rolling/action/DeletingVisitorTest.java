@@ -38,7 +38,7 @@ public class DeletingVisitorTest {
      * later verification.
      */
     static class DeletingVisitorHelper extends DeletingVisitor {
-        List<Path> deleted = new ArrayList<Path>();
+        List<Path> deleted = new ArrayList<>();
 
         public DeletingVisitorHelper(final Path basePath, final List<? extends PathCondition> pathFilters,
                 final boolean testMode) {

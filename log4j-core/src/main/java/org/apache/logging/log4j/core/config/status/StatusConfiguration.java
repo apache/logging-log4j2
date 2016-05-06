@@ -57,7 +57,7 @@ public class StatusConfiguration {
     /**
      * Specifies how verbose the StatusLogger should be.
      */
-    public static enum Verbosity {
+    public enum Verbosity {
         QUIET, VERBOSE;
 
         /**
@@ -197,6 +197,7 @@ public class StatusConfiguration {
             if (statusListener instanceof StatusConsoleListener) {
                 final StatusConsoleListener listener = (StatusConsoleListener) statusListener;
                 listener.setLevel(this.status);
+                this.logger.updateListenerLevel(this.status);
                 if (this.verbosity == Verbosity.QUIET) {
                     listener.setFilters(this.verboseClasses);
                 }

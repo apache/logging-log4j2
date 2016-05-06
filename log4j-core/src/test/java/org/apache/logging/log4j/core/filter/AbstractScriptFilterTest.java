@@ -38,7 +38,7 @@ public abstract class AbstractScriptFilterTest {
     @Test
     public void testGroovyFilter() throws Exception {
         Logger logger = LogManager.getLogger("TestGroovyFilter");
-        logger.entry();
+        logger.traceEntry();
         logger.info("This should not be logged");
         ThreadContext.put("UserId", "JohnDoe");
         logger.info("This should be logged");
@@ -56,7 +56,7 @@ public abstract class AbstractScriptFilterTest {
     @Test
     public void testJavascriptFilter() throws Exception {
         Logger logger = LogManager.getLogger("TestJavaScriptFilter");
-        logger.entry();
+        logger.traceEntry();
         logger.info("This should not be logged");
         ThreadContext.put("UserId", "JohnDoe");
         logger.info("This should be logged");

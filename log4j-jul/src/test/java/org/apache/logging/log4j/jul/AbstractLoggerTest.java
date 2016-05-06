@@ -17,12 +17,6 @@
 
 package org.apache.logging.log4j.jul;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -31,6 +25,11 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Test;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -88,9 +87,9 @@ public abstract class AbstractLoggerTest {
     @Test
     public void testLogParamMarkers() {
         final Logger flowLogger = Logger.getLogger("TestFlow");
-        flowLogger.logp(java.util.logging.Level.FINER, "sourceClass", "sourceMethod", "ENTRY {0}", "params");
+        flowLogger.logp(java.util.logging.Level.FINER, "sourceClass", "sourceMethod", "ENTER {0}", "params");
         final List<LogEvent> events = flowAppender.getEvents();
-        assertEquals("ENTRY params", events.get(0).getMessage().getFormattedMessage());
+        assertEquals("ENTER params", events.get(0).getMessage().getFormattedMessage());
     }
 
     @Test
@@ -149,9 +148,9 @@ public abstract class AbstractLoggerTest {
                 new Object[] { "TestParam0", "TestParam1" });
         final List<LogEvent> events = flowAppender.getEvents();
         assertThat(events, hasSize(3));
-        assertEquals("entry", events.get(0).getMessage().getFormattedMessage());
-        assertEquals("entry params(TestParam)", events.get(1).getMessage().getFormattedMessage());
-        assertEquals("entry params(TestParam0, TestParam1)", events.get(2).getMessage().getFormattedMessage());
+        assertEquals("Enter", events.get(0).getMessage().getFormattedMessage());
+        assertEquals("Enter params(TestParam)", events.get(1).getMessage().getFormattedMessage());
+        assertEquals("Enter params(TestParam0, TestParam1)", events.get(2).getMessage().getFormattedMessage());
     }
 
     @Test

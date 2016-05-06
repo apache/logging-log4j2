@@ -69,8 +69,10 @@ public class ThreadDumpMessageTest {
     @Test
     public void testToString() {
         final ThreadDumpMessage msg = new ThreadDumpMessage("Test");
-        final String expected = "ThreadDumpMessage[Title=\"Test\"]";
-        assertEquals(expected, msg.toString());
+        final String actual = msg.toString();
+        assertTrue(actual.contains("Test"));
+        assertTrue(actual.contains("RUNNABLE"));
+        assertTrue(actual.contains(getClass().getName()));
     }
 
     @Test

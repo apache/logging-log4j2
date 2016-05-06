@@ -22,6 +22,15 @@ import org.junit.Test;
 
 public class StringsTest {
 
+    /**
+     * A sanity test to make sure a typo does not mess up {@link Strings#EMPTY}.
+     */
+    @Test
+    public void testEMPTY() {
+        Assert.assertEquals("", Strings.EMPTY);
+        Assert.assertEquals(0, Strings.EMPTY.length());
+    }
+
     @Test
     public void testQuote() {
         Assert.assertEquals("'Q'", Strings.quote("Q"));

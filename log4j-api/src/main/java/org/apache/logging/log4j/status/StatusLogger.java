@@ -89,7 +89,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Retrieve the StatusLogger.
-     * 
+     *
      * @return The StatusLogger.
      */
     public static StatusLogger getLogger() {
@@ -102,7 +102,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Registers a new listener.
-     * 
+     *
      * @param listener The StatusListener to register.
      */
     public void registerListener(final StatusListener listener) {
@@ -120,7 +120,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Removes a StatusListener.
-     * 
+     *
      * @param listener The StatusListener to remove.
      */
     public void removeListener(final StatusListener listener) {
@@ -141,9 +141,15 @@ public final class StatusLogger extends AbstractLogger {
         }
     }
 
+    public void updateListenerLevel(final Level status) {
+        if (status.intLevel() > listenersLevel) {
+            listenersLevel = status.intLevel();
+        }
+    }
+
     /**
      * Returns a thread safe Iterable for the StatusListener.
-     * 
+     *
      * @return An Iterable for the list of StatusListeners.
      */
     public Iterable<StatusListener> getListeners() {
@@ -177,7 +183,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Returns a List of all events as StatusData objects.
-     * 
+     *
      * @return The list of StatusData objects.
      */
     public List<StatusData> getStatusData() {
@@ -208,7 +214,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Adds an event.
-     * 
+     *
      * @param marker The Marker
      * @param fqcn The fully qualified class name of the <b>caller</b>
      * @param level The logging level
@@ -275,6 +281,79 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final CharSequence message, final Throwable t) {
+        return isEnabled(level, marker);
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
         return isEnabled(level, marker);
     }
@@ -294,7 +373,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Queues for status events.
-     * 
+     *
      * @param <E> Object type to be stored in the queue.
      */
     private class BoundedQueue<E> extends ConcurrentLinkedQueue<E> {

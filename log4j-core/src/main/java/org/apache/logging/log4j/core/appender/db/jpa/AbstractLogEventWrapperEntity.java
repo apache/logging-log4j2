@@ -159,10 +159,30 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     /**
      * A no-op mutator to satisfy JPA requirements, as this entity is write-only.
      *
+     * @param threadId Ignored.
+     */
+    @SuppressWarnings("unused")
+    public void setThreadId(final long threadId) {
+        // this entity is write-only
+    }
+
+    /**
+     * A no-op mutator to satisfy JPA requirements, as this entity is write-only.
+     *
      * @param threadName Ignored.
      */
     @SuppressWarnings("unused")
     public void setThreadName(final String threadName) {
+        // this entity is write-only
+    }
+
+    /**
+     * A no-op mutator to satisfy JPA requirements, as this entity is write-only.
+     *
+     * @param threadPriority Ignored.
+     */
+    @SuppressWarnings("unused")
+    public void setThreadPriority(final int threadPriority) {
         // this entity is write-only
     }
 

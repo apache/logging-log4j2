@@ -23,8 +23,7 @@ import java.util.ResourceBundle;
  * {@link #newMessage(String, Object...)}.
  */
 public class LocalizedMessageFactory extends AbstractMessageFactory {
-
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1996295808703146741L;
 
     // FIXME: cannot use ResourceBundle name for serialization until Java 8
     private transient final ResourceBundle resourceBundle;
@@ -35,32 +34,28 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
         this.baseName = null;
     }
 
-
     public LocalizedMessageFactory(final String baseName) {
         this.resourceBundle = null;
         this.baseName = baseName;
     }
 
-
     /**
      * Gets the resource bundle base name if set.
-     * 
+     *
      * @return the resource bundle base name if set. May be null.
      */
     public String getBaseName() {
         return this.baseName;
     }
 
-
     /**
      * Gets the resource bundle if set.
-     * 
+     *
      * @return the resource bundle if set. May be null.
      */
     public ResourceBundle getResourceBundle() {
         return this.resourceBundle;
     }
-
 
     /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.

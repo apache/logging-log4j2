@@ -86,8 +86,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     public static final String DEFAULT_MDCID = "mdc";
 
-    private static final long serialVersionUID = 1L;
-
     private static final String LF = "\n";
     private static final int TWO_DIGITS = 10;
     private static final int THREE_DIGITS = 100;
@@ -110,7 +108,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final List<String> mdcExcludes;
     private final List<String> mdcIncludes;
     private final List<String> mdcRequired;
-    private final ListChecker checker;
+    private final ListChecker listChecker;
     private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
     private final String escapeNewLine;
@@ -121,6 +119,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private final List<PatternFormatter> exceptionFormatters;
     private final Map<String, FieldFormatter> fieldFormatters;
+    private final String procId;
 
     private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
             final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
@@ -187,10 +186,12 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         } else {
             mdcRequired = null;
         }
-        this.checker = c != null ? c : noopChecker;
+        this.listChecker = c != null ? c : noopChecker;
         final String name = config == null ? null : config.getName();
         configName = Strings.isNotEmpty(name) ? name : null;
         this.fieldFormatters = createFieldFormatters(loggerFields, config);
+        // TODO Java 9: ProcessHandle.current().getPid();
+        this.procId = "-";
     }
 
     private Map<String, FieldFormatter> createFieldFormatters(final LoggerFields[] loggerFields,
@@ -408,19 +409,19 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         for (final Map.Entry<String, StructuredDataElement> entry : sdElements.entrySet()) {
-            formatStructuredElement(entry.getKey(), mdcPrefix, entry.getValue(), buffer, checker);
+            formatStructuredElement(entry.getKey(), mdcPrefix, entry.getValue(), buffer, listChecker);
         }
     }
 
-    private String escapeNewlines(final String text, final String escapeNewLine) {
-        if (null == escapeNewLine) {
+    private String escapeNewlines(final String text, final String replacement) {
+        if (null == replacement) {
             return text;
         }
-        return NEWLINE_PATTERN.matcher(text).replaceAll(escapeNewLine);
+        return NEWLINE_PATTERN.matcher(text).replaceAll(replacement);
     }
 
     protected String getProcId() {
-        return "-";
+        return procId;
     }
 
     protected List<String> getMdcExcludes() {
@@ -710,8 +711,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return !foundNotEmptyValue;
         }
 
-        void union(final Map<String, String> fields) {
-            this.fields.putAll(fields);
+        void union(final Map<String, String> addFields) {
+            this.fields.putAll(addFields);
         }
 
         Map<String, String> getFields() {

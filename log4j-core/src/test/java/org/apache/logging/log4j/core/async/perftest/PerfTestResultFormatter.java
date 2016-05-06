@@ -33,7 +33,7 @@ import java.util.TreeMap;
  * format it for pasting into Excel.
  */
 class PerfTestResultFormatter {
-    static final String LF = System.getProperty("line.separator");
+    static final String LF = System.lineSeparator();
     static final NumberFormat NUM = new DecimalFormat("#,##0");
 
     static class Stats {

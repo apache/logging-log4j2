@@ -31,6 +31,14 @@
       <subsection name="English">
       <ul>
         <li>
+          <a href="https://springframework.guru/asynchronous-logging-with-log4j-2/">Asynchronous Logging With Log4j 2</a>
+          (March 31, 2016)
+        </li>
+        <li>
+          <a href="http://marxsoftware.blogspot.com/2015/10/log4j2-non-logging-performance.html">Better Performing Non-Logging Logger Calls in Log4j2</a>
+          (October 15, 2015)
+        </li>
+        <li>
           <a href="https://garygregory.wordpress.com/2015/09/16/a-gentle-introduction-to-the-log4j-api-and-lambda-basics/">Writing clean logging code using Java 8 lambdas</a>
           (September 16, 2015)
         </li>

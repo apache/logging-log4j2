@@ -16,31 +16,29 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationScheduler;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Manages FileWatchers.
  */
 public class WatchManager extends AbstractLifeCycle {
 
-    private static final long serialVersionUID = 8998356999926962686L;
     private static Logger logger = StatusLogger.getLogger();
     private final ConcurrentMap<File, FileMonitor> watchers = new ConcurrentHashMap<>();
     private int intervalSeconds = 0;
     private ScheduledFuture<?> future;
-    private ConfigurationScheduler scheduler;
+    private final ConfigurationScheduler scheduler;
 
     public WatchManager(ConfigurationScheduler scheduler) {
         this.scheduler = scheduler;
@@ -81,6 +79,14 @@ public class WatchManager extends AbstractLifeCycle {
 
     }
 
+    public Map<File, FileWatcher> getWatchers() {
+        Map<File, FileWatcher> map = new HashMap<>();
+        for (Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
+            map.put(entry.getKey(), entry.getValue().fileWatcher);
+        }
+        return map;
+    }
+
     private class WatchWorker implements Runnable {
 
         @Override
@@ -89,12 +95,16 @@ public class WatchManager extends AbstractLifeCycle {
                 File file = entry.getKey();
                 FileMonitor fileMonitor = entry.getValue();
                 long lastModfied = file.lastModified();
-                if (lastModfied > fileMonitor.lastModified) {
+                if (fileModified(fileMonitor, lastModfied)) {
                     logger.info("File {} was modified", file.toString());
                     fileMonitor.lastModified = lastModfied;
                     fileMonitor.fileWatcher.fileModified(file);
                 }
             }
+        }
+
+        private boolean fileModified(FileMonitor fileMonitor, long lastModfied) {
+            return lastModfied != fileMonitor.lastModified;
         }
     }
 

@@ -42,14 +42,15 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class RandomAccessFileAppenderTests {
 
-    @Parameterized.Parameters(name = "{0}, locationEnabled={1}")
+    @Parameterized.Parameters(name = "{0}, locationEnabled={1}, type={2}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][]{
-                        { "RandomAccessFileAppenderTest", false },
-                        { "RandomAccessFileAppenderLocationTest", true },
-                        { "RollingRandomAccessFileAppenderTest", false },
-                        { "RollingRandomAccessFileAppenderLocationTest", true }
+                        { "RandomAccessFileAppenderTest", false, ".xml" },
+                        { "RandomAccessFileAppenderLocationTest", true, ".xml" },
+                        { "RollingRandomAccessFileAppenderTest", false, ".xml" },
+                        { "RollingRandomAccessFileAppenderLocationTest", true, ".xml" },
+                        { "RollingRandomAccessFileAppenderLocationPropsTest", false, ".properties" }
                 }
         );
     }
@@ -63,8 +64,8 @@ public class RandomAccessFileAppenderTests {
     private final File logFile;
     private final boolean locationEnabled;
 
-    public RandomAccessFileAppenderTests(final String testName, final boolean locationEnabled) {
-        this.init = new LoggerContextRule(testName + ".xml");
+    public RandomAccessFileAppenderTests(final String testName, final boolean locationEnabled, final String type) {
+        this.init = new LoggerContextRule(testName + type);
         this.logFile = new File("target", testName + ".log");
         this.files = new CleanFiles(this.logFile);
         this.locationEnabled = locationEnabled;

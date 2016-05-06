@@ -19,15 +19,13 @@ package org.apache.logging.log4j.simple;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerContextKey;
+import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -45,7 +43,7 @@ public class SimpleLoggerContext implements LoggerContext {
 
     /** Include the instance name in the log message? */
     private final boolean showLogName;
-    
+
     /**
      * Include the short name (last component) of the logger in the log message. Defaults to true - otherwise we'll be
      * lost in a flood of messages without knowing who sends them.
@@ -62,7 +60,7 @@ public class SimpleLoggerContext implements LoggerContext {
 
     private final PrintStream stream;
 
-    private final ConcurrentMap<String, ExtendedLogger> loggers = new ConcurrentHashMap<>();
+    private final LoggerRegistry<ExtendedLogger> loggerRegistry = new LoggerRegistry<>();
 
     public SimpleLoggerContext() {
         props = new PropertiesUtil("log4j2.simplelog.properties");
@@ -101,20 +99,16 @@ public class SimpleLoggerContext implements LoggerContext {
 
     @Override
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
-        // Note: This is the only method where we add entries to the 'loggers' ivar.
-        // The loggers map key is the logger name plus the messageFactory FQCN.
-        String key = LoggerContextKey.create(name, messageFactory);
-        final ExtendedLogger extendedLogger = loggers.get(key);
+        // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
+        final ExtendedLogger extendedLogger = loggerRegistry.getLogger(name, messageFactory);
         if (extendedLogger != null) {
             AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);
             return extendedLogger;
         }
         final SimpleLogger simpleLogger = new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
                 showContextMap, dateTimeFormat, messageFactory, props, stream);
-        // If messageFactory was null then we need to pull it out of the logger now
-        key = LoggerContextKey.create(name, simpleLogger.getMessageFactory());
-        loggers.putIfAbsent(key, simpleLogger);
-        return loggers.get(key);
+        loggerRegistry.putIfAbsent(name, messageFactory, simpleLogger);
+        return loggerRegistry.getLogger(name, messageFactory);
     }
 
     @Override
@@ -126,12 +120,12 @@ public class SimpleLoggerContext implements LoggerContext {
     public boolean hasLogger(String name, MessageFactory messageFactory) {
         return false;
     }
-    
+
     @Override
     public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
         return false;
     }
-    
+
     @Override
     public Object getExternalContext() {
         return null;

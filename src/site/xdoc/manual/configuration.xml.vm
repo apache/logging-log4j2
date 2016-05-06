@@ -818,12 +818,17 @@ public class Bar {
               configurations define the configuration in terms of plugins and attributes to the plugins.
             </p>
             <p>
-              The properties configuration requires that you list the identifiers of the appenders, filters and loggers,
+              Prior to version 2.6,
+              the properties configuration requires that you list the identifiers of the appenders, filters and loggers,
               in a comma separated list in properties with those names. Each of those components will then be expected
               to be defined in sets of properties that begin with <i>component.identifier</i>. The identifier does not
               have to match the name of the component being defined but must uniquely identify all the attributes and
               subcomponents that are part of the component. Each individual component MUST have a "type" attribute
               specified that identifies the component's Plugin type.
+            </p>
+            <p>
+              As of version 2.6, this list of identifiers is no longer required as names are inferred upon first usage.
+              The list of identifiers used in a 2.4/2.5 format will be safely ignored in 2.6+.
             </p>
             <p>
               Unlike the base components, when creating subcomponents you cannot specify an element containing a list of
@@ -842,12 +847,8 @@ name = PropertiesConfig
 
 property.filename = target/rolling/rollingtest.log
 
-filters = threshold
-
 filter.threshold.type = ThresholdFilter
 filter.threshold.level = debug
-
-appenders = console, rolling, list
 
 appender.console.type = Console
 appender.console.name = STDOUT
@@ -871,20 +872,15 @@ appender.rolling.strategy.max = 5
 
 appender.list.type = List
 appender.list.name = List
-appender.list.filters = threshold
 appender.list.filter.threshold.type = ThresholdFilter
 appender.list.filter.threshold.level = error
-
-loggers = rolling
 
 logger.rolling.name = com.example.my.app
 logger.rolling.level = debug
 logger.rolling.additivity = false
-logger.rolling.appenderRefs = rolling
 logger.rolling.appenderRef.rolling.ref = RollingFile
 
 rootLogger.level = info
-rootLogger.appenderRefs = stdout
 rootLogger.appenderRef.stdout.ref = STDOUT
           </pre>
         </subsection>
@@ -976,6 +972,10 @@ rootLogger.appenderRef.stdout.ref = STDOUT
               <tr>
                 <td>env</td>
                 <td>System environment variables</td>
+              </tr>
+              <tr>
+                <td>jndi</td>
+                <td>A value set in the default JNDI Context.</td>
               </tr>
               <tr>
                 <td>jvmrunargs</td>
@@ -1238,6 +1238,34 @@ rootLogger.appenderRef.stdout.ref = STDOUT
 </loggers>
 ]]></pre>
         </subsection>
+        <a name="CompositeConfiguration"/>
+        <subsection name="Composite Configuration">
+            <p>
+              Log4j allows multiple configuration files to be used by specifying them as a list of comma separated
+              file paths on log4j.configurationFile.  The merge logic can be controlled by specifying a class
+                that implements the MergeStrategy interface on the log4j.mergeStrategy property. The default
+                merge strategy will merge the files using the following rules:
+              <ol>
+                <li>The global configuration attributes are aggregated with those in later configurations replacing
+                  those in previous configurations, with the exception that the highest status level and the lowest
+                  monitorInterval greater than 0 will be used.</li>
+                <li>Properties from all configurations are aggregated. Duplicate properties replace those in previous
+                  configurations.</li>
+                <li>Filters are aggregated under a CompositeFilter if more than one Filter is defined. Since Filters
+                  are not named duplicates may be present.</li>
+                <li>Scripts and ScriptFile references are aggregated. Duplicate definiations replace those in previous
+                  configurations.</li>
+                <li>Appenders are aggregated. Appenders with the same name are replaced by those in later
+                  configurations, including all of the Appender's subcomponents.</li>
+                <li>Loggers are all aggregated. Logger attributes are individually merged with duplicates being
+                  replaced by those in later configurations. Appender references on a Logger are aggregated with
+                  duplicates being replaced by those in later configurations. Filters on a Logger are aggregated
+                  under a CompositeFilter if more than one Filter is defined. Since Filters are not named
+                  duplicates may be present. Filters under Appender references included or discarded depending on
+                  whether their parent Appender reference is kept or discarded.</li>
+                </ol>
+            </p>
+        </subsection>
         <a name="StatusMessages"/>
         <subsection name="Status Messages">
           <table>
@@ -1474,14 +1502,14 @@ StatusLogger.getLogger().registerListener(listener);
           named file to be used during the test.
         </p>
           <p>
-            A third approach, also used extensively by Log4j 2, is to use the <code>InitialLoggerContext</code>
+            A third approach, also used extensively by Log4j 2, is to use the <code>LoggerContextRule</code>
             JUnit test rule which provides additional convenience methods for testing. This requires adding the
             <code>log4j-core</code> <code>test-jar</code> dependency to your test scope dependencies. For example:
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 public class AwesomeTest {
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("MyTestConfig.xml");
+    public LoggerContextRule init = new LoggerContextRule("MyTestConfig.xml");
 
     @Test
     public void testSomeAwesomeFeature() {
@@ -1499,9 +1527,16 @@ public class AwesomeTest {
         <a name="SystemProperties"/>
         <subsection name="System Properties">
         <p>
-          Below follows a number of system properties that can be used to control Log4j 2 behaviour.
+          The Log4j documentation references a number of System Properties that can be used to control various aspects
+          of Log4j 2 behavior. The table below lists these properties along with their default value and a
+          description of what they control.
           Any spaces present in the property name are for visual flow and should be removed.
         </p>
+          <p>
+            The properties listed below can also be specified by creating a file named
+            <tt>log4j2.component.properties</tt>, adding the desired keys and value to the file, and then including
+            the file in the classpath of the application.
+          </p>
 <table>
   <caption align="top">Log4j 2 System Properties</caption>
   <tr>
@@ -1513,7 +1548,16 @@ public class AwesomeTest {
     <td>log4j.configurationFile</td>
     <td>&nbsp;</td>
     <td>
-      Path to an XML or JSON Log4j 2 configuration file.
+      Path to an XML or JSON Log4j 2 configuration file. May also contain a comma separated list of configuration
+      file names.
+    </td>
+  </tr>
+  <tr>
+    <td>log4j.mergeFactory</td>
+    <td>&nbsp;</td>
+    <td>
+      The name of the class that implements the MergeStrategy interface. If not specified
+      <code>DefaultMergeStrategy</code> will be used when creating a CompositeConfiguration..
     </td>
   </tr>
   <tr>
@@ -1798,8 +1842,7 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td>AsyncLogger.ExceptionHandler</td>
-    <td>&nbsp;
-    </td>
+    <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
     </td>
@@ -1831,7 +1874,7 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td>AsyncLoggerConfig.ExceptionHandler</td>
-    <td>&nbsp;    </td>
+    <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
     </td>
@@ -1881,27 +1924,39 @@ public class AwesomeTest {
       <p>If no value is specified (the default) events are never discarded. If the queue is full, the
         logger call blocks until the event can be added to the queue.</p>
       <p>Specify <tt>Discard</tt> to drop events whose level is equal or less than the threshold level
-        (INFO by default) when the queue has been filled to the discard ratio (0.8 by default).</p>
-      <p>It is also possible to specify the fully qualified class name of a custom class that implements the
-        <tt>org.apache.logging.log4j.core.async.AsyncEventRouter</tt> interface.</p>
+        (INFO by default) when the queue is full.</p>
     </td>
   </tr>
   <tr>
     <td>log4j2.DiscardThreshold</td>
     <td>INFO</td>
     <td>Used by the DiscardingAsyncEventRouter to determine which events to drop when the queue
-      becomes too full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
-      events are discarded when the queue has been filled up to or beyond the discard ratio.
+      becomes full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
+      events are discarded when the queue is full.
       This property only has effect if <tt>Discard</tt> is specified as the
       <tt>log4j2.AsyncEventRouter</tt>.</td>
   </tr>
   <tr>
-    <td>log4j2.DiscardQueueRatio</td>
-    <td>0.8</td>
-    <td>Used by the DiscardingAsyncEventRouter to determine when the queue is becoming too full.
-      By default, events may be discarded when the queue is 80% full or more.
-      This property only has effect if <tt>Discard</tt> is specified as the
-      <tt>log4j2.AsyncEventRouter</tt>.</td>
+    <td>log4j2.messageFactory</td>
+    <td>org.apache.logging.log4j.message. ParameterizedMessageFactory</td>
+    <td>Default message factory used by Loggers if no factory was specified.</td>
+  </tr>
+  <tr>
+    <td>log4j2.flowMessageFactory</td>
+    <td>org.apache.logging.log4j.message. DefaultFlowMessageFactory</td>
+    <td>Default flow message factory used by Loggers.</td>
+  </tr>
+  <tr>
+    <td>log4j.initialReusableMsgSize</td>
+    <td>128</td>
+    <td>In GC-free mode, this property determines the initial size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
+  </tr>
+  <tr>
+    <td>log4j.maxReusableMsgSize</td>
+    <td>518</td>
+    <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
   </tr>
 </table>
 

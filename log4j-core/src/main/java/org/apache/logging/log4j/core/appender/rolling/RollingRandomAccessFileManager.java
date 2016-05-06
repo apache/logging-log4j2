@@ -40,21 +40,17 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     private static final RollingRandomAccessFileManagerFactory FACTORY = new RollingRandomAccessFileManagerFactory();
 
-    private final boolean isImmediateFlush;
     private RandomAccessFile randomAccessFile;
-    private final ByteBuffer buffer;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
 
     public RollingRandomAccessFileManager(final RandomAccessFile raf, final String fileName, final String pattern,
             final OutputStream os, final boolean append, final boolean immediateFlush, final int bufferSize,
             final long size, final long time, final TriggeringPolicy policy, final RolloverStrategy strategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader) {
-        super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout, bufferSize,
-                writeHeader);
-        this.isImmediateFlush = immediateFlush;
+        super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout, writeHeader,
+                ByteBuffer.wrap(new byte[bufferSize]));
         this.randomAccessFile = raf;
         isEndOfBatch.set(Boolean.FALSE);
-        this.buffer = ByteBuffer.allocate(bufferSize);
         writeHeader();
     }
 
@@ -93,23 +89,21 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         this.isEndOfBatch.set(Boolean.valueOf(endOfBatch));
     }
 
+    // override to make visible for unit tests
     @Override
-    protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
-        super.write(bytes, offset, length, immediateFlush); // writes to dummy output stream, needed to track file size
+    protected synchronized void write(final byte[] bytes, final int offset, final int length,
+            final boolean immediateFlush) {
+        super.write(bytes, offset, length, immediateFlush);
+    }
 
-        int chunk = 0;
-        do {
-            if (length > buffer.remaining()) {
-                flush();
-            }
-            chunk = Math.min(length, buffer.remaining());
-            buffer.put(bytes, offset, chunk);
-            offset += chunk;
-            length -= chunk;
-        } while (length > 0);
-
-        if (immediateFlush || isImmediateFlush || isEndOfBatch.get() == Boolean.TRUE) {
-            flush();
+    @Override
+    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
+        try {
+            randomAccessFile.write(bytes, offset, length);
+            size += length;
+        } catch (final IOException ex) {
+            final String msg = "Error writing to RandomAccessFile " + getName();
+            throw new AppenderLoggingException(msg, ex);
         }
     }
 
@@ -124,14 +118,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     @Override
     public synchronized void flush() {
-        buffer.flip();
-        try {
-            randomAccessFile.write(buffer.array(), 0, buffer.limit());
-        } catch (final IOException ex) {
-            final String msg = "Error writing to RandomAccessFile " + getName();
-            throw new AppenderLoggingException(msg, ex);
-        }
-        buffer.clear();
+        flushBuffer(byteBuffer);
     }
 
     @Override
@@ -146,12 +133,12 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     /**
      * Returns the buffer capacity.
-     * 
+     *
      * @return the buffer size
      */
     @Override
     public int getBufferSize() {
-        return buffer.capacity();
+        return byteBuffer.capacity();
     }
 
     /**
@@ -197,7 +184,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                         data.append, data.immediateFlush, data.bufferSize, size, time, data.policy, data.strategy,
                         data.advertiseURI, data.layout, writeHeader);
             } catch (final IOException ex) {
-                LOGGER.error("Cannot access RandomAccessFile {}) " + ex);
+                LOGGER.error("Cannot access RandomAccessFile " + ex, ex);
                 if (raf != null) {
                     try {
                         raf.close();
@@ -260,8 +247,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     }
 
     @Override
-    public void updateData(final Object data)
-    {
+    public void updateData(final Object data) {
         final FactoryData factoryData = (FactoryData) data;
         setRolloverStrategy(factoryData.getRolloverStrategy());
         setTriggeringPolicy(factoryData.getTriggeringPolicy());

@@ -45,7 +45,7 @@ class AsyncLoggerDisruptor {
     private ExecutorService executor;
     private String contextName;
 
-    private boolean useThreadLocalTranslator;
+    private boolean useThreadLocalTranslator = true;
     private long backgroundThreadId;
     private AsyncEventRouter asyncEventRouter;
     private int ringBufferSize;
@@ -83,13 +83,12 @@ class AsyncLoggerDisruptor {
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
         executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]"));
         backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
-        asyncEventRouter = AsyncEventRouterFactory.create(ringBufferSize);
+        asyncEventRouter = AsyncEventRouterFactory.create();
 
         disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
                 waitStrategy);
 
-        final ExceptionHandler<RingBufferLogEvent> errorHandler = DisruptorUtil.getExceptionHandler(
-                "AsyncLogger.ExceptionHandler", RingBufferLogEvent.class);
+        final ExceptionHandler<RingBufferLogEvent> errorHandler = DisruptorUtil.getAsyncLoggerExceptionHandler();
         disruptor.handleExceptionsWith(errorHandler);
 
         final RingBufferLogEventHandler[] handlers = {new RingBufferLogEventHandler()};
@@ -164,7 +163,7 @@ class AsyncLoggerDisruptor {
         if (remainingCapacity < 0) {
             return EventRoute.DISCARD;
         }
-        return asyncEventRouter.getRoute(backgroundThreadId, logLevel, ringBufferSize, remainingCapacity);
+        return asyncEventRouter.getRoute(backgroundThreadId, logLevel);
     }
 
     private int remainingDisruptorCapacity() {
@@ -179,10 +178,20 @@ class AsyncLoggerDisruptor {
          */
     private boolean hasLog4jBeenShutDown(final Disruptor<RingBufferLogEvent> aDisruptor) {
         if (aDisruptor == null) { // LOG4J2-639
-            LOGGER.fatal("Ignoring log event after log4j was shut down");
+            LOGGER.warn("Ignoring log event after log4j was shut down");
             return true;
         }
         return false;
+    }
+
+    public boolean tryPublish(final RingBufferLogEventTranslator translator) {
+        // LOG4J2-639: catch NPE if disruptor field was set to null in stop()
+        try {
+            return disruptor.getRingBuffer().tryPublishEvent(translator);
+        } catch (final NullPointerException npe) {
+            LOGGER.warn("[{}] Ignoring log event after log4j was shut down.", contextName);
+            return false;
+        }
     }
 
     void enqueueLogMessageInfo(final RingBufferLogEventTranslator translator) {
@@ -193,7 +202,7 @@ class AsyncLoggerDisruptor {
             // was shut down, which could cause the publishEvent method to hang and never return.
             disruptor.publishEvent(translator);
         } catch (final NullPointerException npe) {
-            LOGGER.fatal("[{}] Ignoring log event after log4j was shut down.", contextName);
+            LOGGER.warn("[{}] Ignoring log event after log4j was shut down.", contextName);
         }
     }
 
@@ -211,6 +220,9 @@ class AsyncLoggerDisruptor {
     /**
      * Signals this AsyncLoggerDisruptor whether it is allowed to store non-JDK classes in ThreadLocal objects for
      * efficiency.
+     * <p>
+     * This property may be modified after the {@link #start()} method has been called.
+     * </p>
      *
      * @param allow whether AsyncLoggers are allowed to use ThreadLocal objects
      * @since 2.5
@@ -218,5 +230,7 @@ class AsyncLoggerDisruptor {
      */
     public void setUseThreadLocals(final boolean allow) {
         useThreadLocalTranslator = allow;
+        LOGGER.trace("[{}] AsyncLoggers have been modified to use a {} translator", contextName,
+                useThreadLocalTranslator ? "threadlocal" : "vararg");
     }
 }

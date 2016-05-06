@@ -35,33 +35,16 @@ public class DefaultAsyncEventRouterTest {
     }
 
     @Test
-    public void testGetRouteEnqueuesIfQueueNotFull() throws Exception {
-        DefaultAsyncEventRouter router = new DefaultAsyncEventRouter();
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(currentThreadId(), Level.OFF, 256, 256));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.OFF, 256, 256));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(currentThreadId(), Level.ALL, 256, 256));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.ALL, 256, 256));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(currentThreadId(), Level.ALL, 256, 255));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.ALL, 256, 255));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(currentThreadId(), Level.OFF, 256, 255));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.OFF, 256, 255));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(currentThreadId(), Level.ALL, 256, 1));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.ALL, 256, 1));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(currentThreadId(), Level.OFF, 256, 1));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.OFF, 256, 1));
-    }
-
-    @Test
     public void testGetRouteEnqueuesIfQueueFullAndCalledFromDifferentThread() throws Exception {
         DefaultAsyncEventRouter router = new DefaultAsyncEventRouter();
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.ALL, 512, 0));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.OFF, 512, 0));
+        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.ALL));
+        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.OFF));
     }
 
     @Test
     public void testGetRouteSynchronousIfQueueFullAndCalledFromSameThread() throws Exception {
         DefaultAsyncEventRouter router = new DefaultAsyncEventRouter();
-        assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.ALL, 512, 0));
-        assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.OFF, 512, 0));
+        assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.ALL));
+        assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.OFF));
     }
 }

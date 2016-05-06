@@ -33,8 +33,7 @@ public final class SimpleMessageFactory extends AbstractMessageFactory {
      * Instance of StringFormatterMessageFactory.
      */
     public static final SimpleMessageFactory INSTANCE = new SimpleMessageFactory();
-
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4418995198790088516L;
 
     /**
      * Creates {@link StringFormattedMessage} instances.

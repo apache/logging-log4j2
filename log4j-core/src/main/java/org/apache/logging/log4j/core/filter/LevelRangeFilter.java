@@ -39,8 +39,6 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "LevelRangeFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class LevelRangeFilter extends AbstractFilter {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Create a ThresholdFilter.
      * 

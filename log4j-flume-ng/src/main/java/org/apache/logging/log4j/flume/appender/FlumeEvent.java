@@ -248,6 +248,24 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
+     * Returns the ID of the Thread.
+     * @return the ID of the Thread.
+     */
+    @Override
+    public long getThreadId() {
+        return event.getThreadId();
+    }
+
+    /**
+     * Returns the priority of the Thread.
+     * @return the priority of the Thread.
+     */
+    @Override
+    public int getThreadPriority() {
+        return event.getThreadPriority();
+    }
+
+    /**
      * Returns the name of the Thread.
      * @return the name of the Thread.
      */

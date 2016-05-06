@@ -23,6 +23,8 @@ import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
  * Extends {@code DefaultComponentBuilder} to specify
  * {@code DefaultConfigurationBuilder<? extends Configuration>} as the
  * {@code ConfigurationBuilder} type.
+ *
+ * @since 2.4
  */
 class DefaultComponentAndConfigurationBuilder<T extends ComponentBuilder<T>>
         extends DefaultComponentBuilder<T, DefaultConfigurationBuilder<? extends Configuration>> {

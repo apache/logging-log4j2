@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Level;
 /**
  * Routing rule for deciding whether to log an event on the current thread, the background thread, or not at all.
  *
- * @since 2.5.1
+ * @since 2.6
  */
 public interface AsyncEventRouter {
 
@@ -30,10 +30,7 @@ public interface AsyncEventRouter {
      *
      * @param backgroundThreadId the thread ID of the background thread. Can be compared with the current thread's ID.
      * @param level the level of the log event
-     * @param queueSize total capacity of the queue used for asynchronous logging
-     * @param queueRemainingCapacity remaining capacity of the queue
      * @return the appropriate route for this routing rule
      */
-    EventRoute getRoute(final long backgroundThreadId, final Level level, final int queueSize,
-            final int queueRemainingCapacity);
+    EventRoute getRoute(final long backgroundThreadId, final Level level);
 }

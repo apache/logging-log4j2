@@ -19,12 +19,12 @@ package org.apache.logging.log4j;
 import java.io.IOException;
 
 import org.apache.logging.log4j.MarkerManager.Log4jMarker;
-import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
@@ -33,18 +33,20 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  *
  * This class is in this package to let {@link Log4jMarker} have the least visibility.
  */
-public class MarkerMixInTest {
+public abstract class MarkerMixInTest {
 
     private ObjectReader reader;
     private ObjectWriter writer;
 
     @Before
     public void setUp() {
-        final Log4jJsonObjectMapper log4jObjectMapper = new Log4jJsonObjectMapper();
+        final ObjectMapper log4jObjectMapper = newObjectMapper();
         writer = log4jObjectMapper.writer();
         reader = log4jObjectMapper.readerFor(Log4jMarker.class);
         MarkerManager.clear();
     }
+
+    protected abstract ObjectMapper newObjectMapper();
 
     @Test
     public void testNameOnly() throws IOException {

@@ -23,6 +23,7 @@ import java.io.ObjectOutputStream;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
+import java.util.Locale;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -46,14 +47,34 @@ public class MessageFormatMessage implements Message {
     private String[] serializedParameters;
     private transient String formattedMessage;
     private transient Throwable throwable;
+    private final Locale locale;
 
-    public MessageFormatMessage(final String messagePattern, final Object... parameters) {
+    /**
+     * Constructs a message.
+     * 
+     * @param locale the locale for this message format
+     * @param messagePattern the pattern for this message format
+     * @param parameters The objects to format
+     * @since 2.6
+     */
+    public MessageFormatMessage(final Locale locale, final String messagePattern, final Object... parameters) {
+        this.locale = locale;
         this.messagePattern = messagePattern;
         this.parameters = parameters;
         final int length = parameters == null ? 0 : parameters.length;
         if (length > 0 && parameters[length - 1] instanceof Throwable) {
             this.throwable = (Throwable) parameters[length - 1];
         }
+    }
+
+    /**
+     * Constructs a message.
+     * 
+     * @param messagePattern the pattern for this message format
+     * @param parameters The objects to format
+     */
+    public MessageFormatMessage(final String messagePattern, final Object... parameters) {
+        this(Locale.getDefault(Locale.Category.FORMAT), messagePattern, parameters);
     }
 
     /**
@@ -91,7 +112,8 @@ public class MessageFormatMessage implements Message {
 
     protected String formatMessage(final String msgPattern, final Object... args) {
         try {
-            return MessageFormat.format(msgPattern, args);
+            MessageFormat temp = new MessageFormat(msgPattern, locale);
+            return temp.format(args);
         } catch (final IllegalFormatException ife) {
             LOGGER.error("Unable to format msg: " + msgPattern, ife);
             return msgPattern;
@@ -125,8 +147,7 @@ public class MessageFormatMessage implements Message {
 
     @Override
     public String toString() {
-        return "StringFormatMessage[messagePattern=" + messagePattern + ", args=" +
-            Arrays.toString(parameters) + ']';
+        return getFormattedMessage();
     }
 
     private void writeObject(final ObjectOutputStream out) throws IOException {

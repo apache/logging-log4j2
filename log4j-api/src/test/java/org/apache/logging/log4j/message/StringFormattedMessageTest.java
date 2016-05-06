@@ -24,7 +24,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Locale;
 
+import org.apache.logging.log4j.junit.Mutable;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,11 +52,29 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testOneArg() {
+    public void testOneStringArg() {
         final String testMsg = "Test message %1s";
         final StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();
         final String expected = "Test message Apache";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testOneIntArgLocaleUs() {
+        final String testMsg = "Test e = %+10.4f";
+        final StringFormattedMessage msg = new StringFormattedMessage(Locale.US, testMsg, Math.E);
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test e =    +2.7183";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testOneArgLocaleFrance() {
+        final String testMsg = "Test e = %+10.4f";
+        final StringFormattedMessage msg = new StringFormattedMessage(Locale.FRANCE, testMsg, Math.E);
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test e =    +2,7183";
         assertEquals(expected, result);
     }
 

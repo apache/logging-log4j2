@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 
 /**
- *
+ * @since 2.4
  */
 class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuilder<LoggerComponentBuilder>
         implements LoggerComponentBuilder {
@@ -44,12 +44,41 @@ class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuil
      * @param builder
      * @param name
      * @param level
+     * @param includeLocation
+     */
+    public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
+            final String level, boolean includeLocation) {
+        super(builder, name, "Logger");
+        addAttribute("level", level);
+        addAttribute("includeLocation", includeLocation);
+    }
+
+    /**
+     * Configure a logger.
+     * @param builder
+     * @param name
+     * @param level
      * @param type
      */
     public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
             final String level, final String type) {
         super(builder, name, type);
         addAttribute("level", level);
+    }
+
+    /**
+     * Configure a logger.
+     * @param builder
+     * @param name
+     * @param level
+     * @param type
+     * @param includeLocation
+     */
+    public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
+            final String level, final String type, boolean includeLocation) {
+        super(builder, name, type);
+        addAttribute("level", level);
+        addAttribute("includeLocation", includeLocation);
     }
 
     @Override

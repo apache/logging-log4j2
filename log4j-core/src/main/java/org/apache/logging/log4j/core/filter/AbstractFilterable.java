@@ -27,8 +27,6 @@ import org.apache.logging.log4j.core.LogEvent;
  */
 public abstract class AbstractFilterable extends AbstractLifeCycle implements Filterable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * May be null.
      */

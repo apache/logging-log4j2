@@ -67,7 +67,7 @@ public interface StatusLoggerAdminMBean {
      * Returns the {@code ObjectName} that this status logger mbean is registered with.
      * @return the ObjectName of this StatusLogger MBean
      */
-    public ObjectName getObjectName();
+    ObjectName getObjectName();
     
     /**
      * Returns a list with the most recent {@code StatusData} objects in the

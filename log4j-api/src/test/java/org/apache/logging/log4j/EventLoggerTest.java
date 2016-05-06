@@ -40,7 +40,7 @@ public class EventLoggerTest {
         results.clear();
     }
 
-      @Test
+    @Test
     public void structuredData() {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");

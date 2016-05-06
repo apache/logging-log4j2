@@ -51,8 +51,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "CsvParameterLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class CsvParameterLayout extends AbstractCsvLayout {
 
-    private static final long serialVersionUID = 1L;
-    
     public static AbstractCsvLayout createDefaultLayout() {
         return new CsvParameterLayout(null, Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
     }
@@ -93,7 +91,6 @@ public class CsvParameterLayout extends AbstractCsvLayout {
         final StringBuilder buffer = getStringBuilder();
         // Revisit when 1.3 is out so that we do not need to create a new
         // printer for each event.
-        // No need to close the printer.
         try (final CSVPrinter printer = new CSVPrinter(buffer, getFormat())) {
             printer.printRecord(parameters);
             return buffer.toString();

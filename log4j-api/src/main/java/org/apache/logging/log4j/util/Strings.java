@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.Locale;
+
 /**
  * <em>Consider this class private.</em>
  * 
@@ -126,6 +128,16 @@ public final class Strings {
         return Chars.QUOTE + str + Chars.QUOTE;
     }
 
+    /**
+     * Shorthand for {@code str.toUpperCase(Locale.ROOT);}
+     * @param str The string to upper case.
+     * @return a new string
+     * @see String#toLowerCase(Locale)
+     */
+    public String toRootUpperCase(final String str) {
+        return str.toUpperCase(Locale.ROOT);
+    }
+    
     /**
      * <p>
      * Removes control characters (char &lt;= 32) from both ends of this String returning {@code null} if the String is

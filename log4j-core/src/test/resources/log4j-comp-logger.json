@@ -1,0 +1,36 @@
+{
+    "Configuration" : {
+        "status": "warn",
+        "name": "LoggerConfigTest",
+        "Loggers" : {
+            "logger" : [
+                {
+                    "name" : "cat1",
+                    "level" : "debug",
+                    "additivity" : false,
+                    "AppenderRef" : {
+                        "ref" : "STDOUT"
+                    }
+                },
+                {
+                    "name" : "cat2",
+                    "level" : "debug",
+                    "additivity" : false,
+                    "AppenderRef" : {
+                        "ref" : "File"
+                    }
+
+                }
+            ],
+            "Root" : {
+                "level" : "error",
+                "AppenderRef" : [{
+                    "ref" : "STDOUT"
+                },
+                {
+                    "ref" : "File"
+                }]
+            }
+        }
+    }
+}

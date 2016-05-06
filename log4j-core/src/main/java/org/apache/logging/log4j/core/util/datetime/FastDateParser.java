@@ -196,7 +196,7 @@ public class FastDateParser implements DateParser, Serializable {
     private void init(final Calendar definingCalendar) {
 
         final StringBuilder regex = new StringBuilder();
-        final List<Strategy> collector = new ArrayList<Strategy>();
+        final List<Strategy> collector = new ArrayList<>();
 
         final Matcher patternMatcher = formatPattern.matcher(pattern);
         if (!patternMatcher.lookingAt()) {
@@ -642,7 +642,7 @@ public class FastDateParser implements DateParser, Serializable {
     private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
         synchronized (caches) {
             if (caches[field] == null) {
-                caches[field] = new ConcurrentHashMap<Locale, Strategy>(3);
+                caches[field] = new ConcurrentHashMap<>(3);
             }
             return caches[field];
         }
@@ -725,7 +725,7 @@ public class FastDateParser implements DateParser, Serializable {
             this.field = field;
             this.locale = locale;
             final Map<String, Integer> keyValues = getDisplayNames(field, definingCalendar, locale);
-            this.lKeyValues = new HashMap<String, Integer>();
+            this.lKeyValues = new HashMap<>();
 
             for (final Map.Entry<String, Integer> entry : keyValues.entrySet()) {
                 lKeyValues.put(entry.getKey().toLowerCase(locale), entry.getValue());
@@ -828,7 +828,7 @@ public class FastDateParser implements DateParser, Serializable {
         private static final String GMT_OPTION = "GMT[+-]\\d{1,2}:\\d{2}";
 
         private final Locale locale;
-        private final Map<String, TimeZone> tzNames = new HashMap<String, TimeZone>();
+        private final Map<String, TimeZone> tzNames = new HashMap<>();
         private final String validTimeZoneChars;
 
         /**

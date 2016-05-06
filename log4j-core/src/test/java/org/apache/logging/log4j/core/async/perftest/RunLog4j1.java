@@ -23,10 +23,12 @@ import com.lmax.disruptor.collections.Histogram;
 
 public class RunLog4j1 implements IPerfTestRunner {
 
+    final Logger LOGGER = LogManager.getLogger(getClass());
+
     @Override
     public void runThroughputTest(final int lines, final Histogram histogram) {
         final long s1 = System.nanoTime();
-        final Logger logger = LogManager.getLogger(getClass());
+        final Logger logger = LOGGER;
         for (int j = 0; j < lines; j++) {
             logger.info(THROUGHPUT_MSG);
         }
@@ -38,7 +40,7 @@ public class RunLog4j1 implements IPerfTestRunner {
     @Override
     public void runLatencyTest(final int samples, final Histogram histogram,
             final long nanoTimeCost, final int threadCount) {
-        final Logger logger = LogManager.getLogger(getClass());
+        final Logger logger = LOGGER;
         for (int i = 0; i < samples; i++) {
             final long s1 = System.nanoTime();
             logger.info(LATENCY_MSG);
@@ -63,7 +65,6 @@ public class RunLog4j1 implements IPerfTestRunner {
 
     @Override
     public void log(final String finalMessage) {
-        final Logger logger = LogManager.getLogger(getClass());
-        logger.info(finalMessage);
+        LOGGER.info(finalMessage);
     }
 }

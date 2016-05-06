@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -31,31 +32,36 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
  * List could eventually grow to cause an OutOfMemoryError.
+ *
+ * This appender will use {@link Layout#toByteArray(LogEvent)}.
+ *
  * @see org.apache.logging.log4j.junit.LoggerContextRule#getListAppender(String) ILC.getListAppender
  */
 @Plugin(name = "List", category = "Core", elementType = "appender", printObject = true)
 public class ListAppender extends AbstractAppender {
 
-    private static final long serialVersionUID = 1L;
-
     // Use CopyOnWriteArrayList?
 
-    private final List<LogEvent> events = new ArrayList<>();
+    final List<LogEvent> events = new ArrayList<>();
 
     private final List<String> messages = new ArrayList<>();
 
-    private final List<byte[]> data = new ArrayList<>();
+    final List<byte[]> data = new ArrayList<>();
 
     private final boolean newLine;
 
     private final boolean raw;
 
     private static final String WINDOWS_LINE_SEP = "\r\n";
+
+    public CountDownLatch countDownLatch = null;
 
     public ListAppender(final String name) {
         super(name, null, null);
@@ -80,7 +86,12 @@ public class ListAppender extends AbstractAppender {
     public synchronized void append(final LogEvent event) {
         final Layout<? extends Serializable> layout = getLayout();
         if (layout == null) {
-            events.add(event);
+            if (event instanceof MutableLogEvent) {
+                // must take snapshot or subsequent calls to logger.log() will modify this event
+                events.add(((MutableLogEvent) event).createMemento());
+            } else {
+                events.add(event);
+            }
         } else if (layout instanceof SerializedLayout) {
             final byte[] header = layout.getHeader();
             final byte[] content = layout.toByteArray(event);
@@ -91,9 +102,12 @@ public class ListAppender extends AbstractAppender {
         } else {
             write(layout.toByteArray(event));
         }
+        if (countDownLatch != null) {
+            countDownLatch.countDown();
+        }
     }
 
-    private void write(final byte[] bytes) {
+    void write(final byte[] bytes) {
         if (raw) {
             data.add(bytes);
             return;
@@ -163,9 +177,7 @@ public class ListAppender extends AbstractAppender {
 
     @PluginFactory
     public static ListAppender createAppender(
-            @PluginAttribute("name")
-            @Required(message = "No name provided for ListAppender")
-            final String name,
+            @PluginAttribute("name") @Required(message = "No name provided for ListAppender") final String name,
             @PluginAttribute("entryPerNewLine") final boolean newLine,
             @PluginAttribute("raw") final boolean raw,
             @PluginElement("Layout") final Layout<? extends Serializable> layout,
