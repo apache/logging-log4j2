@@ -88,8 +88,10 @@
                 The graph shows response time and service time for the same system under a load of 100,000 messages
                 per second. Out of 24 million measurements, only ~50 are more than 250 microseconds, less than 0.001%.
                 In a service time-only graph this would hardly be visible.
-                However, the wait time adds up and the response time graph shows that in reality many more events are
-                impacted by these delays.
+                However, the depending on the load it will take a while to catch up after a spike.
+              </p><p>
+                The response time graph shows that in reality many more events are
+                impacted by these delays than the service time numbers alone would suggest.
               </p>
                 <p>
                   To learn more, watch Gil Tene's eye-opening presentation
@@ -152,7 +154,7 @@ if (logger.isDebugEnabled()) {
         When logging asynchronously, the message parameters may be changed
         by the application thread before the background thread had a chance to log the message.
         This would show the wrong values in the log file.
-        To prevent this, one solution is to format the message text in the application thread
+        To prevent this, Log4j 2, Log4j 1.2 and Logback format the message text in the application thread
         <em>before</em> passing off the log event to the background thread.</p>
       <p>This is the safe thing to do, but the formatting has a performance cost.
         The graph below compares the throughput of logging messages with parameters using various logging libraries.
@@ -174,9 +176,11 @@ if (logger.isDebugEnabled()) {
       </p>
 
       <h4>Synchronous File Logging - Sustained Throughput Comparison</h4>
-      <p>Here we look at the maximum sustained throughput of logging to a file.
-        This is is synchronous logging, so there is no background thread; the message formatting and disk I/O
-        takes place in the application thread that calls the logger. </p>
+      <p>This section discusses the maximum sustained throughput of logging to a file.
+        In any system, the maximum sustained throughput is determined by its slowest component.
+        In the case of logging, this is the appender, where the message formatting and disk I/O takes place.
+        For this reason we will look at simple <em>synchronous</em> logging to a file,
+        without queues or background threads.</p>
       <p>The graph below compares Log4j 2.6's RandomAccessFile appender
         to the respective File appenders of Log4j 1.2.17, Logback 1.1.7 and
         Java util logging (JUL) on Oracle Java 1.8.0_45. ImmediateFlush was set to false for all
