@@ -41,7 +41,7 @@ import static org.apache.logging.log4j.util.Unbox.*;
  * for each uses a FileAppender
  */
 // HOW TO RUN THIS TEST
-// java -jar target/benchmarks.jar ".*FileAppenderParamsBenchmark.*" -f 1 -i 5 -wi 5 -bm sample -tu ns
+// java -jar target/benchmarks.jar ".*FileAppenderParamsBenchmark.*" -f 1 -i 10 -wi 20 -bm sample -tu ns
 @State(Scope.Thread)
 public class FileAppenderParamsBenchmark {
     private FileHandler julFileHandler;

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.LogManager;
@@ -32,6 +31,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+
 import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
 
 /**
@@ -40,10 +40,10 @@ import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*Async.*Benchmark.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLog4j1Benchmark.*" -f 1 -wi 10 -i 20
 //
 // multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*Async.*Benchmark.*" -f 1 -wi 5 -i 5 -t 4 -si true
+// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLog4j1Benchmark.*" -f 1 -wi 10 -i 20 -t 4 -si true
 //
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
