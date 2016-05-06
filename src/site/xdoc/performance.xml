@@ -156,9 +156,9 @@ if (logger.isDebugEnabled()) {
         <em>before</em> passing off the log event to the background thread.</p>
       <p>This is the safe thing to do, but the formatting has a performance cost.
         The graph below compares the throughput of logging messages with parameters using various logging libraries.
-        In absolute numbers, Log4j 2's Async Loggers perform well compared to the other logging
-        frameworks, but notice that the cost increases with the number of parameters.
-        In this area, Log4j 2 still has work to do to improve.</p>
+        In absolute numbers, <em>Log4j 2's Async Loggers perform well compared to the other logging
+        frameworks, but notice that the message formatting cost increases with the number of parameters.
+        In this area, Log4j 2 still has work to do to improve.</em></p>
       <p>Note that the java.util.logging MemoryHandler does <em>not</em> do the safe thing of taking a snapshot
         of the current parameter state (it just keeps a reference to the original parameter objects),
         and as a result it is very fast when single-threaded.
