@@ -166,9 +166,6 @@ if (logger.isDebugEnabled()) {
         The graph below compares the throughput of logging messages with parameters using various logging libraries.
         These are all asynchronous logging calls, so these numbers do not include the cost of disk I/O
         and represent <em>peak</em> throughput.</p>
-      <p>In absolute numbers, <em>Log4j 2's Async Loggers perform well compared to the other logging
-        frameworks, but notice that the message formatting cost increases with the number of parameters.
-        In this area, Log4j 2 still has work to do to improve.</em></p>
       <p>JUL (java.util.logging) does not have a built-in asynchronous Handler.
         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/MemoryHandler.html">MemoryHandler</a>
         is the nearest thing available so we included it here.
@@ -176,6 +173,9 @@ if (logger.isDebugEnabled()) {
         of the current parameter state (it just keeps a reference to the original parameter objects),
         and as a result it is very fast when single-threaded.
         However, when more application threads are logging concurrently, the cost of lock contention outweighs this gain.</p>
+      <p>In absolute numbers, <em>Log4j 2's Async Loggers perform well compared to the other logging
+        frameworks, but notice that the message formatting cost increases with the number of parameters.
+        In this area, Log4j 2 still has work to do to improve.</em></p>
       <p><img src="images/ParamMsgThrpt1-4T.png" /></p>
       <p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6, Log4j 1.2.17 and Logback 1.1.7,
         and were obtained with the
@@ -185,7 +185,7 @@ if (logger.isDebugEnabled()) {
       </p>
 
       <a name="asyncLoggingWithLocation" />
-      <h4>Performance Impact of Capturing Location Information on Asynchronous Logging Throughput</h4>
+      <h4>Asynchronous Logging with Caller Location Information</h4>
       <p>
         Some layouts can show the class, method and line number in the application where the logging call was made.
         In Log4j 2, examples of such layout options are HTML
