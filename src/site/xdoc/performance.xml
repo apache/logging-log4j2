@@ -75,6 +75,7 @@
           </p>
           </li>
       </ul>
+      <a name="responseTimeVsServiceTime" />
       <table>
         <tr><td>
           <h5>Sidebar: Why Care About Response Time Latency?</h5>
@@ -107,8 +108,10 @@
           </table>
         </td></tr>
       </table>
+      <a name="loglibComparison" />
       <h3>Logging Library Performance Comparison</h3>
 
+      <a name="asyncLogging" />
       <h4>Asynchronous Logging - Peak Throughput Comparison</h4>
       <p>Asynchronous logging is useful to deal with bursts of events. How this works is that
         a minimum amount of work is done by the application thread to capture all required information in a log event,
@@ -140,6 +143,8 @@
         log4j-1.2.17 and logback-1.0.10. The PerfTest, MTPerfTest and PerfTestDriver
         classes that generated these results can be found in the Log4j 2 unit test source directory.
       </p>
+
+      <a name="asyncLoggingWithParams" />
       <h4>Asynchronous Logging Parameterized Messages</h4>
       <p>Many logging libraries offer an API for logging parameterized messages.
         This enables application code to look something like this:<pre>
@@ -164,7 +169,10 @@ if (logger.isDebugEnabled()) {
       <p>In absolute numbers, <em>Log4j 2's Async Loggers perform well compared to the other logging
         frameworks, but notice that the message formatting cost increases with the number of parameters.
         In this area, Log4j 2 still has work to do to improve.</em></p>
-      <p>Note that the java.util.logging MemoryHandler does <em>not</em> do the safe thing of taking a snapshot
+      <p>JUL (java.util.logging) does not have a built-in asynchronous Handler.
+        <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/MemoryHandler.html">MemoryHandler</a>
+        is the nearest thing available so we included it here.
+        MemoryHandler does <em>not</em> do the safe thing of taking a snapshot
         of the current parameter state (it just keeps a reference to the original parameter objects),
         and as a result it is very fast when single-threaded.
         However, when more application threads are logging concurrently, the cost of lock contention outweighs this gain.</p>
@@ -176,6 +184,7 @@ if (logger.isDebugEnabled()) {
         AsyncLoggersBenchmark and the MemoryHandlerJULBenchmark source code in the log4j-perf module.
       </p>
 
+      <a name="asyncLoggingWithLocation" />
       <h4>Performance Impact of Capturing Location Information on Asynchronous Logging Throughput</h4>
       <p>
         Some layouts can show the class, method and line number in the application where the logging call was made.
@@ -204,6 +213,7 @@ if (logger.isDebugEnabled()) {
         MemoryHandlerJULLocationBenchmark source code in the log4j-perf module.
       </p>
 
+      <a name="fileLoggingComparison" />
       <h4>Synchronous File Logging - Sustained Throughput Comparison</h4>
       <p>This section discusses the maximum sustained throughput of logging to a file.
         In any system, the maximum sustained throughput is determined by its slowest component.
