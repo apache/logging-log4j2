@@ -439,8 +439,8 @@
         <p>
           However, asynchronous loggers need to make this decision before passing the
           log message to another thread; the location information will be lost after that point.
-          The performance impact of taking a stack trace snapshot is even higher for asynchronous loggers:
-          logging with location is 4 - 20 times slower than without location.
+          The <a href="../performance.html#asyncLoggingWithLocation">performance impact</a> of taking a stack trace snapshot is even higher for asynchronous loggers:
+          logging with location is 30-100 times slower than without location.
           For this reason, asynchronous loggers and asynchronous appenders do not include location information by default.
         </p>
         <p>
@@ -689,54 +689,6 @@
             <td align="right">3,610</td>
           </tr>
         </table>
-
-        <h4>Throughput of Logging With Location (includeLocation="true")
-        </h4>
-        <p>On Solaris 10 (64bit) with JDK1.7.0_06, 4-core Xeon X5570 dual CPU
-          @2.93Ghz with hyperthreading switched off (8 virtual cores):
-        </p>
-        <table>
-          <caption align="top">Throughput in log messages/second per thread</caption>
-          <tr>
-            <th>Logger (Log4j 2)</th>
-            <th>1 thread</th>
-            <th>2 threads</th>
-            <th>4 threads</th>
-            <th>8 threads</th>
-          </tr>
-          <tr>
-            <td>Loggers all asynchronous</td>
-            <td align="right">75,862</td>
-            <td align="right">88,775</td>
-            <td align="right">80,240</td>
-            <td align="right">68,077</td>
-          </tr>
-          <tr>
-            <td>Loggers mixed sync/async</td>
-            <td align="right">61,993</td>
-            <td align="right">66,164</td>
-            <td align="right">55,735</td>
-            <td align="right">52,843</td>
-          </tr>
-          <tr>
-            <td>Async Appender</td>
-            <td align="right">47,033</td>
-            <td align="right">52,426</td>
-            <td align="right">50,882</td>
-            <td align="right">36,905</td>
-          </tr>
-          <tr>
-            <td>Synchronous</td>
-            <td align="right">31,054</td>
-            <td align="right">33,175</td>
-            <td align="right">29,791</td>
-            <td align="right">23,628</td>
-          </tr>
-        </table>
-        <p>As expected, logging location information has a large performance impact. Asynchronous loggers are 4 - 20
-          times slower, while synchronous loggers are 1.3 - 5 times slower. However, if you do need
-          location information, asynchronous logging will still be faster than synchronous logging.
-        </p>
 
         <a name="Latency" />
         <h4>Latency</h4>
