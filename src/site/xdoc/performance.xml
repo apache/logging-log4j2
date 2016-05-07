@@ -37,9 +37,9 @@
       -->
       <p>Apart from functional requirements, an important reason for selecting a logging library is often how well it
         fulfills non-functional requirements like reliability and performance.</p>
-      <p>On this page we will compare the performance of a number of logging frameworks
+      <p>This page compares the performance of a number of logging frameworks
         (java.util.logging "JUL", Logback, Log4j 1.2 and Log4j 2.6),
-        and document some performance trade-offs for Log4j 2 functionality.
+        and documents some performance trade-offs for Log4j 2 functionality.
       </p>
       <a name="benchmarks" />
       <h3>Benchmarks</h3>
@@ -64,6 +64,7 @@
           they will likely experience jitter and large response time spikes.</li>
         <a name="responseTime" />
         <li><p>What is its <b>response time</b> behaviour under various loads?
+          This is the most important question for applications that need to react to external events in a timely manner.
           Response time is the total amount of time it takes to log a message and is the sum of the
           service time and wait time.
           The <b>service time</b> is the time it takes to do the work to log the message.
@@ -81,8 +82,8 @@
             <tr style="border: 0">
               <td width="50%" style="border: 0"><p>
                 What is often measured and reported as <em>latency</em> is actually <em>service time</em>,
-                which unfortunately hides the wait time. This may present results that are more optimistic than what
-                users experience.
+                and omits that a service time spike adds wait time for many subsequent events.
+                This may present results that are more optimistic than what users experience.
               </p><p>
                 The graph on the right illustrates how much more optimistic service time is than response time.
                 The graph shows response time and service time for the same system under a load of 100,000 messages
@@ -173,6 +174,34 @@ if (logger.isDebugEnabled()) {
         <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
         See the AsyncAppenderLog4j1Benchmark, AsyncAppenderLog4j2Benchmark, AsyncAppenderLogbackBenchmark,
         AsyncLoggersBenchmark and the MemoryHandlerJULBenchmark source code in the log4j-perf module.
+      </p>
+
+      <h4>Performance Impact of Capturing Location Information on Asynchronous Logging Throughput</h4>
+      <p>
+        Some layouts can show the class, method and line number in the application where the logging call was made.
+        In Log4j 2, examples of such layout options are HTML
+        <a href="layouts.html#HtmlLocationInfo">locationInfo</a>,
+        or one of the patterns <a href="layouts.html#PatternClass">%C or $class</a>,
+        <a href="layouts.html#PatternFile">%F or %file</a>,
+        <a href="layouts.html#PatternLocation">%l or %location</a>,
+        <a href="layouts.html#PatternLine">%L or %line</a>,
+        <a href="layouts.html#PatternMethod">%M or %method</a>.
+        In order to provide caller location information, the logging library
+        will take a snapshot of the stack, and walk the stack trace to find the location information.
+      </p>
+      <p>
+        The graph below shows the performance impact of capturing caller location information when logging
+        asynchronously from a single thread. Our tests show that <em>capturing caller location has a similar impact
+        across all logging libraries, and slows down asynchronous
+        logging by about 30-100x</em>.
+      </p>
+      <p><img src="images/AsyncWithLocationThrpt1T.png" /></p>
+      <p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6, Log4j 1.2.17 and Logback 1.1.7,
+        and were obtained with the
+        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        See the AsyncAppenderLog4j1LocationBenchmark, AsyncAppenderLog4j2LocationBenchmark,
+        AsyncAppenderLogbackLocationBenchmark, AsyncLoggersLocationBenchmark and the
+        MemoryHandlerJULLocationBenchmark source code in the log4j-perf module.
       </p>
 
       <h4>Synchronous File Logging - Sustained Throughput Comparison</h4>
