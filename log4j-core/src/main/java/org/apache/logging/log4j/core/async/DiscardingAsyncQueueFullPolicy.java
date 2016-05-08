@@ -24,12 +24,12 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Discarding router extends the DefaultAsyncEventRouter by first verifying if the queue is fuller than the specified
+ * Discarding router extends the DefaultAsyncQueueFullPolicy by first verifying if the queue is fuller than the specified
  * threshold ratio; if this is the case, log events {@linkplain Level#isMoreSpecificThan(Level) more specific} than
- * the specified threshold level are dropped. If this is not the case, the {@linkplain DefaultAsyncEventRouter
+ * the specified threshold level are dropped. If this is not the case, the {@linkplain DefaultAsyncQueueFullPolicy
  * default routing rules hold.
  */
-public class DiscardingAsyncEventRouter extends DefaultAsyncEventRouter {
+public class DiscardingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Level thresholdLevel;
@@ -41,7 +41,7 @@ public class DiscardingAsyncEventRouter extends DefaultAsyncEventRouter {
      *
      * @param thresholdLevel level of events to discard
      */
-    public DiscardingAsyncEventRouter(final Level thresholdLevel) {
+    public DiscardingAsyncQueueFullPolicy(final Level thresholdLevel) {
         this.thresholdLevel = Objects.requireNonNull(thresholdLevel, "thresholdLevel");
     }
 
@@ -59,9 +59,9 @@ public class DiscardingAsyncEventRouter extends DefaultAsyncEventRouter {
         return super.getRoute(backgroundThreadId, level);
     }
 
-    public static long getDiscardCount(final AsyncEventRouter router) {
-        if (router instanceof DiscardingAsyncEventRouter) {
-            return ((DiscardingAsyncEventRouter) router).discardCount.get();
+    public static long getDiscardCount(final AsyncQueueFullPolicy router) {
+        if (router instanceof DiscardingAsyncQueueFullPolicy) {
+            return ((DiscardingAsyncQueueFullPolicy) router).discardCount.get();
         }
         return 0;
     }

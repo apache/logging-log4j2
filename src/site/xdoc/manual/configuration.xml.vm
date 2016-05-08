@@ -1916,7 +1916,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="AsyncEventRouter"/>log4j2.AsyncEventRouter</td>
+    <td><a name="AsyncQueueFullPolicy"/>log4j2.AsyncQueueFullPolicy</td>
     <td>&nbsp;</td>
     <td>
       <p>Used by Async Loggers and the AsyncAppender to maintain application throughput even when
@@ -1930,11 +1930,11 @@ public class AwesomeTest {
   <tr>
     <td>log4j2.DiscardThreshold</td>
     <td>INFO</td>
-    <td>Used by the DiscardingAsyncEventRouter to determine which events to drop when the queue
+    <td>Used by the DiscardingAsyncQueueFullPolicy to determine which events to drop when the queue
       becomes full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
       events are discarded when the queue is full.
       This property only has effect if <tt>Discard</tt> is specified as the
-      <tt>log4j2.AsyncEventRouter</tt>.</td>
+      <tt>log4j2.AsyncQueueFullPolicy</tt>.</td>
   </tr>
   <tr>
     <td>log4j2.messageFactory</td>

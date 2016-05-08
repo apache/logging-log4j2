@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.HdrHistogram.Histogram;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.async.DefaultAsyncEventRouter;
+import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
@@ -61,7 +61,7 @@ public class ResponseTimeTest {
         final String loggerLib = args.length > 2 ? args[2] : "Log4j2";
 
         // print to console if ringbuffer is full
-        System.setProperty("log4j2.AsyncEventRouter", PrintingDefaultAsyncEventRouter.class.getName());
+        System.setProperty("log4j2.AsyncQueueFullPolicy", PrintingAsyncQueueFullPolicy.class.getName());
         System.setProperty("AsyncLogger.RingBufferSize", String.valueOf(256 * 1024));
         //System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
         //System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
@@ -105,7 +105,7 @@ public class ResponseTimeTest {
         long start = System.currentTimeMillis();
         List<Histogram> serviceTmHistograms = new ArrayList<>(threadCount);
         List<Histogram> responseTmHistograms = new ArrayList<>(threadCount);
-        PrintingDefaultAsyncEventRouter.ringbufferFull.set(0);
+        PrintingAsyncQueueFullPolicy.ringbufferFull.set(0);
 
         // Actual test: run as many iterations of 1,000,000 calls to logger.log as we can in 4 minutes.
         final long TEST_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(4);
@@ -124,7 +124,7 @@ public class ResponseTimeTest {
         writeToFile("r", resultResponseTm, (int) (loadMessagesPerSec / 1000), 1000.0);
 
         System.out.printf("%n%s: %d threads, load %,f msg/sec, ringbuffer full=%d%n", loggerLib, threadCount,
-                loadMessagesPerSec, PrintingDefaultAsyncEventRouter.ringbufferFull.get());
+                loadMessagesPerSec, PrintingAsyncQueueFullPolicy.ringbufferFull.get());
         System.out.println("Test duration: " + (end - start) / 1000.0 + " seconds");
     }
 
@@ -196,7 +196,7 @@ public class ResponseTimeTest {
         }
     }
 
-    public static class PrintingDefaultAsyncEventRouter extends DefaultAsyncEventRouter {
+    public static class PrintingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy {
         static AtomicLong ringbufferFull = new AtomicLong();
         @Override
         public EventRoute getRoute(long backgroundThreadId, Level level) {

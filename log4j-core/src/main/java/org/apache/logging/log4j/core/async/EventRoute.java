@@ -25,6 +25,10 @@ import org.apache.logging.log4j.message.Message;
 /**
  * Enumeration over the different destinations where a log event can be sent.
  *
+ * @see AsyncQueueFullPolicy
+ * @see AsyncQueueFullPolicyFactory
+ * @see DefaultAsyncQueueFullPolicy
+ * @see DiscardingAsyncQueueFullPolicy
  * @since 2.6
  */
 public enum EventRoute {

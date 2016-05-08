@@ -22,9 +22,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Tests the DefaultAsyncEventRouter class.
+ * Tests the DefaultAsyncQueueFullPolicy class.
  */
-public class DefaultAsyncEventRouterTest {
+public class DefaultAsyncQueueFullPolicyTest {
 
     private static long currentThreadId() {
         return Thread.currentThread().getId();
@@ -36,14 +36,14 @@ public class DefaultAsyncEventRouterTest {
 
     @Test
     public void testGetRouteEnqueuesIfQueueFullAndCalledFromDifferentThread() throws Exception {
-        DefaultAsyncEventRouter router = new DefaultAsyncEventRouter();
+        DefaultAsyncQueueFullPolicy router = new DefaultAsyncQueueFullPolicy();
         assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.ALL));
         assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.OFF));
     }
 
     @Test
     public void testGetRouteSynchronousIfQueueFullAndCalledFromSameThread() throws Exception {
-        DefaultAsyncEventRouter router = new DefaultAsyncEventRouter();
+        DefaultAsyncQueueFullPolicy router = new DefaultAsyncQueueFullPolicy();
         assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.ALL));
         assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.OFF));
     }

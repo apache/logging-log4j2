@@ -21,14 +21,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.async.DefaultAsyncEventRouter;
+import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.BlockingAppender;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -44,16 +43,16 @@ import static org.junit.Assert.*;
  *         else queue.add(event) // blocking call
  * </pre>
  */
-public class AsyncAppenderEventRouterTest {
+public class AsyncAppenderQueueFullPolicyTest {
     private static final String CONFIG = "log4j-asynch-queue-full.xml";
     static {
         // this must be set before the Log4j context initializes
-        System.setProperty("log4j2.AsyncEventRouter", CountingAsyncEventRouter.class.getName());
+        System.setProperty("log4j2.AsyncQueueFullPolicy", CountingAsyncQueueFullPolicy.class.getName());
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty("log4j2.AsyncEventRouter");
+        System.clearProperty("log4j2.AsyncQueueFullPolicy");
     }
 
     @ClassRule
@@ -75,7 +74,7 @@ public class AsyncAppenderEventRouterTest {
 
     @Test
     public void testRouter() throws Exception {
-        final Logger logger = LogManager.getLogger(AsyncAppenderEventRouterTest.class);
+        final Logger logger = LogManager.getLogger(AsyncAppenderQueueFullPolicyTest.class);
 
         assertEquals(3, asyncAppender.getQueueCapacity());
         logger.error("event 1 - gets taken off the queue");
@@ -83,11 +82,11 @@ public class AsyncAppenderEventRouterTest {
         logger.info("event 3");
         logger.info("event 4 - now the queue is full");
         assertEquals("queue remaining capacity", 0, asyncAppender.getQueueRemainingCapacity());
-        assertEquals("EventRouter invocations", 0, CountingAsyncEventRouter.queueFull.get());
+        assertEquals("EventRouter invocations", 0, CountingAsyncQueueFullPolicy.queueFull.get());
 
         Thread release = new Thread("AsyncAppenderReleaser") {
             public void run() {
-                while (CountingAsyncEventRouter.queueFull.get() == 0) {
+                while (CountingAsyncQueueFullPolicy.queueFull.get() == 0) {
                     try {
                         Thread.sleep(10L);
                     } catch (InterruptedException ignored) {
@@ -100,10 +99,10 @@ public class AsyncAppenderEventRouterTest {
         release.setDaemon(true);
         release.start();
         logger.fatal("this blocks until queue space available");
-        assertEquals(1, CountingAsyncEventRouter.queueFull.get());
+        assertEquals(1, CountingAsyncQueueFullPolicy.queueFull.get());
     }
 
-    public static class CountingAsyncEventRouter extends DefaultAsyncEventRouter {
+    public static class CountingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy {
         static AtomicLong queueFull = new AtomicLong();
         @Override
         public EventRoute getRoute(long backgroundThreadId, Level level) {

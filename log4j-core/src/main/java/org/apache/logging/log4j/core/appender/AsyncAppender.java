@@ -27,9 +27,9 @@ import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.async.AsyncEventRouter;
-import org.apache.logging.log4j.core.async.AsyncEventRouterFactory;
-import org.apache.logging.log4j.core.async.DiscardingAsyncEventRouter;
+import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
+import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
+import org.apache.logging.log4j.core.async.DiscardingAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
@@ -68,7 +68,7 @@ public final class AsyncAppender extends AbstractAppender {
     private final boolean includeLocation;
     private AppenderControl errorAppender;
     private AsyncThread thread;
-    private AsyncEventRouter asyncEventRouter;
+    private AsyncQueueFullPolicy asyncQueueFullPolicy;
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
                           final String errorRef, final int queueSize, final boolean blocking,
@@ -111,7 +111,7 @@ public final class AsyncAppender extends AbstractAppender {
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
-        asyncEventRouter = AsyncEventRouterFactory.create();
+        asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
         thread.start();
         super.start();
@@ -129,9 +129,9 @@ public final class AsyncAppender extends AbstractAppender {
         }
         LOGGER.trace("AsyncAppender stopped. Queue has {} events.", queue.size());
 
-        if (DiscardingAsyncEventRouter.getDiscardCount(asyncEventRouter) > 0) {
-            LOGGER.trace("AsyncAppender: {} discarded {} events.", asyncEventRouter,
-                DiscardingAsyncEventRouter.getDiscardCount(asyncEventRouter));
+        if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {
+            LOGGER.trace("AsyncAppender: {} discarded {} events.", asyncQueueFullPolicy,
+                DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
     }
 
@@ -152,7 +152,7 @@ public final class AsyncAppender extends AbstractAppender {
         if (!queue.offer(memento)) {
             if (blocking) {
                 // delegate to the event router (which may discard, enqueue and block, or log in current thread)
-                final EventRoute route = asyncEventRouter.getRoute(thread.getId(), memento.getLevel());
+                final EventRoute route = asyncQueueFullPolicy.getRoute(thread.getId(), memento.getLevel());
                 route.logMessage(this, memento);
             } else {
                 error("Appender " + getName() + " is unable to write primary appenders. queue is full");
