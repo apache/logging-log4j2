@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<Configuration name="XMLPerfTest" status="warn">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %p [%t] %c{1} %X{transactionId} - %m%n"/>
+        </Console>
+        <File name="File" fileName="target/testlog4j2.log" immediateFlush="false">
+            <PatternLayout pattern="%d %p [%t] %c{1} %X{transactionId} - %m%n"/>
+        </File>
+        <RandomAccessFile name="RandomAccessFile" fileName="target/testRandomlog4j2.log" immediateFlush="false">
+            <PatternLayout pattern="%d %p [%t] %c{1} %X{transactionId} - %m%n"/>
+        </RandomAccessFile>
+        <MemoryMappedFile name="MemoryMappedFile"
+                fileName="target/MemoryMappedFileAppenderTest.log"
+                immediateFlush="false" append="false">
+            <PatternLayout pattern="%d %p [%t] %c{1} %X{transactionId} - %m%n"/>
+        </MemoryMappedFile>
+        <CountingNoOp name="NoOp">
+        </CountingNoOp>
+        <Rewrite name="Rewrite">
+            <AppenderRef ref="NoOp"/>
+            <LoggerNameLevelRewritePolicy loggerName="RewriteLogger">
+                <KeyValuePair key="INFO" value="DEBUG"/>
+                <KeyValuePair key="DEBUG" value="ERROR"/>
+            </LoggerNameLevelRewritePolicy>
+        </Rewrite>
+      </Appenders>
+    <Loggers>
+        <Logger name="RAFLogger" level="debug" additivity="false">
+            <AppenderRef ref="RandomAccessFile"/>
+        </Logger>
+        <Logger name="MMapLogger" level="debug" additivity="false">
+            <AppenderRef ref="MemoryMappedFile"/>
+        </Logger>
+        <Logger name="FileLogger" level="debug" additivity="false">
+            <AppenderRef ref="File"/>
+        </Logger>
+        <Logger name="ConsoleLogger" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="NoopLogger" level="debug" additivity="false">
+            <AppenderRef ref="NoOp"/>
+        </Logger>
+        <Logger name="RewriteLogger" level="debug" additivity="false">
+            <AppenderRef ref="Rewrite"/>
+        </Logger>
+    </Loggers>
+</Configuration>
