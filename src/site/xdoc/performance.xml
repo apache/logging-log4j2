@@ -149,11 +149,20 @@
       </p>
       <p>This section shows another graph showing response time latency behaviour
       under a modest total workload of 64,000 messages per second, with 4 threads logging concurrently.
-      At this rate and on this hardware/OS/JVM configuration, lock contention does not come
+      At this load and on this hardware/OS/JVM configuration, lock contention does not come
       into play and the pauses are caused by minor garbage collections.
-      Generally, garbage-free async loggers had the best response time behaviour
-      in all configurations we tested.</p>
+      Garbage collection pause duration and frequency can vary a lot: when testing the Log4j 1.2.17
+        Async Appender
+        a minor GC pause of 7 milliseconds occurred while the Log4j 2 Async Appender test only saw
+        a GC pause of a little over 2 milliseconds. This does not necessarily mean that one is better than the other.
+      </p>
+      <p>Generally, garbage-free async loggers had the best response time behaviour
+      in all configurations we tested. </p>
       <p><img src="images/ResponseTimeAsyncLogging4Threads@16kEach.png" alt="" /></p>
+      <p>The above result was obtained with JDK 1.8.0_45 on
+        RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with
+        10-core Xeon CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual cores).
+      </p>
       <a name="asyncLoggingWithParams" />
       <h4>Asynchronous Logging Parameterized Messages</h4>
       <p>Many logging libraries offer an API for logging parameterized messages.
