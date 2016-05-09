@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -180,7 +179,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
     private static final ThreadFactory THREAD_FACTORY = new DaemonThreadFactory("AsyncLoggerConfig-");
 
     private int ringBufferSize;
-    private AsyncEventRouter asyncEventRouter;
+    private AsyncQueueFullPolicy asyncQueueFullPolicy;
     private Boolean mutable = Boolean.FALSE;
 
     private volatile Disruptor<Log4jEventWrapper> disruptor;
@@ -217,7 +216,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLoggerConfig.WaitStrategy");
         executor = Executors.newSingleThreadExecutor(THREAD_FACTORY);
         backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
-        asyncEventRouter = AsyncEventRouterFactory.create();
+        asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
         translator = mutable ? MUTABLE_TRANSLATOR : TRANSLATOR;
         factory = mutable ? MUTABLE_FACTORY : FACTORY;
@@ -265,9 +264,9 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         executor.shutdown(); // finally, kill the processor thread
         executor = null; // release reference to allow GC
 
-        if (DiscardingAsyncEventRouter.getDiscardCount(asyncEventRouter) > 0) {
-            LOGGER.trace("AsyncLoggerConfigDisruptor: {} discarded {} events.", asyncEventRouter,
-                    DiscardingAsyncEventRouter.getDiscardCount(asyncEventRouter));
+        if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {
+            LOGGER.trace("AsyncLoggerConfigDisruptor: {} discarded {} events.", asyncQueueFullPolicy,
+                    DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
     }
 
@@ -285,7 +284,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         if (remainingCapacity < 0) {
             return EventRoute.DISCARD;
         }
-        return asyncEventRouter.getRoute(backgroundThreadId, logLevel);
+        return asyncQueueFullPolicy.getRoute(backgroundThreadId, logLevel);
     }
 
     private int remainingDisruptorCapacity() {

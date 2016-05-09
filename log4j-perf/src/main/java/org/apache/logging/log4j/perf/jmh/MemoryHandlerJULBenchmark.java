@@ -35,6 +35,7 @@ import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
 
 /**
  * Tests JUL (java.util.logging) Memory Handler performance.
+ * We explicitly specify the location so that JUL will not try to look up caller location information.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 //

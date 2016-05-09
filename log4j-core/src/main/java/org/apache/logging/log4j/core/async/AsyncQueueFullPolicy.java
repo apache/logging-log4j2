@@ -19,18 +19,20 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 
 /**
- * Routing rule for deciding whether to log an event on the current thread, the background thread, or not at all.
+ * Policy for deciding whether to discard the event, enqueue it or log the event on the current thread when the queue
+ * is full.
  *
+ * @see AsyncQueueFullPolicyFactory
  * @since 2.6
  */
-public interface AsyncEventRouter {
+public interface AsyncQueueFullPolicy {
 
     /**
-     * Returns the appropriate route for this routing rule, given the specified parameters.
+     * Returns the appropriate route for the current log event, given the specified parameters.
      *
      * @param backgroundThreadId the thread ID of the background thread. Can be compared with the current thread's ID.
      * @param level the level of the log event
-     * @return the appropriate route for this routing rule
+     * @return the appropriate route for the current event
      */
     EventRoute getRoute(final long backgroundThreadId, final Level level);
 }

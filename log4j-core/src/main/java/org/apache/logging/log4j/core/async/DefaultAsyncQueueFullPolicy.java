@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Level;
  * background thread and the queue is full (enqueueing would cause a deadlock). In that case send the event directly to
  * the appender (in the current thread).
  */
-public class DefaultAsyncEventRouter implements AsyncEventRouter {
+public class DefaultAsyncQueueFullPolicy implements AsyncQueueFullPolicy {
     @Override
     public EventRoute getRoute(final long backgroundThreadId, final Level level) {
 

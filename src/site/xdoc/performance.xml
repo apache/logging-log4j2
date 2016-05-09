@@ -37,9 +37,9 @@
       -->
       <p>Apart from functional requirements, an important reason for selecting a logging library is often how well it
         fulfills non-functional requirements like reliability and performance.</p>
-      <p>On this page we will compare the performance of a number of logging frameworks
+      <p>This page compares the performance of a number of logging frameworks
         (java.util.logging "JUL", Logback, Log4j 1.2 and Log4j 2.6),
-        and document some performance trade-offs for Log4j 2 functionality.
+        and documents some performance trade-offs for Log4j 2 functionality.
       </p>
       <a name="benchmarks" />
       <h3>Benchmarks</h3>
@@ -64,6 +64,7 @@
           they will likely experience jitter and large response time spikes.</li>
         <a name="responseTime" />
         <li><p>What is its <b>response time</b> behaviour under various loads?
+          This is the most important question for applications that need to react to external events in a timely manner.
           Response time is the total amount of time it takes to log a message and is the sum of the
           service time and wait time.
           The <b>service time</b> is the time it takes to do the work to log the message.
@@ -74,6 +75,7 @@
           </p>
           </li>
       </ul>
+      <a name="responseTimeVsServiceTime" />
       <table>
         <tr><td>
           <h5>Sidebar: Why Care About Response Time Latency?</h5>
@@ -81,8 +83,8 @@
             <tr style="border: 0">
               <td width="50%" style="border: 0"><p>
                 What is often measured and reported as <em>latency</em> is actually <em>service time</em>,
-                which unfortunately hides the wait time. This may present results that are more optimistic than what
-                users experience.
+                and omits that a service time spike adds wait time for many subsequent events.
+                This may present results that are more optimistic than what users experience.
               </p><p>
                 The graph on the right illustrates how much more optimistic service time is than response time.
                 The graph shows response time and service time for the same system under a load of 100,000 messages
@@ -106,8 +108,10 @@
           </table>
         </td></tr>
       </table>
+      <a name="loglibComparison" />
       <h3>Logging Library Performance Comparison</h3>
 
+      <a name="asyncLogging" />
       <h4>Asynchronous Logging - Peak Throughput Comparison</h4>
       <p>Asynchronous logging is useful to deal with bursts of events. How this works is that
         a minimum amount of work is done by the application thread to capture all required information in a log event,
@@ -131,14 +135,35 @@
         once the queue is full, the appender thread needs to wait until a slot becomes available in the queue,
         and throughput will drop to the maximum sustained throughput of the underlying appenders at best.
       </p>
-      <p>For details, see the <a href="manual/async.html">Async
-        Loggers</a> manual page.</p>
       <p><img src="images/async-throughput-comparison.png" alt="Peak throughput comparison" />
       </p>
-      <p>The results above were obtained with log4j-2.0-beta5, disruptor-3.0.0.beta3,
-        log4j-1.2.17 and logback-1.0.10. The PerfTest, MTPerfTest and PerfTestDriver
-        classes that generated these results can be found in the Log4j 2 unit test source directory.
+      <p>For details, see the <a href="manual/async.html">Async
+        Loggers</a> manual page.</p>
+
+      <a name="asyncLoggingResponseTime" />
+      <h4>Asynchronous Logging Response Time</h4>
+      <p>Response time behaviour varies a lot with the workload and the number of threads that log concurrently.
+        The <a href="manual/async.html#Latency">Async Loggers</a> manual page and the
+        <a href="manual/garbagefree.html#Latency">garbage-free logging</a> manual page
+        provide some graphs showing response time behaviour under various loads.
       </p>
+      <p>This section shows another graph showing response time latency behaviour
+      under a modest total workload of 64,000 messages per second, with 4 threads logging concurrently.
+      At this load and on this hardware/OS/JVM configuration, lock contention does not come
+      into play and the pauses are caused by minor garbage collections.
+      Garbage collection pause duration and frequency can vary a lot: when testing the Log4j 1.2.17
+        Async Appender
+        a minor GC pause of 7 milliseconds occurred while the Log4j 2 Async Appender test only saw
+        a GC pause of a little over 2 milliseconds. This does not necessarily mean that one is better than the other.
+      </p>
+      <p>Generally, garbage-free async loggers had the best response time behaviour
+      in all configurations we tested. </p>
+      <p><img src="images/ResponseTimeAsyncLogging4Threads@16kEach.png" alt="" /></p>
+      <p>The above result was obtained with JDK 1.8.0_45 on
+        RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with
+        10-core Xeon CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual cores).
+      </p>
+      <a name="asyncLoggingWithParams" />
       <h4>Asynchronous Logging Parameterized Messages</h4>
       <p>Many logging libraries offer an API for logging parameterized messages.
         This enables application code to look something like this:<pre>
@@ -160,13 +185,16 @@ if (logger.isDebugEnabled()) {
         The graph below compares the throughput of logging messages with parameters using various logging libraries.
         These are all asynchronous logging calls, so these numbers do not include the cost of disk I/O
         and represent <em>peak</em> throughput.</p>
-      <p>In absolute numbers, <em>Log4j 2's Async Loggers perform well compared to the other logging
-        frameworks, but notice that the message formatting cost increases with the number of parameters.
-        In this area, Log4j 2 still has work to do to improve.</em></p>
-      <p>Note that the java.util.logging MemoryHandler does <em>not</em> do the safe thing of taking a snapshot
+      <p>JUL (java.util.logging) does not have a built-in asynchronous Handler.
+        <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/MemoryHandler.html">MemoryHandler</a>
+        is the nearest thing available so we included it here.
+        MemoryHandler does <em>not</em> do the safe thing of taking a snapshot
         of the current parameter state (it just keeps a reference to the original parameter objects),
         and as a result it is very fast when single-threaded.
         However, when more application threads are logging concurrently, the cost of lock contention outweighs this gain.</p>
+      <p>In absolute numbers, <em>Log4j 2's Async Loggers perform well compared to the other logging
+        frameworks, but notice that the message formatting cost increases with the number of parameters.
+        In this area, Log4j 2 still has work to do to improve.</em></p>
       <p><img src="images/ParamMsgThrpt1-4T.png" /></p>
       <p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6, Log4j 1.2.17 and Logback 1.1.7,
         and were obtained with the
@@ -175,6 +203,36 @@ if (logger.isDebugEnabled()) {
         AsyncLoggersBenchmark and the MemoryHandlerJULBenchmark source code in the log4j-perf module.
       </p>
 
+      <a name="asyncLoggingWithLocation" />
+      <h4>Asynchronous Logging with Caller Location Information</h4>
+      <p>
+        Some layouts can show the class, method and line number in the application where the logging call was made.
+        In Log4j 2, examples of such layout options are HTML
+        <a href="layouts.html#HtmlLocationInfo">locationInfo</a>,
+        or one of the patterns <a href="layouts.html#PatternClass">%C or $class</a>,
+        <a href="layouts.html#PatternFile">%F or %file</a>,
+        <a href="layouts.html#PatternLocation">%l or %location</a>,
+        <a href="layouts.html#PatternLine">%L or %line</a>,
+        <a href="layouts.html#PatternMethod">%M or %method</a>.
+        In order to provide caller location information, the logging library
+        will take a snapshot of the stack, and walk the stack trace to find the location information.
+      </p>
+      <p>
+        The graph below shows the performance impact of capturing caller location information when logging
+        asynchronously from a single thread. Our tests show that <em>capturing caller location has a similar impact
+        across all logging libraries, and slows down asynchronous
+        logging by about 30-100x</em>.
+      </p>
+      <p><img src="images/AsyncWithLocationThrpt1T-labeled.png" /></p>
+      <p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6, Log4j 1.2.17 and Logback 1.1.7,
+        and were obtained with the
+        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        See the AsyncAppenderLog4j1LocationBenchmark, AsyncAppenderLog4j2LocationBenchmark,
+        AsyncAppenderLogbackLocationBenchmark, AsyncLoggersLocationBenchmark and the
+        MemoryHandlerJULLocationBenchmark source code in the log4j-perf module.
+      </p>
+
+      <a name="fileLoggingComparison" />
       <h4>Synchronous File Logging - Sustained Throughput Comparison</h4>
       <p>This section discusses the maximum sustained throughput of logging to a file.
         In any system, the maximum sustained throughput is determined by its slowest component.

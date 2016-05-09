@@ -23,27 +23,27 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * Creates {@link AsyncEventRouter} instances based on user-specified system properties. The {@code AsyncEventRouter}
+ * Creates {@link AsyncQueueFullPolicy} instances based on user-specified system properties. The {@code AsyncQueueFullPolicy}
  * created by this factory is used in AsyncLogger, AsyncLoggerConfig and AsyncAppender
  * to control if events are logged in the current thread, the background thread, or discarded.
  * <p>
- * Property {@code "log4j2.AsyncEventRouter"} controls the routing behaviour. If this property is not specified or has
- * value {@code "Default"}, this factory creates {@link DefaultAsyncEventRouter} objects.
+ * Property {@code "log4j2.AsyncQueueFullPolicy"} controls the routing behaviour. If this property is not specified or has
+ * value {@code "Default"}, this factory creates {@link DefaultAsyncQueueFullPolicy} objects.
  * </p> <p>
- * If this property has value {@code "Discard"}, this factory creates {@link DiscardingAsyncEventRouter} objects.
+ * If this property has value {@code "Discard"}, this factory creates {@link DiscardingAsyncQueueFullPolicy} objects.
  * By default, this router discards events of level {@code INFO}, {@code DEBUG} and {@code TRACE} if the queue is full.
  * This can be adjusted with property {@code "log4j2.DiscardThreshold"} (name of the level at which to start
  * discarding).
  * </p> <p>
  * For any other value, this
- * factory interprets the value as the fully qualified name of a class implementing the {@link AsyncEventRouter}
+ * factory interprets the value as the fully qualified name of a class implementing the {@link AsyncQueueFullPolicy}
  * interface. The class must have a default constructor.
  * </p>
  *
  * @since 2.6
  */
-public class AsyncEventRouterFactory {
-    static final String PROPERTY_NAME_ASYNC_EVENT_ROUTER = "log4j2.AsyncEventRouter";
+public class AsyncQueueFullPolicyFactory {
+    static final String PROPERTY_NAME_ASYNC_EVENT_ROUTER = "log4j2.AsyncQueueFullPolicy";
     static final String PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER = "Default";
     static final String PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER = "Discard";
     static final String PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL = "log4j2.DiscardThreshold";
@@ -51,51 +51,51 @@ public class AsyncEventRouterFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
-     * Creates and returns {@link AsyncEventRouter} instances based on user-specified system properties.
+     * Creates and returns {@link AsyncQueueFullPolicy} instances based on user-specified system properties.
      * <p>
-     * Property {@code "log4j2.AsyncEventRouter"} controls the routing behaviour. If this property is not specified or
-     * has value {@code "Default"}, this method returns {@link DefaultAsyncEventRouter} objects.
+     * Property {@code "log4j2.AsyncQueueFullPolicy"} controls the routing behaviour. If this property is not specified or
+     * has value {@code "Default"}, this method returns {@link DefaultAsyncQueueFullPolicy} objects.
      * </p> <p>
-     * If this property has value {@code "Discard"}, this method returns {@link DiscardingAsyncEventRouter} objects.
+     * If this property has value {@code "Discard"}, this method returns {@link DiscardingAsyncQueueFullPolicy} objects.
      * </p> <p>
      * For any other value, this method interprets the value as the fully qualified name of a class implementing the
-     * {@link AsyncEventRouter} interface. The class must have a default constructor.
+     * {@link AsyncQueueFullPolicy} interface. The class must have a default constructor.
      * </p>
      *
-     * @return a new AsyncEventRouter
+     * @return a new AsyncQueueFullPolicy
      */
-    public static AsyncEventRouter create() {
+    public static AsyncQueueFullPolicy create() {
         final String router = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME_ASYNC_EVENT_ROUTER);
         if (router == null || PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER.equals(router)
-                || DefaultAsyncEventRouter.class.getSimpleName().equals(router)
-                || DefaultAsyncEventRouter.class.getName().equals(router)) {
-            return new DefaultAsyncEventRouter();
+                || DefaultAsyncQueueFullPolicy.class.getSimpleName().equals(router)
+                || DefaultAsyncQueueFullPolicy.class.getName().equals(router)) {
+            return new DefaultAsyncQueueFullPolicy();
         }
         if (PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.equals(router)
-                || DiscardingAsyncEventRouter.class.getSimpleName().equals(router)
-                || DiscardingAsyncEventRouter.class.getName().equals(router)) {
-            return createDiscardingAsyncEventRouter();
+                || DiscardingAsyncQueueFullPolicy.class.getSimpleName().equals(router)
+                || DiscardingAsyncQueueFullPolicy.class.getName().equals(router)) {
+            return createDiscardingAsyncQueueFullPolicy();
         }
         return createCustomRouter(router);
     }
 
-    private static AsyncEventRouter createCustomRouter(final String router) {
+    private static AsyncQueueFullPolicy createCustomRouter(final String router) {
         try {
-            final Class<? extends AsyncEventRouter> cls = LoaderUtil.loadClass(router).asSubclass(AsyncEventRouter.class);
-            LOGGER.debug("Creating custom AsyncEventRouter '{}'", router);
+            final Class<? extends AsyncQueueFullPolicy> cls = LoaderUtil.loadClass(router).asSubclass(AsyncQueueFullPolicy.class);
+            LOGGER.debug("Creating custom AsyncQueueFullPolicy '{}'", router);
             return cls.newInstance();
         } catch (final Exception ex) {
-            LOGGER.debug("Using DefaultAsyncEventRouter. Could not create custom AsyncEventRouter '{}': {}", router,
+            LOGGER.debug("Using DefaultAsyncQueueFullPolicy. Could not create custom AsyncQueueFullPolicy '{}': {}", router,
                     ex.toString());
-            return new DefaultAsyncEventRouter();
+            return new DefaultAsyncQueueFullPolicy();
         }
     }
 
-    private static AsyncEventRouter createDiscardingAsyncEventRouter() {
+    private static AsyncQueueFullPolicy createDiscardingAsyncQueueFullPolicy() {
         final PropertiesUtil util = PropertiesUtil.getProperties();
         final String level = util.getStringProperty(PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL, Level.INFO.name());
         final Level thresholdLevel = Level.toLevel(level, Level.INFO);
-        LOGGER.debug("Creating custom DiscardingAsyncEventRouter(discardThreshold:{})", thresholdLevel);
-        return new DiscardingAsyncEventRouter(thresholdLevel);
+        LOGGER.debug("Creating custom DiscardingAsyncQueueFullPolicy(discardThreshold:{})", thresholdLevel);
+        return new DiscardingAsyncQueueFullPolicy(thresholdLevel);
     }
 }

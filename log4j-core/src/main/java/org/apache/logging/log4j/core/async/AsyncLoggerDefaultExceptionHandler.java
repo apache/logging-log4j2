@@ -21,12 +21,10 @@ import com.lmax.disruptor.ExceptionHandler;
 /**
  * Default disruptor exception handler for errors that occur in the AsyncLogger background thread.
  */
-public class DefaultAsyncLoggerConfigExceptionHandler
-        implements ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> {
+public class AsyncLoggerDefaultExceptionHandler implements ExceptionHandler<RingBufferLogEvent> {
 
     @Override
-    public void handleEventException(final Throwable throwable, final long sequence,
-            final AsyncLoggerConfigDisruptor.Log4jEventWrapper event) {
+    public void handleEventException(final Throwable throwable, final long sequence, final RingBufferLogEvent event) {
         StringBuilder sb = new StringBuilder(512);
         sb.append("AsyncLogger error handling event seq=").append(sequence).append(", value='");
         try {

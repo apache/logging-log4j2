@@ -22,9 +22,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Tests the DiscardingAsyncEventRouter class..
+ * Tests the DiscardingAsyncQueueFullPolicy class..
  */
-public class DiscardingAsyncEventRouterTest {
+public class DiscardingAsyncQueueFullPolicyTest {
 
     private static long currentThreadId() {
         return Thread.currentThread().getId();
@@ -36,20 +36,20 @@ public class DiscardingAsyncEventRouterTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorDisallowsNullThresholdLevel() {
-        new DiscardingAsyncEventRouter(null);
+        new DiscardingAsyncQueueFullPolicy(null);
     }
 
     @Test
     public void testThresholdLevelIsConstructorValue() {
-        assertSame(Level.ALL, new DiscardingAsyncEventRouter(Level.ALL).getThresholdLevel());
-        assertSame(Level.OFF, new DiscardingAsyncEventRouter(Level.OFF).getThresholdLevel());
-        assertSame(Level.INFO, new DiscardingAsyncEventRouter(Level.INFO).getThresholdLevel());
+        assertSame(Level.ALL, new DiscardingAsyncQueueFullPolicy(Level.ALL).getThresholdLevel());
+        assertSame(Level.OFF, new DiscardingAsyncQueueFullPolicy(Level.OFF).getThresholdLevel());
+        assertSame(Level.INFO, new DiscardingAsyncQueueFullPolicy(Level.INFO).getThresholdLevel());
     }
 
     @Test
     public void testGetRouteDiscardsIfThresholdCapacityReachedAndLevelEqualOrLessSpecificThanThreshold()
             throws Exception {
-        DiscardingAsyncEventRouter router = new DiscardingAsyncEventRouter(Level.WARN);
+        DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (Level level : new Level[] {Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL}) {
             assertEquals(level.name(), EventRoute.DISCARD, router.getRoute(currentThreadId(), level));
@@ -61,7 +61,7 @@ public class DiscardingAsyncEventRouterTest {
 
     @Test
     public void testGetRouteDiscardsIfQueueFullAndLevelEqualOrLessSpecificThanThreshold() throws Exception {
-        DiscardingAsyncEventRouter router = new DiscardingAsyncEventRouter(Level.WARN);
+        DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (Level level : new Level[] {Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL}) {
             assertEquals(level.name(), EventRoute.DISCARD, router.getRoute(currentThreadId(), level));
@@ -72,7 +72,7 @@ public class DiscardingAsyncEventRouterTest {
     @Test
     public void testGetRouteEnqueuesIfThresholdCapacityReachedButLevelMoreSpecificThanThreshold()
             throws Exception {
-        DiscardingAsyncEventRouter router = new DiscardingAsyncEventRouter(Level.WARN);
+        DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (Level level : new Level[] {Level.ERROR, Level.FATAL, Level.OFF}) {
             assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level));
@@ -84,7 +84,7 @@ public class DiscardingAsyncEventRouterTest {
 
     @Test
     public void testGetRouteEnqueuesIfOtherThreadQueueFullAndLevelMoreSpecificThanThreshold() throws Exception {
-        DiscardingAsyncEventRouter router = new DiscardingAsyncEventRouter(Level.WARN);
+        DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (Level level : new Level[] {Level.ERROR, Level.FATAL, Level.OFF}) {
             assertEquals(level.name(), EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level));
@@ -93,7 +93,7 @@ public class DiscardingAsyncEventRouterTest {
 
     @Test
     public void testGetRouteSynchronousIfCurrentThreadQueueFullAndLevelMoreSpecificThanThreshold() throws Exception {
-        DiscardingAsyncEventRouter router = new DiscardingAsyncEventRouter(Level.WARN);
+        DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (Level level : new Level[] {Level.ERROR, Level.FATAL, Level.OFF}) {
             assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level));
@@ -102,16 +102,16 @@ public class DiscardingAsyncEventRouterTest {
 
     @Test
     public void testGetDiscardCount() throws Exception {
-        DiscardingAsyncEventRouter router = new DiscardingAsyncEventRouter(Level.INFO);
-        assertEquals("initially", 0, DiscardingAsyncEventRouter.getDiscardCount(router));
+        DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.INFO);
+        assertEquals("initially", 0, DiscardingAsyncQueueFullPolicy.getDiscardCount(router));
 
         assertEquals(EventRoute.DISCARD, router.getRoute(-1L, Level.INFO));
-        assertEquals("increase", 1, DiscardingAsyncEventRouter.getDiscardCount(router));
+        assertEquals("increase", 1, DiscardingAsyncQueueFullPolicy.getDiscardCount(router));
 
         assertEquals(EventRoute.DISCARD, router.getRoute(-1L, Level.INFO));
-        assertEquals("increase", 2, DiscardingAsyncEventRouter.getDiscardCount(router));
+        assertEquals("increase", 2, DiscardingAsyncQueueFullPolicy.getDiscardCount(router));
 
         assertEquals(EventRoute.DISCARD, router.getRoute(-1L, Level.INFO));
-        assertEquals("increase", 3, DiscardingAsyncEventRouter.getDiscardCount(router));
+        assertEquals("increase", 3, DiscardingAsyncQueueFullPolicy.getDiscardCount(router));
     }
 }

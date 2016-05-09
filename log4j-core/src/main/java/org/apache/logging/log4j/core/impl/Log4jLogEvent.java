@@ -98,8 +98,11 @@ public class Log4jLogEvent implements LogEvent {
         public Builder(LogEvent other) {
             Objects.requireNonNull(other);
             if (other instanceof RingBufferLogEvent) {
-                RingBufferLogEvent evt = (RingBufferLogEvent) other;
-                evt.initializeBuilder(this);
+                ((RingBufferLogEvent) other).initializeBuilder(this);
+                return;
+            }
+            if (other instanceof MutableLogEvent) {
+                ((MutableLogEvent) other).initializeBuilder(this);
                 return;
             }
             this.loggerFqcn = other.getLoggerFqcn();
@@ -634,6 +637,15 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         return new LogEventProxy(this, this.includeLocation);
     }
 
+    /**
+     * Take a snapshot of the specified {@code LogEvent}.
+     *
+     * @param event the event to take a snapshot of
+     * @param includeLocation if true, this method will obtain caller location information
+     * @return snapshot of the event as a {@code Serializable} object
+     * @see #deserialize(Serializable)
+     * @see #serialize(Log4jLogEvent, boolean)
+     */
     public static Serializable serialize(final LogEvent event, final boolean includeLocation) {
         if (event instanceof Log4jLogEvent) {
             event.getThrownProxy(); // ensure ThrowableProxy is initialized
@@ -642,6 +654,15 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         return new LogEventProxy(event, includeLocation);
     }
 
+    /**
+     * Take a snapshot of the specified {@code Log4jLogEvent}.
+     *
+     * @param event the event to take a snapshot of
+     * @param includeLocation if true, this method will obtain caller location information
+     * @return snapshot of the event as a {@code Serializable} object
+     * @see #deserialize(Serializable)
+     * @see #serialize(LogEvent, boolean)
+     */
     public static Serializable serialize(final Log4jLogEvent event, final boolean includeLocation) {
         event.getThrownProxy(); // ensure ThrowableProxy is initialized
         return new LogEventProxy(event, includeLocation);

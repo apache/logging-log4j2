@@ -132,7 +132,6 @@
             <tt>log4j2.component.properties</tt> by including this file in the classpath of the application.
           </p>
         <a name="Appenders" />
-        <subsubsection name="Supported Appenders">
           <h4>Supported Appenders</h4>
           <p>
             The following <a href="appenders.html">appenders</a> are garbage-free during steady-state logging:
@@ -149,9 +148,7 @@
             Any other appenders not in the above list (including Async) create temporary objects during steady-state
             logging. Use <a href="async.html">Async Loggers</a> to log asynchronously in a garbage-free manner.
           </p>
-        </subsubsection>
         <a name="Layouts" />
-        <subsubsection name="Supported Layouts">
           <h4>Supported Layouts</h4>
 
           <h5>GelfLayout</h5>
@@ -291,9 +288,7 @@
 
           </td></tr></table>
 
-        </subsubsection>
         <a name="api" />
-        <subsubsection name="API Changes">
           <h4>API Changes</h4>
           <p>
             Methods have been added to the <tt>Logger</tt> interface so that no vararg array objects are created
@@ -311,9 +306,7 @@
             Log4j may call <tt>toString()</tt> on message and parameter objects when garbage-free logging
             is disabled (when system property <tt>log4j2.enable.threadlocals</tt> is set to "false".)
           </p>
-        </subsubsection>
         <a name="codeImpact" />
-        <subsubsection name="Impact on Application Code: Autoboxing">
         <h4>Impact on Application Code: Autoboxing</h4>
         <p>
           We made an effort to make logging garbage-free without requiring code changes in existing applications,
@@ -353,7 +346,6 @@ public void garbageFree() {
               <li>The <tt>Logger.traceEntry</tt> and <tt>Logger.traceExit</tt> methods create temporary objects.</li>
             </ul>
           </td></tr></table>
-        </subsubsection>
         <p>
         </p>
         <p>
@@ -430,12 +422,15 @@ public void garbageFree() {
           of tens of milliseconds or more; and attempting to increase the load even more results in larger and larger
           response time spikes.
         </p>
-        <h4>Synchronous Logging</h4>
-        <p>With synchronous logging, garbage-free logging still performs better, but the difference is less pronounced.
+        <h4>Synchronous File Logging</h4>
+        <p>With synchronous file logging, garbage-free logging still performs better than classic logging,
+          but the difference is less pronounced.
         </p>
-        <p>For both classic and garbage-free logging, synchronous logging showed response times of 3-5 milliseconds
-        even at loads of 100,000 messages/second. It may be possible to improve on this, we did not investigate
-        further yet.</p>
+        <p>At a workload of 100,000 messages/second, classic logging max response time was a little over 2 milliseconds
+          where garbage-free logging was a little over 1 millisecond.
+          When the workload is increased to 300,000 messages/second, classic logging shows response time pauses of 6
+          milliseconds where the garbage-free response times were less than 3 milliseconds.
+          It may be possible to improve on this, we did not investigate further yet.</p>
         <p><img src="../images/ResponseTimeSyncClassicVsGcFree.png" /></p>
 
         <a name="Throughput" />
