@@ -223,7 +223,7 @@ if (logger.isDebugEnabled()) {
         across all logging libraries, and slows down asynchronous
         logging by about 30-100x</em>.
       </p>
-      <p><img src="images/AsyncWithLocationThrpt1T.png" /></p>
+      <p><img src="images/AsyncWithLocationThrpt1T-labeled.png" /></p>
       <p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6, Log4j 1.2.17 and Logback 1.1.7,
         and were obtained with the
         <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
