@@ -98,8 +98,11 @@ public class Log4jLogEvent implements LogEvent {
         public Builder(LogEvent other) {
             Objects.requireNonNull(other);
             if (other instanceof RingBufferLogEvent) {
-                RingBufferLogEvent evt = (RingBufferLogEvent) other;
-                evt.initializeBuilder(this);
+                ((RingBufferLogEvent) other).initializeBuilder(this);
+                return;
+            }
+            if (other instanceof MutableLogEvent) {
+                ((MutableLogEvent) other).initializeBuilder(this);
                 return;
             }
             this.loggerFqcn = other.getLoggerFqcn();

@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -281,6 +282,73 @@ public class Log4jLogEventTest {
         LogEvent event2 = new Log4jLogEvent.Builder(event).build();
         assertEquals("copy constructor builder", event2, event);
         assertEquals("same hashCode", event2.hashCode(), event.hashCode());
+    }
+
+    @Test
+    public void testBuilderCorrectlyCopiesMutableLogEvent() throws Exception {
+        final Map<String, String> contextMap = new HashMap<>();
+        contextMap.put("A", "B");
+        final ContextStack contextStack = ThreadContext.getImmutableStack();
+        final Exception exception = new Exception("test");
+        final Marker marker = MarkerManager.getMarker("EVENTTEST");
+        final Message message = new SimpleMessage("foo");
+        final StackTraceElement stackTraceElement = new StackTraceElement("A", "B", "file", 123);
+        final String fqcn = "qualified";
+        final String name = "Ceci n'est pas une pipe";
+        final String threadName = "threadName";
+        final MutableLogEvent event = new MutableLogEvent();
+        event.setContextMap(contextMap);
+        event.setContextStack(contextStack);
+        event.setEndOfBatch(true);
+        event.setIncludeLocation(true);
+        //event.setSource(stackTraceElement); // cannot be explicitly set
+        event.setLevel(Level.FATAL);
+        event.setLoggerFqcn(fqcn);
+        event.setLoggerName(name);
+        event.setMarker(marker);
+        event.setMessage(message);
+        event.setNanoTime(1234567890L);
+        event.setThreadName(threadName);
+        event.setThrown(exception);
+        event.setTimeMillis(987654321L);
+
+        assertSame(contextMap, event.getContextMap());
+        assertSame(contextStack, event.getContextStack());
+        assertEquals(true, event.isEndOfBatch());
+        assertEquals(true, event.isIncludeLocation());
+        assertSame(Level.FATAL, event.getLevel());
+        assertSame(fqcn, event.getLoggerFqcn());
+        assertSame(name, event.getLoggerName());
+        assertSame(marker, event.getMarker());
+        assertSame(message, event.getMessage());
+        assertEquals(1234567890L, event.getNanoTime());
+        //assertSame(stackTraceElement, event.getSource()); // don't invoke
+        assertSame(threadName, event.getThreadName());
+        assertSame(exception, event.getThrown());
+        assertEquals(987654321L, event.getTimeMillis());
+
+        LogEvent e2 = new Log4jLogEvent.Builder(event).build();
+        assertSame(contextMap, e2.getContextMap());
+        assertSame(contextStack, e2.getContextStack());
+        assertEquals(true, e2.isEndOfBatch());
+        assertEquals(true, e2.isIncludeLocation());
+        assertSame(Level.FATAL, e2.getLevel());
+        assertSame(fqcn, e2.getLoggerFqcn());
+        assertSame(name, e2.getLoggerName());
+        assertSame(marker, e2.getMarker());
+        assertSame(message, e2.getMessage());
+        assertEquals(1234567890L, e2.getNanoTime());
+        //assertSame(stackTraceElement, e2.getSource()); // don't invoke
+        assertSame(threadName, e2.getThreadName());
+        assertSame(exception, e2.getThrown());
+        assertEquals(987654321L, e2.getTimeMillis());
+
+        // use reflection to get value of source field in log event copy:
+        // invoking the getSource() method would initialize the field
+        Field fieldSource = Log4jLogEvent.class.getDeclaredField("source");
+        fieldSource.setAccessible(true);
+        Object value = fieldSource.get(e2);
+        assertNull("source in copy", value);
     }
 
     @Test
