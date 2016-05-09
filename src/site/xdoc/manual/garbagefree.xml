@@ -132,7 +132,6 @@
             <tt>log4j2.component.properties</tt> by including this file in the classpath of the application.
           </p>
         <a name="Appenders" />
-        <subsubsection name="Supported Appenders">
           <h4>Supported Appenders</h4>
           <p>
             The following <a href="appenders.html">appenders</a> are garbage-free during steady-state logging:
@@ -149,9 +148,7 @@
             Any other appenders not in the above list (including Async) create temporary objects during steady-state
             logging. Use <a href="async.html">Async Loggers</a> to log asynchronously in a garbage-free manner.
           </p>
-        </subsubsection>
         <a name="Layouts" />
-        <subsubsection name="Supported Layouts">
           <h4>Supported Layouts</h4>
 
           <h5>GelfLayout</h5>
@@ -291,9 +288,7 @@
 
           </td></tr></table>
 
-        </subsubsection>
         <a name="api" />
-        <subsubsection name="API Changes">
           <h4>API Changes</h4>
           <p>
             Methods have been added to the <tt>Logger</tt> interface so that no vararg array objects are created
@@ -311,9 +306,7 @@
             Log4j may call <tt>toString()</tt> on message and parameter objects when garbage-free logging
             is disabled (when system property <tt>log4j2.enable.threadlocals</tt> is set to "false".)
           </p>
-        </subsubsection>
         <a name="codeImpact" />
-        <subsubsection name="Impact on Application Code: Autoboxing">
         <h4>Impact on Application Code: Autoboxing</h4>
         <p>
           We made an effort to make logging garbage-free without requiring code changes in existing applications,
@@ -353,7 +346,6 @@ public void garbageFree() {
               <li>The <tt>Logger.traceEntry</tt> and <tt>Logger.traceExit</tt> methods create temporary objects.</li>
             </ul>
           </td></tr></table>
-        </subsubsection>
         <p>
         </p>
         <p>
