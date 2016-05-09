@@ -421,11 +421,11 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     /**
      * Creates and returns a new immutable copy of this {@code MutableLogEvent}.
+     * If {@link #isIncludeLocation()} is true, this will obtain caller location information.
      *
      * @return a new immutable copy of the data in this {@code MutableLogEvent}
      */
     public Log4jLogEvent createMemento() {
-        // TODO implement MutableLogEvent.createMemento()
         return Log4jLogEvent.deserialize(Log4jLogEvent.serialize(this, includeLocation));
     }
 
