@@ -423,10 +423,11 @@ public void garbageFree() {
           response time spikes.
         </p>
         <h4>Synchronous File Logging</h4>
-        <p>With file synchronous logging, garbage-free logging still performs better, but the difference is less pronounced.
+        <p>With synchronous file logging, garbage-free logging still performs better than classic logging,
+          but the difference is less pronounced.
         </p>
-        <p>For both classic and garbage-free logging, synchronous file logging showed response times of 3-5 milliseconds
-        even at loads of 100,000 messages/second.
+        <p>At a workload of 100,000 messages/second, classic logging max response time was a little over 2 milliseconds
+          where garbage-free logging was a little over 1 millisecond.
           When the workload is increased to 300,000 messages/second, classic logging shows response time pauses of 6
           milliseconds where the garbage-free response times were less than 3 milliseconds.
           It may be possible to improve on this, we did not investigate further yet.</p>
