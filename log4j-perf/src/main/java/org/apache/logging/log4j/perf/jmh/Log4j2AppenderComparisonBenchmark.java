@@ -18,11 +18,19 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -40,28 +48,69 @@ import org.openjdk.jmh.annotations.TearDown;
 //
 // RUNNING THIS TEST WITH 4 THREADS:
 // java -jar log4j-perf/target/benchmarks.jar ".*Log4j2AppenderComparisonBenchmark.*" -f 1 -wi 10 -i 20 -t 4
-@State(Scope.Thread)
+@State(Scope.Benchmark)
 public class Log4j2AppenderComparisonBenchmark {
     public static final String MESSAGE = "Short message";
+    private final LogEvent EVENT = createLogEvent();
 
-    private Logger file;
-    private Logger raf;
-    private Logger mmap;
-    private Logger console;
-    private Logger noop;
-    private Logger rewrite;
+    private Logger fileLogger;
+    private Logger rafLogger;
+    private Logger mmapLogger;
+    private Logger consoleLogger;
+    private Logger noopLogger;
+    private Logger rewriteLogger;
+    private Appender fileAppender;
+    private Appender rafAppender;
+    private Appender mmapAppender;
+    private Appender consoleAppender;
+    private Appender noopAppender;
+    private Appender rewriteAppender;
+
+    private static LogEvent createLogEvent() {
+        final Marker marker = null;
+        final String fqcn = "com.mycom.myproject.mypackage.MyClass";
+        final Level level = Level.DEBUG;
+        final Message message = new SimpleMessage(MESSAGE);
+        final Throwable t = null;
+        final Map<String, String> mdc = null;
+        final ThreadContext.ContextStack ndc = null;
+        final String threadName = "THREAD";
+        final StackTraceElement location = null;
+        final long timestamp = System.currentTimeMillis();
+
+        return Log4jLogEvent.newBuilder() //
+                .setLoggerName("name(ignored)") //
+                .setMarker(marker) //
+                .setLoggerFqcn(fqcn) //
+                .setLevel(level) //
+                .setMessage(message) //
+                .setThrown(t) //
+                .setContextMap(mdc) //
+                .setContextStack(ndc) //
+                .setThreadName(threadName) //
+                .setSource(location) //
+                .setTimeMillis(timestamp) //
+                .build();
+    }
 
     @Setup
     public void setUp() throws Exception {
         System.setProperty("log4j.configurationFile", "log4j2-appenderComparison.xml");
         deleteLogFiles();
 
-        file = LogManager.getLogger("FileLogger");
-        raf = LogManager.getLogger("RAFLogger");
-        mmap = LogManager.getLogger("MMapLogger");
-        console = LogManager.getLogger("ConsoleLogger");
-        noop = LogManager.getLogger("NoopLogger");
-        rewrite = LogManager.getLogger("RewriteLogger");
+        fileLogger = LogManager.getLogger("FileLogger");
+        rafLogger = LogManager.getLogger("RAFLogger");
+        mmapLogger = LogManager.getLogger("MMapLogger");
+        consoleLogger = LogManager.getLogger("ConsoleLogger");
+        noopLogger = LogManager.getLogger("NoopLogger");
+        rewriteLogger = LogManager.getLogger("RewriteLogger");
+
+        fileAppender = ((org.apache.logging.log4j.core.Logger) fileLogger).getAppenders().get("File");
+        rafAppender = ((org.apache.logging.log4j.core.Logger) rafLogger).getAppenders().get("RandomAccessFile");
+        mmapAppender = ((org.apache.logging.log4j.core.Logger) mmapLogger).getAppenders().get("MemoryMappedFile");
+        consoleAppender = ((org.apache.logging.log4j.core.Logger) consoleLogger).getAppenders().get("Console");
+        noopAppender = ((org.apache.logging.log4j.core.Logger) noopLogger).getAppenders().get("NoOp");
+        rewriteAppender = ((org.apache.logging.log4j.core.Logger) rewriteLogger).getAppenders().get("Rewrite");
     }
 
     @TearDown
@@ -82,36 +131,91 @@ public class Log4j2AppenderComparisonBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void raf() {
-        raf.debug(MESSAGE);
+    public void baseline() {
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void end2endRAF() {
+        rafLogger.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void appenderRAF() {
+        rafAppender.append(EVENT);
     }
 
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void file() {
-        file.debug(MESSAGE);
+    public void end2endFile() {
+        fileLogger.debug(MESSAGE);
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void mmap() {
-        mmap.debug(MESSAGE);
+    public void appenderFile() {
+        fileAppender.append(EVENT);
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void noop() {
-        noop.debug(MESSAGE);
+    public void end2endMMap() {
+        mmapLogger.debug(MESSAGE);
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void rewrite() {
-        rewrite.debug(MESSAGE);
+    public void appenderMMap() {
+        mmapAppender.append(EVENT);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void end2endNoop() {
+        noopLogger.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void appenderNoop() {
+        noopAppender.append(EVENT);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void end2endRewrite() {
+        rewriteLogger.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void appenderRewrite() {
+        rewriteAppender.append(EVENT);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void end2endConsole() {
+        consoleLogger.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void appenderConsole() {
+        consoleAppender.append(EVENT);
     }
 }

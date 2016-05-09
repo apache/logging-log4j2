@@ -36,7 +36,7 @@
         </CountingNoOp>
         <Rewrite name="Rewrite">
             <AppenderRef ref="NoOp"/>
-            <LoggerNameLevelRewritePolicy loggerName="RewriteLogger">
+            <LoggerNameLevelRewritePolicy logger="RewriteLogger">
                 <KeyValuePair key="INFO" value="DEBUG"/>
                 <KeyValuePair key="DEBUG" value="ERROR"/>
             </LoggerNameLevelRewritePolicy>
@@ -61,5 +61,8 @@
         <Logger name="RewriteLogger" level="debug" additivity="false">
             <AppenderRef ref="Rewrite"/>
         </Logger>
+        <Root level="OFF">
+            <AppenderRef ref="NoOp" />
+        </Root>
     </Loggers>
 </Configuration>
