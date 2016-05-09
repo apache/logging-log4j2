@@ -135,15 +135,25 @@
         once the queue is full, the appender thread needs to wait until a slot becomes available in the queue,
         and throughput will drop to the maximum sustained throughput of the underlying appenders at best.
       </p>
-      <p>For details, see the <a href="manual/async.html">Async
-        Loggers</a> manual page.</p>
       <p><img src="images/async-throughput-comparison.png" alt="Peak throughput comparison" />
       </p>
-      <p>The results above were obtained with log4j-2.0-beta5, disruptor-3.0.0.beta3,
-        log4j-1.2.17 and logback-1.0.10. The PerfTest, MTPerfTest and PerfTestDriver
-        classes that generated these results can be found in the Log4j 2 unit test source directory.
-      </p>
+      <p>For details, see the <a href="manual/async.html">Async
+        Loggers</a> manual page.</p>
 
+      <a name="asyncLoggingResponseTime" />
+      <h4>Asynchronous Logging Response Time</h4>
+      <p>Response time behaviour varies a lot with the workload and the number of threads that log concurrently.
+        The <a href="manual/async.html#Latency">Async Loggers</a> manual page and the
+        <a href="manual/garbagefree.html#Latency">garbage-free logging</a> manual page
+        provide some graphs showing response time behaviour under various loads.
+      </p>
+      <p>This section shows another graph showing response time latency behaviour
+      under a modest total workload of 64,000 messages per second, with 4 threads logging concurrently.
+      At this rate and on this hardware/OS/JVM configuration, lock contention does not come
+      into play and the pauses are caused by minor garbage collections.
+      Generally, garbage-free async loggers had the best response time behaviour
+      in all configurations we tested.</p>
+      <p><img src="images/ResponseTimeAsyncLogging4Threads@16kEach.png" alt="" /></p>
       <a name="asyncLoggingWithParams" />
       <h4>Asynchronous Logging Parameterized Messages</h4>
       <p>Many logging libraries offer an API for logging parameterized messages.
