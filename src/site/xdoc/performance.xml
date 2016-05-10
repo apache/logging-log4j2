@@ -253,14 +253,19 @@ if (logger.isDebugEnabled()) {
       <p><img src="images/SyncThroughputLoggerComparisonLinux.png" /></p>
       <p>The synchronous logging throughput results above are obtained with the
         <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
-        See the <tt>org.apache.logging.log4j.perf.jmh.FileAppenderBenchmark</tt> source code in the log4j-perf module.</p>
+        See the FileAppenderBenchmark source code in the log4j-perf module.</p>
 
       <h4>Synchronous File Logging - Response Time Comparison</h4>
-
+      <p>TODO</p>
+<!--
+TODO
       <h4>Synchronous Socket Sustained Throughput Comparison</h4>
       <h4>Synchronous Syslog Sustained Throughput Comparison</h4>
-
+-->
+      <a name="tradeoffs" />
       <h3>Trade-offs</h3>
+      <a name="whichAppender" />
+      <h4>Which Appender to Use?</h4>
       <p>Assuming that you selected Log4j 2 as your logging framework,
         next you may be interested in learning what the performance trade-offs are for
         selecting a specific Log4j 2 configuration. For example, there are three appenders
@@ -282,6 +287,9 @@ if (logger.isDebugEnabled()) {
       The absolute numbers are higher on Windows: we don't know why but it looks like Windows
       handles lock contention better than Linux.</p>
       <p><img src="images/Log4j2AppenderThroughputComparison-windows.png"/></p>
+      <p>The Log4j 2 appender comparison results above are obtained with the
+        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        See the Log4j2AppenderComparisonBenchmark source code in the log4j-perf module.</p>
       <!--
       <p>The user should be aware of the following performance issues.</p>
           <h3>Logging performance when logging is turned off.</h3>

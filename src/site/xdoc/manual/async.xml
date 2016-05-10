@@ -56,18 +56,20 @@
         </p>
         <ul>
           <li>
-            Higher peak <a href="#Performance">throughput</a>. With an asynchronous logger
-            your application can log messages at 6 - 68 times the rate of a synchronous logger.
+            <p>Higher peak <a href="#Performance">throughput</a>. With an asynchronous logger
+            your application can log messages at 6 - 68 times the rate of a synchronous logger.</p>
+            <p>This is especially interesting for applications that occasionally need to log
+              bursts of messages. Async logging can help prevent or dampen latency spikes by shortening
+              the wait time until the next message can be logged. If the queue size is configured
+              large enough to handle the burst, asynchronous logging will help prevent your
+              application from falling behind (as much) during a sudden increase of activity.
+            </p>
           </li>
           <li>
             Lower logging response time <a href="#Latency">latency</a>.
             Response time latency is the time it takes for a call to Logger.log to return under a given workload.
             Asynchronous Loggers have consistently lower latency than synchronous loggers or even
             queue-based asynchronous appenders.
-          </li>
-          <li>Prevent or dampen latency spikes during bursts of events. If the queue size is configured
-            large enough to handle spikes, asynchronous logging will help prevent your
-            application from falling behind (as much) during sudden bursts of activity.
           </li>
         </ul>
         <b>Drawbacks</b>
@@ -106,6 +108,15 @@
               href="../log4j-api/apidocs/org/apache/logging/log4j/message/Message.html">Message</a>
             implementations should be designed with asynchronous use in mind, and either take a snapshot
             of their parameters at construction time, or document their thread-safety characteristics.
+          </li>
+          <li>
+            If the <em>sustained rate</em> at which your application is logging messages is faster than the
+            maximum sustained throughput of the underlying appender, the queue will fill up and the
+            application will end up logging at the speed of the slowest appender.
+            If this happens, consider selecting a <a href="../performance.html#whichAppender">faster
+            appender</a>, or logging less.
+            If neither of these is an option, you may get better throughput and fewer latency spikes by
+            logging synchronously.
           </li>
         </ul>
       </subsection>
@@ -443,7 +454,7 @@
       <a name="Performance" />
       <subsection name="Asynchronous Logging Performance">
         <p>
-          The performance results below were derived from running the PerfTest, MTPerfTest and PerfTestDriver
+          The throughput performance results below were derived from running the PerfTest, MTPerfTest and PerfTestDriver
           classes which can be found in the Log4j 2 unit test source directory.
           For throughput tests, the methodology used was:
         </p>
@@ -479,7 +490,7 @@
 
         <h4>Asynchronous Throughput Comparison with Other Logging Packages</h4>
         <p>
-          We also compared throughput of asynchronous loggers to the synchronous loggers and asynchronous
+          We also compared peak throughput of asynchronous loggers to the synchronous loggers and asynchronous
           appenders available in other logging packages, specifically log4j-1.2.17 and
           logback-1.0.10, with similar results. For asynchronous appenders, total logging throughput of all
           threads together remains roughly constant when adding more threads.
@@ -678,13 +689,28 @@
 
         <a name="Latency" />
         <h4>Response Time Latency</h4>
-        <p>Response time is how long it takes to log a message under a certain load.
+        <table>
+          <tr><td>This section has been rewritten with the Log4j 2.6 release.
+            The previous version only reported <em>service time</em> instead of <em>response time</em>.
+            See the <a href="../performance.html#responseTime">response time</a> side bar on the
+            performance page on why this is too optimistic.
+            Furthermore the previous version reported average latency, which does not make sense since
+            latency is not a normal distribution.
+            Finally, the previous version of this section only reported the maximum latency of up to 99.99%
+            of the measurements, which does not tell you how bad the worst 0.01% of the outliers were.
+            From this release we will try to do better and report response time latency
+            across the full range of percentages, including all the outliers.
+            Our thanks to Gil Tene for his
+            <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure latency</a>
+            presentation. (Now we know why this is also known as the "Oh s#@t!" presentation.)
+          </td></tr>
+        </table>
+        <p><a href="../performance.html#responseTime">Response time</a> is how long it takes to log a message under a certain load.
           What is often reported as latency is actually <em>service time</em>: how long it took to perform the operation.
           This hides the fact that a single spike in service time adds queueing delay for many of the subsequent operations.
           Service time is easy to measure (and often looks good on paper) but is irrelevant for users since it
           omits the time spent waiting for service.
           For this reason we report response time: service time plus wait time.
-          See the <a href="../performance.html#responseTime">response time section</a> of the performance page for more detail.
         </p>
         <p>The response time test results below were all derived from running the ResponseTimeTest class
           which can be found in the Log4j 2 unit test source directory. If you want to run these tests yourself,
