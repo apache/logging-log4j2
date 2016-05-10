@@ -159,7 +159,9 @@
       <p>Generally, garbage-free async loggers had the best response time behaviour
       in all configurations we tested. </p>
       <p><img src="images/ResponseTimeAsyncLogging4Threads@16kEach.png" alt="" /></p>
-      <p>The above result was obtained with JDK 1.8.0_45 on
+      <p>The above result was obtained with
+        the ResponseTimeTest class which can be found in the Log4j 2 unit test source directory,
+        running on JDK 1.8.0_45 on
         RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with
         10-core Xeon CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual cores).
       </p>
