@@ -149,8 +149,8 @@
       </p>
       <p>This section shows another graph showing response time latency behaviour
       under a modest total workload of 64,000 messages per second, with 4 threads logging concurrently.
-      At this load and on this hardware/OS/JVM configuration, lock contention does not come
-      into play and the pauses are caused by minor garbage collections.
+      At this load and on this hardware/OS/JVM configuration, lock contention and context switches play less of a role
+      and the pauses are mostly caused by minor garbage collections.
       Garbage collection pause duration and frequency can vary a lot: when testing the Log4j 1.2.17
         Async Appender
         a minor GC pause of 7 milliseconds occurred while the Log4j 2 Async Appender test only saw
@@ -261,7 +261,27 @@ if (logger.isDebugEnabled()) {
       <h4>Synchronous Syslog Sustained Throughput Comparison</h4>
 
       <h3>Trade-offs</h3>
-
+      <p>Assuming that you selected Log4j 2 as your logging framework,
+        next you may be interested in learning what the performance trade-offs are for
+        selecting a specific Log4j 2 configuration. For example, there are three appenders
+        for logging to a file: the File, RandomAccessFile and MemoryMappedFile appenders.
+        Which one should you use?</p>
+      <p>
+        The graph below shows sustained throughput for the console and file appenders in Log4j 2.6,
+        and for reference also provides the 2.5 performance.</p>
+      <p>It turns out that the garbage-free text encoding logic in 2.6 gives
+        these appenders a performance boost compared to Log4j 2.5.
+        It used to be that the RandomAccessFile appender was significantly faster,
+        especially in multi-threaded scenarios, but with the 2.6 release the File appender
+        performance has improved and the performance difference between these two appender is smaller.</p>
+      <p>Another takeaway is just how much of a performance drag logging to the console can be.
+        Considering logging to a file and using a tool like <tt>tail</tt> to watch the file change in real time.</p>
+      <p><img src="images/Log4j2AppenderThroughputComparison-linux.png"/></p>
+      <p>On Windows, the results are similar but the RandomAccessFile and MemoryMappedFile appenders outperform
+      the plain File appender in multi-threaded scenarios.
+      The absolute numbers are higher on Windows: we don't know why but it looks like Windows
+      handles lock contention better than Linux.</p>
+      <p><img src="images/Log4j2AppenderThroughputComparison-windows.png"/></p>
       <!--
       <p>The user should be aware of the following performance issues.</p>
           <h3>Logging performance when logging is turned off.</h3>
