@@ -267,7 +267,7 @@ TODO
       <a name="tradeoffs" />
       <h3>Trade-offs</h3>
       <a name="whichAppender" />
-      <h4>Which Appender to Use?</h4>
+      <h4>Which Log4j 2 Appender to Use?</h4>
       <p>Assuming that you selected Log4j 2 as your logging framework,
         next you may be interested in learning what the performance trade-offs are for
         selecting a specific Log4j 2 configuration. For example, there are three appenders
