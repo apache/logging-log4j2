@@ -38,11 +38,16 @@
         This contributes to pressure on the garbage collector and increases the frequency with which GC pauses occur.
       </p>
       <p>
-        From version 2.6, Log4j runs in "garbage free" mode by default ("low garbage" mode for web applications)
-        where objects and buffers are reused and temporary object allocation is avoided as much as possible.
+        From version 2.6, Log4j runs in "garbage free" mode by default
+        where objects and buffers are reused and no temporary objects are allocated as much as possible.
+        There is also a "low garbage" mode which is not completely garbage free but does not use ThreadLocal fields.
+        This is the default mode when Log4j detects it is running in a web application.
+        <!--
       </p>
       <p>
-
+      -->
+        Finally, it is possible to switch off all garbage-free logic and run in "classic mode" instead.
+        For details, see the <a href="#Config">Configuration</a> section below.
       </p>
       <a name="jfr" />
       <subsection name="A Contrived Example">
@@ -80,22 +85,23 @@
 
       <a name="Config" />
       <subsection name="Configuration">
+        <p>Garbage-free logging in Log4j 2.6 is partially implemented by reusing objects in ThreadLocal fields,
+          and partially by reusing buffers when converting text to bytes.
+        </p>
+        <p>
+          ThreadLocal fields holding non-JDK classes can cause memory leaks in
+          web applications when the application server's thread pool continues to reference
+          these fields after the web application is undeployed.
+          To avoid causing memory leaks, Log4j will not use these ThreadLocals when
+          it detects that it is used in a web application
+          (when the <tt>javax.servlet.Servlet</tt> class is in the classpath,
+          or when system property <tt>log4j2.is.webapp</tt> is set to "true").
+        </p>
           <p>
-            In Log4j 2.6, garbage-free logging is enabled by default, except in web applications.
-            Log4j will partially disable garbage-free logging if it detects that it is used in a web application
-            (when the <tt>javax.servlet.Servlet</tt> class is in the classpath,
-            or when system property <tt>log4j2.is.webapp</tt> is set to "true").
-            This is because garbage-free logging uses a number of ThreadLocal fields, which can cause
-            memory leaks when a thread pool of the web application server continues to hold references
-            to these fields after the web application is undeployed. Log4j will not use these ThreadLocals
-            to avoid memory leaks when used in web applications.
-          </p>
-          <p>
-            Some garbage-reducing functionality in Log4j is available for all applications:
+            Some garbage-reducing functionality does not rely on ThreadLocals and is
+            enabled by default for all applications:
             in Log4j 2.6, converting log events to text and text to bytes can be done by directly encoding text
-            into a reused ByteBuffer without creating intermediary
-            Strings, char arrays and byte arrays. This functionality does not rely on ThreadLocals and is
-            enabled by default.
+            into a reused ByteBuffer without creating intermediary Strings, char arrays and byte arrays.
             So while logging is not completely garbage-free for web applications yet,
             the pressure on the garbage collector can still be significantly reduced.
           </p>
