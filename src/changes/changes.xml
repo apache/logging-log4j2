@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1270" dev="rpopma" type="add">
+        (GC) Added support for garbage-free logging in steady state.
+        This includes Async Loggers and logging synchronously to the console and to a file,
+        but does not include the AsyncAppender. This release makes the GelfLayout and
+        the main patterns in the PatternLayout garbage-free.
+      </action>
       <action issue="LOG4J2-1297" dev="rpopma" type="add">
         (GC) Added manual page on garbage-free logging.
       </action>
