@@ -42,8 +42,9 @@
         <item name="JSP Tag Library (TLD Doc)" href="/log4j-taglib/tlddoc/index.html" />
       </item>
       <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
-      <item name="FAQ" href="/faq.html"/>
       <item name="Articles" href="/articles.html"/>
+      <item name="FAQ" href="/faq.html"/>
+      <item name="Performance" href="/performance.html"/>
       <item name="Thanks" href="/thanks.html"/>
     </menu>
 
