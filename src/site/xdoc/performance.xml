@@ -430,13 +430,7 @@ TODO
             Testing has shown that Log4j 2 benefits greatly from running in server mode and user's are
             strongly encouraged to configure their applications to run in server mode when using Log4j 2.
           </p>
-
-
-      <p>
-        The performance results above were all derived from running the DebugDisabledPerformanceComparison,
-        FilterPerformanceComparison, and PerformanceComparison junit tests which can be found in the
-        Log4j 2 unit test source directory.
-      </p>
+      
     </section>
   </body>
 </document>
