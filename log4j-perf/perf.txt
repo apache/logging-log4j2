@@ -1,0 +1,23 @@
+# VM invoker: /Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/jre/bin/java
+# VM options: <none>
+# Warmup: 5 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.apache.logging.log4j.perf.jmh.MDCFilterBenchmark.baseline
+
+# Run progress: 0.00% complete, ETA 00:00:30
+# Fork: 1 of 1
+# Warmup Iteration   1: 12:58:43,899 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback-mdcFilter-perf.xml] at [jar:file:/Users/rgoers/projects/apache/logging/log4j/log4j2/logging-log4j2/log4j-perf/target/benchmarks.jar!/logback-mdcFilter-perf.xml]
+12:58:43,920 |-INFO in ch.qos.logback.core.joran.spi.ConfigurationWatchList@74a40c91 - URL [jar:file:/Users/rgoers/projects/apache/logging/log4j/log4j2/logging-log4j2/log4j-perf/target/benchmarks.jar!/logback-mdcFilter-perf.xml] is not of type file
+12:58:43,955 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+12:58:43,976 |-ERROR in ch.qos.logback.core.joran.spi.Interpreter@23:17 - no applicable action for [onMisMatch], current ElementPath  is [[configuration][turboFilter][onMisMatch]]
+12:58:43,976 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+12:58:43,978 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
+12:58:43,979 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+12:58:44,003 |-INFO in ch.qos.logback.classic.joran.action.RootLoggerAction - Setting level of ROOT logger to DEBUG
+12:58:44,004 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to Logger[ROOT]
+12:58:44,004 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+12:58:44,006 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@3e353f6a - Registering current configuration as safe fallback point
+
