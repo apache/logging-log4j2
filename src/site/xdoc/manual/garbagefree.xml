@@ -440,20 +440,17 @@ public void garbageFree() {
         <p><img src="../images/ResponseTimeSyncClassicVsGcFree.png" /></p>
 
         <a name="Throughput" />
-        <h4>Throughput of Garbage-free and Classic Logging is Similar</h4>
-        <p>Throughput is roughly similar for garbage-free and classic logging.
-          In our measurements, Log4j 2.6 in garbage-free mode had the highest throughput in single-threaded scenarios. In multi-threaded
-          scenarios,  Log4j 2.6 "classic" had the highest throughput, with Log4j 2.6 in garbage-free mode and Log4j 2.5
-          not far behind.</p>
-        <p>The synchronous logging throughput results below are obtained with the
+        <h4>Classic Logging has Slightly Higher Throughput</h4>
+        <p>Throughput is slightly higher for classic logging than for garbage-free logging.
+          This is true for both synchronous and asynchronous logging.
+          Garbage-free logging throughput is roughly similar to the throughput of Log4j 2.5.
+          The graph below compares the sustained throughput of synchronous logging to a file with Log4j 2.6 in
+          garbage-free mode, classic mode and Log4j 2.5.</p>
+        <p>The results below are obtained with the
           <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
           See the <tt>org.apache.logging.log4j.perf.jmh.FileAppenderBenchmark</tt> source code in the log4j-perf module.</p>
         <p><img src="../images/garbage-free2.6-SyncThroughputLinux.png"
             alt="Throughput of Log4j 2.6 in garbage-free mode is slightly worse than in classic mode, but on par with 2.5 and much better than alternatives logging libraries" /></p>
-        <p>(TODO: DOUBLE-CHECK) The above results are for <em>synchronous</em> logging. For <em>asynchronous</em> logging,
-          there was no measurable difference in throughput between
-          Log4j 2.6 in garbage-free mode and Log4j 2.6 in "classic" mode (allocating
-          new objects on every logging call).</p>
       </subsection>
       <a name="UnderTheHood" />
       <subsection name="Under the Hood">
