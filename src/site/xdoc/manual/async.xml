@@ -697,7 +697,8 @@
             Furthermore the previous version reported average latency, which does not make sense since
             latency is not a normal distribution.
             Finally, the previous version of this section only reported the maximum latency of up to 99.99%
-            of the measurements, which does not tell you how bad the worst 0.01% of the outliers were.
+            of the measurements, which does not tell you how bad the worst 0.01% were.
+            This is unfortunate because often the "outliers" are all that matter when it comes to response time.
             From this release we will try to do better and report response time latency
             across the full range of percentages, including all the outliers.
             Our thanks to Gil Tene for his
