@@ -44,7 +44,17 @@
       <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
       <item name="Articles" href="/articles.html"/>
       <item name="FAQ" href="/faq.html"/>
-      <item name="Performance" href="/performance.html"/>
+      <item name="Performance" href="/performance.html" collapse="true">
+        <item name="Benchmarks" href="/performance.html#benchmarks" />
+        <item name="Logging Library Comparison" href="/performance.html#loglibComparison" />
+        <item name="Async Logging Comparison" href="/performance.html#asyncLogging" />
+        <item name="Async Logging Latency" href="/performance.html#asyncLoggingResponseTime" />
+        <item name="Parameters" href="/performance.html#asyncLoggingWithParams" />
+        <item name="Location" href="/performance.html#asyncLoggingWithLocation" />
+        <item name="File Logging Comparison" href="/performance.html#fileLoggingComparison" />
+        <item name="Filtering Comparison" href="/performance.html#filtering" />
+        <item name="Trade-offs" href="/performance.html#tradeoffs" />
+      </item>
       <item name="Thanks" href="/thanks.html"/>
     </menu>
 

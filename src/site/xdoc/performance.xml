@@ -264,6 +264,7 @@ TODO
       <h4>Synchronous Socket Sustained Throughput Comparison</h4>
       <h4>Synchronous Syslog Sustained Throughput Comparison</h4>
 -->
+      <a name="filtering" />
       <h4>Advanced Filtering</h4>
       <p>
         Both Logback and Log4j 2 support advanced filtering. Logback calls them TurboFilters while
@@ -430,7 +431,7 @@ TODO
             Testing has shown that Log4j 2 benefits greatly from running in server mode and user's are
             strongly encouraged to configure their applications to run in server mode when using Log4j 2.
           </p>
-      
+
     </section>
   </body>
 </document>
