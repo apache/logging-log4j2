@@ -38,22 +38,33 @@ import org.slf4j.MDC;
 // multiple threads (for example, 4 threads):
 // java -jar target/benchmarks.jar ".*MDCFilterBenchmark.*" -f 1 -i 5 -wi 5 -t 4 -si true -bm sample -tu ns
 
-@State(Scope.Thread)
+@State(Scope.Benchmark)
 public class MDCFilterBenchmark {
+    // Loggers are Benchmark scope, just like in a real application:
+    // different threads may use the same logger instance, which may have some lock contention.
     Logger log4jLogger;
     org.slf4j.Logger slf4jLogger;
-    Integer j;
+
+    @State(Scope.Thread)
+    public static class ThreadContextState {
+        // Thread scope: initialize MDC/ThreadContext here to ensure each thread has some value set
+        public ThreadContextState() {
+            ThreadContext.put("user", "Apache");
+            MDC.put("user", "Apache");
+        }
+
+        public String message() {
+            return "This is a test";
+        }
+    }
 
     @Setup
     public void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-threadContextFilter-perf.xml");
         System.setProperty("logback.configurationFile", "logback-mdcFilter-perf.xml");
-        ThreadContext.put("user", "Apache");
-        MDC.put("user", "Apache");
 
         log4jLogger = LogManager.getLogger(MDCFilterBenchmark.class);
         slf4jLogger = LoggerFactory.getLogger(MDCFilterBenchmark.class);
-        j = Integer.valueOf(2);
     }
 
     @TearDown
@@ -68,13 +79,13 @@ public class MDCFilterBenchmark {
     }
 
     @Benchmark
-    public void log4jThreadContextFilter() {
-        log4jLogger.info("This is a test");
+    public void log4jThreadContextFilter(final ThreadContextState state) {
+        log4jLogger.info(state.message());
     }
 
     @Benchmark
-    public void slf4jMDCFilter() {
-        slf4jLogger.info("This is a test");
+    public void slf4jMDCFilter(final ThreadContextState state) {
+        slf4jLogger.info(state.message());
     }
 
 }
