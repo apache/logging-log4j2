@@ -38,11 +38,10 @@ import org.slf4j.MarkerFactory;
 // java -jar target/benchmarks.jar ".*MarkerFilterBenchmark.*" -f 1 -i 5 -wi 5 -bm sample -tu ns
 // multiple threads (for example, 4 threads):
 // java -jar target/benchmarks.jar ".*MarkerFilterBenchmark.*" -f 1 -i 5 -wi 5 -t 4 -si true -bm sample -tu ns
-@State(Scope.Thread)
+@State(Scope.Benchmark)
 public class MarkerFilterBenchmark {
     Logger log4jLogger;
     org.slf4j.Logger slf4jLogger;
-    Integer j;
     org.slf4j.Marker LOGBACK_FLOW_MARKER;
     org.slf4j.Marker LOGBACK_ENTRY_MARKER;
     Marker LOG4J_FLOW_MARKER;
@@ -59,8 +58,7 @@ public class MarkerFilterBenchmark {
         LOGBACK_ENTRY_MARKER.add(LOGBACK_FLOW_MARKER);
         LOG4J_ENTRY_MARKER.addParents(LOG4J_FLOW_MARKER);
         log4jLogger = LogManager.getLogger(MarkerFilterBenchmark.class);
-        slf4jLogger = LoggerFactory.getLogger(MarkerFilterBenchmark.class);;
-        j = Integer.valueOf(2);
+        slf4jLogger = LoggerFactory.getLogger(MarkerFilterBenchmark.class);
     }
 
     @TearDown
@@ -80,10 +78,14 @@ public class MarkerFilterBenchmark {
         log4jLogger.info(LOG4J_ENTRY_MARKER, "This is a test");
     }
 
-
     @Benchmark
     public void log4jSimpleMarker() {
         log4jLogger.info(LOG4J_FLOW_MARKER, "This is a test");
+    }
+
+    @Benchmark
+    public void log4jTooFine() {
+        log4jLogger.trace("This is not logged");
     }
 
     @Benchmark
@@ -94,5 +96,10 @@ public class MarkerFilterBenchmark {
     @Benchmark
     public void logbackSimpleMarker() {
         slf4jLogger.info(LOGBACK_FLOW_MARKER, "This is a test");
+    }
+
+    @Benchmark
+    public void logbackTooFine() {
+        slf4jLogger.trace("This is not logged");
     }
 }
