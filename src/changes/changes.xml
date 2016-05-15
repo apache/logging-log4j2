@@ -33,9 +33,6 @@
       <action issue="LOG4J2-1297" dev="rpopma" type="add">
         (GC) Added manual page on garbage-free logging.
       </action>
-      <action issue="LOG4J2-1297" dev="rpopma" type="add">
-        (GC) Added manual page on garbage-free logging.
-      </action>
       <action issue="LOG4J2-1382" dev="rpopma" type="fix">
         Copying a MutableLogEvent using Log4jLogEvent.Builder should not unnecessarily obtain caller location information.
       </action>
