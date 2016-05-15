@@ -732,14 +732,6 @@
             -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime (to eyeball GC and safepoint pauses)</li>
         </ul>
         <p>
-          <img src="../images/ResponseTmHistogramAllAsyncClassicVsLog4j1-16Threads@128k.png"
-            alt="Histogram of async latency" />
-        </p>
-        <p>Note that this is log-scale, not linear. The above graph compares the latency distributions of
-          an asynchronous logger and a Log4j 1.2.17 Async Appender. This shows the latency of one thread
-          during a test where 16 threads are logging in parallel.
-        </p>
-        <p>
           The graph below compares response time latency of the
           ArrayBlockingQueue-based asynchronous appenders in Logback 1.1.7, Log4j 1.2.17 to the
           various options for asynchronous logging that Log4j 2.6 offers.
