@@ -456,8 +456,9 @@ public void garbageFree() {
       <subsection name="Under the Hood">
         <p>
           Custom Message implementations that implement <tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt>
-          can be converted to text by PatternLayout without creating temporary objects.
-          Other layouts that convert LogEvents to text will likely also look for this interface.
+          can be converted to text by garbage-free Layouts without creating temporary objects.
+          PatternLayout uses this mechanism and other layouts that convert LogEvents to text
+          will likely also look for this interface.
         </p>
         <p>
           Custom Layouts that want to be garbage-free should implement the <tt>Encoder&lt;LogEvent&gt;</tt> interface.
