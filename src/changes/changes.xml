@@ -33,6 +33,9 @@
       <action issue="LOG4J2-1297" dev="rpopma" type="add">
         (GC) Added manual page on garbage-free logging.
       </action>
+      <action issue="LOG4J2-1179" dev="rpopma" type="add">
+        Documented benchmark results comparing Log4j 2 performance to other logging libraries.
+      </action>
       <action issue="LOG4J2-1382" dev="rpopma" type="fix">
         Copying a MutableLogEvent using Log4jLogEvent.Builder should not unnecessarily obtain caller location information.
       </action>
