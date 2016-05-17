@@ -274,6 +274,9 @@
       <action issue="LOG4J2-1358" dev="ggregory" type="update">
         Update Apache Commons Compress from 1.10 to 1.11.
       </action>
+      <action issue="LOG4J2-1388" dev="rpopma" type="update">
+        Update Google java-allocation-instrumenter from 3.0 to 3.0.1.
+      </action>
       <action issue="LOG4J2-1233" dev="ggregory" type="update" due-to="Bahri Gencsoy">
         Misleading Value In Properties Example.
       </action>
