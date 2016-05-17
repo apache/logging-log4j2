@@ -438,19 +438,21 @@ public void garbageFree() {
           milliseconds where the garbage-free response times were less than 3 milliseconds.
           It may be possible to improve on this, we did not investigate further yet.</p>
         <p><img src="../images/ResponseTimeSyncClassicVsGcFree.png" /></p>
+        <p>The above results are obtained with the ResponseTimeTest class which can be found in the Log4j 2
+          unit test source directory, running on JDK 1.8.0_45 on RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64)
+          with 10-core Xeon CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual cores).</p>
 
         <a name="Throughput" />
         <h4>Classic Logging has Slightly Higher Throughput</h4>
-        <p>Throughput is slightly higher for classic logging than for garbage-free logging.
+        <p>Throughput is slightly worse for garbage-free logging, compared to classic logging.
           This is true for both synchronous and asynchronous logging.
-          Garbage-free logging throughput is roughly similar to the throughput of Log4j 2.5.
           The graph below compares the sustained throughput of synchronous logging to a file with Log4j 2.6 in
           garbage-free mode, classic mode and Log4j 2.5.</p>
-        <p>The results below are obtained with the
-          <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
-          See the <tt>org.apache.logging.log4j.perf.jmh.FileAppenderBenchmark</tt> source code in the log4j-perf module.</p>
         <p><img src="../images/garbage-free2.6-SyncThroughputLinux.png"
             alt="Throughput of Log4j 2.6 in garbage-free mode is slightly worse than in classic mode, but on par with 2.5 and much better than alternatives logging libraries" /></p>
+        <p>The results above are obtained with the
+          <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+          See the FileAppenderBenchmark source code in the log4j-perf module.</p>
       </subsection>
       <a name="UnderTheHood" />
       <subsection name="Under the Hood">
