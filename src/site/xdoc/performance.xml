@@ -285,17 +285,26 @@ TODO
         Both Logback and Log4j 2 support advanced filtering. Logback calls them TurboFilters while
         Log4j 2 has a single Filter object. Advanced filtering provides the capability to filter
         LogEvents using more than just the Level before the events are passed to Appenders.
-        However, this flexibility does come with some cost. Since multi-threading can also have an impact on the
+        However, this flexibility does come with some cost.
+        Since multi-threading can also have an impact on the
         performance of advanced filtering, the chart below shows the difference in performance of filtering based
-        on a value in the Log4j ThreadContext vs filtering in Logback on a value in the MDC.
-      </p><p><img src="images/ThreadContextFilterCostComparison.png" /></p>
-      <p>Log4j and Logback also support filtering on a Marker or a Marker's parent. It should be pointed out that
-      the poor performance of Logback's Marker filter is not due to a problem in Logback but in SLF4J. See
-      <a href="http://jira.qos.ch/browse/SLF4J-240">SLF4J-240</a>. The "simple" comparison checks to see if a Marker
-        that has no references to other markers matches the requested Marker. The "parent" comparison checks to see
-        if a Marker that does have references to other markers matches. </p>
+        on a Marker or a Marker's parent.</p>
+      <p>
+        The "Simple Marker" comparison checks to see if a Marker that has no references
+        to other markers matches the requested Marker. The "Parent Marker" comparison checks to see
+        if a Marker that does have references to other markers matches the requested Marker. </p>
+      <p>It appears that coarse-grained synchronization in SLF4J can impact performance in
+        multi-threaded scenarios. See
+        <a href="http://jira.qos.ch/browse/SLF4J-240">SLF4J-240</a>.</p>
       <p><img src="images/MarkerFilterCostComparison.png" /></p>
-      <p>See the MarkerFilterBenchmark and MDCFilterBenchmark in the log4j-perf module for details on these
+      <p>Log4j and Logback also support filtering
+        on a value in the Log4j ThreadContext vs filtering in Logback on a value in the MDC.
+        The graph below shows that the performance difference between Log4j 2 and Logback
+        is small for the ThreadContext filter.
+      </p><p><img src="images/ThreadContextFilterCostComparison.png" /></p>
+      <p>The Filter comparison results above are obtained with the
+        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        See the MarkerFilterBenchmark and MDCFilterBenchmark in the log4j-perf module for details on these
         benchmarks.</p>
       <a name="tradeoffs" />
       <h3>Trade-offs</h3>
