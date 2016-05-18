@@ -66,7 +66,7 @@ import org.apache.logging.log4j.core.util.Loader;
  * <li>DO compare response time / latency spectrum at given loads.</li>
  * <li>DO [repeatedly] sanity check and calibrate the benchmark setup to verify that it produces expected results for
  * known forced scenarios. E.g. forced pauses of known size via ^Z or SIGSTOP/SIGCONT should produce expected response
- * time percentile levels. Attempting to load at >100% than achieved throughput should result in response time / latency
+ * time percentile levels. Attempting to load at &gt;100% than achieved throughput should result in response time / latency
  * measurements that grow with benchmark run length, while service time (if measured) should remain fairly flat well
  * past saturation.</li>
  * <li>DON'T use or report standard deviation for latency. Ever. Except if you mean it as a joke.</li>
