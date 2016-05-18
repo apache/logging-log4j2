@@ -41,7 +41,7 @@
         From version 2.6, Log4j runs in "garbage free" mode by default
         where objects and buffers are reused and no temporary objects are allocated as much as possible.
         There is also a "low garbage" mode which is not completely garbage free but does not use ThreadLocal fields.
-        This is the default mode when Log4j detects it is running in a web application.
+        This is the default mode when Log4j <a href="#Config">detects</a> it is running in a web application.
         <!--
       </p>
       <p>
@@ -151,8 +151,9 @@
             <li>MemoryMappedFile</li>
           </ul>
           <p>
-            Any other appenders not in the above list (including Async) create temporary objects during steady-state
-            logging. Use <a href="async.html">Async Loggers</a> to log asynchronously in a garbage-free manner.
+            Any other appenders not in the above list (including AsyncAppender) create temporary objects
+            during steady-state logging. Instead of AsyncAppender, use <a href="async.html">Async Loggers</a>
+            to log asynchronously in a garbage-free manner.
           </p>
         <a name="Layouts" />
           <h4>Supported Layouts</h4>
