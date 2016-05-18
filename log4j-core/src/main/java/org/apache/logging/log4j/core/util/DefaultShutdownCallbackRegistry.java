@@ -78,33 +78,42 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
         }
     }
 
+    private static class RegisteredCancellable implements Cancellable {
+        // use a reference to prevent memory leaks
+        private final Reference<Runnable> hook;
+        private Collection<Cancellable> registered;
+
+        RegisteredCancellable(final Runnable callback, final Collection<Cancellable> registered) {
+            this.registered = registered;
+            hook = new SoftReference<>(callback);
+        }
+
+        @Override
+        public void cancel() {
+            hook.clear();
+            registered.remove(this);
+            registered = null;
+        }
+
+        @Override
+        public void run() {
+            final Runnable runnableHook = this.hook.get();
+            if (runnableHook != null) {
+                runnableHook.run();
+                this.hook.clear();
+            }
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(hook.get());
+        }
+    }
+
     @Override
     public Cancellable addShutdownCallback(final Runnable callback) {
         if (isStarted()) {
-            final Cancellable receipt = new Cancellable() {
-                // use a reference to prevent memory leaks
-                private final Reference<Runnable> hook = new SoftReference<>(callback);
-
-                @Override
-                public void cancel() {
-                    hook.clear();
-                    hooks.remove(this);
-                }
-
-                @Override
-                public void run() {
-                    final Runnable runnableHook = this.hook.get();
-                    if (runnableHook != null) {
-                        runnableHook.run();
-                        this.hook.clear();
-                    }
-                }
-
-                @Override
-                public String toString() {
-                    return String.valueOf(hook.get());
-                }
-            };
+            final Cancellable receipt = new RegisteredCancellable(callback, hooks);
             hooks.add(receipt);
             return receipt;
         }
