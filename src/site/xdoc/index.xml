@@ -61,6 +61,11 @@
               While the Log4j 2 API will provide the best performance, Log4j 2 provides support for the
               Log4j 1.2, SLF4J, Commons Logging and java.util.logging (JUL) APIs.
             </dd>
+            <dt>Avoid lock-in</dt>
+            <dd>
+              Applications coded to the Log4j 2 API always have the option to use any SLF4J-compliant
+              library as their logger implementation with the log4j-to-slf4j adapter.
+            </dd>
             <dt>Automatic Reloading of Configurations</dt>
             <dd>
               Like Logback, Log4j 2 can automatically reload its configuration upon modification. Unlike Logback,
