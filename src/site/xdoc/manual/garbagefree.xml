@@ -64,7 +64,8 @@
           Mission Control shows that with Log4j 2.5 this application allocates memory at a rate of about 809 MB/sec,
           resulting in 141 minor collections.
           Log4j 2.6 does not allocate temporary objects in this configuration, and as a result
-          the same application with Log4j 2.6 has a memory allocation rate of 1.6 MB/sec and had 0 (zero) garbage collections.
+          the same application with Log4j 2.6 has a memory allocation rate of 1.6 MB/sec and
+          was GC-free with 0 (zero) garbage collections.
         </p>
         <table>
           <tr>
