@@ -195,8 +195,9 @@ if (logger.isDebugEnabled()) {
         and as a result it is very fast when single-threaded.
         However, when more application threads are logging concurrently, the cost of lock contention outweighs this gain.</p>
       <p>In absolute numbers, <em>Log4j 2's Async Loggers perform well compared to the other logging
-        frameworks, but notice that the message formatting cost increases with the number of parameters.
-        In this area, Log4j 2 still has work to do to improve.</em></p>
+        frameworks, but notice that the message formatting cost increases sharply with the number of parameters.
+        In this area, Log4j 2 still has work to do to improve: we would like to keep this cost more constant.</em>
+      </p>
       <p><img src="images/ParamMsgThrpt1-4T.png" /></p>
       <p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6, Log4j 1.2.17 and Logback 1.1.7,
         and were obtained with the
