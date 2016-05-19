@@ -52,8 +52,8 @@
               orders of magnitude lower latency than Log4j 1.x and Logback.
               See <a href="manual/async.html#Performance">Asynchronous Logging Performance</a>
               for details.
-              Otherwise, Log4j 2 performs faster than Log4j 1.x in critical areas
-              and similarly to Logback under most circumstances.
+              Otherwise, Log4j 2 significantly outperforms Log4j 1.x, Logback and java.util.logging,
+              especially in multi-threaded applications.
               See <a href="performance.html">Performance</a> for more information.
             </dd>
             <dt>Support for multiple APIs</dt>
