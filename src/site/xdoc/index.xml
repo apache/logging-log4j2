@@ -58,8 +58,8 @@
             </dd>
             <dt>Support for multiple APIs</dt>
             <dd>
-              While the Log4j 2 API will provide the best performance, Log4j 2 provides support for the SLF4J and
-              Commons Logging APIs.
+              While the Log4j 2 API will provide the best performance, Log4j 2 provides support for the
+              Log4j 1.2, SLF4J, Commons Logging and java.util.logging (JUL) APIs.
             </dd>
             <dt>Automatic Reloading of Configurations</dt>
             <dd>
