@@ -37,7 +37,7 @@
         <li><a href="#separate_log_files">How do I dynamically write to separate log files?</a></li>
         <li><a href="#reconfig_level_from_code">How do I set a logger's level programmatically?</a></li>
         <li><a href="#retention">How do I set my log archive retention policy? How do I delete old log archives?</a></li>
-        <li><a href="#api-tradeoffs">Should I use the Log4j 2 API or the SLF4J API?</a></li>
+        <li><a href="#api-tradeoffs">What are the trade-offs of using the Log4j 2 API versus the SLF4J API?</a></li>
         <li><a href="#gc-free-slf4j">Is Log4j 2 still garbage-free when I use the SLF4J API?</a></li>
         <!--
         <li><a href="#custom_plugin">How do I get log4j2 to recognize my custom plugin?</a></li>
@@ -295,7 +295,7 @@
           <a href="manual/appenders.html#ScriptCondition">script condition</a>
         </p>
         <a name="api-tradeoffs" />
-        <h4>Should I use the Log4j 2 API or the SLF4J API?</h4>
+        <h4>What are the trade-offs of using the Log4j 2 API versus the SLF4J API?</h4>
         <p>
           The Log4j 2 API and SLF4J have a lot in common.
           They both share the objective of cleanly separating the logging API from the implementation.
