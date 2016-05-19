@@ -303,7 +303,7 @@
           while offering more functionality and more flexibility.
         </p>
         <p>
-          There may be a concern that using the Log4j 2 native API will tightly couple your application to Log4j 2.
+          There may be a concern that using the Log4j 2 API will tightly couple your application to Log4j 2.
           This is not the case: applications coded to the Log4j 2 API always have the option to use any SLF4J-compliant
           library as their logging implementation with the log4j-to-slf4j adapter.
           See the <a href="#which_jars_log4j-to-slf4j">which jars</a> FAQ entry for details.
@@ -319,10 +319,10 @@
             Users are free to create their own Message types and write custom Layouts,
             Filters and Lookups to manipulate them.
           </li>
-          <li>The native Log4j 2 API has support for Java 8
+          <li>The Log4j 2 API has support for Java 8
             <a href="manual/api.html#LambdaSupport">lambda expressions</a>.</li>
           <li>
-            The native Log4j 2 API has better support for <a href="manual/garbagefree.html">garbage-free logging</a>:
+            The Log4j 2 API has better support for <a href="manual/garbagefree.html">garbage-free logging</a>:
             it avoids creating vararg arrays and avoids creating Strings when logging CharSequence objects.
           </li>
         </ul>
@@ -335,9 +335,9 @@
           However, bear in mind that there are some limitations:</p>
         <p>The SLF4J API only offers up to two parameters for a parameterized message.
           More than that uses varargs which creates a temporary object for the parameter array.
-          The native Log4j 2.6 API has methods for up to ten unrolled parameters.</p>
+          The Log4j 2.6 API has methods for up to ten unrolled parameters.</p>
         <p>
-          Another consideration is that the native Log4j 2 API lets you log Objects, not just Strings.
+          Another consideration is that the Log4j 2 API lets you log Objects, not just Strings.
           Any Object that implements java.lang.CharSequence can be logged without creating garbage.
         </p>
         <p>
