@@ -26,7 +26,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.util.Log4jThread;
 
 public class KafkaManager extends AbstractManager {
 
@@ -58,21 +57,7 @@ public class KafkaManager extends AbstractManager {
     @Override
     public void releaseSub() {
         if (producer != null) {
-            // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
-            final Thread closeThread = new Log4jThread(new Runnable() {
-                @Override
-                public void run() {
-                    producer.close();
-                }
-            });
-            closeThread.setName("KafkaManager-CloseThread");
-            closeThread.setDaemon(true); // avoid blocking JVM shutdown
-            closeThread.start();
-            try {
-                closeThread.join(timeoutMillis);
-            } catch (final InterruptedException ignore) {
-                // ignore
-            }
+            producer.close(timeoutMillis, TimeUnit.MILLISECONDS);
         }
     }
 
