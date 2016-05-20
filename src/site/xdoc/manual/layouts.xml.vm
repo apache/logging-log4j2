@@ -326,12 +326,6 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           <p>
           This approach enforces the independence of the JSONLayout and the appender where you embed it.
           </p>
-          <h4>Encoding</h4>
-          <p>
-          Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
-          <code>UTF-16</code>, otherwise events containing non-ASCII characters could result in corrupted log files.
-          If not specified, this layout uses UTF-8.
-          </p>
           <h4>Pretty vs. compact JSON</h4>
           <p>
           By default, the JSON layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which
@@ -348,8 +342,8 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>charset</td>
               <td>String</td>
-              <td>The character set to use when converting the HTML String to a byte array. The value must be
-                a valid ${Charset}. If not specified, UTF-8 will be used.</td>
+              <td>The character set to use when converting to a byte array. The value must be a valid ${Charset}.
+                 If not specified, UTF-8 will be used.</td>
             </tr>
             <tr>
               <td>compact</td>
@@ -372,7 +366,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>properties</td>
               <td>boolean</td>
-              <td>If true, the appender includes the thread context in the generated JSON. Defaults to false.</td>
+              <td>If true, the appender includes the thread context map in the generated JSON. Defaults to false.</td>
             </tr>
             <tr>
               <td>locationInfo</td>
@@ -1848,12 +1842,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           parent will be provided in the <code>parent</code> attribute of the <code>Marker</code> element.
           Only the leaf marker is included, not the full hierarchy.
           </p>
-          <h4>Encoding</h4>
-          <p>
-          Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
-          <code>UTF-16</code>, otherwise events containing non ASCII characters could result in corrupted log files.
-          If not specified, this layout uses UTF-8.
-          </p>
           <h4>Pretty vs. compact XML</h4>
           <p>
           By default, the XML layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which
@@ -1861,6 +1849,44 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain,
           of course, end-of-lines.
           </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>charset</td>
+              <td>String</td>
+              <td>The character set to use when converting to a byte array. The value must be a valid ${Charset}.
+                 If not specified, UTF-8 will be used.</td>
+            </tr>
+            <tr>
+              <td>compact</td>
+              <td>boolean</td>
+              <td>If true, the appender does not use end-of-lines and indentation. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>complete</td>
+              <td>boolean</td>
+              <td>If true, the appender includes the XML header and footer. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>boolean</td>
+              <td>If true, the appender includes the thread context map in the generated XML. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>locationInfo</td>
+              <td>boolean</td>
+              <td>
+              <p>If true, the appender includes the location information in the generated XML. Defaults to false.</p>
+              <p>Generating <a href="#LocationInformation">location information</a>
+                is an expensive operation and may impact performance. Use with caution.</p>
+              </td>
+            </tr>
+            <caption align="top">XML Layout Parameters</caption>
+          </table>
         </subsection>
         <a name="YamlLayout"/>
         <subsection name="YamlLayout">
@@ -2004,14 +2030,34 @@ source:
   method: "createLogEvent"
   file: "LogEventFixtures.java"
   line: 53</pre>
-        <p>
-          This approach enforces the independence of the YamlLayout and the appender where you embed it.
-        </p>
-        <h4>Encoding</h4>
-        <p>
-          Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
-          events containing non ASCII characters could result in corrupted log files.
-        </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>charset</td>
+              <td>String</td>
+              <td>The character set to use when converting to a byte array. The value must be a valid ${Charset}.
+                 If not specified, UTF-8 will be used.</td>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>boolean</td>
+              <td>If true, the appender includes the thread context map in the generated YAML. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>locationInfo</td>
+              <td>boolean</td>
+              <td>
+              <p>If true, the appender includes the location information in the generated YAML. Defaults to false.</p>
+              <p>Generating <a href="#LocationInformation">location information</a>
+                is an expensive operation and may impact performance. Use with caution.</p>
+              </td>
+            </tr>
+            <caption align="top">YAML Layout Parameters</caption>
+          </table>
         </subsection>
         <a name="LocationInformation"/>
         <subsection name="Location Information">
