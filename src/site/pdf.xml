@@ -38,7 +38,7 @@
     <item name="Appenders" ref="/manual/appenders.xml"/>
     <item name="Layouts" ref="/manual/layouts.xml.vm"/>
     <item name="Filters" ref="/manual/filters.xml"/>
-    <item name="Async Loggers" ref="/manual/async.xml" />
+    <item name="Lock-free Async Loggers" ref="/manual/async.xml" />
     <item name="Garbage-free Logging" ref="/manual/garbagefree.xml"/>
     <item name="JMX" ref="/manual/jmx.xml.vm"/>
     <item name="Logging Separation" ref="/manual/logsep.xml"/>

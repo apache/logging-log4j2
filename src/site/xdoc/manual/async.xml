@@ -12,18 +12,18 @@
 <document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
-    <title>Log4j 2 Asynchronous Loggers for Low-Latency Logging</title>
+    <title>Log4j 2 Lock-free Asynchronous Loggers for Low-Latency Logging</title>
     <author email="rpopma@apache.org">Remko Popma</author>
   </properties>
   <body>
-    <section name="Asynchronous Loggers for Low-Latency Logging">
+    <section name="Lock-free Asynchronous Loggers for Low-Latency Logging">
       <p>
         Asynchronous logging can improve your application's performance by executing the I/O operations
         in a separate thread. Log4j 2 makes a number of improvements in this area.
       </p>
       <ul>
         <li>
-          <b>Asynchronous Loggers</b> are a new addition in Log4j 2.
+          <b>Lock-free Asynchronous Loggers</b> are a new addition in Log4j 2.
           Their aim is to return from the call to Logger.log to the application as
           soon as possible. You can choose between making all Loggers asynchronous
           or using a mixture of synchronous and asynchronous Loggers. Making all
