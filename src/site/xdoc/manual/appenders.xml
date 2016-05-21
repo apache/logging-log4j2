@@ -55,6 +55,15 @@
             on a separate Thread. Note that exceptions while writing to those Appenders will be hidden from
             the application. The AsyncAppender should be configured after the appenders it references to allow it
             to shut down properly.</p>
+          <p>
+            Note that AsyncAppender internally uses the built-in java.util.concurrent.ArrayBlockingQueue,
+            so it does not have any dependencies on external libraries. However, multi-threaded applications
+            should exercise care before using this appender:
+            the blocking queue is susceptible to lock contention and our
+            <a href="../performance.html#asyncLogging">tests showed</a>
+            performance may become worse when more threads are logging concurrently.
+            Consider using <a href="async.html">lock-free Async Loggers</a> for optimal performance.
+          </p>
           <table>
             <caption align="top">AsyncAppender Parameters</caption>
             <tr>
