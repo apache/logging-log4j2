@@ -46,7 +46,7 @@
             </dd>
             <dt>Improved Performance</dt>
             <dd>
-              Log4j 2 contains next-generation lock-free Asynchronous Loggers based
+              Log4j 2 contains next-generation Asynchronous Loggers based
               on the LMAX Disruptor library. In multi-threaded scenarios
               Asynchronous Loggers have 18 times higher throughput and
               orders of magnitude lower latency than Log4j 1.x and Logback.

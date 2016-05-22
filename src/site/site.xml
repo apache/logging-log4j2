@@ -170,7 +170,7 @@
         <item name="Time" href="/manual/filters.html#TimeFilter"/>
       </item>
 
-      <item name="Lock-free Async Loggers" href="/manual/async.html" collapse="true">
+      <item name="Async Loggers" href="/manual/async.html" collapse="true">
         <item name="Trade-offs" href="/manual/async.html#Trade-offs"/>
         <item name="All Loggers Async" href="/manual/async.html#AllAsync"/>
         <item name="Mixed Sync &amp; Async" href="/manual/async.html#MixedSync-Async"/>
