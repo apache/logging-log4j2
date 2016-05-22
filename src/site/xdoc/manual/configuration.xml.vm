@@ -1929,7 +1929,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j2.DiscardThreshold</td>
+    <td><a name="log4j2.DiscardThreshold"/>log4j2.DiscardThreshold</td>
     <td>INFO</td>
     <td>Used by the DiscardingAsyncQueueFullPolicy to determine which events to drop when the queue
       becomes full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
@@ -1938,35 +1938,23 @@ public class AwesomeTest {
       <tt>log4j2.AsyncQueueFullPolicy</tt>.</td>
   </tr>
   <tr>
-    <td>log4j2.messageFactory</td>
+    <td><a name="log4j2.messageFactory" />log4j2.messageFactory</td>
     <td>org.apache.logging.log4j.message. ParameterizedMessageFactory</td>
     <td>Default message factory used by Loggers if no factory was specified.</td>
   </tr>
   <tr>
-    <td>log4j2.flowMessageFactory</td>
+    <td><a name="log4j2.flowMessageFactory" />log4j2.flowMessageFactory</td>
     <td>org.apache.logging.log4j.message. DefaultFlowMessageFactory</td>
     <td>Default flow message factory used by Loggers.</td>
   </tr>
   <tr>
-    <td>log4j.initialReusableMsgSize</td>
-    <td>128</td>
-    <td>In GC-free mode, this property determines the initial size of the reusable StringBuilders where the message
-     text is formatted and potentially passed to background threads.</td>
-  </tr>
-  <tr>
-    <td>log4j.maxReusableMsgSize</td>
-    <td>518</td>
-    <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
-     text is formatted and potentially passed to background threads.</td>
-  </tr>
-  <tr>
-    <td>log4j2.is.webapp</td>
+    <td><a name="log4j2.is.webapp"/>log4j2.is.webapp</td>
     <td>true if <tt>Servlet</tt> class on class path </td>
     <td>This system property can be used to force Log4j 2 to behave as if it is part of a web application (when true)
     or as if it is not part of a web application (when false).</td>
   </tr>
   <tr>
-    <td>log4j2.enable.threadlocals</td>
+    <td><a name="log4j2.enable.threadlocals" />log4j2.enable.threadlocals</td>
     <td>true</td>
     <td>This system property can be used to switch off the use of threadlocals, which will partly disable
       Log4j's garbage-free behaviour: to be fully garbage-free, Log4j stores
@@ -1974,10 +1962,25 @@ public class AwesomeTest {
       Note that this property is not effective when Log4j detects it is running in a web application.</td>
   </tr>
   <tr>
-    <td>log4j2.enable.direct.encoders</td>
+    <td><a name="log4j2.enable.direct.encoders" />log4j2.enable.direct.encoders</td>
     <td>true</td>
-    <td>Garbage-aware Layouts that convert log events to text will convert this text to bytes
-      without creating temporary objects when this property is true.</td>
+    <td>This property can be used to force garbage-aware Layouts and Appenders to revert to the
+      pre-2.6 behaviour where converting log events to text generates temporary objects like
+      Strings and char[] arrays, and converting this text to bytes generates temporary byte[] arrays.
+      By default, this property is <tt>true</tt> and garbage-aware Layouts and Appenders that convert log events
+      to text will convert this text to bytes without creating temporary objects.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j.initialReusableMsgSize" />log4j.initialReusableMsgSize</td>
+    <td>128</td>
+    <td>In GC-free mode, this property determines the initial size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j.maxReusableMsgSize" />log4j.maxReusableMsgSize</td>
+    <td>518</td>
+    <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
   </tr>
 </table>
 
