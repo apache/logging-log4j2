@@ -1697,7 +1697,8 @@ public class AwesomeTest {
     <td>
       If <tt>true</tt>, log4j's JMX notifications are sent from a separate background thread,
       otherwise they are sent from the caller thread.
-      If the <tt>javax.servlet.Servlet</tt> class is on the classpath, the default behaviour
+      If system property <tt>log4j2.is.webapp</tt> is <tt>true</tt> or the <tt>javax.servlet.Servlet</tt>
+      class is on the classpath, the default behaviour
       is to use the caller thread to send JMX notifications.
     </td>
   </tr>
@@ -1957,6 +1958,26 @@ public class AwesomeTest {
     <td>518</td>
     <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
      text is formatted and potentially passed to background threads.</td>
+  </tr>
+  <tr>
+    <td>log4j2.is.webapp</td>
+    <td>true if <tt>Servlet</tt> class on class path </td>
+    <td>This system property can be used to force Log4j 2 to behave as if it is part of a web application (when true)
+    or as if it is not part of a web application (when false).</td>
+  </tr>
+  <tr>
+    <td>log4j2.enable.threadlocals</td>
+    <td>true</td>
+    <td>This system property can be used to switch off the use of threadlocals, which will partly disable
+      Log4j's garbage-free behaviour: to be fully garbage-free, Log4j stores
+      objects in ThreadLocal fields to reuse them, otherwise new objects are created for each log event.
+      Note that this property is not effective when Log4j detects it is running in a web application.</td>
+  </tr>
+  <tr>
+    <td>log4j2.enable.direct.encoders</td>
+    <td>true</td>
+    <td>Garbage-aware Layouts that convert log events to text will convert this text to bytes
+      without creating temporary objects when this property is true.</td>
   </tr>
 </table>
 
