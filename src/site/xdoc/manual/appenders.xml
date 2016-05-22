@@ -132,7 +132,7 @@
             There are also a few system properties that can be used to maintain application throughput even when
             the underlying appender cannot keep up with the logging rate and the queue is filling up.
             See the details for system properties
-            <a href="configuration.html#AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
+            <a href="configuration.html#log4j2.AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
               <tt>log4j2.DiscardThreshold</tt></a>.
           </p>
           <p>
