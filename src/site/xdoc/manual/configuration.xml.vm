@@ -1545,7 +1545,7 @@ public class AwesomeTest {
     <th>Description</th>
   </tr>
   <tr>
-    <td>log4j.configurationFile</td>
+    <td><a name="log4j.configurationFile"/>log4j.configurationFile</td>
     <td>&nbsp;</td>
     <td>
       Path to an XML or JSON Log4j 2 configuration file. May also contain a comma separated list of configuration
@@ -1553,7 +1553,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j.mergeFactory</td>
+    <td><a name="log4j.mergeFactory"/>log4j.mergeFactory</td>
     <td>&nbsp;</td>
     <td>
       The name of the class that implements the MergeStrategy interface. If not specified
@@ -1561,7 +1561,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>Log4jContextSelector</td>
+    <td><a name="Log4jContextSelector"/>Log4jContextSelector</td>
     <td>ClassLoaderContextSelector</td>
     <td>
       Creates the <tt>LoggerContext</tt>s. An application can have one or more active LoggerContexts depending
@@ -1577,7 +1577,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>Log4jLogEventFactory</td>
+    <td><a name="Log4jLogEventFactory"/>Log4jLogEventFactory</td>
     <!-- deliberately inserted spaces to allow line break -->
     <td>org.apache.logging.log4j.core.impl .DefaultLogEventFactory</td>
     <td>
@@ -1586,7 +1586,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j2.loggerContextFactory</td>
+    <td><a name="log4j2.loggerContextFactory"/>log4j2.loggerContextFactory</td>
     <!-- deliberately inserted spaces to allow line break -->
     <td>org.apache.logging.log4j.simple .SimpleLoggerContextFactory</td>
     <td>
@@ -1595,7 +1595,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j.configurationFactory</td>
+    <td><a name="log4j.configurationFactory"/>log4j.configurationFactory</td>
     <td>&nbsp;</td>
     <td>
       Fully specified class name of a class extending <tt>org.apache.logging.log4j.core.config.ConfigurationFactory</tt>.
@@ -1603,7 +1603,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j.shutdownHookEnabled</td>
+    <td><a name="log4j.shutdownHookEnabled"/>log4j.shutdownHookEnabled</td>
     <td>true</td>
     <td>
       Overrides the global flag for whether or not a shutdown hook should be used to stop a <tt>LoggerContext</tt>.
@@ -1612,7 +1612,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j.shutdownCallbackRegistry</td>
+    <td><a name="log4j.shutdownCallbackRegistry"/>log4j.shutdownCallbackRegistry</td>
     <!-- deliberately inserted spaces to allow line break -->
     <td>org.apache.logging.log4j.core.util .DefaultShutdownCallbackRegistry</td>
     <td>
@@ -1623,7 +1623,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j.Clock</td>
+    <td><a name="log4j.Clock"/>log4j.Clock</td>
     <td>SystemClock</td>
     <td>
       Implementation of the <tt>org.apache.logging.log4j.core.util.Clock</tt>
@@ -1636,7 +1636,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>org.apache.logging.log4j.level</td>
+    <td><a name="org.apache.logging.log4j.level"/>org.apache.logging.log4j.level</td>
     <td>ERROR</td>
     <td>
       Log level of the default configuration. The default configuration is used if the ConfigurationFactory
@@ -1645,7 +1645,7 @@ public class AwesomeTest {
   </tr>
 
   <tr>
-    <td>disableThreadContext</td>
+    <td><a name="disableThreadContext"/>disableThreadContext</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, the ThreadContext stack and map are disabled.
@@ -1653,14 +1653,14 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>disableThreadContextStack</td>
+    <td><a name="disableThreadContextStack"/>disableThreadContextStack</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, the ThreadContext stack is disabled.
     </td>
   </tr>
   <tr>
-    <td>disableThreadContextMap</td>
+    <td><a name="disableThreadContextMap"/>disableThreadContextMap</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, the ThreadContext map is disabled.
@@ -1668,14 +1668,14 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j2.threadContextMap</td>
+    <td><a name="log4j2.threadContextMap"/>log4j2.threadContextMap</td>
     <td>&nbsp;</td>
     <td>
       Fully specified class name of a custom <tt>ThreadContextMap</tt> implementation class.
     </td>
   </tr>
   <tr>
-    <td>isThreadContextMapInheritable</td>
+    <td><a name="isThreadContextMapInheritable"/>isThreadContextMapInheritable</td>
     <td>false</td>
     <td>
       If <tt>true</tt> use a <tt>InheritableThreadLocal</tt> to implement the ThreadContext map.
@@ -1684,7 +1684,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j2.disable.jmx</td>
+    <td><a name="log4j2.disable.jmx"/>log4j2.disable.jmx</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, Log4j configuration objects like LoggerContexts, Appenders, Loggers, etc.
@@ -1692,7 +1692,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j2.jmx.notify.async</td>
+    <td><a name="log4j2.jmx.notify.async"/>log4j2.jmx.notify.async</td>
     <td>false for web apps, true otherwise</td>
     <td>
       If <tt>true</tt>, log4j's JMX notifications are sent from a separate background thread,
@@ -1703,14 +1703,14 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j.skipJansi</td>
+    <td><a name="log4j.skipJansi"/>log4j.skipJansi</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, the ConsoleAppender will not try to use the Jansi output stream on Windows.
     </td>
   </tr>
   <tr>
-    <td>log4j.ignoreTCL</td>
+    <td><a name="log4j.ignoreTCL"/>log4j.ignoreTCL</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, classes are only loaded with the default class loader.
@@ -1719,7 +1719,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>org.apache.logging.log4j.uuidSequence</td>
+    <td><a name="org.apache.logging.log4j.uuidSequence"/>org.apache.logging.log4j.uuidSequence</td>
     <td>0</td>
     <td>
       System property that may be used to seed the UUID generation with an integer value.
@@ -1727,7 +1727,7 @@ public class AwesomeTest {
   </tr>
   <!--
   <tr>
-    <td>org.apache.logging.log4j.assignedSequences</td>
+    <td><a name="org.apache.logging.log4j.assignedSequences"/>org.apache.logging.log4j.assignedSequences</td>
     <td>true</td>
     <td>
       TODO: used to seed UUID generation. Not sure when or why one would use this...
@@ -1736,19 +1736,19 @@ public class AwesomeTest {
   -->
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.log4j.simplelog .showContextMap</td>
+    <td><a name="org.apache.logging.log4j.simplelog.showContextMap"/>org.apache.logging.log4j.simplelog .showContextMap</td>
     <td>false</td>
     <td>If <tt>true</tt>, the full ThreadContext map is included in each SimpleLogger log message.</td>
   </tr>
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.log4j.simplelog .showlogname</td>
+    <td><a name="org.apache.logging.log4j.simplelog.showlogname"/>org.apache.logging.log4j.simplelog .showlogname</td>
     <td>false</td>
     <td>If <tt>true</tt>, the logger name is included in each SimpleLogger log message.</td>
   </tr>
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.log4j.simplelog .showShortLogname</td>
+    <td><a name="org.apache.logging.log4j.simplelog.showShortLogname"/>org.apache.logging.log4j.simplelog .showShortLogname</td>
     <td>true</td>
     <td>If <tt>true</tt>, only the last component of a logger name is included in SimpleLogger log messages.
     (E.g., if the logger name is "mycompany.myproject.mycomponent", only "mycomponent" is logged.
@@ -1756,14 +1756,14 @@ public class AwesomeTest {
   </tr>
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.log4j.simplelog .showdatetime</td>
+    <td><a name="org.apache.logging.log4j.simplelog.showdatetime"/>org.apache.logging.log4j.simplelog .showdatetime</td>
     <td>false</td>
     <td>If <tt>true</tt>, SimpleLogger log messages contain timestamp information.
     </td>
   </tr>
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.log4j.simplelog .dateTimeFormat</td>
+    <td><a name="org.apache.logging.log4j.simplelog.dateTimeFormat"/>org.apache.logging.log4j.simplelog .dateTimeFormat</td>
     <td>"yyyy/MM/dd HH:mm:ss:SSS zzz"</td>
     <td>Date-time format to use.
     Ignored if <tt>org.apache.logging.log4j.simplelog.showdatetime</tt> is <tt>false</tt>.
@@ -1771,7 +1771,7 @@ public class AwesomeTest {
   </tr>
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.logj.simplelog .logFile</td>
+    <td><a name="org.apache.logging.logj.simplelog.logFile"/>org.apache.logging.logj.simplelog .logFile</td>
     <td>system.err</td>
     <td>"system.err" (case-insensitive) logs to System.err,
     "system.out" (case-insensitive) logs to System.out,
@@ -1780,20 +1780,20 @@ public class AwesomeTest {
   </tr>
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.log4j.simplelog .level</td>
+    <td><a name="org.apache.logging.log4j.simplelog.level"/>org.apache.logging.log4j.simplelog .level</td>
     <td>ERROR</td>
     <td>Default level for new SimpleLogger instances.
     </td>
   </tr>
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.log4j.simplelog.&lt;loggerName&gt;level</td>
+    <td><a name="org.apache.logging.log4j.simplelog.[loggerName]level"/>org.apache.logging.log4j.simplelog.&lt;loggerName&gt;level</td>
     <td>SimpleLogger default log level</td>
     <td>Log level for a the SimpleLogger instance with the specified name.</td>
   </tr>
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.log4j.simplelog .StatusLogger.level</td>
+    <td><a name="org.apache.logging.log4j.simplelog.StatusLogger.level" />org.apache.logging.log4j.simplelog .StatusLogger.level</td>
     <td>ERROR</td>
     <td>This property is used to control the initial StatusLogger level, and can be overridden in code by calling
     <code>StatusLogger.getLogger().setLevel(someLevel)</code>.
@@ -1802,7 +1802,7 @@ public class AwesomeTest {
     and from that point onwards, status messages are only sent to the listeners (depending on their statusLevel).</td>
   </tr>
   <tr>
-    <td>Log4jDefaultStatusLevel</td>
+    <td><a name="Log4jDefaultStatusLevel" />Log4jDefaultStatusLevel</td>
     <td>ERROR</td>
     <td>
       <p>The StatusLogger logs events that occur in the logging system to the console.
@@ -1816,7 +1816,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j2.StatusLogger.level</td>
+    <td><a name="log4j2.StatusLogger.level"/>log4j2.StatusLogger.level</td>
     <td>WARN</td>
     <td>
       <p>The initial "listenersLevel" of the StatusLogger. If StatusLogger listeners are added, the "listenerLevel"
@@ -1834,7 +1834,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j2.status.entries</td>
+    <td><a name="log4j2.status.entries"/>log4j2.status.entries</td>
     <td>200</td>
     <td>
       Number of StatusLogger events that are kept in a buffer and can be retrieved with
@@ -1842,21 +1842,21 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>AsyncLogger.ExceptionHandler</td>
+    <td><a name="AsyncLogger.ExceptionHandler"/>AsyncLogger.ExceptionHandler</td>
     <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
     </td>
   </tr>
   <tr>
-    <td>AsyncLogger.RingBufferSize</td>
+    <td><a name="AsyncLogger.RingBufferSize"/>AsyncLogger.RingBufferSize</td>
     <td>256&#160;*&#160;1024</td>
     <td>
       See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
     </td>
   </tr>
   <tr>
-    <td>AsyncLogger.WaitStrategy</td>
+    <td><a name="AsyncLogger.WaitStrategy" />AsyncLogger.WaitStrategy</td>
     <td>
       Sleep
     </td>
@@ -1865,7 +1865,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>AsyncLogger.ThreadNameStrategy</td>
+    <td><a name="AsyncLogger.ThreadNameStrategy"/>AsyncLogger.ThreadNameStrategy</td>
     <td>
       CACHED
     </td>
@@ -1874,21 +1874,21 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>AsyncLoggerConfig.ExceptionHandler</td>
+    <td><a name="AsyncLoggerConfig.ExceptionHandler"/>AsyncLoggerConfig.ExceptionHandler</td>
     <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
     </td>
   </tr>
   <tr>
-    <td>AsyncLoggerConfig.RingBufferSize</td>
+    <td><a name="AsyncLoggerConfig.RingBufferSize"/>AsyncLoggerConfig.RingBufferSize</td>
     <td>256&#160;*&#160;1024</td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
     </td>
   </tr>
   <tr>
-    <td>AsyncLoggerConfig.WaitStrategy</td>
+    <td><a name="AsyncLoggerConfig.WaitStrategy"/>AsyncLoggerConfig.WaitStrategy</td>
     <td>
       Sleep
     </td>
@@ -1897,7 +1897,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j.jul.LoggerAdapter</td>
+    <td><a name="log4j.jul.LoggerAdapter"/>log4j.jul.LoggerAdapter</td>
     <!-- deliberately inserted spaces to allow line break -->
     <td>org.apache.logging.log4j.jul .ApiLoggerAdapter</td>
     <td>
@@ -1907,7 +1907,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j.format.msg.async</td>
+    <td><a name="log4j.format.msg.async"/>log4j.format.msg.async</td>
     <td>
       false
     </td>
@@ -1917,7 +1917,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="AsyncQueueFullPolicy"/>log4j2.AsyncQueueFullPolicy</td>
+    <td><a name="log4j2.AsyncQueueFullPolicy"/>log4j2.AsyncQueueFullPolicy</td>
     <td>&nbsp;</td>
     <td>
       <p>Used by Async Loggers and the AsyncAppender to maintain application throughput even when
