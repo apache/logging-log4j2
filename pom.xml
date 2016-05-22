@@ -1324,6 +1324,10 @@
             <version>${rat.plugin.version}</version>
             <configuration>
               <excludes>
+                <!-- VM metadata -->
+                <exclude>.vagrant/**/*</exclude>
+                <!-- Generated files -->
+                <exclude>log4j-distribution/target/**/*</exclude>
                 <exclude>dist/target/.plxarc</exclude>
                 <exclude>dist/target/*.asc</exclude>
                 <exclude>dist/target/**/*</exclude>
@@ -1334,6 +1338,8 @@
                 <exclude>src/site/site.vm</exclude>
                 <exclude>src/ide/**/*</exclude>
                 <exclude>**/target/generated-sources/**/*</exclude>
+                <!-- Other -->
+                <exclude>felix-cache/**</exclude>
               </excludes>
             </configuration>
             <executions>

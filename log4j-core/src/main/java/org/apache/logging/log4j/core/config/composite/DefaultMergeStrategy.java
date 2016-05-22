@@ -213,7 +213,11 @@ public class DefaultMergeStrategy implements MergeStrategy {
                 }
             }
             if (!isMerged) {
-                target.getChildren().add(sourceChildNode);
+                if (sourceChildNode.getName().equalsIgnoreCase("Properties")) {
+                    target.getChildren().add(0, sourceChildNode);
+                } else {
+                    target.getChildren().add(sourceChildNode);
+                }
             }
         }
     }

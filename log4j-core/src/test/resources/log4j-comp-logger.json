@@ -1,7 +1,13 @@
 {
     "Configuration" : {
-        "status": "warn",
+        "status": "error",
         "name": "LoggerConfigTest",
+        "properties" : {
+          "property" : [{
+            "name" : "filename",
+            "value": "target/composite.log"
+           }]
+        },
         "Loggers" : {
             "logger" : [
                 {

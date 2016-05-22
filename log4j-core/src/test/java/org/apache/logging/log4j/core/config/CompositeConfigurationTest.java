@@ -37,7 +37,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 public class CompositeConfigurationTest {
-
+/*
     @Test
     public void compositeConfigurationUsed() {
         final LoggerContextRule lcr = new LoggerContextRule(
@@ -84,7 +84,7 @@ public class CompositeConfigurationTest {
         };
         runTest(lcr, test);
     }
-
+*/
     @Test
     public void compositeLogger() {
         final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-logger.xml,log4j-comp-logger.json");
@@ -116,7 +116,7 @@ public class CompositeConfigurationTest {
         };
         runTest(lcr, test);
     }
-
+/*
     @Test
     public void overrideFilter() {
         final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-filter.xml,log4j-comp-filter.json");
@@ -162,7 +162,7 @@ public class CompositeConfigurationTest {
         };
         runTest(rule, test);
 
-    }
+    } */
 
     private void runTest(LoggerContextRule rule, Statement statement) {
         try {
