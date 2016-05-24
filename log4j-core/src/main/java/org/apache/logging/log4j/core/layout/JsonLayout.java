@@ -808,10 +808,11 @@ public final class JsonLayout extends AbstractJacksonLayout {
     static final String CONTENT_TYPE = "application/json";
 
     protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
+            final boolean encodeThreadContextAsList,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
             final String footerPattern, final Charset charset) {
-        super(config, new JacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact,
-                complete, eventEol,
+        super(config, new JacksonFactory.JSON(encodeThreadContextAsList).newWriter(locationInfo, properties, compact),
+                charset, compact, complete, eventEol,
                 PatternLayout.createSerializer(config, null, headerPattern, DEFAULT_HEADER, null, false, false),
                 PatternLayout.createSerializer(config, null, footerPattern, DEFAULT_FOOTER, null, false, false));
     }
@@ -872,7 +873,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     /**
      * Creates a JSON Layout.
-     * @param config 
+     * @param config
      *           The plugin configuration.
      * @param locationInfo
      *            If "true", includes the location information in the generated JSON.
@@ -899,6 +900,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
             @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
             @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
+            @PluginAttribute(value = "propertiesAsList", defaultBoolean = false) final boolean propertiesAsList,
             @PluginAttribute(value = "complete", defaultBoolean = false) final boolean complete,
             @PluginAttribute(value = "compact", defaultBoolean = false) final boolean compact,
             @PluginAttribute(value = "eventEol", defaultBoolean = false) final boolean eventEol,
@@ -907,7 +909,9 @@ public final class JsonLayout extends AbstractJacksonLayout {
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset
             // @formatter:on
     ) {
-        return new JsonLayout(config, locationInfo, properties, complete, compact, eventEol, headerPattern, footerPattern, charset);
+        final boolean encodeThreadContextAsList = properties && propertiesAsList;
+        return new JsonLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
+                headerPattern, footerPattern, charset);
     }
 
     /**
@@ -916,7 +920,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static JsonLayout createDefaultLayout() {
-        return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8);
+        return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, false,
+                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8);
     }
 
     @Override

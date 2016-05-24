@@ -369,6 +369,13 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>If true, the appender includes the thread context map in the generated JSON. Defaults to false.</td>
             </tr>
             <tr>
+              <td>propertiesAsList</td>
+              <td>boolean</td>
+              <td>If true, the thread context map is included as a list of map entry objects, where each entry has
+              a "key" attribute (whose value is the key) and a "value" attribute (whose value is the value).
+              Defaults to false, in which case the thread context map is included as a simple map of key-value pairs.</td>
+            </tr>
+            <tr>
               <td>locationInfo</td>
               <td>boolean</td>
               <td>

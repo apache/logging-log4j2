@@ -92,6 +92,12 @@
       <action issue="LOG4J2-1269" dev="rpopma" type="fix">
         (GC) AsyncLogger should use thread-local translator by default.
       </action>
+      <action issue="LOG4J2-623" dev="rpopma" type="fix">
+        Generate MDC properties as a JSON map in JSONLayout, with option to output as list of map entries.
+      </action>
+      <action issue="LOG4J2-1362" dev="rpopma" type="add" due-to="Gary Gregory">
+        Added a YAML layout.
+      </action>
       <action issue="LOG4J2-1387" dev="rpopma" type="fix">
         Fixed memory leak related to shutdown hook.
       </action>

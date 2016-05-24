@@ -30,9 +30,11 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 final class Log4jYamlModule extends SimpleModule {
 
     private static final long serialVersionUID = 1L;
+    private final boolean encodeThreadContextAsList;
 
-    Log4jYamlModule() {
+    Log4jYamlModule(final boolean encodeThreadContextAsList) {
         super(Log4jYamlModule.class.getName(), new Version(2, 0, 0, null, null, null));
+        this.encodeThreadContextAsList = encodeThreadContextAsList;
         // MUST init here.
         // Calling this from setupModule is too late!
         //noinspection ThisEscapedInObjectConstruction
@@ -43,6 +45,10 @@ final class Log4jYamlModule extends SimpleModule {
     public void setupModule(final SetupContext context) {
         // Calling super is a MUST!
         super.setupModule(context);
-        new SetupContextInitializer().setupModule(context);
+        if (encodeThreadContextAsList) {
+            new SetupContextInitializer().setupModule(context);
+        } else {
+            new Initializers.SetupContextJsonInitializer().setupModule(context);
+        }
     }
 }
