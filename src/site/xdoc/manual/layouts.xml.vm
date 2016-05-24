@@ -2026,10 +2026,8 @@ contextStack:
 endOfBatch: false
 loggerFqcn: "f.q.c.n"
 contextMap:
-- key: "MDC.B"
-  value: "B_Value"
-- key: "MDC.A"
-  value: "A_Value"
+  MDC.B: "B_Value"
+  MDC.A: "A_Value"
 threadId: 1
 threadPriority: 5
 source:
