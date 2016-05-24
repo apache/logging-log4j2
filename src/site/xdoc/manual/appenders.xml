@@ -161,7 +161,7 @@
         <a name="ConsoleAppender"/>
         <subsection name="ConsoleAppender">
           <p>
-            As one might expect, the ConsoleAppender writes its output to either System.err or System.out with System.err
+            As one might expect, the ConsoleAppender writes its output to either System.out or System.err with System.out
             being the default target. A Layout must be provided to format the LogEvent.
           </p>
           <table>
@@ -206,7 +206,7 @@
             <tr>
               <td>target</td>
               <td>String</td>
-              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_ERR".</td>
+              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_OUT".</td>
             </tr>
           </table>
           <p>
