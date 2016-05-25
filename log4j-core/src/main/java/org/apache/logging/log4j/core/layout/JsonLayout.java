@@ -878,7 +878,12 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @param locationInfo
      *            If "true", includes the location information in the generated JSON.
      * @param properties
-     *            If "true", includes the thread context in the generated JSON.
+     *            If "true", includes the thread context map in the generated JSON.
+     * @param propertiesAsList
+     *            If true, the thread context map is included as a list of map entry objects, where each entry has
+     *            a "key" attribute (whose value is the key) and a "value" attribute (whose value is the value).
+     *            Defaults to false, in which case the thread context map is included as a simple map of key-value
+     *            pairs.
      * @param complete
      *            If "true", includes the JSON header and footer, and comma between records.
      * @param compact

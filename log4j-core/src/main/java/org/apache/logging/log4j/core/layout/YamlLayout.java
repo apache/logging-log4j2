@@ -779,7 +779,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
      * @param locationInfo
      *            If "true", includes the location information in the generated YAML.
      * @param properties
-     *            If "true", includes the thread context in the generated YAML.
+     *            If "true", includes the thread context map in the generated YAML.
      * @param headerPattern
      *            The header pattern, defaults to {@code ""} if null.
      * @param footerPattern
