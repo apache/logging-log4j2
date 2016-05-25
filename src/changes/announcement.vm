@@ -27,8 +27,8 @@ many other modern features such as support for Markers, property substitution us
 a PatternLayout and asynchronous Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
 
 This is the ${relCount} GA release. It contains several bugfixes and new features. The new features include
-the ability to not generate any objects while logging if certain conditions are met, a new YAML Layout,
-the ability to merge configuration files, and documenting Log4j's performance against other logging
+the ability to be "garbage-free" (avoid allocating temporary objects) while logging if certain conditions are met,
+a new YAML Layout, the ability to merge configuration files, and documenting Log4j's performance against other logging
 frameworks and in various logging configurations. More details on the features and bugfixes are itemized below.
 
 ## Hack to improve layout: replace all pairs of spaces with a single new-line
