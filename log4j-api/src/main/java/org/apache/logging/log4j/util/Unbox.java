@@ -36,23 +36,23 @@ public class Unbox {
     private static final int MASK = 16 - 1;
 
     private static class State {
-        private final StringBuilder[] ringbuffer = new StringBuilder[16];
+        private final StringBuilder[] ringBuffer = new StringBuilder[16];
         private int current;
         State() {
-            for (int i = 0; i < ringbuffer.length; i++) {
-                ringbuffer[i] = new StringBuilder(21);
+            for (int i = 0; i < ringBuffer.length; i++) {
+                ringBuffer[i] = new StringBuilder(21);
             }
         }
 
         public StringBuilder getStringBuilder() {
-            final StringBuilder result = ringbuffer[MASK & current++];
+            final StringBuilder result = ringBuffer[MASK & current++];
             result.setLength(0);
             return result;
         }
 
         public boolean isBoxedPrimitive(final StringBuilder text) {
-            for (int i = 0; i < ringbuffer.length; i++) {
-                if (text == ringbuffer[i]) {
+            for (int i = 0; i < ringBuffer.length; i++) {
+                if (text == ringBuffer[i]) {
                     return true;
                 }
             }
