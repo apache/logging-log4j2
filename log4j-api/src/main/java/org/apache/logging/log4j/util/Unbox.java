@@ -157,10 +157,6 @@ public class Unbox {
         return getSB().append(value);
     }
 
-    public static boolean isBoxedPrimitive(final StringBuilder text) {
-        return getState().isBoxedPrimitive(text);
-    }
-
     private static State getState() {
         State state = threadLocalState.get();
         if (state == null) {
