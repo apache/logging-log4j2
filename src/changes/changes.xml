@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6.1" date="2016-MM-DD" description="GA Release 2.6.1">
+      <action issue="LOG4J2-1385" dev="ggregory" type="update">
+        (GC) CSV layouts should not create a new CSVPrinter for each log event.
+      </action>
       <action issue="LOG4J2-1398" dev="ggregory" type="update">
         Update liquibase-core from 3.4.2 to 3.5.1.
       </action>

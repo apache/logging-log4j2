@@ -89,10 +89,8 @@ public class CsvParameterLayout extends AbstractCsvLayout {
         final Message message = event.getMessage();
         final Object[] parameters = message.getParameters();
         final StringBuilder buffer = getStringBuilder();
-        // Revisit when 1.3 is out so that we do not need to create a new
-        // printer for each event.
-        try (final CSVPrinter printer = new CSVPrinter(buffer, getFormat())) {
-            printer.printRecord(parameters);
+        try {
+            getFormat().printRecord(buffer, parameters);
             return buffer.toString();
         } catch (final IOException e) {
             StatusLogger.getLogger().error(message, e);
