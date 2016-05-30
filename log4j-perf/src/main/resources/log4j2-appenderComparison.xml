@@ -21,9 +21,9 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d %p [%t] %c{1} %X{transactionId} - %m%n"/>
         </Console>
-        <FastConsole name="FastConsole" target="SYSTEM_OUT">
+        <Console name="DirectConsole" target="SYSTEM_OUT" direct="true">
             <PatternLayout pattern="%d %p [%t] %c{1} %X{transactionId} - %m%n"/>
-        </FastConsole>
+        </Console>
         <File name="File" fileName="target/testlog4j2.log" immediateFlush="false">
             <PatternLayout pattern="%d %p [%t] %c{1} %X{transactionId} - %m%n"/>
         </File>
@@ -58,8 +58,8 @@
         <Logger name="ConsoleLogger" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
-        <Logger name="FastConsoleLogger" level="debug" additivity="false">
-            <AppenderRef ref="FastConsole"/>
+        <Logger name="DirectConsoleLogger" level="debug" additivity="false">
+            <AppenderRef ref="DirectConsole"/>
         </Logger>
         <Logger name="NoopLogger" level="debug" additivity="false">
             <AppenderRef ref="NoOp"/>
