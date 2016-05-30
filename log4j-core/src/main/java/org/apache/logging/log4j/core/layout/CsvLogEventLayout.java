@@ -80,26 +80,27 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
         final StringBuilder buffer = getStringBuilder();
         // Revisit when 1.3 is out so that we do not need to create a new
         // printer for each event.
-        try (final CSVPrinter printer = new CSVPrinter(buffer, getFormat())) {
-            printer.print(event.getNanoTime());
-            printer.print(event.getTimeMillis());
-            printer.print(event.getLevel());
-            printer.print(event.getThreadId());
-            printer.print(event.getThreadName());
-            printer.print(event.getThreadPriority());
-            printer.print(event.getMessage().getFormattedMessage());
-            printer.print(event.getLoggerFqcn());
-            printer.print(event.getLoggerName());
-            printer.print(event.getMarker());
-            printer.print(event.getThrownProxy());
-            printer.print(event.getSource());
-            printer.print(event.getContextMap());
-            printer.print(event.getContextStack());
-            printer.println();
+        final CSVFormat format = getFormat();
+        try {
+            format.print(event.getNanoTime(), buffer, true);
+            format.print(event.getTimeMillis(), buffer, false);
+            format.print(event.getLevel(), buffer, false);
+            format.print(event.getThreadId(), buffer, false);
+            format.print(event.getThreadName(), buffer, false);
+            format.print(event.getThreadPriority(), buffer, false);
+            format.print(event.getMessage().getFormattedMessage(), buffer, false);
+            format.print(event.getLoggerFqcn(), buffer, false);
+            format.print(event.getLoggerName(), buffer, false);
+            format.print(event.getMarker(), buffer, false);
+            format.print(event.getThrownProxy(), buffer, false);
+            format.print(event.getSource(), buffer, false);
+            format.print(event.getContextMap(), buffer, false);
+            format.print(event.getContextStack(), buffer, false);
+            format.println(buffer);
             return buffer.toString();
         } catch (final IOException e) {
             StatusLogger.getLogger().error(event.toString(), e);
-            return getFormat().getCommentMarker() + " " + e;
+            return format.getCommentMarker() + " " + e;
         }
     }
 
