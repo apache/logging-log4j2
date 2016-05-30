@@ -1755,9 +1755,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
 			<a name="RandomAccessFileAppender" />
 			<subsection name="RandomAccessFileAppender">
-			<p><i>As of beta-9, the name of this appender has been changed from FastFile to
-			  RandomAccessFile. Configurations using the <code>FastFile</code> element
-			  no longer work and should be modified to use the <code>RandomAccessFile</code> element.</i></p>
 				<p>
 					The RandomAccessFileAppender is similar to the standard
 					<a href="#FileAppender">FileAppender</a>
@@ -2907,9 +2904,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
-			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to
-			  RollingRandomAccessFile. Configurations using the <code>FastRollingFile</code> element
-			  no longer work and should be modified to use the <code>RollingRandomAccessFile</code> element.</i></p>
 				<p>
 					The RollingRandomAccessFileAppender is similar to the standard
 					<a href="#RollingFileAppender">RollingFileAppender</a>
