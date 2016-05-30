@@ -188,7 +188,13 @@
               <td>boolean</td>
               <td>Identifies whether the appender honors reassignments of System.out or System.err
                 via System.setOut or System.setErr made after configuration. Note that the follow
-                attribute cannot be used with Jansi on Windows.</td>
+                attribute cannot be used with Jansi on Windows. Cannot be used with <code>direct</code>.</td>
+            </tr>
+            <tr>
+              <td>direct</td>
+              <td>boolean</td>
+              <td>Write directly to <code>java.io.FileDescriptor</code> and bypass <code>java.lang.System.out/.err</code>.
+                Can give up to 5x performance boost. Cannot be used with <code>follow</code>.</td>
             </tr>
             <tr>
               <td>name</td>
