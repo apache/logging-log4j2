@@ -91,7 +91,8 @@
         </tr>
         <tr>
           <td>Kafka Appender</td>
-          <td><a href="http://kafka.apache.org/">Kafka client library</a></td>
+          <td><a href="http://kafka.apache.org/">Kafka client library</a>. Note that you need to use a version of
+          the Kafka client library matching the Kafka server used.</td>
         </tr>
         <tr>
           <td>SMTP Appender</td>

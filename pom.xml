@@ -706,7 +706,7 @@
       <dependency>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-core</artifactId>
-        <version>3.4.2</version>
+        <version>3.5.1</version>
       </dependency>
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
@@ -736,7 +736,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.3</version>
+        <version>1.4</version>
       </dependency>
       <!-- GC-free -->
       <dependency>
