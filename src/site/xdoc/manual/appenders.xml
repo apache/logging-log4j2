@@ -1322,7 +1322,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> to log asynchronously.
           </p>
           <p>
-            This appender requires the <a href="http://kafka.apache.org/">Kafka client library</a>.
+            This appender requires the <a href="http://kafka.apache.org/">Kafka client library</a>. Note that you need to use a version of
+            the Kafka client library matching the Kafka server used.
           </p>
           <p>
             <em>Note:</em>Make sure to not let <code>org.apache.kafka</code> log to a Kafka appender on DEBUG level,
