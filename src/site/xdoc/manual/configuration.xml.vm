@@ -821,14 +821,16 @@ public class Bar {
               Prior to version 2.6,
               the properties configuration requires that you list the identifiers of the appenders, filters and loggers,
               in a comma separated list in properties with those names. Each of those components will then be expected
-              to be defined in sets of properties that begin with <i>component.identifier</i>. The identifier does not
+              to be defined in sets of properties that begin with <i>component.&lt.identifier&gt.</i>. The identifier does not
               have to match the name of the component being defined but must uniquely identify all the attributes and
-              subcomponents that are part of the component. Each individual component MUST have a "type" attribute
+              subcomponents that are part of the component. If the list of identifiers is not present the
+              identier must not contain a '.'. Each individual component MUST have a "type" attribute
               specified that identifies the component's Plugin type.
             </p>
             <p>
-              As of version 2.6, this list of identifiers is no longer required as names are inferred upon first usage.
-              The list of identifiers used in a 2.4/2.5 format will be safely ignored in 2.6+.
+              As of version 2.6, this list of identifiers is no longer required as names are inferred upon first usage,
+              however if you wish to use more complex identifies you must still use the list. If the list is present
+              it will be used.
             </p>
             <p>
               Unlike the base components, when creating subcomponents you cannot specify an element containing a list of
