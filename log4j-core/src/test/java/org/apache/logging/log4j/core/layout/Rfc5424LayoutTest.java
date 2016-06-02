@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 
 public class Rfc5424LayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
 
     private static final String line1 = "ATM - - [RequestContext@3692 loginId=\"JohnDoe\"] starting mdc pattern test";

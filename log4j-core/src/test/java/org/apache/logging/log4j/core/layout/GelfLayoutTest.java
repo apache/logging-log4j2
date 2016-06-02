@@ -72,7 +72,7 @@ public class GelfLayoutTest {
 
     LoggerContext ctx = LoggerContext.getContext();
 
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
     private void testCompressedLayout(final CompressionType compressionType, boolean includeStacktrace) throws IOException {
         for (final Appender appender : root.getAppenders().values()) {

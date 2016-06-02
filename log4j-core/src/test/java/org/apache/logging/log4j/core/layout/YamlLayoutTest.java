@@ -65,7 +65,7 @@ public class YamlLayoutTest {
 
     LoggerContext ctx = LoggerContext.getContext();
 
-    Logger rootLogger = this.ctx.getLogger("");
+    Logger rootLogger = this.ctx.getRootLogger();
 
     private void checkAt(final String expected, final int lineIndex, final List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
