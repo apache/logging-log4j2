@@ -104,43 +104,6 @@ public class LoggerContextRule implements TestRule {
     }
 
     /**
-     * Gets the current LoggerContext associated with this rule.
-     *
-     * @return the current LoggerContext.
-     */
-    public LoggerContext getContext() {
-        return context;
-    }
-
-    /**
-     * Gets a named Logger using the test class's name from this LoggerContext.
-     *
-     * @return the test class's named Logger.
-     */
-    public Logger getLogger() {
-        return context.getLogger(testClassName);
-    }
-
-    /**
-     * Gets a named Logger in this LoggerContext.
-     *
-     * @param name the name of the Logger to look up or create.
-     * @return the named Logger.
-     */
-    public Logger getLogger(final String name) {
-        return context.getLogger(name);
-    }
-
-    /**
-     * Gets the associated Configuration for the configuration file this was constructed with.
-     *
-     * @return this LoggerContext's Configuration.
-     */
-    public Configuration getConfiguration() {
-        return context.getConfiguration();
-    }
-
-    /**
      * Gets a named Appender for this LoggerContext.
      *
      * @param name the name of the Appender to look up.
@@ -160,6 +123,58 @@ public class LoggerContextRule implements TestRule {
      */
     public <T extends Appender> T getAppender(final String name, Class<T> cls) {
         return cls.cast(getConfiguration().getAppenders().get(name));
+    }
+
+    /**
+     * Gets the associated Configuration for the configuration file this was constructed with.
+     *
+     * @return this LoggerContext's Configuration.
+     */
+    public Configuration getConfiguration() {
+        return context.getConfiguration();
+    }
+
+    /**
+     * Gets the current LoggerContext associated with this rule.
+     *
+     * @return the current LoggerContext.
+     */
+    public LoggerContext getContext() {
+        return context;
+    }
+
+    /**
+     * Gets a named ListAppender or throws an exception for this LoggerContext.
+     *
+     * @param name the name of the ListAppender to look up.
+     * @return the named ListAppender.
+     * @throws AssertionError if the named ListAppender doesn't exist or isn't a ListAppender.
+     */
+    public ListAppender getListAppender(final String name) {
+        final Appender appender = getAppender(name);
+        if (appender instanceof ListAppender) {
+            return (ListAppender) appender;
+        }
+        throw new AssertionError("No ListAppender named " + name + " found.");
+    }
+
+    /**
+     * Gets a named Logger using the test class's name from this LoggerContext.
+     *
+     * @return the test class's named Logger.
+     */
+    public Logger getLogger() {
+        return context.getLogger(testClassName);
+    }
+
+    /**
+     * Gets a named Logger in this LoggerContext.
+     *
+     * @param name the name of the Logger to look up or create.
+     * @return the named Logger.
+     */
+    public Logger getLogger(final String name) {
+        return context.getLogger(name);
     }
 
     /**
@@ -188,21 +203,6 @@ public class LoggerContextRule implements TestRule {
         final T appender = getAppender(name, cls);
         assertNotNull("Appender named " + name + " was null.", appender);
         return appender;
-    }
-
-    /**
-     * Gets a named ListAppender or throws an exception for this LoggerContext.
-     *
-     * @param name the name of the ListAppender to look up.
-     * @return the named ListAppender.
-     * @throws AssertionError if the named ListAppender doesn't exist or isn't a ListAppender.
-     */
-    public ListAppender getListAppender(final String name) {
-        final Appender appender = getAppender(name);
-        if (appender instanceof ListAppender) {
-            return (ListAppender) appender;
-        }
-        throw new AssertionError("No ListAppender named " + name + " found.");
     }
 
     @Override
