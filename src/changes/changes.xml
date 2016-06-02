@@ -27,6 +27,9 @@
       <action issue="LOG4J2-1407" dev="ggregory" type="fix" due-to="Gary Gregory">
         Misleading WARN log events from Log4j about message factories and unexpected formatting.
       </action>
+      <action issue="LOG4J2-1408" dev="ggregory" type="fix" due-to="Gary Gregory">
+        The module log4j-liquibase is missing from BOM POM.
+      </action>
       <action issue="LOG4J2-1180" dev="ggregory" type="fix" due-to="Gary Gregory">
         Logger cache does not account for message factory.
       </action>
