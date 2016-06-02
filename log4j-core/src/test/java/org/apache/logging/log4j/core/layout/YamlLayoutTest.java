@@ -49,8 +49,6 @@ import org.junit.Test;
 public class YamlLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    private static final String DQUOTE = "\"";
-
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
