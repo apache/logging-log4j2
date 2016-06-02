@@ -84,7 +84,6 @@ public class YamlLayoutTest {
     }
 
     private void checkMapEntry(final String key, final String value, final boolean compact, final String str) {
-        final String propSep = this.toPropertySeparator(compact, true);
         // "name":"value"
         //final String expected = String.format("- key: \"%s\"\n  value: \"%s\"", key, value);
         final String expected = String.format("%s: \"%s\"", key, value);
@@ -111,7 +110,6 @@ public class YamlLayoutTest {
                 StandardCharsets.UTF_8);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
-        final String propSep = this.toPropertySeparator(compact, true);
         // Just check for \n since \r might or might not be there.
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("source"));
