@@ -70,6 +70,7 @@ public class LoggerContextRule implements TestRule {
         this.contextSelectorClass = contextSelectorClass;
     }
 
+
     @Override
     public Statement apply(final Statement base, final Description description) {
         // Hack: Using -DEBUG as a JVM param sets a property called "EBUG"... 
@@ -203,6 +204,15 @@ public class LoggerContextRule implements TestRule {
         final T appender = getAppender(name, cls);
         assertNotNull("Appender named " + name + " was null.", appender);
         return appender;
+    }
+
+    /**
+     * Gets the root logger.
+     *
+     * @return the root logger.
+     */
+    public Logger getRootLogger() {
+        return context.getRootLogger();
     }
 
     @Override
