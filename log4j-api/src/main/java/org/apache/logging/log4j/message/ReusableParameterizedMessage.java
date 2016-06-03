@@ -299,11 +299,11 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     }
 
     @Override
-    public void formatTo(final StringBuilder buffer) {
+    public void formatTo(final StringBuilder builder) {
         if (indices[0] < 0) {
-            ParameterFormatter.formatMessage(buffer, messagePattern, getParams(), argCount);
+            ParameterFormatter.formatMessage(builder, messagePattern, getParams(), argCount);
         } else {
-            ParameterFormatter.formatMessage2(buffer, messagePattern, getParams(), usedCount, indices);
+            ParameterFormatter.formatMessage2(builder, messagePattern, getParams(), usedCount, indices);
         }
     }
 
