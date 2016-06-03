@@ -210,7 +210,8 @@
         <item name="Converters" href="/manual/plugins.html#Converters"/>
         <item name="Key Providers" href="/manual/plugins.html#KeyProviders"/>
         <item name="Lookups" href="/manual/plugins.html#Lookups"/>
-        <item name="Preloading" href="/manual/plugins.html#Plugin_Preloading"/>
+        <item name="Type Converters" href="/manual/plugins.html#TypeConverters"/>
+        <item name="Developer Notes" href="/manual/plugins.html#DeveloperNotes"/>
       </item>
 
       <item name="Programmatic Log4j Configuration" href="/manual/customconfig.html" collapse="true">
