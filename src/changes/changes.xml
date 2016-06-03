@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6.1" date="2016-MM-DD" description="GA Release 2.6.1">
+      <action issue="LOG4J2-1409" dev="rpopma" type="fix" due-to="Shahan">
+        Fixed ArrayIndexOutOfBoundsException that may occur in ReusableParameterizedMessage.
+      </action>
       <action issue="LOG4J2-997" dev="rgoers" type="fix" due-to="Maytee Chinavanichkit">
         Add filter and remove filter were not working properly in AbstractFilterable.
       </action>
