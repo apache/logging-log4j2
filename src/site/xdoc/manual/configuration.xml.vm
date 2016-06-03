@@ -424,6 +424,7 @@ public class Bar {
                 <td>Enables diagnostic information while loading plugins.</td>
               </tr>
             </table>
+          <a name="XML"/>
           <p>
             Log4j can be configured using two XML flavors; concise and strict. The concise format makes
             configuration very easy as the element names match the components they represent however it
