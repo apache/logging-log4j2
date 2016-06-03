@@ -51,17 +51,17 @@ public class MapMessageLookup extends AbstractLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
-        Message msg = event.getMessage();
+        final Message msg = event.getMessage();
         if (msg instanceof MapMessage) {
             try {
-                Map<String, String> properties = ((MapMessage) msg).getData();
+                final Map<String, String> properties = ((MapMessage) msg).getData();
                 if (properties == null) {
                     return "";
                 }
                 if (key == null || key.length() == 0 || key.equals("*")) {
-                    StringBuilder sb = new StringBuilder("{");
+                    final StringBuilder sb = new StringBuilder("{");
                     boolean first = true;
-                    for (Map.Entry<String, String> entry : properties.entrySet()) {
+                    for (final Map.Entry<String, String> entry : properties.entrySet()) {
                         if (!first) {
                             sb.append(", ");
                         }
@@ -80,7 +80,7 @@ public class MapMessageLookup extends AbstractLookup {
         return null;
     }
 
-    public static void setLoggerProperties(String loggerName, Map<String, String> properties) {
+    public static void setLoggerProperties(final String loggerName, final Map<String, String> properties) {
         loggerProperties.put(loggerName, properties);
     }
 

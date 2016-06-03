@@ -64,11 +64,11 @@ public class RollingAppenderCustomDeleteActionTest {
         final int MAX_TRIES = 20;
         for (int i = 0; i < MAX_TRIES; i++) {
             final File[] files = dir.listFiles();
-            for (File file : files) {
+            for (final File file : files) {
                 System.out.println(file);
             }
             if (files.length == 3) {
-                for (File file : files) {
+                for (final File file : files) {
                     assertTrue("test-4.log should have been deleted",
                             Arrays.asList("test-1.log", "test-2.log", "test-3.log").contains(file.getName()));
                 }
@@ -92,10 +92,10 @@ public class RollingAppenderCustomDeleteActionTest {
     }
 
     public static void main(final String[] args) {
-        Pattern p = Pattern.compile("test-.?[2,4,6,8,0]\\.log\\.gz");
+        final Pattern p = Pattern.compile("test-.?[2,4,6,8,0]\\.log\\.gz");
         for (int i = 0; i < 16; i++) {
-            String str = "test-" + i + ".log.gz";
-            java.util.regex.Matcher m = p.matcher(str);
+            final String str = "test-" + i + ".log.gz";
+            final java.util.regex.Matcher m = p.matcher(str);
             System.out.println(m.matches() + ": " + str);
         }
     }

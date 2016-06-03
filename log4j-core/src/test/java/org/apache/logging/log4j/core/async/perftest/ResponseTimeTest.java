@@ -133,8 +133,8 @@ public class ResponseTimeTest {
 
         // Warmup: run as many iterations of 50,000 calls to logger.log as we can in 1 minute
         final long WARMUP_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(1);
-        List<Histogram> warmupServiceTmHistograms = new ArrayList<>(threadCount);
-        List<Histogram> warmupResponseTmHistograms = new ArrayList<>(threadCount);
+        final List<Histogram> warmupServiceTmHistograms = new ArrayList<>(threadCount);
+        final List<Histogram> warmupResponseTmHistograms = new ArrayList<>(threadCount);
 
         final int WARMUP_COUNT = 50000 / threadCount;
         runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, loadMessagesPerSec, idleStrategy,
@@ -146,9 +146,9 @@ public class ResponseTimeTest {
         }
         System.out.println("-----------------Starting measured run. load=" + loadMessagesPerSec);
 
-        long start = System.currentTimeMillis();
-        List<Histogram> serviceTmHistograms = new ArrayList<>(threadCount);
-        List<Histogram> responseTmHistograms = new ArrayList<>(threadCount);
+        final long start = System.currentTimeMillis();
+        final List<Histogram> serviceTmHistograms = new ArrayList<>(threadCount);
+        final List<Histogram> responseTmHistograms = new ArrayList<>(threadCount);
         PrintingAsyncQueueFullPolicy.ringbufferFull.set(0);
 
         // Actual test: run as many iterations of 1,000,000 calls to logger.log as we can in 4 minutes.
@@ -156,7 +156,7 @@ public class ResponseTimeTest {
         final int COUNT = (1000 * 1000) / threadCount;
         runLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, loadMessagesPerSec, idleStrategy, serviceTmHistograms,
                 responseTmHistograms, threadCount);
-        long end = System.currentTimeMillis();
+        final long end = System.currentTimeMillis();
 
         // ... and report the results
         final Histogram resultServiceTm = createResultHistogram(serviceTmHistograms, start, end);
@@ -208,7 +208,7 @@ public class ResponseTimeTest {
                     LATCH.countDown();
                     try {
                         LATCH.await(); // wait until all threads are ready to go
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         interrupt();
                         return;
                     }
@@ -317,7 +317,7 @@ public class ResponseTimeTest {
 
         public long nsecToNextOperation() {
 
-            long now = System.nanoTime();
+            final long now = System.nanoTime();
 
             long nextStartTime = expectedNextOperationNanoTime();
 
@@ -337,7 +337,7 @@ public class ResponseTimeTest {
                 }
 
                 // Figure out if it's time to send, per catch up throughput:
-                long unitsCompletedSinceCatchUpStart =
+                final long unitsCompletedSinceCatchUpStart =
                         unitsCompleted - unitsCompletedAtCatchUpStart;
 
                 nextStartTime = catchUpStartTime +
@@ -358,7 +358,7 @@ public class ResponseTimeTest {
          * @param unitCount
          */
         public void acquire(final long unitCount) {
-            long nsecToNextOperation = nsecToNextOperation();
+            final long nsecToNextOperation = nsecToNextOperation();
             if (nsecToNextOperation > 0) {
                 sleepNs(nsecToNextOperation);
             }
@@ -367,7 +367,7 @@ public class ResponseTimeTest {
 
         private void sleepNs(final long ns) {
             long now = System.nanoTime();
-            long deadline = now + ns;
+            final long deadline = now + ns;
             while ((now = System.nanoTime()) < deadline) {
                 idleStrategy.idle();
             }

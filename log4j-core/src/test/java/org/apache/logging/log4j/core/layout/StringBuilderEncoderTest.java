@@ -61,7 +61,7 @@ public class StringBuilderEncoderTest {
             assertEquals("char at " + i, (byte) text.charAt(i), destination.drained.get(i));
         }
         for (int i = destination.buffer.capacity(); i < text.length(); i++) {
-            int bufIx = i - destination.buffer.capacity();
+            final int bufIx = i - destination.buffer.capacity();
             assertEquals("char at " + i, (byte) text.charAt(i), destination.buffer.get(bufIx));
         }
     }
@@ -90,7 +90,7 @@ public class StringBuilderEncoderTest {
             assertEquals("char at " + i, (byte) text.charAt(i), destination.drained.get(i));
         }
         for (int i = 3 * destination.buffer.capacity(); i < text.length(); i++) {
-            int bufIx = i - 3 * destination.buffer.capacity();
+            final int bufIx = i - 3 * destination.buffer.capacity();
             assertEquals("char at " + i, (byte) text.charAt(i), destination.buffer.get(bufIx));
         }
     }
@@ -260,7 +260,7 @@ public class StringBuilderEncoderTest {
         final int DESTINATION_SIZE = 1024 * 1024;
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(256 * 1024, DESTINATION_SIZE);
 
-        int max = DESTINATION_SIZE / text.length();
+        final int max = DESTINATION_SIZE / text.length();
         for (int i = 0; i < max; i++) {
             helper.encode(text, destination);
         }

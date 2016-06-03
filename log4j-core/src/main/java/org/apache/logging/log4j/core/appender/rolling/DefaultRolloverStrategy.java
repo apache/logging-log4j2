@@ -132,7 +132,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         };
 
         static FileExtensions lookup(final String fileExtension) {
-            for (FileExtensions ext : values()) {
+            for (final FileExtensions ext : values()) {
                 if (ext.isExtensionFor(fileExtension)) {
                     return ext;
                 }
@@ -537,7 +537,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         final String compressedName = renameTo;
         Action compressAction = null;
 
-        for (FileExtensions ext : FileExtensions.values()) { // LOG4J2-1077 support other compression formats
+        for (final FileExtensions ext : FileExtensions.values()) { // LOG4J2-1077 support other compression formats
             if (ext.isExtensionFor(renameTo)) {
                 renameTo = renameTo.substring(0, renameTo.length() - ext.length()); // LOG4J2-1135 omit extension!
                 compressAction = ext.createCompressAction(renameTo, compressedName, true, compressionLevel);
@@ -552,7 +552,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     }
 
     private int suffixLength(final String lowFilename) {
-        for (FileExtensions extension : FileExtensions.values()) {
+        for (final FileExtensions extension : FileExtensions.values()) {
             if (extension.isExtensionFor(lowFilename)) {
                 return extension.length();
             }

@@ -289,7 +289,7 @@ public class RollingFileManager extends FileManager {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             builder.append(super.toString());
             builder.append("[action=");
             builder.append(action);
@@ -354,7 +354,7 @@ public class RollingFileManager extends FileManager {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             builder.append(super.toString());
             builder.append("[pattern=");
             builder.append(pattern);

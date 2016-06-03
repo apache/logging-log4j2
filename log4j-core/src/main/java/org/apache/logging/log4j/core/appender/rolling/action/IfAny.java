@@ -62,7 +62,7 @@ public final class IfAny implements PathCondition {
      */
     @Override
     public void beforeFileTreeWalk() {
-        for (PathCondition condition : components) {
+        for (final PathCondition condition : components) {
             condition.beforeFileTreeWalk();
         }
     }

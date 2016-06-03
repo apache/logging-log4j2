@@ -80,7 +80,7 @@ public class TextEncoderHelper {
         boolean endOfInput = true;
         do {
             charBuf.clear(); // reset character buffer position to zero, limit to capacity
-            int copied = copy(text, start, charBuf);
+            final int copied = copy(text, start, charBuf);
             start += copied;
             todoChars -= copied;
             endOfInput = todoChars <= 0;

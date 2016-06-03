@@ -204,7 +204,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             final String advertise,
             final Configuration config) {
             // @formatter:on
-        boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
+        final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean fail = Booleans.parseBoolean(immediateFail, true);

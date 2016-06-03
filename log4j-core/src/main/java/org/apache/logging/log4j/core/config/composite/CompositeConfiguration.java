@@ -65,7 +65,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         super(ConfigurationSource.NULL_SOURCE);
         rootNode = configurations.get(0).getRootNode();
         this.configurations = configurations;
-        String mergeStrategyClassName = PropertiesUtil.getProperties().getStringProperty(MERGE_STRATEGY_PROPERTY,
+        final String mergeStrategyClassName = PropertiesUtil.getProperties().getStringProperty(MERGE_STRATEGY_PROPERTY,
                 DefaultMergeStrategy.class.getName());
         try {
             mergeStrategy = LoaderUtil.newInstanceOf(mergeStrategyClassName);
@@ -73,7 +73,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 InstantiationException ex) {
             mergeStrategy = new DefaultMergeStrategy();
         }
-        for (AbstractConfiguration config : configurations) {
+        for (final AbstractConfiguration config : configurations) {
             mergeStrategy.mergeRootProperties(rootNode, config);
         }
         final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
@@ -100,38 +100,38 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
 
     @Override
     public void setup() {
-        AbstractConfiguration targetConfiguration = configurations.get(0);
+        final AbstractConfiguration targetConfiguration = configurations.get(0);
         staffChildConfiguration(targetConfiguration);
-        WatchManager watchManager = getWatchManager();
-        WatchManager targetWatchManager = targetConfiguration.getWatchManager();
-        FileWatcher fileWatcher = new ConfiguratonFileWatcher(this, listeners);
+        final WatchManager watchManager = getWatchManager();
+        final WatchManager targetWatchManager = targetConfiguration.getWatchManager();
+        final FileWatcher fileWatcher = new ConfiguratonFileWatcher(this, listeners);
         if (targetWatchManager.getIntervalSeconds() > 0) {
             watchManager.setIntervalSeconds(targetWatchManager.getIntervalSeconds());
-            Map<File, FileWatcher> watchers = targetWatchManager.getWatchers();
-            for (Map.Entry<File, FileWatcher> entry : watchers.entrySet()) {
+            final Map<File, FileWatcher> watchers = targetWatchManager.getWatchers();
+            for (final Map.Entry<File, FileWatcher> entry : watchers.entrySet()) {
                 if (entry.getValue() instanceof ConfiguratonFileWatcher) {
                     watchManager.watchFile(entry.getKey(), fileWatcher);
                 }
             }
         }
-        for (AbstractConfiguration sourceConfiguration : configurations.subList(1, configurations.size())) {
+        for (final AbstractConfiguration sourceConfiguration : configurations.subList(1, configurations.size())) {
             staffChildConfiguration(sourceConfiguration);
-            Node sourceRoot = sourceConfiguration.getRootNode();
+            final Node sourceRoot = sourceConfiguration.getRootNode();
             mergeStrategy.mergConfigurations(rootNode, sourceRoot, getPluginManager());
             if (LOGGER.isEnabled(Level.ALL)) {
-                StringBuilder sb = new StringBuilder();
+                final StringBuilder sb = new StringBuilder();
                 printNodes("", rootNode, sb);
                 System.out.println(sb.toString());
             }
-            int monitorInterval = sourceConfiguration.getWatchManager().getIntervalSeconds();
+            final int monitorInterval = sourceConfiguration.getWatchManager().getIntervalSeconds();
             if (monitorInterval > 0) {
-                int currentInterval = watchManager.getIntervalSeconds();
+                final int currentInterval = watchManager.getIntervalSeconds();
                 if (currentInterval <= 0 || monitorInterval < currentInterval) {
                     watchManager.setIntervalSeconds(monitorInterval);
                 }
-                WatchManager sourceWatchManager = sourceConfiguration.getWatchManager();
-                Map<File, FileWatcher> watchers = sourceWatchManager.getWatchers();
-                for (Map.Entry<File, FileWatcher> entry : watchers.entrySet()) {
+                final WatchManager sourceWatchManager = sourceConfiguration.getWatchManager();
+                final Map<File, FileWatcher> watchers = sourceWatchManager.getWatchers();
+                for (final Map.Entry<File, FileWatcher> entry : watchers.entrySet()) {
                     if (entry.getValue() instanceof ConfiguratonFileWatcher) {
                         watchManager.watchFile(entry.getKey(), fileWatcher);
                     }
@@ -143,11 +143,11 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     @Override
     public Configuration reconfigure() {
         LOGGER.debug("Reconfiguring composite configuration");
-        List<AbstractConfiguration> configs = new ArrayList<>();
-        ConfigurationFactory factory = ConfigurationFactory.getInstance();
-        for (AbstractConfiguration config : configurations) {
-            ConfigurationSource source = config.getConfigurationSource();
-            URI sourceURI = source.getURI();
+        final List<AbstractConfiguration> configs = new ArrayList<>();
+        final ConfigurationFactory factory = ConfigurationFactory.getInstance();
+        for (final AbstractConfiguration config : configurations) {
+            final ConfigurationSource source = config.getConfigurationSource();
+            final URI sourceURI = source.getURI();
             Configuration currentConfig;
             if (sourceURI != null) {
                 LOGGER.warn("Unable to determine URI for configuration {}, changes to it will be ignored",
@@ -176,7 +176,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     private void printNodes(final String indent, final Node node, final StringBuilder sb) {
         sb.append(indent).append(node.getName()).append(" type: ").append(node.getType()).append("\n");
         sb.append(indent).append(node.getAttributes().toString()).append("\n");
-        for (Node child : node.getChildren()) {
+        for (final Node child : node.getChildren()) {
             printNodes(indent + "  ", child, sb);
         }
     }

@@ -282,14 +282,14 @@ public final class CronExpression {
      * expression
      */
     public boolean isSatisfiedBy(final Date date) {
-        Calendar testDateCal = Calendar.getInstance(getTimeZone());
+        final Calendar testDateCal = Calendar.getInstance(getTimeZone());
         testDateCal.setTime(date);
         testDateCal.set(Calendar.MILLISECOND, 0);
-        Date originalDate = testDateCal.getTime();
+        final Date originalDate = testDateCal.getTime();
 
         testDateCal.add(Calendar.SECOND, -1);
 
-        Date timeAfter = getTimeAfter(testDateCal.getTime());
+        final Date timeAfter = getTimeAfter(testDateCal.getTime());
 
         return ((timeAfter != null) && (timeAfter.equals(originalDate)));
     }
@@ -318,7 +318,7 @@ public final class CronExpression {
         long difference = 1000;
 
         //move back to the nearest second so differences will be accurate
-        Calendar adjustCal = Calendar.getInstance(getTimeZone());
+        final Calendar adjustCal = Calendar.getInstance(getTimeZone());
         adjustCal.setTime(date);
         adjustCal.set(Calendar.MILLISECOND, 0);
         Date lastDate = adjustCal.getTime();
@@ -388,7 +388,7 @@ public final class CronExpression {
 
         try {
             new CronExpression(cronExpression);
-        } catch (ParseException pe) {
+        } catch (final ParseException pe) {
             return false;
         }
 
@@ -436,11 +436,11 @@ public final class CronExpression {
 
             int exprOn = SECOND;
 
-            StringTokenizer exprsTok = new StringTokenizer(expression, " \t",
+            final StringTokenizer exprsTok = new StringTokenizer(expression, " \t",
                     false);
 
             while (exprsTok.hasMoreTokens() && exprOn <= YEAR) {
-                String expr = exprsTok.nextToken().trim();
+                final String expr = exprsTok.nextToken().trim();
 
                 // throw an exception if L is used with other days of the month
                 if (exprOn == DAY_OF_MONTH && expr.indexOf('L') != -1 && expr.length() > 1 && expr.contains(",")) {
@@ -454,9 +454,9 @@ public final class CronExpression {
                     throw new ParseException("Support for specifying multiple \"nth\" days is not implemented.", -1);
                 }
 
-                StringTokenizer vTok = new StringTokenizer(expr, ",");
+                final StringTokenizer vTok = new StringTokenizer(expr, ",");
                 while (vTok.hasMoreTokens()) {
-                    String v = vTok.nextToken();
+                    final String v = vTok.nextToken();
                     storeExpressionVals(0, v, exprOn);
                 }
 
@@ -472,12 +472,12 @@ public final class CronExpression {
                 storeExpressionVals(0, "*", YEAR);
             }
 
-            TreeSet<Integer> dow = getSet(DAY_OF_WEEK);
-            TreeSet<Integer> dom = getSet(DAY_OF_MONTH);
+            final TreeSet<Integer> dow = getSet(DAY_OF_WEEK);
+            final TreeSet<Integer> dom = getSet(DAY_OF_MONTH);
 
             // Copying the logic from the UnsupportedOperationException below
-            boolean dayOfMSpec = !dom.contains(NO_SPEC);
-            boolean dayOfWSpec = !dow.contains(NO_SPEC);
+            final boolean dayOfMSpec = !dom.contains(NO_SPEC);
+            final boolean dayOfWSpec = !dow.contains(NO_SPEC);
 
             if (!dayOfMSpec || dayOfWSpec) {
                 if (!dayOfWSpec || dayOfMSpec) {
@@ -485,9 +485,9 @@ public final class CronExpression {
                             "Support for specifying both a day-of-week AND a day-of-month parameter is not implemented.", 0);
                 }
             }
-        } catch (ParseException pe) {
+        } catch (final ParseException pe) {
             throw pe;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParseException("Illegal cron expression format ("
                     + e.toString() + ")", 0);
         }
@@ -546,7 +546,7 @@ public final class CronExpression {
                             if (nthdayOfWeek < 1 || nthdayOfWeek > 5) {
                                 throw new Exception();
                             }
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             throw new ParseException(
                                     "A numeric value between 1 and 5 must follow the '#' option",
                                     i);
@@ -582,7 +582,7 @@ public final class CronExpression {
                         i);
             }
             if (type == DAY_OF_WEEK && !lastdayOfMonth) {
-                int val = daysOfMonth.last();
+                final int val = daysOfMonth.last();
                 if (val == NO_SPEC_INT) {
                     throw new ParseException(
                             "'?' can only be specfied for Day-of-Month -OR- Day-of-Week.",
@@ -646,7 +646,7 @@ public final class CronExpression {
             if (type == DAY_OF_MONTH && s.length() > i) {
                 c = s.charAt(i);
                 if (c == '-') {
-                    ValueSet vs = getValue(0, s, i + 1);
+                    final ValueSet vs = getValue(0, s, i + 1);
                     lastdayOffset = vs.value;
                     if (lastdayOffset > 30) {
                         throw new ParseException("Offset from last day must be <= 30", i + 1);
@@ -670,7 +670,7 @@ public final class CronExpression {
             } else {
                 c = s.charAt(i);
                 if (c >= '0' && c <= '9') {
-                    ValueSet vs = getValue(val, s, i);
+                    final ValueSet vs = getValue(val, s, i);
                     val = vs.value;
                     i = vs.pos;
                 }
@@ -706,7 +706,7 @@ public final class CronExpression {
             } else {
                 throw new ParseException("'L' option is not valid here. (pos=" + i + ")", i);
             }
-            TreeSet<Integer> set = getSet(type);
+            final TreeSet<Integer> set = getSet(type);
             set.add(val);
             i++;
             return i;
@@ -721,7 +721,7 @@ public final class CronExpression {
             if (val > 31) {
                 throw new ParseException("The 'W' option does not make sense with values larger than 31 (max number of days in a month)", i);
             }
-            TreeSet<Integer> set = getSet(type);
+            final TreeSet<Integer> set = getSet(type);
             set.add(val);
             i++;
             return i;
@@ -737,13 +737,13 @@ public final class CronExpression {
                 if (nthdayOfWeek < 1 || nthdayOfWeek > 5) {
                     throw new Exception();
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new ParseException(
                         "A numeric value between 1 and 5 must follow the '#' option",
                         i);
             }
 
-            TreeSet<Integer> set = getSet(type);
+            final TreeSet<Integer> set = getSet(type);
             set.add(val);
             i++;
             return i;
@@ -752,7 +752,7 @@ public final class CronExpression {
         if (c == '-') {
             i++;
             c = s.charAt(i);
-            int v = Integer.parseInt(String.valueOf(c));
+            final int v = Integer.parseInt(String.valueOf(c));
             end = v;
             i++;
             if (i >= s.length()) {
@@ -761,14 +761,14 @@ public final class CronExpression {
             }
             c = s.charAt(i);
             if (c >= '0' && c <= '9') {
-                ValueSet vs = getValue(v, s, i);
+                final ValueSet vs = getValue(v, s, i);
                 end = vs.value;
                 i = vs.pos;
             }
             if (i < s.length() && ((c = s.charAt(i)) == '/')) {
                 i++;
                 c = s.charAt(i);
-                int v2 = Integer.parseInt(String.valueOf(c));
+                final int v2 = Integer.parseInt(String.valueOf(c));
                 i++;
                 if (i >= s.length()) {
                     addToSet(val, end, v2, type);
@@ -776,8 +776,8 @@ public final class CronExpression {
                 }
                 c = s.charAt(i);
                 if (c >= '0' && c <= '9') {
-                    ValueSet vs = getValue(v2, s, i);
-                    int v3 = vs.value;
+                    final ValueSet vs = getValue(v2, s, i);
+                    final int v3 = vs.value;
                     addToSet(val, end, v3, type);
                     i = vs.pos;
                     return i;
@@ -794,7 +794,7 @@ public final class CronExpression {
         if (c == '/') {
             i++;
             c = s.charAt(i);
-            int v2 = Integer.parseInt(String.valueOf(c));
+            final int v2 = Integer.parseInt(String.valueOf(c));
             i++;
             if (i >= s.length()) {
                 addToSet(val, end, v2, type);
@@ -802,8 +802,8 @@ public final class CronExpression {
             }
             c = s.charAt(i);
             if (c >= '0' && c <= '9') {
-                ValueSet vs = getValue(v2, s, i);
-                int v3 = vs.value;
+                final ValueSet vs = getValue(v2, s, i);
+                final int v3 = vs.value;
                 addToSet(val, end, v3, type);
                 i = vs.pos;
                 return i;
@@ -822,7 +822,7 @@ public final class CronExpression {
     }
 
     public String getExpressionSummary() {
-        StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder();
 
         buf.append("seconds: ");
         buf.append(getExpressionSetSummary(seconds));
@@ -870,13 +870,13 @@ public final class CronExpression {
             return "*";
         }
 
-        StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder();
 
-        Iterator<Integer> itr = set.iterator();
+        final Iterator<Integer> itr = set.iterator();
         boolean first = true;
         while (itr.hasNext()) {
-            Integer iVal = itr.next();
-            String val = iVal.toString();
+            final Integer iVal = itr.next();
+            final String val = iVal.toString();
             if (!first) {
                 buf.append(",");
             }
@@ -896,13 +896,13 @@ public final class CronExpression {
             return "*";
         }
 
-        StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder();
 
-        Iterator<Integer> itr = list.iterator();
+        final Iterator<Integer> itr = list.iterator();
         boolean first = true;
         while (itr.hasNext()) {
-            Integer iVal = itr.next();
-            String val = iVal.toString();
+            final Integer iVal = itr.next();
+            final String val = iVal.toString();
             if (!first) {
                 buf.append(",");
             }
@@ -932,7 +932,7 @@ public final class CronExpression {
     protected void addToSet(final int val, final int end, int incr, final int type)
             throws ParseException {
 
-        TreeSet<Integer> set = getSet(type);
+        final TreeSet<Integer> set = getSet(type);
 
         if (type == SECOND || type == MINUTE) {
             if ((val < 0 || val > 59 || end > 59) && (val != ALL_SPEC_INT)) {
@@ -1099,7 +1099,7 @@ public final class CronExpression {
 
     protected ValueSet getValue(final int v, final String s, int i) {
         char c = s.charAt(i);
-        StringBuilder s1 = new StringBuilder(String.valueOf(v));
+        final StringBuilder s1 = new StringBuilder(String.valueOf(v));
         while (c >= '0' && c <= '9') {
             s1.append(c);
             i++;
@@ -1108,7 +1108,7 @@ public final class CronExpression {
             }
             c = s.charAt(i);
         }
-        ValueSet val = new ValueSet();
+        final ValueSet val = new ValueSet();
 
         val.pos = (i < s.length()) ? i : i + 1;
         val.value = Integer.parseInt(s1.toString());
@@ -1116,13 +1116,13 @@ public final class CronExpression {
     }
 
     protected int getNumericValue(final String s, final int i) {
-        int endOfVal = findNextWhiteSpace(i, s);
-        String val = s.substring(i, endOfVal);
+        final int endOfVal = findNextWhiteSpace(i, s);
+        final String val = s.substring(i, endOfVal);
         return Integer.parseInt(val);
     }
 
     protected int getMonthNumber(final String s) {
-        Integer integer = monthMap.get(s);
+        final Integer integer = monthMap.get(s);
 
         if (integer == null) {
             return -1;
@@ -1132,7 +1132,7 @@ public final class CronExpression {
     }
 
     protected int getDayOfWeekNumber(final String s) {
-        Integer integer = dayMap.get(s);
+        final Integer integer = dayMap.get(s);
 
         if (integer == null) {
             return -1;
@@ -1150,7 +1150,7 @@ public final class CronExpression {
     public Date getTimeAfter(Date afterTime) {
 
         // Computation is based on Gregorian year only.
-        Calendar cl = new java.util.GregorianCalendar(getTimeZone());
+        final Calendar cl = new java.util.GregorianCalendar(getTimeZone());
 
         // move ahead one second, since we're computing the time *after* the
         // given time
@@ -1236,8 +1236,8 @@ public final class CronExpression {
             int tmon = mon;
 
             // get day...................................................
-            boolean dayOfMSpec = !daysOfMonth.contains(NO_SPEC);
-            boolean dayOfWSpec = !daysOfWeek.contains(NO_SPEC);
+            final boolean dayOfMSpec = !daysOfMonth.contains(NO_SPEC);
+            final boolean dayOfWSpec = !daysOfWeek.contains(NO_SPEC);
             if (dayOfMSpec && !dayOfWSpec) { // get day by day of month rule
                 st = daysOfMonth.tailSet(day);
                 if (lastdayOfMonth) {
@@ -1259,7 +1259,7 @@ public final class CronExpression {
                         day = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
                         day -= lastdayOffset;
 
-                        java.util.Calendar tcal = java.util.Calendar.getInstance(getTimeZone());
+                        final java.util.Calendar tcal = java.util.Calendar.getInstance(getTimeZone());
                         tcal.set(Calendar.SECOND, 0);
                         tcal.set(Calendar.MINUTE, 0);
                         tcal.set(Calendar.HOUR_OF_DAY, 0);
@@ -1267,8 +1267,8 @@ public final class CronExpression {
                         tcal.set(Calendar.MONTH, mon - 1);
                         tcal.set(Calendar.YEAR, cl.get(Calendar.YEAR));
 
-                        int ldom = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
-                        int dow = tcal.get(Calendar.DAY_OF_WEEK);
+                        final int ldom = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
+                        final int dow = tcal.get(Calendar.DAY_OF_WEEK);
 
                         if (dow == Calendar.SATURDAY && day == 1) {
                             day += 2;
@@ -1285,7 +1285,7 @@ public final class CronExpression {
                         tcal.set(Calendar.HOUR_OF_DAY, hr);
                         tcal.set(Calendar.DAY_OF_MONTH, day);
                         tcal.set(Calendar.MONTH, mon - 1);
-                        Date nTime = tcal.getTime();
+                        final Date nTime = tcal.getTime();
                         if (nTime.before(afterTime)) {
                             day = 1;
                             mon++;
@@ -1295,7 +1295,7 @@ public final class CronExpression {
                     t = day;
                     day = daysOfMonth.first();
 
-                    java.util.Calendar tcal = java.util.Calendar.getInstance(getTimeZone());
+                    final java.util.Calendar tcal = java.util.Calendar.getInstance(getTimeZone());
                     tcal.set(Calendar.SECOND, 0);
                     tcal.set(Calendar.MINUTE, 0);
                     tcal.set(Calendar.HOUR_OF_DAY, 0);
@@ -1303,8 +1303,8 @@ public final class CronExpression {
                     tcal.set(Calendar.MONTH, mon - 1);
                     tcal.set(Calendar.YEAR, cl.get(Calendar.YEAR));
 
-                    int ldom = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
-                    int dow = tcal.get(Calendar.DAY_OF_WEEK);
+                    final int ldom = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
+                    final int dow = tcal.get(Calendar.DAY_OF_WEEK);
 
                     if (dow == Calendar.SATURDAY && day == 1) {
                         day += 2;
@@ -1322,7 +1322,7 @@ public final class CronExpression {
                     tcal.set(Calendar.HOUR_OF_DAY, hr);
                     tcal.set(Calendar.DAY_OF_MONTH, day);
                     tcal.set(Calendar.MONTH, mon - 1);
-                    Date nTime = tcal.getTime();
+                    final Date nTime = tcal.getTime();
                     if (nTime.before(afterTime)) {
                         day = daysOfMonth.first();
                         mon++;
@@ -1331,7 +1331,7 @@ public final class CronExpression {
                     t = day;
                     day = st.first();
                     // make sure we don't over-run a short month, such as february
-                    int lastDay = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
+                    final int lastDay = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
                     if (day > lastDay) {
                         day = daysOfMonth.first();
                         mon++;
@@ -1354,9 +1354,9 @@ public final class CronExpression {
             } else if (dayOfWSpec && !dayOfMSpec) { // get day by day of week rule
                 if (lastdayOfWeek) { // are we looking for the last XXX day of
                     // the month?
-                    int dow = daysOfWeek.first(); // desired
+                    final int dow = daysOfWeek.first(); // desired
                     // d-o-w
-                    int cDow = cl.get(Calendar.DAY_OF_WEEK); // current d-o-w
+                    final int cDow = cl.get(Calendar.DAY_OF_WEEK); // current d-o-w
                     int daysToAdd = 0;
                     if (cDow < dow) {
                         daysToAdd = dow - cDow;
@@ -1365,7 +1365,7 @@ public final class CronExpression {
                         daysToAdd = dow + (7 - cDow);
                     }
 
-                    int lDay = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
+                    final int lDay = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
 
                     if (day + daysToAdd > lDay) { // did we already miss the
                         // last one?
@@ -1397,9 +1397,9 @@ public final class CronExpression {
 
                 } else if (nthdayOfWeek != 0) {
                     // are we looking for the Nth XXX day in the month?
-                    int dow = daysOfWeek.first(); // desired
+                    final int dow = daysOfWeek.first(); // desired
                     // d-o-w
-                    int cDow = cl.get(Calendar.DAY_OF_WEEK); // current d-o-w
+                    final int cDow = cl.get(Calendar.DAY_OF_WEEK); // current d-o-w
                     int daysToAdd = 0;
                     if (cDow < dow) {
                         daysToAdd = dow - cDow;
@@ -1440,7 +1440,7 @@ public final class CronExpression {
                         continue;
                     }
                 } else {
-                    int cDow = cl.get(Calendar.DAY_OF_WEEK); // current d-o-w
+                    final int cDow = cl.get(Calendar.DAY_OF_WEEK); // current d-o-w
                     int dow = daysOfWeek.first(); // desired
                     // d-o-w
                     st = daysOfWeek.tailSet(cDow);
@@ -1456,7 +1456,7 @@ public final class CronExpression {
                         daysToAdd = dow + (7 - cDow);
                     }
 
-                    int lDay = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
+                    final int lDay = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
 
                     if (day + daysToAdd > lDay) { // will we pass the end of
                         // the month?

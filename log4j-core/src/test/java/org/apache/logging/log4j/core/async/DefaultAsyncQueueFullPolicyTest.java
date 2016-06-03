@@ -36,14 +36,14 @@ public class DefaultAsyncQueueFullPolicyTest {
 
     @Test
     public void testGetRouteEnqueuesIfQueueFullAndCalledFromDifferentThread() throws Exception {
-        DefaultAsyncQueueFullPolicy router = new DefaultAsyncQueueFullPolicy();
+        final DefaultAsyncQueueFullPolicy router = new DefaultAsyncQueueFullPolicy();
         assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.ALL));
         assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.OFF));
     }
 
     @Test
     public void testGetRouteSynchronousIfQueueFullAndCalledFromSameThread() throws Exception {
-        DefaultAsyncQueueFullPolicy router = new DefaultAsyncQueueFullPolicy();
+        final DefaultAsyncQueueFullPolicy router = new DefaultAsyncQueueFullPolicy();
         assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.ALL));
         assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.OFF));
     }

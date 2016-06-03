@@ -364,12 +364,12 @@ public class TestConfigurator {
 
     @Test
     public void testBuilder() throws Exception {
-        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setStatusLevel(Level.ERROR);
         builder.setConfigurationName("BuilderTest");
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
-        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+        final AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
                 ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(builder.newLayout("PatternLayout").
                 addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
@@ -389,7 +389,7 @@ public class TestConfigurator {
 
     @Test
     public void testRolling() throws Exception {
-        ConfigurationBuilder< BuiltConfiguration > builder =
+        final ConfigurationBuilder< BuiltConfiguration > builder =
                 ConfigurationBuilderFactory.newConfigurationBuilder();
 
         builder.setStatusLevel( Level.ERROR);
@@ -401,9 +401,9 @@ public class TestConfigurator {
                 addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
         builder.add( appenderBuilder );
 
-        LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+        final LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
                 .addAttribute("pattern", "%d [%t] %-5level: %msg%n");
-        ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
+        final ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
                 .addComponent(builder.newComponent("CronTriggeringPolicy").addAttribute("schedule", "0 0 0 * * ?"))
                 .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "100M"));
         appenderBuilder = builder.newAppender("rolling", "RollingFile")
@@ -420,30 +420,30 @@ public class TestConfigurator {
 
         builder.add( builder.newRootLogger( Level.DEBUG )
                 .add( builder.newAppenderRef( "rolling" ) ) );
-        Configuration config = builder.build();
+        final Configuration config = builder.build();
         config.initialize();
         assertNotNull("No rolling file appender", config.getAppender("rolling"));
         assertEquals("Unexpected Configuration", "RollingBuilder", config.getName());
         // Initialize the new configuration
-        LoggerContext ctx = Configurator.initialize( config );
+        final LoggerContext ctx = Configurator.initialize( config );
         Configurator.shutdown(ctx);
 
     }
 
     @Test
     public void testBuilderWithScripts() throws Exception {
-        String script = "if (logEvent.getLoggerName().equals(\"NoLocation\")) {\n" +
+        final String script = "if (logEvent.getLoggerName().equals(\"NoLocation\")) {\n" +
                 "                return \"NoLocation\";\n" +
                 "            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf(\"FLOW\")) {\n" +
                 "                return \"Flow\";\n" +
                 "            } else {\n" +
                 "                return null;\n" +
                 "            }";
-        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setStatusLevel(Level.ERROR);
         builder.setConfigurationName("BuilderTest");
         builder.add(builder.newScriptFile("filter.groovy", "target/test-classes/scripts/filter.groovy").addIsWatched(true));
-        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+        final AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
                 ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(builder.newLayout("PatternLayout").
                 addComponent(builder.newComponent("ScriptPatternSelector")

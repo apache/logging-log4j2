@@ -60,18 +60,18 @@ public class EncodingListAppender extends ListAppender {
         if (layout == null) {
             events.add(event);
         } else if (layout instanceof SerializedLayout) {
-            Destination content = new Destination();
+            final Destination content = new Destination();
             content.byteBuffer.put(layout.getHeader());
             layout.encode(event, content);
             content.getByteBuffer().flip();
-            byte[] record = new byte[content.getByteBuffer().remaining()];
+            final byte[] record = new byte[content.getByteBuffer().remaining()];
             content.getByteBuffer().get(record);
             data.add(record);
         } else {
-            Destination content = new Destination();
+            final Destination content = new Destination();
             layout.encode(event, content);
             content.getByteBuffer().flip();
-            byte[] record = new byte[content.getByteBuffer().remaining()];
+            final byte[] record = new byte[content.getByteBuffer().remaining()];
             content.getByteBuffer().get(record);
             write(record);
         }

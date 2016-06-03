@@ -51,19 +51,19 @@ public class CsvParameterLayoutAllAsyncTest {
 
     @Test
     public void testLayoutDefaultNormal() throws Exception {
-        Logger root = (Logger) LogManager.getRootLogger();
+        final Logger root = (Logger) LogManager.getRootLogger();
         CsvParameterLayoutTest.testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), false);
     }
 
     @Test
     public void testLayoutDefaultObjectArrayMessage() throws Exception {
-        Logger root = (Logger) LogManager.getRootLogger();
+        final Logger root = (Logger) LogManager.getRootLogger();
         CsvParameterLayoutTest.testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), true);
     }
 
     @Test
     public void testLayoutTab() throws Exception {
-        Logger root = (Logger) LogManager.getRootLogger();
+        final Logger root = (Logger) LogManager.getRootLogger();
         CsvParameterLayoutTest.testLayoutNormalApi(root, CsvParameterLayout.createLayout(CSVFormat.TDF), true);
     }
 }

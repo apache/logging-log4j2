@@ -114,7 +114,7 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
         if (loggerConfig == configuration.getRootLogger()) {
             try {
                 Thread.sleep(SLEEP_MILLIS);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 StatusLogger.getLogger().warn("Sleep before stop configuration was interrupted.");
             }
         }

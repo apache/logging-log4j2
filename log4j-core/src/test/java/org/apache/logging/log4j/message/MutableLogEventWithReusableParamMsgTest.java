@@ -26,8 +26,8 @@ import org.junit.Test;
 public class MutableLogEventWithReusableParamMsgTest {
     @Test
     public void testInteractionWithReusableParameterizedMessage() {
-        MutableLogEvent evt = new MutableLogEvent();
-        ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
+        final MutableLogEvent evt = new MutableLogEvent();
+        final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         msg.set("Hello {} {} {}", 1, 2, 3);
         evt.setMessage(msg);
         evt.clear();

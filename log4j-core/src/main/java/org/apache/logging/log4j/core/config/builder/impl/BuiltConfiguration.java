@@ -123,12 +123,12 @@ public class BuiltConfiguration extends AbstractConfiguration {
         byte[] buffer = null;
         try {
             if (configSource != null) {
-                InputStream is = configSource.getInputStream();
+                final InputStream is = configSource.getInputStream();
                 if (is != null) {
                     buffer = toByteArray(is);
                 }
             }
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOGGER.warn("Unable to read configuration source " + configSource.toString());
         }
         super.createAdvertiser(advertiserString, configSource, buffer, contentType);
@@ -154,7 +154,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 if (intervalSeconds > 0) {
                     getWatchManager().setIntervalSeconds(intervalSeconds);
                     if (configFile != null) {
-                        FileWatcher watcher = new ConfiguratonFileWatcher((Reconfigurable) this, listeners);
+                        final FileWatcher watcher = new ConfiguratonFileWatcher((Reconfigurable) this, listeners);
                         getWatchManager().watchFile(configFile, watcher);
                     }
                 }

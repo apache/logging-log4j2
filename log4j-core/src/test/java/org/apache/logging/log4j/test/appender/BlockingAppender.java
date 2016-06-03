@@ -42,7 +42,7 @@ public class BlockingAppender extends AbstractAppender {
         while (running) {
             try {
                 Thread.sleep(10L);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt(); // set interrupt status
             }
         }

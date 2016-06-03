@@ -57,10 +57,10 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
             return this;
         }
         if (filter instanceof CompositeFilter) {
-            int size = this.filters.length + ((CompositeFilter) filter).size();
+            final int size = this.filters.length + ((CompositeFilter) filter).size();
             final Filter[] copy = Arrays.copyOf(this.filters, size);
-            int index = this.filters.length;
-            for (Filter currentFilter : ((CompositeFilter) filter).filters) {
+            final int index = this.filters.length;
+            for (final Filter currentFilter : ((CompositeFilter) filter).filters) {
                 copy[index] = currentFilter;
             }
             return new CompositeFilter(copy);
@@ -81,7 +81,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
         // which is OK since removing a filter should not be on the critical path.
         final List<Filter> filterList = new ArrayList<>(Arrays.asList(this.filters));
         if (filter instanceof CompositeFilter) {
-            for (Filter currentFilter : ((CompositeFilter) filter).filters) {
+            for (final Filter currentFilter : ((CompositeFilter) filter).filters) {
                 filterList.remove(currentFilter);
             }
         } else {

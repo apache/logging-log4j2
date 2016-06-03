@@ -60,14 +60,14 @@ public class RollingAppenderDeleteScriptTest {
         assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
 
         final File[] files = dir.listFiles();
-        for (File file : files) {
+        for (final File file : files) {
             System.out.println(file);
         }
-        for (File file : files) {
+        for (final File file : files) {
             assertTrue(file.getName() + " starts with 'test-'", file.getName().startsWith("test-"));
             assertTrue(file.getName() + " ends with '.log'", file.getName().endsWith(".log"));
-            String strIndex = file.getName().substring(5, file.getName().indexOf('.'));
-            int index = Integer.parseInt(strIndex);
+            final String strIndex = file.getName().substring(5, file.getName().indexOf('.'));
+            final int index = Integer.parseInt(strIndex);
             assertTrue(file + " should have odd index", index % 2 == 1);
         }
     }

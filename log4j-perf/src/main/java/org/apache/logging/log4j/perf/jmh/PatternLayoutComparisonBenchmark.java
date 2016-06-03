@@ -106,7 +106,7 @@ public class PatternLayoutComparisonBenchmark {
         patternLayoutEncoder.init(baos);
     }
 
-    ILoggingEvent makeLoggingEvent(String message) {
+    ILoggingEvent makeLoggingEvent(final String message) {
         return new LoggingEvent(PatternLayoutComparisonBenchmark.class.getName(), logger,
                 ch.qos.logback.classic.Level.DEBUG, message, null, null);
     }

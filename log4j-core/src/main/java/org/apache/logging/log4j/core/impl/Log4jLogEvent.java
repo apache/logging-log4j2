@@ -120,7 +120,7 @@ public class Log4jLogEvent implements LogEvent {
 
             // Avoid unnecessarily initializing thrownProxy, threadName and source if possible
             if (other instanceof Log4jLogEvent) {
-                Log4jLogEvent evt = (Log4jLogEvent) other;
+                final Log4jLogEvent evt = (Log4jLogEvent) other;
                 this.thrownProxy = evt.thrownProxy;
                 this.source = evt.source;
                 this.threadId = evt.threadId;

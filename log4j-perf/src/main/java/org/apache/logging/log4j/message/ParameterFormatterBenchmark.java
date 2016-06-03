@@ -57,10 +57,10 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency3ParamsV3(final ThreadState state) {
         state.buffer.setLength(0);
-        String STR = "p1={}, p2={}, p3={}";
-        int length = STR.length();
+        final String STR = "p1={}, p2={}, p3={}";
+        final int length = STR.length();
         STR.getChars(0, length, state.copy, 0);
-        int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
         ParameterFormatter.formatMessage3(state.buffer, state.copy, length, ARGS, count, state.indices);
         return state.buffer.length();
     }
@@ -70,10 +70,10 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency5ParamsV3(final ThreadState state) {
         state.buffer.setLength(0);
-        String STR = "p1={}, p2={}, p3={}, p4={}, p5={}";
-        int length = STR.length();
+        final String STR = "p1={}, p2={}, p3={}, p4={}, p5={}";
+        final int length = STR.length();
         STR.getChars(0, length, state.copy, 0);
-        int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
         ParameterFormatter.formatMessage3(state.buffer, state.copy, length, ARGS, count, state.indices);
         return state.buffer.length();
     }
@@ -83,10 +83,10 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency7ParamsV3(final ThreadState state) {
         state.buffer.setLength(0);
-        String STR = "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}";
-        int length = STR.length();
+        final String STR = "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}";
+        final int length = STR.length();
         STR.getChars(0, length, state.copy, 0);
-        int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
         ParameterFormatter.formatMessage3(state.buffer, state.copy, length, ARGS, count, state.indices);
         return state.buffer.length();
     }
@@ -96,10 +96,10 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency9ParamsV3(final ThreadState state) {
         state.buffer.setLength(0);
-        String STR = "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}";
-        int length = STR.length();
+        final String STR = "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}";
+        final int length = STR.length();
         STR.getChars(0, length, state.copy, 0);
-        int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
         ParameterFormatter.formatMessage3(state.buffer, state.copy, length, ARGS, count, state.indices);
         return state.buffer.length();
     }
@@ -109,7 +109,7 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency3ParamsV2(final ThreadState state) {
         state.buffer.setLength(0);
-        int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}", state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}", state.indices);
         ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}", ARGS, count, state.indices);
         return state.buffer.length();
     }
@@ -119,7 +119,7 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency5ParamsV2(final ThreadState state) {
         state.buffer.setLength(0);
-        int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}", state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}", state.indices);
         ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}", ARGS, count, state.indices);
         return state.buffer.length();
     }
@@ -129,7 +129,7 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency7ParamsV2(final ThreadState state) {
         state.buffer.setLength(0);
-        int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", state.indices);
         ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", ARGS, count, state.indices);
         return state.buffer.length();
     }
@@ -139,7 +139,7 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency9ParamsV2(final ThreadState state) {
         state.buffer.setLength(0);
-        int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", state.indices);
         ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", ARGS, count, state.indices);
         return state.buffer.length();
     }
@@ -149,7 +149,7 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency3Params(final ThreadState state) {
         state.buffer.setLength(0);
-        int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}");
+        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}");
         ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}", ARGS, count);
         return state.buffer.length();
     }
@@ -159,7 +159,7 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency5Params(final ThreadState state) {
         state.buffer.setLength(0);
-        int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}");
+        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}");
         ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}", ARGS, count);
         return state.buffer.length();
     }
@@ -169,7 +169,7 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency7Params(final ThreadState state) {
         state.buffer.setLength(0);
-        int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}");
+        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}");
         ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", ARGS, count);
         return state.buffer.length();
     }
@@ -179,7 +179,7 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency9Params(final ThreadState state) {
         state.buffer.setLength(0);
-        int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}");
+        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}");
         ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", ARGS, count);
         return state.buffer.length();
     }

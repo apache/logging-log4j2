@@ -48,7 +48,7 @@ public class GcFreeLoggingTestUtil {
         assertTrue("Constants.ENABLE_DIRECT_ENCODERS", Constants.ENABLE_DIRECT_ENCODERS);
         assertFalse("Constants.IS_WEB_APP", Constants.IS_WEB_APP);
 
-        MyCharSeq myCharSeq = new MyCharSeq();
+        final MyCharSeq myCharSeq = new MyCharSeq();
         MarkerManager.getMarker("test"); // initial creation, value is cached
 
         // initialize LoggerContext etc.

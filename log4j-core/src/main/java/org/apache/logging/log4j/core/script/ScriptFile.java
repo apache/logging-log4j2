@@ -81,9 +81,9 @@ public class ScriptFile extends AbstractScript {
         final URI uri = NetUtils.toURI(filePathOrUri);
         final File file = FileUtils.fileFromUri(uri);
         if (language == null && file != null) {
-            String fileExtension = FileUtils.getFileExtension(file);
+            final String fileExtension = FileUtils.getFileExtension(file);
             if (fileExtension != null) {
-                ExtensionLanguageMapping mapping = ExtensionLanguageMapping.getByExtension(fileExtension);
+                final ExtensionLanguageMapping mapping = ExtensionLanguageMapping.getByExtension(fileExtension);
                 if (mapping != null) {
                     language = mapping.getLanguage();
                 }
@@ -99,12 +99,12 @@ public class ScriptFile extends AbstractScript {
         try (final Reader reader = new InputStreamReader(
                 file != null ? new FileInputStream(file) : uri.toURL().openStream(), actualCharset)) {
             scriptText = IOUtils.toString(reader);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("{}: language={}, path={}, actualCharset={}", e.getClass().getSimpleName(),
                     language, filePathOrUri, actualCharset);
             return null;
         }
-        Path path = file != null ? Paths.get(file.toURI()) : Paths.get(uri);
+        final Path path = file != null ? Paths.get(file.toURI()) : Paths.get(uri);
         if (path == null) {
             LOGGER.error("Unable to convert {} to a Path", uri.toString());
             return null;
@@ -114,7 +114,7 @@ public class ScriptFile extends AbstractScript {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         if (!(getName().equals(filePath.toString()))) {
             sb.append("name=").append(getName()).append(", ");
         }

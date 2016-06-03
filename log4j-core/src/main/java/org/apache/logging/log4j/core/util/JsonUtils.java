@@ -57,7 +57,7 @@ public final class JsonUtils {
         while (inPtr < inputLen) {
             tight_loop:
             while (true) {
-                char c = input.charAt(inPtr);
+                final char c = input.charAt(inPtr);
                 if (c < escCodeCount && escCodes[c] != 0) {
                     break tight_loop;
                 }
@@ -67,9 +67,9 @@ public final class JsonUtils {
                 }
             }
             // something to escape; 2 or 6-char variant?
-            char d = input.charAt(inPtr++);
-            int escCode = escCodes[d];
-            int length = (escCode < 0)
+            final char d = input.charAt(inPtr++);
+            final int escCode = escCodes[d];
+            final int length = (escCode < 0)
                     ? _appendNumeric(d, qbuf)
                     : _appendNamed(escCode, qbuf);
 

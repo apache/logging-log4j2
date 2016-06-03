@@ -127,7 +127,7 @@ public class StringEncodingBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public byte[] shiftJisEncoder() throws CharacterCodingException {
-        ByteBuffer buf = ENCODER_SHIFT_JIS.encode(CharBuffer.wrap(LOGMSG));
+        final ByteBuffer buf = ENCODER_SHIFT_JIS.encode(CharBuffer.wrap(LOGMSG));
         return buf.array();
     }
 
@@ -135,7 +135,7 @@ public class StringEncodingBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public byte[] iso8859_1Encoder() throws CharacterCodingException {
-        ByteBuffer buf = ENCODER_ISO8859_1.encode(CharBuffer.wrap(LOGMSG));
+        final ByteBuffer buf = ENCODER_ISO8859_1.encode(CharBuffer.wrap(LOGMSG));
         return buf.array();
     }
 
@@ -171,8 +171,8 @@ public class StringEncodingBenchmark {
         return result;
     }
 
-    private int nonIsoChar(String logmsg, int i) {
-        char c = logmsg.charAt(i++);
+    private int nonIsoChar(final String logmsg, int i) {
+        final char c = logmsg.charAt(i++);
         if ((Character.isHighSurrogate(c)) && (i < logmsg.length()) && (Character.isLowSurrogate(logmsg.charAt(i)))) {
             i++;
         }
@@ -189,10 +189,10 @@ public class StringEncodingBenchmark {
         return result;
     }
 
-    private static int encodeISOArray(String charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
+    private static int encodeISOArray(final String charArray, int charIndex, final byte[] byteArray, int byteIndex, final int length) {
         int i = 0;
         for (; i < length; i++) {
-            char c = charArray.charAt(charIndex++);
+            final char c = charArray.charAt(charIndex++);
             if (c > 255) {
                 break;
             }
@@ -201,16 +201,16 @@ public class StringEncodingBenchmark {
         return i;
     }
 
-    private int encode(String charArray, int charOffset, int charLength, byte[] byteArray) {
+    private int encode(final String charArray, int charOffset, int charLength, final byte[] byteArray) {
         int offset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
         while (charOffset < charDoneIndex) {
-            int m = encodeISOArray(charArray, charOffset, byteArray, offset, length);
+            final int m = encodeISOArray(charArray, charOffset, byteArray, offset, length);
             charOffset += m;
             offset += m;
             if (m != length) {
-                char c = charArray.charAt(charOffset++);
+                final char c = charArray.charAt(charOffset++);
                 if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
                         && (Character.isLowSurrogate(charArray.charAt(charOffset)))) {
                     if (charLength > byteArray.length) {
@@ -230,17 +230,17 @@ public class StringEncodingBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public byte[] iso8859_1CustomPortedJDK8CopyArray() throws CharacterCodingException {
-        char[] charArray = LOGMSG.toCharArray();
+        final char[] charArray = LOGMSG.toCharArray();
         final int length = charArray.length;
         final byte[] result = new byte[length];
         encode0(charArray, 0, length, result);
         return result;
     }
 
-    private static int encodeISOArray0(char[] charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
+    private static int encodeISOArray0(final char[] charArray, int charIndex, final byte[] byteArray, int byteIndex, final int length) {
         int i = 0;
         for (; i < length; i++) {
-            char c = charArray[(charIndex++)];
+            final char c = charArray[(charIndex++)];
             if (c > 255) {
                 break;
             }
@@ -249,16 +249,16 @@ public class StringEncodingBenchmark {
         return i;
     }
 
-    private int encode0(char[] charArray, int charOffset, int charLength, byte[] byteArray) {
+    private int encode0(final char[] charArray, int charOffset, int charLength, final byte[] byteArray) {
         int offset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
         while (charOffset < charDoneIndex) {
-            int m = encodeISOArray0(charArray, charOffset, byteArray, offset, length);
+            final int m = encodeISOArray0(charArray, charOffset, byteArray, offset, length);
             charOffset += m;
             offset += m;
             if (m != length) {
-                char c = charArray[(charOffset++)];
+                final char c = charArray[(charOffset++)];
                 if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
                         && (Character.isLowSurrogate(charArray[(charOffset)]))) {
                     if (charLength > byteArray.length) {

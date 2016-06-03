@@ -116,22 +116,22 @@ public class Duration implements Serializable, Comparable<Duration> {
      */
     public static Duration parse(final CharSequence text) {
         Objects.requireNonNull(text, "text");
-        Matcher matcher = PATTERN.matcher(text);
+        final Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             // check for letter T but no time sections
             if ("T".equals(matcher.group(2)) == false) {
-                String dayMatch = matcher.group(1);
-                String hourMatch = matcher.group(3);
-                String minuteMatch = matcher.group(4);
-                String secondMatch = matcher.group(5);
+                final String dayMatch = matcher.group(1);
+                final String hourMatch = matcher.group(3);
+                final String minuteMatch = matcher.group(4);
+                final String secondMatch = matcher.group(5);
                 if (dayMatch != null || hourMatch != null || minuteMatch != null || secondMatch != null) {
-                    long daysAsSecs = parseNumber(text, dayMatch, SECONDS_PER_DAY, "days");
-                    long hoursAsSecs = parseNumber(text, hourMatch, SECONDS_PER_HOUR, "hours");
-                    long minsAsSecs = parseNumber(text, minuteMatch, SECONDS_PER_MINUTE, "minutes");
-                    long seconds = parseNumber(text, secondMatch, 1, "seconds");
+                    final long daysAsSecs = parseNumber(text, dayMatch, SECONDS_PER_DAY, "days");
+                    final long hoursAsSecs = parseNumber(text, hourMatch, SECONDS_PER_HOUR, "hours");
+                    final long minsAsSecs = parseNumber(text, minuteMatch, SECONDS_PER_MINUTE, "minutes");
+                    final long seconds = parseNumber(text, secondMatch, 1, "seconds");
                     try {
                         return create(daysAsSecs, hoursAsSecs, minsAsSecs, seconds);
-                    } catch (ArithmeticException ex) {
+                    } catch (final ArithmeticException ex) {
                         throw new IllegalArgumentException("Text cannot be parsed to a Duration (overflow) " + text, ex);
                     }
                 }
@@ -188,7 +188,7 @@ public class Duration implements Serializable, Comparable<Duration> {
         if (!(obj instanceof Duration)) {
             return false;
         }
-        Duration other = (Duration) obj;
+        final Duration other = (Duration) obj;
         return other.seconds == this.seconds;
     }
 

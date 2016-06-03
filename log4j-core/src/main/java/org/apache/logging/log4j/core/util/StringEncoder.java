@@ -45,7 +45,7 @@ public final class StringEncoder {
             final Charset actual = charset != null ? charset : Charset.defaultCharset();
             try { // LOG4J2-935: String.getBytes(String) gives better performance
                 return str.getBytes(actual.name());
-            } catch (UnsupportedEncodingException e) {
+            } catch (final UnsupportedEncodingException e) {
                 return str.getBytes(actual);
             }
         }
@@ -74,7 +74,7 @@ public final class StringEncoder {
     public static int encodeIsoChars(final CharSequence charArray, int charIndex, final byte[] byteArray, int byteIndex, final int length) {
         int i = 0;
         for (; i < length; i++) {
-            char c = charArray.charAt(charIndex++);
+            final char c = charArray.charAt(charIndex++);
             if (c > 255) {
                 break;
             }
@@ -89,11 +89,11 @@ public final class StringEncoder {
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
         while (charOffset < charDoneIndex) {
-            int done = encodeIsoChars(charArray, charOffset, byteArray, byteOffset, length);
+            final int done = encodeIsoChars(charArray, charOffset, byteArray, byteOffset, length);
             charOffset += done;
             byteOffset += done;
             if (done != length) {
-                char c = charArray.charAt(charOffset++);
+                final char c = charArray.charAt(charOffset++);
                 if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
                         && (Character.isLowSurrogate(charArray.charAt(charOffset)))) {
                     if (charLength > byteArray.length) {

@@ -46,7 +46,7 @@ public class SslConfigurationTest {
                 Assert.assertNotNull(clientSocket);
                 clientSocket.close();
             }
-        } catch (UnknownHostException offline) {
+        } catch (final UnknownHostException offline) {
             // this exception is thrown on Windows when offline
         }
     }
@@ -65,7 +65,7 @@ public class SslConfigurationTest {
                     // Expected, do nothing.
                 }
             }
-        } catch (UnknownHostException offline) {
+        } catch (final UnknownHostException offline) {
             // this exception is thrown on Windows when offline
         }
     }

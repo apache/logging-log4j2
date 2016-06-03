@@ -44,10 +44,10 @@ public class IfAccumulatedFileSizeTest {
 
     @Test
     public void testNotAcceptOnExactMatch() {
-        String[] sizes = {"2KB", "3MB", "4GB"};
-        for (String size : sizes) {
-            IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
-            DummyFileAttributes attribs = new DummyFileAttributes();
+        final String[] sizes = {"2KB", "3MB", "4GB"};
+        for (final String size : sizes) {
+            final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
+            final DummyFileAttributes attribs = new DummyFileAttributes();
             attribs.size = condition.getThresholdBytes();
             assertFalse(condition.accept(null, null, attribs));
         }
@@ -55,10 +55,10 @@ public class IfAccumulatedFileSizeTest {
 
     @Test
     public void testAcceptIfExceedThreshold() {
-        String[] sizes = {"2KB", "3MB", "4GB"};
-        for (String size : sizes) {
-            IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
-            DummyFileAttributes attribs = new DummyFileAttributes();
+        final String[] sizes = {"2KB", "3MB", "4GB"};
+        for (final String size : sizes) {
+            final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
+            final DummyFileAttributes attribs = new DummyFileAttributes();
             attribs.size = condition.getThresholdBytes() + 1;
             assertTrue(condition.accept(null, null, attribs));
         }
@@ -66,10 +66,10 @@ public class IfAccumulatedFileSizeTest {
 
     @Test
     public void testNotAcceptIfBelowThreshold() {
-        String[] sizes = {"2KB", "3MB", "4GB"};
-        for (String size : sizes) {
-            IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
-            DummyFileAttributes attribs = new DummyFileAttributes();
+        final String[] sizes = {"2KB", "3MB", "4GB"};
+        for (final String size : sizes) {
+            final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
+            final DummyFileAttributes attribs = new DummyFileAttributes();
             attribs.size = condition.getThresholdBytes() - 1;
             assertFalse(condition.accept(null, null, attribs));
         }
@@ -77,11 +77,11 @@ public class IfAccumulatedFileSizeTest {
 
     @Test
     public void testAcceptOnceThresholdExceeded() {
-        DummyFileAttributes attribs = new DummyFileAttributes();
-        String[] sizes = {"2KB", "3MB", "4GB"};
-        for (String size : sizes) {
-            IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
-            long quarter = condition.getThresholdBytes() / 4;
+        final DummyFileAttributes attribs = new DummyFileAttributes();
+        final String[] sizes = {"2KB", "3MB", "4GB"};
+        for (final String size : sizes) {
+            final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
+            final long quarter = condition.getThresholdBytes() / 4;
             attribs.size = quarter;
             assertFalse(condition.accept(null, null, attribs));
             assertFalse(condition.accept(null, null, attribs));
@@ -94,10 +94,10 @@ public class IfAccumulatedFileSizeTest {
     @Test
     public void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
         final CountingCondition counter = new CountingCondition(true);
-        IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition("2KB", counter);
-        DummyFileAttributes attribs = new DummyFileAttributes();
+        final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition("2KB", counter);
+        final DummyFileAttributes attribs = new DummyFileAttributes();
 
-        long quarter = condition.getThresholdBytes() / 4;
+        final long quarter = condition.getThresholdBytes() / 4;
         attribs.size = quarter;
         assertFalse(condition.accept(null, null, attribs));
         assertEquals(0, counter.getAcceptCount());

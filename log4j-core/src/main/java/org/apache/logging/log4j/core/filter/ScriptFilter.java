@@ -61,7 +61,7 @@ public final class ScriptFilter extends AbstractFilter {
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
                          final Object... params) {
-        SimpleBindings bindings = new SimpleBindings();
+        final SimpleBindings bindings = new SimpleBindings();
         bindings.put("logger", logger);
         bindings.put("level", level);
         bindings.put("marker", marker);
@@ -70,14 +70,14 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("throwable", null);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
         return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
                          final Throwable t) {
-        SimpleBindings bindings = new SimpleBindings();
+        final SimpleBindings bindings = new SimpleBindings();
         bindings.put("logger", logger);
         bindings.put("level", level);
         bindings.put("marker", marker);
@@ -86,14 +86,14 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("throwable", t);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
         return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
                          final Throwable t) {
-        SimpleBindings bindings = new SimpleBindings();
+        final SimpleBindings bindings = new SimpleBindings();
         bindings.put("logger", logger);
         bindings.put("level", level);
         bindings.put("marker", marker);
@@ -102,17 +102,17 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("throwable", t);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
         return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
     @Override
     public Result filter(final LogEvent event) {
-        SimpleBindings bindings = new SimpleBindings();
+        final SimpleBindings bindings = new SimpleBindings();
         bindings.put("logEvent", event);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
         return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 

@@ -27,11 +27,11 @@ public class AsyncLoggerConfigDefaultExceptionHandler
     @Override
     public void handleEventException(final Throwable throwable, final long sequence,
             final AsyncLoggerConfigDisruptor.Log4jEventWrapper event) {
-        StringBuilder sb = new StringBuilder(512);
+        final StringBuilder sb = new StringBuilder(512);
         sb.append("AsyncLogger error handling event seq=").append(sequence).append(", value='");
         try {
             sb.append(event);
-        } catch (Exception ignored) {
+        } catch (final Exception ignored) {
             sb.append("[ERROR calling ").append(event.getClass()).append(".toString(): ");
             sb.append(ignored).append("]");
         }

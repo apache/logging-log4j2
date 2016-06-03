@@ -305,10 +305,10 @@ public class PatternParserTest {
 
     @Test
     public void testNanoPatternShortChangesConfigurationNanoClock() {
-        Configuration config = new NullConfiguration();
+        final Configuration config = new NullConfiguration();
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);
 
-        PatternParser pp = new PatternParser(config, KEY, null);
+        final PatternParser pp = new PatternParser(config, KEY, null);
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);
 
         pp.parse("%m");
@@ -320,10 +320,10 @@ public class PatternParserTest {
 
     @Test
     public void testNanoPatternLongChangesNanoClockFactoryMode() {
-        Configuration config = new NullConfiguration();
+        final Configuration config = new NullConfiguration();
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);
 
-        PatternParser pp = new PatternParser(config, KEY, null);
+        final PatternParser pp = new PatternParser(config, KEY, null);
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);
 
         pp.parse("%m");

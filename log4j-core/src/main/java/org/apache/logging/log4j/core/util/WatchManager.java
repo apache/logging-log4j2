@@ -80,8 +80,8 @@ public class WatchManager extends AbstractLifeCycle {
     }
 
     public Map<File, FileWatcher> getWatchers() {
-        Map<File, FileWatcher> map = new HashMap<>();
-        for (Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
+        final Map<File, FileWatcher> map = new HashMap<>();
+        for (final Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
             map.put(entry.getKey(), entry.getValue().fileWatcher);
         }
         return map;
@@ -91,10 +91,10 @@ public class WatchManager extends AbstractLifeCycle {
 
         @Override
         public void run() {
-            for (Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
-                File file = entry.getKey();
-                FileMonitor fileMonitor = entry.getValue();
-                long lastModfied = file.lastModified();
+            for (final Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
+                final File file = entry.getKey();
+                final FileMonitor fileMonitor = entry.getValue();
+                final long lastModfied = file.lastModified();
                 if (fileModified(fileMonitor, lastModfied)) {
                     logger.info("File {} was modified", file.toString());
                     fileMonitor.lastModified = lastModfied;

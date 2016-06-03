@@ -317,7 +317,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (!async.isEmpty()) {
             // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
             LOGGER.trace("{} stopping {} AsyncAppenders.", cls, async.size());
-            for (Appender appender : async) {
+            for (final Appender appender : async) {
                 appender.stop();
             }
         }
@@ -441,13 +441,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     LOGGER.error("Unable to locate plugin type for " + child.getName());
                     continue;
                 }
-                Class<?> clazz = child.getType().getPluginClass();
+                final Class<?> clazz = child.getType().getPluginClass();
                 if (clazz.isAnnotationPresent(Scheduled.class)) {
                     configurationScheduler.incrementScheduledItems();
                 }
                 preConfigure(child);
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Error capturing node data for node " + node.getName(), ex);
         }
     }
@@ -481,7 +481,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 continue;
             }
             if (child.getName().equalsIgnoreCase("Scripts")) {
-                for (AbstractScript script : child.getObject(AbstractScript[].class)) {
+                for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
                     if (script instanceof ScriptRef) {
                         LOGGER.error("Script reference to {} not added. Scripts definition cannot contain script references",
                                 script.getName());

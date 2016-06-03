@@ -120,11 +120,11 @@ public class Log4j2AppenderComparisonBenchmark {
     }
 
     private void deleteLogFiles() {
-        File log4j2File = new File ("target/testlog4j2.log");
+        final File log4j2File = new File ("target/testlog4j2.log");
         log4j2File.delete();
-        File log4jRandomFile = new File ("target/testRandomlog4j2.log");
+        final File log4jRandomFile = new File ("target/testRandomlog4j2.log");
         log4jRandomFile.delete();
-        File mmapFile = new File ("target/MemoryMappedFileAppenderTest.log");
+        final File mmapFile = new File ("target/MemoryMappedFileAppenderTest.log");
         mmapFile.delete();
     }
 

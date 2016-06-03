@@ -176,7 +176,7 @@ public class GelfLayoutTest {
         final String uncompressedString = new String(uncompressed, layout.getCharset());
         final String uncompressedString2 = new String(uncompressed2, layout.getCharset());
         //@formatter:off
-        String expected = "{" +
+        final String expected = "{" +
                 "\"version\": \"1.1\"," +
                 "\"host\": \"" + HOSTNAME + "\"," +
                 "\"timestamp\": " + GelfLayout.formatTimestamp(events.get(2).getTimeMillis()) + "," +

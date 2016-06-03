@@ -393,11 +393,11 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 final String configLocationStr = this.substitutor.replace(PropertiesUtil.getProperties()
                         .getStringProperty(CONFIGURATION_FILE_PROPERTY));
                 if (configLocationStr != null) {
-                    String[] sources = configLocationStr.split(",");
+                    final String[] sources = configLocationStr.split(",");
                     if (sources.length > 1) {
-                        List<AbstractConfiguration> configs = new ArrayList<>();
-                        for (String sourceLocation : sources) {
-                            Configuration config = getConfiguration(sourceLocation.trim());
+                        final List<AbstractConfiguration> configs = new ArrayList<>();
+                        for (final String sourceLocation : sources) {
+                            final Configuration config = getConfiguration(sourceLocation.trim());
                             if (config != null && config instanceof AbstractConfiguration) {
                                 configs.add((AbstractConfiguration) config);
                             } else {

@@ -42,11 +42,11 @@ public class PathSortByModificationTimeTest {
 
     @Test
     public void testCompareRecentFirst() {
-        PathSorter sorter = PathSortByModificationTime.createSorter(true);
-        Path p1 = Paths.get("aaa");
-        Path p2 = Paths.get("bbb");
-        DummyFileAttributes a1 = new DummyFileAttributes();
-        DummyFileAttributes a2 = new DummyFileAttributes();
+        final PathSorter sorter = PathSortByModificationTime.createSorter(true);
+        final Path p1 = Paths.get("aaa");
+        final Path p2 = Paths.get("bbb");
+        final DummyFileAttributes a1 = new DummyFileAttributes();
+        final DummyFileAttributes a2 = new DummyFileAttributes();
         a1.lastModified = FileTime.fromMillis(100);
         a2.lastModified = FileTime.fromMillis(222);
         
@@ -65,11 +65,11 @@ public class PathSortByModificationTimeTest {
 
     @Test
     public void testCompareRecentLast() {
-        PathSorter sorter = PathSortByModificationTime.createSorter(false);
-        Path p1 = Paths.get("aaa");
-        Path p2 = Paths.get("bbb");
-        DummyFileAttributes a1 = new DummyFileAttributes();
-        DummyFileAttributes a2 = new DummyFileAttributes();
+        final PathSorter sorter = PathSortByModificationTime.createSorter(false);
+        final Path p1 = Paths.get("aaa");
+        final Path p2 = Paths.get("bbb");
+        final DummyFileAttributes a1 = new DummyFileAttributes();
+        final DummyFileAttributes a2 = new DummyFileAttributes();
         a1.lastModified = FileTime.fromMillis(100);
         a2.lastModified = FileTime.fromMillis(222);
         

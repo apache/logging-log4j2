@@ -46,7 +46,7 @@ public final class ReliabilityStrategyFactory {
      */
     public static ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
 
-        String strategy = PropertiesUtil.getProperties().getStringProperty("log4j.ReliabilityStrategy",
+        final String strategy = PropertiesUtil.getProperties().getStringProperty("log4j.ReliabilityStrategy",
                 "AwaitCompletion");
         if ("AwaitCompletion".equals(strategy)) {
             return new AwaitCompletionReliabilityStrategy(loggerConfig);
@@ -61,7 +61,7 @@ public final class ReliabilityStrategyFactory {
             final Class<? extends ReliabilityStrategy> cls = LoaderUtil.loadClass(strategy).asSubclass(
                 ReliabilityStrategy.class);
             return cls.getConstructor(LoggerConfig.class).newInstance(loggerConfig);
-        } catch (Exception dynamicFailed) {
+        } catch (final Exception dynamicFailed) {
             StatusLogger.getLogger().warn(
                     "Could not create ReliabilityStrategy for '{}', using default AwaitCompletionReliabilityStrategy: {}", strategy, dynamicFailed);
             return new AwaitCompletionReliabilityStrategy(loggerConfig);

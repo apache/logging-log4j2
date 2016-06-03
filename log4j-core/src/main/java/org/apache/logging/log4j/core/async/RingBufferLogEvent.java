@@ -58,7 +58,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
         @Override
         public RingBufferLogEvent newInstance() {
-            RingBufferLogEvent result = new RingBufferLogEvent();
+            final RingBufferLogEvent result = new RingBufferLogEvent();
             if (Constants.ENABLE_THREADLOCALS) {
                 result.messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
                 result.parameters = new Object[10];
@@ -114,7 +114,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     private void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
-            ReusableMessage reusable = (ReusableMessage) msg;
+            final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
             if (parameters != null) {
                 parameters = reusable.swapParameters(parameters);
@@ -271,7 +271,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         if (message != null) {
             return message;
         }
-        Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
+        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
         return new ParameterizedMessage(messageText.toString(), params);
     }
 

@@ -88,10 +88,10 @@ public class CompositeConfigurationTest {
     @Test
     public void compositeLogger() {
         final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-logger.xml,log4j-comp-logger.json");
-        Statement test = new Statement() {
+        final Statement test = new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
+                final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
                 Map<String, Appender> appendersMap = config.getLogger("cat1").getAppenders();
                 assertEquals("Expected 2 Appender references for cat1 but got " + appendersMap.size(), 2,
                         appendersMap.size());
@@ -169,7 +169,7 @@ public class CompositeConfigurationTest {
             rule.apply(statement, Description
                     .createTestDescription(getClass(), Thread.currentThread().getStackTrace()[1].getMethodName()))
                     .evaluate();
-        } catch (Throwable throwable) {
+        } catch (final Throwable throwable) {
             throw new RuntimeException(throwable);
         }
     }

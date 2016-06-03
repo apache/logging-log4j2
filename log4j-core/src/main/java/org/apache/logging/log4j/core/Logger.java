@@ -604,7 +604,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             builder.append("PrivateConfig [loggerConfig=");
             builder.append(loggerConfig);
             builder.append(", config=");

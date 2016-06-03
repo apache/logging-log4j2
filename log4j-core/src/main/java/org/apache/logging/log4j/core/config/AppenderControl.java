@@ -108,7 +108,7 @@ public class AppenderControl extends AbstractFilterable {
     }
 
     private String appenderErrorHandlerMessage(final String prefix) {
-        String result = createErrorMsg(prefix);
+        final String result = createErrorMsg(prefix);
         appender.getHandler().error(result);
         return result;
     }

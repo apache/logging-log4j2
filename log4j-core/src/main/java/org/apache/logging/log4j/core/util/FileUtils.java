@@ -94,7 +94,7 @@ public final class FileUtils {
     }
 
     public static String getFileExtension(final File file) {
-        String fileName = file.getName();
+        final String fileName = file.getName();
         if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
         }

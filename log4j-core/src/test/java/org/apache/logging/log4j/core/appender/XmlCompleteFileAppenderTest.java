@@ -112,7 +112,7 @@ public class XmlCompleteFileAppenderTest {
         log.info(secondLogMsg);
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
-        String[] lines = new String[9];
+        final String[] lines = new String[9];
 
         try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
 

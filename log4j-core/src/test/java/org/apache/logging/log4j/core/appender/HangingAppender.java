@@ -47,7 +47,7 @@ public class HangingAppender extends AbstractAppender {
     public void append(final LogEvent event) {
         try {
             Thread.sleep(delay);
-        } catch (InterruptedException ignore) {
+        } catch (final InterruptedException ignore) {
             // ignore
         }
     }
@@ -69,7 +69,7 @@ public class HangingAppender extends AbstractAppender {
     public void start() {
         try {
             Thread.sleep(startupDelay);
-        } catch (InterruptedException ignore) {
+        } catch (final InterruptedException ignore) {
             // ignore
         }
         super.start();
@@ -80,7 +80,7 @@ public class HangingAppender extends AbstractAppender {
         super.stop();
         try {
             Thread.sleep(shutdownDelay);
-        } catch (InterruptedException ignore) {
+        } catch (final InterruptedException ignore) {
             // ignore
         }
     }

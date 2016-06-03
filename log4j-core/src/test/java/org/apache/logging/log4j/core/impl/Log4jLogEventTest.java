@@ -279,7 +279,7 @@ public class Log4jLogEventTest {
         assertSame(exception, event.getThrown());
         assertEquals(987654321L, event.getTimeMillis());
 
-        LogEvent event2 = new Log4jLogEvent.Builder(event).build();
+        final LogEvent event2 = new Log4jLogEvent.Builder(event).build();
         assertEquals("copy constructor builder", event2, event);
         assertEquals("same hashCode", event2.hashCode(), event.hashCode());
     }
@@ -327,7 +327,7 @@ public class Log4jLogEventTest {
         assertSame(exception, event.getThrown());
         assertEquals(987654321L, event.getTimeMillis());
 
-        LogEvent e2 = new Log4jLogEvent.Builder(event).build();
+        final LogEvent e2 = new Log4jLogEvent.Builder(event).build();
         assertSame(contextMap, e2.getContextMap());
         assertSame(contextStack, e2.getContextStack());
         assertEquals(true, e2.isEndOfBatch());
@@ -345,9 +345,9 @@ public class Log4jLogEventTest {
 
         // use reflection to get value of source field in log event copy:
         // invoking the getSource() method would initialize the field
-        Field fieldSource = Log4jLogEvent.class.getDeclaredField("source");
+        final Field fieldSource = Log4jLogEvent.class.getDeclaredField("source");
         fieldSource.setAccessible(true);
-        Object value = fieldSource.get(e2);
+        final Object value = fieldSource.get(e2);
         assertNull("source in copy", value);
     }
 
@@ -437,7 +437,7 @@ public class Log4jLogEventTest {
         try { // TODO null logger name throws NPE in equals. Use Objects.requireNonNull in constructor?
             different("null name", builder(event).setLoggerName(null), event);
             fail("Expected NullPointerException");
-        } catch (NullPointerException ok) {
+        } catch (final NullPointerException ok) {
         }
 
         different("different marker", builder(event).setMarker(MarkerManager.getMarker("different")), event);
@@ -447,7 +447,7 @@ public class Log4jLogEventTest {
         try { // TODO null message throws NPE in equals(). Use Objects.requireNonNull in constructor?
             different("null message", builder(event).setMessage(null), event);
             fail("Expected NullPointerException");
-        } catch (NullPointerException ok) {
+        } catch (final NullPointerException ok) {
         }
 
         different("different nanoTime", builder(event).setNanoTime(135), event);

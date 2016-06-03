@@ -143,7 +143,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        StringBuilder text = toText(event, getStringBuilder(), false);
+        final StringBuilder text = toText(event, getStringBuilder(), false);
         final byte[] bytes = getBytes(text.toString());
         return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
@@ -226,11 +226,11 @@ public final class GelfLayout extends AbstractStringLayout {
         }
 
         builder.append("\"short_message\":\"");
-        Message message = event.getMessage();
+        final Message message = event.getMessage();
         if (message instanceof CharSequence) {
             JsonUtils.quoteAsString(((CharSequence)message), builder);
         } else if (gcFree && message instanceof StringBuilderFormattable) {
-            StringBuilder messageBuffer = getMessageStringBuilder();
+            final StringBuilder messageBuffer = getMessageStringBuilder();
             ((StringBuilderFormattable)message).formatTo(messageBuffer);
             JsonUtils.quoteAsString(messageBuffer, builder);
         } else {
@@ -264,7 +264,7 @@ public final class GelfLayout extends AbstractStringLayout {
         if (timeMillis < 1000) {
             return "0";
         }
-        StringBuilder builder = getTimestampStringBuilder();
+        final StringBuilder builder = getTimestampStringBuilder();
         builder.append(timeMillis);
         builder.insert(builder.length() - 3, '.');
         return builder;

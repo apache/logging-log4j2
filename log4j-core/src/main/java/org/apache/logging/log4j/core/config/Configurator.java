@@ -115,11 +115,11 @@ public final class Configurator {
             return initialize(name, loader, (URI) null, externalContext);
         }
         if (configLocation.contains(",")) {
-            String[] parts = configLocation.split(",");
+            final String[] parts = configLocation.split(",");
             String scheme = null;
-            List<URI> uris = new ArrayList<>(parts.length);
-            for (String part : parts) {
-                URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
+            final List<URI> uris = new ArrayList<>(parts.length);
+            for (final String part : parts) {
+                final URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
                 if (scheme == null && uri.getScheme() != null) {
                     scheme = uri.getScheme();
                 }

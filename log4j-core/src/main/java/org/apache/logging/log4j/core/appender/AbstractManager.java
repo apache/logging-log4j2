@@ -151,7 +151,7 @@ public abstract class AbstractManager {
     }
 
     protected void log(final Level level, final String message, final Throwable throwable) {
-        Message m = LOGGER.getMessageFactory().newMessage("{} {} {}: {}",
+        final Message m = LOGGER.getMessageFactory().newMessage("{} {} {}: {}",
                 getClass().getSimpleName(), getName(), message, throwable);
         LOGGER.log(level, m, throwable);
     }

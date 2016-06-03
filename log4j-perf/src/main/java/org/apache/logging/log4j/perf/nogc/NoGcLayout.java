@@ -41,15 +41,15 @@ public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
     private final PatternSerializer2 serializer = new PatternSerializer2();
     private final StringBuilderEncoder cachedHelper;
 
-    public NoGcLayout(Charset charset) {
+    public NoGcLayout(final Charset charset) {
         cachedHelper = new StringBuilderEncoder(charset);
     }
 
     @Override
-    public void encode(LogEvent event, ByteBufferDestination destination) {
-        StringBuilder text = toText(event, getCachedStringBuilder());
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
+        final StringBuilder text = toText(event, getCachedStringBuilder());
 
-        Encoder<StringBuilder> helper = getCachedHelper();
+        final Encoder<StringBuilder> helper = getCachedHelper();
         helper.encode(text, destination);
     }
 
@@ -60,7 +60,7 @@ public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
      * Implementations are free to return a new StringBuilder if they can
      * detect in advance that the specified StringBuilder is too small.
      */
-    StringBuilder toText(LogEvent e, StringBuilder destination) {
+    StringBuilder toText(final LogEvent e, final StringBuilder destination) {
         return serializer.toSerializable(e, destination);
     }
 
@@ -88,7 +88,7 @@ public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
             this.formatters = formatters;
         }
 
-        public StringBuilder toSerializable(final LogEvent event, StringBuilder buf) {
+        public StringBuilder toSerializable(final LogEvent event, final StringBuilder buf) {
             //final StringBuilder buf = getStringBuilder();
             final int len = formatters.length;
             for (int i = 0; i < len; i++) {
@@ -113,12 +113,12 @@ public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
     }
 
     @Override
-    public byte[] toByteArray(LogEvent event) {
+    public byte[] toByteArray(final LogEvent event) {
         return null;
     }
 
     @Override
-    public Serializable toSerializable(LogEvent event) {
+    public Serializable toSerializable(final LogEvent event) {
         return null;
     }
 

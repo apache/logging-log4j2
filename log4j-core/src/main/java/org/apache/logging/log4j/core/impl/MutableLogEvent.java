@@ -191,7 +191,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
-            ReusableMessage reusable = (ReusableMessage) msg;
+            final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
             if (parameters != null) {
                 parameters = reusable.swapParameters(parameters);
@@ -282,7 +282,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         if (message != null) {
             return message;
         }
-        Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
+        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
         return new ParameterizedMessage(messageText.toString(), params);
     }
 

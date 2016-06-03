@@ -69,8 +69,8 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
      */
     @Override
     public void purge() {
-        long createTime = System.currentTimeMillis() - timeToLive;
-        for (Entry<String, Long> entry : appendersUsage.entrySet()) {
+        final long createTime = System.currentTimeMillis() - timeToLive;
+        for (final Entry<String, Long> entry : appendersUsage.entrySet()) {
             if (entry.getValue() < createTime) {
                 LOGGER.debug("Removing appender " + entry.getKey());
                 appendersUsage.remove(entry.getKey());
@@ -81,7 +81,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
 
     @Override
     public void update(final String key, final LogEvent event) {
-        long now = System.currentTimeMillis();
+        final long now = System.currentTimeMillis();
         appendersUsage.put(key, now);
         if (future == null) {
             synchronized (this) {
@@ -101,13 +101,13 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
 
     private void scheduleNext() {
         long createTime = Long.MAX_VALUE;
-        for (Entry<String, Long> entry : appendersUsage.entrySet()) {
+        for (final Entry<String, Long> entry : appendersUsage.entrySet()) {
             if (entry.getValue() < createTime) {
                 createTime = entry.getValue();
             }
         }
         if (createTime < Long.MAX_VALUE) {
-            long interval = timeToLive - (System.currentTimeMillis() - createTime);
+            final long interval = timeToLive - (System.currentTimeMillis() - createTime);
             future = scheduler.schedule(this, interval, TimeUnit.MILLISECONDS);
         }
     }
@@ -135,7 +135,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
         } else {
             try {
                 units = TimeUnit.valueOf(timeUnit.toUpperCase());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Invalid time unit {}", timeUnit);
                 units = TimeUnit.MINUTES;
             }

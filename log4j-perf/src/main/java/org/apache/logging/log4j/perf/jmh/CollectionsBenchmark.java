@@ -65,7 +65,7 @@ public class CollectionsBenchmark {
     @Benchmark
     public long iterMap1Element() {
         long total = 0;
-        for (Long value : map1.values()) {
+        for (final Long value : map1.values()) {
             total += value;
         }
         return total;
@@ -74,7 +74,7 @@ public class CollectionsBenchmark {
     @Benchmark
     public long iterArraySet1Element() {
         long total = 0;
-        for (Long value : arraySet1) {
+        for (final Long value : arraySet1) {
             total += value;
         }
         return total;
@@ -83,7 +83,7 @@ public class CollectionsBenchmark {
     @Benchmark
     public long iterArrayList1Element() {
         long total = 0;
-        for (Long value : arrayList1) {
+        for (final Long value : arrayList1) {
             total += value;
         }
         return total;
@@ -92,7 +92,7 @@ public class CollectionsBenchmark {
     @Benchmark
     public long iterMap3Elements() {
         long total = 0;
-        for (Long value : map3.values()) {
+        for (final Long value : map3.values()) {
             total += value;
         }
         return total;
@@ -101,7 +101,7 @@ public class CollectionsBenchmark {
     @Benchmark
     public long iterArraySet3Element() {
         long total = 0;
-        for (Long value : arraySet3) {
+        for (final Long value : arraySet3) {
             total += value;
         }
         return total;
@@ -110,7 +110,7 @@ public class CollectionsBenchmark {
     @Benchmark
     public long iterArrayList3Element() {
         long total = 0;
-        for (Long value : arrayList3) {
+        for (final Long value : arrayList3) {
             total += value;
         }
         return total;

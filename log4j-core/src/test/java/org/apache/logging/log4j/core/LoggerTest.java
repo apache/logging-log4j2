@@ -191,7 +191,7 @@ public class LoggerTest {
 
     @Test
     public void debugChangeLevelsChildLoggers() {
-        org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
+        final org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
         // Use logger AND loggerChild
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
@@ -213,7 +213,7 @@ public class LoggerTest {
         logger.debug("Debug message 1");
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
-        Map<String, Level> map = new HashMap<>();
+        final Map<String, Level> map = new HashMap<>();
         map.put(logger.getName(), Level.OFF);
         Configurator.setLevel(map);
         logger.debug("Debug message 2");
@@ -231,7 +231,7 @@ public class LoggerTest {
         loggerGrandchild.debug("Debug message 1 GC");
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
-        Map<String, Level> map = new HashMap<>();
+        final Map<String, Level> map = new HashMap<>();
         map.put(logger.getName(), Level.OFF);
         map.put(loggerChild.getName(), Level.DEBUG);
         map.put(loggerGrandchild.getName(), Level.WARN);
@@ -413,13 +413,13 @@ public class LoggerTest {
     @Test
     public void paramWithExceptionTest() throws Exception {
         logger.error("Throwing with parameters {}", "TestParam", new NullPointerException("Test Exception"));
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertNotNull("Log event list not returned", events);
         assertTrue("Incorrect number of log events: expected 1, actual " + events.size(), events.size() == 1);
-        LogEvent event = events.get(0);
-        Throwable thrown = event.getThrown();
+        final LogEvent event = events.get(0);
+        final Throwable thrown = event.getThrown();
         assertNotNull("No throwable present in log event", thrown);
-        Message msg = event.getMessage();
+        final Message msg = event.getMessage();
         assertTrue("Incorrect message type. Expected ParameterizedMessage/ReusableParameterizedMessage, actual " + msg.getClass().getSimpleName(),
                 msg instanceof ParameterizedMessage || msg instanceof ReusableParameterizedMessage);
 

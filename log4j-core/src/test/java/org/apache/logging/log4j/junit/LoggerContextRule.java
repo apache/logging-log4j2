@@ -217,7 +217,7 @@ public class LoggerContextRule implements TestRule {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("LoggerContextRule [configLocation=");
         builder.append(configLocation);
         builder.append(", contextSelectorClass=");
