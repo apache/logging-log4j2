@@ -323,12 +323,12 @@
           autoboxes these primitive values to their Object wrapper equivalents, creating garbage.
         </p>
         <p>
-          Log4j provides an <tt>Unboxer</tt> utility to prevent autoboxing of primitive parameters.
+          Log4j provides an <tt>Unbox</tt> utility to prevent autoboxing of primitive parameters.
           This utility contains a thread-local pool of reused <tt>StringBuilder</tt>s.
-          The <tt>Unboxer.box(primitive)</tt> methods write directly into a StringBuilder, and
+          The <tt>Unbox.box(primitive)</tt> methods write directly into a StringBuilder, and
           the resulting text will be copied into the final log message text without creating temporary objects.
         </p>
-        <pre class="prettyprint linenums">import static org.apache.logging.log4j.util.Unboxer.box;
+        <pre class="prettyprint linenums">import static org.apache.logging.log4j.util.Unbox.box;
 
 ...
 public void garbageFree() {
