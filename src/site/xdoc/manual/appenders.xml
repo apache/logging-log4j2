@@ -1766,7 +1766,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					<tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
 					FileAppender with "bufferedIO=true" in our
-					<a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+					<a href="../performance.html#whichAppender">measurements</a>.
 					Similar to the FileAppender,
 					RandomAccessFileAppender uses a RandomAccessFileManager to actually perform the
 					file I/O. While RandomAccessFileAppender
@@ -2913,7 +2913,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					instead of a <tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
 					RollingFileAppender with "bufferedIO=true"
-					in our <a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+					in our <a href="../performance.html#whichAppender">measurements</a>.
 
 					The RollingRandomAccessFileAppender writes to the File named in the
 					fileName parameter and rolls the file over according the
