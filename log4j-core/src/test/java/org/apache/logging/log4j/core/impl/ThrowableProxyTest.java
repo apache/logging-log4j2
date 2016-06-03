@@ -155,7 +155,7 @@ public class ThrowableProxyTest {
 
         assertEquals(proxy.getExtendedStackTraceAsString(), proxy2.getExtendedStackTraceAsString());
     }
-    
+
     @Test
 	public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth1() throws Exception {
 		final Throwable throwable = new RuntimeException(new IllegalArgumentException("This is a test"));
@@ -237,7 +237,7 @@ public class ThrowableProxyTest {
 
         subject.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
     }
-    
+
     /**
      * Tests LOG4J2-934.
      */

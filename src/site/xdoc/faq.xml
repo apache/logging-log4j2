@@ -37,6 +37,8 @@
         <li><a href="#separate_log_files">How do I dynamically write to separate log files?</a></li>
         <li><a href="#reconfig_level_from_code">How do I set a logger's level programmatically?</a></li>
         <li><a href="#retention">How do I set my log archive retention policy? How do I delete old log archives?</a></li>
+        <li><a href="#api-tradeoffs">What are the trade-offs of using the Log4j 2 API versus the SLF4J API?</a></li>
+        <li><a href="#gc-free-slf4j">Is Log4j 2 still garbage-free when I use the SLF4J API?</a></li>
         <!--
         <li><a href="#custom_plugin">How do I get log4j2 to recognize my custom plugin?</a></li>
         -->
@@ -59,6 +61,7 @@
         <p>
           <img src="images/whichjar-2.x.png" alt="Diagram showing which JARs correspond to which systems"/>
         </p>
+        <a name="which_jars_log4j-to-slf4j" />
         <p>You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2 API and you
           want to route logging calls to a SLF4J implementation.
         </p>
@@ -291,10 +294,57 @@
           writing a
           <a href="manual/appenders.html#ScriptCondition">script condition</a>
         </p>
-        <!--
-		<a name="custom_plugin" />
-        <h4>How do I get log4j2 to recognize my custom plugin?</h4>
-        -->
+        <a name="api-tradeoffs" />
+        <h4>What are the trade-offs of using the Log4j 2 API versus the SLF4J API?</h4>
+        <p>
+          The Log4j 2 API and SLF4J have a lot in common.
+          They both share the objective of cleanly separating the logging API from the implementation.
+          We believe that the Log4j 2 API can help make your application more performant
+          while offering more functionality and more flexibility.
+        </p>
+        <p>
+          There may be a concern that using the Log4j 2 API will tightly couple your application to Log4j 2.
+          This is not the case: applications coded to the Log4j 2 API always have the option to use any SLF4J-compliant
+          library as their logging implementation with the log4j-to-slf4j adapter.
+          See the <a href="#which_jars_log4j-to-slf4j">which jars</a> FAQ entry for details.
+        </p>
+        <p>
+          There are several advantages to using the Log4j 2 API:
+        </p>
+        <ul>
+          <li>
+            The Log4j 2 API offers support for logging <a href="manual/messages.html">Message objects</a>.
+            Messages allow support for interesting and complex constructs to be passed
+            through the logging system and be efficiently manipulated.
+            Users are free to create their own Message types and write custom Layouts,
+            Filters and Lookups to manipulate them.
+          </li>
+          <li>The Log4j 2 API has support for Java 8
+            <a href="manual/api.html#LambdaSupport">lambda expressions</a>.</li>
+          <li>
+            The Log4j 2 API has better support for <a href="manual/garbagefree.html">garbage-free logging</a>:
+            it avoids creating vararg arrays and avoids creating Strings when logging CharSequence objects.
+          </li>
+        </ul>
+
+
+        <a name="gc-free-slf4j" />
+        <h4>Is Log4j 2 still garbage-free when I use the SLF4J API?</h4>
+        <p>Yes, the log4j-slf4j-impl binding (together with log4j-core) implements the
+          <tt>org.slf4j.Logger</tt> methods to be GC-free.
+          However, bear in mind that there are some limitations:</p>
+        <p>The SLF4J API only offers up to two parameters for a parameterized message.
+          More than that uses varargs which creates a temporary object for the parameter array.
+          The Log4j 2.6 API has methods for up to ten unrolled parameters.</p>
+        <p>
+          Another consideration is that the Log4j 2 API lets you log Objects, not just Strings.
+          Any Object that implements java.lang.CharSequence can be logged without creating garbage.
+        </p>
+        <p>
+          The <tt>org.slf4j.spi.LocationAwareLogger::<a href="http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker, java.lang.String, int, java.lang.String, java.lang.Object[], java.lang.Throwable)">log</a></tt>
+          method is not yet implemented
+          in a garbage-free manner in the log4j-slf4j-impl binding. It creates a new message object for each call.
+        </p>
       </subsection>
     </section>
 

@@ -77,7 +77,8 @@ public class StackTraceElementMixInTest {
     @Test
     public void testFromJsonWithLog4jModule() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
-        final SimpleModule module = new Log4jJsonModule();
+        final boolean encodeThreadContextAsList = false;
+        final SimpleModule module = new Log4jJsonModule(encodeThreadContextAsList);
         module.addDeserializer(StackTraceElement.class, new Log4jStackTraceElementDeserializer());
         mapper.registerModule(module);
         final StackTraceElement expected = new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);

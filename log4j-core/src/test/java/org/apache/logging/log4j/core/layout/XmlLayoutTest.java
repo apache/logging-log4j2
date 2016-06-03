@@ -69,7 +69,7 @@ public class XmlLayoutTest {
 
     LoggerContext ctx = LoggerContext.getContext();
 
-    Logger rootLogger = this.ctx.getLogger("");
+    Logger rootLogger = this.ctx.getRootLogger();
 
     private void checkAttribute(final String name, final String value, final boolean compact, final String str) {
         Assert.assertTrue(str, str.contains(name + "=\"" + value + "\""));

@@ -12,7 +12,7 @@
 <document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
-    <title>Log4j 2 Asynchronous Loggers for Low-Latency Logging</title>
+    <title>Log4j 2 Lock-free Asynchronous Loggers for Low-Latency Logging</title>
     <author email="rpopma@apache.org">Remko Popma</author>
   </properties>
   <body>
@@ -23,7 +23,7 @@
       </p>
       <ul>
         <li>
-          <b>Asynchronous Loggers</b> are a new addition to Log4j 2.
+          <b>Asynchronous Loggers</b> are a new addition in Log4j 2.
           Their aim is to return from the call to Logger.log to the application as
           soon as possible. You can choose between making all Loggers asynchronous
           or using a mixture of synchronous and asynchronous Loggers. Making all
@@ -36,19 +36,12 @@
           communication library, instead of queues, resulting in higher throughput and lower latency.
         </li>
         <li>
-          <b>Asynchronous Appenders</b> already existed in Log4j 1.x, but have
+          As part of the work for Async Loggers, <b>Asynchronous Appenders</b> have
           been enhanced to flush to disk at the end of a batch (when the queue is empty).
           This produces the same result as configuring "immediateFlush=true", that is, all
           received log events are always available on disk, but is more efficient because it does not need to
           touch the disk on each and every log event. (Async Appenders use ArrayBlockingQueue internally and
           do not need the disruptor jar on the classpath.)
-        </li>
-        <li>(For synchronous and asynchronous use) <b>Random Access File Appenders</b>
-          are an alternative to Buffered File Appenders. Under the hood, these
-          new appenders use a ByteBuffer + RandomAccessFile instead of a BufferedOutputStream. In our testing
-          this was about 20-200% faster. These appenders can also be used
-          with synchronous loggers and will give the same performance benefits.
-          Random Access File Appenders do not need the disruptor jar on the classpath.
         </li>
       </ul>
       <a name="Trade-offs" />
@@ -63,21 +56,20 @@
         </p>
         <ul>
           <li>
-            Higher <a href="#Performance">throughput</a>. With an asynchronous logger
-            your application can log messages at 6 - 68 times the rate of a synchronous logger.
+            <p>Higher peak <a href="#Performance">throughput</a>. With an asynchronous logger
+            your application can log messages at 6 - 68 times the rate of a synchronous logger.</p>
+            <p>This is especially interesting for applications that occasionally need to log
+              bursts of messages. Async logging can help prevent or dampen latency spikes by shortening
+              the wait time until the next message can be logged. If the queue size is configured
+              large enough to handle the burst, asynchronous logging will help prevent your
+              application from falling behind (as much) during a sudden increase of activity.
+            </p>
           </li>
           <li>
-            Lower logging <a href="#Latency">latency</a>.
-            Latency is the time it takes for a call to Logger.log to return.
+            Lower logging response time <a href="#Latency">latency</a>.
+            Response time latency is the time it takes for a call to Logger.log to return under a given workload.
             Asynchronous Loggers have consistently lower latency than synchronous loggers or even
-            queue-based asynchronous appenders. Applications interested in low latency often care
-            not only about average latency, but also about worst-case latency.
-            Our performance comparison shows that Asynchronous Loggers also do better when comparing the
-            maximum latency of 99% or even 99.99% of observations with other logging methods.
-          </li>
-          <li>Prevent or dampen latency spikes during bursts of events. If the queue size is configured
-            large enough to handle spikes, asynchronous logging will help prevent your
-            application from falling behind (as much) during sudden bursts of activity.
+            queue-based asynchronous appenders.
           </li>
         </ul>
         <b>Drawbacks</b>
@@ -117,12 +109,25 @@
             implementations should be designed with asynchronous use in mind, and either take a snapshot
             of their parameters at construction time, or document their thread-safety characteristics.
           </li>
+          <li>If your application is running in an environment where CPU resources are scarce, like a machine
+            with one CPU with a single core, starting another thread is not likely
+            to give better performance.</li>
+          <li>
+            If the <em>sustained rate</em> at which your application is logging messages is faster than the
+            maximum sustained throughput of the underlying appender, the queue will fill up and the
+            application will end up logging at the speed of the slowest appender.
+            If this happens, consider selecting a <a href="../performance.html#whichAppender">faster
+            appender</a>, or logging less.
+            If neither of these is an option, you may get better throughput and fewer latency spikes by
+            logging synchronously.
+          </li>
         </ul>
       </subsection>
       <a name="AllAsync" />
       <subsection name="Making All Loggers Asynchronous">
         <p>
           <i>Requires disruptor-3.0.0.jar or higher on the classpath.
+            Future versions of Log4j 2 will require disruptor-3.3.3.jar or higher.
           </i>
         </p>
         <p>
@@ -287,14 +292,15 @@
           There are also a few system properties that can be used to maintain application throughput even when
           the underlying appender cannot keep up with the logging rate and the queue is filling up.
           See the details for system properties
-          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt> and
+          <a href="configuration.html#log4j2.AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
             <tt>log4j2.DiscardThreshold</tt></a>.
         </p>
       </subsection>
       <a name="MixedSync-Async" />
       <subsection name="Mixing Synchronous and Asynchronous Loggers">
-        <p><i>Requires disruptor-3.0.0.jar or higher on the classpath. There is no need to set system property
-            "Log4jContextSelector" to any value.</i></p>
+        <p><i>Requires disruptor-3.0.0.jar or higher on the classpath.
+          (Future versions of Log4j 2 will require disruptor-3.3.3.jar or higher.)
+          There is no need to set system property "Log4jContextSelector" to any value.</i></p>
         <p>
           Synchronous and asynchronous loggers can be combined in configuration.
           This gives you more flexibility at the cost of a slight loss in performance (compared to making
@@ -414,7 +420,7 @@
           There are also a few system properties that can be used to maintain application throughput even when
           the underlying appender cannot keep up with the logging rate and the queue is filling up.
           See the details for system properties
-          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt> and
+          <a href="configuration.html#log4j2.AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
             <tt>log4j2.DiscardThreshold</tt></a>.
         </p>
       </subsection>
@@ -437,8 +443,8 @@
         <p>
           However, asynchronous loggers need to make this decision before passing the
           log message to another thread; the location information will be lost after that point.
-          The performance impact of taking a stack trace snapshot is even higher for asynchronous loggers:
-          logging with location is 4 - 20 times slower than without location.
+          The <a href="../performance.html#asyncLoggingWithLocation">performance impact</a> of taking a stack trace snapshot is even higher for asynchronous loggers:
+          logging with location is 30-100 times slower than without location.
           For this reason, asynchronous loggers and asynchronous appenders do not include location information by default.
         </p>
         <p>
@@ -451,19 +457,15 @@
       <a name="Performance" />
       <subsection name="Asynchronous Logging Performance">
         <p>
-          The performance results below were all derived from running the PerfTest, MTPerfTest and PerfTestDriver
+          The throughput performance results below were derived from running the PerfTest, MTPerfTest and PerfTestDriver
           classes which can be found in the Log4j 2 unit test source directory.
-          All tests were done using the default settings (SystemClock and SleepingWaitStrategy).
-          The methodology used was the same for all tests:
+          For throughput tests, the methodology used was:
         </p>
         <ul>
           <li>First, warm up the JVM by logging 200,000 log messages of 500 characters.
           </li>
           <li>Repeat the warm-up 10 times, then wait 10 seconds for the I/O thread to catch up and buffers to drain.</li>
-          <li>Latency test: at less than saturation, measure how long a call to Logger.log takes.
-            Pause for 10 microseconds * threadCount between measurements. Repeat this 5 million times,
-            and measure average latency, latency of 99% of observations and 99.99% of observations.</li>
-          <li>Throughput test: measure how long it takes to execute 256 * 1024 / threadCount calls to Logger.log
+          <li>Measure how long it takes to execute 256 * 1024 / threadCount calls to Logger.log
             and express the result in messages per second.
           </li>
           <li>Repeat the test 5 times and average the results.</li>
@@ -471,7 +473,7 @@
         <p>The results below were obtained with log4j-2.0-beta5, disruptor-3.0.0.beta3,
           log4j-1.2.17 and logback-1.0.10.
         </p>
-        <h4>Logging Throughput</h4>
+        <h4>Logging Peak Throughput</h4>
         <p>
           The graph below compares the throughput of synchronous loggers, asynchronous appenders and asynchronous
           loggers. This is the total throughput of all threads together. In the test with 64 threads,
@@ -491,7 +493,7 @@
 
         <h4>Asynchronous Throughput Comparison with Other Logging Packages</h4>
         <p>
-          We also compared throughput of asynchronous loggers to the synchronous loggers and asynchronous
+          We also compared peak throughput of asynchronous loggers to the synchronous loggers and asynchronous
           appenders available in other logging packages, specifically log4j-1.2.17 and
           logback-1.0.10, with similar results. For asynchronous appenders, total logging throughput of all
           threads together remains roughly constant when adding more threads.
@@ -688,245 +690,72 @@
           </tr>
         </table>
 
-        <h4>Throughput of Logging With Location (includeLocation="true")
-        </h4>
-        <p>On Solaris 10 (64bit) with JDK1.7.0_06, 4-core Xeon X5570 dual CPU
-          @2.93Ghz with hyperthreading switched off (8 virtual cores):
-        </p>
-        <table>
-          <caption align="top">Throughput in log messages/second per thread</caption>
-          <tr>
-            <th>Logger (Log4j 2)</th>
-            <th>1 thread</th>
-            <th>2 threads</th>
-            <th>4 threads</th>
-            <th>8 threads</th>
-          </tr>
-          <tr>
-            <td>Loggers all asynchronous</td>
-            <td align="right">75,862</td>
-            <td align="right">88,775</td>
-            <td align="right">80,240</td>
-            <td align="right">68,077</td>
-          </tr>
-          <tr>
-            <td>Loggers mixed sync/async</td>
-            <td align="right">61,993</td>
-            <td align="right">66,164</td>
-            <td align="right">55,735</td>
-            <td align="right">52,843</td>
-          </tr>
-          <tr>
-            <td>Async Appender</td>
-            <td align="right">47,033</td>
-            <td align="right">52,426</td>
-            <td align="right">50,882</td>
-            <td align="right">36,905</td>
-          </tr>
-          <tr>
-            <td>Synchronous</td>
-            <td align="right">31,054</td>
-            <td align="right">33,175</td>
-            <td align="right">29,791</td>
-            <td align="right">23,628</td>
-          </tr>
-        </table>
-        <p>As expected, logging location information has a large performance impact. Asynchronous loggers are 4 - 20
-          times slower, while synchronous loggers are 1.3 - 5 times slower. However, if you do need
-          location information, asynchronous logging will still be faster than synchronous logging.
-        </p>
-
         <a name="Latency" />
-        <h4>Latency</h4>
-        <p>Latency tests are done by logging at less than saturation, measuring how long a call to Logger.log
-          takes to return. After each call to Logger.log, the test waits for 10 microseconds * threadCount before continuing.
-          Each thread logs 5 million messages.
-        </p>
-        <p>All the latency measurements below are results of tests run
-          on Solaris 10 (64bit) with JDK1.7.0_06, 4-core Xeon X5570 dual CPU
-          @2.93Ghz with hyperthreading switched on (16 virtual cores).
-        </p>
-        <p>
-          <img src="../images/async-latency-histogram-64-threads.png"
-            alt="Histogram of async latency" />
-        </p>
-        <p>Note that this is log-scale, not linear. The above graph compares the latency distributions of
-          an asynchronous logger and a Log4j 1.2.17 Async Appender. This shows the latency of one thread
-          during a test where 64 threads are logging in parallel.
-          The test was run once for the async logger and once for the async appender.
-        </p>
+        <h4>Response Time Latency</h4>
         <table>
-          <caption align="top">Latency of a call to Logger.log() in nanoseconds</caption>
-          <tr>
-            <th />
-            <th colspan="2">Average latency</th>
-            <th colspan="2">99% observations less than</th>
-            <th colspan="2">99.99% observations less than</th>
-          </tr>
-          <tr>
-            <th />
-            <th>1 thread</th>
-            <th>64 threads</th>
-            <th>1 thread</th>
-            <th>64 threads</th>
-            <th>1 thread</th>
-            <th>64 threads</th>
-          </tr>
-          <tr>
-            <td>Log4j 2: Loggers all async</td>
-            <td align="right">677</td>
-            <td align="right">4,135</td>
-            <td align="right">1,638</td>
-            <td align="right">4,096</td>
-            <td align="right">8,192</td>
-            <td align="right">16,128</td>
-          </tr>
-          <tr>
-            <td>Log4j 2: Loggers mixed sync/async</td>
-            <td align="right">648</td>
-            <td align="right">4,873</td>
-            <td align="right">1,228</td>
-            <td align="right">4,096</td>
-            <td align="right">8,192</td>
-            <td align="right">16,384</td>
-          </tr>
-          <tr>
-            <td>Log4j 2: Async Appender</td>
-            <td align="right">2,423</td>
-            <td align="right">2,117,722</td>
-            <td align="right">4,096</td>
-            <td align="right">67,108,864</td>
-            <td align="right">16,384</td>
-            <td align="right">268,435,456</td>
-          </tr>
-          <tr>
-            <td>Log4j1: Async Appender</td>
-            <td align="right">1,562</td>
-            <td align="right">1,781,404</td>
-            <td align="right">4,096</td>
-            <td align="right">109,051,904</td>
-            <td align="right">16,384</td>
-            <td align="right">268,435,456</td>
-          </tr>
-          <tr>
-            <td>Logback: Async Appender</td>
-            <td align="right">2,123</td>
-            <td align="right">2,079,020</td>
-            <td align="right">3,276</td>
-            <td align="right">67,108,864</td>
-            <td align="right">14,745</td>
-            <td align="right">268,435,456</td>
-          </tr>
+          <tr><td>This section has been rewritten with the Log4j 2.6 release.
+            The previous version only reported <em>service time</em> instead of <em>response time</em>.
+            See the <a href="../performance.html#responseTime">response time</a> side bar on the
+            performance page on why this is too optimistic.
+            Furthermore the previous version reported average latency, which does not make sense since
+            latency is not a normal distribution.
+            Finally, the previous version of this section only reported the maximum latency of up to 99.99%
+            of the measurements, which does not tell you how bad the worst 0.01% were.
+            This is unfortunate because often the "outliers" are all that matter when it comes to response time.
+            From this release we will try to do better and report response time latency
+            across the full range of percentages, including all the outliers.
+            Our thanks to Gil Tene for his
+            <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure latency</a>
+            presentation. (Now we know why this is also known as the "Oh s#@t!" presentation.)
+          </td></tr>
         </table>
+        <p><a href="../performance.html#responseTime">Response time</a> is how long it takes to log a message under a certain load.
+          What is often reported as latency is actually <em>service time</em>: how long it took to perform the operation.
+          This hides the fact that a single spike in service time adds queueing delay for many of the subsequent operations.
+          Service time is easy to measure (and often looks good on paper) but is irrelevant for users since it
+          omits the time spent waiting for service.
+          For this reason we report response time: service time plus wait time.
+        </p>
+        <p>The response time test results below were all derived from running the ResponseTimeTest class
+          which can be found in the Log4j 2 unit test source directory. If you want to run these tests yourself,
+          here are the command line options we used:
+        </p>
+        <ul>
+          <li>-Xms1G -Xmx1G (prevent heap resizing during the test)</li>
+          <!--
+          <li>-XX:+UnlockDiagnosticVMOptions -XX:GuaranteedSafepointInterval=500000 (by default Hotspot schedules a
+            safepoint pause every second. Reduce jitter by postponing this for the duration of the test.)</li>
+            -->
+          <li>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+            -DAsyncLogger.WaitStrategy=busyspin (to use Async Loggers. The BusySpin wait strategy reduces some jitter.)</li>
+          <li><b>classic mode: </b>-Dlog4j2.enable.threadlocals=false -Dlog4j2.enable.direct.encoders=false<br />
+            <b>garbage-free mode: </b>-Dlog4j2.enable.threadlocals=true -Dlog4j2.enable.direct.encoders=true</li>
+          <li>-XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle</li>
+          <li>-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution
+            -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime (to eyeball GC and safepoint pauses)</li>
+        </ul>
         <p>
-          The latency comparison graph below is also log-scale, and shows the average latency of asynchronous loggers and
-          ArrayBlockingQueue-based asynchronous appenders in scenarios with more and more threads running in parallel.
-          Up to 8 threads asynchronous appenders have comparable average latency, two or three times that of asynchronous loggers.
-          With more threads, the average latency of asynchronous appenders is orders of magnitude larger than
-          asynchronous loggers.
+          The graph below compares response time latency of the
+          ArrayBlockingQueue-based asynchronous appenders in Logback 1.1.7, Log4j 1.2.17 to the
+          various options for asynchronous logging that Log4j 2.6 offers.
+          Under a workload of 128,000 messages per second, using 16 threads (each logging at a rate of 8,000 messages
+          per second), we see that Logback 1.1.7, Log4j 1.2.17 experience latency spikes that are orders
+          of magnitude larger than Log4j 2.
         </p>
         <p>
-          <img src="../images/async-average-latency.png" alt="Average async logger latency" />
+          <img src="../images/ResponseTimeAsyncLogging16Threads@8kEach.png"
+               alt="When 16 threads generate a total workload of 128,000 msg/sec, Logback 1.1.7 and
+               Log4j 1.2.17 experience latency spikes that are orders of magnitude larger than Log4j 2" />
         </p>
         <p>
-          Applications interested in low latency often care not only about average latency, but also about worst-case latency.
-          The graph below shows that asynchronous loggers also do better when comparing the maximum latency of 99.99% of
-          observations with other logging methods.
-          When increasing the number of threads the vast majority of latency measurements for asynchronous
-          loggers stay in the 10-20 microseconds range where Asynchronous Appenders start experiencing many
-          latency spikes in the 100 millisecond range, a difference of four orders of magnitude.
+          The graph below zooms in on the Log4j 2 results for the same test.
+          We see that the worst-case response time is highest for the ArrayBlockingQueue-based Async Appender.
+          <a href="garbagefree.html">Garbage-free</a> async loggers have the best response time behaviour.
         </p>
         <p>
-          <img src="../images/async-max-latency-99.99pct.png" alt="Maximum async logger latency" />
+          <img src="../images/ResponseTimeAsyncLogging16Threads@8kEachLog4j2Only-labeled.png" alt="" />
         </p>
 
-        <a name="RandomAccessFileAppenderPerformance" />
-        <h4>FileAppender vs. RandomAccessFileAppender</h4>
-        <p>
-          The appender comparison below was done with <em>synchronous loggers</em>.
-        </p>
-        <p>On Windows 7 (64bit) with JDK1.7.0_11, 2-core Intel i5-3317u CPU
-          @1.70Ghz with hyperthreading switched on (4 virtual cores):
-        </p>
-        <table>
-          <caption align="top">Throughput per thread in messages/second</caption>
-          <tr>
-            <th>Appender</th>
-            <th>1 thread</th>
-            <th>2 threads</th>
-            <th>4 threads</th>
-            <th>8 threads</th>
-          </tr>
-          <tr>
-            <td>RandomAccessFileAppender</td>
-            <td align="right">250,438</td>
-            <td align="right">169,939</td>
-            <td align="right">109,074</td>
-            <td align="right">58,845</td>
-          </tr>
-          <tr>
-            <td>FileAppender</td>
-            <td align="right">186,695</td>
-            <td align="right">118,587</td>
-            <td align="right">57,012</td>
-            <td align="right">28,846</td>
-          </tr>
-          <tr>
-            <td>RollingRandomAccessFileAppender</td>
-            <td align="right">278,369</td>
-            <td align="right">213,176</td>
-            <td align="right">125,300</td>
-            <td align="right">63,103</td>
-          </tr>
-          <tr>
-            <td>RollingFileAppender</td>
-            <td align="right">182,518</td>
-            <td align="right">114,690</td>
-            <td align="right">55,147</td>
-            <td align="right">28,153</td>
-          </tr>
-        </table>
-        <p>On Solaris 10 (64bit) with JDK1.7.0_06, 4-core dual Xeon X5570 CPU
-          @2.93GHz with hyperthreading switched off (8 virtual cores):
-        </p>
-        <table>
-          <caption align="top">Throughput per thread in messages/second</caption>
-          <tr>
-            <th>Appender</th>
-            <th>1 thread</th>
-            <th>2 threads</th>
-            <th>4 threads</th>
-            <th>8 threads</th>
-          </tr>
-          <tr>
-            <td>RandomAccessFileAppender</td>
-            <td align="right">240,760</td>
-            <td align="right">128,713</td>
-            <td align="right">66,555</td>
-            <td align="right">30,544</td>
-          </tr>
-          <tr>
-            <td>FileAppender</td>
-            <td align="right">172,517</td>
-            <td align="right">106,587</td>
-            <td align="right">55,885</td>
-            <td align="right">25,675</td>
-          </tr>
-          <tr>
-            <td>RollingRandomAccessFileAppender</td>
-            <td align="right">228,491</td>
-            <td align="right">135,355</td>
-            <td align="right">69,277</td>
-            <td align="right">32,484</td>
-          </tr>
-          <tr>
-            <td>RollingFileAppender</td>
-            <td align="right">186,422</td>
-            <td align="right">97,737</td>
-            <td align="right">55,766</td>
-            <td align="right">25,097</td>
-          </tr>
-        </table>
       </subsection>
       <!-- <a name="PerformanceTuning" /> <subsection name="Async Logger
         Performance Tuning"> <p>While the default settings should give good results

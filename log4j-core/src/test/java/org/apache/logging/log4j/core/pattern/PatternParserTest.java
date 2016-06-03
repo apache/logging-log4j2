@@ -46,7 +46,7 @@ public class PatternParserTest {
     static String OUTPUT_FILE   = "output/PatternParser";
     static String WITNESS_FILE  = "witness/PatternParser";
     LoggerContext ctx = LoggerContext.getContext();
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
     private static String msgPattern = "%m%n";
     private final String mdcMsgPattern1 = "%m : %X%n";

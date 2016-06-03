@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * File rename action.
@@ -67,7 +69,7 @@ public class FileRenameAction extends AbstractAction {
 
     /**
      * Gets the destination.
-     * 
+     *
      * @return the destination.
      */
     public File getDestination() {
@@ -76,7 +78,7 @@ public class FileRenameAction extends AbstractAction {
 
     /**
      * Gets the source.
-     * 
+     *
      * @return the source.
      */
     public File getSource() {
@@ -85,7 +87,7 @@ public class FileRenameAction extends AbstractAction {
 
     /**
      * Whether to rename empty files. If true, rename empty files, otherwise delete empty files.
-     * 
+     *
      * @return Whether to rename empty files.
      */
     public boolean isRenameEmptyFiles() {
@@ -113,52 +115,32 @@ public class FileRenameAction extends AbstractAction {
                     return false;
                 }
             }
+            Path sourcePath = source.toPath();
             try {
-                if (!source.renameTo(destination)) {
-                    try {
-                        copyFile(source, destination);
-                        return source.delete();
-                    } catch (final IOException iex) {
-                        LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
-                                destination.getAbsolutePath(), iex.getMessage());
-                    }
-                }
+                Files.move(sourcePath, destination.toPath());
                 return true;
             } catch (final Exception ex) {
+                LOGGER.error("Unable to rename {} to {} due to {} - {}", source.toString(), destination.toString(),
+                        ex.getClass().getSimpleName(), ex.getMessage());
                 try {
-                    copyFile(source, destination);
-                    return source.delete();
-                } catch (final IOException iex) {
-                    LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
-                            destination.getAbsolutePath(), iex.getMessage());
+
+                    Files.copy(sourcePath, destination.toPath());
+                    Files.delete(sourcePath);
+                    return true;
+                } catch (final Exception iex) {
+                    LOGGER.error("Unable to rename file {} to {} due to {} - {}", source.getAbsolutePath(),
+                            destination.getAbsolutePath(), iex.getClass().getSimpleName(), iex.getMessage());
                 }
             }
         } else {
             try {
-                source.delete();
+                Files.delete(source.toPath());
             } catch (final Exception ex) {
                 LOGGER.error("Unable to delete empty file " + source.getAbsolutePath());
             }
         }
 
         return false;
-    }
-
-    private static void copyFile(final File source, final File destination) throws IOException {
-        if (!destination.exists()) {
-            destination.createNewFile();
-        }
-
-        // LOG4J2-1173: Files.copy(source.toPath(), destination.toPath()) throws IOException
-        // when copying to a directory mapped to a remote Linux host
-
-        try (FileInputStream srcStream = new FileInputStream(source);
-                FileOutputStream destStream = new FileOutputStream(destination);
-                FileChannel srcChannel = srcStream.getChannel();
-                FileChannel destChannel = destStream.getChannel();) {
-
-            destChannel.transferFrom(srcChannel, 0, srcChannel.size());
-        }
     }
 
     @Override

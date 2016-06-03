@@ -27,11 +27,9 @@ many other modern features such as support for Markers, property substitution us
 a PatternLayout and asynchronous Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
 
 This is the ${relCount} GA release. It contains several bugfixes and new features. The new features include
-the ability to specify delete actions during file rollover, a CRON-based triggering policy for file rollover,
-Support for JSR 223 scripts in filters, pattern selectors and delete actions, and a policy for removing
-idle appenders from the RoutingAppender. More details on the features and bugfixes are itemized below.
-
-Log4j 2 requires a minimum of Java 7.
+the ability to be "garbage-free" (avoid allocating temporary objects) while logging if certain conditions are met,
+a new YAML Layout, the ability to merge configuration files, and documenting Log4j's performance against other logging
+frameworks and in various logging configurations. More details on the features and bugfixes are itemized below.
 
 ## Hack to improve layout: replace all pairs of spaces with a single new-line
 $release.description.replaceAll("  ", "

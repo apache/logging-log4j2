@@ -45,8 +45,8 @@
           ensure the byte array contains correct values.
         </p>
         <p>
-          The root class for layouts that use a Charset is <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
-          where the default is UTF-8. Each layout that extends <code>AbstractStringLayout</code> 
+          The root class for layouts that use a Charset is <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code>
+          where the default is UTF-8. Each layout that extends <code>AbstractStringLayout</code>
           can provide its own default. See each layout below.
         </p>
         <p>
@@ -62,12 +62,12 @@
           </p>
           <p>
             The CSV layout can be used in two ways: First, using <code>CsvParameterLayout</code> to log event parameters
-            to create a custom database, usually to a logger and file appender uniquely configured for this purpose. 
-            Second, using <code>CsvLogEventLayout</code> to log events to create a database, as an alternative to using a 
+            to create a custom database, usually to a logger and file appender uniquely configured for this purpose.
+            Second, using <code>CsvLogEventLayout</code> to log events to create a database, as an alternative to using a
             full DBMS or using a JDBC driver that supports the CSV format.
           </p>
           <p>
-            The <code>CsvParameterLayout</code> converts an event's parameters into a CSV record, ignoring the message. 
+            The <code>CsvParameterLayout</code> converts an event's parameters into a CSV record, ignoring the message.
             To log CSV records, you can use the usual Logger methods <code>info()</code>, <code>debug()</code>, and so on:
           </p>
           <pre class="prettyprint linenums">
@@ -75,10 +75,10 @@ logger.info("Ignored", value1, value2, value3);
 </pre>
           <p>
             Which will create the CSV record:
-          </p>            
+          </p>
           <pre class="prettyprint linenums">
 value1, value2, value3
-</pre>            
+</pre>
           <p>
             Alternatively, you can use a <code>ObjectArrayMessage</code>, which only carries parameters:
           </p>
@@ -99,9 +99,9 @@ logger.info(new ObjectArrayMessage(value1, value2, value3));
               <td>format</td>
               <td>String</td>
               <td>
-                One of the predefined formats: <code>Default</code>, <code>Excel</code>, <code>MySQL</code>, 
+                One of the predefined formats: <code>Default</code>, <code>Excel</code>, <code>MySQL</code>,
                 <code>RFC4180</code>, <code>TDF</code>.
-                See 
+                See
                   <a href="https://commons.apache.org/proper/commons-csv/archives/1.2/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html">CSVFormat.Predefined</a>.
               </td>
             </tr>
@@ -124,7 +124,7 @@ logger.info(new ObjectArrayMessage(value1, value2, value3));
               <td>quoteMode</td>
               <td>String</td>
               <td>
-                Sets the output quote policy of the format to the specified value. One of: <code>ALL</code>, 
+                Sets the output quote policy of the format to the specified value. One of: <code>ALL</code>,
                 <code>MINIMAL</code>, <code>NON_NUMERIC</code>, <code>NONE</code>.
               </td>
             </tr>
@@ -153,13 +153,13 @@ logger.info(new ObjectArrayMessage(value1, value2, value3));
               <td>Sets the footer to include when the stream is closed.</td>
               <td>Desc.</td>
             </tr>
-        </table>           
+        </table>
         <p>
           Logging as a CSV events looks like this:
         </p>
         <pre class="prettyprint linenums">
-logger.debug("one={}, two={}, three={}", 1, 2, 3); 
-</pre>                    
+logger.debug("one={}, two={}, three={}", 1, 2, 3);
+</pre>
         <p>
           Produces a CSV record with the following fields:
           <ol>
@@ -178,10 +178,10 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <li>Context Map</li>
             <li>Context Stack</li>
           </ol>
-        </p>            
+        </p>
         <pre class="prettyprint linenums">
 0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
-</pre>                    
+</pre>
         </subsection>
         <a name="GELFLayout"/>
         <subsection name="GELF Layout">
@@ -326,12 +326,6 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           <p>
           This approach enforces the independence of the JSONLayout and the appender where you embed it.
           </p>
-          <h4>Encoding</h4>
-          <p>
-          Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
-          <code>UTF-16</code>, otherwise events containing non-ASCII characters could result in corrupted log files.
-          If not specified, this layout uses UTF-8.
-          </p>
           <h4>Pretty vs. compact JSON</h4>
           <p>
           By default, the JSON layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which
@@ -348,8 +342,8 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>charset</td>
               <td>String</td>
-              <td>The character set to use when converting the HTML String to a byte array. The value must be
-                a valid ${Charset}. If not specified, UTF-8 will be used.</td>
+              <td>The character set to use when converting to a byte array. The value must be a valid ${Charset}.
+                 If not specified, UTF-8 will be used.</td>
             </tr>
             <tr>
               <td>compact</td>
@@ -372,7 +366,14 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>properties</td>
               <td>boolean</td>
-              <td>If true, the appender includes the thread context in the generated JSON. Defaults to false.</td>
+              <td>If true, the appender includes the thread context map in the generated JSON. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>propertiesAsList</td>
+              <td>boolean</td>
+              <td>If true, the thread context map is included as a list of map entry objects, where each entry has
+              a "key" attribute (whose value is the key) and a "value" attribute (whose value is the value).
+              Defaults to false, in which case the thread context map is included as a simple map of key-value pairs.</td>
             </tr>
             <tr>
               <td>locationInfo</td>
@@ -520,14 +521,14 @@ WARN  [main]: Message 2</pre>
                   specifier can be optionally followed by <em>precision specifier</em>, which consists of a
                   decimal integer, or a pattern starting with a decimal integer.
                 </p>
-                <p>When the precision specifier is an integer value, it reduces the size of the logger name. 
-                  If the number is positive, the layout prints the corresponding number of rightmost logger 
-                  name components. If negative, the layout removes the corresponding number of leftmost logger 
+                <p>When the precision specifier is an integer value, it reduces the size of the logger name.
+                  If the number is positive, the layout prints the corresponding number of rightmost logger
+                  name components. If negative, the layout removes the corresponding number of leftmost logger
                   name components.
                 </p>
                 <p>
-                   If the precision contains any non-integer characters, then the layout abbreviates the name 
-                   based on the pattern. If the precision integer is less than one, the layout still prints 
+                   If the precision contains any non-integer characters, then the layout abbreviates the name
+                   based on the pattern. If the precision integer is less than one, the layout still prints
                    the right-most token in full. By default, the layout prints the logger name in full.
                 </p>
                 <table>
@@ -1848,12 +1849,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           parent will be provided in the <code>parent</code> attribute of the <code>Marker</code> element.
           Only the leaf marker is included, not the full hierarchy.
           </p>
-          <h4>Encoding</h4>
-          <p>
-          Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
-          <code>UTF-16</code>, otherwise events containing non ASCII characters could result in corrupted log files.
-          If not specified, this layout uses UTF-8.
-          </p>
           <h4>Pretty vs. compact XML</h4>
           <p>
           By default, the XML layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which
@@ -1861,6 +1856,44 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain,
           of course, end-of-lines.
           </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>charset</td>
+              <td>String</td>
+              <td>The character set to use when converting to a byte array. The value must be a valid ${Charset}.
+                 If not specified, UTF-8 will be used.</td>
+            </tr>
+            <tr>
+              <td>compact</td>
+              <td>boolean</td>
+              <td>If true, the appender does not use end-of-lines and indentation. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>complete</td>
+              <td>boolean</td>
+              <td>If true, the appender includes the XML header and footer. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>boolean</td>
+              <td>If true, the appender includes the thread context map in the generated XML. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>locationInfo</td>
+              <td>boolean</td>
+              <td>
+              <p>If true, the appender includes the location information in the generated XML. Defaults to false.</p>
+              <p>Generating <a href="#LocationInformation">location information</a>
+                is an expensive operation and may impact performance. Use with caution.</p>
+              </td>
+            </tr>
+            <caption align="top">XML Layout Parameters</caption>
+          </table>
         </subsection>
         <a name="YamlLayout"/>
         <subsection name="YamlLayout">
@@ -1993,10 +2026,8 @@ contextStack:
 endOfBatch: false
 loggerFqcn: "f.q.c.n"
 contextMap:
-- key: "MDC.B"
-  value: "B_Value"
-- key: "MDC.A"
-  value: "A_Value"
+  MDC.B: "B_Value"
+  MDC.A: "A_Value"
 threadId: 1
 threadPriority: 5
 source:
@@ -2004,14 +2035,34 @@ source:
   method: "createLogEvent"
   file: "LogEventFixtures.java"
   line: 53</pre>
-        <p>
-          This approach enforces the independence of the YamlLayout and the appender where you embed it.
-        </p>
-        <h4>Encoding</h4>
-        <p>
-          Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
-          events containing non ASCII characters could result in corrupted log files.
-        </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>charset</td>
+              <td>String</td>
+              <td>The character set to use when converting to a byte array. The value must be a valid ${Charset}.
+                 If not specified, UTF-8 will be used.</td>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>boolean</td>
+              <td>If true, the appender includes the thread context map in the generated YAML. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>locationInfo</td>
+              <td>boolean</td>
+              <td>
+              <p>If true, the appender includes the location information in the generated YAML. Defaults to false.</p>
+              <p>Generating <a href="#LocationInformation">location information</a>
+                is an expensive operation and may impact performance. Use with caution.</p>
+              </td>
+            </tr>
+            <caption align="top">YAML Layout Parameters</caption>
+          </table>
         </subsection>
         <a name="LocationInformation"/>
         <subsection name="Location Information">
@@ -2034,15 +2085,12 @@ source:
 			long as possible before they take this stack snapshot. If no
 			location is required, the snapshot will never be taken.
 			</p><p>
-			However,
-			asynchronous loggers need to make this decision before passing the
-			log message to another thread; the location information will be
-			lost after that point.
-			The performance impact of taking a stack trace snapshot is even
-			higher for asynchronous loggers: logging with location is
-			4 - 20 times slower than without location.
-			For this reason, asynchronous loggers and asynchronous
-			appenders do not include location information by default.
+              However, asynchronous loggers need to make this decision before passing the
+              log message to another thread; the location information will be lost after that point.
+              The <a href="../performance.html#asyncLoggingWithLocation">performance impact</a>
+              of taking a stack trace snapshot is even higher for asynchronous loggers:
+              logging with location is 30-100 times slower than without location.
+              For this reason, asynchronous loggers and asynchronous appenders do not include location information by default.
 			</p><p>
 			You can override the default behaviour in your logger
 			or asynchronous appender configuration

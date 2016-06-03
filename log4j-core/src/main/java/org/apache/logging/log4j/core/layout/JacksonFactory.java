@@ -42,6 +42,12 @@ abstract class JacksonFactory {
 
     static class JSON extends JacksonFactory {
 
+        private final boolean encodeThreadContextAsList;
+
+        public JSON(final boolean encodeThreadContextAsList) {
+            this.encodeThreadContextAsList = encodeThreadContextAsList;
+        }
+
         @Override
         protected String getPropertNameForContextMap() {
             return JsonConstants.ELT_CONTEXT_MAP;
@@ -64,7 +70,7 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jJsonObjectMapper();
+            return new Log4jJsonObjectMapper(encodeThreadContextAsList);
         }
 
         @Override
@@ -76,7 +82,7 @@ abstract class JacksonFactory {
     static class XML extends JacksonFactory {
 
         static final int DEFAULT_INDENT = 1;
-        
+
         @Override
         protected String getPropertNameForContextMap() {
             return XmlConstants.ELT_CONTEXT_MAP;
@@ -133,7 +139,7 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jYamlObjectMapper();
+            return new Log4jYamlObjectMapper(false);
         }
 
         @Override

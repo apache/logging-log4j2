@@ -54,9 +54,9 @@ public abstract class AbstractSocketServerTest {
     private static final String MESSAGE = "This is test message";
 
     private static final String MESSAGE_2 = "This is test message 2";
-    
+
     private static final String MESSAGE_WITH_SPECIAL_CHARS = "{This}\n[is]\"n\"a\"\r\ntrue:\n\ttest,\nmessage";
-    
+
     static final int PORT_NUM = AvailablePortFinder.getNextAvailable();
 
     static final int PORT = PORT_NUM;
@@ -78,7 +78,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createJsonLayout() {
-        return JsonLayout.createLayout(null, true, true, false, false, false, null, null, null);
+        return JsonLayout.createLayout(null, true, true, false, false, false, false, null, null, null);
     }
 
     protected abstract Layout<? extends Serializable> createLayout();
@@ -145,13 +145,13 @@ public abstract class AbstractSocketServerTest {
             testServer(m1, m2);
         }
     }
-    
-    
+
+
     @Test
     public void testMessagesWithSpecialChars() throws Exception {
         testServer(MESSAGE_WITH_SPECIAL_CHARS);
     }
-    
+
 
     private void testServer(final int size) throws Exception {
         final String[] messages = new String[size];

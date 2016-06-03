@@ -162,6 +162,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     @Override
     public Level getLevel() {
+        if (level == null) {
+            level = Level.OFF; // LOG4J2-462, LOG4J2-465
+        }
         return level;
     }
 
@@ -418,12 +421,39 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     /**
      * Creates and returns a new immutable copy of this {@code MutableLogEvent}.
+     * If {@link #isIncludeLocation()} is true, this will obtain caller location information.
      *
      * @return a new immutable copy of the data in this {@code MutableLogEvent}
      */
     public Log4jLogEvent createMemento() {
-        // TODO implement MutableLogEvent.createMemento()
         return Log4jLogEvent.deserialize(Log4jLogEvent.serialize(this, includeLocation));
     }
 
+    /**
+     * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code MutableLogEvent}.
+     * @param builder the builder whose fields to populate
+     */
+    public void initializeBuilder(Log4jLogEvent.Builder builder) {
+        builder.setContextMap(contextMap) //
+                .setContextStack(contextStack) //
+                .setEndOfBatch(endOfBatch) //
+                .setIncludeLocation(includeLocation) //
+                .setLevel(getLevel()) // ensure non-null
+                .setLoggerFqcn(loggerFqcn) //
+                .setLoggerName(loggerName) //
+                .setMarker(marker) //
+                .setMessage(getNonNullImmutableMessage()) // ensure non-null & immutable
+                .setNanoTime(nanoTime) //
+                .setSource(source) //
+                .setThreadId(threadId) //
+                .setThreadName(threadName) //
+                .setThreadPriority(threadPriority) //
+                .setThrown(getThrown()) // may deserialize from thrownProxy
+                .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
+                .setTimeMillis(timeMillis);
+    }
+
+    private Message getNonNullImmutableMessage() {
+        return message != null ? message : new SimpleMessage(String.valueOf(messageText));
+    }
 }

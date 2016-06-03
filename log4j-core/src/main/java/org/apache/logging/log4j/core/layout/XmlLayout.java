@@ -268,7 +268,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * Creates an XML Layout.
      *
      * @param locationInfo If "true", includes the location information in the generated XML.
-     * @param properties If "true", includes the thread context in the generated XML.
+     * @param properties If "true", includes the thread context map in the generated XML.
      * @param complete If "true", includes the XML header and footer, defaults to "false".
      * @param compact If "true", does not use end-of-lines and indentation, defaults to "false".
      * @param charset The character set to use, if {@code null}, uses "UTF-8".

@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
-import org.HdrHistogram.Histogram;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.async.DefaultAsyncEventRouter;
-import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.core.util.Constants;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -31,10 +23,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.HdrHistogram.Histogram;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
+import org.apache.logging.log4j.core.async.EventRoute;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Loader;
 
 /**
  * Latency test showing both service time and response time.
  * <p>Service time = time to perform the desired operation, response time = service time + queueing time.</p>
+ *
+ * <h4>Gil's DOs and DONTs for latency testing</h4>
+ * <p>
+ * <a href="https://groups.google.com/d/msg/mechanical-sympathy/0gaBXxFm4hE/O9QomwHIJAAJ">https://groups.google.com/d/msg/mechanical-sympathy/0gaBXxFm4hE/O9QomwHIJAAJ</a>
+ * </p>
+ * If you are looking at the set of "stacks" below (all of which are queues/transports),
+ * I would strongly encourage you to avoid repeating the mistakes of testing methodologies
+ * that focus entirely on max achievable throughput and then report some (usually bogus)
+ * latency stats at those max throughout modes.
+ * The tech empower numbers are a classic example of this in play, and while they do provide some basis
+ * for comparing a small aspect of behavior (what I call the "how fast can this thing drive off a cliff"
+ * comparison, or "peddle to the metal" testing), those results are not very useful for comparing load
+ * carrying capacities for anything that actually needs to maintain some form of responsiveness SLA or
+ * latency spectrum requirements.
+ * <p>
+ * Rules of thumb I'd start with (some simple DOs and DON'Ts):
+ * </p>
+ * <ol>
+ * <li>DO measure max achievable throughput, but DON'T get focused on it as the main or single axis of measurement /
+ * comparison.
+ * </li>
+ * <li>DO measure response time / latency behaviors across a spectrum of attempted load levels (e.g. at attempted loads
+ * between 2% to 100%+ of max established thoughout).</li>
+ * <li>DO measure the response time / latency spectrum for each tested load (even for max throughout, for which response
+ * time should linearly grow with test length, or the test is wrong). HdrHistogram is one good way to capture this
+ * information.</li>
+ * <li>DO make sure you are measuring response time correctly and labeling it right. If you also measure and report
+ * service time, label it as such (don't call it "latency").</li>
+ * <li>DO compare response time / latency spectrum at given loads.</li>
+ * <li>DO [repeatedly] sanity check and calibrate the benchmark setup to verify that it produces expected results for
+ * known forced scenarios. E.g. forced pauses of known size via ^Z or SIGSTOP/SIGCONT should produce expected response
+ * time percentile levels. Attempting to load at &gt;100% than achieved throughput should result in response time / latency
+ * measurements that grow with benchmark run length, while service time (if measured) should remain fairly flat well
+ * past saturation.</li>
+ * <li>DON'T use or report standard deviation for latency. Ever. Except if you mean it as a joke.</li>
+ * <li>DON'T use average latency as a way to compare things with one another. [use median or 90%'ile instead, if what
+ * you want to compare is "common case" latencies]. Consider not reporting avg. at all.</li>
+ * <li>DON'T compare results of different setups or loads from short runs (&lt; 20-30 minutes).</li>
+ * <li>DON'T include process warmup behavior (e.g. 1st minute and 1st 50K messages) in compared or reported
+ * results.</li>
+ * </ol>
+ * <p.
+ * See  <a href="https://groups.google.com/d/msg/mechanical-sympathy/0gaBXxFm4hE/O9QomwHIJAAJ">https://groups.google.com/d/msg/mechanical-sympathy/0gaBXxFm4hE/O9QomwHIJAAJ</a>
+ * for some concrete visual examples.
  */
 // RUN
 // java -XX:+UnlockDiagnosticVMOptions -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution
@@ -52,23 +96,31 @@ public class ResponseTimeTest {
 
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
-            System.out.println("Please specify thread count and target throughput (msg/sec)");
+            System.out.println("Please specify thread count, target throughput (msg/sec) " +
+                    "and logger library (Log4j1, Log4j2, Logback, JUL)");
             return;
         }
         final int threadCount = Integer.parseInt(args[0]);
         final double loadMessagesPerSec = Double.parseDouble(args[1]);
+        final String loggerLib = args.length > 2 ? args[2] : "Log4j2";
 
         // print to console if ringbuffer is full
-        System.setProperty("log4j2.AsyncEventRouter", PrintingDefaultAsyncEventRouter.class.getName());
+        System.setProperty("log4j2.AsyncQueueFullPolicy", PrintingAsyncQueueFullPolicy.class.getName());
         System.setProperty("AsyncLogger.RingBufferSize", String.valueOf(256 * 1024));
         //System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
-        System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
+        //System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
         if (System.getProperty("AsyncLogger.WaitStrategy") == null) {
             System.setProperty("AsyncLogger.WaitStrategy", "Yield");
         }
+        //for (Object key : System.getProperties().keySet()) {
+        //    System.out.println(key + "=" + System.getProperty((String) key));
+        //}
 
-        Logger logger = LogManager.getLogger();
-        logger.info("Starting..."); // initializes Log4j
+        // initialize the logger
+        final String wrapper = loggerLib.startsWith("Run") ? loggerLib : "Run" + loggerLib;
+        final String loggerWrapperClass = "org.apache.logging.log4j.core.async.perftest." + wrapper;
+        final IPerfTestRunner logger = Loader.newCheckedInstanceOf(loggerWrapperClass, IPerfTestRunner.class);
+        logger.log("Starting..."); // ensure initialized
         Thread.sleep(100);
 
         final int requiredProcessors = threadCount + 1 + 1; // producers + 1 consumer + 1 for OS
@@ -76,8 +128,8 @@ public class ResponseTimeTest {
                 ? new NoOpIdleStrategy()
                 : new YieldIdleStrategy();
 
-        System.out.printf("%d threads, load is %,f msg/sec, using %s%n", threadCount, loadMessagesPerSec,
-                idleStrategy.getClass().getSimpleName());
+        System.out.printf("%s: %d threads, load is %,f msg/sec, using %s%n", loggerLib, threadCount,
+                loadMessagesPerSec, idleStrategy.getClass().getSimpleName());
 
         // Warmup: run as many iterations of 50,000 calls to logger.log as we can in 1 minute
         final long WARMUP_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(1);
@@ -85,32 +137,25 @@ public class ResponseTimeTest {
         List<Histogram> warmupResponseTmHistograms = new ArrayList<>(threadCount);
 
         final int WARMUP_COUNT = 50000 / threadCount;
-        final CountDownLatch warmupLatch = new CountDownLatch(threadCount + 1);
-        Thread[] warmup = createLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, warmupLatch, loadMessagesPerSec,
-                idleStrategy, warmupServiceTmHistograms, warmupResponseTmHistograms, threadCount);
+        runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, loadMessagesPerSec, idleStrategy,
+                warmupServiceTmHistograms, warmupResponseTmHistograms, threadCount);
+        System.out.println("-----------------Warmup done. load=" + loadMessagesPerSec);
+        if (!Constants.ENABLE_DIRECT_ENCODERS || !Constants.ENABLE_THREADLOCALS) {
+            //System.gc();
+            //Thread.sleep(5000);
+        }
+        System.out.println("-----------------Starting measured run. load=" + loadMessagesPerSec);
 
+        long start = System.currentTimeMillis();
         List<Histogram> serviceTmHistograms = new ArrayList<>(threadCount);
         List<Histogram> responseTmHistograms = new ArrayList<>(threadCount);
+        PrintingAsyncQueueFullPolicy.ringbufferFull.set(0);
 
+        // Actual test: run as many iterations of 1,000,000 calls to logger.log as we can in 4 minutes.
         final long TEST_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(4);
         final int COUNT = (1000 * 1000) / threadCount;
-        final CountDownLatch actualLatch = new CountDownLatch(threadCount + 1);
-        Thread[] actual = createLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, actualLatch, loadMessagesPerSec, idleStrategy,
-                serviceTmHistograms, responseTmHistograms, threadCount);
-
-        warmupLatch.countDown();
-        await(warmup);
-        System.out.println("Warmup done.");
-        if (!Constants.ENABLE_DIRECT_ENCODERS || !Constants.ENABLE_THREADLOCALS) {
-            System.gc();
-            Thread.sleep(5000);
-        }
-        System.out.println("Starting measured run.");
-
-        // Actual test: run as many iterations of 5,000,000 calls to logger.log as we can in 4 minutes.
-        long start = System.currentTimeMillis();
-        actualLatch.countDown(); // start the actual test threads
-        await(actual);
+        runLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, loadMessagesPerSec, idleStrategy, serviceTmHistograms,
+                responseTmHistograms, threadCount);
         long end = System.currentTimeMillis();
 
         // ... and report the results
@@ -122,6 +167,8 @@ public class ResponseTimeTest {
         resultResponseTm.outputPercentileDistribution(System.out, 1000.0);
         writeToFile("r", resultResponseTm, (int) (loadMessagesPerSec / 1000), 1000.0);
 
+        System.out.printf("%n%s: %d threads, load %,f msg/sec, ringbuffer full=%d%n", loggerLib, threadCount,
+                loadMessagesPerSec, PrintingAsyncQueueFullPolicy.ringbufferFull.get());
         System.out.println("Test duration: " + (end - start) / 1000.0 + " seconds");
     }
 
@@ -142,64 +189,63 @@ public class ResponseTimeTest {
         return result;
     }
 
-    public static Thread[] createLatencyTest(final Logger logger, final long durationMillis, final int samples,
-            final CountDownLatch latch, final double loadMessagesPerSec, final IdleStrategy idleStrategy,
+    public static void runLatencyTest(final IPerfTestRunner logger, final long durationMillis, final int samples,
+            final double loadMessagesPerSec, final IdleStrategy idleStrategy,
             final List<Histogram> serviceTmHistograms, final List<Histogram> responseTmHistograms,
             final int threadCount) throws InterruptedException {
 
         final Thread[] threads = new Thread[threadCount];
+        final CountDownLatch LATCH = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             final Histogram serviceTmHist = new Histogram(TimeUnit.SECONDS.toNanos(10), 3);
             final Histogram responseTmHist = new Histogram(TimeUnit.SECONDS.toNanos(10), 3);
             serviceTmHistograms.add(serviceTmHist);
             responseTmHistograms.add(responseTmHist);
 
-            final Pacer pacer = new Pacer(loadMessagesPerSec, idleStrategy);
             threads[i] = new Thread("latencytest-" + i) {
                 @Override
                 public void run() {
-                    latch.countDown();
+                    LATCH.countDown();
                     try {
-                        latch.await(); // wait until all threads are ready to go
+                        LATCH.await(); // wait until all threads are ready to go
                     } catch (InterruptedException e) {
                         interrupt();
                         return;
                     }
                     final long endTimeMillis = System.currentTimeMillis() + durationMillis;
                     do {
+                        final Pacer pacer = new Pacer(loadMessagesPerSec, idleStrategy);
                         runLatencyTest(samples, logger, serviceTmHist, responseTmHist, pacer);
                     } while (System.currentTimeMillis() < endTimeMillis);
                 }
             };
             threads[i].start();
         }
-        return threads;
-    }
-
-    private static void await(final Thread[] threads) throws InterruptedException {
-        for (int i = 0; i < threads.length; i++) {
+        for (int i = 0; i < threadCount; i++) {
             threads[i].join();
         }
     }
 
-    private static void runLatencyTest(final int samples, final Logger logger, final Histogram serviceTmHist,
+    private static void runLatencyTest(final int samples, final IPerfTestRunner logger, final Histogram serviceTmHist,
             final Histogram responseTmHist, final Pacer pacer) {
 
-        pacer.setInitialStartTime(System.nanoTime());
         for (int i = 0; i < samples; i++) {
             final long expectedStartTimeNanos = pacer.expectedNextOperationNanoTime();
             pacer.acquire(1);
             final long actualStartTime = System.nanoTime();
-            logger.info(LATENCY_MSG);
+            logger.log(LATENCY_MSG);
             final long doneTime = System.nanoTime();
             serviceTmHist.recordValue(doneTime - actualStartTime);
             responseTmHist.recordValue(doneTime - expectedStartTimeNanos);
         }
     }
 
-    public static class PrintingDefaultAsyncEventRouter extends DefaultAsyncEventRouter {
+    public static class PrintingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy {
+        static AtomicLong ringbufferFull = new AtomicLong();
+
         @Override
         public EventRoute getRoute(long backgroundThreadId, Level level) {
+            ringbufferFull.incrementAndGet();
             System.out.print('!');
             return super.getRoute(backgroundThreadId, level);
         }
@@ -207,7 +253,7 @@ public class ResponseTimeTest {
 
     /**
      * Pacer determines the pace at which measurements are taken. Sample usage:
-     *
+     * <p/>
      * <pre>
      * - each thread has a Pacer instance
      * - at start of test, call pacer.setInitialStartTime(System.nanoTime());
@@ -308,6 +354,7 @@ public class ResponseTimeTest {
 
         /**
          * Will wait for next operation time. After this the expectedNextOperationNanoTime() will move forward.
+         *
          * @param unitCount
          */
         public void acquire(long unitCount) {

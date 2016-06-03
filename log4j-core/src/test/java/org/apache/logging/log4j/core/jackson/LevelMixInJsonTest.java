@@ -23,7 +23,7 @@ public class LevelMixInJsonTest extends LevelMixInTest {
 
     @Override
     protected ObjectMapper newObjectMapper() {
-        return new Log4jJsonObjectMapper();
+        return new Log4jJsonObjectMapper(false);
     }
 
 }

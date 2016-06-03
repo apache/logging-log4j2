@@ -68,7 +68,7 @@ public class PatternLayoutTest {
 
     LoggerContext ctx = LoggerContext.getContext();
 
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
     @After
     public void after() {

@@ -33,13 +33,15 @@ public class JsonInputStreamLogEventBridge extends InputStreamLogEventBridge {
     private static final char EVENT_START_MARKER = '{';
     private static final char JSON_ESC = '\\';
     private static final char JSON_STR_DELIM = Chars.DQUOTE;
+    private static final boolean THREAD_CONTEXT_MAP_AS_LIST = false;
 
     public JsonInputStreamLogEventBridge() {
         this(1024, Charset.defaultCharset());
     }
 
     public JsonInputStreamLogEventBridge(final int bufferSize, final Charset charset) {
-        super(new Log4jJsonObjectMapper(), bufferSize, charset, String.valueOf(EVENT_END_MARKER));
+        super(new Log4jJsonObjectMapper(THREAD_CONTEXT_MAP_AS_LIST), bufferSize, charset,
+                String.valueOf(EVENT_END_MARKER));
     }
 
     @Override
@@ -58,7 +60,7 @@ public class JsonInputStreamLogEventBridge extends InputStreamLogEventBridge {
             if (inEsc) {
             	// Skip this char and continue
             	inEsc = false;
-            } else { 
+            } else {
                 switch (c) {
                 case EVENT_START_MARKER:
                     if (!inStr) {

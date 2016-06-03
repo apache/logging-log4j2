@@ -49,8 +49,6 @@ import org.junit.Test;
 public class YamlLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    private static final String DQUOTE = "\"";
-
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
@@ -67,7 +65,7 @@ public class YamlLayoutTest {
 
     LoggerContext ctx = LoggerContext.getContext();
 
-    Logger rootLogger = this.ctx.getLogger("");
+    Logger rootLogger = this.ctx.getRootLogger();
 
     private void checkAt(final String expected, final int lineIndex, final List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
@@ -86,9 +84,9 @@ public class YamlLayoutTest {
     }
 
     private void checkMapEntry(final String key, final String value, final boolean compact, final String str) {
-        final String propSep = this.toPropertySeparator(compact, true);
         // "name":"value"
-        final String expected = String.format("- key: \"%s\"\n  value: \"%s\"", key, value);
+        //final String expected = String.format("- key: \"%s\"\n  value: \"%s\"", key, value);
+        final String expected = String.format("%s: \"%s\"", key, value);
         assertTrue("Cannot find " + expected + " in " + str, str.contains(expected));
     }
 
@@ -106,18 +104,17 @@ public class YamlLayoutTest {
     }
 
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol,
-            final boolean includeContext) throws Exception {
+            final boolean includeContext, final boolean contextMapAslist) throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = YamlLayout.createLayout(null, includeSource, includeContext, null, null,
                 StandardCharsets.UTF_8);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
-        final String propSep = this.toPropertySeparator(compact, true);
         // Just check for \n since \r might or might not be there.
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper().readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist).readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext);
         if (includeContext) {
             this.checkMapEntry("MDC.A", "A_Value", compact, str);
@@ -266,19 +263,19 @@ public class YamlLayoutTest {
                 .setTimeMillis(1).build();
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("loggerName: \"a.B\""));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper().readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jYamlObjectMapper(false).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
     }
 
     @Test
     public void testLocationOffCompactOffMdcOff() throws Exception {
-        this.testAllFeatures(false, false, false, false);
+        this.testAllFeatures(false, false, false, false, false);
     }
 
     @Test
     public void testLocationOnCompactOffEventEolOffMdcOn() throws Exception {
-        this.testAllFeatures(true, false, false, true);
+        this.testAllFeatures(true, false, false, true, false);
     }
 
     private String toPropertySeparator(final boolean compact, final boolean value) {

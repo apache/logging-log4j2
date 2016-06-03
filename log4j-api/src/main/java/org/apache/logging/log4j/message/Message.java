@@ -26,7 +26,9 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * at runtime such as the locale of the system.
  * <p>
  * Custom Message implementations should consider implementing the {@link StringBuilderFormattable}
- * interface for more efficient processing.
+ * interface for more efficient processing. Garbage-free Layouts will call
+ * {@link StringBuilderFormattable#formatTo(StringBuilder) formatTo(StringBuilder)} instead of
+ * {@link Message#getFormattedMessage()} if the Message implements StringBuilderFormattable.
  * </p>
  *<p>
  * Note: Message objects should not be considered to be thread safe nor should they be assumed to be

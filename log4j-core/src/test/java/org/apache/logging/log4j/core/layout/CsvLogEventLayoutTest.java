@@ -60,7 +60,7 @@ public class CsvLogEventLayoutTest {
 
     private final LoggerContext ctx = LoggerContext.getContext();
 
-    private final Logger root = ctx.getLogger("");
+    private final Logger root = ctx.getRootLogger();
 
     @Test
     public void testCustomCharset() {

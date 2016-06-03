@@ -17,6 +17,15 @@
 
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -31,19 +40,27 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Properties;
-
 import static org.junit.Assert.*;
 
 public class KafkaAppenderTest {
 
-    private static final MockProducer<byte[], byte[]> kafka = new MockProducer<>(true, null, null);
+    private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, null, null) {
+        @Override
+        public void close() {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException ignore) {
+            }
+        }
+
+        @Override
+        public void close(long timeout, TimeUnit timeUnit) {
+            try {
+                Thread.sleep(timeUnit.toMillis(timeout));
+            } catch (InterruptedException ignore) {
+            }
+        }
+    };
 
     private static final String LOG_MESSAGE = "Hello, world!";
     private static final String TOPIC_NAME = "kafka-topic";
@@ -120,5 +137,11 @@ public class KafkaAppenderTest {
         try (ObjectInput ois = new ObjectInputStream(bis)) {
             return (LogEvent) ois.readObject();
         }
+    }
+
+    @Test(timeout = 2000)
+    public void testClose() throws Exception {
+        final Appender appender = ctx.getRequiredAppender("KafkaAppender");
+        appender.stop();
     }
 }

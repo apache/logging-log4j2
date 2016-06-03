@@ -181,6 +181,10 @@ public final class ReflectionUtil {
         if (cn.startsWith("java.lang.reflect.") && (mn.equals("invoke") || mn.equals("newInstance"))) {
             return false;
         }
+        // ignore use of Java 1.9+ reflection classes
+        if (cn.startsWith("jdk.internal.reflect.")) {
+            return false;
+        }
         // ignore Class.newInstance
         if (cn.equals("java.lang.Class") && mn.equals("newInstance")) {
             return false;

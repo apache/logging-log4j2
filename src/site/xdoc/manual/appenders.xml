@@ -55,6 +55,15 @@
             on a separate Thread. Note that exceptions while writing to those Appenders will be hidden from
             the application. The AsyncAppender should be configured after the appenders it references to allow it
             to shut down properly.</p>
+          <p>
+            Note that AsyncAppender internally uses the built-in java.util.concurrent.ArrayBlockingQueue,
+            so it does not have any dependencies on external libraries. However, multi-threaded applications
+            should exercise care before using this appender:
+            the blocking queue is susceptible to lock contention and our
+            <a href="../performance.html#asyncLogging">tests showed</a>
+            performance may become worse when more threads are logging concurrently.
+            Consider using <a href="async.html">lock-free Async Loggers</a> for optimal performance.
+          </p>
           <table>
             <caption align="top">AsyncAppender Parameters</caption>
             <tr>
@@ -123,8 +132,8 @@
             There are also a few system properties that can be used to maintain application throughput even when
             the underlying appender cannot keep up with the logging rate and the queue is filling up.
             See the details for system properties
-            <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt>,
-              <tt>log4j2.DiscardThreshold</tt> and <tt>log4j2.DiscardQueueRatio</tt></a>.
+            <a href="configuration.html#log4j2.AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
+              <tt>log4j2.DiscardThreshold</tt></a>.
           </p>
           <p>
             A typical AsyncAppender configuration might look like:
@@ -152,7 +161,7 @@
         <a name="ConsoleAppender"/>
         <subsection name="ConsoleAppender">
           <p>
-            As one might expect, the ConsoleAppender writes its output to either System.err or System.out with System.err
+            As one might expect, the ConsoleAppender writes its output to either System.out or System.err with System.out
             being the default target. A Layout must be provided to format the LogEvent.
           </p>
           <table>
@@ -197,7 +206,7 @@
             <tr>
               <td>target</td>
               <td>String</td>
-              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_ERR".</td>
+              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_OUT".</td>
             </tr>
           </table>
           <p>
@@ -1285,7 +1294,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>properties</td>
               <td>Property[]</td>
               <td>
-                You can set any properties in <a href="http://kafka.apache.org/documentation.html#newproducerconfigs">Kafka new producer properties</a>.
+                You can set any properties in <a href="http://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>.
                 You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others.
               </td>
             </tr>
@@ -1307,7 +1316,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> to log asynchronously.
           </p>
           <p>
-            This appender requires the <a href="http://search.maven.org/#artifactdetails|org.apache.kafka|kafka-clients|0.8.2.2|jar">Kafka client library</a>.
+            This appender requires the <a href="http://kafka.apache.org/">Kafka client library</a>. Note that you need to use a version of
+            the Kafka client library matching the Kafka server used.
           </p>
           <p>
             <em>Note:</em>Make sure to not let <code>org.apache.kafka</code> log to a Kafka appender on DEBUG level,
@@ -1746,9 +1756,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
 			<a name="RandomAccessFileAppender" />
 			<subsection name="RandomAccessFileAppender">
-			<p><i>As of beta-9, the name of this appender has been changed from FastFile to
-			  RandomAccessFile. Configurations using the <code>FastFile</code> element
-			  no longer work and should be modified to use the <code>RandomAccessFile</code> element.</i></p>
 				<p>
 					The RandomAccessFileAppender is similar to the standard
 					<a href="#FileAppender">FileAppender</a>
@@ -2898,9 +2905,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
-			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to
-			  RollingRandomAccessFile. Configurations using the <code>FastRollingFile</code> element
-			  no longer work and should be modified to use the <code>RollingRandomAccessFile</code> element.</i></p>
 				<p>
 					The RollingRandomAccessFileAppender is similar to the standard
 					<a href="#RollingFileAppender">RollingFileAppender</a>

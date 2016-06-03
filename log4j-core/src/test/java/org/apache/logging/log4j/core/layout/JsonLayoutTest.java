@@ -67,7 +67,7 @@ public class JsonLayoutTest {
 
     LoggerContext ctx = LoggerContext.getContext();
 
-    Logger rootLogger = this.ctx.getLogger("");
+    Logger rootLogger = this.ctx.getRootLogger();
 
     private void checkAt(final String expected, final int lineIndex, final List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
@@ -84,11 +84,18 @@ public class JsonLayoutTest {
         Assert.fail("Cannot find " + expected + " in " + list);
     }
 
-    private void checkMapEntry(final String key, final String value, final boolean compact, final String str) {
+    private void checkMapEntry(final String key, final String value, final boolean compact, final String str,
+            final boolean contextMapAslist) {
         final String propSep = this.toPropertySeparator(compact);
-        // "name":"value"
-        final String expected = String.format("{\"key\":\"%s\",\"value\":\"%s\"}", key, value);
-        assertTrue("Cannot find " + expected + " in " + str, str.contains(expected));
+        if (contextMapAslist) {
+            // {"key":"KEY", "value":"VALUE"}
+            final String expected = String.format("{\"key\":\"%s\",\"value\":\"%s\"}", key, value);
+            assertTrue("Cannot find contextMapAslist " + expected + " in " + str, str.contains(expected));
+        } else {
+            // "KEY":"VALUE"
+            final String expected = String.format("\"%s\":\"%s\"", key, value);
+            assertTrue("Cannot find contextMap " + expected + " in " + str, str.contains(expected));
+        }
     }
 
     private void checkProperty(final String key, final String value, final boolean compact, final String str) {
@@ -103,11 +110,12 @@ public class JsonLayoutTest {
         assertTrue(str, str.contains(DQUOTE + name + DQUOTE + propSep));
     }
 
-    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol, final boolean includeContext)
+    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol,
+            final boolean includeContext, final boolean contextMapAslist)
             throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = JsonLayout.createLayout(null, includeSource,
-                includeContext, false, compact, eventEol, null, null, StandardCharsets.UTF_8);
+                includeContext, contextMapAslist, false, compact, eventEol, null, null, StandardCharsets.UTF_8);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         final String propSep = this.toPropertySeparator(compact);
@@ -115,11 +123,11 @@ public class JsonLayoutTest {
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
-        final Log4jLogEvent actual = new Log4jJsonObjectMapper().readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper(contextMapAslist).readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext);
         if (includeContext) {
-            this.checkMapEntry("MDC.A", "A_Value", compact, str);
-            this.checkMapEntry("MDC.B", "B_Value", compact, str);
+            this.checkMapEntry("MDC.A", "A_Value", compact, str, contextMapAslist);
+            this.checkMapEntry("MDC.B", "B_Value", compact, str, contextMapAslist);
         }
         //
         assertNull(actual.getThrown());
@@ -179,7 +187,9 @@ public class JsonLayoutTest {
         }
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(configuration, true, true, true, false, false, null, null, null);
+        final boolean propertiesAsList = false;
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(configuration, true, true, propertiesAsList,
+                true, false, false, null, null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -216,7 +226,9 @@ public class JsonLayoutTest {
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
         // Use [[ and ]] to test header and footer (instead of [ and ])
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(configuration, true, true, true, false, false, "[[", "]]", null);
+        final boolean propertiesAsList = false;
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(configuration, true, true, propertiesAsList,
+                true, false, false, "[[", "]]", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -255,8 +267,9 @@ public class JsonLayoutTest {
 
     @Test
     public void testLayoutLoggerName() throws Exception {
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(null, false, false, false, true, false, null, null,
-                StandardCharsets.UTF_8);
+        final boolean propertiesAsList = false;
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(null, false, false, propertiesAsList,
+                false, true, false, null, null, StandardCharsets.UTF_8);
         final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //
@@ -266,24 +279,29 @@ public class JsonLayoutTest {
                 .setTimeMillis(1).build();
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("\"loggerName\":\"a.B\""));
-        final Log4jLogEvent actual = new Log4jJsonObjectMapper().readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
     }
 
     @Test
     public void testLocationOffCompactOffMdcOff() throws Exception {
-        this.testAllFeatures(false, false, false, false);
+        this.testAllFeatures(false, false, false, false, false);
     }
 
     @Test
     public void testLocationOnCompactOnMdcOn() throws Exception {
-        this.testAllFeatures(true, true, false, true);
+        this.testAllFeatures(true, true, false, true, false);
     }
 
     @Test
     public void testLocationOnCompactOnEventEolOnMdcOn() throws Exception {
-        this.testAllFeatures(true, true, true, true);
+        this.testAllFeatures(true, true, true, true, false);
+    }
+
+    @Test
+    public void testLocationOnCompactOnEventEolOnMdcOnMdcAsList() throws Exception {
+        this.testAllFeatures(true, true, true, true, true);
     }
 
     private String toPropertySeparator(final boolean compact) {

@@ -98,7 +98,7 @@ public class MutableLogEventTest {
         assertNull("context stack", mutable.getContextStack());
         assertFalse("end of batch", mutable.isEndOfBatch());
         assertFalse("incl loc", mutable.isIncludeLocation());
-        assertNull("level", mutable.getLevel());
+        assertSame("level", Level.OFF, mutable.getLevel());
         assertNull("fqcn", mutable.getLoggerFqcn());
         assertNull("logger", mutable.getLoggerName());
         assertNull("marker", mutable.getMarker());
@@ -151,7 +151,7 @@ public class MutableLogEventTest {
         mutable.clear();
         assertNull("context map", mutable.getContextMap());
         assertNull("context stack", mutable.getContextStack());
-        assertNull("level", mutable.getLevel());
+        assertSame("level", Level.OFF, mutable.getLevel());
         assertNull("fqcn", mutable.getLoggerFqcn());
         assertNull("logger", mutable.getLoggerName());
         assertNull("marker", mutable.getMarker());

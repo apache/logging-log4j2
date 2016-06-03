@@ -22,7 +22,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.6-SNAPSHOT</version>
+  <version>2.6.1-SNAPSHOT</version>
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
@@ -142,8 +142,9 @@
       <subscribe>log4j-user-subscribe@logging.apache.org</subscribe>
       <unsubscribe>log4j-user-unsubscribe@logging.apache.org</unsubscribe>
       <post>log4j-user@logging.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-user/</archive>
+      <archive>https://lists.apache.org/list.html?log4j-user@logging.apache.org</archive>
       <otherArchives>
+        <otherArchive>http://mail-archives.apache.org/mod_mbox/logging-log4j-user/</otherArchive>
         <otherArchive>http://marc.info/?l=log4j-user</otherArchive>
         <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
       </otherArchives>
@@ -153,8 +154,9 @@
       <subscribe>log4j-dev-subscribe@logging.apache.org</subscribe>
       <unsubscribe>log4j-dev-unsubscribe@logging.apache.org</unsubscribe>
       <post>log4j-dev@logging.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
+      <archive>https://lists.apache.org/list.html?log4j-dev@logging.apache.org</archive>
       <otherArchives>
+        <otherArchive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</otherArchive>
         <otherArchive>http://marc.info/?l=log4j-dev</otherArchive>
         <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
       </otherArchives>
@@ -180,8 +182,8 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.5</Log4jReleaseVersion>
-    <Log4jReleaseCount>ninth</Log4jReleaseCount>
+    <Log4jReleaseVersion>2.6</Log4jReleaseVersion>
+    <Log4jReleaseCount>tenth</Log4jReleaseCount>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!-- <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
@@ -704,7 +706,7 @@
       <dependency>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-core</artifactId>
-        <version>3.4.2</version>
+        <version>3.5.1</version>
       </dependency>
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
@@ -724,17 +726,23 @@
         <artifactId>commons-compress</artifactId>
         <version>1.11</version>
       </dependency>
+      <dependency>
+        <groupId>org.tukaani</groupId>
+        <artifactId>xz</artifactId>
+        <version>1.5</version>
+        <scope>test</scope>
+      </dependency>
       <!-- Used for the CSV layout -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.2</version>
+        <version>1.4</version>
       </dependency>
       <!-- GC-free -->
       <dependency>
         <groupId>com.google.code.java-allocation-instrumenter</groupId>
         <artifactId>java-allocation-instrumenter</artifactId>
-        <version>3.0</version>
+        <version>3.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.hdrhistogram</groupId>
@@ -1318,6 +1326,10 @@
             <version>${rat.plugin.version}</version>
             <configuration>
               <excludes>
+                <!-- VM metadata -->
+                <exclude>.vagrant/**/*</exclude>
+                <!-- Generated files -->
+                <exclude>log4j-distribution/target/**/*</exclude>
                 <exclude>dist/target/.plxarc</exclude>
                 <exclude>dist/target/*.asc</exclude>
                 <exclude>dist/target/**/*</exclude>
@@ -1328,6 +1340,8 @@
                 <exclude>src/site/site.vm</exclude>
                 <exclude>src/ide/**/*</exclude>
                 <exclude>**/target/generated-sources/**/*</exclude>
+                <!-- Other -->
+                <exclude>felix-cache/**</exclude>
               </excludes>
             </configuration>
             <executions>

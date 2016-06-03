@@ -24,6 +24,7 @@
   <properties>
     <title>Log4j 2 Project Thanks</title>
   </properties>
+  <link href="https://www.jetbrains.com/_assets/common.e5c75942074f0f03f4500affcc4bf651.css" rel="stylesheet" type="text/css" />
 
   <body>
     <section name="Log4j 2 Project Thanks">
@@ -58,9 +59,41 @@
                   for profiling</span>
                 <br clear="none" />
                 <span style="color: rgb(34,34,34);">
-                  Java and .NET applications.
-                  <a shape="rect" class="external-link" href="https://www.yourkit.com/features/">Take a look at YourKit's leading
-                    software products</a>
+                  Java and .NET applications. See
+                  <a shape="rect" class="external-link" href="https://www.yourkit.com/features/">YourKit's leading
+                    software products</a>.
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="1" rowspan="1">
+                <a shape="rect" class="external-link" href="https://www.jetbrains.com/idea/">
+                  <span>
+                    <img src="images/IntelliJ-IDEA-logo.png" alt="IntelliJ IDEA logo" />
+                  </span>
+                </a>
+              </td>
+              <td colspan="1" rowspan="1">
+                JetBrains supports the Log4j 2 project with its
+                <a shape="rect" class="external-link" href="https://www.jetbrains.com/idea/">IntelliJ IDEA Java<sup>*</sup> IDE</a>
+                <br clear="none" />
+                <br clear="none" />
+                <sup>*</sup> Actually, much more than just Java.
+              </td>
+            </tr>
+            <tr>
+              <td colspan="1" rowspan="1">
+                <a shape="rect" class="external-link" href="https://www.jclarity.com">
+                  <span>
+                    <img src="https://www.jclarity.com/wp-content/uploads/2015/02/JClarity_logo_tagline3.png" alt="jClarity" />
+                  </span>
+                </a>
+              </td>
+              <td colspan="1" rowspan="1">
+                <br clear="none" />
+                <span style="color: rgb(34,34,34);">jClarity supports the Log4j 2 project with its
+                  <a shape="rect" class="external-link" href="https://www.jclarity.com/censum/">Censum</a>
+                  GC log parsing tool.
                 </span>
               </td>
             </tr>
