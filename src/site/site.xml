@@ -124,8 +124,7 @@
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
-        <item name="JMS Queue" href="/manual/appenders.html#JMSQueueAppender"/>
-        <item name="JMS Topic" href="/manual/appenders.html#JMSTopicAppender"/>
+        <item name="JMS" href="/manual/appenders.html#JMSAppender"/>
         <item name="JPA" href="/manual/appenders.html#JPAAppender"/>
         <item name="Kafka" href="/manual/appenders.html#KafkaAppender"/>
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
