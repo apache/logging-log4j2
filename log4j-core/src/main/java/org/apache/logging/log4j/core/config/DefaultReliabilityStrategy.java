@@ -44,8 +44,8 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
      * org.apache.logging.log4j.message.Message, java.lang.Throwable)
      */
     @Override
-    public void log(Supplier<LoggerConfig> reconfigured, String loggerName, String fqcn, Marker marker, Level level,
-            Message data, Throwable t) {
+    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn, final Marker marker, final Level level,
+            final Message data, final Throwable t) {
         loggerConfig.log(loggerName, fqcn, marker, level, data, t);
     }
 
@@ -56,7 +56,7 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
      * org.apache.logging.log4j.core.LogEvent)
      */
     @Override
-    public void log(Supplier<LoggerConfig> reconfigured, LogEvent event) {
+    public void log(final Supplier<LoggerConfig> reconfigured, final LogEvent event) {
         loggerConfig.log(event);
     }
 
@@ -68,7 +68,7 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
      * LoggerConfig, org.apache.logging.log4j.util.Supplier)
      */
     @Override
-    public LoggerConfig getActiveLoggerConfig(Supplier<LoggerConfig> next) {
+    public LoggerConfig getActiveLoggerConfig(final Supplier<LoggerConfig> next) {
         return this.loggerConfig;
     }
 
@@ -100,7 +100,7 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
      * .config.Configuration)
      */
     @Override
-    public void beforeStopConfiguration(Configuration configuration) {
+    public void beforeStopConfiguration(final Configuration configuration) {
         // no action
     }
 

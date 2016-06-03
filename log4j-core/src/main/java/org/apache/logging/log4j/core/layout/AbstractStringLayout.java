@@ -207,7 +207,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return headerSerializer;
     }
 
-    protected byte[] serializeToBytes(final Serializer serializer, byte[] defaultValue) {
+    protected byte[] serializeToBytes(final Serializer serializer, final byte[] defaultValue) {
         final String serializable = serializeToString(serializer);
         if (serializer == null) {
             return defaultValue;

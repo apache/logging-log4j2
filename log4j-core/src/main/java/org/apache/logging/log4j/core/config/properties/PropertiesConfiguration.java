@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
  */
 public class PropertiesConfiguration extends BuiltConfiguration implements Reconfigurable {
 
-    public PropertiesConfiguration(ConfigurationSource source, Component root) {
+    public PropertiesConfiguration(final ConfigurationSource source, final Component root) {
         super(source, root);
     }
 

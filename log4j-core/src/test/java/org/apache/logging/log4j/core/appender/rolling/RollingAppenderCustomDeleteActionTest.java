@@ -91,7 +91,7 @@ public class RollingAppenderCustomDeleteActionTest {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Pattern p = Pattern.compile("test-.?[2,4,6,8,0]\\.log\\.gz");
         for (int i = 0; i < 16; i++) {
             String str = "test-" + i + ".log.gz";

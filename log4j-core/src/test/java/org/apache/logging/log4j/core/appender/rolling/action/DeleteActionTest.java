@@ -39,13 +39,13 @@ import static org.junit.Assert.*;
  */
 public class DeleteActionTest {
 
-    private static DeleteAction createAnyFilter(String path, boolean followLinks, int maxDepth, boolean testMode) {
+    private static DeleteAction createAnyFilter(final String path, final boolean followLinks, final int maxDepth, final boolean testMode) {
         PathCondition[] pathFilters = {new FixedCondition(true)};
         return create(path, followLinks, maxDepth, testMode, pathFilters);
     }
 
-    private static DeleteAction create(String path, boolean followLinks, int maxDepth, boolean testMode,
-            PathCondition[] conditions) {
+    private static DeleteAction create(final String path, final boolean followLinks, final int maxDepth, final boolean testMode,
+            final PathCondition[] conditions) {
         Configuration config = new BasicConfigurationFactory().new BasicConfiguration();
         DeleteAction delete = DeleteAction.createDeleteAction(path, followLinks, maxDepth, testMode, null, conditions,
                 null, config);

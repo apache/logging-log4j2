@@ -131,7 +131,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
         };
 
-        static FileExtensions lookup(String fileExtension) {
+        static FileExtensions lookup(final String fileExtension) {
             for (FileExtensions ext : values()) {
                 if (ext.isExtensionFor(fileExtension)) {
                     return ext;
@@ -162,11 +162,11 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             return extension.length();
         }
 
-        File source(String fileName) {
+        File source(final String fileName) {
             return new File(fileName);
         }
 
-        File target(String fileName) {
+        File target(final String fileName) {
             return new File(fileName);
         }
     };

@@ -107,7 +107,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final boolean includeStacktrace;
 
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
-                      final int compressionThreshold, boolean includeStacktrace) {
+                      final int compressionThreshold, final boolean includeStacktrace) {
         super(StandardCharsets.UTF_8);
         this.host = host;
         this.additionalFields = additionalFields;
@@ -182,7 +182,7 @@ public final class GelfLayout extends AbstractStringLayout {
         return text.toString();
     }
 
-    private StringBuilder toText(LogEvent event, StringBuilder builder, boolean gcFree) {
+    private StringBuilder toText(final LogEvent event, final StringBuilder builder, final boolean gcFree) {
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
         builder.append("\"host\":\"");

@@ -83,7 +83,7 @@ public class ScriptPatternSelector implements PatternSelector {
     }
 
     @Override
-    public PatternFormatter[] getFormatters(LogEvent event) {
+    public PatternFormatter[] getFormatters(final LogEvent event) {
         SimpleBindings bindings = new SimpleBindings();
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
@@ -99,7 +99,7 @@ public class ScriptPatternSelector implements PatternSelector {
 
 
     @PluginFactory
-    public static ScriptPatternSelector createSelector(@PluginElement("Script") AbstractScript script,
+    public static ScriptPatternSelector createSelector(@PluginElement("Script") final AbstractScript script,
                                                        @PluginElement("PatternMatch") final PatternMatch[] properties,
                                                        @PluginAttribute("defaultPattern") String defaultPattern,
                                                        @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,

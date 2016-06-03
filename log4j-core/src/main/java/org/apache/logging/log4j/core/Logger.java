@@ -632,7 +632,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         private final String name;
         private final MessageFactory messageFactory;
 
-        public LoggerProxy(String name, MessageFactory messageFactory) {
+        public LoggerProxy(final String name, final MessageFactory messageFactory) {
             this.name = name;
             this.messageFactory = messageFactory;
         }

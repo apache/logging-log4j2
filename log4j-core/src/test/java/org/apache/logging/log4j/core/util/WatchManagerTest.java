@@ -79,12 +79,12 @@ public class WatchManagerTest {
 
         private final Queue<File> queue;
 
-        public TestWatcher(Queue<File> queue) {
+        public TestWatcher(final Queue<File> queue) {
             this.queue = queue;
         }
 
         @Override
-        public void fileModified(File file) {
+        public void fileModified(final File file) {
             System.out.println(file.toString() + " was modified");
             queue.add(file);
         }

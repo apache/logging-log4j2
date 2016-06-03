@@ -94,7 +94,7 @@ import org.apache.logging.log4j.core.util.Loader;
 public class ResponseTimeTest {
     private static final String LATENCY_MSG = new String(new char[64]);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         if (args.length < 2) {
             System.out.println("Please specify thread count, target throughput (msg/sec) " +
                     "and logger library (Log4j1, Log4j2, Logback, JUL)");
@@ -244,7 +244,7 @@ public class ResponseTimeTest {
         static AtomicLong ringbufferFull = new AtomicLong();
 
         @Override
-        public EventRoute getRoute(long backgroundThreadId, Level level) {
+        public EventRoute getRoute(final long backgroundThreadId, final Level level) {
             ringbufferFull.incrementAndGet();
             System.out.print('!');
             return super.getRoute(backgroundThreadId, level);
@@ -283,27 +283,27 @@ public class ResponseTimeTest {
         private double catchUpRateMultiple;
         private final IdleStrategy idleStrategy;
 
-        public Pacer(double unitsPerSec, IdleStrategy idleStrategy) {
+        public Pacer(final double unitsPerSec, final IdleStrategy idleStrategy) {
             this(unitsPerSec, 3.0, idleStrategy); // Default to catching up at 3x the set throughput
         }
 
-        public Pacer(double unitsPerSec, double catchUpRateMultiple, IdleStrategy idleStrategy) {
+        public Pacer(final double unitsPerSec, final double catchUpRateMultiple, final IdleStrategy idleStrategy) {
             this.idleStrategy = idleStrategy;
             setThroughout(unitsPerSec);
             setCatchupRateMultiple(catchUpRateMultiple);
             initialStartTime = System.nanoTime();
         }
 
-        public void setInitialStartTime(long initialStartTime) {
+        public void setInitialStartTime(final long initialStartTime) {
             this.initialStartTime = initialStartTime;
         }
 
-        public void setThroughout(double unitsPerSec) {
+        public void setThroughout(final double unitsPerSec) {
             throughputInUnitsPerNsec = unitsPerSec / 1000000000.0;
             catchUpThroughputInUnitsPerNsec = catchUpRateMultiple * throughputInUnitsPerNsec;
         }
 
-        public void setCatchupRateMultiple(double multiple) {
+        public void setCatchupRateMultiple(final double multiple) {
             catchUpRateMultiple = multiple;
             catchUpThroughputInUnitsPerNsec = catchUpRateMultiple * throughputInUnitsPerNsec;
         }
@@ -357,7 +357,7 @@ public class ResponseTimeTest {
          *
          * @param unitCount
          */
-        public void acquire(long unitCount) {
+        public void acquire(final long unitCount) {
             long nsecToNextOperation = nsecToNextOperation();
             if (nsecToNextOperation > 0) {
                 sleepNs(nsecToNextOperation);
@@ -365,7 +365,7 @@ public class ResponseTimeTest {
             unitsCompleted += unitCount;
         }
 
-        private void sleepNs(long ns) {
+        private void sleepNs(final long ns) {
             long now = System.nanoTime();
             long deadline = now + ns;
             while ((now = System.nanoTime()) < deadline) {

@@ -91,7 +91,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture that can be used to extract result or cancel.
      *
      */
-    public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
+    public <V> ScheduledFuture<V> schedule(final Callable<V> callable, final long delay, final TimeUnit unit) {
         return executorService.schedule(callable, delay, unit);
     }
 
@@ -103,7 +103,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing pending completion of the task and whose get() method will return null
      * upon completion.
      */
-    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+    public ScheduledFuture<?> schedule(final Runnable command, final long delay, final TimeUnit unit) {
         return executorService.schedule(command, delay, unit);
     }
 
@@ -114,7 +114,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @param command The Runnable to run,
      * @return a ScheduledFuture representing the next time the command will run.
      */
-    public CronScheduledFuture<?> scheduleWithCron(CronExpression cronExpression, Runnable command) {
+    public CronScheduledFuture<?> scheduleWithCron(final CronExpression cronExpression, final Runnable command) {
         CronRunnable runnable = new CronRunnable(command, cronExpression);
         ScheduledFuture<?> future = schedule(runnable, nextFireInterval(cronExpression), TimeUnit.MILLISECONDS);
         CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future);
@@ -134,7 +134,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing pending completion of the task, and whose get() method will throw an
      * exception upon cancellation
      */
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
+    public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
         return executorService.scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
@@ -148,7 +148,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing pending completion of the task, and whose get() method will throw an
      * exception upon cancellation
      */
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+    public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay, final TimeUnit unit) {
         return executorService.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
@@ -158,12 +158,12 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         private final Runnable runnable;
         private CronScheduledFuture<?> scheduledFuture;
 
-        public CronRunnable(Runnable runnable, CronExpression cronExpression) {
+        public CronRunnable(final Runnable runnable, final CronExpression cronExpression) {
             this.cronExpression = cronExpression;
             this.runnable = runnable;
         }
 
-        public void setScheduledFuture(CronScheduledFuture<?> future) {
+        public void setScheduledFuture(final CronScheduledFuture<?> future) {
             this.scheduledFuture = future;
         }
 
@@ -180,7 +180,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         }
     }
 
-    private long nextFireInterval(CronExpression cronExpression) {
+    private long nextFireInterval(final CronExpression cronExpression) {
         Date now = new Date();
         Date fireDate = cronExpression.getNextValidTimeAfter(now);
         return fireDate.getTime() - now.getTime();

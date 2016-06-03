@@ -155,7 +155,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return scriptManager;
     }
 
-    public void setScriptManager(ScriptManager scriptManager) {
+    public void setScriptManager(final ScriptManager scriptManager) {
         this.scriptManager = scriptManager;
     }
 
@@ -163,7 +163,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return pluginManager;
     }
 
-    public void setPluginManager(PluginManager pluginManager) {
+    public void setPluginManager(final PluginManager pluginManager) {
         this.pluginManager = pluginManager;
     }
 
@@ -434,7 +434,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.putIfAbsent(componentName, obj);
     }
 
-    protected void preConfigure(Node node) {
+    protected void preConfigure(final Node node) {
         try {
             for (final Node child : node.getChildren()) {
                 if (child.getType() == null) {
@@ -655,7 +655,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * .core.config.LoggerConfig)
      */
     @Override
-    public ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig) {
+    public ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
         return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig);
     }
 

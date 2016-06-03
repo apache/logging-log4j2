@@ -36,7 +36,7 @@ import java.net.URI;
 //@Order(50)
 public class CustomConfigurationFactory extends ConfigurationFactory {
 
-    static Configuration addTestFixtures(final String name, ConfigurationBuilder<BuiltConfiguration> builder) {
+    static Configuration addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
         builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy").addIsWatched(true));
@@ -56,7 +56,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(ConfigurationSource source) {
+    public Configuration getConfiguration(final ConfigurationSource source) {
         return getConfiguration(source.toString(), null);
     }
 

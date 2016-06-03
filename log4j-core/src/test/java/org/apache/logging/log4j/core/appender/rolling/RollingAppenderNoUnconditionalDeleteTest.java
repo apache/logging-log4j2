@@ -96,7 +96,7 @@ public class RollingAppenderNoUnconditionalDeleteTest {
         deleteDir(directory.getParentFile());
     }
 
-    private void deleteDir(File dir) {
+    private void deleteDir(final File dir) {
         if (dir.exists()) {
             final File[] files = dir.listFiles();
             for (final File file : files) {

@@ -130,7 +130,7 @@ public class TextEncoderHelper {
         return temp;
     }
 
-    private static ByteBuffer drainIfByteBufferFull(ByteBufferDestination destination, ByteBuffer temp, CoderResult result) {
+    private static ByteBuffer drainIfByteBufferFull(final ByteBufferDestination destination, ByteBuffer temp, final CoderResult result) {
         if (result.isOverflow()) { // byte buffer full
 
             // SHOULD NOT HAPPEN:

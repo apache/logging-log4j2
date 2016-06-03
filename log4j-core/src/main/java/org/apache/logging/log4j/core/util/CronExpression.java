@@ -262,7 +262,7 @@ public final class CronExpression {
      * @throws java.text.ParseException if the string expression cannot be parsed into a valid
      *                                  <CODE>CronExpression</CODE>
      */
-    public CronExpression(String cronExpression) throws ParseException {
+    public CronExpression(final String cronExpression) throws ParseException {
         if (cronExpression == null) {
             throw new IllegalArgumentException("cronExpression cannot be null");
         }
@@ -281,7 +281,7 @@ public final class CronExpression {
      * @return a boolean indicating whether the given date satisfies the cron
      * expression
      */
-    public boolean isSatisfiedBy(Date date) {
+    public boolean isSatisfiedBy(final Date date) {
         Calendar testDateCal = Calendar.getInstance(getTimeZone());
         testDateCal.setTime(date);
         testDateCal.set(Calendar.MILLISECOND, 0);
@@ -302,7 +302,7 @@ public final class CronExpression {
      *             date/time
      * @return the next valid date/time
      */
-    public Date getNextValidTimeAfter(Date date) {
+    public Date getNextValidTimeAfter(final Date date) {
         return getTimeAfter(date);
     }
 
@@ -314,7 +314,7 @@ public final class CronExpression {
      *             invalid date/time
      * @return the next valid date/time
      */
-    public Date getNextInvalidTimeAfter(Date date) {
+    public Date getNextInvalidTimeAfter(final Date date) {
         long difference = 1000;
 
         //move back to the nearest second so differences will be accurate
@@ -362,7 +362,7 @@ public final class CronExpression {
      * Sets the time zone for which  this <code>CronExpression</code>
      * will be resolved.
      */
-    public void setTimeZone(TimeZone timeZone) {
+    public void setTimeZone(final TimeZone timeZone) {
         this.timeZone = timeZone;
     }
 
@@ -384,7 +384,7 @@ public final class CronExpression {
      * @return a boolean indicating whether the given expression is a valid cron
      * expression
      */
-    public static boolean isValidExpression(String cronExpression) {
+    public static boolean isValidExpression(final String cronExpression) {
 
         try {
             new CronExpression(cronExpression);
@@ -395,7 +395,7 @@ public final class CronExpression {
         return true;
     }
 
-    public static void validateExpression(String cronExpression) throws ParseException {
+    public static void validateExpression(final String cronExpression) throws ParseException {
 
         new CronExpression(cronExpression);
     }
@@ -407,7 +407,7 @@ public final class CronExpression {
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    protected void buildExpression(String expression) throws ParseException {
+    protected void buildExpression(final String expression) throws ParseException {
         expressionParsed = true;
 
         try {
@@ -493,7 +493,7 @@ public final class CronExpression {
         }
     }
 
-    protected int storeExpressionVals(int pos, String s, int type)
+    protected int storeExpressionVals(final int pos, final String s, final int type)
             throws ParseException {
 
         int incr = 0;
@@ -684,7 +684,7 @@ public final class CronExpression {
         return i;
     }
 
-    protected int checkNext(int pos, String s, int val, int type)
+    protected int checkNext(final int pos, final String s, final int val, final int type)
             throws ParseException {
 
         int end = -1;
@@ -861,7 +861,7 @@ public final class CronExpression {
         return buf.toString();
     }
 
-    protected String getExpressionSetSummary(java.util.Set<Integer> set) {
+    protected String getExpressionSetSummary(final java.util.Set<Integer> set) {
 
         if (set.contains(NO_SPEC)) {
             return "?";
@@ -887,7 +887,7 @@ public final class CronExpression {
         return buf.toString();
     }
 
-    protected String getExpressionSetSummary(java.util.ArrayList<Integer> list) {
+    protected String getExpressionSetSummary(final java.util.ArrayList<Integer> list) {
 
         if (list.contains(NO_SPEC)) {
             return "?";
@@ -913,7 +913,7 @@ public final class CronExpression {
         return buf.toString();
     }
 
-    protected int skipWhiteSpace(int i, String s) {
+    protected int skipWhiteSpace(int i, final String s) {
         for (; i < s.length() && (s.charAt(i) == ' ' || s.charAt(i) == '\t'); i++) {
             ;
         }
@@ -921,7 +921,7 @@ public final class CronExpression {
         return i;
     }
 
-    protected int findNextWhiteSpace(int i, String s) {
+    protected int findNextWhiteSpace(int i, final String s) {
         for (; i < s.length() && (s.charAt(i) != ' ' || s.charAt(i) != '\t'); i++) {
             ;
         }
@@ -929,7 +929,7 @@ public final class CronExpression {
         return i;
     }
 
-    protected void addToSet(int val, int end, int incr, int type)
+    protected void addToSet(final int val, final int end, int incr, final int type)
             throws ParseException {
 
         TreeSet<Integer> set = getSet(type);
@@ -1076,7 +1076,7 @@ public final class CronExpression {
         }
     }
 
-    TreeSet<Integer> getSet(int type) {
+    TreeSet<Integer> getSet(final int type) {
         switch (type) {
             case SECOND:
                 return seconds;
@@ -1097,7 +1097,7 @@ public final class CronExpression {
         }
     }
 
-    protected ValueSet getValue(int v, String s, int i) {
+    protected ValueSet getValue(final int v, final String s, int i) {
         char c = s.charAt(i);
         StringBuilder s1 = new StringBuilder(String.valueOf(v));
         while (c >= '0' && c <= '9') {
@@ -1115,13 +1115,13 @@ public final class CronExpression {
         return val;
     }
 
-    protected int getNumericValue(String s, int i) {
+    protected int getNumericValue(final String s, final int i) {
         int endOfVal = findNextWhiteSpace(i, s);
         String val = s.substring(i, endOfVal);
         return Integer.parseInt(val);
     }
 
-    protected int getMonthNumber(String s) {
+    protected int getMonthNumber(final String s) {
         Integer integer = monthMap.get(s);
 
         if (integer == null) {
@@ -1131,7 +1131,7 @@ public final class CronExpression {
         return integer;
     }
 
-    protected int getDayOfWeekNumber(String s) {
+    protected int getDayOfWeekNumber(final String s) {
         Integer integer = dayMap.get(s);
 
         if (integer == null) {
@@ -1558,7 +1558,7 @@ public final class CronExpression {
      * @param cal  the calendar to operate on
      * @param hour the hour to set
      */
-    protected void setCalendarHour(Calendar cal, int hour) {
+    protected void setCalendarHour(final Calendar cal, final int hour) {
         cal.set(java.util.Calendar.HOUR_OF_DAY, hour);
         if (cal.get(java.util.Calendar.HOUR_OF_DAY) != hour && hour != 24) {
             cal.set(java.util.Calendar.HOUR_OF_DAY, hour + 1);
@@ -1569,7 +1569,7 @@ public final class CronExpression {
      * NOT YET IMPLEMENTED: Returns the time before the given time
      * that the <code>CronExpression</code> matches.
      */
-    public Date getTimeBefore(Date endTime) {
+    public Date getTimeBefore(final Date endTime) {
         // FUTURE_TODO: implement QUARTZ-423
         return null;
     }
@@ -1583,11 +1583,11 @@ public final class CronExpression {
         return null;
     }
 
-    protected boolean isLeapYear(int year) {
+    protected boolean isLeapYear(final int year) {
         return ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0));
     }
 
-    protected int getLastDayOfMonth(int monthNum, int year) {
+    protected int getLastDayOfMonth(final int monthNum, final int year) {
 
         switch (monthNum) {
             case 1:

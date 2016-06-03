@@ -48,13 +48,13 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     private final ConfigurationScheduler scheduler;
     private volatile ScheduledFuture<?> future = null;
 
-    public IdlePurgePolicy(long timeToLive, ConfigurationScheduler scheduler) {
+    public IdlePurgePolicy(final long timeToLive, final ConfigurationScheduler scheduler) {
         this.timeToLive = timeToLive;
         this.scheduler = scheduler;
     }
 
     @Override
-    public void initialize(RoutingAppender routingAppender) {
+    public void initialize(final RoutingAppender routingAppender) {
         this.routingAppender = routingAppender;
     }
 
@@ -80,7 +80,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     }
 
     @Override
-    public void update(String key, LogEvent event) {
+    public void update(final String key, final LogEvent event) {
         long now = System.currentTimeMillis();
         appendersUsage.put(key, now);
         if (future == null) {
@@ -123,7 +123,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     public static PurgePolicy createPurgePolicy(
         @PluginAttribute("timeToLive") final String timeToLive,
         @PluginAttribute("timeUnit") final String timeUnit,
-        @PluginConfiguration Configuration configuration) {
+        @PluginConfiguration final Configuration configuration) {
 
         if (timeToLive == null) {
             LOGGER.error("A timeToLive  value is required");

@@ -40,11 +40,11 @@ public class WatchManager extends AbstractLifeCycle {
     private ScheduledFuture<?> future;
     private final ConfigurationScheduler scheduler;
 
-    public WatchManager(ConfigurationScheduler scheduler) {
+    public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = scheduler;
     }
 
-    public void setIntervalSeconds(int intervalSeconds) {
+    public void setIntervalSeconds(final int intervalSeconds) {
         if (!isStarted()) {
             if (this.intervalSeconds > 0 && intervalSeconds == 0) {
                 scheduler.decrementScheduledItems();
@@ -74,7 +74,7 @@ public class WatchManager extends AbstractLifeCycle {
         super.stop();
     }
 
-    public void watchFile(File file, FileWatcher watcher) {
+    public void watchFile(final File file, final FileWatcher watcher) {
         watchers.put(file, new FileMonitor(file.lastModified(), watcher));
 
     }
@@ -103,7 +103,7 @@ public class WatchManager extends AbstractLifeCycle {
             }
         }
 
-        private boolean fileModified(FileMonitor fileMonitor, long lastModfied) {
+        private boolean fileModified(final FileMonitor fileMonitor, final long lastModfied) {
             return lastModfied != fileMonitor.lastModified;
         }
     }
@@ -112,7 +112,7 @@ public class WatchManager extends AbstractLifeCycle {
         private final FileWatcher fileWatcher;
         private long lastModified;
 
-        public FileMonitor(long lastModified, FileWatcher fileWatcher) {
+        public FileMonitor(final long lastModified, final FileWatcher fileWatcher) {
             this.fileWatcher = fileWatcher;
             this.lastModified = lastModified;
         }

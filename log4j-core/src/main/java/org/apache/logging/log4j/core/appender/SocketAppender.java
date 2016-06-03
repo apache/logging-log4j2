@@ -199,7 +199,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             final String name,
             final String immediateFlush,
             final String ignore,
-            Layout<? extends Serializable> layout,
+            final Layout<? extends Serializable> layout,
             final Filter filter,
             final String advertise,
             final Configuration config) {

@@ -50,7 +50,7 @@ class AsyncLoggerDisruptor {
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
     private int ringBufferSize;
 
-    AsyncLoggerDisruptor(String contextName) {
+    AsyncLoggerDisruptor(final String contextName) {
         this.contextName = contextName;
     }
 
@@ -58,7 +58,7 @@ class AsyncLoggerDisruptor {
         return contextName;
     }
 
-    public void setContextName(String name) {
+    public void setContextName(final String name) {
         contextName = name;
     }
 

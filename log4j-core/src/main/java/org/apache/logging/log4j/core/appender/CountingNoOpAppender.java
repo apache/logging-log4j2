@@ -33,7 +33,7 @@ public class CountingNoOpAppender extends AbstractAppender  {
 
     private final AtomicLong total = new AtomicLong();
 
-    public CountingNoOpAppender(String name, Layout<?> layout) {
+    public CountingNoOpAppender(final String name, final Layout<?> layout) {
         super(name, null, layout);
     }
 
@@ -42,7 +42,7 @@ public class CountingNoOpAppender extends AbstractAppender  {
     }
 
     @Override
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         total.incrementAndGet();
     }
 

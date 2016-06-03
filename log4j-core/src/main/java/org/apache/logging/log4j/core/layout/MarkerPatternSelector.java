@@ -74,7 +74,7 @@ public class MarkerPatternSelector implements PatternSelector {
     }
 
     @Override
-    public PatternFormatter[] getFormatters(LogEvent event) {
+    public PatternFormatter[] getFormatters(final LogEvent event) {
         Marker marker = event.getMarker();
         if (marker == null) {
             return defaultFormatters;

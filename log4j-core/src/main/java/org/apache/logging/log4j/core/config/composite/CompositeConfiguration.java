@@ -61,7 +61,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
      *
      * @param configurations The List of Configurations to merge.
      */
-    public CompositeConfiguration(List<? extends AbstractConfiguration> configurations) {
+    public CompositeConfiguration(final List<? extends AbstractConfiguration> configurations) {
         super(ConfigurationSource.NULL_SOURCE);
         rootNode = configurations.get(0).getRootNode();
         this.configurations = configurations;
@@ -167,13 +167,13 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         return new CompositeConfiguration(configs);
     }
 
-    private void staffChildConfiguration(AbstractConfiguration childConfiguration) {
+    private void staffChildConfiguration(final AbstractConfiguration childConfiguration) {
         childConfiguration.setPluginManager(pluginManager);
         childConfiguration.setScriptManager(scriptManager);
         childConfiguration.setup();
     }
 
-    private void printNodes(String indent, Node node, StringBuilder sb) {
+    private void printNodes(final String indent, final Node node, final StringBuilder sb) {
         sb.append(indent).append(node.getName()).append(" type: ").append(node.getType()).append("\n");
         sb.append(indent).append(node.getAttributes().toString()).append("\n");
         for (Node child : node.getChildren()) {

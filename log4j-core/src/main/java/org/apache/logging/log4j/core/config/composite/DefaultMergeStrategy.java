@@ -68,7 +68,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
      * @param configuration The configuration to merge.
      */
     @Override
-    public void mergeRootProperties(Node rootNode, AbstractConfiguration configuration) {
+    public void mergeRootProperties(final Node rootNode, final AbstractConfiguration configuration) {
         for (Map.Entry<String, String> attribute : configuration.getRootNode().getAttributes().entrySet()) {
             boolean isFound = false;
             for (Map.Entry<String, String> targetAttribute : rootNode.getAttributes().entrySet()) {
@@ -112,7 +112,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
      * @param pluginManager The PluginManager.
      */
     @Override
-    public void mergConfigurations(Node target, Node source, PluginManager pluginManager) {
+    public void mergConfigurations(final Node target, final Node source, final PluginManager pluginManager) {
         for (Node sourceChildNode : source.getChildren()) {
             boolean isFilter = isFilterNode(sourceChildNode);
             boolean isMerged = false;
@@ -222,7 +222,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
         }
     }
 
-    private Node getLoggerNode(Node parentNode, String name) {
+    private Node getLoggerNode(final Node parentNode, final String name) {
         for (Node node : parentNode.getChildren()) {
             String nodeName = node.getAttributes().get(NAME);
             if (name == null && nodeName == null) {
@@ -235,8 +235,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
         return null;
     }
 
-    private void updateFilterNode(Node target, Node targetChildNode, Node sourceChildNode,
-            PluginManager pluginManager) {
+    private void updateFilterNode(final Node target, final Node targetChildNode, final Node sourceChildNode,
+            final PluginManager pluginManager) {
         if (CompositeFilter.class.isAssignableFrom(targetChildNode.getType().getPluginClass())) {
             Node node = new Node(targetChildNode, sourceChildNode.getName(), sourceChildNode.getType());
             node.getChildren().addAll(sourceChildNode.getChildren());
@@ -256,15 +256,15 @@ public class DefaultMergeStrategy implements MergeStrategy {
         }
     }
 
-    private boolean isFilterNode(Node node) {
+    private boolean isFilterNode(final Node node) {
         return Filter.class.isAssignableFrom(node.getType().getPluginClass());
     }
 
-    private boolean isSameName(Node node1, Node node2) {
+    private boolean isSameName(final Node node1, final Node node2) {
         return node1.getAttributes().get(NAME).toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
     }
 
-    private boolean isSameReference(Node node1, Node node2) {
+    private boolean isSameReference(final Node node1, final Node node2) {
         return node1.getAttributes().get(REF).toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
     }
 }

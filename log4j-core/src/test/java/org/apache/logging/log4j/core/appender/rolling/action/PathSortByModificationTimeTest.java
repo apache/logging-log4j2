@@ -86,7 +86,7 @@ public class PathSortByModificationTimeTest {
         assertEquals("p1 < p2, same time", 1, sorter.compare(path(p2, a1), path(p1, a1)));
     }
 
-    private PathWithAttributes path(Path path, DummyFileAttributes attributes) {
+    private PathWithAttributes path(final Path path, final DummyFileAttributes attributes) {
         return new PathWithAttributes(path, attributes);
     }
 

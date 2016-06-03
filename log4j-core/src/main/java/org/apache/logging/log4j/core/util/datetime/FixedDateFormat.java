@@ -213,7 +213,7 @@ public class FixedDateFormat {
      * @param format the format to use
      * @return a new {@code FixedDateFormat} object
      */
-    public static FixedDateFormat create(FixedFormat format) {
+    public static FixedDateFormat create(final FixedFormat format) {
         return new FixedDateFormat(format);
     }
 

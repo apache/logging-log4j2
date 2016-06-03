@@ -30,7 +30,7 @@ import org.junit.Test;
 public class PatternSelectorTest {
 
     public class FauxLogger {
-        public String formatEvent(LogEvent event, Layout<?> layout) {
+        public String formatEvent(final LogEvent event, final Layout<?> layout) {
             return new String(layout.toByteArray(event));
         }
     }

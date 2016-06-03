@@ -38,7 +38,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
 public class SimplePerfTest {
     static final int ITERATIONS = 100000;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
 
         Logger logger = LogManager.getLogger();

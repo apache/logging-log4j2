@@ -30,7 +30,7 @@ public class ConfiguratonFileWatcher implements FileWatcher {
     private final Reconfigurable reconfigurable;
     private final List<ConfigurationListener> listeners;
 
-    public ConfiguratonFileWatcher(Reconfigurable reconfigurable, final List<ConfigurationListener> listeners) {
+    public ConfiguratonFileWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners) {
         this.reconfigurable = reconfigurable;
         this.listeners = listeners;
     }
@@ -41,7 +41,7 @@ public class ConfiguratonFileWatcher implements FileWatcher {
 
 
     @Override
-    public void fileModified(File file) {
+    public void fileModified(final File file) {
         for (final ConfigurationListener listener : listeners) {
             final Thread thread = new Log4jThread(new ReconfigurationWorker(listener, reconfigurable));
             thread.setDaemon(true);

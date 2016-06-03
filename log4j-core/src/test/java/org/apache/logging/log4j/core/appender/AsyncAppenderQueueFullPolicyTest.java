@@ -105,7 +105,7 @@ public class AsyncAppenderQueueFullPolicyTest {
     public static class CountingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy {
         static AtomicLong queueFull = new AtomicLong();
         @Override
-        public EventRoute getRoute(long backgroundThreadId, Level level) {
+        public EventRoute getRoute(final long backgroundThreadId, final Level level) {
             queueFull.incrementAndGet();
             return EventRoute.ENQUEUE;
         }

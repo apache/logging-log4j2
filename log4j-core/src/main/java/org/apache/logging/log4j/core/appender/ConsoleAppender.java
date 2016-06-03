@@ -69,7 +69,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions, Target target) {
+            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target) {
         super(name, layout, filter, ignoreExceptions, true, manager);
         this.target = target;
     }

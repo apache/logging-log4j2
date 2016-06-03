@@ -77,7 +77,7 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
      * @param parser       The PatternParser.
      */
     private EqualsReplacementConverter(final List<PatternFormatter> formatters, final String testString,
-                                       final String substitution, PatternParser parser) {
+                                       final String substitution, final PatternParser parser) {
         super("equals", "equals");
         this.testString = testString;
         this.substitution = substitution;

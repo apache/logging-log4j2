@@ -71,7 +71,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         return this;
     }
 
-    public PropertiesConfigurationBuilder setConfigurationSource(ConfigurationSource source) {
+    public PropertiesConfigurationBuilder setConfigurationSource(final ConfigurationSource source) {
         builder.setConfigurationSource(source);
         return this;
     }

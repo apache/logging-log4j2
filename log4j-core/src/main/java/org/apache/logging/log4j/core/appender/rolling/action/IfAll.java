@@ -91,7 +91,7 @@ public final class IfAll implements PathCondition {
      * 
      * @param nestedConditions the conditions to call {@link #beforeFileTreeWalk()} on
      */
-    public static void beforeFileTreeWalk(PathCondition[] nestedConditions) {
+    public static void beforeFileTreeWalk(final PathCondition[] nestedConditions) {
         for (PathCondition condition : nestedConditions) {
             condition.beforeFileTreeWalk();
         }

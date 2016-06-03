@@ -91,13 +91,13 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
         }
     }
 
-    private void updateLastModified(Path... paths) throws IOException {
+    private void updateLastModified(final Path... paths) throws IOException {
         for (Path path : paths) {
             Files.setLastModifiedTime(path, FileTime.fromMillis(System.currentTimeMillis() + 2000));
         }
     }
 
-    private Path writeTextTo(String location) throws IOException {
+    private Path writeTextTo(final String location) throws IOException {
         Path path = Paths.get(location);
         Files.createDirectories(path.getParent());
         try (BufferedWriter buffy = Files.newBufferedWriter(path, Charset.defaultCharset())) {

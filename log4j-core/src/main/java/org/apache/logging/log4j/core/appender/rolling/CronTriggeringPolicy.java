@@ -44,7 +44,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
     private final Configuration configuration;
     private final boolean checkOnStartup;
 
-    private CronTriggeringPolicy(CronExpression schedule, boolean checkOnStartup, Configuration configuration) {
+    private CronTriggeringPolicy(final CronExpression schedule, final boolean checkOnStartup, final Configuration configuration) {
         this.cronExpression = schedule;
         this.configuration = configuration;
         this.checkOnStartup = checkOnStartup;
@@ -89,7 +89,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
      */
     @PluginFactory
     public static CronTriggeringPolicy createPolicy(
-            @PluginConfiguration Configuration configuration,
+            @PluginConfiguration final Configuration configuration,
             @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
             @PluginAttribute("schedule") final String schedule) {
         CronExpression cronExpression;
@@ -107,7 +107,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
         return new CronTriggeringPolicy(cronExpression, checkOnStartup, configuration);
     }
 
-    private static CronExpression getSchedule(String expression) {
+    private static CronExpression getSchedule(final String expression) {
         try {
             return new CronExpression(expression);
         } catch (ParseException pe) {

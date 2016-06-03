@@ -164,7 +164,7 @@ public class CompositeConfigurationTest {
 
     } */
 
-    private void runTest(LoggerContextRule rule, Statement statement) {
+    private void runTest(final LoggerContextRule rule, final Statement statement) {
         try {
             rule.apply(statement, Description
                     .createTestDescription(getClass(), Thread.currentThread().getStackTrace()[1].getMethodName()))

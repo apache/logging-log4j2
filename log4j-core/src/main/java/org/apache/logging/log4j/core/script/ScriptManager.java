@@ -52,7 +52,7 @@ public class ScriptManager implements FileWatcher, Serializable {
     private final WatchManager watchManager;
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
 
-    public ScriptManager(WatchManager watchManager) {
+    public ScriptManager(final WatchManager watchManager) {
         this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
         if (logger.isDebugEnabled()) {

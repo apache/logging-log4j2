@@ -65,7 +65,7 @@ public class ConfigurationAssemblerTest {
         }
     }
 
-    private void validate(Configuration config) {
+    private void validate(final Configuration config) {
         assertNotNull(config);
         assertNotNull(config.getName());
         assertFalse(config.getName().isEmpty());

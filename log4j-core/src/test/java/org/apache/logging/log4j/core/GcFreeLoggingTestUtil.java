@@ -70,7 +70,7 @@ public class GcFreeLoggingTestUtil {
         final AtomicBoolean samplingEnabled = new AtomicBoolean(true);
         final Sampler sampler = new Sampler() {
             @Override
-            public void sampleAllocation(int count, String desc, Object newObj, long size) {
+            public void sampleAllocation(final int count, final String desc, final Object newObj, final long size) {
                 if (!samplingEnabled.get()) {
                     return;
                 }
@@ -108,7 +108,7 @@ public class GcFreeLoggingTestUtil {
         Thread.sleep(100);
     }
 
-    public static void runTest(Class<?> cls) throws Exception {
+    public static void runTest(final Class<?> cls) throws Exception {
         final String javaHome = System.getProperty("java.home");
         final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         final String classpath = System.getProperty("java.class.path");

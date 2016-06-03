@@ -48,7 +48,7 @@ public class ScriptFile extends AbstractScript {
     private final boolean isWatched;
 
 
-    public ScriptFile(String name, Path filePath, String language, boolean isWatched, String scriptText) {
+    public ScriptFile(final String name, final Path filePath, final String language, final boolean isWatched, final String scriptText) {
         super(name, language, scriptText);
         this.filePath = filePath;
         this.isWatched = isWatched;

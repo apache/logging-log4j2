@@ -33,11 +33,11 @@ import java.nio.ByteBuffer;
  */
 public class EncodingListAppender extends ListAppender {
 
-    public EncodingListAppender(String name) {
+    public EncodingListAppender(final String name) {
         super(name);
     }
 
-    public EncodingListAppender(String name, Filter filter, Layout<? extends Serializable> layout, boolean newline, boolean raw) {
+    public EncodingListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final boolean newline, final boolean raw) {
         super(name, filter, layout, newline, raw);
     }
 

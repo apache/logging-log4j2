@@ -90,7 +90,7 @@ public class CsvParameterLayoutTest {
         assertEquals("text/csv; charset=UTF-8", layout.getContentType());
     }
 
-    static void testLayoutNormalApi(final Logger root, final AbstractCsvLayout layout, boolean messageApi) throws Exception {
+    static void testLayoutNormalApi(final Logger root, final AbstractCsvLayout layout, final boolean messageApi) throws Exception {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);

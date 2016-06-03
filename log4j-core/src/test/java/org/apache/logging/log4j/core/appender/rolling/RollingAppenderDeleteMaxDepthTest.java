@@ -87,7 +87,7 @@ public class RollingAppenderDeleteMaxDepthTest {
         assertTrue(p4 + " should not have been deleted", Files.exists(p4));
     }
 
-    private Path writeTextTo(String location) throws IOException {
+    private Path writeTextTo(final String location) throws IOException {
         Path path = Paths.get(location);
         Files.createDirectories(path.getParent());
         try (BufferedWriter buffy = Files.newBufferedWriter(path, Charset.defaultCharset())) {
@@ -109,7 +109,7 @@ public class RollingAppenderDeleteMaxDepthTest {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Pattern p = Pattern.compile("test-.?[2,4,6,8,0]\\.log\\.gz");
         for (int i = 0; i < 16; i++) {
             String str = "test-" + i + ".log.gz";

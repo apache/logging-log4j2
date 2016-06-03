@@ -77,7 +77,7 @@ public class Duration implements Serializable, Comparable<Duration> {
      *
      * @param seconds the length of the duration in seconds, positive or negative
      */
-    private Duration(long seconds) {
+    private Duration(final long seconds) {
         super();
         this.seconds = seconds;
     }
@@ -114,7 +114,7 @@ public class Duration implements Serializable, Comparable<Duration> {
      * @return the parsed duration, not null
      * @throws IllegalArgumentException if the text cannot be parsed to a duration
      */
-    public static Duration parse(CharSequence text) {
+    public static Duration parse(final CharSequence text) {
         Objects.requireNonNull(text, "text");
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
@@ -181,7 +181,7 @@ public class Duration implements Serializable, Comparable<Duration> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
@@ -251,7 +251,7 @@ public class Duration implements Serializable, Comparable<Duration> {
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
-    public int compareTo(Duration other) {
+    public int compareTo(final Duration other) {
         return Long.signum(toMillis() - other.toMillis());
     }
 }

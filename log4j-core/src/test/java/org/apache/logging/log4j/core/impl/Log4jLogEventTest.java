@@ -221,7 +221,7 @@ public class Log4jLogEventTest {
     }
 
     @SuppressWarnings("deprecation")
-    private void verifyNanoTimeWithAllConstructors(long expected) {
+    private void verifyNanoTimeWithAllConstructors(final long expected) {
         assertEquals(expected, Log4jLogEvent.getNanoClock().nanoTime());
 
         assertEquals("No-arg constructor", expected, new Log4jLogEvent().getNanoTime());
@@ -464,11 +464,11 @@ public class Log4jLogEventTest {
         different("null exception", builder(event).setThrown(null), event);
     }
 
-    private static Log4jLogEvent.Builder builder(LogEvent event) {
+    private static Log4jLogEvent.Builder builder(final LogEvent event) {
         return new Log4jLogEvent.Builder(event);
     }
 
-    private void different(String reason, Log4jLogEvent.Builder builder, LogEvent event) {
+    private void different(final String reason, final Log4jLogEvent.Builder builder, final LogEvent event) {
         final LogEvent other = builder.build();
         assertNotEquals(reason, other, event);
         assertNotEquals(reason + " hashCode", other.hashCode(), event.hashCode());

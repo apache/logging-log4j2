@@ -106,7 +106,7 @@ public class RoutingAppenderWithPurgingTest {
         assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
     }
 
-    private void assertFileExistance(String... files) {
+    private void assertFileExistance(final String... files) {
     	for (String file : files) {
 			assertTrue("File should exist - " + file + " file ", new File(file).exists());
 		}

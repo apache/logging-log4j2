@@ -290,7 +290,7 @@ public class PatternParserTest {
         testFirstConverter(pattern, ThreadPriorityPatternConverter.class);
     }
 
-    private void testFirstConverter(final String pattern, Class<?> checkClass) {
+    private void testFirstConverter(final String pattern, final Class<?> checkClass) {
         final List<PatternFormatter> formatters = parser.parse(pattern);
         assertNotNull(formatters);
         final String msg = formatters.toString();

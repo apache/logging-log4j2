@@ -187,7 +187,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      * @return a new DocumentBuilder
      * @throws ParserConfigurationException
      */
-    static DocumentBuilder newDocumentBuilder(boolean xIncludeAware) throws ParserConfigurationException {
+    static DocumentBuilder newDocumentBuilder(final boolean xIncludeAware) throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         if (xIncludeAware) {

@@ -458,7 +458,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             return new DefaultConfiguration();
         }
 
-        private Configuration getConfiguration(String configLocationStr) {
+        private Configuration getConfiguration(final String configLocationStr) {
             ConfigurationSource source = null;
             try {
                 source = getInputFromUri(NetUtils.toURI(configLocationStr));

@@ -54,7 +54,7 @@ public class KafkaAppenderTest {
         }
 
         @Override
-        public void close(long timeout, TimeUnit timeUnit) {
+        public void close(final long timeout, final TimeUnit timeUnit) {
             try {
                 Thread.sleep(timeUnit.toMillis(timeout));
             } catch (InterruptedException ignore) {
@@ -132,7 +132,7 @@ public class KafkaAppenderTest {
         assertEquals(LOG_MESSAGE, deserializeLogEvent(item.value()).getMessage().getFormattedMessage());
     }
 
-    private LogEvent deserializeLogEvent(byte[] data) throws IOException, ClassNotFoundException {
+    private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         try (ObjectInput ois = new ObjectInputStream(bis)) {
             return (LogEvent) ois.readObject();

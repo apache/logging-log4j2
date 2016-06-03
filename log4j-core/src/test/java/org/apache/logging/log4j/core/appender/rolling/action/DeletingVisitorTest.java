@@ -116,7 +116,7 @@ public class DeletingVisitorTest {
         PathCondition filter = new PathCondition() {
 
             @Override
-            public boolean accept(Path baseDir, Path relativePath, BasicFileAttributes attrs) {
+            public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
                 Path expected = Paths.get("relative");
                 assertEquals(expected, relativePath);
                 return true;

@@ -257,12 +257,12 @@ public class AbstractFilterableTest {
 
     private class EqualFilter extends AbstractFilter {
         private final String key;
-        public EqualFilter(String key) {
+        public EqualFilter(final String key) {
             this.key = key;
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             if (this == o) return true;
             if (!(o instanceof EqualFilter)) return false;
 

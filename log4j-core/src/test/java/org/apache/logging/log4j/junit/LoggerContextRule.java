@@ -122,7 +122,7 @@ public class LoggerContextRule implements TestRule {
      * @param cls  The target Appender class
      * @return the named Appender or {@code null} if it wasn't defined in the configuration.
      */
-    public <T extends Appender> T getAppender(final String name, Class<T> cls) {
+    public <T extends Appender> T getAppender(final String name, final Class<T> cls) {
         return cls.cast(getConfiguration().getAppenders().get(name));
     }
 
@@ -200,7 +200,7 @@ public class LoggerContextRule implements TestRule {
      * @return the named Appender.
      * @throws AssertionError if the Appender doesn't exist.
      */
-    public <T extends Appender> T getRequiredAppender(final String name, Class<T> cls) {
+    public <T extends Appender> T getRequiredAppender(final String name, final Class<T> cls) {
         final T appender = getAppender(name, cls);
         assertNotNull("Appender named " + name + " was null.", appender);
         return appender;

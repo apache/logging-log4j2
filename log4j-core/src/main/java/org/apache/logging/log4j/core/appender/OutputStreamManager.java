@@ -143,7 +143,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param immediateFlush If true, flushes after writing.
      * @throws AppenderLoggingException if an error occurs.
      */
-    protected void write(final byte[] bytes, boolean immediateFlush)  {
+    protected void write(final byte[] bytes, final boolean immediateFlush)  {
         write(bytes, 0, bytes.length, immediateFlush);
     }
 
@@ -168,7 +168,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param immediateFlush flushes immediately after writing.
      * @throws AppenderLoggingException if an error occurs.
      */
-    protected synchronized void write(final byte[] bytes, final int offset, final int length, boolean immediateFlush) {
+    protected synchronized void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         if (immediateFlush && byteBuffer.position() == 0) {
             writeToDestination(bytes, offset, length);
             flushDestination();

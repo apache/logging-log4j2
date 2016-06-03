@@ -126,7 +126,7 @@ public abstract class AbstractLoggerTest {
         testMessage("message{%s}");
     }
 
-    private void testMessage(String string) {
+    private void testMessage(final String string) {
         final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         root.info("Test info " + string);
         root.config("Test info " + string);
@@ -173,7 +173,7 @@ public abstract class AbstractLoggerTest {
         testLambdaMessages("message{%s}");
     }
 
-    private void testLambdaMessages(String string) {
+    private void testLambdaMessages(final String string) {
         // TODO FOR JAVA 8
         // final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         // root.info(() -> "Test info " + string);
