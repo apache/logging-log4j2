@@ -108,7 +108,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         this.varargs = null;
         this.messagePattern = messagePattern;
         this.argCount = argCount;
-        int placeholderCount = count(messagePattern, indices);
+        final int placeholderCount = count(messagePattern, indices);
         initThrowable(paramArray, argCount, placeholderCount);
         this.usedCount = Math.min(placeholderCount, argCount);
     }
@@ -130,26 +130,26 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         }
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object... arguments) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object... arguments) {
         init(messagePattern, arguments == null ? 0 : arguments.length, arguments);
         varargs = arguments;
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0) {
         params[0] = p0;
         init(messagePattern, 1, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1) {
         params[0] = p0;
         params[1] = p1;
         init(messagePattern, 2, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
@@ -157,7 +157,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
@@ -166,7 +166,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
@@ -176,7 +176,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
@@ -187,8 +187,8 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
@@ -200,8 +200,8 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6, Object p7) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
@@ -214,8 +214,8 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6, Object p7, Object p8) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
@@ -229,8 +229,8 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         return this;
     }
 
-    ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6, Object p7, Object p8, Object p9) {
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;

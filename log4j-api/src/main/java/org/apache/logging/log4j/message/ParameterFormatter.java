@@ -75,7 +75,7 @@ final class ParameterFormatter {
         if (messagePattern == null) {
             return 0;
         }
-        int length = messagePattern.length();
+        final int length = messagePattern.length();
         int result = 0;
         boolean isEscaped = false;
         for (int i = 0; i < length - 1; i++) {
@@ -105,7 +105,7 @@ final class ParameterFormatter {
         if (messagePattern == null) {
             return 0;
         }
-        int length = messagePattern.length();
+        final int length = messagePattern.length();
         int result = 0;
         boolean isEscaped = false;
         for (int i = 0; i < length - 1; i++) {
@@ -134,7 +134,7 @@ final class ParameterFormatter {
      * @param messagePattern the message pattern to be analyzed.
      * @return the number of unescaped placeholders.
      */
-    static int countArgumentPlaceholders3(final char[] messagePattern, int length, final int[] indices) {
+    static int countArgumentPlaceholders3(final char[] messagePattern, final int length, final int[] indices) {
         int result = 0;
         boolean isEscaped = false;
         for (int i = 0; i < length - 1; i++) {
@@ -229,7 +229,7 @@ final class ParameterFormatter {
         int escapeCounter = 0;
         int currentArgument = 0;
         int i = 0;
-        int len = messagePattern.length();
+        final int len = messagePattern.length();
         for (; i < len - 1; i++) { // last char is excluded from the loop
             final char curChar = messagePattern.charAt(i);
             if (curChar == ESCAPE_CHAR) {
@@ -275,7 +275,7 @@ final class ParameterFormatter {
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static void handleRemainingCharIfAny(final String messagePattern, final int len,
-            final StringBuilder buffer, int escapeCounter, int i) {
+            final StringBuilder buffer, final int escapeCounter, final int i) {
         if (i == len - 1) {
             final char curChar = messagePattern.charAt(i);
             handleLastChar(buffer, escapeCounter, curChar);

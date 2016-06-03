@@ -43,7 +43,7 @@ public class JsonMessage implements Message {
     public String getFormattedMessage() {
         try {
             return mapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (final JsonProcessingException e) {
             StatusLogger.getLogger().catching(e);
             return object.toString();
         }

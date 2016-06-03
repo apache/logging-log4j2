@@ -78,7 +78,7 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
 
     @Override
     public Message newMessage(final CharSequence charSequence) {
-        ReusableSimpleMessage result = getSimple();
+        final ReusableSimpleMessage result = getSimple();
         result.set(charSequence);
         return result;
     }
@@ -164,7 +164,7 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
      */
     @Override
     public Message newMessage(final String message) {
-        ReusableSimpleMessage result = getSimple();
+        final ReusableSimpleMessage result = getSimple();
         result.set(message);
         return result;
     }
@@ -180,7 +180,7 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
      */
     @Override
     public Message newMessage(final Object message) {
-        ReusableObjectMessage result = getObject();
+        final ReusableObjectMessage result = getObject();
         result.set(message);
         return result;
     }

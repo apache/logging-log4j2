@@ -29,7 +29,7 @@ public class ReusableParameterizedMessageTest {
     @Test
     public void testNoArgs() {
         final String testMsg = "Test message {}";
-        ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
+        final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         msg.set(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
@@ -129,7 +129,7 @@ public class ReusableParameterizedMessageTest {
     @Test
     public void testThrowable() {
         final String testMsg = "Test message {}";
-        ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
+        final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         final Throwable EXCEPTION1 = new IllegalAccessError("#1");
         msg.set(testMsg, "msg", EXCEPTION1);
         assertSame(EXCEPTION1, msg.getThrowable());
