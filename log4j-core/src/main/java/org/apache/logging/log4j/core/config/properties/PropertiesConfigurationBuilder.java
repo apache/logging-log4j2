@@ -120,24 +120,56 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
 
-        final Map<String, Properties> filters = PropertiesUtil.partitionOnCommonPrefixes(
-            PropertiesUtil.extractSubset(rootProperties, "filter"));
-        for (final Map.Entry<String, Properties> entry : filters.entrySet()) {
-            builder.add(createFilter(entry.getKey().trim(), entry.getValue()));
+        String filterProp = rootProperties.getProperty("filters");
+        if (filterProp != null) {
+            String[] filterNames = filterProp.split(",");
+            for (String filterName : filterNames) {
+                String name = filterName.trim();
+                builder.add(createFilter(name, PropertiesUtil.extractSubset(rootProperties, "filter." + name)));
+            }
+        } else {
+
+            final Map<String, Properties> filters = PropertiesUtil
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "filter"));
+            for (final Map.Entry<String, Properties> entry : filters.entrySet()) {
+                builder.add(createFilter(entry.getKey().trim(), entry.getValue()));
+            }
         }
 
-        final Map<String, Properties> appenders = PropertiesUtil.partitionOnCommonPrefixes(
-            PropertiesUtil.extractSubset(rootProperties, "appender"));
-        for (final Map.Entry<String, Properties> entry : appenders.entrySet()) {
-            builder.add(createAppender(entry.getKey().trim(), entry.getValue()));
+        String appenderProp = rootProperties.getProperty("appenders");
+        if (appenderProp != null) {
+            String[] appenderNames = appenderProp.split(",");
+            for (String appenderName : appenderNames) {
+                String name = appenderName.trim();
+                builder.add(createAppender(appenderName.trim(),
+                        PropertiesUtil.extractSubset(rootProperties, "appender." + name)));
+            }
+        } else {
+            final Map<String, Properties> appenders = PropertiesUtil
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "appender"));
+            for (final Map.Entry<String, Properties> entry : appenders.entrySet()) {
+                builder.add(createAppender(entry.getKey().trim(), entry.getValue()));
+            }
         }
 
-        final Map<String, Properties> loggers = PropertiesUtil.partitionOnCommonPrefixes(
-            PropertiesUtil.extractSubset(rootProperties, "logger"));
-        for (final Map.Entry<String, Properties> entry : loggers.entrySet()) {
-            final String name = entry.getKey().trim();
-            if (!name.equals(LoggerConfig.ROOT)) {
-                builder.add(createLogger(name, entry.getValue()));
+        String loggerProp = rootProperties.getProperty("loggers");
+        if (loggerProp != null) {
+            String[] loggerNames = loggerProp.split(",");
+            for (String loggerName : loggerNames) {
+                String name = loggerName.trim();
+                if (!name.equals(LoggerConfig.ROOT)) {
+                    builder.add(createLogger(name, PropertiesUtil.extractSubset(rootProperties, "logger." +
+                            name)));
+                }
+            }
+        } else {
+            final Map<String, Properties> loggers = PropertiesUtil
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "logger"));
+            for (final Map.Entry<String, Properties> entry : loggers.entrySet()) {
+                final String name = entry.getKey().trim();
+                if (!name.equals(LoggerConfig.ROOT)) {
+                    builder.add(createLogger(name, entry.getValue()));
+                }
             }
         }
 

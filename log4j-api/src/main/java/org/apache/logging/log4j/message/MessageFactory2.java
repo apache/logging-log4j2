@@ -22,6 +22,7 @@ package org.apache.logging.log4j.message;
  * @see ParameterizedMessageFactory
  */
 public interface MessageFactory2 extends MessageFactory {
+    
     /**
      * Creates a new message for the specified CharSequence.
      * @param charSequence the (potentially mutable) CharSequence

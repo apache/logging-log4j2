@@ -24,6 +24,24 @@
   </properties>
   <body>
     <release version="2.6.1" date="2016-MM-DD" description="GA Release 2.6.1">
+      <action issue="LOG4J2-997" dev="rgoers" type="fix" due-to="Maytee Chinavanichkit">
+        Add filter and remove filter were not working properly in AbstractFilterable.
+      </action>
+      <action issue="LOG4J2-1032" dev="rgoers" type="fix">
+        Change RenameAction to use java.nio to better report rename failures.
+      </action>
+      <action issue="LOG4J2-1407" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Misleading WARN log events from Log4j about message factories and unexpected formatting.
+      </action>
+      <action issue="LOG4J2-1408" dev="ggregory" type="fix" due-to="Gary Gregory">
+        The module log4j-liquibase is missing from BOM POM.
+      </action>
+      <action issue="LOG4J2-1180" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Logger cache does not account for message factory.
+      </action>
+      <action issue="LOG4J2-1402" dev="rgoers" type="fix">
+        Fix regression in properties configuration to support arbitrary component ids.
+      </action>
       <action issue="LOG4J2-1385" dev="ggregory" type="update">
         (GC) CSV layouts should not create a new CSVPrinter for each log event.
       </action>

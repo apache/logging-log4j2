@@ -41,7 +41,7 @@ import static org.junit.Assert.*;
  */
 public class SyslogLayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
 
     private static final String line1 = "starting mdc pattern test";

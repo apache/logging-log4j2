@@ -49,7 +49,7 @@ import static org.junit.Assert.*;
 public class SerializedLayoutTest {
     private static final String DAT_PATH = "target/test-classes/serializedEvent.dat";
     LoggerContext ctx = LoggerContext.getContext();
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
