@@ -69,7 +69,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(float value) {
+    public static StringBuilder box(final float value) {
         return getSB().append(value);
     }
 
@@ -81,7 +81,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(double value) {
+    public static StringBuilder box(final double value) {
         return getSB().append(value);
     }
 
@@ -93,7 +93,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(short value) {
+    public static StringBuilder box(final short value) {
         return getSB().append(value);
     }
 
@@ -105,7 +105,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(int value) {
+    public static StringBuilder box(final int value) {
         return getSB().append(value);
     }
 
@@ -117,7 +117,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(char value) {
+    public static StringBuilder box(final char value) {
         return getSB().append(value);
     }
 
@@ -129,7 +129,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(long value) {
+    public static StringBuilder box(final long value) {
         return getSB().append(value);
     }
 
@@ -141,7 +141,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(byte value) {
+    public static StringBuilder box(final byte value) {
         return getSB().append(value);
     }
 
@@ -153,7 +153,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(boolean value) {
+    public static StringBuilder box(final boolean value) {
         return getSB().append(value);
     }
 

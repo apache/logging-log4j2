@@ -26,7 +26,7 @@ public class UnboxTest {
 
     @Test
     public void testBoxHas16Slots() throws Exception {
-        StringBuilder[] probe = new StringBuilder[16 * 3];
+        final StringBuilder[] probe = new StringBuilder[16 * 3];
         for (int i = 0; i <= probe.length - 8; ) {
             probe[i++] = Unbox.box(true);
             probe[i++] = Unbox.box('c');
@@ -118,7 +118,7 @@ public class UnboxTest {
     public void testBoxIsThreadLocal() throws Exception {
         final StringBuilder[] probe = new StringBuilder[16 * 3];
         populate(0, probe);
-        Thread t1 = new Thread() {
+        final Thread t1 = new Thread() {
             @Override
             public void run() {
                 populate(16, probe);
@@ -126,7 +126,7 @@ public class UnboxTest {
         };
         t1.start();
         t1.join();
-        Thread t2 = new Thread() {
+        final Thread t2 = new Thread() {
             @Override
             public void run() {
                 populate(16, probe);
