@@ -52,7 +52,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
 
     private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
 
-    private List<? extends AbstractConfiguration> configurations;
+    private final List<? extends AbstractConfiguration> configurations;
 
     private MergeStrategy mergeStrategy;
 

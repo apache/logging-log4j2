@@ -281,7 +281,7 @@ public class ResponseTimeTest {
         private long unitsCompletedAtCatchUpStart;
         private double catchUpThroughputInUnitsPerNsec;
         private double catchUpRateMultiple;
-        private IdleStrategy idleStrategy;
+        private final IdleStrategy idleStrategy;
 
         public Pacer(double unitsPerSec, IdleStrategy idleStrategy) {
             this(unitsPerSec, 3.0, idleStrategy); // Default to catching up at 3x the set throughput

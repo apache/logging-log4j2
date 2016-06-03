@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "CountingNoOp", category = "Core", elementType = "appender", printObject = true)
 public class CountingNoOpAppender extends AbstractAppender  {
 
-    private AtomicLong total = new AtomicLong();
+    private final AtomicLong total = new AtomicLong();
 
     public CountingNoOpAppender(String name, Layout<?> layout) {
         super(name, null, layout);
