@@ -30,6 +30,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public class ReusableParameterizedMessage implements ReusableMessage {
 
+    private static final int MAX_PARMS = 10;
     private static final long serialVersionUID = 7800075879295123856L;
     private static ThreadLocal<StringBuilder> buffer = new ThreadLocal<>();
 
@@ -38,7 +39,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     private int usedCount;
     private final int[] indices = new int[256];
     private transient Object[] varargs;
-    private transient Object[] params = new Object[10];
+    private transient Object[] params = new Object[MAX_PARMS];
     private transient Throwable throwable;
 
     /**
@@ -61,7 +62,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         Object[] result;
         if (varargs == null) {
             result = params;
-            if (emptyReplacement.length >= 10) {
+            if (emptyReplacement.length >= MAX_PARMS) {
                 params = emptyReplacement;
             } else {
                 // Bad replacement! Too small, may blow up future 10-arg messages.
@@ -71,7 +72,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
                     result = emptyReplacement;
                 } else {
                     // replacement array is too small for current content and future content: discard it
-                    params = new Object[10];
+                    params = new Object[MAX_PARMS];
                 }
             }
         } else {
