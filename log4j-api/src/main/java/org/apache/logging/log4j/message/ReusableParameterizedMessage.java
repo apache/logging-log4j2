@@ -30,6 +30,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public class ReusableParameterizedMessage implements ReusableMessage {
 
+    private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
     private static final long serialVersionUID = 7800075879295123856L;
     private static ThreadLocal<StringBuilder> buffer = new ThreadLocal<>();
@@ -291,7 +292,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         StringBuilder result = buffer.get();
         if (result == null) {
             final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
-            result = new StringBuilder(Math.min(512, currentPatternLength * 2));
+            result = new StringBuilder(Math.min(MIN_BUILDER_SIZE, currentPatternLength * 2));
             buffer.set(result);
         }
         result.setLength(0);
