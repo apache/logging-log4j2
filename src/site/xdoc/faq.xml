@@ -39,9 +39,8 @@
         <li><a href="#retention">How do I set my log archive retention policy? How do I delete old log archives?</a></li>
         <li><a href="#api-tradeoffs">What are the trade-offs of using the Log4j 2 API versus the SLF4J API?</a></li>
         <li><a href="#gc-free-slf4j">Is Log4j 2 still garbage-free when I use the SLF4J API?</a></li>
-        <!--
-        <li><a href="#custom_plugin">How do I get log4j2 to recognize my custom plugin?</a></li>
-        -->
+        <li><a href="#gc-free-domain-object">How do I log my domain object without creating garbage?</a> </li>
+
       </ul>
       <subsection>
         <a name="missing_core"/>
@@ -135,11 +134,11 @@
           Be aware that these classes are not part of the public API so your code may break with any minor release.
         </p>
         <pre class="prettyprint linenums">// import org.apache.logging.log4j.core.LoggerContext;
-          // import org.apache.logging.log4j.core.config.Configurator;
+// import org.apache.logging.log4j.core.config.Configurator;
 
-          // get the current context
-          LoggerContext context = (LoggerContext) LogManager.getContext();
-          Configurator.shutdown(context);
+// get the current context
+LoggerContext context = (LoggerContext) LogManager.getContext();
+Configurator.shutdown(context);
         </pre>
 
         <a name="config_sep_appender_level"/>
@@ -269,10 +268,10 @@
         </p>
         <pre class="prettyprint linenums">// org.apache.logging.log4j.core.config.Configurator;
 
-          Configurator.setLevel("com.example.Foo", Level.DEBUG);
+Configurator.setLevel("com.example.Foo", Level.DEBUG);
 
-          // You can also set the root logger:
-          Configurator.setRootLevel(Level.DEBUG);
+// You can also set the root logger:
+Configurator.setRootLevel(Level.DEBUG);
         </pre>
 
         <a name="retention"/>
@@ -312,6 +311,11 @@
           There are several advantages to using the Log4j 2 API:
         </p>
         <ul>
+          <li>SLF4J forces your application to log Strings.
+            The Log4j 2 API supports logging any CharSequence if you want to log text, but also
+            supports logging any Object as is.
+            It is the responsibility of the logging <em>implementation</em> to handle this object,
+            and we consider it a design mistake to limit applications to logging Strings.</li>
           <li>
             The Log4j 2 API offers support for logging <a href="manual/messages.html">Message objects</a>.
             Messages allow support for interesting and complex constructs to be passed
@@ -337,14 +341,37 @@
           More than that uses varargs which creates a temporary object for the parameter array.
           The Log4j 2.6 API has methods for up to ten unrolled parameters.</p>
         <p>
-          Another consideration is that the Log4j 2 API lets you log Objects, not just Strings.
-          Any Object that implements java.lang.CharSequence can be logged without creating garbage.
+          Another consideration is that the SLF4J API forces your application to log Strings.
+          Log4j 2 API lets you log any java.lang.CharSequence, and even any Objects.
+          Log4j can log any Object that implements <tt>java.lang.CharSequence</tt>
+          or <tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt> without creating garbage.
         </p>
         <p>
           The <tt>org.slf4j.spi.LocationAwareLogger::<a href="http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker, java.lang.String, int, java.lang.String, java.lang.Object[], java.lang.Throwable)">log</a></tt>
           method is not yet implemented
           in a garbage-free manner in the log4j-slf4j-impl binding. It creates a new message object for each call.
         </p>
+
+        <a name="gc-free-domain-object" />
+        <h4>How do I log my domain object without creating garbage?</h4>
+        <p>One option is to let the domain object implement java.lang.CharSequence.
+          However, for many domain objects it may not be trivial to implement this without allocating temporary
+          objects.</p>
+        <p>An alternative is to implement the <tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt> interface.
+          If an object is logged that implements this interface, its <tt>formatTo</tt> method is called instead of
+          <tt>toString()</tt>.
+        </p>
+        <pre class="prettyprint linenums">package org.apache.logging.log4j.util;
+public interface StringBuilderFormattable {
+    /**
+     * Writes a text representation of this object into the specified {@code StringBuilder},
+     * ideally without allocating temporary objects.
+     *
+     * @param buffer the StringBuilder to write into
+     */
+     void formatTo(StringBuilder buffer);
+}
+</pre>
       </subsection>
     </section>
 
