@@ -822,7 +822,7 @@ public class Bar {
               Prior to version 2.6,
               the properties configuration requires that you list the identifiers of the appenders, filters and loggers,
               in a comma separated list in properties with those names. Each of those components will then be expected
-              to be defined in sets of properties that begin with <i>component.&lt.identifier&gt.</i>. The identifier does not
+              to be defined in sets of properties that begin with <i>component.&lt;.identifier&gt;.</i>. The identifier does not
               have to match the name of the component being defined but must uniquely identify all the attributes and
               subcomponents that are part of the component. If the list of identifiers is not present the
               identier must not contain a '.'. Each individual component MUST have a "type" attribute
