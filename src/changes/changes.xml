@@ -58,6 +58,9 @@
       <action issue="LOG4J2-1399" dev="ggregory" type="update">
         Update Apache Commons CSV from 1.3 to 1.4.
       </action>
+      <action issue="LOG4J2-1411" dev="mattsicker" type="add">
+        Add documentation about plugin builders compared to factories.
+      </action>
     </release>
     <release version="2.6" date="2016-05-25" description="GA Release 2.6">
       <action issue="LOG4J2-1270" dev="rpopma" type="add">

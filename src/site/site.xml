@@ -201,6 +201,7 @@
         <item name="Appenders" href="/manual/extending.html#Appenders"/>
         <item name="Layouts" href="/manual/extending.html#Layouts"/>
         <item name="PatternConverters" href="/manual/extending.html#PatternConverters"/>
+        <item name="Plugin Builders" href="/manual/extending.html#Plugin_Builders"/>
         <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
       </item>
 
