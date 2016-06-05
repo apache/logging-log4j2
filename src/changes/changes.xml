@@ -50,7 +50,7 @@
         Fix regression in properties configuration to support arbitrary component ids.
       </action>
       <action issue="LOG4J2-1385" dev="ggregory" type="update">
-        (GC) CSV layouts should not create a new CSVPrinter for each log event.
+        (GC) CSV layouts should not create a new CSVPrinter for each log event. Requires Apache Commons CSV 1.4.
       </action>
       <action issue="LOG4J2-1398" dev="ggregory" type="update">
         Update liquibase-core from 3.4.2 to 3.5.1.
