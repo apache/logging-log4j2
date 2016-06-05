@@ -33,6 +33,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     protected final Layout<?> layout;
     protected ByteBuffer byteBuffer;
     private volatile OutputStream os;
+    private boolean skipFooter = false;
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
@@ -81,6 +82,14 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     }
 
     /**
+     * Indicate whether the footer should be skipped or not.
+     * @param skipFooter true if the footer should be skipped.
+     */
+    public void skipFooter(boolean skipFooter) {
+        this.skipFooter = skipFooter;
+    }
+
+    /**
      * Default hook to write footer during close.
      */
     @Override
@@ -93,7 +102,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * Writes the footer.
      */
     protected void writeFooter() {
-        if (layout == null) {
+        if (layout == null || skipFooter) {
             return;
         }
         final byte[] footer = layout.getFooter();
