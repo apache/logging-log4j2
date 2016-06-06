@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.util;/*
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,6 +14,8 @@ package org.apache.logging.log4j.util;/*
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
+package org.apache.logging.log4j.util;
 
 import org.junit.Test;
 
