@@ -27,6 +27,11 @@ import static org.junit.Assert.*;
 public class UnboxTest {
 
     @Test
+    public void testBoxClaimsItHas32Slots() throws Exception {
+        assertEquals(32, Unbox.getRingbufferSize());
+    }
+
+    @Test
     public void testBoxHas32Slots() throws Exception {
         final int MAX = 32;
         final StringBuilder[] probe = new StringBuilder[MAX * 3];
