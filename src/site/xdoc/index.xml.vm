@@ -131,10 +131,32 @@
 
           <subsection name="News">
             <p>
-              Log4j 2 is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter
+              Log4j ${Log4jReleaseVersion} is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter
               is available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for
               Apache Commons Logging and SLF4J.
             </p>
+            <p>
+              Log4j ${Log4jReleaseVersion} is the latest release of Log4j and contains several bug fixes that were
+              found after the release of Log4j 2.6. The list of fixes can be found in the latest
+              <a href="changes-report.html#a2.6.1">changes report</a>.
+            </p>
+            <p>
+              Note that subsequent to the release of Log4j 2.6 a minor source incompatibility with prior releass was
+              found due to the addition of new methods to the Logger interface. If you have code that does:</p>
+            <pre>
+              logger.error(null, "This is the log message", throwable);
+            </pre>
+            <p>
+              or similar with any log level you will get a compiler error saying the reference is ambiguous.  To correct this either do:</p>
+            <pre>
+              logger.error("This is the log message", throwable);
+            </pre>
+            <p>or</p>
+            <pre>
+              logger.error((Marker) null, "This is the log message", throwable);
+            </pre>
+            <p>Log4j ${Log4jReleaseVersion} maintains binary compatibility with previous releases.</p>
+
           </subsection>
         </section>
     </body>
