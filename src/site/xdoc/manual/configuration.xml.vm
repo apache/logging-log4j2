@@ -1985,6 +1985,19 @@ public class AwesomeTest {
     <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
      text is formatted and potentially passed to background threads.</td>
   </tr>
+
+  <tr>
+    <td><a name="log4j.unbox.ringbuffer.size" />log4j.unbox.ringbuffer.size</td>
+    <td>32</td>
+    <td>The <tt>org.apache.logging.log4j.util.Unbox</tt> utility
+    manages a small thread-local ring buffer of StringBuilders.
+     Each time one of the <tt>box()</tt> methods is called, the next slot in the ring buffer is used, until the ring
+     buffer is full and the first slot is reused. By default the Unbox ring buffer has 32 slots, so user code can
+     have up to 32 boxed primitives in a single logger call.
+     <p>
+     If more slots are required, set system property <tt>log4j.unbox.ringbuffer.size</tt> to the desired ring buffer size.
+     Note that the specified number will be rounded up to the nearest power of 2.</p></td>
+  </tr>
 </table>
 
         </subsection>
