@@ -61,6 +61,9 @@ public class Unbox {
     }
     private static ThreadLocal<State> threadLocalState = new ThreadLocal<>();
 
+    private Unbox() {
+        // this is a utility
+    }
     /**
      * Returns a {@code StringBuilder} containing the text representation of the specified primitive value.
      * This method will not allocate temporary objects.
