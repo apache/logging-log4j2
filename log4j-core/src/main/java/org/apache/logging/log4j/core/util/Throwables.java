@@ -34,20 +34,6 @@ public final class Throwables {
     }
 
     /**
-     * Has no effect on Java 6 and below.
-     *
-     * @param throwable a Throwable
-     * @param suppressedThrowable a suppressed Throwable
-     * @see Throwable#addSuppressed(Throwable)
-     * @deprecated If compiling on Java 7 and above use {@link Throwable#addSuppressed(Throwable)}.
-     *             Marked as deprecated because Java 6 is deprecated. Will be removed in 2.5.
-     */
-    @Deprecated
-    public static void addSuppressed(final Throwable throwable, final Throwable suppressedThrowable) {
-        throwable.addSuppressed(suppressedThrowable);
-    }
-
-    /**
      * Returns the deepest cause of the given {@code throwable}.
      *
      * @param throwable the throwable to navigate
@@ -60,31 +46,6 @@ public final class Throwables {
             root = cause;
         }
         return root;
-    }
-
-    /**
-     * Has no effect on Java 6 and below.
-     *
-     * @param throwable a Throwable
-     * @return see Java 7's {@link Throwable#getSuppressed()}
-     * @see Throwable#getSuppressed()
-     * @deprecated If compiling on Java 7 and above use {@link Throwable#getSuppressed()}. Marked as deprecated because
-     *             Java 6 is deprecated. Will be removed 2.5.
-     */
-    @Deprecated
-    public static Throwable[] getSuppressed(final Throwable throwable) {
-        return throwable.getSuppressed();
-    }
-
-    /**
-     * Returns true if the getSuppressed method is available.
-     *
-     * @return True if getSuppressed is available. As of 2.4, always returns true.
-     * @deprecated Will be removed in 2.5. As of 2.4, always returns true.
-     */
-    @Deprecated
-    public static boolean isGetSuppressedAvailable() {
-        return true;
     }
 
     /**
