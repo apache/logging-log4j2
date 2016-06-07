@@ -143,7 +143,7 @@ public class CloseableThreadContext {
         }
 
         private void closeMap() {
-            for (Iterator<Map.Entry<String, String>> it = originalValues.entrySet().iterator(); it.hasNext(); ) {
+            for (final Iterator<Map.Entry<String, String>> it = originalValues.entrySet().iterator(); it.hasNext(); ) {
                 final Map.Entry<String, String> entry = it.next();
                 final String key = entry.getKey();
                 final String originalValue = entry.getValue();

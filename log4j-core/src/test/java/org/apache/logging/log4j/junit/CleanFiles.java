@@ -51,13 +51,13 @@ public class CleanFiles extends ExternalResource {
                 if (file.exists()) {
                     try {
                         FileSystems.getDefault().provider().delete(file.toPath());
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         fail(e.toString());
                     }
                 }
                 try {
                     Thread.sleep(200);
-                } catch (InterruptedException ignored) {
+                } catch (final InterruptedException ignored) {
                 }
             }
         }
@@ -70,7 +70,7 @@ public class CleanFiles extends ExternalResource {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("CleanFiles [");
         builder.append(files);
         builder.append("]");

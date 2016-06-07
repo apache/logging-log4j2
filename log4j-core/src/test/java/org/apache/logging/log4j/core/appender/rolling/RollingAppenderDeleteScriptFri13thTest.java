@@ -50,7 +50,7 @@ public class RollingAppenderDeleteScriptFri13thTest {
         final File dir = new File(DIR);
         dir.mkdirs();
         for (int i = 1; i <= 30; i++) {
-            String day = i < 10 ? "0" + i : "" + i;
+            final String day = i < 10 ? "0" + i : "" + i;
             new File(dir, "test-201511" + day + "-0.log").createNewFile();
         }
         assertEquals("Dir " + DIR + " filecount", 30, dir.listFiles().length);
@@ -64,13 +64,13 @@ public class RollingAppenderDeleteScriptFri13thTest {
         }
 
         final File[] files = dir.listFiles();
-        for (File file : files) {
+        for (final File file : files) {
             System.out.println(file);
         }
-        for (File file : files) {
+        for (final File file : files) {
             assertTrue(file.getName() + " starts with 'test-'", file.getName().startsWith("test-"));
             assertTrue(file.getName() + " ends with '.log'", file.getName().endsWith(".log"));
-            String strDate = file.getName().substring(5, 13);
+            final String strDate = file.getName().substring(5, 13);
             assertFalse(file + " is not Fri 13th", strDate.endsWith("20151113"));
         }
     }

@@ -33,11 +33,11 @@ import java.nio.ByteBuffer;
  */
 public class EncodingListAppender extends ListAppender {
 
-    public EncodingListAppender(String name) {
+    public EncodingListAppender(final String name) {
         super(name);
     }
 
-    public EncodingListAppender(String name, Filter filter, Layout<? extends Serializable> layout, boolean newline, boolean raw) {
+    public EncodingListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final boolean newline, final boolean raw) {
         super(name, filter, layout, newline, raw);
     }
 
@@ -60,18 +60,18 @@ public class EncodingListAppender extends ListAppender {
         if (layout == null) {
             events.add(event);
         } else if (layout instanceof SerializedLayout) {
-            Destination content = new Destination();
+            final Destination content = new Destination();
             content.byteBuffer.put(layout.getHeader());
             layout.encode(event, content);
             content.getByteBuffer().flip();
-            byte[] record = new byte[content.getByteBuffer().remaining()];
+            final byte[] record = new byte[content.getByteBuffer().remaining()];
             content.getByteBuffer().get(record);
             data.add(record);
         } else {
-            Destination content = new Destination();
+            final Destination content = new Destination();
             layout.encode(event, content);
             content.getByteBuffer().flip();
-            byte[] record = new byte[content.getByteBuffer().remaining()];
+            final byte[] record = new byte[content.getByteBuffer().remaining()];
             content.getByteBuffer().get(record);
             write(record);
         }

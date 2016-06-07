@@ -23,7 +23,18 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.6.1" date="2016-MM-DD" description="GA Release 2.6.1">
+    <release version="2.6.1" date="2016-06-05" description="GA Release 2.6.1">
+      <action issue="LOG4J2-1405" dev="rgoers" type="fix">
+        OnStartupTriggeringPolicy was forcing a rollover of empty files at startup and would append a
+        second footer that was added by the prior shutdown.
+      </action>
+      <action issue="LOG4J2-1406" dev="rpopma" type="fix" due-to="Trask Stalnaker">
+        Fixed bug in ReusableParameterizedMessage where Throwable was never updated so first error was logged over
+        and over again and subsequent errors were not logged.
+      </action>
+      <action issue="LOG4J2-1409" dev="rpopma" type="fix" due-to="Shahan">
+        Fixed ArrayIndexOutOfBoundsException that may occur in ReusableParameterizedMessage.
+      </action>
       <action issue="LOG4J2-997" dev="rgoers" type="fix" due-to="Maytee Chinavanichkit">
         Add filter and remove filter were not working properly in AbstractFilterable.
       </action>
@@ -43,13 +54,16 @@
         Fix regression in properties configuration to support arbitrary component ids.
       </action>
       <action issue="LOG4J2-1385" dev="ggregory" type="update">
-        (GC) CSV layouts should not create a new CSVPrinter for each log event.
+        (GC) CSV layouts should not create a new CSVPrinter for each log event. Requires Apache Commons CSV 1.4.
       </action>
       <action issue="LOG4J2-1398" dev="ggregory" type="update">
         Update liquibase-core from 3.4.2 to 3.5.1.
       </action>
       <action issue="LOG4J2-1399" dev="ggregory" type="update">
         Update Apache Commons CSV from 1.3 to 1.4.
+      </action>
+      <action issue="LOG4J2-1411" dev="mattsicker" type="add">
+        Add documentation about plugin builders compared to factories.
       </action>
     </release>
     <release version="2.6" date="2016-05-25" description="GA Release 2.6">

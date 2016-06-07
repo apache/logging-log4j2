@@ -115,7 +115,7 @@ public class FileRenameAction extends AbstractAction {
                     return false;
                 }
             }
-            Path sourcePath = source.toPath();
+            final Path sourcePath = source.toPath();
             try {
                 Files.move(sourcePath, destination.toPath());
                 return true;

@@ -213,7 +213,7 @@ public class FixedDateFormat {
      * @param format the format to use
      * @return a new {@code FixedDateFormat} object
      */
-    public static FixedDateFormat create(FixedFormat format) {
+    public static FixedDateFormat create(final FixedFormat format) {
         return new FixedDateFormat(format);
     }
 
@@ -266,7 +266,7 @@ public class FixedDateFormat {
     // 28 bytes (allows immediate JVM inlining: <= -XX:MaxInlineSize=35 bytes)
     public String format(final long time) {
         final char[] result = new char[length << 1]; // double size for locales with lengthy DateFormatSymbols
-        int written = format(time, result, 0);
+        final int written = format(time, result, 0);
         return new String(result, 0, written);
     }
 

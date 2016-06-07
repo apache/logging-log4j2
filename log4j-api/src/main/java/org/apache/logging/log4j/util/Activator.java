@@ -34,6 +34,7 @@ import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 
 /**
+ * <em>Consider this class private.</em>
  * OSGi bundle activator. Used for locating an implementation of
  * {@link org.apache.logging.log4j.spi.LoggerContextFactory} et al. that have corresponding
  * {@code META-INF/log4j-provider.properties} files. As with all OSGi BundleActivator classes, this class is not for

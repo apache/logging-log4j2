@@ -67,7 +67,7 @@ public class MemoryHandlerJULLocationBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughputSimple() {
-        LogRecord logRecord = new LogRecord(java.util.logging.Level.INFO, BenchmarkMessageParams.TEST);
+        final LogRecord logRecord = new LogRecord(java.util.logging.Level.INFO, BenchmarkMessageParams.TEST);
         logRecord.getSourceClassName(); // force location
         logger.log(logRecord);
     }

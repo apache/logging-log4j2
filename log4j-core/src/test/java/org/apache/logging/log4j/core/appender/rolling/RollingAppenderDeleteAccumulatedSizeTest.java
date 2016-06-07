@@ -62,13 +62,13 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
         assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
 
         final File[] files = dir.listFiles();
-        for (File file : files) {
+        for (final File file : files) {
             System.out.println(file + " (" + file.length() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
         assertEquals(Arrays.toString(files), 4, files.length);
         long total = 0;
-        for (File file : files) {
+        for (final File file : files) {
             // sometimes test-6.log remains
             assertTrue("unexpected file " + file, file.getName().startsWith("test-"));
             total += file.length();

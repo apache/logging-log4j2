@@ -81,12 +81,12 @@ public class AsyncLoggerContext extends LoggerContext {
      * @see org.apache.logging.log4j.core.LoggerContext#start(org.apache.logging.log4j.core.config.Configuration)
      */
     @Override
-    public void start(Configuration config) {
+    public void start(final Configuration config) {
         maybeStartHelper(config);
         super.start(config);
     }
 
-    private void maybeStartHelper(Configuration config) {
+    private void maybeStartHelper(final Configuration config) {
         // If no log4j configuration was found, there are no loggers
         // and there is no point in starting the disruptor (which takes up
         // significant memory and starts a thread).

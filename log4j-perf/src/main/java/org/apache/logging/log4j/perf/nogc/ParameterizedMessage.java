@@ -354,7 +354,7 @@ public class ParameterizedMessage implements Message {
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int handleRemainingCharIfAny(final String messagePattern, final int len, final char[] result,
-            int pos, int escapeCounter, int i) {
+            int pos, final int escapeCounter, final int i) {
         if (i == len - 1) {
             final char curChar = messagePattern.charAt(i);
             pos = handleLastChar(result, pos, escapeCounter, curChar);
@@ -427,7 +427,7 @@ public class ParameterizedMessage implements Message {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 20 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static int writeUnescapedEscapeChars(int escapeCounter, char[] result, int pos) {
+    private static int writeUnescapedEscapeChars(int escapeCounter, final char[] result, int pos) {
         while (escapeCounter > 0) {
             result[pos++] = ESCAPE_CHAR;
             escapeCounter--;
@@ -460,7 +460,7 @@ public class ParameterizedMessage implements Message {
     private static int writeArgAt0(final String[] arguments, final int currentArgument, final char[] result,
             final int pos) {
         final String arg = String.valueOf(arguments[currentArgument]);
-        int argLen = arg.length();
+        final int argLen = arg.length();
         arg.getChars(0, argLen, result, pos);
         return pos + argLen;
     }

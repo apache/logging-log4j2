@@ -52,7 +52,7 @@ public class ScriptManager implements FileWatcher, Serializable {
     private final WatchManager watchManager;
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
 
-    public ScriptManager(WatchManager watchManager) {
+    public ScriptManager(final WatchManager watchManager) {
         this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
         if (logger.isDebugEnabled()) {
@@ -108,8 +108,8 @@ public class ScriptManager implements FileWatcher, Serializable {
         }
 
         if (script instanceof ScriptFile) {
-            ScriptFile scriptFile = (ScriptFile)script;
-            Path path = scriptFile.getPath();
+            final ScriptFile scriptFile = (ScriptFile)script;
+            final Path path = scriptFile.getPath();
             if (scriptFile.isWatched() && path != null) {
                 watchManager.watchFile(path.toFile(), this);
             }
@@ -117,19 +117,19 @@ public class ScriptManager implements FileWatcher, Serializable {
     }
 
     public AbstractScript getScript(final String name) {
-        ScriptRunner runner = scripts.get(name);
+        final ScriptRunner runner = scripts.get(name);
         return runner != null ? runner.getScript() : null;
     }
 
     @Override
     public void fileModified(final File file) {
-        ScriptRunner runner = scripts.get(file.toString());
+        final ScriptRunner runner = scripts.get(file.toString());
         if (runner == null) {
             logger.info("{} is not a running script");
             return;
         }
-        ScriptEngine engine = runner.getScriptEngine();
-        AbstractScript script = runner.getScript();
+        final ScriptEngine engine = runner.getScriptEngine();
+        final AbstractScript script = runner.getScript();
         if (engine.getFactory().getParameter(KEY_THREADING) == null) {
             scripts.put(script.getName(), new ThreadLocalScriptRunner(script));
         } else {

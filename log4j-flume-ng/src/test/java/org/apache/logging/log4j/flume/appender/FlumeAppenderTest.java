@@ -280,7 +280,7 @@ public class FlumeAppenderTest {
         avroLogger.info("Test message 2");
         avroAppender.stop();
         for (int i = 0; i < 3; ++i) {
-            Event event = channel.take();
+            final Event event = channel.take();
             Assert.assertNotNull("No event for item " + i, event);
             Assert.assertTrue("Channel contained event, but not expected message. Received : " + getBody(event),
                     getBody(event).endsWith("Test message " + i));

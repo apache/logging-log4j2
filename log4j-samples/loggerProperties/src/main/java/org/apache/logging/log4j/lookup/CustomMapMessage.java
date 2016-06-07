@@ -28,7 +28,7 @@ public class CustomMapMessage extends MapMessage {
     private static final long serialVersionUID = 1L;
     private final String message;
 
-    public CustomMapMessage(String msg, Map<String, String> map) {
+    public CustomMapMessage(final String msg, final Map<String, String> map) {
         super(map);
         this.message = msg;
     }

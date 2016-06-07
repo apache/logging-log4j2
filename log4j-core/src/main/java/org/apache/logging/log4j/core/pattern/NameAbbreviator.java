@@ -226,7 +226,7 @@ public abstract class NameAbbreviator {
             }
         }
 
-        private void abbreviateForDrop(String original, StringBuilder destination) {
+        private void abbreviateForDrop(final String original, final StringBuilder destination) {
             // If a path does not contain enough path elements to drop, none will be dropped.
             int start = 0;
             int nextStart = 0;
@@ -242,7 +242,7 @@ public abstract class NameAbbreviator {
             destination.append(original, start, original.length());
         }
 
-        private void abbreviateForRetain(String original, StringBuilder destination) {
+        private void abbreviateForRetain(final String original, final StringBuilder destination) {
             // We subtract 1 from 'len' when assigning to 'end' to avoid out of
             // bounds exception in return r.substring(end+1, len). This can happen if
             // precision is 1 and the category name ends with a dot.

@@ -150,21 +150,21 @@ public abstract class AbstractManager {
         return new HashMap<>();
     }
 
-    protected void log(Level level, String message, Throwable throwable) {
-        Message m = LOGGER.getMessageFactory().newMessage("{} {} {}: {}",
+    protected void log(final Level level, final String message, final Throwable throwable) {
+        final Message m = LOGGER.getMessageFactory().newMessage("{} {} {}: {}",
                 getClass().getSimpleName(), getName(), message, throwable);
         LOGGER.log(level, m, throwable);
     }
 
-    protected void logDebug(String message, Throwable throwable) {
+    protected void logDebug(final String message, final Throwable throwable) {
         log(Level.DEBUG, message, throwable);
     }
 
-    protected void logError(String message, Throwable throwable) {
+    protected void logError(final String message, final Throwable throwable) {
         log(Level.ERROR, message, throwable);
     }
 
-    protected void logWarn(String message, Throwable throwable) {
+    protected void logWarn(final String message, final Throwable throwable) {
         log(Level.WARN, message, throwable);
     }
 

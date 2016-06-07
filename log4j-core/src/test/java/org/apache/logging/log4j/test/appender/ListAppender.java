@@ -28,11 +28,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
@@ -175,14 +174,63 @@ public class ListAppender extends AbstractAppender {
         return Collections.unmodifiableList(data);
     }
 
-    @PluginFactory
-    public static ListAppender createAppender(
-            @PluginAttribute("name") @Required(message = "No name provided for ListAppender") final String name,
-            @PluginAttribute("entryPerNewLine") final boolean newLine,
-            @PluginAttribute("raw") final boolean raw,
-            @PluginElement("Layout") final Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter) {
+    public static ListAppender createAppender(final String name, final boolean newLine, final boolean raw,
+                                              final Layout<? extends Serializable> layout, final Filter filter) {
         return new ListAppender(name, filter, layout, newLine, raw);
+    }
+
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ListAppender> {
+
+        @PluginBuilderAttribute
+        @Required
+        private String name;
+
+        @PluginBuilderAttribute
+        private boolean entryPerNewLine;
+
+        @PluginBuilderAttribute
+        private boolean raw;
+
+        @PluginElement("Layout")
+        private Layout<? extends Serializable> layout;
+
+        @PluginElement("Filter")
+        private Filter filter;
+
+        public Builder setName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setEntryPerNewLine(final boolean entryPerNewLine) {
+            this.entryPerNewLine = entryPerNewLine;
+            return this;
+        }
+
+        public Builder setRaw(final boolean raw) {
+            this.raw = raw;
+            return this;
+        }
+
+        public Builder setLayout(final Layout<? extends Serializable> layout) {
+            this.layout = layout;
+            return this;
+        }
+
+        public Builder setFilter(final Filter filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        @Override
+        public ListAppender build() {
+            return new ListAppender(name, filter, layout, entryPerNewLine, raw);
+        }
     }
 
     /**

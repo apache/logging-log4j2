@@ -36,13 +36,13 @@ import java.net.URI;
 //@Order(50)
 public class CustomConfigurationFactory extends ConfigurationFactory {
 
-    static Configuration addTestFixtures(final String name, ConfigurationBuilder<BuiltConfiguration> builder) {
+    static Configuration addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
         builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy").addIsWatched(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
-        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+        final AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(builder.newLayout("PatternLayout").
                 addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
         appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
@@ -56,13 +56,13 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(ConfigurationSource source) {
+    public Configuration getConfiguration(final ConfigurationSource source) {
         return getConfiguration(source.toString(), null);
     }
 
     @Override
     public Configuration getConfiguration(final String name, final URI configLocation) {
-        ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
+        final ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
         return addTestFixtures(name, builder);
     }
 

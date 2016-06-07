@@ -116,7 +116,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     @Override
-    protected void write(final byte[] bytes, final int offset, final int length, boolean immediateFlush)  {
+    protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush)  {
         if (socket == null) {
             if (connector != null && !immediateFail) {
                 connector.latch();

@@ -79,7 +79,7 @@ public class EqualsReplacementConverterTest {
 
     @Test
     public void testParseSubstitutionWithoutPattern() {
-        String substitution = "test";
+        final String substitution = "test";
         testParseSubstitution(substitution, substitution);
     }
 

@@ -84,12 +84,12 @@ public class AsyncAppenderQueueFullPolicyTest {
         assertEquals("queue remaining capacity", 0, asyncAppender.getQueueRemainingCapacity());
         assertEquals("EventRouter invocations", 0, CountingAsyncQueueFullPolicy.queueFull.get());
 
-        Thread release = new Thread("AsyncAppenderReleaser") {
+        final Thread release = new Thread("AsyncAppenderReleaser") {
             public void run() {
                 while (CountingAsyncQueueFullPolicy.queueFull.get() == 0) {
                     try {
                         Thread.sleep(10L);
-                    } catch (InterruptedException ignored) {
+                    } catch (final InterruptedException ignored) {
                         //ignored
                     }
                 }
@@ -105,7 +105,7 @@ public class AsyncAppenderQueueFullPolicyTest {
     public static class CountingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy {
         static AtomicLong queueFull = new AtomicLong();
         @Override
-        public EventRoute getRoute(long backgroundThreadId, Level level) {
+        public EventRoute getRoute(final long backgroundThreadId, final Level level) {
             queueFull.incrementAndGet();
             return EventRoute.ENQUEUE;
         }

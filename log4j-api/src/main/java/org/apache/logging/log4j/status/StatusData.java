@@ -51,7 +51,7 @@ public class StatusData implements Serializable {
      * @param threadName The thread name
      */
     public StatusData(final StackTraceElement caller, final Level level, final Message msg, final Throwable t,
-            String threadName) {
+            final String threadName) {
         this.timestamp = System.currentTimeMillis();
         this.caller = caller;
         this.level = level;

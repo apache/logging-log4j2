@@ -169,23 +169,23 @@ public class ParameterFormatterTest {
 
     @Test
     public void testDeepToString() throws Exception {
-        List<Object> list = new ArrayList<>();
+        final List<Object> list = new ArrayList<>();
         list.add(1);
         list.add(list);
         list.add(2);
-        String actual = ParameterFormatter.deepToString(list);
-        String expected = "[1, [..." + ParameterFormatter.identityToString(list) + "...], 2]";
+        final String actual = ParameterFormatter.deepToString(list);
+        final String expected = "[1, [..." + ParameterFormatter.identityToString(list) + "...], 2]";
         assertEquals(expected, actual);
     }
 
     @Test
     public void testIdentityToString() throws Exception {
-        List<Object> list = new ArrayList<>();
+        final List<Object> list = new ArrayList<>();
         list.add(1);
         list.add(list);
         list.add(2);
-        String actual = ParameterFormatter.identityToString(list);
-        String expected = list.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(list));
+        final String actual = ParameterFormatter.identityToString(list);
+        final String expected = list.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(list));
         assertEquals(expected, actual);
     }
 }

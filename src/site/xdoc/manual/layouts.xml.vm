@@ -58,7 +58,7 @@
         <subsection name="CSV Layouts">
           <p>
             This layout creates <a href="https://en.wikipedia.org/wiki/Comma-separated_values">Comma Separated Value (CSV)</a>
-            records and requires <a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a> 1.2.
+            records and requires <a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a> 1.4.
           </p>
           <p>
             The CSV layout can be used in two ways: First, using <code>CsvParameterLayout</code> to log event parameters
@@ -102,7 +102,7 @@ logger.info(new ObjectArrayMessage(value1, value2, value3));
                 One of the predefined formats: <code>Default</code>, <code>Excel</code>, <code>MySQL</code>,
                 <code>RFC4180</code>, <code>TDF</code>.
                 See
-                  <a href="https://commons.apache.org/proper/commons-csv/archives/1.2/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html">CSVFormat.Predefined</a>.
+                  <a href="https://commons.apache.org/proper/commons-csv/archives/1.4/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html">CSVFormat.Predefined</a>.
               </td>
             </tr>
             <tr>

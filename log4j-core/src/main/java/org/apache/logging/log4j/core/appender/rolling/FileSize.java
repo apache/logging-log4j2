@@ -53,7 +53,7 @@ public final class FileSize {
      * @param string The string to convert
      * @return The Bytes value for the string
      */
-    public static long parse(final String string, long defaultValue) {
+    public static long parse(final String string, final long defaultValue) {
         final Matcher matcher = VALUE_PATTERN.matcher(string);
 
         // Valid input?

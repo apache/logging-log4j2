@@ -68,7 +68,7 @@ public class ParameterizedMessageBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int refactoredFormatTo(ThreadState state) {
+    public int refactoredFormatTo(final ThreadState state) {
         state.buffer.setLength(0);
         new ParameterizedMessage("pattern {} with {} two parameters and some text", ARGS).
                 formatTo(state.buffer);

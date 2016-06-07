@@ -115,11 +115,11 @@ public final class Configurator {
             return initialize(name, loader, (URI) null, externalContext);
         }
         if (configLocation.contains(",")) {
-            String[] parts = configLocation.split(",");
+            final String[] parts = configLocation.split(",");
             String scheme = null;
-            List<URI> uris = new ArrayList<>(parts.length);
-            for (String part : parts) {
-                URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
+            final List<URI> uris = new ArrayList<>(parts.length);
+            for (final String part : parts) {
+                final URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
                 if (scheme == null && uri.getScheme() != null) {
                     scheme = uri.getScheme();
                 }
@@ -193,7 +193,7 @@ public final class Configurator {
      * @param configuration The Configuration.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(Configuration configuration) {
+    public static LoggerContext initialize(final Configuration configuration) {
         return initialize(null, configuration, null);
     }
 
@@ -203,7 +203,7 @@ public final class Configurator {
      * @param configuration The Configuration.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(final ClassLoader loader, Configuration configuration) {
+    public static LoggerContext initialize(final ClassLoader loader, final Configuration configuration) {
         return initialize(loader, configuration, null);
     }
 
@@ -214,7 +214,7 @@ public final class Configurator {
      * @param externalContext - The external context to be attached to the LoggerContext.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(final ClassLoader loader, Configuration configuration, final Object externalContext) {
+    public static LoggerContext initialize(final ClassLoader loader, final Configuration configuration, final Object externalContext) {
         try {
             final Log4jContextFactory factory = getFactory();
             return factory == null ? null :

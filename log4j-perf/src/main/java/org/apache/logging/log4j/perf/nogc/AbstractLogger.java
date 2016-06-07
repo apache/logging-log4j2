@@ -30,15 +30,15 @@ public abstract class AbstractLogger {
 
     protected abstract Layout<?> createLayout();
 
-    protected void log(Message message) {
+    protected void log(final Message message) {
         callAppenders(createLogEvent(message));
     }
 
-    private void callAppenders(LogEvent logEvent) {
+    private void callAppenders(final LogEvent logEvent) {
         appender.append(logEvent);
     }
 
-    private LogEvent createLogEvent(Message message) {
+    private LogEvent createLogEvent(final Message message) {
         reusedLogEvent.setMessage(message);
         return reusedLogEvent;
     }

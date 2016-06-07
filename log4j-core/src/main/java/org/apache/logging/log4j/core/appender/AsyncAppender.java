@@ -141,7 +141,7 @@ public final class AsyncAppender extends AbstractAppender {
      * @param logEvent The LogEvent.
      */
     @Override
-    public void append(LogEvent logEvent) {
+    public void append(final LogEvent logEvent) {
         if (!isStarted()) {
             throw new IllegalStateException("AsyncAppender " + getName() + " is not active");
         }

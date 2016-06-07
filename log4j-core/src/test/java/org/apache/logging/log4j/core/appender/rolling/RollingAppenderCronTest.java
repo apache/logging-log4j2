@@ -80,8 +80,8 @@ public class RollingAppenderCronTest {
         if (!succeeded) {
             fail("No compressed files found");
         }
-        Path src = FileSystems.getDefault().getPath("target/test-classes/log4j-rolling-cron2.xml");
-        OutputStream os = new FileOutputStream("target/test-classes/log4j-rolling-cron.xml");
+        final Path src = FileSystems.getDefault().getPath("target/test-classes/log4j-rolling-cron2.xml");
+        final OutputStream os = new FileOutputStream("target/test-classes/log4j-rolling-cron.xml");
         Files.copy(src, os);
         Thread.sleep(5000);
         // force a reconfiguration
@@ -89,11 +89,11 @@ public class RollingAppenderCronTest {
             logger.debug("Adding new event {}", i);
         }
         Thread.sleep(1000);
-        RollingFileAppender app = (RollingFileAppender) ctx.getContext().getConfiguration().getAppender("RollingFile");
-        TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
+        final RollingFileAppender app = (RollingFileAppender) ctx.getContext().getConfiguration().getAppender("RollingFile");
+        final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
         assertNotNull("No triggering policy", policy);
         assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);
-        CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
+        final CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
         assertTrue("Incorrect triggering policy", expression.getCronExpression().equals("* * * ? * *"));
 
     }

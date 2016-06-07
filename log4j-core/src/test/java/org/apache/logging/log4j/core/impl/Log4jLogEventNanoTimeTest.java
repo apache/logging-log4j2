@@ -80,7 +80,7 @@ public class Log4jLogEventNanoTimeTest {
         final String[] line1Parts = line1.split(" AND ");
         assertEquals("Use actual System.nanoTime()", line1Parts[2]);
         assertEquals(line1Parts[0], line1Parts[1]);
-        long loggedNanoTime = Long.parseLong(line1Parts[0]);
+        final long loggedNanoTime = Long.parseLong(line1Parts[0]);
         assertTrue("used system nano time", loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1));
         
         final String[] line2Parts = line2.split(" AND ");

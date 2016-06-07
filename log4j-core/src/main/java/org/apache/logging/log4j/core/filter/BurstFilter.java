@@ -153,7 +153,7 @@ public final class BurstFilter extends AbstractFilter {
      * Clear the history. Used for unit testing.
      */
     public void clear() {
-        for (LogDelay delay : history) {
+        for (final LogDelay delay : history) {
             history.remove(delay);
             available.add(delay);
         }

@@ -72,7 +72,7 @@ public class LoggerConfigBenchmark {
         }
 
         @Override
-        public void append(LogEvent event) {
+        public void append(final LogEvent event) {
             count.incrementAndGet();
         }
 

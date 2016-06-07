@@ -51,14 +51,14 @@ public class CustomLookup extends AbstractLookup {
     @Override
     public String lookup(final LogEvent event, final String key) {
         try {
-            Map<String, String> properties = loggerProperties.get(event.getLoggerName());
+            final Map<String, String> properties = loggerProperties.get(event.getLoggerName());
             if (properties == null) {
                 return "";
             }
             if (key == null || key.length() == 0 || key.equals("*")) {
-                StringBuilder sb = new StringBuilder("{");
+                final StringBuilder sb = new StringBuilder("{");
                 boolean first = true;
-                for (Map.Entry<String, String> entry : properties.entrySet()) {
+                for (final Map.Entry<String, String> entry : properties.entrySet()) {
                     if (!first) {
                         sb.append(", ");
                     }
@@ -75,7 +75,7 @@ public class CustomLookup extends AbstractLookup {
         }
     }
 
-    public static void setLoggerProperties(String loggerName, Map<String, String> properties) {
+    public static void setLoggerProperties(final String loggerName, final Map<String, String> properties) {
         loggerProperties.put(loggerName, properties);
     }
 

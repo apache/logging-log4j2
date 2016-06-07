@@ -80,7 +80,7 @@ public final class StatusLogger extends AbstractLogger {
 
     private int listenersLevel;
 
-    private StatusLogger(String name, MessageFactory messageFactory) {
+    private StatusLogger(final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
         this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY,
                 messageFactory, PROPS, System.err);

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  * Utility for preventing primitive parameter values from being auto-boxed. Auto-boxing creates temporary objects
  * which contribute to pressure on the garbage collector. With this utility users can convert primitive values directly
@@ -30,13 +33,27 @@ package org.apache.logging.log4j.util;
  * // prevent primitive values from being auto-boxed
  * logger.debug("Long value={}, double value={}", box(longValue), box(doubleValue));
  * </pre>
+ * <p>
+ * This class manages a small thread-local ring buffer of StringBuilders.
+ * Each time one of the {@code box()} methods is called, the next slot in the ring buffer is used, until the ring
+ * buffer is full and the first slot is reused. By default the Unbox ring buffer has 32 slots, so user code can
+ * have up to 32 boxed primitives in a single logger call.
+ * </p>
+ * <p>
+ * If more slots are required, set system property {@code log4j.unbox.ringbuffer.size} to the desired ring buffer size.
+ * Note that the specified number will be rounded up to the nearest power of 2.
+ * </p>
  */
 @PerformanceSensitive("allocation")
 public class Unbox {
-    private static final int MASK = 16 - 1;
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final int BITS_PER_INT = 32;
+    private static final int RINGBUFFER_MIN_SIZE = 32;
+    private static final int RINGBUFFER_SIZE = calculateRingBufferSize("log4j.unbox.ringbuffer.size");
+    private static final int MASK = RINGBUFFER_SIZE - 1;
 
     private static class State {
-        private final StringBuilder[] ringBuffer = new StringBuilder[16];
+        private final StringBuilder[] ringBuffer = new StringBuilder[RINGBUFFER_SIZE];
         private int current;
         State() {
             for (int i = 0; i < ringBuffer.length; i++) {
@@ -61,6 +78,40 @@ public class Unbox {
     }
     private static ThreadLocal<State> threadLocalState = new ThreadLocal<>();
 
+    private Unbox() {
+        // this is a utility
+    }
+
+    private static int calculateRingBufferSize(final String propertyName) {
+        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
+                String.valueOf(RINGBUFFER_MIN_SIZE));
+        try {
+            int size = Integer.parseInt(userPreferredRBSize);
+            if (size < RINGBUFFER_MIN_SIZE) {
+                size = RINGBUFFER_MIN_SIZE;
+                LOGGER.warn("Invalid {} {}, using minimum size {}.", propertyName, userPreferredRBSize,
+                        RINGBUFFER_MIN_SIZE);
+            }
+            return ceilingNextPowerOfTwo(size);
+        } catch (final Exception ex) {
+            LOGGER.warn("Invalid {} {}, using default size {}.", propertyName, userPreferredRBSize,
+                    RINGBUFFER_MIN_SIZE);
+            return RINGBUFFER_MIN_SIZE;
+        }
+    }
+
+    /**
+     * Calculate the next power of 2, greater than or equal to x.
+     * <p>
+     * From Hacker's Delight, Chapter 3, Harry S. Warren Jr.
+     *
+     * @param x Value to round up
+     * @return The next power of 2 from x inclusive
+     */
+    private static int ceilingNextPowerOfTwo(final int x) {
+        return 1 << (BITS_PER_INT - Integer.numberOfLeadingZeros(x - 1));
+    }
+
     /**
      * Returns a {@code StringBuilder} containing the text representation of the specified primitive value.
      * This method will not allocate temporary objects.
@@ -69,7 +120,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(float value) {
+    public static StringBuilder box(final float value) {
         return getSB().append(value);
     }
 
@@ -81,7 +132,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(double value) {
+    public static StringBuilder box(final double value) {
         return getSB().append(value);
     }
 
@@ -93,7 +144,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(short value) {
+    public static StringBuilder box(final short value) {
         return getSB().append(value);
     }
 
@@ -105,7 +156,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(int value) {
+    public static StringBuilder box(final int value) {
         return getSB().append(value);
     }
 
@@ -117,7 +168,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(char value) {
+    public static StringBuilder box(final char value) {
         return getSB().append(value);
     }
 
@@ -129,7 +180,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(long value) {
+    public static StringBuilder box(final long value) {
         return getSB().append(value);
     }
 
@@ -141,7 +192,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(byte value) {
+    public static StringBuilder box(final byte value) {
         return getSB().append(value);
     }
 
@@ -153,7 +204,7 @@ public class Unbox {
      * @return a {@code StringBuilder} containing the text representation of the specified primitive value
      */
     @PerformanceSensitive("allocation")
-    public static StringBuilder box(boolean value) {
+    public static StringBuilder box(final boolean value) {
         return getSB().append(value);
     }
 
@@ -168,5 +219,10 @@ public class Unbox {
 
     private static StringBuilder getSB() {
         return getState().getStringBuilder();
+    }
+
+    /** For testing. */
+    static int getRingbufferSize() {
+        return RINGBUFFER_SIZE;
     }
 }

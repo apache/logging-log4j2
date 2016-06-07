@@ -73,7 +73,7 @@ public class ThrowableProxyTest {
         return arr.toByteArray();
     }
 
-    private void testIoContainer(ObjectMapper objectMapper ) throws IOException {
+    private void testIoContainer(final ObjectMapper objectMapper ) throws IOException {
         final Fixture expected = new Fixture();
         final String s = objectMapper.writeValueAsString(expected);
         final Fixture actual = objectMapper.readValue(s, Fixture.class);

@@ -90,7 +90,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     if (intervalSeconds > 0) {
                         getWatchManager().setIntervalSeconds(intervalSeconds);
                         if (configFile != null) {
-                            FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
+                            final FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
                             getWatchManager().watchFile(configFile, watcher);
                         }
                     }

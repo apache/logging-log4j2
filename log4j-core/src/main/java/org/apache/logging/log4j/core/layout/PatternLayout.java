@@ -298,7 +298,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             builder.append(super.toString());
             builder.append("[formatters=");
             builder.append(Arrays.toString(formatters));
@@ -343,7 +343,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             builder.append(super.toString());
             builder.append("[patternSelector=");
             builder.append(patternSelector);

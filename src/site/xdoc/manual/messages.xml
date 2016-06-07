@@ -170,7 +170,7 @@ public class MyApp {
         <a name="FormattedMessage"/>
         <p>
           The message pattern passed to a
-          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/FormattedMessage.html">FormattedMessage</a>
+          <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/FormattedMessage.html">FormattedMessage</a>
           is first checked to see if it is a valid java.text.MessageFormat pattern. If it is, a MessageFormatMessage is
           used to format it. If not it is next checked to see if it contains any tokens that are valid format
           specifiers for String.format(). If so, a StringFormattedMessage is used to format it. Finally, if the
@@ -179,7 +179,7 @@ public class MyApp {
       <h4>LocalizedMessage</h4>
         <a name="LocalizedMessage"/>
         <p>
-          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/LocalizedMessage.html">LocalizedMessage</a>
+          <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/LocalizedMessage.html">LocalizedMessage</a>
           is provided primarily to provide compatibility with Log4j 1.x. Generally,
           the best approach to localization is to have the client UI render the events in the client's locale.
         </p>
@@ -206,7 +206,7 @@ public class MyApp {
         <h4>MessageFormatMessage</h4>
         <a name="MessageFormatMessage"/>
         <p>
-          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/MessageFormatMessage.html">MessageFormatMessage</a>
+          <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/MessageFormatMessage.html">MessageFormatMessage</a>
           handles messages that use a <a href="http://docs.oracle.com/javase/6/docs/api/java/text/MessageFormat.html">conversion format</a>.
           While this Message has more flexibility than ParameterizedMessage, it is also about two times slower.
         </p>
@@ -228,7 +228,7 @@ public class MyApp {
       <h4>ParameterizedMessage</h4>
         <a name="ParameterizedMessage"/>
         <p>
-          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/ParameterizedMessage.html">ParameterizedMessage</a>
+          <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/ParameterizedMessage.html">ParameterizedMessage</a>
           handles messages that contain "{}" in the format to represent replaceable tokens and the replacement
           parameters.
         </p>
@@ -240,15 +240,15 @@ public class MyApp {
       <h4>StringFormattedMessage</h4>
         <a name="StringFormattedMessage"/>
         <p>
-          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/StringFormattedMessage.html">StringFormattedMessage</a>
+          <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/StringFormattedMessage.html">StringFormattedMessage</a>
           handles messages that use a <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax">conversion format</a>
-          that is compliant with <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/String.html#format(java.lang.String, java.lang.Object...)">java.lang.String.format()</a>.
+          that is compliant with <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/String.html#format(java.lang.String, java.lang.Object...)">java.lang.String.format()</a>.
           While this Message has more flexibility than ParameterizedMessage, it is also 5 to 10 times slower.
         </p>
       <h4>StructuredDataMessage</h4>
         <a name="StructuredDataMessage"/>
         <p>
-          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
+          <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
           allows applications to add items to a Map as well as set the id to allow a message to be formatted as a
           Structured Data element in accordance with <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>.
         </p>

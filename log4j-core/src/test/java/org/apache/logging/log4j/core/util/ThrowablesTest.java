@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.lang.reflect.UndeclaredThrowableException;
-
 import org.junit.Test;
 
 public class ThrowablesTest {
@@ -51,7 +49,7 @@ public class ThrowablesTest {
         Throwables.rethrow(new UnknownError());
     }
 
-    @Test(expected = UndeclaredThrowableException.class)
+    @Test(expected = NoSuchMethodException.class)
     public void testRethrowCheckedException() throws Exception {
         Throwables.rethrow(new NoSuchMethodException());
     }

@@ -45,7 +45,7 @@ public class MutableLogEventTest {
     private static final ThreadContext.ContextStack STACK = new MutableThreadContextStack(Arrays.asList("abc", "xyz"));
 
     private static Map<String,String> createContextMap() {
-        Map<String,String> result = new HashMap<>();
+        final Map<String,String> result = new HashMap<>();
         result.put("a", "1");
         result.put("b", "2");
         return result;
@@ -54,7 +54,7 @@ public class MutableLogEventTest {
     @Test
     public void testInitFromCopiesAllFields() {
 //        private ThrowableProxy thrownProxy;
-        Log4jLogEvent source = Log4jLogEvent.newBuilder() //
+        final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
                 .setContextMap(CONTEXTMAP) //
                 .setContextStack(STACK) //
                 .setEndOfBatch(true) //
@@ -70,7 +70,7 @@ public class MutableLogEventTest {
                 .setThrown(new RuntimeException("run")) //
                 .setTimeMillis(987654321)
                 .build();
-        MutableLogEvent mutable = new MutableLogEvent();
+        final MutableLogEvent mutable = new MutableLogEvent();
         mutable.initFrom(source);
         assertEquals("contextMap", CONTEXTMAP, mutable.getContextMap());
         assertEquals("stack", STACK, mutable.getContextStack());
@@ -93,7 +93,7 @@ public class MutableLogEventTest {
 
     @Test
     public void testClear() {
-        MutableLogEvent mutable = new MutableLogEvent();
+        final MutableLogEvent mutable = new MutableLogEvent();
         assertNull("context map", mutable.getContextMap());
         assertNull("context stack", mutable.getContextStack());
         assertFalse("end of batch", mutable.isEndOfBatch());
@@ -175,7 +175,7 @@ public class MutableLogEventTest {
 
     @Test
     public void testJavaIoSerializable() throws Exception {
-        MutableLogEvent evt = new MutableLogEvent();
+        final MutableLogEvent evt = new MutableLogEvent();
         evt.setContextMap(CONTEXTMAP);
         evt.setContextStack(STACK);
         evt.setEndOfBatch(true);
@@ -218,7 +218,7 @@ public class MutableLogEventTest {
     @Test
     public void testJavaIoSerializableWithThrown() throws Exception {
         final Error thrown = new InternalError("test error");
-        MutableLogEvent evt = new MutableLogEvent();
+        final MutableLogEvent evt = new MutableLogEvent();
         evt.setContextMap(CONTEXTMAP);
         evt.setContextStack(STACK);
         evt.setEndOfBatch(true);

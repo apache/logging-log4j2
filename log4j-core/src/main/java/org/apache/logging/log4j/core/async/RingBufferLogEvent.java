@@ -58,7 +58,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
         @Override
         public RingBufferLogEvent newInstance() {
-            RingBufferLogEvent result = new RingBufferLogEvent();
+            final RingBufferLogEvent result = new RingBufferLogEvent();
             if (Constants.ENABLE_THREADLOCALS) {
                 result.messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
                 result.parameters = new Object[10];
@@ -92,8 +92,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
             final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-            final Map<String, String> aMap, final ContextStack aContextStack, long threadId,
-            final String threadName, int threadPriority, final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
+            final Map<String, String> aMap, final ContextStack aContextStack, final long threadId,
+            final String threadName, final int threadPriority, final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
         this.threadPriority = threadPriority;
         this.threadId = threadId;
         this.currentTimeMillis = aCurrentTimeMillis;
@@ -114,7 +114,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     private void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
-            ReusableMessage reusable = (ReusableMessage) msg;
+            final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
             if (parameters != null) {
                 parameters = reusable.swapParameters(parameters);
@@ -271,7 +271,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         if (message != null) {
             return message;
         }
-        Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
+        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
         return new ParameterizedMessage(messageText.toString(), params);
     }
 
@@ -283,12 +283,12 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     }
 
     @Override
-    public char charAt(int index) {
+    public char charAt(final int index) {
         return messageText.charAt(index);
     }
 
     @Override
-    public CharSequence subSequence(int start, int end) {
+    public CharSequence subSequence(final int start, final int end) {
         return messageText.subSequence(start, end);
     }
 
@@ -439,7 +439,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code RingBufferLogEvent}.
      * @param builder the builder whose fields to populate
      */
-    public void initializeBuilder(Log4jLogEvent.Builder builder) {
+    public void initializeBuilder(final Log4jLogEvent.Builder builder) {
         builder.setContextMap(contextMap) //
                 .setContextStack(contextStack) //
                 .setEndOfBatch(endOfBatch) //

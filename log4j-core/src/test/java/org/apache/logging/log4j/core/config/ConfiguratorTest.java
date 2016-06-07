@@ -36,7 +36,7 @@ public class ConfiguratorTest {
         testInitializeFromFilePath(path);
     }
 
-    private void testInitializeFromFilePath(String path) {
+    private void testInitializeFromFilePath(final String path) {
         final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path);
         try {
             Assert.assertNotNull(loggerContext.getConfiguration().getAppender("List"));

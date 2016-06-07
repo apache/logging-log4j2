@@ -55,7 +55,7 @@ public class DatePatternConverterTest {
         return Arrays.asList(new Object[][]{{Boolean.TRUE}, {Boolean.FALSE}});
     }
 
-    public DatePatternConverterTest(Boolean threadLocalEnabled) throws Exception {
+    public DatePatternConverterTest(final Boolean threadLocalEnabled) throws Exception {
         // Setting the system property does not work: the Constant field has already been initialized...
         //System.setProperty("log4j2.enable.threadlocals", threadLocalEnabled.toString());
 

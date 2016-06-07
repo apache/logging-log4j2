@@ -392,6 +392,118 @@ public final class QueryConverter extends LogEventPatternConverter {
     }
 }</pre>
           </subsection>
+          <subsection name="Plugin Builders">
+            <p>
+              Some plugins take a lot of optional configuration options. When a plugin takes many options, it is more
+              maintainable to use a builder class rather than a factory method (see <i>Item 2: Consider a builder when
+              faced with many constructor parameters</i> in <i>Effective Java</i> by Joshua Bloch). There are some other
+              advantages to using an annotated builder class over an annotated factory method:
+            </p>
+            <ul>
+              <li>Attribute names don't need to be specified if they match the field name.</li>
+              <li>Default values can be specified in code rather than through an annotation (also allowing a
+              runtime-calculated default value which isn't allowed in annotations).</li>
+              <li>Adding new optional parameters doesn't require existing programmatic configuration to be refactored.</li>
+              <li>Easier to write unit tests using builders rather than factory methods with optional parameters.</li>
+              <li>Default values are specified via code rather than relying on reflection and injection, so they work
+              programmatically as well as in a configuration file.</li>
+            </ul>
+            <p>
+              Here is an example of a plugin factory from <code>ListAppender</code>:
+            </p>
+            <pre class="prettyprint linenums"><![CDATA[
+@PluginFactory
+public static ListAppender createAppender(
+        @PluginAttribute("name") @Required(message = "No name provided for ListAppender") final String name,
+        @PluginAttribute("entryPerNewLine") final boolean newLine,
+        @PluginAttribute("raw") final boolean raw,
+        @PluginElement("Layout") final Layout<? extends Serializable> layout,
+        @PluginElement("Filter") final Filter filter) {
+    return new ListAppender(name, filter, layout, newLine, raw);
+}
+            ]]></pre>
+            <p>
+              Here is that same factory using a builder pattern instead:
+            </p>
+            <pre class="prettyprint linenums"><![CDATA[
+@PluginBuilderFactory
+public static Builder newBuilder() {
+    return new Builder();
+}
+
+public static class Builder implements org.apache.logging.log4j.core.util.Builder<ListAppender> {
+
+    @PluginBuilderAttribute
+    @Required(message = "No name provided for ListAppender")
+    private String name;
+
+    @PluginBuilderAttribute
+    private boolean entryPerNewLine;
+
+    @PluginBuilderAttribute
+    private boolean raw;
+
+    @PluginElement("Layout")
+    private Layout<? extends Serializable> layout;
+
+    @PluginElement("Filter")
+    private Filter filter;
+
+    public Builder setName(final String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Builder setEntryPerNewLine(final boolean entryPerNewLine) {
+        this.entryPerNewLine = entryPerNewLine;
+        return this;
+    }
+
+    public Builder setRaw(final boolean raw) {
+        this.raw = raw;
+        return this;
+    }
+
+    public Builder setLayout(final Layout<? extends Serializable> layout) {
+        this.layout = layout;
+        return this;
+    }
+
+    public Builder setFilter(final Filter filter) {
+        this.filter = filter;
+        return this;
+    }
+
+    @Override
+    public ListAppender build() {
+        return new ListAppender(name, filter, layout, entryPerNewLine, raw);
+    }
+}
+            ]]></pre>
+            <p>
+              The only difference in annotations is using <code>@PluginBuilderAttribute</code> instead of
+              <code>@PluginAttribute</code> so that default values and reflection can be used instead of specifying
+              them in the annotation. Either annotation can be used in a builder, but the former is better suited
+              for field injection while the latter is better suited for parameter injection. Otherwise, the same
+              annotations (<code>@PluginConfiguration</code>, <code>@PluginElement</code>, <code>@PluginNode</code>,
+              and <code>@PluginValue</code>) are all supported on fields. Note that a factory method is still required
+              to supply a builder, and this factory method should be annotated with <code>@PluginBuilderFactory</code>.
+              <!-- TODO: this will change with LOG4J2-1188 -->
+            </p>
+            <p>
+              When plugins are being constructed after a configuration has been parsed, a plugin builder will be used
+              if available, otherwise a plugin factory method will be used as a fallback. If a plugin contains neither
+              factory, then it cannot be used from a configuration file (it can still be used programmatically of
+              course).
+            </p>
+            <p>
+              Here is an example of using a plugin factory versus a plugin builder programmatically:
+            </p>
+            <pre class="prettyprint linenums"><![CDATA[
+ListAppender list1 = ListAppender.createAppender("List1", true, false, null, null);
+ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLine(true).build();
+            ]]></pre>
+          </subsection>
           <subsection name="Custom Plugins">
             <p>See the <a href="plugins.html">Plugins</a> section of the manual.</p>
 <!-- TODO: some documentation here! -->

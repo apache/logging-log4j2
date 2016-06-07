@@ -67,7 +67,7 @@ public class SmtpManager extends AbstractManager {
 
     private final FactoryData data;
 
-    private static MimeMessage createMimeMessage(final FactoryData data, final Session session, LogEvent appendEvent)
+    private static MimeMessage createMimeMessage(final FactoryData data, final Session session, final LogEvent appendEvent)
             throws MessagingException {
         return new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
                 .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
@@ -295,7 +295,7 @@ public class SmtpManager extends AbstractManager {
         }
     }
 
-    private synchronized void connect(LogEvent appendEvent) {
+    private synchronized void connect(final LogEvent appendEvent) {
         if (message != null) {
             return;
         }

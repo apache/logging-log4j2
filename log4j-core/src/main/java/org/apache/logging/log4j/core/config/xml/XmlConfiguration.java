@@ -95,7 +95,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 document = documentBuilder.parse(source);
             } catch (final Exception e) {
                 // LOG4J2-1127
-                Throwable throwable = Throwables.getRootCause(e);
+                final Throwable throwable = Throwables.getRootCause(e);
                 if (throwable instanceof UnsupportedOperationException) {
                     LOGGER.warn(
                             "The DocumentBuilder {} does not support an operation: {}."
@@ -134,7 +134,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                     if (intervalSeconds > 0) {
                         getWatchManager().setIntervalSeconds(intervalSeconds);
                         if (configFile != null) {
-                            FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
+                            final FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
                             getWatchManager().watchFile(configFile, watcher);
                         }
                     }
@@ -187,7 +187,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      * @return a new DocumentBuilder
      * @throws ParserConfigurationException
      */
-    static DocumentBuilder newDocumentBuilder(boolean xIncludeAware) throws ParserConfigurationException {
+    static DocumentBuilder newDocumentBuilder(final boolean xIncludeAware) throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         if (xIncludeAware) {

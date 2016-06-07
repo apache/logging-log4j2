@@ -155,7 +155,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return scriptManager;
     }
 
-    public void setScriptManager(ScriptManager scriptManager) {
+    public void setScriptManager(final ScriptManager scriptManager) {
         this.scriptManager = scriptManager;
     }
 
@@ -163,7 +163,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return pluginManager;
     }
 
-    public void setPluginManager(PluginManager pluginManager) {
+    public void setPluginManager(final PluginManager pluginManager) {
         this.pluginManager = pluginManager;
     }
 
@@ -317,7 +317,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (!async.isEmpty()) {
             // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
             LOGGER.trace("{} stopping {} AsyncAppenders.", cls, async.size());
-            for (Appender appender : async) {
+            for (final Appender appender : async) {
                 appender.stop();
             }
         }
@@ -434,20 +434,20 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.putIfAbsent(componentName, obj);
     }
 
-    protected void preConfigure(Node node) {
+    protected void preConfigure(final Node node) {
         try {
             for (final Node child : node.getChildren()) {
                 if (child.getType() == null) {
                     LOGGER.error("Unable to locate plugin type for " + child.getName());
                     continue;
                 }
-                Class<?> clazz = child.getType().getPluginClass();
+                final Class<?> clazz = child.getType().getPluginClass();
                 if (clazz.isAnnotationPresent(Scheduled.class)) {
                     configurationScheduler.incrementScheduledItems();
                 }
                 preConfigure(child);
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Error capturing node data for node " + node.getName(), ex);
         }
     }
@@ -481,7 +481,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 continue;
             }
             if (child.getName().equalsIgnoreCase("Scripts")) {
-                for (AbstractScript script : child.getObject(AbstractScript[].class)) {
+                for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
                     if (script instanceof ScriptRef) {
                         LOGGER.error("Script reference to {} not added. Scripts definition cannot contain script references",
                                 script.getName());
@@ -655,7 +655,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * .core.config.LoggerConfig)
      */
     @Override
-    public ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig) {
+    public ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
         return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig);
     }
 

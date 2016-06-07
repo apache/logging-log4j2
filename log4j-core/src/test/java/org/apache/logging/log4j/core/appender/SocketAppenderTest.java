@@ -151,7 +151,7 @@ public class SocketAppenderTest {
     public void testUdpAppender() throws Exception {
         try {
             udpServer.latch.await();
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             ex.printStackTrace();
         }
 

@@ -130,7 +130,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     public Collection<T> getLoggers(final Collection<T> destination) {
-        for (Map<String, T> inner : map.values()) {
+        for (final Map<String, T> inner : map.values()) {
             destination.addAll(inner.values());
         }
         return destination;
