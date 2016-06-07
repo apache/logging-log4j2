@@ -20,7 +20,6 @@ import org.apache.logging.log4j.message.Message
 import org.apache.logging.log4j.{Level, Marker}
 
 import scala.language.experimental.macros
-
 import scala.reflect.macros.blackbox.Context
 
 private object LoggerMacro {
@@ -33,10 +32,10 @@ private object LoggerMacro {
   def fatalMarkerMsgThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMarkerMsgThrowable(c)(c.universe.reify(Level.FATAL), marker, message, cause)
 
-  def fatalMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String]) =
+  def fatalMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence]) =
     logMarkerString(c)(c.universe.reify(Level.FATAL), marker, message)
 
-  def fatalMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def fatalMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logMarkerStringThrowable(c)(c.universe.reify(Level.FATAL), marker, message, cause)
 
   def fatalMsg(c: LoggerContext)(message: c.Expr[Message]) =
@@ -45,10 +44,10 @@ private object LoggerMacro {
   def fatalMsgThrowable(c: LoggerContext)(message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMsgThrowable(c)(c.universe.reify(Level.FATAL), message, cause)
 
-  def fatalString(c: LoggerContext)(message: c.Expr[String]) =
+  def fatalString(c: LoggerContext)(message: c.Expr[CharSequence]) =
     logString(c)(c.universe.reify(Level.FATAL), message)
 
-  def fatalStringThrowable(c: LoggerContext)(message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def fatalStringThrowable(c: LoggerContext)(message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logStringThrowable(c)(c.universe.reify(Level.FATAL), message, cause)
 
   def errorMarkerMsg(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message]) =
@@ -57,10 +56,10 @@ private object LoggerMacro {
   def errorMarkerMsgThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMarkerMsgThrowable(c)(c.universe.reify(Level.ERROR), marker, message, cause)
 
-  def errorMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String]) =
+  def errorMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence]) =
     logMarkerString(c)(c.universe.reify(Level.ERROR), marker, message)
 
-  def errorMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def errorMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logMarkerStringThrowable(c)(c.universe.reify(Level.ERROR), marker, message, cause)
 
   def errorMsg(c: LoggerContext)(message: c.Expr[Message]) =
@@ -69,10 +68,10 @@ private object LoggerMacro {
   def errorMsgThrowable(c: LoggerContext)(message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMsgThrowable(c)(c.universe.reify(Level.ERROR), message, cause)
 
-  def errorString(c: LoggerContext)(message: c.Expr[String]) =
+  def errorString(c: LoggerContext)(message: c.Expr[CharSequence]) =
     logString(c)(c.universe.reify(Level.ERROR), message)
 
-  def errorStringThrowable(c: LoggerContext)(message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def errorStringThrowable(c: LoggerContext)(message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logStringThrowable(c)(c.universe.reify(Level.ERROR), message, cause)
 
   def warnMarkerMsg(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message]) =
@@ -81,10 +80,10 @@ private object LoggerMacro {
   def warnMarkerMsgThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMarkerMsgThrowable(c)(c.universe.reify(Level.WARN), marker, message, cause)
 
-  def warnMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String]) =
+  def warnMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence]) =
     logMarkerString(c)(c.universe.reify(Level.WARN), marker, message)
 
-  def warnMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def warnMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logMarkerStringThrowable(c)(c.universe.reify(Level.WARN), marker, message, cause)
 
   def warnMsg(c: LoggerContext)(message: c.Expr[Message]) =
@@ -93,10 +92,10 @@ private object LoggerMacro {
   def warnMsgThrowable(c: LoggerContext)(message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMsgThrowable(c)(c.universe.reify(Level.WARN), message, cause)
 
-  def warnString(c: LoggerContext)(message: c.Expr[String]) =
+  def warnString(c: LoggerContext)(message: c.Expr[CharSequence]) =
     logString(c)(c.universe.reify(Level.WARN), message)
 
-  def warnStringThrowable(c: LoggerContext)(message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def warnStringThrowable(c: LoggerContext)(message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logStringThrowable(c)(c.universe.reify(Level.WARN), message, cause)
 
   def infoMarkerMsg(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message]) =
@@ -105,10 +104,10 @@ private object LoggerMacro {
   def infoMarkerMsgThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMarkerMsgThrowable(c)(c.universe.reify(Level.INFO), marker, message, cause)
 
-  def infoMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String]) =
+  def infoMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence]) =
     logMarkerString(c)(c.universe.reify(Level.INFO), marker, message)
 
-  def infoMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def infoMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logMarkerStringThrowable(c)(c.universe.reify(Level.INFO), marker, message, cause)
 
   def infoMsg(c: LoggerContext)(message: c.Expr[Message]) =
@@ -117,10 +116,10 @@ private object LoggerMacro {
   def infoMsgThrowable(c: LoggerContext)(message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMsgThrowable(c)(c.universe.reify(Level.INFO), message, cause)
 
-  def infoString(c: LoggerContext)(message: c.Expr[String]) =
+  def infoString(c: LoggerContext)(message: c.Expr[CharSequence]) =
     logString(c)(c.universe.reify(Level.INFO), message)
 
-  def infoStringThrowable(c: LoggerContext)(message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def infoStringThrowable(c: LoggerContext)(message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logStringThrowable(c)(c.universe.reify(Level.INFO), message, cause)
 
   def debugMarkerMsg(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message]) =
@@ -129,10 +128,10 @@ private object LoggerMacro {
   def debugMarkerMsgThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMarkerMsgThrowable(c)(c.universe.reify(Level.DEBUG), marker, message, cause)
 
-  def debugMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String]) =
+  def debugMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence]) =
     logMarkerString(c)(c.universe.reify(Level.DEBUG), marker, message)
 
-  def debugMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def debugMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logMarkerStringThrowable(c)(c.universe.reify(Level.DEBUG), marker, message, cause)
 
   def debugMsg(c: LoggerContext)(message: c.Expr[Message]) =
@@ -141,10 +140,10 @@ private object LoggerMacro {
   def debugMsgThrowable(c: LoggerContext)(message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMsgThrowable(c)(c.universe.reify(Level.DEBUG), message, cause)
 
-  def debugString(c: LoggerContext)(message: c.Expr[String]) =
+  def debugString(c: LoggerContext)(message: c.Expr[CharSequence]) =
     logString(c)(c.universe.reify(Level.DEBUG), message)
 
-  def debugStringThrowable(c: LoggerContext)(message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def debugStringThrowable(c: LoggerContext)(message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logStringThrowable(c)(c.universe.reify(Level.DEBUG), message, cause)
 
   def traceMarkerMsg(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message]) =
@@ -153,10 +152,10 @@ private object LoggerMacro {
   def traceMarkerMsgThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMarkerMsgThrowable(c)(c.universe.reify(Level.TRACE), marker, message, cause)
 
-  def traceMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String]) =
+  def traceMarkerString(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence]) =
     logMarkerString(c)(c.universe.reify(Level.TRACE), marker, message)
 
-  def traceMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def traceMarkerStringThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logMarkerStringThrowable(c)(c.universe.reify(Level.TRACE), marker, message, cause)
 
   def traceMsg(c: LoggerContext)(message: c.Expr[Message]) =
@@ -165,10 +164,10 @@ private object LoggerMacro {
   def traceMsgThrowable(c: LoggerContext)(message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMsgThrowable(c)(c.universe.reify(Level.TRACE), message, cause)
 
-  def traceString(c: LoggerContext)(message: c.Expr[String]) =
+  def traceString(c: LoggerContext)(message: c.Expr[CharSequence]) =
     logString(c)(c.universe.reify(Level.TRACE), message)
 
-  def traceStringThrowable(c: LoggerContext)(message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def traceStringThrowable(c: LoggerContext)(message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     logStringThrowable(c)(c.universe.reify(Level.TRACE), message, cause)
 
   def logMarkerMsg(c: LoggerContext)(level: c.Expr[Level], marker: c.Expr[Marker], message: c.Expr[Message]) =
@@ -185,14 +184,14 @@ private object LoggerMacro {
       }
     )
 
-  def logMarkerString(c: LoggerContext)(level: c.Expr[Level], marker: c.Expr[Marker], message: c.Expr[String]) =
+  def logMarkerString(c: LoggerContext)(level: c.Expr[Level], marker: c.Expr[Marker], message: c.Expr[CharSequence]) =
     c.universe.reify(
       if (c.prefix.splice.delegate.isEnabled(level.splice, marker.splice)) {
         c.prefix.splice.logMessage(level.splice, marker.splice, message.splice, null)
       }
     )
 
-  def logMarkerStringThrowable(c: LoggerContext)(level: c.Expr[Level], marker: c.Expr[Marker], message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def logMarkerStringThrowable(c: LoggerContext)(level: c.Expr[Level], marker: c.Expr[Marker], message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     c.universe.reify(
       if (c.prefix.splice.delegate.isEnabled(level.splice, marker.splice)) {
         c.prefix.splice.logMessage(level.splice, marker.splice, message.splice, cause.splice)
@@ -213,14 +212,14 @@ private object LoggerMacro {
       }
     )
 
-  def logString(c: LoggerContext)(level: c.Expr[Level], message: c.Expr[String]) =
+  def logString(c: LoggerContext)(level: c.Expr[Level], message: c.Expr[CharSequence]) =
     c.universe.reify(
       if (c.prefix.splice.delegate.isEnabled(level.splice)) {
         c.prefix.splice.logMessage(level.splice, null, message.splice, null)
       }
     )
 
-  def logStringThrowable(c: LoggerContext)(level: c.Expr[Level], message: c.Expr[String], cause: c.Expr[Throwable]) =
+  def logStringThrowable(c: LoggerContext)(level: c.Expr[Level], message: c.Expr[CharSequence], cause: c.Expr[Throwable]) =
     c.universe.reify(
       if (c.prefix.splice.delegate.isEnabled(level.splice)) {
         c.prefix.splice.logMessage(level.splice, null, message.splice, cause.splice)

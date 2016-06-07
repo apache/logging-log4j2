@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.scala
 
-import org.apache.logging.log4j.message.{SimpleMessage, Message, ParameterizedMessageFactory}
+import org.apache.logging.log4j.message.{Message, ParameterizedMessage, ParameterizedMessageFactory}
 import org.apache.logging.log4j.spi.ExtendedLogger
-import org.apache.logging.log4j.{MarkerManager, Level, Marker}
+import org.apache.logging.log4j.{Level, Marker, MarkerManager}
 import org.junit.runner.RunWith
 import org.mockito.Matchers.{any, anyString, eq => eqv}
 import org.mockito.Mockito._
@@ -30,7 +30,7 @@ import org.scalatest.{FunSuite, Matchers}
 class LoggerTest extends FunSuite with Matchers with MockitoSugar {
 
   val stringMsg = "string msg"
-  val msg = new SimpleMessage("simple msg")
+  val msg = new ParameterizedMessage("msg {}", 17)
   val cause = new RuntimeException("cause")
   val marker = MarkerManager.getMarker("marker")
 
