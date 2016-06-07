@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -78,8 +77,6 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
     @Override
     public String toSerializable(final LogEvent event) {
         final StringBuilder buffer = getStringBuilder();
-        // Revisit when 1.3 is out so that we do not need to create a new
-        // printer for each event.
         final CSVFormat format = getFormat();
         try {
             format.print(event.getNanoTime(), buffer, true);

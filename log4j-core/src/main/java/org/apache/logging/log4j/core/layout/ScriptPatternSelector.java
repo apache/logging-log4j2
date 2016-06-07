@@ -64,42 +64,42 @@ public class ScriptPatternSelector implements PatternSelector {
             config.getScriptManager().addScript(script);
         }
         final PatternParser parser = PatternLayout.createPatternParser(config);
-        for (PatternMatch property : properties) {
+        for (final PatternMatch property : properties) {
             try {
-                List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, noConsoleNoAnsi);
+                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, noConsoleNoAnsi);
                 formatterMap.put(property.getKey(), list.toArray(new PatternFormatter[list.size()]));
                 patternMap.put(property.getKey(), property.getPattern());
-            } catch (RuntimeException ex) {
+            } catch (final RuntimeException ex) {
                 throw new IllegalArgumentException("Cannot parse pattern '" + property.getPattern() + "'", ex);
             }
         }
         try {
-            List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi);
+            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
             this.defaultPattern = defaultPattern;
-        } catch (RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             throw new IllegalArgumentException("Cannot parse pattern '" + defaultPattern + "'", ex);
         }
     }
 
     @Override
-    public PatternFormatter[] getFormatters(LogEvent event) {
-        SimpleBindings bindings = new SimpleBindings();
+    public PatternFormatter[] getFormatters(final LogEvent event) {
+        final SimpleBindings bindings = new SimpleBindings();
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
         bindings.put("logEvent", event);
-        Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
         if (object == null) {
             return defaultFormatters;
         }
-        PatternFormatter[] patternFormatter = formatterMap.get(object.toString());
+        final PatternFormatter[] patternFormatter = formatterMap.get(object.toString());
 
         return patternFormatter == null ? defaultFormatters : patternFormatter;
     }
 
 
     @PluginFactory
-    public static ScriptPatternSelector createSelector(@PluginElement("Script") AbstractScript script,
+    public static ScriptPatternSelector createSelector(@PluginElement("Script") final AbstractScript script,
                                                        @PluginElement("PatternMatch") final PatternMatch[] properties,
                                                        @PluginAttribute("defaultPattern") String defaultPattern,
                                                        @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
@@ -126,9 +126,9 @@ public class ScriptPatternSelector implements PatternSelector {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (Map.Entry<String, String> entry : patternMap.entrySet()) {
+        for (final Map.Entry<String, String> entry : patternMap.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }

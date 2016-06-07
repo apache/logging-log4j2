@@ -22,7 +22,14 @@ import java.util.Map;
 
 /**
  * Adds entries to the {@link ThreadContext stack or map} and them removes them when the object is closed, e.g. as part
- * of a try-with-resources.
+ * of a try-with-resources. User code can now look like this:
+ * <pre>
+ * try (CloseableThreadContext.put(key1, value1).put(key2, value2)) {
+ *     callSomeMethodThatLogsALot();
+ *
+ * // key1 and key2 are automatically removed from the ThreadContext map when done
+ * }
+ * </pre>
  *
  * @since 2.6
  */
@@ -136,7 +143,7 @@ public class CloseableThreadContext {
         }
 
         private void closeMap() {
-            for (Iterator<Map.Entry<String, String>> it = originalValues.entrySet().iterator(); it.hasNext(); ) {
+            for (final Iterator<Map.Entry<String, String>> it = originalValues.entrySet().iterator(); it.hasNext(); ) {
                 final Map.Entry<String, String> entry = it.next();
                 final String key = entry.getKey();
                 final String originalValue = entry.getValue();

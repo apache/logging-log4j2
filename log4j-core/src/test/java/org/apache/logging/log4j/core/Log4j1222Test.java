@@ -55,7 +55,7 @@ public class Log4j1222Test
 			if (((TestLogger) Holder.LOGGER).getEntries().size() == 0) {
 				System.out.println("Logger contains no messages");
 			}
-			for (String msg : ((TestLogger) Holder.LOGGER).getEntries()) {
+			for (final String msg : ((TestLogger) Holder.LOGGER).getEntries()) {
 				System.out.println(msg);
 			}
 		}

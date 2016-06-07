@@ -30,7 +30,7 @@ public class ReusableObjectMessage implements ReusableMessage {
     private transient Object obj;
     private transient String objectString;
 
-    public void set(Object object) {
+    public void set(final Object object) {
         this.obj = object;
     }
 

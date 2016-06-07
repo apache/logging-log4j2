@@ -61,7 +61,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final Message msg = event.getMessage();
         if (msg instanceof StringBuilderFormattable) {
-            int offset = toAppendTo.length();
+            final int offset = toAppendTo.length();
             ((StringBuilderFormattable) msg).formatTo(toAppendTo);
 
             // TODO can we optimize this?

@@ -94,7 +94,7 @@ import org.apache.logging.log4j.core.util.Loader;
 public class ResponseTimeTest {
     private static final String LATENCY_MSG = new String(new char[64]);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         if (args.length < 2) {
             System.out.println("Please specify thread count, target throughput (msg/sec) " +
                     "and logger library (Log4j1, Log4j2, Logback, JUL)");
@@ -133,8 +133,8 @@ public class ResponseTimeTest {
 
         // Warmup: run as many iterations of 50,000 calls to logger.log as we can in 1 minute
         final long WARMUP_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(1);
-        List<Histogram> warmupServiceTmHistograms = new ArrayList<>(threadCount);
-        List<Histogram> warmupResponseTmHistograms = new ArrayList<>(threadCount);
+        final List<Histogram> warmupServiceTmHistograms = new ArrayList<>(threadCount);
+        final List<Histogram> warmupResponseTmHistograms = new ArrayList<>(threadCount);
 
         final int WARMUP_COUNT = 50000 / threadCount;
         runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, loadMessagesPerSec, idleStrategy,
@@ -146,9 +146,9 @@ public class ResponseTimeTest {
         }
         System.out.println("-----------------Starting measured run. load=" + loadMessagesPerSec);
 
-        long start = System.currentTimeMillis();
-        List<Histogram> serviceTmHistograms = new ArrayList<>(threadCount);
-        List<Histogram> responseTmHistograms = new ArrayList<>(threadCount);
+        final long start = System.currentTimeMillis();
+        final List<Histogram> serviceTmHistograms = new ArrayList<>(threadCount);
+        final List<Histogram> responseTmHistograms = new ArrayList<>(threadCount);
         PrintingAsyncQueueFullPolicy.ringbufferFull.set(0);
 
         // Actual test: run as many iterations of 1,000,000 calls to logger.log as we can in 4 minutes.
@@ -156,7 +156,7 @@ public class ResponseTimeTest {
         final int COUNT = (1000 * 1000) / threadCount;
         runLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, loadMessagesPerSec, idleStrategy, serviceTmHistograms,
                 responseTmHistograms, threadCount);
-        long end = System.currentTimeMillis();
+        final long end = System.currentTimeMillis();
 
         // ... and report the results
         final Histogram resultServiceTm = createResultHistogram(serviceTmHistograms, start, end);
@@ -208,7 +208,7 @@ public class ResponseTimeTest {
                     LATCH.countDown();
                     try {
                         LATCH.await(); // wait until all threads are ready to go
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         interrupt();
                         return;
                     }
@@ -244,7 +244,7 @@ public class ResponseTimeTest {
         static AtomicLong ringbufferFull = new AtomicLong();
 
         @Override
-        public EventRoute getRoute(long backgroundThreadId, Level level) {
+        public EventRoute getRoute(final long backgroundThreadId, final Level level) {
             ringbufferFull.incrementAndGet();
             System.out.print('!');
             return super.getRoute(backgroundThreadId, level);
@@ -281,29 +281,29 @@ public class ResponseTimeTest {
         private long unitsCompletedAtCatchUpStart;
         private double catchUpThroughputInUnitsPerNsec;
         private double catchUpRateMultiple;
-        private IdleStrategy idleStrategy;
+        private final IdleStrategy idleStrategy;
 
-        public Pacer(double unitsPerSec, IdleStrategy idleStrategy) {
+        public Pacer(final double unitsPerSec, final IdleStrategy idleStrategy) {
             this(unitsPerSec, 3.0, idleStrategy); // Default to catching up at 3x the set throughput
         }
 
-        public Pacer(double unitsPerSec, double catchUpRateMultiple, IdleStrategy idleStrategy) {
+        public Pacer(final double unitsPerSec, final double catchUpRateMultiple, final IdleStrategy idleStrategy) {
             this.idleStrategy = idleStrategy;
             setThroughout(unitsPerSec);
             setCatchupRateMultiple(catchUpRateMultiple);
             initialStartTime = System.nanoTime();
         }
 
-        public void setInitialStartTime(long initialStartTime) {
+        public void setInitialStartTime(final long initialStartTime) {
             this.initialStartTime = initialStartTime;
         }
 
-        public void setThroughout(double unitsPerSec) {
+        public void setThroughout(final double unitsPerSec) {
             throughputInUnitsPerNsec = unitsPerSec / 1000000000.0;
             catchUpThroughputInUnitsPerNsec = catchUpRateMultiple * throughputInUnitsPerNsec;
         }
 
-        public void setCatchupRateMultiple(double multiple) {
+        public void setCatchupRateMultiple(final double multiple) {
             catchUpRateMultiple = multiple;
             catchUpThroughputInUnitsPerNsec = catchUpRateMultiple * throughputInUnitsPerNsec;
         }
@@ -317,7 +317,7 @@ public class ResponseTimeTest {
 
         public long nsecToNextOperation() {
 
-            long now = System.nanoTime();
+            final long now = System.nanoTime();
 
             long nextStartTime = expectedNextOperationNanoTime();
 
@@ -337,7 +337,7 @@ public class ResponseTimeTest {
                 }
 
                 // Figure out if it's time to send, per catch up throughput:
-                long unitsCompletedSinceCatchUpStart =
+                final long unitsCompletedSinceCatchUpStart =
                         unitsCompleted - unitsCompletedAtCatchUpStart;
 
                 nextStartTime = catchUpStartTime +
@@ -357,17 +357,17 @@ public class ResponseTimeTest {
          *
          * @param unitCount
          */
-        public void acquire(long unitCount) {
-            long nsecToNextOperation = nsecToNextOperation();
+        public void acquire(final long unitCount) {
+            final long nsecToNextOperation = nsecToNextOperation();
             if (nsecToNextOperation > 0) {
                 sleepNs(nsecToNextOperation);
             }
             unitsCompleted += unitCount;
         }
 
-        private void sleepNs(long ns) {
+        private void sleepNs(final long ns) {
             long now = System.nanoTime();
-            long deadline = now + ns;
+            final long deadline = now + ns;
             while ((now = System.nanoTime()) < deadline) {
                 idleStrategy.idle();
             }

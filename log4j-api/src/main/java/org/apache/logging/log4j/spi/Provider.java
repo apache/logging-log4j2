@@ -88,7 +88,7 @@ public class Provider {
         if (className == null) {
             return null;
         }
-        ClassLoader loader = classLoader.get();
+        final ClassLoader loader = classLoader.get();
         if (loader == null) {
             return null;
         }
@@ -121,7 +121,7 @@ public class Provider {
         if (threadContextMap == null) {
             return null;
         }
-        ClassLoader loader = classLoader.get();
+        final ClassLoader loader = classLoader.get();
         if (loader == null) {
             return null;
         }

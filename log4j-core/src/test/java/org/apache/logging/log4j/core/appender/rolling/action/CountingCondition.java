@@ -31,12 +31,12 @@ public class CountingCondition implements PathCondition {
     private int acceptCount;
     private int beforeFileTreeWalkCount;
 
-    public CountingCondition(boolean accept) {
+    public CountingCondition(final boolean accept) {
         this.accept = accept;
     }
 
     @Override
-    public boolean accept(Path baseDir, Path path, BasicFileAttributes attrs) {
+    public boolean accept(final Path baseDir, final Path path, final BasicFileAttributes attrs) {
         acceptCount++;
         return accept;
     }

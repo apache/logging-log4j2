@@ -44,7 +44,7 @@ import static org.junit.Assert.*;
  */
 public class PatternLayoutTest {
     public class FauxLogger {
-        public String formatEvent(LogEvent event, Layout<?> layout) {
+        public String formatEvent(final LogEvent event, final Layout<?> layout) {
             return new String(layout.toByteArray(event));
         }
     }
@@ -68,7 +68,7 @@ public class PatternLayoutTest {
 
     LoggerContext ctx = LoggerContext.getContext();
 
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
     @After
     public void after() {
@@ -227,9 +227,9 @@ public class PatternLayoutTest {
 
     @Test
     public void testPatternSelector() throws Exception {
-        PatternMatch[] patterns = new PatternMatch[1];
+        final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
-        PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
+        final PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
         final PatternLayout layout = PatternLayout.newBuilder().withPatternSelector(selector)
                 .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
@@ -499,7 +499,7 @@ public class PatternLayoutTest {
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!")).build();
             final String result1 = layout.toSerializable(event1);
-            String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
+            final String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {
@@ -553,7 +553,7 @@ public class PatternLayoutTest {
                     .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
                     .build();
             final String result1 = layout.toSerializable(event1);
-            String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
+            final String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {

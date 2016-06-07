@@ -67,12 +67,12 @@ public final class KafkaAppender extends AbstractAppender {
             LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
         } else {
             try {
-                Layout<? extends Serializable> layout = getLayout();
+                final Layout<? extends Serializable> layout = getLayout();
                 byte[] data;
                 if (layout != null) {
                     if (layout instanceof SerializedLayout) {
-                        byte[] header = layout.getHeader();
-                        byte[] body = layout.toByteArray(event);
+                        final byte[] header = layout.getHeader();
+                        final byte[] body = layout.toByteArray(event);
                         data = new byte[header.length + body.length];
                         System.arraycopy(header, 0, data, 0, header.length);
                         System.arraycopy(body, 0, data, header.length, body.length);

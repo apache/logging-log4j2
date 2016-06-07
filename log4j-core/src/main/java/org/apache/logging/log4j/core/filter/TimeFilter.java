@@ -127,7 +127,7 @@ public final class TimeFilter extends AbstractFilter {
         stf.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             return stf.parse(timestamp).getTime();
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             LOGGER.warn("Error parsing TimeFilter timestamp value {}", timestamp, e);
             return defaultValue;
         }

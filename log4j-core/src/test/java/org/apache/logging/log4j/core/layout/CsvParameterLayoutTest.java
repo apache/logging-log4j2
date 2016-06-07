@@ -90,7 +90,7 @@ public class CsvParameterLayoutTest {
         assertEquals("text/csv; charset=UTF-8", layout.getContentType());
     }
 
-    static void testLayoutNormalApi(final Logger root, final AbstractCsvLayout layout, boolean messageApi) throws Exception {
+    static void testLayoutNormalApi(final Logger root, final AbstractCsvLayout layout, final boolean messageApi) throws Exception {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);
@@ -143,19 +143,19 @@ public class CsvParameterLayoutTest {
 
     @Test
     public void testLayoutDefaultNormal() throws Exception {
-        Logger root = this.init.getLogger("");
+        final Logger root = this.init.getRootLogger();
         testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), false);
     }
 
     @Test
     public void testLayoutDefaultObjectArrayMessage() throws Exception {
-        Logger root = this.init.getLogger("");
+        final Logger root = this.init.getRootLogger();
         testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), true);
     }
 
     @Test
     public void testLayoutTab() throws Exception {
-        Logger root = this.init.getLogger("");
+        final Logger root = this.init.getRootLogger();
         testLayoutNormalApi(root, CsvParameterLayout.createLayout(CSVFormat.TDF), true);
     }
 }

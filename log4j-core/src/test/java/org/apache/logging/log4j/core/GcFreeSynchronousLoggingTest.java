@@ -34,7 +34,7 @@ public class GcFreeSynchronousLoggingTest {
     /**
      * This code runs in a separate process, instrumented with the Google Allocation Instrumenter.
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeSynchronousLoggingTest.class);
     }
 }

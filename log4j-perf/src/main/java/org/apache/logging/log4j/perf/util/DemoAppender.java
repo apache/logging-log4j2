@@ -32,17 +32,17 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
 
     public long checksum;
 
-    public DemoAppender(Layout<?> layout) {
+    public DemoAppender(final Layout<?> layout) {
         super("demo", null, layout);
     }
 
     @Override
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         if (Constants.ENABLE_DIRECT_ENCODERS) {
             getLayout().encode(event, this);
             drain(byteBuffer);
         } else {
-            byte[] binary = getLayout().toByteArray(event);
+            final byte[] binary = getLayout().toByteArray(event);
             consume(binary, 0, binary.length);
         }
     }
@@ -53,14 +53,14 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
     }
 
     @Override
-    public ByteBuffer drain(ByteBuffer buf) {
+    public ByteBuffer drain(final ByteBuffer buf) {
         buf.flip();
         consume(buf.array(), buf.position(), buf.limit());
         buf.clear();
         return buf;
     }
 
-    private void consume(byte[] data, int offset, int length) {
+    private void consume(final byte[] data, final int offset, final int length) {
         // need to do something with the result or the JVM may optimize everything away
         long sum = 0;
         for (int i = offset; i < length; i++) {

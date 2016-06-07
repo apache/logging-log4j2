@@ -303,12 +303,19 @@
             when logging messages with up to ten parameters.
           </p>
           <p>
-            Also, methods have been added to the <tt>Logger</tt> interface to log <tt>CharSequence</tt> messages.
+            Also, methods have been added to the <tt>Logger</tt> interface to log <tt>java.lang.CharSequence</tt> messages.
             User-defined objects that implement the <tt>CharSequence</tt> interface can be logged without creating
             temporary objects: Log4j will try to turn CharSequence messages,
             Object messages and message parameters
             into text by appending them to a StringBuilder as a CharSequence.
             This avoids calling <tt>toString()</tt> on these objects.
+          </p>
+          <p>
+            An alternative is to implement the
+            <a href="http://logging.apache.org/log4j/2.x/log4j-api/xref/org/apache/logging/log4j/util/StringBuilderFormattable.html"><tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt></a>
+            interface.
+            If an object is logged that implements this interface, its <tt>formatTo</tt> method is called instead of
+            <tt>toString()</tt>.
           </p>
           <p>
             Log4j may call <tt>toString()</tt> on message and parameter objects when garbage-free logging
@@ -323,12 +330,12 @@
           autoboxes these primitive values to their Object wrapper equivalents, creating garbage.
         </p>
         <p>
-          Log4j provides an <tt>Unboxer</tt> utility to prevent autoboxing of primitive parameters.
+          Log4j provides an <tt>Unbox</tt> utility to prevent autoboxing of primitive parameters.
           This utility contains a thread-local pool of reused <tt>StringBuilder</tt>s.
-          The <tt>Unboxer.box(primitive)</tt> methods write directly into a StringBuilder, and
+          The <tt>Unbox.box(primitive)</tt> methods write directly into a StringBuilder, and
           the resulting text will be copied into the final log message text without creating temporary objects.
         </p>
-        <pre class="prettyprint linenums">import static org.apache.logging.log4j.util.Unboxer.box;
+        <pre class="prettyprint linenums">import static org.apache.logging.log4j.util.Unbox.box;
 
 ...
 public void garbageFree() {

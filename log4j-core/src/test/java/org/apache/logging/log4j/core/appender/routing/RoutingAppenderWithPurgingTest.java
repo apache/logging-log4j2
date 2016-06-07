@@ -84,7 +84,7 @@ public class RoutingAppenderWithPurgingTest {
         EventLogger.logEvent(msg);
         msg = new StructuredDataMessage("3", "This is a test 3", "Service");
         EventLogger.logEvent(msg);
-        String[] files = {IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3, MANUAL_LOG_FILE1, MANUAL_LOG_FILE2, MANUAL_LOG_FILE3};
+        final String[] files = {IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3, MANUAL_LOG_FILE1, MANUAL_LOG_FILE2, MANUAL_LOG_FILE3};
         assertFileExistance(files);
 
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 3, routingAppenderIdle.getAppenders().size());
@@ -106,8 +106,8 @@ public class RoutingAppenderWithPurgingTest {
         assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
     }
 
-    private void assertFileExistance(String... files) {
-    	for (String file : files) {
+    private void assertFileExistance(final String... files) {
+    	for (final String file : files) {
 			assertTrue("File should exist - " + file + " file ", new File(file).exists());
 		}
     }

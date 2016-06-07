@@ -32,7 +32,7 @@ public class Script extends AbstractScript {
 
     private static final Logger logger = StatusLogger.getLogger();
 
-    public Script(String name, String language, String scriptText) {
+    public Script(final String name, final String language, final String scriptText) {
         super(name, language, scriptText);
     }
 

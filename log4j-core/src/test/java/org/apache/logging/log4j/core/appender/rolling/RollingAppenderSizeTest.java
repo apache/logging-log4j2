@@ -92,26 +92,26 @@ public class RollingAppenderSizeTest {
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(fileExtension))))));
 
-        DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
+        final DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
         if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
                 || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
             return; // commons compress cannot deflate zip? TODO test decompressing these formats
         }
-        for (File file : files) {
+        for (final File file : files) {
             if (file.getName().endsWith(fileExtension)) {
                 CompressorInputStream in = null;
                 try (FileInputStream fis = new FileInputStream(file)) {
                     try {
                         in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
-                    } catch (CompressorException ce) {
+                    } catch (final CompressorException ce) {
                         ce.printStackTrace();
                         fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
                     }
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     IOUtils.copy(in, baos);
-                    String text = new String(baos.toByteArray(), Charset.defaultCharset());
-                    String[] lines = text.split("[\\r\\n]+");
-                    for (String line : lines) {
+                    final String text = new String(baos.toByteArray(), Charset.defaultCharset());
+                    final String[] lines = text.split("[\\r\\n]+");
+                    for (final String line : lines) {
                         assertTrue(line
                                 .contains("DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
                     }

@@ -48,13 +48,13 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     private final ConfigurationScheduler scheduler;
     private volatile ScheduledFuture<?> future = null;
 
-    public IdlePurgePolicy(long timeToLive, ConfigurationScheduler scheduler) {
+    public IdlePurgePolicy(final long timeToLive, final ConfigurationScheduler scheduler) {
         this.timeToLive = timeToLive;
         this.scheduler = scheduler;
     }
 
     @Override
-    public void initialize(RoutingAppender routingAppender) {
+    public void initialize(final RoutingAppender routingAppender) {
         this.routingAppender = routingAppender;
     }
 
@@ -69,8 +69,8 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
      */
     @Override
     public void purge() {
-        long createTime = System.currentTimeMillis() - timeToLive;
-        for (Entry<String, Long> entry : appendersUsage.entrySet()) {
+        final long createTime = System.currentTimeMillis() - timeToLive;
+        for (final Entry<String, Long> entry : appendersUsage.entrySet()) {
             if (entry.getValue() < createTime) {
                 LOGGER.debug("Removing appender " + entry.getKey());
                 appendersUsage.remove(entry.getKey());
@@ -80,8 +80,8 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     }
 
     @Override
-    public void update(String key, LogEvent event) {
-        long now = System.currentTimeMillis();
+    public void update(final String key, final LogEvent event) {
+        final long now = System.currentTimeMillis();
         appendersUsage.put(key, now);
         if (future == null) {
             synchronized (this) {
@@ -101,13 +101,13 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
 
     private void scheduleNext() {
         long createTime = Long.MAX_VALUE;
-        for (Entry<String, Long> entry : appendersUsage.entrySet()) {
+        for (final Entry<String, Long> entry : appendersUsage.entrySet()) {
             if (entry.getValue() < createTime) {
                 createTime = entry.getValue();
             }
         }
         if (createTime < Long.MAX_VALUE) {
-            long interval = timeToLive - (System.currentTimeMillis() - createTime);
+            final long interval = timeToLive - (System.currentTimeMillis() - createTime);
             future = scheduler.schedule(this, interval, TimeUnit.MILLISECONDS);
         }
     }
@@ -123,7 +123,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     public static PurgePolicy createPurgePolicy(
         @PluginAttribute("timeToLive") final String timeToLive,
         @PluginAttribute("timeUnit") final String timeUnit,
-        @PluginConfiguration Configuration configuration) {
+        @PluginConfiguration final Configuration configuration) {
 
         if (timeToLive == null) {
             LOGGER.error("A timeToLive  value is required");
@@ -135,7 +135,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
         } else {
             try {
                 units = TimeUnit.valueOf(timeUnit.toUpperCase());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Invalid time unit {}", timeUnit);
                 units = TimeUnit.MINUTES;
             }

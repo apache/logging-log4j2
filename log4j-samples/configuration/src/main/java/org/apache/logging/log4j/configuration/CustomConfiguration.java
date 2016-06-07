@@ -57,7 +57,7 @@ public class CustomConfiguration extends AbstractConfiguration {
     /**
      * Constructor to create the default configuration.
      */
-    public CustomConfiguration(ConfigurationSource source) {
+    public CustomConfiguration(final ConfigurationSource source) {
         super(source);
 
         setName(CONFIG_NAME);

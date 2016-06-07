@@ -68,13 +68,13 @@ public class VarargsBenchmark {
                 "six", "seven", "eight", "nine", "ten");
     }
 
-    private long varargMethod(String string, String... p) {
+    private long varargMethod(final String string, final String... p) {
         return string.length() + p[0].length() + p[1].length() + p[2].length() + p[3].length() + p[4].length()
                 + p[5].length() + p[6].length() + p[7].length() + p[8].length() + p[9].length();
     }
 
-    private long individualArgMethod(String string, String p1, String p2, String p3, String p4, String p5, String p6,
-            String p7, String p8, String p9, String p10) {
+    private long individualArgMethod(final String string, final String p1, final String p2, final String p3, final String p4, final String p5, final String p6,
+            final String p7, final String p8, final String p9, final String p10) {
         return string.length() + p1.length() + p2.length() + p3.length() + p4.length() + p5.length() + p6.length()
                 + p7.length() + p8.length() + p9.length() + p10.length();
     }

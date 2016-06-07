@@ -155,7 +155,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                 return null;
             }
         } else if (Strings.isNotEmpty(databaseName)) {
-            List<MongoCredential> credentials = new ArrayList<>();
+            final List<MongoCredential> credentials = new ArrayList<>();
             description = "database=" + databaseName;
             if (Strings.isNotEmpty(userName) && Strings.isNotEmpty(password)) {
                 description += ", username=" + userName + ", passwordHash="
@@ -195,7 +195,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             return null;
         }
 
-        WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
+        final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
 
         return new MongoDbProvider(database, writeConcern, collectionName, description);
     }

@@ -163,12 +163,12 @@ abstract class JacksonFactory {
 
         private static final long serialVersionUID = 1L;
 
-        Log4jXmlPrettyPrinter(int nesting) {
+        Log4jXmlPrettyPrinter(final int nesting) {
             _nesting = nesting;
         }
 
         @Override
-        public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException {
+        public void writePrologLinefeed(final XMLStreamWriter2 sw) throws XMLStreamException {
             // nothing
         }
 

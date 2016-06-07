@@ -29,12 +29,12 @@ public class FixedCondition implements PathCondition {
 
     private final boolean accept;
 
-    public FixedCondition(boolean accept) {
+    public FixedCondition(final boolean accept) {
         this.accept = accept;
     }
 
     @Override
-    public boolean accept(Path baseDir, Path path, BasicFileAttributes attrs) {
+    public boolean accept(final Path baseDir, final Path path, final BasicFileAttributes attrs) {
         return accept;
     }
 

@@ -199,7 +199,7 @@ public class PerfTestDriver {
 
         private final Class<? extends IPerfTestRunner> implementationClass;
 
-        private Runner(Class<? extends IPerfTestRunner> cls) {
+        private Runner(final Class<? extends IPerfTestRunner> cls) {
             this.implementationClass = cls;
         }
     }
@@ -277,7 +277,7 @@ public class PerfTestDriver {
         return tests;
     }
 
-    private static void add(final List<Setup> tests, int threadCount, final String config, final Runner runner, final String name,
+    private static void add(final List<Setup> tests, final int threadCount, final String config, final Runner runner, final String name,
             final String... systemProperties) throws IOException {
         final WaitStrategy wait = WaitStrategy.get();
         final Class<?> perfTest = threadCount == 1 ? PerfTest.class : MultiThreadPerfTest.class;

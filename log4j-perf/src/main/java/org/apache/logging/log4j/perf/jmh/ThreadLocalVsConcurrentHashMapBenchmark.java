@@ -48,21 +48,21 @@ public class ThreadLocalVsConcurrentHashMapBenchmark {
 
     @Benchmark
     public String newInstance() {
-        StringBuilder sb = getNew();
+        final StringBuilder sb = getNew();
         sb.append(VALUE);
         return sb.toString();
     }
 
     @Benchmark
     public String threadLocal() {
-        StringBuilder sb = getThreadLocal();
+        final StringBuilder sb = getThreadLocal();
         sb.append(VALUE);
         return sb.toString();
     }
 
     @Benchmark
     public String concurrentHashMap() {
-        StringBuilder sb = getConcurrentMap();
+        final StringBuilder sb = getConcurrentMap();
         sb.append(VALUE);
         return sb.toString();
     }

@@ -25,21 +25,21 @@ import org.apache.logging.log4j.ThreadContext;
 
 public class ServletRequestThreadContext {
 
-    public static void put(String key, ServletRequest servletRequest) {
+    public static void put(final String key, final ServletRequest servletRequest) {
         put(key, "RemoteAddr", servletRequest.getRemoteAddr());
         put(key, "RemoteHost", servletRequest.getRemoteHost());
         put(key, "RemotePort", servletRequest.getRemotePort());
     }
 
-    public static void put(String key, String field, Object value) {
+    public static void put(final String key, final String field, final Object value) {
         put(key + "." + field, Objects.toString(value));
     }
 
-    public static void put(String key, String value) {
+    public static void put(final String key, final String value) {
         ThreadContext.put(key, value);
     }
 
-    public static void put(String key, HttpServletRequest servletRequest) {
+    public static void put(final String key, final HttpServletRequest servletRequest) {
         put(key, (ServletRequest) servletRequest);
     }
 }

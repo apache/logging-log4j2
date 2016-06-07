@@ -27,7 +27,7 @@ public class ReusableSimpleMessageTest {
 
     @Test
     public void testSet_InitializesFormattedMessage() throws Exception {
-        ReusableSimpleMessage msg = new ReusableSimpleMessage();
+        final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormattedMessage());
     }
@@ -39,7 +39,7 @@ public class ReusableSimpleMessageTest {
 
     @Test
     public void testGetFormattedMessage_ReturnsLatestSetString() throws Exception {
-        ReusableSimpleMessage msg = new ReusableSimpleMessage();
+        final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormattedMessage());
         msg.set("def");
@@ -55,7 +55,7 @@ public class ReusableSimpleMessageTest {
 
     @Test
     public void testGetFormat_ReturnsLatestSetString() throws Exception {
-        ReusableSimpleMessage msg = new ReusableSimpleMessage();
+        final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormat());
         msg.set("def");
@@ -71,7 +71,7 @@ public class ReusableSimpleMessageTest {
 
     @Test
     public void testGetParameters_ReturnsEmptyArrayAfterMessageSet() throws Exception {
-        ReusableSimpleMessage msg = new ReusableSimpleMessage();
+        final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertArrayEquals(new Object[0], msg.getParameters());
         msg.set("def");
@@ -85,7 +85,7 @@ public class ReusableSimpleMessageTest {
 
     @Test
     public void testGetThrowable_ReturnsNullAfterMessageSet() throws Exception {
-        ReusableSimpleMessage msg = new ReusableSimpleMessage();
+        final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertNull(msg.getThrowable());
         msg.set("def");
@@ -94,16 +94,16 @@ public class ReusableSimpleMessageTest {
 
     @Test
     public void testFormatTo_InitiallyWritesNull() throws Exception {
-        ReusableSimpleMessage msg = new ReusableSimpleMessage();
-        StringBuilder sb = new StringBuilder();
+        final ReusableSimpleMessage msg = new ReusableSimpleMessage();
+        final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);
         assertEquals("null", sb.toString());
     }
 
     @Test
     public void testFormatTo_WritesLatestSetString() throws Exception {
-        ReusableSimpleMessage msg = new ReusableSimpleMessage();
-        StringBuilder sb = new StringBuilder();
+        final ReusableSimpleMessage msg = new ReusableSimpleMessage();
+        final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);
         assertEquals("null", sb.toString());
         sb.setLength(0);

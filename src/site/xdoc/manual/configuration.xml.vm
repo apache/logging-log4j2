@@ -424,6 +424,7 @@ public class Bar {
                 <td>Enables diagnostic information while loading plugins.</td>
               </tr>
             </table>
+          <a name="XML"/>
           <p>
             Log4j can be configured using two XML flavors; concise and strict. The concise format makes
             configuration very easy as the element names match the components they represent however it
@@ -821,14 +822,16 @@ public class Bar {
               Prior to version 2.6,
               the properties configuration requires that you list the identifiers of the appenders, filters and loggers,
               in a comma separated list in properties with those names. Each of those components will then be expected
-              to be defined in sets of properties that begin with <i>component.identifier</i>. The identifier does not
+              to be defined in sets of properties that begin with <i>component.&lt;.identifier&gt;.</i>. The identifier does not
               have to match the name of the component being defined but must uniquely identify all the attributes and
-              subcomponents that are part of the component. Each individual component MUST have a "type" attribute
+              subcomponents that are part of the component. If the list of identifiers is not present the
+              identier must not contain a '.'. Each individual component MUST have a "type" attribute
               specified that identifies the component's Plugin type.
             </p>
             <p>
-              As of version 2.6, this list of identifiers is no longer required as names are inferred upon first usage.
-              The list of identifiers used in a 2.4/2.5 format will be safely ignored in 2.6+.
+              As of version 2.6, this list of identifiers is no longer required as names are inferred upon first usage,
+              however if you wish to use more complex identifies you must still use the list. If the list is present
+              it will be used.
             </p>
             <p>
               Unlike the base components, when creating subcomponents you cannot specify an element containing a list of
@@ -1981,6 +1984,19 @@ public class AwesomeTest {
     <td>518</td>
     <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
      text is formatted and potentially passed to background threads.</td>
+  </tr>
+
+  <tr>
+    <td><a name="log4j.unbox.ringbuffer.size" />log4j.unbox.ringbuffer.size</td>
+    <td>32</td>
+    <td>The <tt>org.apache.logging.log4j.util.Unbox</tt> utility
+    manages a small thread-local ring buffer of StringBuilders.
+     Each time one of the <tt>box()</tt> methods is called, the next slot in the ring buffer is used, until the ring
+     buffer is full and the first slot is reused. By default the Unbox ring buffer has 32 slots, so user code can
+     have up to 32 boxed primitives in a single logger call.
+     <p>
+     If more slots are required, set system property <tt>log4j.unbox.ringbuffer.size</tt> to the desired ring buffer size.
+     Note that the specified number will be rounded up to the nearest power of 2.</p></td>
   </tr>
 </table>
 

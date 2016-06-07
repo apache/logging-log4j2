@@ -131,7 +131,7 @@ public class DeleteAction extends AbstractPathAction {
         final List<PathWithAttributes> sortedPaths = getSortedPaths();
         trace("Sorted paths:", sortedPaths);
 
-        for (PathWithAttributes element : sortedPaths) {
+        for (final PathWithAttributes element : sortedPaths) {
             try {
                 visitor.visitFile(element.getPath(), element.getAttributes());
             } catch (final IOException ioex) {

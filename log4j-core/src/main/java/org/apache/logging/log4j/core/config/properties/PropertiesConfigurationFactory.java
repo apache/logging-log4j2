@@ -46,7 +46,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         final Properties properties = new Properties();
         try {
             properties.load(configStream);
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             throw new ConfigurationException("Unable to load " + source.toString(), ioe);
         }
         return new PropertiesConfigurationBuilder().setConfigurationSource(source)

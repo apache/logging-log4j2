@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
  */
 public class HtmlLayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 

@@ -68,14 +68,14 @@ public class DefaultMergeStrategy implements MergeStrategy {
      * @param configuration The configuration to merge.
      */
     @Override
-    public void mergeRootProperties(Node rootNode, AbstractConfiguration configuration) {
-        for (Map.Entry<String, String> attribute : configuration.getRootNode().getAttributes().entrySet()) {
+    public void mergeRootProperties(final Node rootNode, final AbstractConfiguration configuration) {
+        for (final Map.Entry<String, String> attribute : configuration.getRootNode().getAttributes().entrySet()) {
             boolean isFound = false;
-            for (Map.Entry<String, String> targetAttribute : rootNode.getAttributes().entrySet()) {
+            for (final Map.Entry<String, String> targetAttribute : rootNode.getAttributes().entrySet()) {
                 if (targetAttribute.getKey().equalsIgnoreCase(attribute.getKey())) {
                     if (attribute.getKey().equalsIgnoreCase(STATUS)) {
-                        Level targetLevel = Level.getLevel(targetAttribute.getValue().toUpperCase());
-                        Level sourceLevel = Level.getLevel(attribute.getValue().toUpperCase());
+                        final Level targetLevel = Level.getLevel(targetAttribute.getValue().toUpperCase());
+                        final Level sourceLevel = Level.getLevel(attribute.getValue().toUpperCase());
                         if (targetLevel != null && sourceLevel != null) {
                             if (sourceLevel.isLessSpecificThan(targetLevel)) {
                                 targetAttribute.setValue(attribute.getValue());
@@ -86,8 +86,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
                             }
                     } else {
                         if (attribute.getKey().equalsIgnoreCase("monitorInterval")) {
-                            int sourceInterval = Integer.parseInt(attribute.getValue());
-                            int targetInterval = Integer.parseInt(targetAttribute.getValue());
+                            final int sourceInterval = Integer.parseInt(attribute.getValue());
+                            final int targetInterval = Integer.parseInt(targetAttribute.getValue());
                             if (targetInterval == 0 || sourceInterval < targetInterval) {
                                 targetAttribute.setValue(attribute.getValue());
                             }
@@ -112,11 +112,11 @@ public class DefaultMergeStrategy implements MergeStrategy {
      * @param pluginManager The PluginManager.
      */
     @Override
-    public void mergConfigurations(Node target, Node source, PluginManager pluginManager) {
-        for (Node sourceChildNode : source.getChildren()) {
-            boolean isFilter = isFilterNode(sourceChildNode);
+    public void mergConfigurations(final Node target, final Node source, final PluginManager pluginManager) {
+        for (final Node sourceChildNode : source.getChildren()) {
+            final boolean isFilter = isFilterNode(sourceChildNode);
             boolean isMerged = false;
-            for (Node targetChildNode : target.getChildren()) {
+            for (final Node targetChildNode : target.getChildren()) {
                 if (isFilter) {
                     if (isFilterNode(targetChildNode)) {
                         updateFilterNode(target, targetChildNode, sourceChildNode, pluginManager);
@@ -135,8 +135,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
                     case PROPERTIES:
                     case SCRIPTS:
                     case APPENDERS: {
-                        for (Node node : sourceChildNode.getChildren()) {
-                            for (Node targetNode : targetChildNode.getChildren()) {
+                        for (final Node node : sourceChildNode.getChildren()) {
+                            for (final Node targetNode : targetChildNode.getChildren()) {
                                 if (targetNode.getAttributes().get(NAME).equals(node.getAttributes().get(NAME))) {
                                     targetChildNode.getChildren().remove(targetNode);
                                     break;
@@ -148,18 +148,18 @@ public class DefaultMergeStrategy implements MergeStrategy {
                         break;
                     }
                     case LOGGERS: {
-                        Map<String, Node> targetLoggers = new HashMap<>();
-                        for (Node node : targetChildNode.getChildren()) {
+                        final Map<String, Node> targetLoggers = new HashMap<>();
+                        for (final Node node : targetChildNode.getChildren()) {
                             targetLoggers.put(node.getName(), node);
                         }
-                        for (Node node : sourceChildNode.getChildren()) {
-                            Node targetNode = getLoggerNode(targetChildNode, node.getAttributes().get(NAME));
-                            Node loggerNode = new Node(targetChildNode, node.getName(), node.getType());
+                        for (final Node node : sourceChildNode.getChildren()) {
+                            final Node targetNode = getLoggerNode(targetChildNode, node.getAttributes().get(NAME));
+                            final Node loggerNode = new Node(targetChildNode, node.getName(), node.getType());
                             if (targetNode != null) {
-                                for (Node sourceLoggerChild : node.getChildren()) {
+                                for (final Node sourceLoggerChild : node.getChildren()) {
                                     if (isFilterNode(sourceLoggerChild)) {
                                         boolean foundFilter = false;
-                                        for (Node targetChild : targetNode.getChildren()) {
+                                        for (final Node targetChild : targetNode.getChildren()) {
                                             if (isFilterNode(targetChild)) {
                                                 updateFilterNode(loggerNode, targetChild, sourceLoggerChild,
                                                         pluginManager);
@@ -168,23 +168,23 @@ public class DefaultMergeStrategy implements MergeStrategy {
                                             }
                                         }
                                         if (!foundFilter) {
-                                            Node childNode = new Node(loggerNode, sourceLoggerChild.getName(),
+                                            final Node childNode = new Node(loggerNode, sourceLoggerChild.getName(),
                                                     sourceLoggerChild.getType());
                                             targetNode.getChildren().add(childNode);
                                         }
                                     } else {
-                                        Node childNode = new Node(loggerNode, sourceLoggerChild.getName(),
+                                        final Node childNode = new Node(loggerNode, sourceLoggerChild.getName(),
                                                 sourceLoggerChild.getType());
                                         childNode.getAttributes().putAll(sourceLoggerChild.getAttributes());
                                         if (childNode.getName().equalsIgnoreCase("AppenderRef")) {
-                                            for (Node targetChild : targetNode.getChildren()) {
+                                            for (final Node targetChild : targetNode.getChildren()) {
                                                 if (isSameReference(targetChild, childNode)) {
                                                     targetNode.getChildren().remove(targetChild);
                                                     break;
                                                 }
                                             }
                                         } else {
-                                            for (Node targetChild : targetNode.getChildren()) {
+                                            for (final Node targetChild : targetNode.getChildren()) {
                                                 if (isSameName(targetChild, childNode)) {
                                                     targetNode.getChildren().remove(targetChild);
                                                     break;
@@ -222,9 +222,9 @@ public class DefaultMergeStrategy implements MergeStrategy {
         }
     }
 
-    private Node getLoggerNode(Node parentNode, String name) {
-        for (Node node : parentNode.getChildren()) {
-            String nodeName = node.getAttributes().get(NAME);
+    private Node getLoggerNode(final Node parentNode, final String name) {
+        for (final Node node : parentNode.getChildren()) {
+            final String nodeName = node.getAttributes().get(NAME);
             if (name == null && nodeName == null) {
                 return node;
             }
@@ -235,36 +235,36 @@ public class DefaultMergeStrategy implements MergeStrategy {
         return null;
     }
 
-    private void updateFilterNode(Node target, Node targetChildNode, Node sourceChildNode,
-            PluginManager pluginManager) {
+    private void updateFilterNode(final Node target, final Node targetChildNode, final Node sourceChildNode,
+            final PluginManager pluginManager) {
         if (CompositeFilter.class.isAssignableFrom(targetChildNode.getType().getPluginClass())) {
-            Node node = new Node(targetChildNode, sourceChildNode.getName(), sourceChildNode.getType());
+            final Node node = new Node(targetChildNode, sourceChildNode.getName(), sourceChildNode.getType());
             node.getChildren().addAll(sourceChildNode.getChildren());
             node.getAttributes().putAll(sourceChildNode.getAttributes());
             targetChildNode.getChildren().add(node);
         } else {
-            PluginType pluginType = pluginManager.getPluginType(FILTERS);
-            Node filtersNode = new Node(targetChildNode, FILTERS, pluginType);
-            Node node = new Node(filtersNode, sourceChildNode.getName(), sourceChildNode.getType());
+            final PluginType pluginType = pluginManager.getPluginType(FILTERS);
+            final Node filtersNode = new Node(targetChildNode, FILTERS, pluginType);
+            final Node node = new Node(filtersNode, sourceChildNode.getName(), sourceChildNode.getType());
             node.getAttributes().putAll(sourceChildNode.getAttributes());
-            List<Node> children = filtersNode.getChildren();
+            final List<Node> children = filtersNode.getChildren();
             children.add(targetChildNode);
             children.add(node);
-            List<Node> nodes = target.getChildren();
+            final List<Node> nodes = target.getChildren();
             nodes.remove(targetChildNode);
             nodes.add(filtersNode);
         }
     }
 
-    private boolean isFilterNode(Node node) {
+    private boolean isFilterNode(final Node node) {
         return Filter.class.isAssignableFrom(node.getType().getPluginClass());
     }
 
-    private boolean isSameName(Node node1, Node node2) {
+    private boolean isSameName(final Node node1, final Node node2) {
         return node1.getAttributes().get(NAME).toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
     }
 
-    private boolean isSameReference(Node node1, Node node2) {
+    private boolean isSameReference(final Node node1, final Node node2) {
         return node1.getAttributes().get(REF).toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
     }
 }

@@ -55,7 +55,7 @@ public final class RoutingAppender extends AbstractAppender {
 	  private final PurgePolicy purgePolicy;
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
-                            final RewritePolicy rewritePolicy, final Configuration config, PurgePolicy purgePolicy) {
+                            final RewritePolicy rewritePolicy, final Configuration config, final PurgePolicy purgePolicy) {
         super(name, filter, null, ignoreExceptions);
         this.routes = routes;
         this.config = config;
@@ -181,9 +181,9 @@ public final class RoutingAppender extends AbstractAppender {
      * 
      * @param key The appender's key
      */
-    public void deleteAppender(String key) {
+    public void deleteAppender(final String key) {
     	LOGGER.debug("Stopping route with key" + key);
-    	AppenderControl control = appenders.remove(key);
+    	final AppenderControl control = appenders.remove(key);
     	control.getAppender().stop();
     }
 

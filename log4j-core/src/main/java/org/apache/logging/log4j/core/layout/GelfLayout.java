@@ -107,7 +107,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final boolean includeStacktrace;
 
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
-                      final int compressionThreshold, boolean includeStacktrace) {
+                      final int compressionThreshold, final boolean includeStacktrace) {
         super(StandardCharsets.UTF_8);
         this.host = host;
         this.additionalFields = additionalFields;
@@ -143,7 +143,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        StringBuilder text = toText(event, getStringBuilder(), false);
+        final StringBuilder text = toText(event, getStringBuilder(), false);
         final byte[] bytes = getBytes(text.toString());
         return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
@@ -182,7 +182,7 @@ public final class GelfLayout extends AbstractStringLayout {
         return text.toString();
     }
 
-    private StringBuilder toText(LogEvent event, StringBuilder builder, boolean gcFree) {
+    private StringBuilder toText(final LogEvent event, final StringBuilder builder, final boolean gcFree) {
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
         builder.append("\"host\":\"");
@@ -226,11 +226,11 @@ public final class GelfLayout extends AbstractStringLayout {
         }
 
         builder.append("\"short_message\":\"");
-        Message message = event.getMessage();
+        final Message message = event.getMessage();
         if (message instanceof CharSequence) {
             JsonUtils.quoteAsString(((CharSequence)message), builder);
         } else if (gcFree && message instanceof StringBuilderFormattable) {
-            StringBuilder messageBuffer = getMessageStringBuilder();
+            final StringBuilder messageBuffer = getMessageStringBuilder();
             ((StringBuilderFormattable)message).formatTo(messageBuffer);
             JsonUtils.quoteAsString(messageBuffer, builder);
         } else {
@@ -264,7 +264,7 @@ public final class GelfLayout extends AbstractStringLayout {
         if (timeMillis < 1000) {
             return "0";
         }
-        StringBuilder builder = getTimestampStringBuilder();
+        final StringBuilder builder = getTimestampStringBuilder();
         builder.append(timeMillis);
         builder.insert(builder.length() - 3, '.');
         return builder;

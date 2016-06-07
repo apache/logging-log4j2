@@ -124,8 +124,7 @@
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
-        <item name="JMS Queue" href="/manual/appenders.html#JMSQueueAppender"/>
-        <item name="JMS Topic" href="/manual/appenders.html#JMSTopicAppender"/>
+        <item name="JMS" href="/manual/appenders.html#JMSAppender"/>
         <item name="JPA" href="/manual/appenders.html#JPAAppender"/>
         <item name="Kafka" href="/manual/appenders.html#KafkaAppender"/>
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
@@ -202,6 +201,7 @@
         <item name="Appenders" href="/manual/extending.html#Appenders"/>
         <item name="Layouts" href="/manual/extending.html#Layouts"/>
         <item name="PatternConverters" href="/manual/extending.html#PatternConverters"/>
+        <item name="Plugin Builders" href="/manual/extending.html#Plugin_Builders"/>
         <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
       </item>
 
@@ -210,7 +210,8 @@
         <item name="Converters" href="/manual/plugins.html#Converters"/>
         <item name="Key Providers" href="/manual/plugins.html#KeyProviders"/>
         <item name="Lookups" href="/manual/plugins.html#Lookups"/>
-        <item name="Preloading" href="/manual/plugins.html#Plugin_Preloading"/>
+        <item name="Type Converters" href="/manual/plugins.html#TypeConverters"/>
+        <item name="Developer Notes" href="/manual/plugins.html#DeveloperNotes"/>
       </item>
 
       <item name="Programmatic Log4j Configuration" href="/manual/customconfig.html" collapse="true">

@@ -48,7 +48,7 @@ public class ConfigurationAssemblerTest {
     public void testBuildConfiguration() throws Exception {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         CustomConfigurationFactory.addTestFixtures("config name", builder);
-        Configuration configuration = builder.build();
+        final Configuration configuration = builder.build();
         Configurator.initialize(configuration);
         validate(configuration);
     }
@@ -58,29 +58,29 @@ public class ConfigurationAssemblerTest {
         try {
             System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
                     "org.apache.logging.log4j.core.config.builder.CustomConfigurationFactory");
-            Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
+            final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
             validate(config);
         } finally {
             System.getProperties().remove(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
         }
     }
 
-    private void validate(Configuration config) {
+    private void validate(final Configuration config) {
         assertNotNull(config);
         assertNotNull(config.getName());
         assertFalse(config.getName().isEmpty());
         assertNotNull("No configuration created", config);
         assertEquals("Incorrect State: " + config.getState(), config.getState(), LifeCycle.State.STARTED);
-        Map<String, Appender> appenders = config.getAppenders();
+        final Map<String, Appender> appenders = config.getAppenders();
         assertNotNull(appenders);
         assertTrue("Incorrect number of Appenders: " + appenders.size(), appenders.size() == 1);
-        Map<String, LoggerConfig> loggers = config.getLoggers();
+        final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertNotNull(loggers);
         assertTrue("Incorrect number of LoggerConfigs: " + loggers.size(), loggers.size() == 2);
-        Filter filter = config.getFilter();
+        final Filter filter = config.getFilter();
         assertNotNull("No Filter", filter);
         assertTrue("Not a Threshold Filter", filter instanceof ThresholdFilter);
-        Logger logger = LogManager.getLogger(getClass());
+        final Logger logger = LogManager.getLogger(getClass());
         logger.info("Welcome to Log4j!");
     }
 }

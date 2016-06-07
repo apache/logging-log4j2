@@ -66,7 +66,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         public Log4jEventWrapper() {
         }
 
-        public Log4jEventWrapper(MutableLogEvent mutableLogEvent) {
+        public Log4jEventWrapper(final MutableLogEvent mutableLogEvent) {
             event = mutableLogEvent;
         }
 

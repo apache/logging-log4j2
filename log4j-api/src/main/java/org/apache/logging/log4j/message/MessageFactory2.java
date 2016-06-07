@@ -20,8 +20,10 @@ package org.apache.logging.log4j.message;
  * Creates messages. Implementations can provide different message format syntaxes.
  *
  * @see ParameterizedMessageFactory
+ * @since 2.6
  */
 public interface MessageFactory2 extends MessageFactory {
+    
     /**
      * Creates a new message for the specified CharSequence.
      * @param charSequence the (potentially mutable) CharSequence

@@ -42,10 +42,10 @@ public class AbstractLoggerTest extends AbstractLogger {
     // TODO add proper tests for ReusableMessage
     @Before
     public void before() throws Exception {
-        Field field = AbstractLogger.class.getDeclaredField("messageFactory");
+        final Field field = AbstractLogger.class.getDeclaredField("messageFactory");
         field.setAccessible(true); // make non-private
 
-        Field modifierField = Field.class.getDeclaredField("modifiers");
+        final Field modifierField = Field.class.getDeclaredField("modifiers");
         modifierField.setAccessible(true);
         modifierField.setInt(field, field.getModifiers() &~ Modifier.FINAL); // make non-private
 

@@ -124,8 +124,8 @@ public class ThreadsafeDateFormatBenchmark {
         public String format(final long timestamp) {
             if (timestamp != this.timestamp) {
                 this.timestamp = timestamp;
-                char[] buffer = reusableBuffer.get();
-                int len = customFormat.format(timestamp, buffer, 0);
+                final char[] buffer = reusableBuffer.get();
+                final int len = customFormat.format(timestamp, buffer, 0);
                 formatted = new String(buffer, 0, len);
             }
             return formatted;

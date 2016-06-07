@@ -46,7 +46,7 @@ public class PatternParserTest {
     static String OUTPUT_FILE   = "output/PatternParser";
     static String WITNESS_FILE  = "witness/PatternParser";
     LoggerContext ctx = LoggerContext.getContext();
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
     private static String msgPattern = "%m%n";
     private final String mdcMsgPattern1 = "%m : %X%n";
@@ -290,7 +290,7 @@ public class PatternParserTest {
         testFirstConverter(pattern, ThreadPriorityPatternConverter.class);
     }
 
-    private void testFirstConverter(final String pattern, Class<?> checkClass) {
+    private void testFirstConverter(final String pattern, final Class<?> checkClass) {
         final List<PatternFormatter> formatters = parser.parse(pattern);
         assertNotNull(formatters);
         final String msg = formatters.toString();
@@ -305,10 +305,10 @@ public class PatternParserTest {
 
     @Test
     public void testNanoPatternShortChangesConfigurationNanoClock() {
-        Configuration config = new NullConfiguration();
+        final Configuration config = new NullConfiguration();
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);
 
-        PatternParser pp = new PatternParser(config, KEY, null);
+        final PatternParser pp = new PatternParser(config, KEY, null);
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);
 
         pp.parse("%m");
@@ -320,10 +320,10 @@ public class PatternParserTest {
 
     @Test
     public void testNanoPatternLongChangesNanoClockFactoryMode() {
-        Configuration config = new NullConfiguration();
+        final Configuration config = new NullConfiguration();
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);
 
-        PatternParser pp = new PatternParser(config, KEY, null);
+        final PatternParser pp = new PatternParser(config, KEY, null);
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);
 
         pp.parse("%m");

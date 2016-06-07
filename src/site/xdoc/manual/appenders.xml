@@ -1762,9 +1762,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
 			<a name="RandomAccessFileAppender" />
 			<subsection name="RandomAccessFileAppender">
-			<p><i>As of beta-9, the name of this appender has been changed from FastFile to
-			  RandomAccessFile. Configurations using the <code>FastFile</code> element
-			  no longer work and should be modified to use the <code>RandomAccessFile</code> element.</i></p>
 				<p>
 					The RandomAccessFileAppender is similar to the standard
 					<a href="#FileAppender">FileAppender</a>
@@ -1775,7 +1772,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					<tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
 					FileAppender with "bufferedIO=true" in our
-					<a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+					<a href="../performance.html#whichAppender">measurements</a>.
 					Similar to the FileAppender,
 					RandomAccessFileAppender uses a RandomAccessFileManager to actually perform the
 					file I/O. While RandomAccessFileAppender
@@ -2914,9 +2911,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
-			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to
-			  RollingRandomAccessFile. Configurations using the <code>FastRollingFile</code> element
-			  no longer work and should be modified to use the <code>RollingRandomAccessFile</code> element.</i></p>
 				<p>
 					The RollingRandomAccessFileAppender is similar to the standard
 					<a href="#RollingFileAppender">RollingFileAppender</a>
@@ -2925,7 +2919,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					instead of a <tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
 					RollingFileAppender with "bufferedIO=true"
-					in our <a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+					in our <a href="../performance.html#whichAppender">measurements</a>.
 
 					The RollingRandomAccessFileAppender writes to the File named in the
 					fileName parameter and rolls the file over according the

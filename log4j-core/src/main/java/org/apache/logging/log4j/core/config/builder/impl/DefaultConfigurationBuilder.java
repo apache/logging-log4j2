@@ -145,7 +145,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public T build(boolean initialize) {
+    public T build(final boolean initialize) {
         T configuration;
         try {
             if (source == null) {
@@ -215,7 +215,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public LoggerComponentBuilder newAsyncLogger(final String name, final Level level, boolean includeLocation) {
+    public LoggerComponentBuilder newAsyncLogger(final String name, final Level level, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger", includeLocation);
     }
 
@@ -225,7 +225,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public LoggerComponentBuilder newAsyncLogger(final String name, final String level, boolean includeLocation) {
+    public LoggerComponentBuilder newAsyncLogger(final String name, final String level, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
     }
 
@@ -235,7 +235,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public RootLoggerComponentBuilder newAsyncRootLogger(final Level level, boolean includeLocation) {
+    public RootLoggerComponentBuilder newAsyncRootLogger(final Level level, final boolean includeLocation) {
         return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot", includeLocation);
     }
 
@@ -245,7 +245,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public RootLoggerComponentBuilder newAsyncRootLogger(final String level, boolean includeLocation) {
+    public RootLoggerComponentBuilder newAsyncRootLogger(final String level, final boolean includeLocation) {
         return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot", includeLocation);
     }
 
@@ -295,7 +295,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public LoggerComponentBuilder newLogger(final String name, final Level level, boolean includeLocation) {
+    public LoggerComponentBuilder newLogger(final String name, final Level level, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, level.toString(), includeLocation);
     }
 
@@ -305,7 +305,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public LoggerComponentBuilder newLogger(final String name, final String level, boolean includeLocation) {
+    public LoggerComponentBuilder newLogger(final String name, final String level, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, level, includeLocation);
     }
 
@@ -315,7 +315,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public RootLoggerComponentBuilder newRootLogger(final Level level, boolean includeLocation) {
+    public RootLoggerComponentBuilder newRootLogger(final Level level, final boolean includeLocation) {
         return new DefaultRootLoggerComponentBuilder(this, level.toString(), includeLocation);
     }
 
@@ -325,7 +325,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public RootLoggerComponentBuilder newRootLogger(final String level, boolean includeLocation) {
+    public RootLoggerComponentBuilder newRootLogger(final String level, final boolean includeLocation) {
         return new DefaultRootLoggerComponentBuilder(this, level, includeLocation);
     }
 
@@ -390,7 +390,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public ConfigurationBuilder<T> addRootProperty(String key, String value) {
+    public ConfigurationBuilder<T> addRootProperty(final String key, final String value) {
         root.getAttributes().put(key, value);
         return this;
     }

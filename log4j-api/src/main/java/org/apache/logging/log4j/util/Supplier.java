@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.util;
 
 /**
+ * <em>Consider this class private.</em>
  * Classes implementing this interface know how to supply a value.
  *
  * <p>This is a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">functional

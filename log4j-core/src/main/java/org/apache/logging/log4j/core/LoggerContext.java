@@ -424,7 +424,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @return True if the Logger exists, false otherwise.
      */
     @Override
-    public boolean hasLogger(final String name, MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         return loggerRegistry.hasLogger(name, messageFactory);
     }
 
@@ -435,7 +435,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @return True if the Logger exists, false otherwise.
      */
     @Override
-    public boolean hasLogger(final String name, Class<? extends MessageFactory> messageFactoryClass) {
+    public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 

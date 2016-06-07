@@ -85,7 +85,7 @@ public class AbstractStringLayoutStringEncodingBenchmark {
         utf8EncodeLayout = new EncodeLayout(Charset.forName("UTF-8"));
         utf16EncodeLayout = new EncodeLayout(Charset.forName("UTF-16"));
 
-        StringBuilder msg = new StringBuilder();
+        final StringBuilder msg = new StringBuilder();
         msg.append(MESSAGE);
 
         logEvent = createLogEvent(new SimpleMessage(msg));
@@ -93,7 +93,7 @@ public class AbstractStringLayoutStringEncodingBenchmark {
         destination = new Destination();
     }
 
-    private static LogEvent createLogEvent(Message message) {
+    private static LogEvent createLogEvent(final Message message) {
         final Marker marker = null;
         final String fqcn = "com.mycom.myproject.mypackage.MyClass";
         final org.apache.logging.log4j.Level level = org.apache.logging.log4j.Level.DEBUG;
@@ -186,13 +186,13 @@ public class AbstractStringLayoutStringEncodingBenchmark {
         utf16EncodeLayout.encode(logEvent, destination);
     }
 
-    private static long consume(byte[] bytes) {
+    private static long consume(final byte[] bytes) {
         long checksum = 0;
-        for (byte b : bytes) checksum += b;
+        for (final byte b : bytes) checksum += b;
         return checksum;
     }
 
-    private static long consume(byte[] bytes, int offset, int length) {
+    private static long consume(final byte[] bytes, final int offset, final int length) {
         long checksum = 0;
         for (int i = offset; i < length; i++) {
             checksum += bytes[i];
@@ -201,43 +201,43 @@ public class AbstractStringLayoutStringEncodingBenchmark {
     }
 
     private static class GetBytesLayout extends AbstractStringLayout {
-        public GetBytesLayout(Charset charset) {
+        public GetBytesLayout(final Charset charset) {
             super(charset);
         }
 
         @Override
-        public String toSerializable(LogEvent event) {
+        public String toSerializable(final LogEvent event) {
             return null;
         }
 
         @Override
-        public byte[] toByteArray(LogEvent event) {
-            StringBuilder sb = getStringBuilder();
+        public byte[] toByteArray(final LogEvent event) {
+            final StringBuilder sb = getStringBuilder();
             ((StringBuilderFormattable) event.getMessage()).formatTo(sb);
             return getBytes(sb.toString());
         }
     }
 
     private static class EncodeLayout extends AbstractStringLayout {
-        public EncodeLayout(Charset charset) {
+        public EncodeLayout(final Charset charset) {
             super(charset);
         }
 
         @Override
-        public String toSerializable(LogEvent event) {
+        public String toSerializable(final LogEvent event) {
             return null;
         }
 
         @Override
-        public byte[] toByteArray(LogEvent event) {
+        public byte[] toByteArray(final LogEvent event) {
             return null;
         }
 
         @Override
-        public void encode(LogEvent event, ByteBufferDestination destination) {
-            StringBuilder sb = getStringBuilder();
+        public void encode(final LogEvent event, final ByteBufferDestination destination) {
+            final StringBuilder sb = getStringBuilder();
             ((StringBuilderFormattable) event.getMessage()).formatTo(sb);
-            Encoder<StringBuilder> helper = getStringBuilderEncoder();
+            final Encoder<StringBuilder> helper = getStringBuilderEncoder();
             helper.encode(sb, destination);
         }
     }
@@ -251,7 +251,7 @@ public class AbstractStringLayoutStringEncodingBenchmark {
         }
 
         @Override
-        public ByteBuffer drain(ByteBuffer buf) {
+        public ByteBuffer drain(final ByteBuffer buf) {
             buf.flip();
             consume(buf.array(), buf.position(), buf.limit());
             buf.clear();

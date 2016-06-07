@@ -105,7 +105,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingString_ObjectArray2() {
-        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg, 3);
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
@@ -116,7 +116,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingVoidReturn() {
-        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg);
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
@@ -145,7 +145,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingString_SupplierOfObjectMessages() {
-        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<Message>() {
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<Message>() {
             @Override
             public Message get() {
                 return new ObjectMessage(1);
@@ -166,7 +166,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingString_SupplierOfStrings() {
-        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<String>() {
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<String>() {
             @Override
             public String get() {
                 return "1";
@@ -254,7 +254,7 @@ public class LoggerTest {
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
     }
 
-    private static void assertMessageFactoryInstanceOf(MessageFactory factory, Class cls) {
+    private static void assertMessageFactoryInstanceOf(MessageFactory factory, final Class cls) {
         if (factory instanceof MessageFactory2Adapter) {
             factory = ((MessageFactory2Adapter) factory).getOriginal();
         }
@@ -546,7 +546,7 @@ public class LoggerTest {
         int status;
         String message;
 
-        public Response(int status, String message) {
+        public Response(final int status, final String message) {
             this.status = status;
             this.message = message;
         }
@@ -555,7 +555,7 @@ public class LoggerTest {
             return status;
         }
 
-        public void setStatus(int status) {
+        public void setStatus(final int status) {
             this.status = status;
         }
 
@@ -563,7 +563,7 @@ public class LoggerTest {
             return message;
         }
 
-        public void setMessage(String message) {
+        public void setMessage(final String message) {
             this.message = message;
         }
     }

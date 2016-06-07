@@ -57,7 +57,7 @@ public class LogManagerTest {
 
     @Test
     public void testShutdown() {
-        LoggerContext loggerContext = LogManager.getContext(false);
+        final LoggerContext loggerContext = LogManager.getContext(false);
         LogManager.shutdown(loggerContext);
     }
 }

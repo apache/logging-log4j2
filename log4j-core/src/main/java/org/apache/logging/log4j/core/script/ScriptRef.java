@@ -34,21 +34,21 @@ public class ScriptRef extends AbstractScript {
     private static final Logger logger = StatusLogger.getLogger();
     private final ScriptManager scriptManager;
 
-    public ScriptRef(String name, ScriptManager scriptManager) {
+    public ScriptRef(final String name, final ScriptManager scriptManager) {
         super(name, null, null);
         this.scriptManager = scriptManager;
     }
 
     @Override
     public String getLanguage() {
-        AbstractScript script = this.scriptManager.getScript(getName());
+        final AbstractScript script = this.scriptManager.getScript(getName());
         return script != null ? script.getLanguage() : null;
     }
 
 
     @Override
     public String getScriptText() {
-        AbstractScript script = this.scriptManager.getScript(getName());
+        final AbstractScript script = this.scriptManager.getScript(getName());
         return script != null ? script.getScriptText() : null;
     }
 
@@ -56,7 +56,7 @@ public class ScriptRef extends AbstractScript {
     public static ScriptRef createReference(
             // @formatter:off
             @PluginAttribute("ref") final String name,
-            @PluginConfiguration Configuration configuration) {
+            @PluginConfiguration final Configuration configuration) {
             // @formatter:on
         if (name == null) {
             logger.error("No script name provided");

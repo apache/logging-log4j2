@@ -44,7 +44,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
     private final Configuration configuration;
     private final boolean checkOnStartup;
 
-    private CronTriggeringPolicy(CronExpression schedule, boolean checkOnStartup, Configuration configuration) {
+    private CronTriggeringPolicy(final CronExpression schedule, final boolean checkOnStartup, final Configuration configuration) {
         this.cronExpression = schedule;
         this.configuration = configuration;
         this.checkOnStartup = checkOnStartup;
@@ -58,7 +58,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
     public void initialize(final RollingFileManager aManager) {
         this.manager = aManager;
         if (checkOnStartup) {
-            Date nextDate = cronExpression.getNextValidTimeAfter(new Date(this.manager.getFileTime()));
+            final Date nextDate = cronExpression.getNextValidTimeAfter(new Date(this.manager.getFileTime()));
             if (nextDate.getTime() < System.currentTimeMillis()) {
                 manager.rollover();
             }
@@ -89,7 +89,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
      */
     @PluginFactory
     public static CronTriggeringPolicy createPolicy(
-            @PluginConfiguration Configuration configuration,
+            @PluginConfiguration final Configuration configuration,
             @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
             @PluginAttribute("schedule") final String schedule) {
         CronExpression cronExpression;
@@ -107,10 +107,10 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
         return new CronTriggeringPolicy(cronExpression, checkOnStartup, configuration);
     }
 
-    private static CronExpression getSchedule(String expression) {
+    private static CronExpression getSchedule(final String expression) {
         try {
             return new CronExpression(expression);
-        } catch (ParseException pe) {
+        } catch (final ParseException pe) {
             LOGGER.error("Invalid cron expression - " + expression, pe);
             return null;
         }

@@ -98,7 +98,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * @see org.apache.logging.log4j.core.Logger#updateConfiguration(org.apache.logging.log4j.core.config.Configuration)
      */
     @Override
-    protected void updateConfiguration(Configuration newConfig) {
+    protected void updateConfiguration(final Configuration newConfig) {
         nanoClock = newConfig.getNanoClock();
         includeLocation = newConfig.getLoggerConfig(name).isIncludeLocation();
         super.updateConfiguration(newConfig);
@@ -215,7 +215,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * @param fqcn fully qualified caller name.
      * @return the caller location if requested, {@code null} otherwise.
      */
-    private StackTraceElement calcLocationIfRequested(String fqcn) {
+    private StackTraceElement calcLocationIfRequested(final String fqcn) {
         // location: very expensive operation. LOG4J2-153:
         // Only include if "includeLocation=true" is specified,
         // exclude if not specified or if "false" was specified.

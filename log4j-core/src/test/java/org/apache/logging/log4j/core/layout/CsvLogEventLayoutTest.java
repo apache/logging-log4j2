@@ -60,7 +60,7 @@ public class CsvLogEventLayoutTest {
 
     private final LoggerContext ctx = LoggerContext.getContext();
 
-    private final Logger root = ctx.getLogger("");
+    private final Logger root = ctx.getRootLogger();
 
     @Test
     public void testCustomCharset() {
@@ -94,7 +94,7 @@ public class CsvLogEventLayoutTest {
         testLayout(format, CsvLogEventLayout.createLayout(format), null, null);
     }
 
-    private void testLayout(final CSVFormat format, final AbstractCsvLayout layout, String header, String footer) {
+    private void testLayout(final CSVFormat format, final AbstractCsvLayout layout, final String header, final String footer) {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);

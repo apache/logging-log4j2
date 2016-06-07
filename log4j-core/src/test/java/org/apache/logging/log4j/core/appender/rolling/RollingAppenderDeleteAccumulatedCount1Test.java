@@ -58,11 +58,11 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
 
     @Test
     public void testAppender() throws Exception {
-        Path p1 = writeTextTo(DIR + "/my-1.log"); // glob="test-*.log"
-        Path p2 = writeTextTo(DIR + "/my-2.log");
-        Path p3 = writeTextTo(DIR + "/my-3.log");
-        Path p4 = writeTextTo(DIR + "/my-4.log");
-        Path p5 = writeTextTo(DIR + "/my-5.log");
+        final Path p1 = writeTextTo(DIR + "/my-1.log"); // glob="test-*.log"
+        final Path p2 = writeTextTo(DIR + "/my-2.log");
+        final Path p3 = writeTextTo(DIR + "/my-3.log");
+        final Path p4 = writeTextTo(DIR + "/my-4.log");
+        final Path p5 = writeTextTo(DIR + "/my-5.log");
 
         final Logger logger = ctx.getLogger();
         for (int i = 0; i < 10; ++i) {
@@ -78,27 +78,27 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
         assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
 
         final File[] files = dir.listFiles();
-        for (File file : files) {
+        for (final File file : files) {
             System.out.println(file + " (" + file.length() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
-        List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
+        final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
         assertEquals(Arrays.toString(files), expected.size() + 6, files.length);
-        for (File file : files) {
+        for (final File file : files) {
             if (!expected.contains(file.getName()) && !file.getName().startsWith("test-")) {
                 fail("unexpected file" + file);
             }
         }
     }
 
-    private void updateLastModified(Path... paths) throws IOException {
-        for (Path path : paths) {
+    private void updateLastModified(final Path... paths) throws IOException {
+        for (final Path path : paths) {
             Files.setLastModifiedTime(path, FileTime.fromMillis(System.currentTimeMillis() + 2000));
         }
     }
 
-    private Path writeTextTo(String location) throws IOException {
-        Path path = Paths.get(location);
+    private Path writeTextTo(final String location) throws IOException {
+        final Path path = Paths.get(location);
         Files.createDirectories(path.getParent());
         try (BufferedWriter buffy = Files.newBufferedWriter(path, Charset.defaultCharset())) {
             buffy.write("some text");
