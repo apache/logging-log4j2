@@ -70,6 +70,9 @@
       <action issue="LOG4J2-1411" dev="mattsicker" type="add">
         Add documentation about plugin builders compared to factories.
       </action>
+      <action issue="LOG4J2-1394" dev="mattsicker,mikes" type="fix">
+        Fixed minor issues with the 2.6 web site.
+      </action>
     </release>
     <release version="2.6" date="2016-05-25" description="GA Release 2.6">
       <action issue="LOG4J2-1270" dev="rpopma" type="add">
