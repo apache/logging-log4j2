@@ -420,8 +420,7 @@ public static ListAppender createAppender(
         @PluginElement("Layout") final Layout<? extends Serializable> layout,
         @PluginElement("Filter") final Filter filter) {
     return new ListAppender(name, filter, layout, newLine, raw);
-}
-            ]]></pre>
+}]]></pre>
             <p>
               Here is that same factory using a builder pattern instead:
             </p>
@@ -478,8 +477,7 @@ public static class Builder implements org.apache.logging.log4j.core.util.Builde
     public ListAppender build() {
         return new ListAppender(name, filter, layout, entryPerNewLine, raw);
     }
-}
-            ]]></pre>
+}]]></pre>
             <p>
               The only difference in annotations is using <code>@PluginBuilderAttribute</code> instead of
               <code>@PluginAttribute</code> so that default values and reflection can be used instead of specifying
@@ -502,7 +500,7 @@ public static class Builder implements org.apache.logging.log4j.core.util.Builde
             <pre class="prettyprint linenums"><![CDATA[
 ListAppender list1 = ListAppender.createAppender("List1", true, false, null, null);
 ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLine(true).build();
-            ]]></pre>
+]]></pre>
           </subsection>
           <subsection name="Custom Plugins">
             <p>See the <a href="plugins.html">Plugins</a> section of the manual.</p>
