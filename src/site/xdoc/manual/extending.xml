@@ -23,7 +23,7 @@
         <title>Extending Log4j 2</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
-<!-- TODO: add in documentation regarding plugin builders, factories, and typed attributes -->
+<!-- TODO: add in documentation regarding typed attributes -->
     <body>
       <section name="Extending Log4j">
         <p>
