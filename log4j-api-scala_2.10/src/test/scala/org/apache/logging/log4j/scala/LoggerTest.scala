@@ -26,11 +26,14 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FunSuite, Matchers}
 
+case class Custom(i: Int)
+
 @RunWith(classOf[JUnitRunner])
 class LoggerTest extends FunSuite with Matchers with MockitoSugar {
 
-  val stringMsg = "string msg"
   val msg = new ParameterizedMessage("msg {}", 17)
+  val stringMsg = "string msg"
+  val objectMsg = Custom(17)
   val cause = new RuntimeException("cause")
   val marker = MarkerManager.getMarker("marker")
 
@@ -130,67 +133,20 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
   }
 
-  test("log enabled with String message") {
+
+  test("log enabled with Message message and Marker") {
     val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
+    when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(true)
     val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, stringMsg)
-    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), any[Message], eqv(null))
+    logger.log(Level.INFO, marker, msg)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(marker), eqv(msg), eqv(null))
   }
 
-  test("log disabled with String message") {
+  test("log disabled with Message message and Marker") {
     val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
+    when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(false)
     val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, stringMsg)
-    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
-  }
-
-  test("log enabled with String message and cause") {
-    val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
-    val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, stringMsg, cause)
-    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), any[Message], eqv(cause))
-  }
-
-  test("log disabled with String message and cause") {
-    val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
-    val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, stringMsg, cause)
-    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
-  }
-
-  test("log enabled with Message message") {
-    val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
-    val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, msg)
-    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), eqv(msg), eqv(null))
-  }
-
-  test("log disabled with Message message") {
-    val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
-    val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, msg)
-    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
-  }
-
-  test("log enabled with Message message and cause") {
-    val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
-    val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, msg, cause)
-    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), eqv(msg), eqv(cause))
-  }
-
-  test("log disabled with Message message and cause") {
-    val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
-    val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, msg, cause)
+    logger.log(Level.INFO, marker, msg)
     verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
   }
 
@@ -210,35 +166,19 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
   }
 
-  test("log enabled with String message and cause and Marker") {
+  test("log enabled with Object message and Marker") {
     val mockLogger = buildMockLogger
     when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(true)
     val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, marker, stringMsg, cause)
-    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(marker), any[Message], eqv(cause))
+    logger.log(Level.INFO, marker, objectMsg)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(marker), any[Message], eqv(null))
   }
 
-  test("log disabled with String message and cause and Marker") {
+  test("log disabled with Object message and Marker") {
     val mockLogger = buildMockLogger
     when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(false)
     val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, marker, stringMsg, cause)
-    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
-  }
-
-  test("log enabled with Message message and Marker") {
-    val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(true)
-    val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, marker, msg)
-    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(marker), eqv(msg), eqv(null))
-  }
-
-  test("log disabled with Message message and Marker") {
-    val mockLogger = buildMockLogger
-    when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(false)
-    val logger = new Logger(mockLogger)
-    logger.log(Level.INFO, marker, msg)
+    logger.log(Level.INFO, marker, objectMsg)
     verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
   }
 
@@ -257,6 +197,135 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     logger.log(Level.INFO, marker, msg, cause)
     verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
   }
+
+  test("log enabled with String message and cause and Marker") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(true)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, marker, stringMsg, cause)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(marker), any[Message], eqv(cause))
+  }
+
+  test("log disabled with String message and cause and Marker") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(false)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, marker, stringMsg, cause)
+    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
+  }
+
+  test("log enabled with Object message and cause and Marker") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(true)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, marker, objectMsg, cause)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(marker), any[Message], eqv(cause))
+  }
+
+  test("log disabled with Object message and cause and Marker") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO, marker)).thenReturn(false)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, marker, objectMsg, cause)
+    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
+  }
+
+  test("log enabled with Message message") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, msg)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), eqv(msg), eqv(null))
+  }
+
+  test("log disabled with Message message") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, msg)
+    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
+  }
+
+  test("log enabled with String message") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, stringMsg)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), any[Message], eqv(null))
+  }
+
+  test("log disabled with String message") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, stringMsg)
+    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
+  }
+
+  test("log enabled with Object message") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, objectMsg)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), any[Message], eqv(null))
+  }
+
+  test("log disabled with Object message") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, objectMsg)
+    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
+  }
+
+  test("log enabled with Message message and cause") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, msg, cause)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), eqv(msg), eqv(cause))
+  }
+
+  test("log disabled with Message message and cause") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, msg, cause)
+    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
+  }
+
+  test("log enabled with String message and cause") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, stringMsg, cause)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), any[Message], eqv(cause))
+  }
+
+  test("log disabled with String message and cause") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, stringMsg, cause)
+    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
+  }
+
+  test("log enabled with Object message and cause") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(true)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, objectMsg, cause)
+    verify(mockLogger).logMessage(anyString(), eqv(Level.INFO), eqv(null), any[Message], eqv(cause))
+  }
+
+  test("log disabled with Object message and cause") {
+    val mockLogger = buildMockLogger
+    when(mockLogger.isEnabled(Level.INFO)).thenReturn(false)
+    val logger = new Logger(mockLogger)
+    logger.log(Level.INFO, objectMsg, cause)
+    verify(mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
+  }
+
 
   def buildMockLogger: ExtendedLogger = {
     val mockLogger = mock[ExtendedLogger]

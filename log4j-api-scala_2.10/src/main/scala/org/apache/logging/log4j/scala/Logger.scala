@@ -29,38 +29,57 @@ class Logger(val delegate: ExtendedLogger) {
   def fatal(marker: Marker, message: Message): Unit =
   macro LoggerMacro.fatalMarkerMsg
 
-  def fatal(marker: Marker, message: Message, cause: Throwable): Unit =
-  macro LoggerMacro.fatalMarkerMsgThrowable
-
   def fatal(marker: Marker, message: CharSequence): Unit =
   macro LoggerMacro.fatalMarkerString
 
+  def fatal(marker: Marker, message: AnyRef): Unit =
+  macro LoggerMacro.fatalMarkerObject
+
+  def fatal(marker: Marker, message: Message, cause: Throwable): Unit =
+  macro LoggerMacro.fatalMarkerMsgThrowable
+
   def fatal(marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.fatalMarkerStringThrowable
+
+  def fatal(marker: Marker, message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.fatalMarkerObjectThrowable
 
   def fatal(message: Message): Unit =
   macro LoggerMacro.fatalMsg
 
   def fatal(message: CharSequence): Unit =
   macro LoggerMacro.fatalString
-
+  
+  def fatal(message: AnyRef): Unit =
+  macro LoggerMacro.fatalObject
+  
   def fatal(message: Message, cause: Throwable): Unit =
   macro LoggerMacro.fatalMsgThrowable
 
   def fatal(message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.fatalStringThrowable
 
+  def fatal(message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.fatalObjectThrowable
+
+
   def error(marker: Marker, message: Message): Unit =
   macro LoggerMacro.errorMarkerMsg
-
-  def error(marker: Marker, message: Message, cause: Throwable): Unit =
-  macro LoggerMacro.errorMarkerMsgThrowable
 
   def error(marker: Marker, message: CharSequence): Unit =
   macro LoggerMacro.errorMarkerString
 
+  def error(marker: Marker, message: AnyRef): Unit =
+  macro LoggerMacro.errorMarkerObject
+
+  def error(marker: Marker, message: Message, cause: Throwable): Unit =
+  macro LoggerMacro.errorMarkerMsgThrowable
+
   def error(marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.errorMarkerStringThrowable
+
+  def error(marker: Marker, message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.errorMarkerObjectThrowable
 
   def error(message: Message): Unit =
   macro LoggerMacro.errorMsg
@@ -68,23 +87,36 @@ class Logger(val delegate: ExtendedLogger) {
   def error(message: CharSequence): Unit =
   macro LoggerMacro.errorString
 
+  def error(message: AnyRef): Unit =
+  macro LoggerMacro.errorObject
+
   def error(message: Message, cause: Throwable): Unit =
   macro LoggerMacro.errorMsgThrowable
 
   def error(message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.errorStringThrowable
 
+  def error(message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.errorObjectThrowable
+
+
   def warn(marker: Marker, message: Message): Unit =
   macro LoggerMacro.warnMarkerMsg
-
-  def warn(marker: Marker, message: Message, cause: Throwable): Unit =
-  macro LoggerMacro.warnMarkerMsgThrowable
 
   def warn(marker: Marker, message: CharSequence): Unit =
   macro LoggerMacro.warnMarkerString
 
+  def warn(marker: Marker, message: AnyRef): Unit =
+  macro LoggerMacro.warnMarkerObject
+
+  def warn(marker: Marker, message: Message, cause: Throwable): Unit =
+  macro LoggerMacro.warnMarkerMsgThrowable
+
   def warn(marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.warnMarkerStringThrowable
+
+  def warn(marker: Marker, message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.warnMarkerObjectThrowable
 
   def warn(message: Message): Unit =
   macro LoggerMacro.warnMsg
@@ -92,23 +124,36 @@ class Logger(val delegate: ExtendedLogger) {
   def warn(message: CharSequence): Unit =
   macro LoggerMacro.warnString
 
+  def warn(message: AnyRef): Unit =
+  macro LoggerMacro.warnObject
+
   def warn(message: Message, cause: Throwable): Unit =
   macro LoggerMacro.warnMsgThrowable
 
   def warn(message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.warnStringThrowable
 
+  def warn(message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.warnObjectThrowable
+
+
   def info(marker: Marker, message: Message): Unit =
   macro LoggerMacro.infoMarkerMsg
-
-  def info(marker: Marker, message: Message, cause: Throwable): Unit =
-  macro LoggerMacro.infoMarkerMsgThrowable
 
   def info(marker: Marker, message: CharSequence): Unit =
   macro LoggerMacro.infoMarkerString
 
+  def info(marker: Marker, message: AnyRef): Unit =
+  macro LoggerMacro.infoMarkerObject
+
+  def info(marker: Marker, message: Message, cause: Throwable): Unit =
+  macro LoggerMacro.infoMarkerMsgThrowable
+
   def info(marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.infoMarkerStringThrowable
+
+  def info(marker: Marker, message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.infoMarkerObjectThrowable
 
   def info(message: Message): Unit =
   macro LoggerMacro.infoMsg
@@ -116,23 +161,36 @@ class Logger(val delegate: ExtendedLogger) {
   def info(message: CharSequence): Unit =
   macro LoggerMacro.infoString
 
+  def info(message: AnyRef): Unit =
+  macro LoggerMacro.infoObject
+
   def info(message: Message, cause: Throwable): Unit =
   macro LoggerMacro.infoMsgThrowable
 
   def info(message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.infoStringThrowable
 
+  def info(message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.infoObjectThrowable
+
+
   def debug(marker: Marker, message: Message): Unit =
   macro LoggerMacro.debugMarkerMsg
-
-  def debug(marker: Marker, message: Message, cause: Throwable): Unit =
-  macro LoggerMacro.debugMarkerMsgThrowable
 
   def debug(marker: Marker, message: CharSequence): Unit =
   macro LoggerMacro.debugMarkerString
 
+  def debug(marker: Marker, message: AnyRef): Unit =
+  macro LoggerMacro.debugMarkerObject
+
+  def debug(marker: Marker, message: Message, cause: Throwable): Unit =
+  macro LoggerMacro.debugMarkerMsgThrowable
+
   def debug(marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.debugMarkerStringThrowable
+
+  def debug(marker: Marker, message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.debugMarkerObjectThrowable
 
   def debug(message: Message): Unit =
   macro LoggerMacro.debugMsg
@@ -140,23 +198,36 @@ class Logger(val delegate: ExtendedLogger) {
   def debug(message: CharSequence): Unit =
   macro LoggerMacro.debugString
 
+  def debug(message: AnyRef): Unit =
+  macro LoggerMacro.debugObject
+
   def debug(message: Message, cause: Throwable): Unit =
   macro LoggerMacro.debugMsgThrowable
 
   def debug(message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.debugStringThrowable
 
+  def debug(message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.debugObjectThrowable
+
+
   def trace(marker: Marker, message: Message): Unit =
   macro LoggerMacro.traceMarkerMsg
-
-  def trace(marker: Marker, message: Message, cause: Throwable): Unit =
-  macro LoggerMacro.traceMarkerMsgThrowable
 
   def trace(marker: Marker, message: CharSequence): Unit =
   macro LoggerMacro.traceMarkerString
 
+  def trace(marker: Marker, message: AnyRef): Unit =
+  macro LoggerMacro.traceMarkerObject
+
+  def trace(marker: Marker, message: Message, cause: Throwable): Unit =
+  macro LoggerMacro.traceMarkerMsgThrowable
+
   def trace(marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.traceMarkerStringThrowable
+
+  def trace(marker: Marker, message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.traceMarkerObjectThrowable
 
   def trace(message: Message): Unit =
   macro LoggerMacro.traceMsg
@@ -164,35 +235,55 @@ class Logger(val delegate: ExtendedLogger) {
   def trace(message: CharSequence): Unit =
   macro LoggerMacro.traceString
 
+  def trace(message: AnyRef): Unit =
+  macro LoggerMacro.traceObject
+
   def trace(message: Message, cause: Throwable): Unit =
   macro LoggerMacro.traceMsgThrowable
 
   def trace(message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.traceStringThrowable
 
+  def trace(message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.traceObjectThrowable
+  
+  
   def log(level: Level, marker: Marker, message: Message): Unit =
   macro LoggerMacro.logMarkerMsg
-
-  def log(level: Level, marker: Marker, message: Message, cause: Throwable): Unit =
-  macro LoggerMacro.logMarkerMsgThrowable
 
   def log(level: Level, marker: Marker, message: CharSequence): Unit =
   macro LoggerMacro.logMarkerString
 
+  def log(level: Level, marker: Marker, message: AnyRef): Unit =
+  macro LoggerMacro.logMarkerObject
+
+  def log(level: Level, marker: Marker, message: Message, cause: Throwable): Unit =
+  macro LoggerMacro.logMarkerMsgThrowable
+
   def log(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerStringThrowable
-
+  
+  def log(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.logMarkerObjectThrowable
+  
   def log(level: Level, message: Message): Unit =
   macro LoggerMacro.logMsg
 
   def log(level: Level, message: CharSequence): Unit =
   macro LoggerMacro.logString
 
+  def log(level: Level, message: AnyRef): Unit =
+  macro LoggerMacro.logObject
+  
   def log(level: Level, message: Message, cause: Throwable): Unit =
   macro LoggerMacro.logMsgThrowable
 
   def log(level: Level, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.logStringThrowable
+
+  def log(level: Level, message: AnyRef, cause: Throwable): Unit =
+  macro LoggerMacro.logObjectThrowable
+  
 
   def isEnabled(level: Level): Boolean = delegate.isEnabled(level)
 
@@ -201,11 +292,11 @@ class Logger(val delegate: ExtendedLogger) {
   def entry(params: AnyRef*): Unit =
     delegate.entry(params) // TODO would be useful to have this as a macro to avoid varargs array creation
 
-  def entry(): Unit = delegate.entry()
+  def traceEntry(): Unit = delegate.traceEntry()
 
-  def exit[R](result: R): R = delegate.exit(result)
+  def traceExit[R](result: R): R = delegate.traceExit(result)
 
-  def exit(): Unit = delegate.exit()
+  def traceExit(): Unit = delegate.traceExit()
 
   def throwing[T <: Throwable](t: T): T = delegate.throwing(t)
 
@@ -246,6 +337,20 @@ class Logger(val delegate: ExtendedLogger) {
     * @param cause    cause or `null`
     */
   def logMessage(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit = {
+    delegate.logMessage(FQCN, level, marker, delegate.getMessageFactory.newMessage(message), cause)
+  }
+
+  /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
+    * level is enabled.
+    *
+    * Should normally not be used directly from application code, but needs to be public for access by macros.
+    *
+    * @param level    log level
+    * @param marker   marker or `null`
+    * @param message  message
+    * @param cause    cause or `null`
+    */
+  def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, delegate.getMessageFactory.newMessage(message), cause)
   }
 
