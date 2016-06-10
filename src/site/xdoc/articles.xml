@@ -119,6 +119,10 @@
       <subsection name="German">
       <ul>
         <li>
+          <a href="https://jaxenter.de/apache-log4j-2-6-laeuft-nun-auch-ohne-muell-41098">Apache Log4j 2.6 läuft nun auch ohne Müll</a>
+          (May 31, 2016)
+        </li>
+        <li>
           <a
             href="https://www.innoq.com/en/articles/2015/01/logging-konsolidieren-log4j2/">Logging konsolidieren und Performance gewinnen</a>
           (January 23, 2015)
