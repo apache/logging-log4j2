@@ -3691,7 +3691,6 @@ public interface Logger {
      * }
      * </pre>
      * @param message The Message containing the formatted result.
-     * @param result The result being returned from the method call.
      *
      * @since 2.6
      */
