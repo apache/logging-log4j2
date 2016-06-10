@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.Level;
@@ -75,6 +76,12 @@ public class AsyncAppenderQueueFullPolicyTest {
     @Test
     public void testRouter() throws Exception {
         final Logger logger = LogManager.getLogger(AsyncAppenderQueueFullPolicyTest.class);
+
+        Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
+        field.setAccessible(true);
+        Object policy = field.get(asyncAppender);
+        assertEquals("CountingAsyncQueueFullPolicy installed correctly",
+                CountingAsyncQueueFullPolicy.class, policy.getClass());
 
         assertEquals(3, asyncAppender.getQueueCapacity());
         logger.error("event 1 - gets taken off the queue");
