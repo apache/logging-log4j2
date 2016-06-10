@@ -349,6 +349,9 @@ public final class AsyncAppender extends AbstractAppender {
             if (queue.isEmpty()) {
                 queue.offer(SHUTDOWN);
             }
+            if (getState() == State.TIMED_WAITING || getState() == State.WAITING) {
+                this.interrupt(); // LOG4J2-1422: if underlying appender is stuck in wait/sleep/join/park call
+            }
         }
     }
 
