@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6.2" date="2016-MM-DD" description="GA Release 2.6.2">
+      <action issue="LOG4J2-1417" dev="rpopma" type="fix">
+        Fixed issue where Unbox utility ignored the value Constants.ENABLE_THREADLOCALS and always stored non-JDK classes in ThreadLocals.
+      </action>
       <action issue="LOG4J2-1422" dev="rpopma" type="fix">
         Fixed issue where AsyncAppenderQueueFullPolicyTest sometimes hangs.
       </action>
