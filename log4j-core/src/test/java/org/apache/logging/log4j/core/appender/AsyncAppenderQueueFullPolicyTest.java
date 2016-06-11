@@ -61,6 +61,7 @@ public class AsyncAppenderQueueFullPolicyTest {
         Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
         field.setAccessible(true);
         field.set(asyncAppender, new CountingAsyncQueueFullPolicy());
+        CountingAsyncQueueFullPolicy.queueFull.set(0L);
     }
 
     @After
