@@ -46,15 +46,6 @@ import static org.junit.Assert.*;
  */
 public class AsyncAppenderQueueFullPolicyTest {
     private static final String CONFIG = "log4j-asynch-queue-full.xml";
-    static {
-        // this must be set before the Log4j context initializes
-        System.setProperty("log4j2.AsyncQueueFullPolicy", CountingAsyncQueueFullPolicy.class.getName());
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty("log4j2.AsyncQueueFullPolicy");
-    }
 
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);
@@ -66,22 +57,21 @@ public class AsyncAppenderQueueFullPolicyTest {
     public void before() throws Exception {
         blockingAppender = (BlockingAppender) context.getAppender("Block");
         asyncAppender = (AsyncAppender) context.getAppender("Async");
+
+        Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
+        field.setAccessible(true);
+        field.set(asyncAppender, new CountingAsyncQueueFullPolicy());
     }
 
     @After
     public void after() {
-//        blockingAppender.running = false;
+        blockingAppender.running = false;
+        CountingAsyncQueueFullPolicy.queueFull.set(0L);
     }
 
     @Test
     public void testRouter() throws Exception {
         final Logger logger = LogManager.getLogger(AsyncAppenderQueueFullPolicyTest.class);
-
-        Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
-        field.setAccessible(true);
-        Object policy = field.get(asyncAppender);
-        assertEquals("CountingAsyncQueueFullPolicy installed correctly",
-                CountingAsyncQueueFullPolicy.class, policy.getClass());
 
         assertEquals(3, asyncAppender.getQueueCapacity());
         logger.error("event 1 - gets taken off the queue");
