@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.scala
 
-import org.apache.logging.log4j.message.{Message, MessageFactory}
+import org.apache.logging.log4j.message.{Message, MessageFactory2}
 import org.apache.logging.log4j.spi.ExtendedLogger
 import org.apache.logging.log4j.{Level, Marker}
 
@@ -310,7 +310,7 @@ class Logger(val delegate: ExtendedLogger) {
 
   def name: String = delegate.getName
 
-  def messageFactory: MessageFactory = delegate.getMessageFactory
+  def messageFactory: MessageFactory2 = delegate.getMessageFactory.asInstanceOf[MessageFactory2]
 
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
@@ -337,7 +337,7 @@ class Logger(val delegate: ExtendedLogger) {
     * @param cause    cause or `null`
     */
   def logMessage(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit = {
-    delegate.logMessage(FQCN, level, marker, delegate.getMessageFactory.newMessage(message), cause)
+    delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
   }
 
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
@@ -351,7 +351,7 @@ class Logger(val delegate: ExtendedLogger) {
     * @param cause    cause or `null`
     */
   def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
-    delegate.logMessage(FQCN, level, marker, delegate.getMessageFactory.newMessage(message), cause)
+    delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
   }
 
 }
