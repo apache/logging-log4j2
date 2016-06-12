@@ -19,6 +19,7 @@ package org.apache.logging.log4j;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 
@@ -1749,9 +1750,9 @@ public interface Logger {
     /**
      * Gets the message factory used to convert message Objects and Strings into actual log Messages.
      *
-     * @return the message factory.
+     * @return the message factory, as an instance of {@link MessageFactory2}
      */
-    MessageFactory getMessageFactory();
+    <MF extends MessageFactory> MF getMessageFactory();
 
     /**
      * Gets the logger name.
@@ -3691,7 +3692,6 @@ public interface Logger {
      * }
      * </pre>
      * @param message The Message containing the formatted result.
-     * @param result The result being returned from the method call.
      *
      * @since 2.6
      */

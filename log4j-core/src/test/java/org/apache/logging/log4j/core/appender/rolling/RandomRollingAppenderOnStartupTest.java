@@ -32,20 +32,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  *
  */
 @RunWith(Parameterized.class)
-public class RollingAppenderOnStartupTest {
+public class RandomRollingAppenderOnStartupTest {
 
     private static final String DIR = "target/onStartup";
 
@@ -53,26 +46,28 @@ public class RollingAppenderOnStartupTest {
 
     private Logger logger;
 
+    private static volatile int counter = 0;
+
     @Parameterized.Parameters(name = "{0} \u2192 {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { //
                 // @formatter:off
-                {"log4j-test4.xml", ".gz"},
-                {"log4j-test4.xml", ".gz"},});
+                {"log4j-test5.xml", ".gz"},
+                {"log4j-test5.xml", ".gz"},});
                 // @formatter:on
     }
 
     @Rule
     public LoggerContextRule init;
 
-    public RollingAppenderOnStartupTest(final String configFile, final String fileExtension) {
+    public RandomRollingAppenderOnStartupTest(final String configFile, final String fileExtension) {
         this.fileExtension = fileExtension;
         this.init = new LoggerContextRule(configFile);
     }
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger(RollingAppenderOnStartupTest.class.getName());
+        this.logger = this.init.getLogger(RandomRollingAppenderOnStartupTest.class.getName());
     }
 
     @BeforeClass
@@ -97,11 +92,11 @@ public class RollingAppenderOnStartupTest {
                 } else {
                     long fileSize = Files.size(path);
                     assertTrue("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
-                        size == fileSize);
+                            size == fileSize);
                 }
                 Files.delete(path);
             }
-            Files.delete(Paths.get("target/onStartup"));
+            Files.delete(Paths.get(DIR));
         }
     }
 

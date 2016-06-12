@@ -31,6 +31,7 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
@@ -185,30 +186,12 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             final Class<ReusableMessageFactory> reusableParameterizedMessageFactoryClass,
             final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
         try {
-            final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
-                    "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet"));
-            final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
-                    "log4j2.enable.threadlocals", true);
-            final String fallback = ENABLE_THREADLOCALS ? reusableParameterizedMessageFactoryClass.getName()
+            final String fallback = Constants.ENABLE_THREADLOCALS ? reusableParameterizedMessageFactoryClass.getName()
                     : parameterizedMessageFactoryClass.getName();
             final String clsName = PropertiesUtil.getProperties().getStringProperty(property, fallback);
             return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
         } catch (final Throwable t) {
             return parameterizedMessageFactoryClass;
-        }
-    }
-
-    /**
-     * Determines if a named Class can be loaded or not.
-     *
-     * @param className The class name.
-     * @return {@code true} if the class could be found or {@code false} otherwise.
-     */
-    private static boolean isClassAvailable(final String className) {
-        try {
-            return LoaderUtil.loadClass(className) != null;
-        } catch (final Throwable e) {
-            return false;
         }
     }
 
@@ -1221,8 +1204,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logIfEnabled(FQCN, Level.FATAL, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public MessageFactory getMessageFactory() {
+    public MessageFactory2 getMessageFactory() {
         return messageFactory;
     }
 

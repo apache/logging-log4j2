@@ -194,6 +194,8 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return null;
         }
 
+        manager.initialize();
+
         return new RollingFileAppender(name, layout, filter, manager, fileName, filePattern,
                 ignoreExceptions, isFlush, isAdvertise ? config.getAdvertiser() : null);
     }

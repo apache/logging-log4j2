@@ -52,6 +52,49 @@ public class Unbox {
     private static final int RINGBUFFER_SIZE = calculateRingBufferSize("log4j.unbox.ringbuffer.size");
     private static final int MASK = RINGBUFFER_SIZE - 1;
 
+    /**
+     * State implementation that only puts JDK classes in ThreadLocals, so this is safe to be used from
+     * web applications. Web application containers have thread pools that may hold on to ThreadLocal objects
+     * after the application was stopped. This may prevent the classes of the application from being unloaded,
+     * causing memory leaks.
+     * <p>
+     * Such memory leaks will not occur if only JDK classes are stored in ThreadLocals.
+     * </p>
+     */
+    private static class WebSafeState {
+        private final ThreadLocal<StringBuilder[]> ringBuffer = new ThreadLocal<>();
+        private final ThreadLocal<int[]> current = new ThreadLocal<>();
+
+        public StringBuilder getStringBuilder() {
+            StringBuilder[] array = ringBuffer.get();
+            if (array == null) {
+                array = new StringBuilder[RINGBUFFER_SIZE];
+                for (int i = 0; i < array.length; i++) {
+                    array[i] = new StringBuilder(21);
+                }
+                ringBuffer.set(array);
+                current.set(new int[1]);
+            }
+            int[] index = current.get();
+            final StringBuilder result = array[MASK & index[0]++];
+            result.setLength(0);
+            return result;
+        }
+
+        public boolean isBoxedPrimitive(final StringBuilder text) {
+            StringBuilder[] array = ringBuffer.get();
+            if (array == null) {
+                return false;
+            }
+            for (int i = 0; i < array.length; i++) {
+                if (text == array[i]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     private static class State {
         private final StringBuilder[] ringBuffer = new StringBuilder[RINGBUFFER_SIZE];
         private int current;
@@ -77,6 +120,7 @@ public class Unbox {
         }
     }
     private static ThreadLocal<State> threadLocalState = new ThreadLocal<>();
+    private static WebSafeState webSafeState = new WebSafeState();
 
     private Unbox() {
         // this is a utility
@@ -218,7 +262,7 @@ public class Unbox {
     }
 
     private static StringBuilder getSB() {
-        return getState().getStringBuilder();
+        return Constants.ENABLE_THREADLOCALS ? getState().getStringBuilder() : webSafeState.getStringBuilder();
     }
 
     /** For testing. */

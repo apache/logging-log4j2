@@ -19,7 +19,12 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -30,7 +35,9 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,6 +83,16 @@ public class RollingAppenderSizeTest {
         this.init = new LoggerContextRule(configFile);
     }
 
+    @BeforeClass
+    public static void beforeClass() {
+        deleteDir();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        deleteDir();
+    }
+
     @Before
     public void setUp() throws Exception {
         this.logger = this.init.getLogger(RollingAppenderSizeTest.class.getName());
@@ -108,6 +125,7 @@ public class RollingAppenderSizeTest {
                         fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
                     }
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    assertNotNull("No input stream for " + file.getName(), in);
                     IOUtils.copy(in, baos);
                     final String text = new String(baos.toByteArray(), Charset.defaultCharset());
                     final String[] lines = text.split("[\\r\\n]+");
@@ -124,13 +142,18 @@ public class RollingAppenderSizeTest {
     }
 
     private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
+        if (Files.exists(Paths.get(DIR))) {
+            String fileName = null;
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+                for (Path path : directoryStream) {
+                    fileName = path.toFile().getName();
+                    Files.delete(path);
+                }
+                Files.delete(Paths.get(DIR));
+            } catch (IOException ioe) {
+                fail("Unable to delete " + fileName + " due to " + ioe.getClass().getSimpleName() + ": " +
+                        ioe.getMessage());
             }
-            dir.delete();
         }
     }
 }
