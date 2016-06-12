@@ -310,7 +310,7 @@ class Logger(val delegate: ExtendedLogger) {
 
   def name: String = delegate.getName
 
-  def messageFactory: MessageFactory2 = delegate.getMessageFactory
+  def messageFactory: MessageFactory2 = delegate.getMessageFactory.asInstanceOf[MessageFactory2]
 
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
