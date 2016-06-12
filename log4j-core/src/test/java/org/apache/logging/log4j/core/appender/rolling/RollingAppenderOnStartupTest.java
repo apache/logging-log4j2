@@ -35,10 +35,7 @@ import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -80,9 +77,9 @@ public class RollingAppenderOnStartupTest {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get("target/onStartup"))) {
             for (Path path : directoryStream) {
                 if (size == 0) {
-                    size = Files.size(path);
+                    size = Files.size(path); // remember size of first non-empty file
                 } else {
-                    assertTrue(size == Files.size(path));
+                    assertEquals("Size of " + path, size, Files.size(path));
                 }
                 Files.delete(path);
             }
