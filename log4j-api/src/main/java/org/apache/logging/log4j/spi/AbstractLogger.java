@@ -1204,10 +1204,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logIfEnabled(FQCN, Level.FATAL, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public MessageFactory2 getMessageFactory() {
-        return messageFactory;
+    public <MF extends MessageFactory> MF getMessageFactory() {
+        return (MF) messageFactory;
     }
 
     @Override
