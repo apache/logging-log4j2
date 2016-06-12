@@ -1748,7 +1748,13 @@ public interface Logger {
     Level getLevel();
 
     /**
-     * Gets the message factory used to convert message Objects and Strings into actual log Messages.
+     * Gets the message factory used to convert message Objects and Strings/CharSequences into actual log Messages.
+     *
+     * Since version 2.6, Log4j internally uses message factories that implement the {@link MessageFactory2} interface.
+     * From version 2.6.2, the return type of this method was changed from {@link MessageFactory} to
+     * {@code <MF extends MessageFactory> MF}. The returned factory will always implement {@link MessageFactory2},
+     * but the return type of this method could not be changed to {@link MessageFactory2} without breaking binary
+     * compatibility.
      *
      * @return the message factory, as an instance of {@link MessageFactory2}
      */
