@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,10 @@ import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -43,7 +47,7 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class RollingAppenderOnStartupTest {
 
-    private static final String DIR = "target/rolling1";
+    private static final String DIR = "target/onStartup";
 
     private final String fileExtension;
 
@@ -71,15 +75,29 @@ public class RollingAppenderOnStartupTest {
         this.logger = this.init.getLogger(RollingAppenderOnStartupTest.class.getName());
     }
 
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        if (Files.exists(Paths.get("target/onStartup"))) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+                for (Path path : directoryStream) {
+                    Files.delete(path);
+                }
+                Files.delete(Paths.get(DIR));
+            }
+        }
+    }
+
     @AfterClass
     public static void afterClass() throws Exception {
         long size = 0;
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get("target/onStartup"))) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (Path path : directoryStream) {
                 if (size == 0) {
-                    size = Files.size(path); // remember size of first non-empty file
+                    size = Files.size(path);
                 } else {
-                    assertEquals("Size of " + path, size, Files.size(path));
+                    long fileSize = Files.size(path);
+                    assertTrue("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
+                        size == fileSize);
                 }
                 Files.delete(path);
             }

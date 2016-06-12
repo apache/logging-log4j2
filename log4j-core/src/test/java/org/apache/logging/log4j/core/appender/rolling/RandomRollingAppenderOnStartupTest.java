@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class RandomRollingAppenderOnStartupTest {
 
-    private static final String DIR = "target/rolling1";
+    private static final String DIR = "target/onStartup";
 
     private final String fileExtension;
 
@@ -73,11 +73,11 @@ public class RandomRollingAppenderOnStartupTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/onStartup"))) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get("target/onStartup"))) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
                 for (Path path : directoryStream) {
                     Files.delete(path);
                 }
-                Files.delete(Paths.get("target/onStartup"));
+                Files.delete(Paths.get(DIR));
             }
         }
     }
@@ -85,22 +85,23 @@ public class RandomRollingAppenderOnStartupTest {
     @AfterClass
     public static void afterClass() throws Exception {
         long size = 0;
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get("target/onStartup"))) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (Path path : directoryStream) {
                 if (size == 0) {
                     size = Files.size(path);
                 } else {
-                    assertTrue(size == Files.size(path));
+                    long fileSize = Files.size(path);
+                    assertTrue("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
+                            size == fileSize);
                 }
                 Files.delete(path);
             }
-            Files.delete(Paths.get("target/onStartup"));
+            Files.delete(Paths.get(DIR));
         }
     }
 
     @Test
     public void testAppender() throws Exception {
-        System.out.println("Pass " + counter++);
         for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
