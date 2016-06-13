@@ -26,11 +26,12 @@ class Logger(val delegate: ExtendedLogger) {
 
   private final val FQCN = classOf[Logger].getName
 
+  
   def fatal(marker: Marker, message: Message): Unit =
   macro LoggerMacro.fatalMarkerMsg
 
   def fatal(marker: Marker, message: CharSequence): Unit =
-  macro LoggerMacro.fatalMarkerString
+  macro LoggerMacro.fatalMarkerCseq
 
   def fatal(marker: Marker, message: AnyRef): Unit =
   macro LoggerMacro.fatalMarkerObject
@@ -39,7 +40,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.fatalMarkerMsgThrowable
 
   def fatal(marker: Marker, message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.fatalMarkerStringThrowable
+  macro LoggerMacro.fatalMarkerCseqThrowable
 
   def fatal(marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.fatalMarkerObjectThrowable
@@ -48,7 +49,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.fatalMsg
 
   def fatal(message: CharSequence): Unit =
-  macro LoggerMacro.fatalString
+  macro LoggerMacro.fatalCseq
   
   def fatal(message: AnyRef): Unit =
   macro LoggerMacro.fatalObject
@@ -57,7 +58,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.fatalMsgThrowable
 
   def fatal(message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.fatalStringThrowable
+  macro LoggerMacro.fatalCseqThrowable
 
   def fatal(message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.fatalObjectThrowable
@@ -67,7 +68,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.errorMarkerMsg
 
   def error(marker: Marker, message: CharSequence): Unit =
-  macro LoggerMacro.errorMarkerString
+  macro LoggerMacro.errorMarkerCseq
 
   def error(marker: Marker, message: AnyRef): Unit =
   macro LoggerMacro.errorMarkerObject
@@ -76,7 +77,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.errorMarkerMsgThrowable
 
   def error(marker: Marker, message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.errorMarkerStringThrowable
+  macro LoggerMacro.errorMarkerCseqThrowable
 
   def error(marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.errorMarkerObjectThrowable
@@ -85,7 +86,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.errorMsg
 
   def error(message: CharSequence): Unit =
-  macro LoggerMacro.errorString
+  macro LoggerMacro.errorCseq
 
   def error(message: AnyRef): Unit =
   macro LoggerMacro.errorObject
@@ -94,7 +95,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.errorMsgThrowable
 
   def error(message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.errorStringThrowable
+  macro LoggerMacro.errorCseqThrowable
 
   def error(message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.errorObjectThrowable
@@ -104,7 +105,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.warnMarkerMsg
 
   def warn(marker: Marker, message: CharSequence): Unit =
-  macro LoggerMacro.warnMarkerString
+  macro LoggerMacro.warnMarkerCseq
 
   def warn(marker: Marker, message: AnyRef): Unit =
   macro LoggerMacro.warnMarkerObject
@@ -113,7 +114,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.warnMarkerMsgThrowable
 
   def warn(marker: Marker, message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.warnMarkerStringThrowable
+  macro LoggerMacro.warnMarkerCseqThrowable
 
   def warn(marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.warnMarkerObjectThrowable
@@ -122,7 +123,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.warnMsg
 
   def warn(message: CharSequence): Unit =
-  macro LoggerMacro.warnString
+  macro LoggerMacro.warnCseq
 
   def warn(message: AnyRef): Unit =
   macro LoggerMacro.warnObject
@@ -131,7 +132,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.warnMsgThrowable
 
   def warn(message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.warnStringThrowable
+  macro LoggerMacro.warnCseqThrowable
 
   def warn(message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.warnObjectThrowable
@@ -141,7 +142,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.infoMarkerMsg
 
   def info(marker: Marker, message: CharSequence): Unit =
-  macro LoggerMacro.infoMarkerString
+  macro LoggerMacro.infoMarkerCseq
 
   def info(marker: Marker, message: AnyRef): Unit =
   macro LoggerMacro.infoMarkerObject
@@ -150,7 +151,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.infoMarkerMsgThrowable
 
   def info(marker: Marker, message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.infoMarkerStringThrowable
+  macro LoggerMacro.infoMarkerCseqThrowable
 
   def info(marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.infoMarkerObjectThrowable
@@ -159,7 +160,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.infoMsg
 
   def info(message: CharSequence): Unit =
-  macro LoggerMacro.infoString
+  macro LoggerMacro.infoCseq
 
   def info(message: AnyRef): Unit =
   macro LoggerMacro.infoObject
@@ -168,7 +169,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.infoMsgThrowable
 
   def info(message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.infoStringThrowable
+  macro LoggerMacro.infoCseqThrowable
 
   def info(message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.infoObjectThrowable
@@ -178,7 +179,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.debugMarkerMsg
 
   def debug(marker: Marker, message: CharSequence): Unit =
-  macro LoggerMacro.debugMarkerString
+  macro LoggerMacro.debugMarkerCseq
 
   def debug(marker: Marker, message: AnyRef): Unit =
   macro LoggerMacro.debugMarkerObject
@@ -187,7 +188,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.debugMarkerMsgThrowable
 
   def debug(marker: Marker, message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.debugMarkerStringThrowable
+  macro LoggerMacro.debugMarkerCseqThrowable
 
   def debug(marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.debugMarkerObjectThrowable
@@ -196,7 +197,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.debugMsg
 
   def debug(message: CharSequence): Unit =
-  macro LoggerMacro.debugString
+  macro LoggerMacro.debugCseq
 
   def debug(message: AnyRef): Unit =
   macro LoggerMacro.debugObject
@@ -205,7 +206,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.debugMsgThrowable
 
   def debug(message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.debugStringThrowable
+  macro LoggerMacro.debugCseqThrowable
 
   def debug(message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.debugObjectThrowable
@@ -215,7 +216,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.traceMarkerMsg
 
   def trace(marker: Marker, message: CharSequence): Unit =
-  macro LoggerMacro.traceMarkerString
+  macro LoggerMacro.traceMarkerCseq
 
   def trace(marker: Marker, message: AnyRef): Unit =
   macro LoggerMacro.traceMarkerObject
@@ -224,7 +225,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.traceMarkerMsgThrowable
 
   def trace(marker: Marker, message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.traceMarkerStringThrowable
+  macro LoggerMacro.traceMarkerCseqThrowable
 
   def trace(marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.traceMarkerObjectThrowable
@@ -233,7 +234,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.traceMsg
 
   def trace(message: CharSequence): Unit =
-  macro LoggerMacro.traceString
+  macro LoggerMacro.traceCseq
 
   def trace(message: AnyRef): Unit =
   macro LoggerMacro.traceObject
@@ -242,7 +243,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.traceMsgThrowable
 
   def trace(message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.traceStringThrowable
+  macro LoggerMacro.traceCseqThrowable
 
   def trace(message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.traceObjectThrowable
@@ -252,7 +253,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMarkerMsg
 
   def log(level: Level, marker: Marker, message: CharSequence): Unit =
-  macro LoggerMacro.logMarkerString
+  macro LoggerMacro.logMarkerCseq
 
   def log(level: Level, marker: Marker, message: AnyRef): Unit =
   macro LoggerMacro.logMarkerObject
@@ -261,7 +262,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMarkerMsgThrowable
 
   def log(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.logMarkerStringThrowable
+  macro LoggerMacro.logMarkerCseqThrowable
   
   def log(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerObjectThrowable
@@ -270,7 +271,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMsg
 
   def log(level: Level, message: CharSequence): Unit =
-  macro LoggerMacro.logString
+  macro LoggerMacro.logCseq
 
   def log(level: Level, message: AnyRef): Unit =
   macro LoggerMacro.logObject
@@ -279,7 +280,7 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMsgThrowable
 
   def log(level: Level, message: CharSequence, cause: Throwable): Unit =
-  macro LoggerMacro.logStringThrowable
+  macro LoggerMacro.logCseqThrowable
 
   def log(level: Level, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.logObjectThrowable
