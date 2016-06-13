@@ -198,8 +198,8 @@
                 Cannot be used with Jansi on Windows. Cannot be used with <code>follow</code>. Output will not respect
                 <code>java.lang.System.setOut()/.setErr()</code> and may get intertwined with other output to
                 <code>java.lang.System.out/.err</code> in a multi-threaded application.
-                <i>New since 2.6.2. Be aware that this is a new addition, and although it has been
-                  tested on several platforms, it does not have as much track record as using ConsoleAppender without it.</i>
+                <i>New since 2.6.2. Be aware that this is a new addition, and it has only been tested with Oracle JVM
+                  on Linux and Windows so far.</i>
               </td>
             </tr>
             <tr>
