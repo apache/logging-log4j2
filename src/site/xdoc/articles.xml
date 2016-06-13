@@ -27,6 +27,27 @@
       <p>
         A collection of articles about Log4j 2.
       </p>
+      <a name="Chinese" />
+      <subsection name="Chinese">
+        <ul>
+          <li>
+            <a href="http://www.infoq.com/cn/news/2016/06/log4j-garbage-free">Log4j 2.6免垃圾收集</a>
+            (June 12, 2016)
+          </li>
+          <li>
+            <a href="http://www.infoq.com/cn/news/2015/09/interview-log4j-pmc">过渡到全新Log4j：Log4j项目管理委员会访谈</a>
+            (September 14, 2015)
+          </li>
+          <li>
+            <a href="http://www.infoq.com/cn/news/2015/09/log4j-version-1-reaches-eol">Log4j版本1生命周期终结</a>
+            (September 3, 2015)
+          </li>
+          <li>
+            <a href="http://www.infoq.com/cn/news/2014/08/apache-log4j2">Apache Log4j 2.0值得升级吗</a>
+            (August 5, 2014)
+          </li>
+        </ul>
+      </subsection>
       <a name="English"/>
       <subsection name="English">
       <ul>
@@ -133,6 +154,18 @@
       <a name="Japanese"/>
       <subsection name="Japanese">
       <ul>
+        <li>
+          <a href="https://www.infoq.com/jp/news/2015/09/interview-log4j-pmc">新Log4jへの移行: Log4jプロジェクト管理グループとのQ&amp;A</a>
+          (September 27, 2015)
+        </li>
+        <li>
+          <a href="https://www.infoq.com/jp/news/2015/09/log4j-version-1-reaches-eol">Log4jバージョン1のサポートが終了</a>
+          (September 23, 2015)
+        </li>
+        <li>
+          <a href="https://www.infoq.com/jp/news/2014/08/apache-log4j2">Apache Log4j 2.0 - アップグレードする価値はあるか？</a>
+          (August 17, 2014)
+        </li>
         <li>
           <a
             href="http://d.hatena.ne.jp/Kazuhira/20140628/1403959552">Log4j2を試してみる</a>

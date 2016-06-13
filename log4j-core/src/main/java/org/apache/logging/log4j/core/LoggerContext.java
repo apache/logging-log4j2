@@ -45,6 +45,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
 
@@ -205,6 +206,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     @Override
     public void start() {
         LOGGER.debug("Starting LoggerContext[name={}, {}]...", getName(), this);
+        if (PropertiesUtil.getProperties().getBooleanProperty("log4j.LoggerContext.stacktrace.on.start", false)) {
+            LOGGER.debug("Stack trace to locate invoker",
+                    new Exception("Not a real error, showing stack trace to locate invoker"));
+        }
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
