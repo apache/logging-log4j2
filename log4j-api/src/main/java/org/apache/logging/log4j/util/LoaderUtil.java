@@ -135,6 +135,7 @@ public final class LoaderUtil {
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @since 2.1
      */
+    @SuppressWarnings("unchecked")
     public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
             InstantiationException, NoSuchMethodException, InvocationTargetException {
         final Class<?> clazz = loadClass(className);

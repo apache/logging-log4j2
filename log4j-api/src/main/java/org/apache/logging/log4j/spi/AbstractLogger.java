@@ -1206,8 +1206,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @SuppressWarnings("unchecked")
     @Override
-    public MessageFactory2 getMessageFactory() {
-        return messageFactory;
+    public <MF extends MessageFactory> MF getMessageFactory() {
+        return (MF) messageFactory;
     }
 
     @Override
