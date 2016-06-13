@@ -266,7 +266,7 @@
             </td>
             <td>
               <p>
-                Implementation of the <tt>org.apache.logging.log4j.core.helpers.Clock</tt>
+                Implementation of the <tt>org.apache.logging.log4j.core.util.Clock</tt>
                 interface that is used for timestamping the log events when all loggers are asynchronous.
                 <br />
                 By default, <tt>System.currentTimeMillis</tt> is called on every log event.
