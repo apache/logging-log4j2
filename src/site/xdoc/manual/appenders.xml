@@ -195,7 +195,10 @@
               <td>boolean</td>
               <td>Write directly to <code>java.io.FileDescriptor</code> and bypass <code>java.lang.System.out/.err</code>.
                 Can give up to 10x performance boost when the output is redirected to file or other process.
-                Cannot be used with Jansi on Windows. Cannot be used with <code>follow</code>.</td>
+                Cannot be used with Jansi on Windows. Cannot be used with <code>follow</code>.
+                <i>New since 2.6.2. Be aware that this is a new addition, and although it has been
+                  tested on several platforms, it does not have as much track record as using ConsoleAppender without it.</i>
+              </td>
             </tr>
             <tr>
               <td>name</td>
