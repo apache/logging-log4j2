@@ -199,8 +199,7 @@
                 <code>java.lang.System.setOut()/.setErr()</code> and may get intertwined with other output to
                 <code>java.lang.System.out/.err</code> in a multi-threaded application.
                 <i>New since 2.6.2. Be aware that this is a new addition, and it has only been tested with Oracle JVM
-                  on Linux and Windows so far.</i>
-              </td>
+                  on Linux and Windows so far.</i></td>
             </tr>
             <tr>
               <td>name</td>
