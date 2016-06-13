@@ -102,7 +102,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         nanoClock = newConfig.getNanoClock();
         includeLocation = newConfig.getLoggerConfig(name).isIncludeLocation();
         super.updateConfiguration(newConfig);
-        LOGGER.trace("[{}] AsyncLogger {} uses {}.", getContext().getName(), getName(), nanoClock);
     }
 
     // package protected for unit tests
