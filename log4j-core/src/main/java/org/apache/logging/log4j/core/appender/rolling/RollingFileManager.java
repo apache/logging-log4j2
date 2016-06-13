@@ -74,6 +74,9 @@ public class RollingFileManager extends FileManager {
         this.triggeringPolicy = triggeringPolicy;
         this.rolloverStrategy = rolloverStrategy;
         this.patternProcessor = new PatternProcessor(pattern);
+    }
+
+    public void initialize() {
         triggeringPolicy.initialize(this);
     }
 

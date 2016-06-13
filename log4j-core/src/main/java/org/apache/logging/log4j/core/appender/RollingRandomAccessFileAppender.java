@@ -210,6 +210,8 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             return null;
         }
 
+        manager.initialize();
+
         return new RollingRandomAccessFileAppender(name, layout, filter, manager,
                 fileName, filePattern, ignoreExceptions, isFlush, bufferSize,
                 isAdvertise ? config.getAdvertiser() : null);

@@ -58,6 +58,7 @@ public class OnStartupTriggeringPolicyTest {
         OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy();
         RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
                 policy, strategy, null, layout, 8192, true);
+        manager.initialize();
         assertTrue(Files.exists(target));
         assertTrue(Files.size(target) == 0);
         assertTrue(Files.exists(rolled));

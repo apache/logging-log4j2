@@ -16,7 +16,7 @@ To build the site with Java 7, make sure you give Maven enough memory using
 MAVEN_OPTS with options appropriate for your JVM. Alternatively, you can 
 build with Java 8 and not deal with MAVEN_OPTS.
 
-To build the site, from a command line, run:
+To install the jars in your local Maven repository, from a command line, run:
 
 mvn clean install
 
