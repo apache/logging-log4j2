@@ -1893,7 +1893,7 @@ public class AwesomeTest {
   <tr>
     <td><a name="AsyncLoggerConfig.WaitStrategy"/>AsyncLoggerConfig.WaitStrategy</td>
     <td>
-      Sleep
+      Timeout
     </td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
