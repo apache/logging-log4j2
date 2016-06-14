@@ -206,7 +206,7 @@
     <surefire.plugin.version>2.19.1</surefire.plugin.version>
     <failsafe.plugin.version>2.19.1</failsafe.plugin.version>
     <checkstyle.plugin.version>2.17</checkstyle.plugin.version>
-    <rat.plugin.version>0.11</rat.plugin.version>
+    <rat.plugin.version>0.12</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.7</cobertura.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
@@ -1055,6 +1055,7 @@
         <version>${rat.plugin.version}</version>
         <configuration>
           <excludes>
+            <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
             <!-- IntelliJ files -->
             <exclude>.idea/**/*</exclude>
@@ -1070,6 +1071,8 @@
             <exclude>src/site/resources/js/jquery.min.js</exclude>
             <!-- Generated files -->
             <exclude>log4j-distribution/target/**/*</exclude>
+            <exclude>log4j-distribution/.project</exclude>
+            <exclude>log4j-distribution/.settings/**</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
@@ -1150,6 +1153,7 @@
         <version>${rat.plugin.version}</version>
         <configuration>
           <excludes>
+            <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
             <!-- IntelliJ files -->
             <exclude>.idea/**/*</exclude>
@@ -1165,6 +1169,11 @@
             <exclude>src/site/resources/js/jquery.min.js</exclude>
             <!-- Generated files -->
             <exclude>log4j-distribution/target/**/*</exclude>
+            <exclude>log4j-distribution/.project</exclude>
+            <exclude>log4j-distribution/.settings/**</exclude>
+            <exclude>velocity.log</exclude>
+            <!-- Other -->
+            <exclude>felix-cache/**</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -1325,20 +1334,25 @@
             <version>${rat.plugin.version}</version>
             <configuration>
               <excludes>
-                <!-- VM metadata -->
-                <exclude>.vagrant/**/*</exclude>
-                <!-- Generated files -->
-                <exclude>log4j-distribution/target/**/*</exclude>
-                <exclude>dist/target/.plxarc</exclude>
-                <exclude>dist/target/*.asc</exclude>
-                <exclude>dist/target/**/*</exclude>
+                <!-- Matches other RAT configurations in this POM -->
                 <exclude>src/main/resources/META-INF/services/**/*</exclude>
+                <!-- IntelliJ files -->
                 <exclude>.idea/**/*</exclude>
                 <exclude>src/test/resources/**/*</exclude>
-                <exclude>src/site/resources/**/*</exclude>
-                <exclude>src/site/site.vm</exclude>
-                <exclude>src/ide/**/*</exclude>
-                <exclude>**/target/generated-sources/**/*</exclude>
+                <!-- VM metadata -->
+                <exclude>.vagrant/**/*</exclude>
+                <!-- IDE settings imports -->
+                <exclude>src/ide/**</exclude>
+                <!-- does it even make sense to apply a license to a GPG signature? -->
+                <exclude>**/*.asc</exclude>
+                <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
+                <exclude>src/site/resources/js/jquery.js</exclude>
+                <exclude>src/site/resources/js/jquery.min.js</exclude>
+                <!-- Generated files -->
+                <exclude>log4j-distribution/target/**/*</exclude>
+                <exclude>log4j-distribution/.project</exclude>
+                <exclude>log4j-distribution/.settings/**</exclude>
+                <exclude>velocity.log</exclude>
                 <!-- Other -->
                 <exclude>felix-cache/**</exclude>
               </excludes>
