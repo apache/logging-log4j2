@@ -57,12 +57,14 @@ public class Log4j2AppenderComparisonBenchmark {
     private Logger rafLogger;
     private Logger mmapLogger;
     private Logger consoleLogger;
+    private Logger directConsoleLogger;
     private Logger noopLogger;
     private Logger rewriteLogger;
     private Appender fileAppender;
     private Appender rafAppender;
     private Appender mmapAppender;
     private Appender consoleAppender;
+    private Appender directConsoleAppender;
     private Appender noopAppender;
     private Appender rewriteAppender;
 
@@ -102,6 +104,7 @@ public class Log4j2AppenderComparisonBenchmark {
         rafLogger = LogManager.getLogger("RAFLogger");
         mmapLogger = LogManager.getLogger("MMapLogger");
         consoleLogger = LogManager.getLogger("ConsoleLogger");
+        directConsoleLogger = LogManager.getLogger("DirectConsoleLogger");
         noopLogger = LogManager.getLogger("NoopLogger");
         rewriteLogger = LogManager.getLogger("RewriteLogger");
 
@@ -109,6 +112,7 @@ public class Log4j2AppenderComparisonBenchmark {
         rafAppender = ((org.apache.logging.log4j.core.Logger) rafLogger).getAppenders().get("RandomAccessFile");
         mmapAppender = ((org.apache.logging.log4j.core.Logger) mmapLogger).getAppenders().get("MemoryMappedFile");
         consoleAppender = ((org.apache.logging.log4j.core.Logger) consoleLogger).getAppenders().get("Console");
+        directConsoleAppender = ((org.apache.logging.log4j.core.Logger) directConsoleLogger).getAppenders().get("DirectConsole");
         noopAppender = ((org.apache.logging.log4j.core.Logger) noopLogger).getAppenders().get("NoOp");
         rewriteAppender = ((org.apache.logging.log4j.core.Logger) rewriteLogger).getAppenders().get("Rewrite");
     }
@@ -217,5 +221,19 @@ public class Log4j2AppenderComparisonBenchmark {
     @Benchmark
     public void appenderConsole() {
         consoleAppender.append(EVENT);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void end2endDirectConsole() {
+        directConsoleLogger.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void appenderDirectConsole() {
+        directConsoleAppender.append(EVENT);
     }
 }

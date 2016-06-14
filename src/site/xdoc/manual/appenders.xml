@@ -188,7 +188,18 @@
               <td>boolean</td>
               <td>Identifies whether the appender honors reassignments of System.out or System.err
                 via System.setOut or System.setErr made after configuration. Note that the follow
-                attribute cannot be used with Jansi on Windows.</td>
+                attribute cannot be used with Jansi on Windows. Cannot be used with <code>direct</code>.</td>
+            </tr>
+            <tr>
+              <td>direct</td>
+              <td>boolean</td>
+              <td>Write directly to <code>java.io.FileDescriptor</code> and bypass <code>java.lang.System.out/.err</code>.
+                Can give up to 10x performance boost when the output is redirected to file or other process.
+                Cannot be used with Jansi on Windows. Cannot be used with <code>follow</code>. Output will not respect
+                <code>java.lang.System.setOut()/.setErr()</code> and may get intertwined with other output to
+                <code>java.lang.System.out/.err</code> in a multi-threaded application.
+                <i>New since 2.6.2. Be aware that this is a new addition, and it has only been tested with Oracle JVM
+                  on Linux and Windows so far.</i></td>
             </tr>
             <tr>
               <td>name</td>
