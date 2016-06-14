@@ -25,7 +25,7 @@
   <body>
     <release version="2.6.2" date="2016-MM-DD" description="GA Release 2.6.2">
       <action issue="LOG4J2-1395" dev="mikes" type="add">
-        "direct" option to ConsoleAdapter for increased performance.
+        "direct" option to ConsoleAppender for increased performance.
       </action>
       <action issue="LOG4J2-1418" dev="mikes" type="fix">
         Provide MessageFactory2 to custom Logger implementations.
