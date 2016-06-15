@@ -56,13 +56,20 @@
             the application. The AsyncAppender should be configured after the appenders it references to allow it
             to shut down properly.</p>
           <p>
-            Note that AsyncAppender internally uses the built-in java.util.concurrent.ArrayBlockingQueue,
-            so it does not have any dependencies on external libraries. However, multi-threaded applications
-            should exercise care before using this appender:
-            the blocking queue is susceptible to lock contention and our
+            By default, AsyncAppender uses
+            <a class="javadoc" href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">java.util.concurrent.ArrayBlockingQueue</a>
+            which does not require any external libraries. Note that multi-threaded applications should exercise care
+            when using this appender as such: the blocking queue is susceptible to lock contention and our
             <a href="../performance.html#asyncLogging">tests showed</a>
             performance may become worse when more threads are logging concurrently.
             Consider using <a href="async.html">lock-free Async Loggers</a> for optimal performance.
+          </p>
+          <p>
+            Starting in Log4j 2.7, if the <a href="https://github.com/conversant/disruptor">Conversant Disruptor</a>
+            library is on your classpath, then it will be used instead of <tt>ArrayBlockingQueue</tt>. This provides a
+            performance increase over the old AsyncAppender implementation, but <a href="async.html">async logging</a>
+            still provides higher throughput.
+            <!-- TODO: this needs performance charts added -->
           </p>
           <table>
             <caption align="top">AsyncAppender Parameters</caption>
@@ -92,7 +99,8 @@
             <tr>
               <td>bufferSize</td>
               <td>integer</td>
-              <td>Specifies the maximum number of events that can be queued. The default is 128.</td>
+              <td>Specifies the maximum number of events that can be queued. The default is 128. Note that when using a
+                disruptor-style <tt>BlockingQueue</tt>, this buffer size must be a power of 2.</td>
             </tr>
             <tr>
               <td>errorRef</td>
