@@ -55,8 +55,8 @@ public class AsyncAppenderQueueFullPolicyTest {
 
     @Before
     public void before() throws Exception {
-        blockingAppender = (BlockingAppender) context.getAppender("Block");
-        asyncAppender = (AsyncAppender) context.getAppender("Async");
+        blockingAppender = context.getAppender("Block", BlockingAppender.class);
+        asyncAppender = context.getAppender("Async", AsyncAppender.class);
 
         Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
         field.setAccessible(true);
@@ -75,11 +75,12 @@ public class AsyncAppenderQueueFullPolicyTest {
     public void testRouter() throws Exception {
         final Logger logger = LogManager.getLogger(AsyncAppenderQueueFullPolicyTest.class);
 
-        assertEquals(3, asyncAppender.getQueueCapacity());
+        assertEquals(4, asyncAppender.getQueueCapacity());
         logger.error("event 1 - gets taken off the queue");
         logger.warn("event 2");
         logger.info("event 3");
-        logger.info("event 4 - now the queue is full");
+        logger.info("event 4");
+        logger.info("event 5 - now the queue is full");
         assertEquals("queue remaining capacity", 0, asyncAppender.getQueueRemainingCapacity());
         assertEquals("EventRouter invocations", 0, policy.queueFull.get());
 
