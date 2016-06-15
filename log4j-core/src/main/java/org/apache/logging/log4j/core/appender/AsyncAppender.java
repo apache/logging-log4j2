@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -42,6 +41,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.util.BlockingQueueFactoryUtil;
 import org.apache.logging.log4j.core.util.Constants;
 
 /**
@@ -75,7 +75,7 @@ public final class AsyncAppender extends AbstractAppender {
                           final boolean ignoreExceptions,
                           final long shutdownTimeout, final Configuration config, final boolean includeLocation) {
         super(name, filter, null, ignoreExceptions);
-        this.queue = new ArrayBlockingQueue<>(queueSize);
+        this.queue = BlockingQueueFactoryUtil.getLogEventBlockingQueueFactory().create(queueSize);
         this.queueSize = queueSize;
         this.blocking = blocking;
         this.shutdownTimeout = shutdownTimeout;
