@@ -104,6 +104,25 @@ public final class LoaderUtil {
     }
 
     /**
+     * Determines if a named Class can be loaded or not.
+     *
+     * @param className The class name.
+     * @return {@code true} if the class could be found or {@code false} otherwise.
+     * @since 2.7
+     */
+    public static boolean isClassAvailable(final String className) {
+        try {
+            final Class<?> clazz = loadClass(className);
+            return clazz != null;
+        } catch (final ClassNotFoundException e) {
+            return false;
+        } catch (final Throwable e) {
+            LowLevelLogUtil.logException("Unknown error checking for existence of class: " + className, e);
+            return false;
+        }
+    }
+
+    /**
      * Loads a class by name. This method respects the {@link #IGNORE_TCCL_PROPERTY} Log4j property. If this property is
      * specified and set to anything besides {@code false}, then the default ClassLoader will be used.
      *

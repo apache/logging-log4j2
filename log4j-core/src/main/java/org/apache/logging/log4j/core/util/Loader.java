@@ -308,14 +308,6 @@ public final class Loader {
      * @return {@code true} if the class could be found or {@code false} otherwise.
      */
     public static boolean isClassAvailable(final String className) {
-        try {
-            final Class<?> clazz = loadClass(className);
-            return clazz != null;
-        } catch (final ClassNotFoundException e) {
-            return false;
-        } catch (final Throwable e) {
-            LOGGER.trace("Unknown error checking for existence of class [{}].", className, e);
-            return false;
-        }
+        return LoaderUtil.isClassAvailable(className);
     }
 }
