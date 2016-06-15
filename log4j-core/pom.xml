@@ -51,6 +51,12 @@
       <artifactId>disruptor</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Alternative implementation of BlockingQueue for AsyncAppender -->
+    <dependency>
+      <groupId>com.conversantmedia</groupId>
+      <artifactId>disruptor</artifactId>
+      <optional>true</optional>
+    </dependency>
     <!-- Required for JSON support -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

@@ -196,6 +196,7 @@
     <springVersion>3.2.13.RELEASE</springVersion>
     <flumeVersion>1.6.0</flumeVersion>
     <disruptorVersion>3.3.4</disruptorVersion>
+    <conversantDisruptorVersion>1.2.7</conversantDisruptorVersion>
     <compiler.plugin.version>3.5.1</compiler.plugin.version>
     <pmd.plugin.version>3.6</pmd.plugin.version>
     <findbugs.plugin.version>3.0.3</findbugs.plugin.version>
@@ -608,6 +609,11 @@
         <groupId>com.lmax</groupId>
         <artifactId>disruptor</artifactId>
         <version>${disruptorVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.conversantmedia</groupId>
+        <artifactId>disruptor</artifactId>
+        <version>${conversantDisruptorVersion}</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
