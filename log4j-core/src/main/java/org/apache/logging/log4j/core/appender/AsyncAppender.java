@@ -36,10 +36,11 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.BlockingQueueFactoryUtil;
 import org.apache.logging.log4j.core.util.Constants;
@@ -231,21 +232,12 @@ public final class AsyncAppender extends AbstractAppender {
      * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged;
      *                         otherwise they are propagated to the caller.
      * @return The AsyncAppender.
+     * @deprecated use {@link Builder} instead
      */
-    @PluginFactory
-    public static AsyncAppender createAppender(
-        // @formatter:off
-        @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
-        @PluginAttribute("errorRef") @PluginAliases("error-ref") final String errorRef,
-        @PluginAttribute(value = "blocking", defaultBoolean = true) final boolean blocking,
-        @PluginAttribute(value = "shutdownTimeout", defaultLong = 0L) final long shutdownTimeout,
-        @PluginAttribute(value = "bufferSize", defaultInt = DEFAULT_QUEUE_SIZE) final int size,
-        @PluginAttribute("name") final String name,
-        @PluginAttribute(value = "includeLocation", defaultBoolean = false) final boolean includeLocation,
-        @PluginElement("Filter") final Filter filter,
-        @PluginConfiguration final Configuration config,
-        @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions) {
-        // @formatter:on
+    public static AsyncAppender createAppender(final AppenderRef[] appenderRefs, final String errorRef,
+                                               final boolean blocking, final long shutdownTimeout, final int size,
+                                               final String name, final boolean includeLocation, final Filter filter,
+                                               final Configuration config, final boolean ignoreExceptions) {
         if (name == null) {
             LOGGER.error("No name provided for AsyncAppender");
             return null;
@@ -256,6 +248,103 @@ public final class AsyncAppender extends AbstractAppender {
 
         return new AsyncAppender(name, filter, appenderRefs, errorRef, size, blocking, ignoreExceptions,
             shutdownTimeout, config, includeLocation);
+    }
+
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<AsyncAppender> {
+
+        @PluginElement("AppenderRef")
+        @Required(message = "No appender references provided to AsyncAppender")
+        private AppenderRef[] appenderRefs;
+
+        @PluginBuilderAttribute
+        @PluginAliases("error-ref")
+        private String errorRef;
+
+        @PluginBuilderAttribute
+        private boolean blocking = true;
+
+        @PluginBuilderAttribute
+        private long shutdownTimeout = 0L;
+
+        @PluginBuilderAttribute
+        private int bufferSize = DEFAULT_QUEUE_SIZE;
+
+        @PluginBuilderAttribute
+        @Required(message = "No name provided for AsyncAppender")
+        private String name;
+
+        @PluginBuilderAttribute
+        private boolean includeLocation = false;
+
+        @PluginElement("Filter")
+        private Filter filter;
+
+        @PluginConfiguration
+        private Configuration configuration;
+
+        @PluginBuilderAttribute
+        private boolean ignoreExceptions = true;
+
+        public Builder setAppenderRefs(AppenderRef[] appenderRefs) {
+            this.appenderRefs = appenderRefs;
+            return this;
+        }
+
+        public Builder setErrorRef(String errorRef) {
+            this.errorRef = errorRef;
+            return this;
+        }
+
+        public Builder setBlocking(boolean blocking) {
+            this.blocking = blocking;
+            return this;
+        }
+
+        public Builder setShutdownTimeout(long shutdownTimeout) {
+            this.shutdownTimeout = shutdownTimeout;
+            return this;
+        }
+
+        public Builder setBufferSize(int bufferSize) {
+            this.bufferSize = bufferSize;
+            return this;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setIncludeLocation(boolean includeLocation) {
+            this.includeLocation = includeLocation;
+            return this;
+        }
+
+        public Builder setFilter(Filter filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        public Builder setConfiguration(Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        public Builder setIgnoreExceptions(boolean ignoreExceptions) {
+            this.ignoreExceptions = ignoreExceptions;
+            return this;
+        }
+
+        @Override
+        public AsyncAppender build() {
+            return new AsyncAppender(name, filter, appenderRefs, errorRef, bufferSize, blocking, ignoreExceptions,
+                shutdownTimeout, configuration, includeLocation);
+        }
     }
 
     /**
