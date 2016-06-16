@@ -21,23 +21,43 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.util.ArrayBlockingQueueFactory;
+import org.apache.logging.log4j.core.util.BlockingQueueFactory;
+import org.apache.logging.log4j.core.util.DisruptorBlockingQueueFactory;
+import org.apache.logging.log4j.core.util.LinkedTransferQueueFactory;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
 
 /**
  *
  */
+@RunWith(Parameterized.class)
 public class AsyncAppenderTest {
     private static final String CONFIG = "log4j-asynch.xml";
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
+    @Parameterized.Parameters
+    public static Object[] data() {
+        return new Class<?>[]{
+            ArrayBlockingQueueFactory.class,
+            DisruptorBlockingQueueFactory.class,
+            LinkedTransferQueueFactory.class
+        };
+    }
+
+    public AsyncAppenderTest(final Class<? extends BlockingQueueFactory> factory) {
+        context = new LoggerContextRule(CONFIG).withSystemProperty(BlockingQueueFactory.PROPERTY, factory.getName());
+    }
+
+    @Rule
+    public LoggerContextRule context;
 
     private ListAppender listAppender;
 

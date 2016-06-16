@@ -8,5 +8,8 @@ import java.util.concurrent.BlockingQueue;
  * @since 2.7
  */
 public interface BlockingQueueFactory<E> {
+
+    String PROPERTY = "log4j.BlockingQueueFactory";
+
     BlockingQueue<E> create(int capacity);
 }
