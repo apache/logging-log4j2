@@ -2004,6 +2004,12 @@ public class AwesomeTest {
     <td>Prints a stacktrace to the <a href="#StatusMessages">status logger</a> at DEBUG level
     when the LoggerContext is started. For debug purposes.</td>
   </tr>
+  <tr>
+    <td><a name="log4j.BlockingQueueFactory"/>log4j.BlockingQueueFactory</td>
+    <td>org.apache.logging.log4j.core.util.ArrayBlockingQueueFactory</td>
+    <td>Specifies what type of <tt>BlockingQueue</tt> implementation to use with
+      <a href="appenders.html#AsyncAppender">AsyncAppender</a>.</td>
+  </tr>
 </table>
 
         </subsection>

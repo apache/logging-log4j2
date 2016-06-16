@@ -65,11 +65,41 @@
             Consider using <a href="async.html">lock-free Async Loggers</a> for optimal performance.
           </p>
           <p>
-            Starting in Log4j 2.7, if the <a href="https://github.com/conversant/disruptor">Conversant Disruptor</a>
-            library is on your classpath, then it will be used instead of <tt>ArrayBlockingQueue</tt>. This provides a
-            performance increase over the old AsyncAppender implementation, but <a href="async.html">async logging</a>
-            still provides higher throughput.
-            <!-- TODO: this needs performance charts added -->
+            Starting in Log4j 2.7, a custom implementation of <tt>BlockingQueue</tt> can be specified by setting the
+            system property <tt>log4j.BlockingQueueFactory</tt> to the fully qualified class name of an implementation of
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/BlockingQueueFactory.html">BlockingQueueFactory</a>.
+            Log4j comes with the following:
+          </p>
+          <table>
+            <caption align="top">BlockingQueueFactory Implementations</caption>
+            <tr>
+              <th>Class Name</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td><tt>org.apache.logging.log4j.core.util.ArrayBlockingQueueFactory</tt></td>
+              <td>
+                This is the default implementation that uses
+                <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>.
+              </td>
+            </tr>
+            <tr>
+              <td><tt>org.apache.logging.log4j.core.util.DisruptorBlockingQueueFactory</tt></td>
+              <td>
+                This uses the <a href="https://github.com/conversant/disruptor">Conversant Disruptor</a> implementation
+                of <tt>BlockingQueue</tt>.
+                <!-- TODO: this needs performance charts and links added -->
+              </td>
+            </tr>
+            <tr>
+              <td><tt>org.apache.logging.log4j.core.util.LinkedTransferQueueFactory</tt></td>
+              <td>
+                This uses the new in Java 7 implementation
+                <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>.
+                <!-- TODO: this needs performance charts and links added -->
+              </td>
+            </tr>
+          </table>
           </p>
           <table>
             <caption align="top">AsyncAppender Parameters</caption>
