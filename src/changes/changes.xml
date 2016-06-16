@@ -48,6 +48,9 @@
       <action issue="LOG4J2-1432" dev="ggregory" type="update">
         Update Jackson from 2.7.4 to 2.7.5.
       </action>
+      <action issue="LOG4J2-1433" dev="ggregory" type="update">
+        Update Jansi from 1.11 to 1.13.
+      </action>
     </release>
     <release version="2.6.1" date="2016-06-05" description="GA Release 2.6.1">
       <action issue="LOG4J2-1405" dev="rgoers" type="fix">
