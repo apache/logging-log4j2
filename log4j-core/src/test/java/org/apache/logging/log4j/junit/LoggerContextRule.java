@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.junit;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
@@ -44,6 +47,7 @@ public class LoggerContextRule implements TestRule {
     private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
     private final String configLocation;
     private final Class<? extends ContextSelector> contextSelectorClass;
+    private final Map<String, String> systemProperties = new ConcurrentHashMap<>();
 
     private LoggerContext context;
 
@@ -70,6 +74,18 @@ public class LoggerContextRule implements TestRule {
         this.contextSelectorClass = contextSelectorClass;
     }
 
+    /**
+     * Sets a system property before the test and clears that property after the test.
+     *
+     * @param key   system property key
+     * @param value system property value
+     * @return {@code this}
+     * @since 2.7
+     */
+    public LoggerContextRule withSystemProperty(final String key, final String value) {
+        this.systemProperties.put(key, value);
+        return this;
+    }
 
     @Override
     public Statement apply(final Statement base, final Description description) {
@@ -86,6 +102,9 @@ public class LoggerContextRule implements TestRule {
                 }
                 System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
                 System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
+                for (final Map.Entry<String, String> systemProperty : systemProperties.entrySet()) {
+                    System.setProperty(systemProperty.getKey(), systemProperty.getValue());
+                }
                 context = Configurator.initialize(
                     description.getDisplayName(),
                     description.getTestClass().getClassLoader(),
@@ -99,6 +118,9 @@ public class LoggerContextRule implements TestRule {
                     System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
                     System.clearProperty(SYS_PROP_KEY_CLASS_NAME);
                     System.clearProperty(SYS_PROP_KEY_DISPLAY_NAME);
+                    for (final String systemPropertyKey : systemProperties.keySet()) {
+                        System.clearProperty(systemPropertyKey);
+                    }
                 }
             }
         };
