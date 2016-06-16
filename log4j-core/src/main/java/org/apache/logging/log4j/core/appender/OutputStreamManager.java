@@ -85,7 +85,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * Indicate whether the footer should be skipped or not.
      * @param skipFooter true if the footer should be skipped.
      */
-    public void skipFooter(boolean skipFooter) {
+    public void skipFooter(final boolean skipFooter) {
         this.skipFooter = skipFooter;
     }
 
