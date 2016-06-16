@@ -29,6 +29,10 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * </p>
  */
 public class ParameterizedMessage implements Message, StringBuilderFormattable {
+    
+    // Should this be configurable?
+    private static final int DEFAULT_STRING_BUILDER_SIZE = 255;
+    
     /**
      * Prefix for recursion.
      */
@@ -199,7 +203,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     private static StringBuilder getThreadLocalStringBuilder() {
         StringBuilder buffer = threadLocalStringBuilder.get();
         if (buffer == null) {
-            buffer = new StringBuilder(255);
+            buffer = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
             threadLocalStringBuilder.set(buffer);
         }
         buffer.setLength(0);
