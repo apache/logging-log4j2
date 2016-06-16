@@ -22,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.junit.Test;
 
 /**
  * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
@@ -29,27 +30,44 @@ import org.apache.logging.log4j.core.config.Configurator;
  * <p>
  * Running from a Windows command line from the root of the project:
  * </p>
- * 
+ *
+ * <pre>
+ * mvn -Dtest=org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain test
+ * </pre>
+ * or:
  * <pre>
  * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
  * </pre>
+ * 
  */
 public class ConsoleAppenderAnsiStyleLayoutMain {
 
-    private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiStyleLayoutMain.class);
-
     public static void main(final String[] args) {
+        new ConsoleAppenderAnsiStyleLayoutMain().test(args);
+    }
+
+    /**
+     * This is a @Test method to make it easy to run from a command line with {@code mvn -Dtest=FQCN test}
+     */
+    @Test
+    public void test() {
+        test(null);
+    }
+
+    public void test(final String[] args) {
         // System.out.println(System.getProperty("java.class.path"));
-        final String config = args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml" : args[0];
+        final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml"
+                : args[0];
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
+        final Logger logger = LogManager.getLogger(ConsoleAppenderAnsiStyleLayoutMain.class);
         try {
-            LOG.fatal("Fatal message.");
-            LOG.error("Error message.");
-            LOG.warn("Warning message.");
-            LOG.info("Information message.");
-            LOG.debug("Debug message.");
-            LOG.trace("Trace message.");
-            LOG.error("Error message.", new IOException("test"));
+            logger.fatal("Fatal message.");
+            logger.error("Error message.");
+            logger.warn("Warning message.");
+            logger.info("Information message.");
+            logger.debug("Debug message.");
+            logger.trace("Trace message.");
+            logger.error("Error message.", new IOException("test"));
         } finally {
             Configurator.shutdown(ctx);
         }
