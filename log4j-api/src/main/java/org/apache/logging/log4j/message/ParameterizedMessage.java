@@ -46,14 +46,17 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * Prefix for errors.
      */
     public static final String ERROR_PREFIX = ParameterFormatter.ERROR_PREFIX;
+    
     /**
      * Separator for errors.
      */
     public static final String ERROR_SEPARATOR = ParameterFormatter.ERROR_SEPARATOR;
+    
     /**
      * Separator for error messages.
      */
     public static final String ERROR_MSG_SEPARATOR = ParameterFormatter.ERROR_MSG_SEPARATOR;
+    
     /**
      * Suffix for errors.
      */
