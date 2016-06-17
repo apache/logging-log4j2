@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
 import org.apache.logging.log4j.core.async.BlockingQueueFactory;
-import org.apache.logging.log4j.core.async.BlockingQueueFactoryUtil;
 import org.apache.logging.log4j.core.async.DiscardingAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.core.config.AppenderControl;
@@ -78,7 +77,7 @@ public final class AsyncAppender extends AbstractAppender {
                           final boolean ignoreExceptions, final long shutdownTimeout, final Configuration config,
                           final boolean includeLocation, final BlockingQueueFactory<LogEvent> blockingQueueFactory) {
         super(name, filter, null, ignoreExceptions);
-        this.queue = BlockingQueueFactoryUtil.<LogEvent>getBlockingQueueFactory().create(queueSize);
+        this.queue = blockingQueueFactory.create(queueSize);
         this.queueSize = queueSize;
         this.blocking = blocking;
         this.shutdownTimeout = shutdownTimeout;
