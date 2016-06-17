@@ -41,19 +41,21 @@ import static org.junit.Assert.*;
  */
 @RunWith(Parameterized.class)
 public class AsyncAppenderTest {
-    private static final String CONFIG = "log4j-asynch.xml";
 
     @Parameterized.Parameters
     public static Object[] data() {
-        return new Class<?>[]{
-            ArrayBlockingQueueFactory.class,
-            DisruptorBlockingQueueFactory.class,
-            LinkedTransferQueueFactory.class
+        return new String[]{
+            // default async config uses array blocking queue
+            "log4j-asynch.xml",
+            // override default blocking queue implementations
+            "BlockingQueueFactory-ArrayBlockingQueue.xml",
+            "BlockingQueueFactory-DisruptorBlockingQueue.xml",
+            "BlockingQueueFactory-LinkedTransferQueue.xml"
         };
     }
 
-    public AsyncAppenderTest(final Class<? extends BlockingQueueFactory> factory) {
-        context = new LoggerContextRule(CONFIG).withSystemProperty(BlockingQueueFactory.PROPERTY, factory.getName());
+    public AsyncAppenderTest(final String configFileName) {
+        context = new LoggerContextRule(configFileName);
     }
 
     @Rule

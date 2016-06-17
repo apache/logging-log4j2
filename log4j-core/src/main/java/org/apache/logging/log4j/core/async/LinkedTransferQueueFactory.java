@@ -20,14 +20,24 @@ package org.apache.logging.log4j.core.async;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+
 /**
  * Factory for creating instances of {@link LinkedTransferQueue}.
  *
  * @since 2.7
  */
+@Plugin(name = "LinkedTransferQueue", category = Node.CATEGORY, elementType = BlockingQueueFactory.ELEMENT_TYPE)
 public class LinkedTransferQueueFactory<E> implements BlockingQueueFactory<E> {
     @Override
     public BlockingQueue<E> create(int capacity) {
         return new LinkedTransferQueue<>();
+    }
+
+    @PluginFactory
+    public static <E> LinkedTransferQueueFactory<E> createFactory() {
+        return new LinkedTransferQueueFactory<>();
     }
 }

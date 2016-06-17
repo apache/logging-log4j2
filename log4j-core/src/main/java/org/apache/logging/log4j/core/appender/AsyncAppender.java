@@ -26,8 +26,11 @@ import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
+import org.apache.logging.log4j.core.async.BlockingQueueFactory;
+import org.apache.logging.log4j.core.async.BlockingQueueFactoryUtil;
 import org.apache.logging.log4j.core.async.DiscardingAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.core.config.AppenderControl;
@@ -42,7 +45,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.async.BlockingQueueFactoryUtil;
 import org.apache.logging.log4j.core.util.Constants;
 
 /**
@@ -73,8 +75,8 @@ public final class AsyncAppender extends AbstractAppender {
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
                           final String errorRef, final int queueSize, final boolean blocking,
-                          final boolean ignoreExceptions,
-                          final long shutdownTimeout, final Configuration config, final boolean includeLocation) {
+                          final boolean ignoreExceptions, final long shutdownTimeout, final Configuration config,
+                          final boolean includeLocation, final BlockingQueueFactory<LogEvent> blockingQueueFactory) {
         super(name, filter, null, ignoreExceptions);
         this.queue = BlockingQueueFactoryUtil.<LogEvent>getBlockingQueueFactory().create(queueSize);
         this.queueSize = queueSize;
@@ -217,7 +219,9 @@ public final class AsyncAppender extends AbstractAppender {
     }
 
     /**
-     * Create an AsyncAppender.
+     * Create an AsyncAppender. This method is retained for backwards compatibility. New code should use the
+     * {@link Builder} instead. This factory will use {@link ArrayBlockingQueueFactory} by default as was the behavior
+     * pre-2.7.
      *
      * @param appenderRefs     The Appenders to reference.
      * @param errorRef         An optional Appender to write to if the queue is full or other errors occur.
@@ -247,7 +251,7 @@ public final class AsyncAppender extends AbstractAppender {
         }
 
         return new AsyncAppender(name, filter, appenderRefs, errorRef, size, blocking, ignoreExceptions,
-            shutdownTimeout, config, includeLocation);
+            shutdownTimeout, config, includeLocation, new ArrayBlockingQueueFactory<LogEvent>());
     }
 
     @PluginBuilderFactory
@@ -289,6 +293,9 @@ public final class AsyncAppender extends AbstractAppender {
 
         @PluginBuilderAttribute
         private boolean ignoreExceptions = true;
+
+        @PluginElement(BlockingQueueFactory.ELEMENT_TYPE)
+        private BlockingQueueFactory<LogEvent> blockingQueueFactory = new ArrayBlockingQueueFactory<>();
 
         public Builder setAppenderRefs(AppenderRef[] appenderRefs) {
             this.appenderRefs = appenderRefs;
@@ -340,10 +347,15 @@ public final class AsyncAppender extends AbstractAppender {
             return this;
         }
 
+        public Builder setBlockingQueueFactory(final BlockingQueueFactory<LogEvent> blockingQueueFactory) {
+            this.blockingQueueFactory = blockingQueueFactory;
+            return this;
+        }
+
         @Override
         public AsyncAppender build() {
             return new AsyncAppender(name, filter, appenderRefs, errorRef, bufferSize, blocking, ignoreExceptions,
-                shutdownTimeout, configuration, includeLocation);
+                shutdownTimeout, configuration, includeLocation, blockingQueueFactory);
         }
     }
 
