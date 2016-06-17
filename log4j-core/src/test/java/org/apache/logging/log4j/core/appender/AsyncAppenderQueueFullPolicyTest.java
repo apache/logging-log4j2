@@ -84,6 +84,7 @@ public class AsyncAppenderQueueFullPolicyTest {
         assertEquals("EventRouter invocations", 0, policy.queueFull.get());
 
         final Thread release = new Thread("AsyncAppenderReleaser") {
+            @Override
             public void run() {
                 while (policy.queueFull.get() == 0) {
                     try {
