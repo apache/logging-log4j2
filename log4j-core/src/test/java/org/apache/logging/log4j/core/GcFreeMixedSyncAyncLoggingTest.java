@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

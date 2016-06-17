@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
-import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
