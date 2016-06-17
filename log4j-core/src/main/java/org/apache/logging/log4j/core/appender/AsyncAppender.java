@@ -42,7 +42,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.BlockingQueueFactoryUtil;
+import org.apache.logging.log4j.core.async.BlockingQueueFactoryUtil;
 import org.apache.logging.log4j.core.util.Constants;
 
 /**

@@ -2006,7 +2006,7 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td><a name="log4j.BlockingQueueFactory"/>log4j.BlockingQueueFactory</td>
-    <td>org.apache.logging.log4j.core.util.ArrayBlockingQueueFactory</td>
+    <td>org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory</td>
     <td>Specifies what type of <tt>BlockingQueue</tt> implementation to use with
       <a href="appenders.html#AsyncAppender">AsyncAppender</a>.</td>
   </tr>

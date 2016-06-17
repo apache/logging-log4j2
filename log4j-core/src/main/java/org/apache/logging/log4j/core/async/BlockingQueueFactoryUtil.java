@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.async;
 
 import java.lang.reflect.InvocationTargetException;
 

@@ -77,14 +77,14 @@
               <th>Description</th>
             </tr>
             <tr>
-              <td><tt>org.apache.logging.log4j.core.util.ArrayBlockingQueueFactory</tt></td>
+              <td><tt>org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory</tt></td>
               <td>
                 This is the default implementation that uses
                 <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>.
               </td>
             </tr>
             <tr>
-              <td><tt>org.apache.logging.log4j.core.util.DisruptorBlockingQueueFactory</tt></td>
+              <td><tt>org.apache.logging.log4j.core.async.DisruptorBlockingQueueFactory</tt></td>
               <td>
                 This uses the <a href="https://github.com/conversant/disruptor">Conversant Disruptor</a> implementation
                 of <tt>BlockingQueue</tt>.
@@ -92,7 +92,7 @@
               </td>
             </tr>
             <tr>
-              <td><tt>org.apache.logging.log4j.core.util.LinkedTransferQueueFactory</tt></td>
+              <td><tt>org.apache.logging.log4j.core.async.LinkedTransferQueueFactory</tt></td>
               <td>
                 This uses the new in Java 7 implementation
                 <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>.
