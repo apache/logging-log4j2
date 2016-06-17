@@ -64,11 +64,10 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
                 copy[index] = currentFilter;
             }
             return new CompositeFilter(copy);
-        } else {
-            final Filter[] copy = Arrays.copyOf(this.filters, this.filters.length + 1);
-            copy[this.filters.length] = filter;
-            return new CompositeFilter(copy);
         }
+        final Filter[] copy = Arrays.copyOf(this.filters, this.filters.length + 1);
+        copy[this.filters.length] = filter;
+        return new CompositeFilter(copy);
     }
 
     public CompositeFilter removeFilter(final Filter filter) {

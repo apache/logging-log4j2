@@ -32,8 +32,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
-
 /**
  * Tests JUL (java.util.logging) Memory Handler performance when including caller location information.
  */

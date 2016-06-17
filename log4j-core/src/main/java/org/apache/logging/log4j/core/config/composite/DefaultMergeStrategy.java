@@ -122,9 +122,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
                         updateFilterNode(target, targetChildNode, sourceChildNode, pluginManager);
                         isMerged = true;
                         break;
-                    } else {
-                        continue;
                     }
+                    continue;
                 }
 
                 if (!targetChildNode.getName().equalsIgnoreCase(sourceChildNode.getName())) {

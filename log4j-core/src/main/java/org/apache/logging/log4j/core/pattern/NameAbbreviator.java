@@ -235,9 +235,8 @@ public abstract class NameAbbreviator {
                 if (nextStart == -1) {
                     destination.append(original);
                     return;
-                } else {
-                    start = nextStart + 1;
                 }
+                start = nextStart + 1;
             }
             destination.append(original, start, original.length());
         }
