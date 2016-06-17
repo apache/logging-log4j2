@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.scala
 
-import org.apache.logging.log4j.message.{Message, MessageFactory2}
+import org.apache.logging.log4j.message.{EntryMessage, Message, MessageFactory2}
 import org.apache.logging.log4j.spi.ExtendedLogger
 import org.apache.logging.log4j.{Level, Marker}
 
@@ -290,14 +290,19 @@ class Logger(val delegate: ExtendedLogger) {
 
   def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
 
-  def entry(params: AnyRef*): Unit =
-    delegate.entry(params) // TODO would be useful to have this as a macro to avoid varargs array creation
 
-  def traceEntry(): Unit = delegate.traceEntry()
+  def traceEntry(): EntryMessage = delegate.traceEntry()
+
+  def traceEntry(params: AnyRef*): EntryMessage =
+    delegate.traceEntry(null, params) // TODO would be useful to have this as a macro to avoid varargs array creation
+
+  def traceEntry(message: Message): EntryMessage = delegate.traceEntry(message)
 
   def traceExit[R](result: R): R = delegate.traceExit(result)
 
   def traceExit(): Unit = delegate.traceExit()
+
+  def traceExit(entryMessage: EntryMessage): Unit = delegate.traceExit(entryMessage)
 
   def throwing[T <: Throwable](t: T): T = delegate.throwing(t)
 
@@ -306,6 +311,7 @@ class Logger(val delegate: ExtendedLogger) {
   def catching(t: Throwable): Unit = delegate.catching(t)
 
   def catching(level: Level, t: Throwable): Unit = delegate.catching(level, t)
+
 
   def level: Level = delegate.getLevel
 
