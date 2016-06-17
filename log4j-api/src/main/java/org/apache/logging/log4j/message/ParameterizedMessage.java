@@ -145,7 +145,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         this.indices = new int[messagePattern == null ? 0 : messagePattern.length() >> 1]; // divide by 2
         final int placeholders = ParameterFormatter.countArgumentPlaceholders2(messagePattern, indices);
         initThrowable(argArray, placeholders);
-        this.usedCount = Math.min(placeholders, (argArray == null) ? 0 : argArray.length);
+        this.usedCount = Math.min(placeholders, argArray == null ? 0 : argArray.length);
     }
 
     private void initThrowable(final Object[] params, final int usedParams) {
