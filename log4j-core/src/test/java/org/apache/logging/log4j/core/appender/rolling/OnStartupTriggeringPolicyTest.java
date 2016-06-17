@@ -41,22 +41,22 @@ public class OnStartupTriggeringPolicyTest {
 
     @Test
     public void testPolicy() throws Exception {
-        Configuration configuration = new DefaultConfiguration();
-        Path target = Paths.get(TARGET_FILE);
-        Path rolled = Paths.get(ROLLED_FILE);
+        final Configuration configuration = new DefaultConfiguration();
+        final Path target = Paths.get(TARGET_FILE);
+        final Path rolled = Paths.get(ROLLED_FILE);
         Files.deleteIfExists(target);
         Files.deleteIfExists(rolled);
-        InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"));
+        final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"));
         Files.copy(is, target);
         is.close();
-        long size = Files.size(target);
+        final long size = Files.size(target);
         assertTrue(size > 0);
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg")
                 .withConfiguration(configuration).build();
-        RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
+        final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
                 configuration);
-        OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy();
-        RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
+        final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy();
+        final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
                 policy, strategy, null, layout, 8192, true);
         manager.initialize();
         assertTrue(Files.exists(target));

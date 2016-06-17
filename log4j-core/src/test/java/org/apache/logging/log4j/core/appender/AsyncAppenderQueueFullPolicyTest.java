@@ -58,7 +58,7 @@ public class AsyncAppenderQueueFullPolicyTest {
         blockingAppender = (BlockingAppender) context.getAppender("Block");
         asyncAppender = (AsyncAppender) context.getAppender("Async");
 
-        Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
+        final Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
         field.setAccessible(true);
         policy = new CountingAsyncQueueFullPolicy();
         field.set(asyncAppender, policy);
