@@ -290,7 +290,7 @@ class Logger(val delegate: ExtendedLogger) {
 
   def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
 
-
+  // TODO fix FQCN for flow logging
   def traceEntry(): EntryMessage = delegate.traceEntry()
 
   def traceEntry(params: Any*): EntryMessage =
@@ -357,7 +357,7 @@ class Logger(val delegate: ExtendedLogger) {
   }
 
   private[scala] def traceEntryWithParams(params: Any*): EntryMessage = {
-    delegate.traceEntry(null, params)
+    delegate.traceEntry(null, params) // TODO should not do ifEnabled check
   }
 
 }
