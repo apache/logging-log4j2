@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TransferQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.core.AbstractLogEvent;
@@ -151,7 +152,7 @@ public final class AsyncAppender extends AbstractAppender {
             logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
         final Log4jLogEvent memento = Log4jLogEvent.createMemento(logEvent, includeLocation);
-        if (!queue.offer(memento)) {
+        if (!transfer(memento)) {
             if (blocking) {
                 // delegate to the event router (which may discard, enqueue and block, or log in current thread)
                 final EventRoute route = asyncQueueFullPolicy.getRoute(thread.getId(), memento.getLevel());
@@ -161,6 +162,12 @@ public final class AsyncAppender extends AbstractAppender {
                 logToErrorAppenderIfNecessary(false, memento);
             }
         }
+    }
+
+    private boolean transfer(final LogEvent memento) {
+        return queue instanceof TransferQueue
+            ? ((TransferQueue<LogEvent>) queue).tryTransfer(memento)
+            : queue.offer(memento);
     }
 
     /**
