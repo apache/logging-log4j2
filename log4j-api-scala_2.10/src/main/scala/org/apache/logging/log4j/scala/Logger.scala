@@ -26,7 +26,7 @@ class Logger(val delegate: ExtendedLogger) {
 
   private final val FQCN = classOf[Logger].getName
 
-  
+
   def fatal(marker: Marker, message: Message): Unit =
   macro LoggerMacro.fatalMarkerMsg
 
@@ -50,10 +50,10 @@ class Logger(val delegate: ExtendedLogger) {
 
   def fatal(message: CharSequence): Unit =
   macro LoggerMacro.fatalCseq
-  
+
   def fatal(message: AnyRef): Unit =
   macro LoggerMacro.fatalObject
-  
+
   def fatal(message: Message, cause: Throwable): Unit =
   macro LoggerMacro.fatalMsgThrowable
 
@@ -247,8 +247,8 @@ class Logger(val delegate: ExtendedLogger) {
 
   def trace(message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.traceObjectThrowable
-  
-  
+
+
   def log(level: Level, marker: Marker, message: Message): Unit =
   macro LoggerMacro.logMarkerMsg
 
@@ -263,10 +263,10 @@ class Logger(val delegate: ExtendedLogger) {
 
   def log(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerCseqThrowable
-  
+
   def log(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerObjectThrowable
-  
+
   def log(level: Level, message: Message): Unit =
   macro LoggerMacro.logMsg
 
@@ -275,7 +275,7 @@ class Logger(val delegate: ExtendedLogger) {
 
   def log(level: Level, message: AnyRef): Unit =
   macro LoggerMacro.logObject
-  
+
   def log(level: Level, message: Message, cause: Throwable): Unit =
   macro LoggerMacro.logMsgThrowable
 
@@ -284,7 +284,7 @@ class Logger(val delegate: ExtendedLogger) {
 
   def log(level: Level, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.logObjectThrowable
-  
+
 
   def isEnabled(level: Level): Boolean = delegate.isEnabled(level)
 
@@ -293,8 +293,8 @@ class Logger(val delegate: ExtendedLogger) {
 
   def traceEntry(): EntryMessage = delegate.traceEntry()
 
-  def traceEntry(params: AnyRef*): EntryMessage =
-    delegate.traceEntry(null, params) // TODO would be useful to have this as a macro to avoid varargs array creation
+  def traceEntry(params: Any*): EntryMessage =
+  macro LoggerMacro.traceEntryParams
 
   def traceEntry(message: Message): EntryMessage = delegate.traceEntry(message)
 
@@ -319,13 +319,14 @@ class Logger(val delegate: ExtendedLogger) {
 
   def messageFactory: MessageFactory2 = delegate.getMessageFactory.asInstanceOf[MessageFactory2]
 
+
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
     *
-    * @param level    log level
-    * @param marker   marker or `null`
-    * @param message  message
-    * @param cause    cause or `null`
+    * @param level   log level
+    * @param marker  marker or `null`
+    * @param message message
+    * @param cause   cause or `null`
     */
   private[scala] def logMessage(level: Level, marker: Marker, message: Message, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, message, cause)
@@ -334,10 +335,10 @@ class Logger(val delegate: ExtendedLogger) {
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
     *
-    * @param level    log level
-    * @param marker   marker or `null`
-    * @param message  message
-    * @param cause    cause or `null`
+    * @param level   log level
+    * @param marker  marker or `null`
+    * @param message message
+    * @param cause   cause or `null`
     */
   private[scala] def logMessage(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
@@ -346,13 +347,17 @@ class Logger(val delegate: ExtendedLogger) {
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
     *
-    * @param level    log level
-    * @param marker   marker or `null`
-    * @param message  message
-    * @param cause    cause or `null`
+    * @param level   log level
+    * @param marker  marker or `null`
+    * @param message message
+    * @param cause   cause or `null`
     */
   private[scala] def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
+  }
+
+  private[scala] def traceEntryWithParams(params: Any*): EntryMessage = {
+    delegate.traceEntry(null, params)
   }
 
 }

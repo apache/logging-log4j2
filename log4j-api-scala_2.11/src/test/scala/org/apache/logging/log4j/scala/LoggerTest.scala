@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.scala
 
 import org.apache.logging.log4j.message.{Message, ParameterizedMessage, ParameterizedMessageFactory}
-import org.apache.logging.log4j.spi.ExtendedLogger
+import org.apache.logging.log4j.spi.{AbstractLogger, ExtendedLogger}
 import org.apache.logging.log4j.{Level, Marker, MarkerManager}
 import org.junit.runner.RunWith
 import org.mockito.Matchers.{any, anyString, eq => eqv}
@@ -428,4 +428,34 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     verify(f.mockLogger, never).logMessage(anyString(), any[Level], any[Marker], any[Message], any[Throwable])
   }
 
+
+  test("traceEntry enabled with params") {
+    val f = fixture
+    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)).thenReturn(true)
+    val logger = new Logger(f.mockLogger)
+    logger.traceEntry("foo", 17)
+    verify(f.mockLogger).traceEntry(anyString(), any[Array[AnyRef]])
+  }
+
+  test("traceEntry disabled with params") {
+    val f = fixture
+    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)).thenReturn(false)
+    val logger = new Logger(f.mockLogger)
+    logger.traceEntry("foo", 17)
+    verify(f.mockLogger, never).traceEntry(anyString(), any[Array[AnyRef]])
+  }
+
+  test("traceEntry without params") {
+    val f = fixture
+    val logger = new Logger(f.mockLogger)
+    logger.traceEntry()
+    verify(f.mockLogger).traceEntry()
+  }
+
+  test("traceEntry with message") {
+    val f = fixture
+    val logger = new Logger(f.mockLogger)
+    logger.traceEntry(msg)
+    verify(f.mockLogger).traceEntry(eqv(msg))
+  }
 }

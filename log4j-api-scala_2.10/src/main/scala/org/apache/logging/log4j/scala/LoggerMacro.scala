@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.scala
 
-import org.apache.logging.log4j.message.Message
+import org.apache.logging.log4j.message.{EntryMessage, Message}
+import org.apache.logging.log4j.spi.AbstractLogger
 import org.apache.logging.log4j.{Level, Marker}
 
 import scala.language.experimental.macros
@@ -332,5 +333,24 @@ private object LoggerMacro {
         c.prefix.splice.logMessage(level.splice, null, message.splice, cause.splice)
       }
     )
-  
+
+  def traceEntryParams(c: LoggerContext)(params: c.Expr[Any]*): c.Expr[EntryMessage] = {
+    import c.universe._
+    val isEnabled = Apply(
+      Select(Select(c.prefix.tree, newTermName("delegate")), newTermName("isEnabled")),
+      List(
+        reify(Level.TRACE).tree,
+        reify(AbstractLogger.ENTRY_MARKER).tree,
+        reify(null.asInstanceOf[AnyRef]).tree,
+        reify(null).tree
+      )
+    )
+
+    val log = Apply(
+      Select(c.prefix.tree, newTermName("traceEntryWithParams")),
+      (params map (_.tree)).toList
+    )
+    c.Expr[EntryMessage](If(isEnabled, log, reify(null).tree))
+  }
+
 }
