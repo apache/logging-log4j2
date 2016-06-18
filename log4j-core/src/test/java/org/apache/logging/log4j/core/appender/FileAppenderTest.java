@@ -139,15 +139,14 @@ public class FileAppenderTest {
     @Test
     @Ignore
     public void testMultipleVMs() throws Exception {
-
         final String classPath = System.getProperty("java.class.path");
         final Integer count = 10;
         final int processeCount = 3;
         final Process[] processes = new Process[processeCount];
         final ProcessBuilder[] builders = new ProcessBuilder[processeCount];
         for (int index = 0; index < processeCount; ++index) {
-            builders[index] = new ProcessBuilder("java", "-cp", classPath, ProcessTest.class.getName(), "Process "
-                    + index, count.toString(), "true");
+            builders[index] = new ProcessBuilder("java", "-cp", classPath, ProcessTest.class.getName(),
+                    "Process " + index, count.toString(), "true");
         }
         for (int index = 0; index < processeCount; ++index) {
             processes[index] = builders[index].start();
@@ -155,14 +154,12 @@ public class FileAppenderTest {
         for (int index = 0; index < processeCount; ++index) {
             final Process process = processes[index];
             // System.out.println("Process " + index + " exited with " + p.waitFor());
-            final InputStream is = process.getInputStream();
-            final InputStreamReader isr = new InputStreamReader(is);
-            final BufferedReader br = new BufferedReader(isr);
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
+            try (final BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
             }
-            is.close();
             process.destroy();
         }
         verifyFile(count * processeCount);
