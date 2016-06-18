@@ -16,13 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.lang.reflect.Method;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Triggers a rollover on every restart, but only if the file size is greater than zero.

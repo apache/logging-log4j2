@@ -192,7 +192,7 @@
     <slf4jVersion>1.7.21</slf4jVersion>
     <logbackVersion>1.1.7</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.7.4</jackson2Version>
+    <jackson2Version>2.7.5</jackson2Version>
     <springVersion>3.2.13.RELEASE</springVersion>
     <flumeVersion>1.6.0</flumeVersion>
     <disruptorVersion>3.3.4</disruptorVersion>
@@ -386,7 +386,7 @@
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
-        <version>1.11</version>
+        <version>1.13</version>
         <optional>true</optional>
       </dependency>
       <dependency>

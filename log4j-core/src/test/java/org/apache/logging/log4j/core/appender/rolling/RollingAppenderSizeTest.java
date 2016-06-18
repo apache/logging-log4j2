@@ -145,12 +145,12 @@ public class RollingAppenderSizeTest {
         if (Files.exists(Paths.get(DIR))) {
             String fileName = null;
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-                for (Path path : directoryStream) {
+                for (final Path path : directoryStream) {
                     fileName = path.toFile().getName();
                     Files.delete(path);
                 }
                 Files.delete(Paths.get(DIR));
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 fail("Unable to delete " + fileName + " due to " + ioe.getClass().getSimpleName() + ": " +
                         ioe.getMessage());
             }

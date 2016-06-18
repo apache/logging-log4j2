@@ -32,7 +32,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -142,7 +142,6 @@ public abstract class NameAbbreviator {
      *
      * @param original the text to abbreviate, may not be null.
      * @param destination StringBuilder to write the result to
-     * @return The abbreviated String.
      */
     public abstract void abbreviate(final String original, final StringBuilder destination);
 
@@ -176,9 +175,48 @@ public abstract class NameAbbreviator {
          * 2. Retain a given number of parts starting from the end - called RETAIN
          */
         private enum Strategy {
-            DROP,
-            RETAIN
-        };
+            DROP(0) {
+                void abbreviate(final int count, final String original, final StringBuilder destination) {
+                    // If a path does not contain enough path elements to drop, none will be dropped.
+                    int start = 0;
+                    int nextStart;
+                    for (int i = 0; i < count; i++) {
+                        nextStart = original.indexOf('.', start);
+                        if (nextStart == -1) {
+                            destination.append(original);
+                            return;
+                        }
+                        start = nextStart + 1;
+                    }
+                    destination.append(original, start, original.length());
+                }
+            },
+            RETAIN(1) {
+                void abbreviate(final int count, final String original, final StringBuilder destination) {
+                    // We subtract 1 from 'len' when assigning to 'end' to avoid out of
+                    // bounds exception in return r.substring(end+1, len). This can happen if
+                    // precision is 1 and the category name ends with a dot.
+                    int end = original.length() - 1;
+
+                    for (int i = count; i > 0; i--) {
+                        end = original.lastIndexOf('.', end - 1);
+                        if (end == -1) {
+                            destination.append(original);
+                            return;
+                        }
+                    }
+                    destination.append(original, end + 1, original.length());
+                }
+            };
+
+            final int minCount;
+
+            Strategy(final int minCount) {
+                this.minCount = minCount;
+            }
+
+            abstract void abbreviate(final int count, final String original, final StringBuilder destination);
+        }
 
         /**
          * Maximum number of path elements to output.
@@ -197,65 +235,19 @@ public abstract class NameAbbreviator {
          * @param strategy drop or retain
          */
         public MaxElementAbbreviator(final int count, final Strategy strategy) {
-            final int minCount = getMinCount(strategy);
-            this.count = count < minCount ? minCount : count;
+            this.count = Math.max(count, strategy.minCount);
             this.strategy = strategy;
-        }
-
-        private int getMinCount(final Strategy strategy) {
-            if (Strategy.DROP == strategy) {
-                return 0;
-            } else { // Strategy.RETAIN
-                return 1;
-            }
         }
 
         /**
          * Abbreviate name.
          *
          * @param original The String to abbreviate.
-         * @param destination
-         * @return the abbreviated String.
+         * @param destination the buffer to write the abbreviated name into
          */
         @Override
         public void abbreviate(final String original, final StringBuilder destination) {
-            if (Strategy.DROP == strategy) {
-                abbreviateForDrop(original, destination);
-            } else { // Strategy.RETAIN
-                abbreviateForRetain(original, destination);
-            }
-        }
-
-        private void abbreviateForDrop(final String original, final StringBuilder destination) {
-            // If a path does not contain enough path elements to drop, none will be dropped.
-            int start = 0;
-            int nextStart = 0;
-            for (int i = 0; i < count; i++) {
-                nextStart = original.indexOf('.', start);
-                if (nextStart == -1) {
-                    destination.append(original);
-                    return;
-                } else {
-                    start = nextStart + 1;
-                }
-            }
-            destination.append(original, start, original.length());
-        }
-
-        private void abbreviateForRetain(final String original, final StringBuilder destination) {
-            // We subtract 1 from 'len' when assigning to 'end' to avoid out of
-            // bounds exception in return r.substring(end+1, len). This can happen if
-            // precision is 1 and the category name ends with a dot.
-            int end = original.length() - 1;
-
-            for (int i = count; i > 0; i--) {
-                end = original.lastIndexOf('.', end - 1);
-                if (end == -1) {
-                    destination.append(original);
-                    return;
-                }
-            }
-            destination.append(original, end + 1, original.length());
+            strategy.abbreviate(count, original, destination);
         }
     }
 
@@ -347,8 +339,8 @@ public abstract class NameAbbreviator {
         /**
          * Abbreviates name.
          *
-         * @param original       buffer that abbreviated name is appended.
-         * @param destination
+         * @param original the original string to abbreviate
+         * @param destination buffer that abbreviated name is appended to
          */
         @Override
         public void abbreviate(final String original, final StringBuilder destination) {

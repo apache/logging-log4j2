@@ -34,8 +34,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
-
 /**
  * Tests Log4j2 Async Loggers performance.
  */

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
