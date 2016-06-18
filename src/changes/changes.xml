@@ -25,8 +25,8 @@
   <body>
     <release version="2.6.2" date="2016-MM-DD" description="GA Release 2.6.2">
       <action issue="LOG4J2-1434" dev="rpopma" type="fix" due-to="Luke Butters">
-        Ensure that the thread-local StringBuilders used to format log events to text will not retain excessive
-        memory after a large message was logged.
+        Ensure that the thread-local StringBuilders used by Layouts to format log events to text will not
+        retain excessive memory after a large message was logged.
       </action>
       <action issue="LOG4J2-1395" dev="mikes" type="add">
         Add "direct" option to ConsoleAppender for increased performance.
