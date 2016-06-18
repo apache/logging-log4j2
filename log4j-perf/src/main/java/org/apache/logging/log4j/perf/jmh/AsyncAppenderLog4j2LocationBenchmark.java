@@ -28,12 +28,11 @@ import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
 
 /**
  * Tests Log4j2 Async Appender performance when including caller location information.
@@ -53,9 +52,16 @@ import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
 public class AsyncAppenderLog4j2LocationBenchmark {
     Logger logger;
 
+    @Param({
+        "perf5AsyncApndWithLoc-noOpAppender.xml",
+        "perf5AsyncApndDsrptrWithLoc-noOpAppender.xml",
+        "perf5AsyncApndXferQWithLoc-noOpAppender.xml"
+    })
+    public String configFileName;
+
     @Setup(Level.Trial)
     public void up() {
-        System.setProperty("log4j.configurationFile", "perf5AsyncApndWithLoc-noOpAppender.xml");
+        System.setProperty("log4j.configurationFile", configFileName);
         logger = LogManager.getLogger(getClass());
     }
 
