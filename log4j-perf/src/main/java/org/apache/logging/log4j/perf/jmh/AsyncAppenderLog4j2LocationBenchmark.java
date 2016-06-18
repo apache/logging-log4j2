@@ -25,7 +25,9 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Param;
@@ -33,6 +35,8 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.Threads;
+import org.openjdk.jmh.annotations.Warmup;
 
 /**
  * Tests Log4j2 Async Appender performance when including caller location information.
@@ -40,15 +44,19 @@ import org.openjdk.jmh.annotations.TearDown;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLog4j2LocationBenchmark.*" -f 1 -wi 10 -i 20
+// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLog4j2LocationBenchmark.*"
 //
 // multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLog4j2LocationBenchmark.*" -f 1 -wi 10 -i 20 -t 4 -si true
+// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLog4j2LocationBenchmark.*" -t 4 -si true
 //
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Benchmark)
+@Fork(1)
+@Warmup(iterations = 10)
+@Measurement(iterations = 20)
+@Threads(1)
 public class AsyncAppenderLog4j2LocationBenchmark {
     Logger logger;
 
