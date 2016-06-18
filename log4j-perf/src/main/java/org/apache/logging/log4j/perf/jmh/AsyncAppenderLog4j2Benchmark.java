@@ -28,6 +28,7 @@ import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -60,36 +61,19 @@ import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.two;
 // java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Benchmark)
-public abstract class AsyncAppenderLog4j2Benchmark {
+public class AsyncAppenderLog4j2Benchmark {
     Logger logger;
 
-    abstract String getConfigFileName();
-
-    public static class ArrayBlockingQueue extends AsyncAppenderLog4j2Benchmark {
-        @Override
-        String getConfigFileName() {
-            return "perf5AsyncApndNoLoc-noOpAppender.xml";
-        }
-    }
-
-    public static class DisruptorBlockingQueue extends AsyncAppenderLog4j2Benchmark {
-        @Override
-        String getConfigFileName() {
-            return "perf5AsyncApndDsrptrNoLoc-noOpAppender.xml";
-        }
-    }
-
-    public static class LinkedTransferQueue extends AsyncAppenderLog4j2Benchmark {
-
-        @Override
-        String getConfigFileName() {
-            return "perf5AsyncApndXferQNoLoc-noOpAppender.xml";
-        }
-    }
+    @Param({
+        "perf5AsyncApndNoLoc-noOpAppender.xml",
+        "perf5AsyncApndDsrptrNoLoc-noOpAppender.xml",
+        "perf5AsyncApndXferQNoLoc-noOpAppender.xml"
+    })
+    public String configFileName;
 
     @Setup(Level.Trial)
     public void up() {
-        System.setProperty("log4j.configurationFile", getConfigFileName());
+        System.setProperty("log4j.configurationFile", configFileName);
         logger = LogManager.getLogger(getClass());
     }
 
