@@ -322,42 +322,36 @@ class Logger(val delegate: ExtendedLogger) {
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
     *
-    * Should normally not be used directly from application code, but needs to be public for access by macros.
-    *
     * @param level    log level
     * @param marker   marker or `null`
     * @param message  message
     * @param cause    cause or `null`
     */
-  def logMessage(level: Level, marker: Marker, message: Message, cause: Throwable): Unit = {
+  private[scala] def logMessage(level: Level, marker: Marker, message: Message, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, message, cause)
   }
 
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
     *
-    * Should normally not be used directly from application code, but needs to be public for access by macros.
-    *
     * @param level    log level
     * @param marker   marker or `null`
     * @param message  message
     * @param cause    cause or `null`
     */
-  def logMessage(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit = {
+  private[scala] def logMessage(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
   }
 
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
     *
-    * Should normally not be used directly from application code, but needs to be public for access by macros.
-    *
     * @param level    log level
     * @param marker   marker or `null`
     * @param message  message
     * @param cause    cause or `null`
     */
-  def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
+  private[scala] def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
   }
 
