@@ -79,6 +79,9 @@ public class AsyncAppenderQueueFullPolicyTest {
         logger.error("event 1 - gets taken off the queue");
         logger.warn("event 2");
         logger.info("event 3");
+        while (asyncAppender.getQueueRemainingCapacity() == 0) {
+            Thread.yield(); // wait until background thread takes one element off the queue
+        }
         logger.info("event 4 - now the queue is full");
         assertEquals("queue remaining capacity", 0, asyncAppender.getQueueRemainingCapacity());
         assertEquals("EventRouter invocations", 0, policy.queueFull.get());
