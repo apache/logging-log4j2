@@ -176,8 +176,22 @@ public abstract class NameAbbreviator {
          * 2. Retain a given number of parts starting from the end - called RETAIN
          */
         private enum Strategy {
-            DROP,
-            RETAIN
+            
+            DROP {
+                @Override
+                int getMinCount() {
+                    return 0;
+                }
+            },
+            RETAIN {
+                @Override
+                int getMinCount() {
+                    return 1;
+                }
+            };
+            
+            abstract int getMinCount();
+
         };
 
         /**
@@ -197,17 +211,9 @@ public abstract class NameAbbreviator {
          * @param strategy drop or retain
          */
         public MaxElementAbbreviator(final int count, final Strategy strategy) {
-            final int minCount = getMinCount(strategy);
+            final int minCount = strategy.getMinCount();
             this.count = count < minCount ? minCount : count;
             this.strategy = strategy;
-        }
-
-        private int getMinCount(final Strategy strategy) {
-            if (Strategy.DROP == strategy) {
-                return 0;
-            } else { // Strategy.RETAIN
-                return 1;
-            }
         }
 
         /**
