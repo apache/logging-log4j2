@@ -90,6 +90,10 @@
       <groupId>com.lmax</groupId>
       <artifactId>disruptor</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.conversantmedia</groupId>
+      <artifactId>disruptor</artifactId>
+    </dependency>
     <!-- Embedded JDBC drivers for database appender tests -->
     <dependency>
       <groupId>org.hsqldb</groupId>
