@@ -21,7 +21,7 @@
     </CountingNoOp>
     <Async name="Async"  blocking="true" bufferSize="262144">
       <appender-ref ref="NoOp"/>
-      <ArrayBlockingQueue/>
+      <LinkedTransferQueue/>
     </Async>
   </Appenders>
   <Loggers>

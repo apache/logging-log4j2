@@ -33,7 +33,17 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.eight;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.eleven;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.five;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.four;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.nine;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.one;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.seven;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.six;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.ten;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.three;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.two;
 
 /**
  * Tests Log4j2 Async Appender performance.
@@ -50,12 +60,36 @@ import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
 // java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Benchmark)
-public class AsyncAppenderLog4j2Benchmark {
+public abstract class AsyncAppenderLog4j2Benchmark {
     Logger logger;
+
+    abstract String getConfigFileName();
+
+    public static class ArrayBlockingQueue extends AsyncAppenderLog4j2Benchmark {
+        @Override
+        String getConfigFileName() {
+            return "perf5AsyncApndNoLoc-noOpAppender.xml";
+        }
+    }
+
+    public static class DisruptorBlockingQueue extends AsyncAppenderLog4j2Benchmark {
+        @Override
+        String getConfigFileName() {
+            return "perf5AsyncApndDsrptrNoLoc-noOpAppender.xml";
+        }
+    }
+
+    public static class LinkedTransferQueue extends AsyncAppenderLog4j2Benchmark {
+
+        @Override
+        String getConfigFileName() {
+            return "perf5AsyncApndXferQNoLoc-noOpAppender.xml";
+        }
+    }
 
     @Setup(Level.Trial)
     public void up() {
-        System.setProperty("log4j.configurationFile", "perf5AsyncApndNoLoc-noOpAppender.xml");
+        System.setProperty("log4j.configurationFile", getConfigFileName());
         logger = LogManager.getLogger(getClass());
     }
 
