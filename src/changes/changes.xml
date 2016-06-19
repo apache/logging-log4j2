@@ -43,6 +43,9 @@
       <action issue="LOG4J2-1422" dev="rpopma" type="fix">
         Fixed issue where AsyncAppenderQueueFullPolicyTest sometimes hangs.
       </action>
+      <action issue="LOG4J2-1437" dev="rpopma" type="add">
+        (GC) ObjectMessage and ReusableObjectMessage now avoid calling toString() on auto-boxed primitive parameters.
+      </action>
       <action issue="LOG4J2-1415" dev="rpopma" type="add">
         (GC) ParameterFormatter now avoids calling toString() on auto-boxed primitive message parameters.
       </action>
