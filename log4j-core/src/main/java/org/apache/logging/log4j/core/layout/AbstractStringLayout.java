@@ -58,7 +58,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      */
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
-    protected static final int MAX_STRING_BUILDER_SIZE = size("log4j.layoutStringBuilder.maxSize", 2 * 1024);
+    protected static final int MAX_STRING_BUILDER_SIZE = Math.max(DEFAULT_STRING_BUILDER_SIZE,
+            size("log4j.layoutStringBuilder.maxSize", 2 * 1024));
 
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
