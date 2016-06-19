@@ -23,6 +23,9 @@ import org.apache.logging.log4j.{Level, Marker}
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
+/**
+  * Inspired from [[https://github.com/typesafehub/scalalogging ScalaLogging]].
+  */
 private object LoggerMacro {
 
   type LoggerContext = blackbox.Context { type PrefixType = Logger }

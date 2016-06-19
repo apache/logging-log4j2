@@ -23,6 +23,9 @@ import org.apache.logging.log4j.{Level, Marker}
 import scala.language.experimental.macros
 import scala.reflect.macros.Context
 
+/**
+  * Inspired from [[https://github.com/typesafehub/scalalogging ScalaLogging]].
+  */
 private object LoggerMacro {
 
   type LoggerContext = Context {type PrefixType = Logger}
