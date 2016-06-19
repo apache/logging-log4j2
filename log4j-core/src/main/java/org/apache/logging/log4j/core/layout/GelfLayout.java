@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Map;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -31,17 +42,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Map;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -231,8 +231,12 @@ public final class GelfLayout extends AbstractStringLayout {
             JsonUtils.quoteAsString(((CharSequence)message), builder);
         } else if (gcFree && message instanceof StringBuilderFormattable) {
             final StringBuilder messageBuffer = getMessageStringBuilder();
-            ((StringBuilderFormattable)message).formatTo(messageBuffer);
-            JsonUtils.quoteAsString(messageBuffer, builder);
+            try {
+                ((StringBuilderFormattable) message).formatTo(messageBuffer);
+                JsonUtils.quoteAsString(messageBuffer, builder);
+            } finally {
+                returnMessageStringBuilder(messageBuffer);
+            }
         } else {
             JsonUtils.quoteAsString(toNullSafeString(message.getFormattedMessage()), builder);
         }
@@ -251,6 +255,13 @@ public final class GelfLayout extends AbstractStringLayout {
         }
         result.setLength(0);
         return result;
+    }
+
+    private void returnMessageStringBuilder(StringBuilder stringBuilder) {
+        if (stringBuilder.length() > MAX_STRING_BUILDER_SIZE) {
+            stringBuilder.setLength(MAX_STRING_BUILDER_SIZE);
+            stringBuilder.trimToSize();
+        }
     }
 
     private CharSequence toNullSafeString(final CharSequence s) {
