@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.UnsupportedEncodingException;
@@ -57,9 +58,16 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      */
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
+    protected static final int MAX_STRING_BUILDER_SIZE = Math.max(DEFAULT_STRING_BUILDER_SIZE,
+            size("log4j.layoutStringBuilder.maxSize", 2 * 1024));
+
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
     private Encoder<StringBuilder> textEncoder;
+
+    private static int size(final String property, final int defaultValue) {
+        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    }
 
     /**
      * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
@@ -71,6 +79,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         if (result == null) {
             result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
             threadLocal.set(result);
+        }
+        if (result.length() > MAX_STRING_BUILDER_SIZE) {
+            result.setLength(MAX_STRING_BUILDER_SIZE);
+            result.trimToSize();
         }
         result.setLength(0);
         return result;

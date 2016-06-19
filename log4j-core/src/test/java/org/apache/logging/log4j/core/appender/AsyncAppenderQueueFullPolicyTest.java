@@ -58,7 +58,7 @@ public class AsyncAppenderQueueFullPolicyTest {
         blockingAppender = (BlockingAppender) context.getAppender("Block");
         asyncAppender = (AsyncAppender) context.getAppender("Async");
 
-        Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
+        final Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
         field.setAccessible(true);
         policy = new CountingAsyncQueueFullPolicy();
         field.set(asyncAppender, policy);
@@ -79,11 +79,15 @@ public class AsyncAppenderQueueFullPolicyTest {
         logger.error("event 1 - gets taken off the queue");
         logger.warn("event 2");
         logger.info("event 3");
+        while (asyncAppender.getQueueRemainingCapacity() == 0) {
+            Thread.yield(); // wait until background thread takes one element off the queue
+        }
         logger.info("event 4 - now the queue is full");
         assertEquals("queue remaining capacity", 0, asyncAppender.getQueueRemainingCapacity());
         assertEquals("EventRouter invocations", 0, policy.queueFull.get());
 
         final Thread release = new Thread("AsyncAppenderReleaser") {
+            @Override
             public void run() {
                 while (policy.queueFull.get() == 0) {
                     try {

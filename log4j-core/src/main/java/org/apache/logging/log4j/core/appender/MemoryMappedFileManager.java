@@ -300,6 +300,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
          * @param append Append to existing file or truncate.
          * @param force forces the memory content to be written to the storage device on every event
          * @param regionLength length of the mapped region
+         * @param advertiseURI the URI to use when advertising the file
+         * @param layout The layout.
          */
         public FactoryData(final boolean append, final boolean force, final int regionLength,
                 final String advertiseURI, final Layout<? extends Serializable> layout) {

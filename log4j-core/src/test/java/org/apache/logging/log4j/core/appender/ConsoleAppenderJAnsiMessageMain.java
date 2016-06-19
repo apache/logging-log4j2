@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.IOException;
+import static org.fusesource.jansi.Ansi.*;
+import static org.fusesource.jansi.Ansi.Color.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,18 +33,20 @@ import org.junit.Test;
  * </p>
  *
  * <pre>
- * mvn -Dtest=org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain test
+ * mvn -Dtest=org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiMessageMain test
  * </pre>
- * or:
+ * 
+ * or, on Windows:
+ * 
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOMEDRIVE%\%HOMEPATH%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiMessageMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
  * </pre>
  * 
  */
-public class ConsoleAppenderAnsiStyleLayoutMain {
+public class ConsoleAppenderJAnsiMessageMain {
 
     public static void main(final String[] args) {
-        new ConsoleAppenderAnsiStyleLayoutMain().test(args);
+        new ConsoleAppenderJAnsiMessageMain().test(args);
     }
 
     /**
@@ -59,15 +62,11 @@ public class ConsoleAppenderAnsiStyleLayoutMain {
         final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml"
                 : args[0];
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
-        final Logger logger = LogManager.getLogger(ConsoleAppenderAnsiStyleLayoutMain.class);
+        final Logger logger = LogManager.getLogger(ConsoleAppenderJAnsiMessageMain.class);
         try {
-            logger.fatal("Fatal message.");
-            logger.error("Error message.");
-            logger.warn("Warning message.");
-            logger.info("Information message.");
-            logger.debug("Debug message.");
-            logger.trace("Trace message.");
-            logger.error("Error message.", new IOException("test"));
+            logger.info(ansi().fg(RED).a("Hello").fg(CYAN).a(" World").reset());
+            // JAnsi format:
+            // logger.info("@|red Hello|@ @|cyan World|@");
         } finally {
             Configurator.shutdown(ctx);
         }

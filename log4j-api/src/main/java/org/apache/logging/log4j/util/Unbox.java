@@ -75,14 +75,14 @@ public class Unbox {
                 ringBuffer.set(array);
                 current.set(new int[1]);
             }
-            int[] index = current.get();
+            final int[] index = current.get();
             final StringBuilder result = array[MASK & index[0]++];
             result.setLength(0);
             return result;
         }
 
         public boolean isBoxedPrimitive(final StringBuilder text) {
-            StringBuilder[] array = ringBuffer.get();
+            final StringBuilder[] array = ringBuffer.get();
             if (array == null) {
                 return false;
             }

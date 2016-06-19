@@ -67,11 +67,13 @@ public class ReusableLogEventFactoryTest {
         final LogEvent[] event1 = new LogEvent[1];
         final LogEvent[] event2 = new LogEvent[1];
         final Thread t1 = new Thread("THREAD 1") {
+            @Override
             public void run() {
                 event1[0] = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
             }
         };
         final Thread t2 = new Thread("Thread 2") {
+            @Override
             public void run() {
                 event2[0] = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
             }

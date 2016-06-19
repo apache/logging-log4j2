@@ -408,16 +408,15 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                         return new CompositeConfiguration(configs);
                     }
                     return getConfiguration(configLocationStr);
-                } else {
-                    for (final ConfigurationFactory factory : getFactories()) {
-                        final String[] types = factory.getSupportedTypes();
-                        if (types != null) {
-                            for (final String type : types) {
-                                if (type.equals("*")) {
-                                    final Configuration config = factory.getConfiguration(name, configLocation);
-                                    if (config != null) {
-                                        return config;
-                                    }
+                }
+                for (final ConfigurationFactory factory : getFactories()) {
+                    final String[] types = factory.getSupportedTypes();
+                    if (types != null) {
+                        for (final String type : types) {
+                            if (type.equals("*")) {
+                                final Configuration config = factory.getConfiguration(name, configLocation);
+                                if (config != null) {
+                                    return config;
                                 }
                             }
                         }

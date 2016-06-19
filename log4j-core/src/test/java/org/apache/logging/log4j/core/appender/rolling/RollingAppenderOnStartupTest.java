@@ -32,14 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -79,7 +72,7 @@ public class RollingAppenderOnStartupTest {
     public static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/onStartup"))) {
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-                for (Path path : directoryStream) {
+                for (final Path path : directoryStream) {
                     Files.delete(path);
                 }
                 Files.delete(Paths.get(DIR));
@@ -91,11 +84,11 @@ public class RollingAppenderOnStartupTest {
     public static void afterClass() throws Exception {
         long size = 0;
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-            for (Path path : directoryStream) {
+            for (final Path path : directoryStream) {
                 if (size == 0) {
                     size = Files.size(path);
                 } else {
-                    long fileSize = Files.size(path);
+                    final long fileSize = Files.size(path);
                     assertTrue("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
                         size == fileSize);
                 }

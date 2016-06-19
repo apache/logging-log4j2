@@ -59,7 +59,7 @@ public interface Configuration extends Filterable {
     /**
      * Returns the Appender with the specified name.
      *
-     * @param <T> The expected Appender type.
+     * @param <T>  The expected Appender type.
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
@@ -98,6 +98,7 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns the root Logger.
+     *
      * @return the root Logger.
      */
     LoggerConfig getRootLogger();
@@ -155,10 +156,11 @@ public interface Configuration extends Filterable {
      *
      * @return the {@code AsyncLoggerConfigDelegate}
      */
-	AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate();
+    AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate();
 
     /**
      * Return the WatchManager.
+     *
      * @return the WatchManager.
      */
     WatchManager getWatchManager();

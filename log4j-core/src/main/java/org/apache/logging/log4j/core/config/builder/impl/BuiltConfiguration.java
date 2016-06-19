@@ -162,6 +162,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
         }
     }
 
+    @Override
     public PluginManager getPluginManager() {
         return pluginManager;
     }

@@ -126,9 +126,8 @@ public final class Configurator {
                 uris.add(uri);
             }
             return initialize(name, loader, uris, externalContext);
-        } else {
-            return initialize(name, loader, NetUtils.toURI(configLocation), externalContext);
         }
+        return initialize(name, loader, NetUtils.toURI(configLocation), externalContext);
     }
 
     /**

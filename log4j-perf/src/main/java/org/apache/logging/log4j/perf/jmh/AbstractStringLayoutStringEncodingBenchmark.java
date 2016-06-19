@@ -188,7 +188,9 @@ public class AbstractStringLayoutStringEncodingBenchmark {
 
     private static long consume(final byte[] bytes) {
         long checksum = 0;
-        for (final byte b : bytes) checksum += b;
+        for (final byte b : bytes) {
+            checksum += b;
+        }
         return checksum;
     }
 

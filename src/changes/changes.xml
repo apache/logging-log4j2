@@ -24,8 +24,15 @@
   </properties>
   <body>
     <release version="2.6.2" date="2016-MM-DD" description="GA Release 2.6.2">
+      <action issue="LOG4J2-1414" dev="rpopma" type="fix" due-to="Ralph Goers">
+        Fixed minor issues with the 2.6.1 web site.
+      </action>
+      <action issue="LOG4J2-1434" dev="rpopma" type="fix" due-to="Luke Butters">
+        Ensure that the thread-local StringBuilders used by Layouts to format log events to text will not
+        retain excessive memory after a large message was logged.
+      </action>
       <action issue="LOG4J2-1395" dev="mikes" type="add">
-        "direct" option to ConsoleAppender for increased performance.
+        Add "direct" option to ConsoleAppender for increased performance.
       </action>
       <action issue="LOG4J2-1418" dev="mikes" type="fix">
         Provide MessageFactory2 to custom Logger implementations.
@@ -39,11 +46,20 @@
       <action issue="LOG4J2-1422" dev="rpopma" type="fix">
         Fixed issue where AsyncAppenderQueueFullPolicyTest sometimes hangs.
       </action>
+      <action issue="LOG4J2-1437" dev="rpopma" type="add">
+        (GC) ObjectMessage and ReusableObjectMessage now avoid calling toString() on auto-boxed primitive parameters.
+      </action>
       <action issue="LOG4J2-1415" dev="rpopma" type="add">
         (GC) ParameterFormatter now avoids calling toString() on auto-boxed primitive message parameters.
       </action>
       <action issue="LOG4J2-1412" dev="rpopma" type="add">
         Unbox utility's ringbuffer of StringBuilders is now configurable.
+      </action>
+      <action issue="LOG4J2-1432" dev="ggregory" type="update">
+        Update Jackson from 2.7.4 to 2.7.5.
+      </action>
+      <action issue="LOG4J2-1433" dev="ggregory" type="update">
+        Update Jansi from 1.11 to 1.13.
       </action>
     </release>
     <release version="2.6.1" date="2016-06-05" description="GA Release 2.6.1">

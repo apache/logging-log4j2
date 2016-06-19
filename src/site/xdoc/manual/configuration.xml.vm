@@ -1861,7 +1861,7 @@ public class AwesomeTest {
   <tr>
     <td><a name="AsyncLogger.WaitStrategy" />AsyncLogger.WaitStrategy</td>
     <td>
-      Sleep
+      Timeout
     </td>
     <td>
       See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
@@ -1893,7 +1893,7 @@ public class AwesomeTest {
   <tr>
     <td><a name="AsyncLoggerConfig.WaitStrategy"/>AsyncLoggerConfig.WaitStrategy</td>
     <td>
-      Sleep
+      Timeout
     </td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
@@ -1985,7 +1985,12 @@ public class AwesomeTest {
     <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
      text is formatted and potentially passed to background threads.</td>
   </tr>
-
+  <tr>
+    <td><a name="log4j.layoutStringBuilder.maxSize" />log4j.layoutStringBuilder.maxSize</td>
+    <td>2048</td>
+    <td>This property determines the maximum size of the thread-local reusable StringBuilders
+     used to format the log event to text by Layouts that extend AbstractStringLayout.</td>
+  </tr>
   <tr>
     <td><a name="log4j.unbox.ringbuffer.size" />log4j.unbox.ringbuffer.size</td>
     <td>32</td>
