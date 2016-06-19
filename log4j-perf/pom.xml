@@ -94,6 +94,10 @@
       <groupId>com.conversantmedia</groupId>
       <artifactId>disruptor</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+    </dependency>
     <!-- Embedded JDBC drivers for database appender tests -->
     <dependency>
       <groupId>org.hsqldb</groupId>

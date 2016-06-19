@@ -63,6 +63,7 @@ public class AsyncAppenderLog4j2LocationBenchmark {
     @Param({
         "perf5AsyncApndWithLoc-noOpAppender.xml",
         "perf5AsyncApndDsrptrWithLoc-noOpAppender.xml",
+        "perf5AsyncApndMpscQWithLoc-noOpAppender.xml",
         "perf5AsyncApndXferQWithLoc-noOpAppender.xml"
     })
     public String configFileName;

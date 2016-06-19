@@ -225,6 +225,7 @@
     <activemq.version>5.13.2</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
+    <jctoolsVersion>1.2</jctoolsVersion>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -614,6 +615,11 @@
         <groupId>com.conversantmedia</groupId>
         <artifactId>disruptor</artifactId>
         <version>${conversantDisruptorVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jctools</groupId>
+        <artifactId>jctools-core</artifactId>
+        <version>${jctoolsVersion}</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>

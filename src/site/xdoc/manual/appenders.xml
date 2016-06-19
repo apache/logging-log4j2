@@ -213,6 +213,14 @@
               </td>
             </tr>
             <tr>
+              <td>JCToolsBlockingQueue</td>
+              <td>
+                This uses <a href="https://jctools.github.io/JCTools/">JCTools</a>, specifically the
+                <abbr title="multiple producer single consumer">MPSC</abbr> bounded lock-free queue.
+                <!-- TODO: this need performance charts and links added -->
+              </td>
+            </tr>
+            <tr>
               <td>LinkedTransferQueue</td>
               <td>
                 This uses the new in Java 7 implementation
