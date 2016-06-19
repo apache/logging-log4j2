@@ -128,6 +128,12 @@
               not included by default when adding a log event to the queue.
               You can change this by setting includeLocation="true".</td>
             </tr>
+            <tr>
+              <td>BlockingQueueFactory</td>
+              <td>BlockingQueueFactory</td>
+              <td>This element overrides what type of <tt>BlockingQueue</tt> to use. See
+                <a href="#BlockingQueueFactory">below documentation</a> for more details.</td>
+            </tr>
           </table>
           <p>
             There are also a few system properties that can be used to maintain application throughput even when
@@ -159,6 +165,7 @@
   </Loggers>
 </Configuration>]]></pre>
           <p>
+            <a name="BlockingQueueFactory"/>
             Starting in Log4j 2.7, a custom implementation of <tt>BlockingQueue</tt> or <tt>TransferQueue</tt> can be
             specified using a
             <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/async/BlockingQueueFactory.html">BlockingQueueFactory</a>
