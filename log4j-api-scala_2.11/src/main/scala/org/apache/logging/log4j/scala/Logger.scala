@@ -290,7 +290,9 @@ class Logger(val delegate: ExtendedLogger) {
 
   def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
 
+
   // TODO fix FQCN for flow logging
+
   def traceEntry(): EntryMessage = delegate.traceEntry()
 
   def traceEntry(params: Any*): EntryMessage =
@@ -298,11 +300,15 @@ class Logger(val delegate: ExtendedLogger) {
 
   def traceEntry(message: Message): EntryMessage = delegate.traceEntry(message)
 
-  def traceExit[R](result: R): R = delegate.traceExit(result)
-
   def traceExit(): Unit = delegate.traceExit()
 
+  def traceExit[R](result: R): R = delegate.traceExit(result)
+
   def traceExit(entryMessage: EntryMessage): Unit = delegate.traceExit(entryMessage)
+
+  def traceExit[R](entryMessage: EntryMessage, result: R): R = delegate.traceExit(entryMessage, result)
+
+  def traceExit[R](message: Message, result: R): R = delegate.traceExit(message, result)
 
   def throwing[T <: Throwable](t: T): T = delegate.throwing(t)
 
