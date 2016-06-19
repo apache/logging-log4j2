@@ -65,37 +65,59 @@
             Consider using <a href="async.html">lock-free Async Loggers</a> for optimal performance.
           </p>
           <p>
-            Starting in Log4j 2.7, a custom implementation of <tt>BlockingQueue</tt> can be specified by setting the
-            system property <tt>log4j.BlockingQueueFactory</tt> to the fully qualified class name of an implementation of
-            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/BlockingQueueFactory.html">BlockingQueueFactory</a>.
-            Log4j comes with the following:
+            Starting in Log4j 2.7, a custom implementation of <tt>BlockingQueue</tt> or <tt>TransferQueue</tt> can be
+            specified using a
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/async/BlockingQueueFactory.html">BlockingQueueFactory</a>
+            plugin. To override the default <tt>BlockingQueueFactory</tt>, specify the plugin inside an
+            <code><![CDATA[<Async/>]]></code> element like so:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<Configuration name="LinkedTransferQueueExample">
+  <Appenders>
+    <List name="List"/>
+    <Async name="Async" bufferSize="262144">
+      <AppenderRef ref="List"/>
+      <LinkedTransferQueue/>
+    </Async>
+  </Appenders>
+  <Loggers>
+    <Root>
+      <AppenderRef ref="Async"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+          <p>
+            Log4j ships with the following implementations:
           </p>
           <table>
             <caption align="top">BlockingQueueFactory Implementations</caption>
             <tr>
-              <th>Class Name</th>
+              <th>Plugin Name</th>
               <th>Description</th>
             </tr>
             <tr>
-              <td><tt>org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory</tt></td>
+              <td>ArrayBlockingQueue</td>
               <td>
                 This is the default implementation that uses
                 <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>.
               </td>
             </tr>
             <tr>
-              <td><tt>org.apache.logging.log4j.core.async.DisruptorBlockingQueueFactory</tt></td>
+              <td>DisruptorBlockingQueue</td>
               <td>
                 This uses the <a href="https://github.com/conversant/disruptor">Conversant Disruptor</a> implementation
-                of <tt>BlockingQueue</tt>.
+                of <tt>BlockingQueue</tt>. This plugin takes a single optional attribute, <tt>spinPolicy</tt>, which
+                corresponds to
                 <!-- TODO: this needs performance charts and links added -->
               </td>
             </tr>
             <tr>
-              <td><tt>org.apache.logging.log4j.core.async.LinkedTransferQueueFactory</tt></td>
+              <td>LinkedTransferQueue</td>
               <td>
                 This uses the new in Java 7 implementation
                 <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>.
+                Note that this queue does not use the <tt>bufferSize</tt> configuration attribute from AsyncAppender as
+                <tt>LinkedTransferQueue</tt> does not support a maximum capacity.
                 <!-- TODO: this needs performance charts and links added -->
               </td>
             </tr>
