@@ -40,6 +40,7 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
   val objectMsg = Custom(17)
   val cause = new RuntimeException("cause")
   val marker = MarkerManager.getMarker("marker")
+  val result = "foo"
 
   def fixture =
     new {
@@ -452,10 +453,36 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     verify(f.mockLogger).traceEntry()
   }
 
-  test("traceEntry with message") {
+  test("traceEntry enabled with message") {
     val f = fixture
+    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)).thenReturn(true)
     val logger = new Logger(f.mockLogger)
     logger.traceEntry(msg)
     verify(f.mockLogger).traceEntry(eqv(msg))
   }
+
+  test("traceEntry disabled with message") {
+    val f = fixture
+    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)).thenReturn(false)
+    val logger = new Logger(f.mockLogger)
+    logger.traceEntry(msg)
+    verify(f.mockLogger, never).traceEntry(any[Message])
+  }
+
+  test("traceExit enabled with message") {
+    val f = fixture
+    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(true)
+    val logger = new Logger(f.mockLogger)
+    logger.traceExit(msg, result)
+    verify(f.mockLogger).traceExit(eqv(msg), eqv(result))
+  }
+
+  test("traceExit disabled with message") {
+    val f = fixture
+    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(false)
+    val logger = new Logger(f.mockLogger)
+    logger.traceExit(msg, result)
+    verify(f.mockLogger, never).traceExit(any[Message], any[AnyRef])
+  }
+
 }

@@ -298,7 +298,8 @@ class Logger(val delegate: ExtendedLogger) {
   def traceEntry(params: Any*): EntryMessage =
   macro LoggerMacro.traceEntryParams
 
-  def traceEntry(message: Message): EntryMessage = delegate.traceEntry(message)
+  def traceEntry(message: Message): EntryMessage =
+  macro LoggerMacro.traceEntryMessage
 
   def traceExit(): Unit = delegate.traceExit()
 
@@ -308,7 +309,8 @@ class Logger(val delegate: ExtendedLogger) {
 
   def traceExit[R](entryMessage: EntryMessage, result: R): R = delegate.traceExit(entryMessage, result)
 
-  def traceExit[R](message: Message, result: R): R = delegate.traceExit(message, result)
+  def traceExit[R](message: Message, result: R): R =
+  macro LoggerMacro.traceExitMessageResult[R]
 
   def throwing[T <: Throwable](t: T): T = delegate.throwing(t)
 
@@ -362,8 +364,16 @@ class Logger(val delegate: ExtendedLogger) {
     delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
   }
 
-  private[scala] def traceEntryWithParams(params: Any*): EntryMessage = {
+  private[scala] def traceEntryParams(params: Any*): EntryMessage = {
     delegate.traceEntry(null, params) // TODO should not do ifEnabled check
+  }
+
+  private[scala] def traceEntryMessage(message: Message): EntryMessage = {
+    delegate.traceEntry(message) // TODO should not do ifEnabled check
+  }
+
+  private[scala] def traceExitMessageResult[R](message: Message, result: R): Unit = {
+    delegate.traceExit(message, result) // TODO should not do ifEnabled check
   }
 
 }

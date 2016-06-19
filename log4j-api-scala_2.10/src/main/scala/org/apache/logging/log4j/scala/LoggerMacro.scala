@@ -25,7 +25,7 @@ import scala.reflect.macros.Context
 
 private object LoggerMacro {
 
-  type LoggerContext = Context { type PrefixType = Logger }
+  type LoggerContext = Context {type PrefixType = Logger}
 
 
   def fatalMarkerMsg(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message]) =
@@ -36,7 +36,7 @@ private object LoggerMacro {
 
   def fatalMarkerObject(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[AnyRef]) =
     logMarkerObject(c)(c.universe.reify(Level.FATAL), marker, message)
-  
+
   def fatalMarkerMsgThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[Message], cause: c.Expr[Throwable]) =
     logMarkerMsgThrowable(c)(c.universe.reify(Level.FATAL), marker, message, cause)
 
@@ -45,7 +45,7 @@ private object LoggerMacro {
 
   def fatalMarkerObjectThrowable(c: LoggerContext)(marker: c.Expr[Marker], message: c.Expr[AnyRef], cause: c.Expr[Throwable]) =
     logMarkerObjectThrowable(c)(c.universe.reify(Level.FATAL), marker, message, cause)
-  
+
   def fatalMsg(c: LoggerContext)(message: c.Expr[Message]) =
     logMsg(c)(c.universe.reify(Level.FATAL), message)
 
@@ -249,7 +249,7 @@ private object LoggerMacro {
   def traceObjectThrowable(c: LoggerContext)(message: c.Expr[AnyRef], cause: c.Expr[Throwable]) =
     logObjectThrowable(c)(c.universe.reify(Level.TRACE), message, cause)
 
-  
+
   def logMarkerMsg(c: LoggerContext)(level: c.Expr[Level], marker: c.Expr[Marker], message: c.Expr[Message]) =
     c.universe.reify(
       if (c.prefix.splice.delegate.isEnabled(level.splice, marker.splice)) {
@@ -270,7 +270,7 @@ private object LoggerMacro {
         c.prefix.splice.logMessage(level.splice, marker.splice, message.splice, null)
       }
     )
-  
+
   def logMarkerMsgThrowable(c: LoggerContext)(level: c.Expr[Level], marker: c.Expr[Marker], message: c.Expr[Message], cause: c.Expr[Throwable]) =
     c.universe.reify(
       if (c.prefix.splice.delegate.isEnabled(level.splice, marker.splice)) {
@@ -291,7 +291,7 @@ private object LoggerMacro {
         c.prefix.splice.logMessage(level.splice, marker.splice, message.splice, cause.splice)
       }
     )
-  
+
   def logMsg(c: LoggerContext)(level: c.Expr[Level], message: c.Expr[Message]) =
     c.universe.reify(
       if (c.prefix.splice.delegate.isEnabled(level.splice)) {
@@ -312,7 +312,7 @@ private object LoggerMacro {
         c.prefix.splice.logMessage(level.splice, null, message.splice, null)
       }
     )
-  
+
   def logMsgThrowable(c: LoggerContext)(level: c.Expr[Level], message: c.Expr[Message], cause: c.Expr[Throwable]) =
     c.universe.reify(
       if (c.prefix.splice.delegate.isEnabled(level.splice)) {
@@ -334,6 +334,7 @@ private object LoggerMacro {
       }
     )
 
+
   def traceEntryParams(c: LoggerContext)(params: c.Expr[Any]*): c.Expr[EntryMessage] = {
     import c.universe._
     val isEnabled = Apply(
@@ -347,10 +348,29 @@ private object LoggerMacro {
     )
 
     val log = Apply(
-      Select(c.prefix.tree, newTermName("traceEntryWithParams")),
+      Select(c.prefix.tree, newTermName("traceEntryParams")),
       (params map (_.tree)).toList
     )
     c.Expr[EntryMessage](If(isEnabled, log, reify(null).tree))
   }
 
+
+  def traceEntryMessage(c: LoggerContext)(message: c.Expr[Message]): c.Expr[EntryMessage] =
+    c.universe.reify(
+      if (c.prefix.splice.delegate.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)) {
+        c.prefix.splice.traceEntryMessage(message.splice)
+      } else {
+        null
+      }
+    )
+
+  def traceExitMessageResult[R: c.WeakTypeTag](c: LoggerContext)(message: c.Expr[Message], result: c.Expr[R]): c.Expr[R] =
+    c.universe.reify(
+      {
+        if (message.splice != null && c.prefix.splice.delegate.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, message.splice, null)) {
+          c.prefix.splice.traceExitMessageResult(message.splice, result.splice)
+        }
+        result.splice
+      }
+    )
 }
