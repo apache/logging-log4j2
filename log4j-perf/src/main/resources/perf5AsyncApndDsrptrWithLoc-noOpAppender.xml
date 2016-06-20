@@ -21,7 +21,7 @@
     </CountingNoOp>
     <Async name="Async"  blocking="true" bufferSize="262144" includeLocation="true">
       <appender-ref ref="NoOp"/>
-      <DisruptorBlockingQueue/>
+      <DisruptorBlockingQueue spinPolicy="SPINNING"/>
     </Async>
   </Appenders>
   <Loggers>
