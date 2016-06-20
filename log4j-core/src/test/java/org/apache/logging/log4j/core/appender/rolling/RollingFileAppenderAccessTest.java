@@ -28,7 +28,7 @@ public class RollingFileAppenderAccessTest {
 
     /**
      * Not a real test, just make sure we can compile access to the typed manager.
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -38,7 +38,7 @@ public class RollingFileAppenderAccessTest {
         final File file = File.createTempFile("RollingFileAppenderAccessTest", ".tmp");
         file.deleteOnExit();
         final RollingFileAppender appender = RollingFileAppender.createAppender(file.getCanonicalPath(), "FilePattern",
-                null, "Name", null, null, null, OnStartupTriggeringPolicy.createPolicy(), null, null, null, null, null,
+                null, "Name", null, null, null, OnStartupTriggeringPolicy.createPolicy(1), null, null, null, null, null,
                 null, config);
         final RollingFileManager manager = appender.getManager();
         // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their

@@ -55,7 +55,7 @@ public class OnStartupTriggeringPolicyTest {
                 .withConfiguration(configuration).build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
                 configuration);
-        final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy();
+        final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
         final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
                 policy, strategy, null, layout, 8192, true);
         manager.initialize();
