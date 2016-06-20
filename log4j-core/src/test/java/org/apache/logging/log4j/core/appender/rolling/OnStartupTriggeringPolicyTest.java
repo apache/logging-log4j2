@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -51,6 +52,8 @@ public class OnStartupTriggeringPolicyTest {
         is.close();
         final long size = Files.size(target);
         assertTrue(size > 0);
+        long timeStamp = System.currentTimeMillis() - 120000;
+        target.toFile().setLastModified(timeStamp);
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg")
                 .withConfiguration(configuration).build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
@@ -64,6 +67,14 @@ public class OnStartupTriggeringPolicyTest {
         assertTrue(Files.exists(rolled));
         assertTrue(Files.size(rolled) == size);
 
+    }
+
+    @AfterClass
+    public static void cleanup() throws Exception {
+        final Path target = Paths.get(TARGET_FILE);
+        final Path rolled = Paths.get(ROLLED_FILE);
+        Files.deleteIfExists(target);
+        Files.deleteIfExists(rolled);
     }
 
 }
