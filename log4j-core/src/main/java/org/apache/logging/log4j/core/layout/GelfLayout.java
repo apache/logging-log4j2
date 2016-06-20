@@ -115,7 +115,7 @@ public final class GelfLayout extends AbstractStringLayout {
         this.compressionThreshold = compressionThreshold;
         this.includeStacktrace = includeStacktrace;
     }
-    
+
     @PluginFactory
     public static GelfLayout createLayout(
             //@formatter:off
@@ -235,7 +235,7 @@ public final class GelfLayout extends AbstractStringLayout {
                 ((StringBuilderFormattable) message).formatTo(messageBuffer);
                 JsonUtils.quoteAsString(messageBuffer, builder);
             } finally {
-                returnMessageStringBuilder(messageBuffer);
+                trimToMaxSize(messageBuffer);
             }
         } else {
             JsonUtils.quoteAsString(toNullSafeString(message.getFormattedMessage()), builder);
@@ -255,13 +255,6 @@ public final class GelfLayout extends AbstractStringLayout {
         }
         result.setLength(0);
         return result;
-    }
-
-    private void returnMessageStringBuilder(StringBuilder stringBuilder) {
-        if (stringBuilder.length() > MAX_STRING_BUILDER_SIZE) {
-            stringBuilder.setLength(MAX_STRING_BUILDER_SIZE);
-            stringBuilder.trimToSize();
-        }
     }
 
     private CharSequence toNullSafeString(final CharSequence s) {
