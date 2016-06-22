@@ -60,7 +60,9 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     @Override
     public void stop() {
         super.stop();
-        future.cancel(true);
+        if(future != null) {
+            future.cancel(true);
+        }
     }
 
     /**
