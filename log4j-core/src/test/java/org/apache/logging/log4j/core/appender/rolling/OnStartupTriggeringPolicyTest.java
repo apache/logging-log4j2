@@ -54,19 +54,22 @@ public class OnStartupTriggeringPolicyTest {
         assertTrue(size > 0);
         long timeStamp = System.currentTimeMillis() - 120000;
         target.toFile().setLastModified(timeStamp);
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg")
-                .withConfiguration(configuration).build();
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg").withConfiguration(configuration)
+                .build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
                 configuration);
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
         final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
                 policy, strategy, null, layout, 8192, true);
-        manager.initialize();
-        assertTrue(Files.exists(target));
-        assertTrue(Files.size(target) == 0);
-        assertTrue(Files.exists(rolled));
-        assertTrue(Files.size(rolled) == size);
-
+        try {
+            manager.initialize();
+            assertTrue(Files.exists(target));
+            assertTrue(Files.size(target) == 0);
+            assertTrue(Files.exists(rolled));
+            assertTrue(Files.size(rolled) == size);
+        } finally {
+            manager.release();
+        }
     }
 
     @AfterClass
