@@ -50,6 +50,9 @@
       <action issue="LOG4J2-1422" dev="rpopma" type="fix">
         Fixed issue where AsyncAppenderQueueFullPolicyTest sometimes hangs.
       </action>
+      <action issue="LOG4J2-1445" dev="ggregory" type="fix" due-to="Ludovic HOCHET">
+        OnStartupTriggeringPolicyTest fails on Windows saying the file is used by another process.
+      </action>
       <action issue="LOG4J2-1437" dev="rpopma" type="add">
         (GC) ObjectMessage and ReusableObjectMessage now avoid calling toString() on auto-boxed primitive parameters.
       </action>
