@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.AutoCloseableLock;
 
 /**
  * Abstract base class used to register managers.
@@ -40,7 +41,7 @@ public abstract class AbstractManager {
     // manager from the map and closing the stream, requiring the whole stop method to be locked.
     private static final Map<String, AbstractManager> MAP = new HashMap<>();
 
-    private static final Lock LOCK = new ReentrantLock();
+    private static final AutoCloseableLock LOCK = AutoCloseableLock.forReentrantLock();
 
     /**
      * Number of Appenders using this manager.
@@ -65,8 +66,7 @@ public abstract class AbstractManager {
      */
     public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory,
                                                               final T data) {
-        LOCK.lock();
-        try {
+        try (final AutoCloseableLock l = LOCK.lock()) {
             @SuppressWarnings("unchecked")
             M manager = (M) MAP.get(name);
             if (manager == null) {
@@ -81,8 +81,6 @@ public abstract class AbstractManager {
             }
             manager.count++;
             return manager;
-        } finally {
-            LOCK.unlock();
         }
     }
 
@@ -95,11 +93,8 @@ public abstract class AbstractManager {
      * @return True if the Manager exists, false otherwise.
      */
     public static boolean hasManager(final String name) {
-        LOCK.lock();
-        try {
+        try (final AutoCloseableLock l = LOCK.lock()) {
             return MAP.containsKey(name);
-        } finally {
-            LOCK.unlock();
         }
     }
 
@@ -118,16 +113,13 @@ public abstract class AbstractManager {
      * Called to signify that this Manager is no longer required by an Appender.
      */
     public void release() {
-        LOCK.lock();
-        try {
+        try (final AutoCloseableLock l = LOCK.lock()) {
             --count;
             if (count <= 0) {
                 MAP.remove(name);
                 LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
                 releaseSub();
             }
-        } finally {
-            LOCK.unlock();
         }
     }
 

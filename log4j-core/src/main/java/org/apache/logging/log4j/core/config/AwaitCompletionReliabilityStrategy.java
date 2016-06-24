@@ -23,12 +23,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.AutoCloseableLock;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
@@ -39,7 +39,7 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
     private static final int MAX_RETRIES = 3;
     private final AtomicInteger counter = new AtomicInteger();
     private final AtomicBoolean shutdown = new AtomicBoolean(false);
-    private final Lock shutdownLock = new ReentrantLock();
+    private final AutoCloseableLock shutdownLock = AutoCloseableLock.forReentrantLock();
     private final Condition noLogEvents = shutdownLock.newCondition(); // should only be used when shutdown == true
     private final LoggerConfig loggerConfig;
 
@@ -111,12 +111,8 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
     }
 
     private void signalCompletionIfShutdown() {
-        final Lock lock = shutdownLock;
-        lock.lock();
-        try {
+        try (final AutoCloseableLock l = shutdownLock.lock()) {
             noLogEvents.signalAll();
-        } finally {
-            lock.unlock();
         }
     }
 
@@ -134,8 +130,7 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
      * Waits for all log events to complete before returning.
      */
     private void waitForCompletion() {
-        shutdownLock.lock();
-        try {
+        try (final AutoCloseableLock l = shutdownLock.lock()) {
             if (shutdown.compareAndSet(false, true)) {
                 int retries = 0;
                 // repeat while counter is non-zero
@@ -155,8 +150,6 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
                     }
                 }
             }
-        } finally {
-            shutdownLock.unlock();
         }
     }
 

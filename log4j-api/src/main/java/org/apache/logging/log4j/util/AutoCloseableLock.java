@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -30,23 +31,18 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
     
     private static final long serialVersionUID = 1L;
 
-    public static AutoCloseableLock create(Lock lock) {
+    public static AutoCloseableLock wrap(final Lock lock) {
         return new AutoCloseableLock(lock);
     }
     
     public static AutoCloseableLock forReentrantLock() {
-        return new AutoCloseableLock(new ReentrantLock());
+        return wrap(new ReentrantLock());
     }
     
-    public static AutoCloseableLock lock(final Lock lock) {
-        Objects.requireNonNull(lock, "lock");
-        lock.lock();
-        return new AutoCloseableLock(lock);
-    }
-
     private final Lock lock;
 
     public AutoCloseableLock(final Lock lock) {
+        Objects.requireNonNull(lock, "lock");
         this.lock = lock;
     }
 
@@ -60,12 +56,16 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
         return this;
     }
 
-    public void unlock() {
-        this.lock.unlock();
-    }
-
     public AutoCloseableLock lockInterruptibly() throws InterruptedException {
         this.lock.lockInterruptibly();
         return this;
+    }
+
+    public Condition newCondition() {
+        return this.lock.newCondition();
+    }
+
+    public void unlock() {
+        this.lock.unlock();
     }
 }

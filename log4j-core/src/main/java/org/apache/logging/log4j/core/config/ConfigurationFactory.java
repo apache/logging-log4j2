@@ -30,8 +30,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -46,6 +44,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.AutoCloseableLock;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -123,7 +122,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     protected final StrSubstitutor substitutor = new StrSubstitutor(new Interpolator());
 
-    private static final Lock LOCK = new ReentrantLock();
+    private static final AutoCloseableLock LOCK = AutoCloseableLock.forReentrantLock();
 
     /**
      * Returns the ConfigurationFactory.
@@ -133,8 +132,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         // volatile works in Java 1.6+, so double-checked locking also works properly
         //noinspection DoubleCheckedLocking
         if (factories == null) {
-            LOCK.lock();
-            try {
+            try (final AutoCloseableLock l = LOCK.lock()) {
                 if (factories == null) {
                     final List<ConfigurationFactory> list = new ArrayList<>();
                     final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
@@ -160,8 +158,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     //noinspection NonThreadSafeLazyInitialization
                     factories = Collections.unmodifiableList(list);
                 }
-            } finally {
-                LOCK.unlock();
             }
         }
 
