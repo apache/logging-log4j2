@@ -28,7 +28,7 @@ import org.junit.rules.ExternalResource;
 import static org.junit.Assert.*;
 
 /**
- * A JUnit test rule to automatically delete certain files after a test is run.
+ * A JUnit test rule to automatically delete files after a test is run.
  */
 public class CleanFiles extends ExternalResource {
     private static final int MAX_TRIES = 10;
