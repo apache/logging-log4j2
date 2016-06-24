@@ -31,10 +31,21 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Wraps the given Lock.
+     * 
+     * @param lock
+     * @return a new wrapper
+     */
     public static AutoCloseableLock wrap(final Lock lock) {
         return new AutoCloseableLock(lock);
     }
 
+    /**
+     * Create a new wrapper for a new {@link ReentrantLock}.
+     * 
+     * @return a new wrapper for a new {@link ReentrantLock}.
+     */
     public static AutoCloseableLock forReentrantLock() {
         return wrap(new ReentrantLock());
     }
