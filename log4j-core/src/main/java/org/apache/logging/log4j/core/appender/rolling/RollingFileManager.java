@@ -154,8 +154,7 @@ public class RollingFileManager extends FileManager {
     }
 
     protected void createFileAfterRollover() throws IOException  {
-        final OutputStream os = new FileOutputStream(getFileName(), isAppend());
-        setOutputStream(os);
+        setOutputStream(new FileOutputStream(getFileName(), isAppend()));
     }
 
     /**
