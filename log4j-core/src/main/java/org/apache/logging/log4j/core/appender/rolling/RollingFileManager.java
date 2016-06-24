@@ -148,7 +148,7 @@ public class RollingFileManager extends FileManager {
                 initialTime = System.currentTimeMillis();
                 createFileAfterRollover();
             } catch (final IOException e) {
-                logError("failed to create file after rollover", e);
+                logError("Failed to create file after rollover", e);
             }
         }
     }
@@ -217,7 +217,7 @@ public class RollingFileManager extends FileManager {
                     try {
                         success = descriptor.getSynchronous().execute();
                     } catch (final Exception ex) {
-                        logError("caught error in synchronous task", ex);
+                        logError("Caught error in synchronous task", ex);
                     }
                 }
 
