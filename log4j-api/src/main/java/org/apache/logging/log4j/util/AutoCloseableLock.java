@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -87,10 +88,24 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
     }
 
     /**
+     * Delegates to {@link Lock#tryLock()}, do NOT use in a try block.
+     * 
+     * @param time
+     *            See {@link Lock#tryLock()}.
+     * @param unit
+     *            See {@link Lock#tryLock()}.
+     * @return See {@link Lock#tryLock()}.
+     * @throws InterruptedException
+     */
+    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        return this.lock.tryLock(time, unit);
+    }
+
+    /**
      * Delegates to {@link Lock#lockInterruptibly()}, use in a try block.
      * 
      * @return this
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public AutoCloseableLock lockInterruptibly() throws InterruptedException {
         this.lock.lockInterruptibly();
