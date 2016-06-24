@@ -56,6 +56,10 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
         return this;
     }
 
+    public boolean tryLock() {
+        return this.lock.tryLock();
+    }
+
     public AutoCloseableLock lockInterruptibly() throws InterruptedException {
         this.lock.lockInterruptibly();
         return this;

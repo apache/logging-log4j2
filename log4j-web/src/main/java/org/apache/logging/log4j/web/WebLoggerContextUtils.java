@@ -23,6 +23,7 @@ import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.util.AutoCloseableLock;
 
 /**
  * Convenience methods for retrieving the {@link org.apache.logging.log4j.core.LoggerContext} associated with a
@@ -36,7 +37,7 @@ public final class WebLoggerContextUtils {
     private WebLoggerContextUtils() {
     }
 
-    private static final Lock WEB_SUPPORT_LOOKUP = new ReentrantLock();
+    private static final AutoCloseableLock WEB_SUPPORT_LOOKUP = AutoCloseableLock.forReentrantLock();
 
     /**
      * Finds the main {@link org.apache.logging.log4j.core.LoggerContext} configured for the given ServletContext.
@@ -75,16 +76,13 @@ public final class WebLoggerContextUtils {
      * @since 2.0.1
      */
     public static Log4jWebLifeCycle getWebLifeCycle(final ServletContext servletContext) {
-        WEB_SUPPORT_LOOKUP.lock();
-        try {
+        try (final AutoCloseableLock l = WEB_SUPPORT_LOOKUP.lock()) {
             Log4jWebLifeCycle webLifeCycle = (Log4jWebLifeCycle) servletContext.getAttribute(
                 Log4jWebSupport.SUPPORT_ATTRIBUTE);
             if (webLifeCycle == null) {
                 webLifeCycle = Log4jWebInitializerImpl.initialize(servletContext);
             }
             return webLifeCycle;
-        } finally {
-            WEB_SUPPORT_LOOKUP.unlock();
         }
     }
 

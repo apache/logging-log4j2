@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -24,8 +26,6 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -45,9 +45,8 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
+import org.apache.logging.log4j.util.AutoCloseableLock;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
@@ -77,7 +76,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     private volatile URI configLocation;
     private Cancellable shutdownCallback;
 
-    private final Lock configLock = new ReentrantLock();
+    private final AutoCloseableLock configLock = AutoCloseableLock.forReentrantLock();
 
     /**
      * Constructor taking only a name.
@@ -289,8 +288,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     @Override
     public void stop() {
         LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
-        configLock.lock();
-        try {
+        try (final AutoCloseableLock l = configLock.lock()) {
             if (this.isStopped()) {
                 return;
             }
@@ -312,8 +310,6 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             externalContext = null;
             LogManager.getFactory().removeContext(this);
             this.setStopped();
-        } finally {
-            configLock.unlock();
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}]...", getName(), this);
     }
@@ -480,8 +476,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     private Configuration setConfiguration(final Configuration config) {
         Objects.requireNonNull(config, "No Configuration was provided");
-        configLock.lock();
-        try {
+        try (final AutoCloseableLock l = configLock.lock()) {
             final Configuration prev = this.configuration;
             config.addListener(this);
             final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
@@ -513,8 +508,6 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             Log4jLogEvent.setNanoClock(configuration.getNanoClock());
 
             return prev;
-        } finally {
-            configLock.unlock();
         }
     }
 
