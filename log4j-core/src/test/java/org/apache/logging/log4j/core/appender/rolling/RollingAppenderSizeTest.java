@@ -43,6 +43,7 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.junit.CleanFolders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -50,6 +51,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -58,6 +60,9 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class RollingAppenderSizeTest {
+
+    @Rule
+    public RuleChain chain;
 
     private static final String DIR = "target/rolling1";
 
@@ -75,16 +80,17 @@ public class RollingAppenderSizeTest {
                 {"log4j-rolling-bzip2.xml", ".bz2"}, //
                 {"log4j-rolling-deflate.xml", ".deflate"}, //
                 {"log4j-rolling-pack200.xml", ".pack200"}, //
-                {"log4j-rolling-xz.xml", ".xz"},});
+                {"log4j-rolling-xz.xml", ".xz"}, //
+                });
                 // @formatter:on
     }
 
-    @Rule
-    public LoggerContextRule loggerContextRule;
+    private LoggerContextRule loggerContextRule;
 
     public RollingAppenderSizeTest(final String configFile, final String fileExtension) {
         this.fileExtension = fileExtension;
         this.loggerContextRule = new LoggerContextRule(configFile);
+        this.chain = RuleChain.outerRule(new CleanFolders(new File(DIR))).around(loggerContextRule);
     }
 
     @BeforeClass
@@ -102,11 +108,6 @@ public class RollingAppenderSizeTest {
         this.logger = this.loggerContextRule.getLogger(RollingAppenderSizeTest.class.getName());
     }
 
-    @After
-    public void tearDown() {
-        deleteDir();
-    }
-    
     @Test
     public void testAppender() throws Exception {
         for (int i = 0; i < 100; ++i) {
