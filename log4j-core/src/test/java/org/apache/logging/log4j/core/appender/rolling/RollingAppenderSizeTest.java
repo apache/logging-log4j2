@@ -112,7 +112,7 @@ public class RollingAppenderSizeTest {
         final DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
         if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
                 || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
-            return; // commons compress cannot deflate zip? TODO test decompressing these formats
+            return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these formats
         }
         for (final File file : files) {
             if (file.getName().endsWith(fileExtension)) {
