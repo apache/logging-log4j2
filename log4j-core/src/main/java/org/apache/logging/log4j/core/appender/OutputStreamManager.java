@@ -33,7 +33,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     protected final Layout<?> layout;
     protected ByteBuffer byteBuffer;
     private volatile OutputStream os;
-    private boolean skipFooter = false;
+    private boolean skipFooter;
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
