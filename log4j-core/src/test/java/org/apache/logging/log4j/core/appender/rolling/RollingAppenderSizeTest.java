@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +44,7 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -42,12 +52,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -98,6 +102,11 @@ public class RollingAppenderSizeTest {
         this.logger = this.loggerContextRule.getLogger(RollingAppenderSizeTest.class.getName());
     }
 
+    @After
+    public void tearDown() {
+        deleteDir();
+    }
+    
     @Test
     public void testAppender() throws Exception {
         for (int i = 0; i < 100; ++i) {
@@ -130,15 +139,14 @@ public class RollingAppenderSizeTest {
                     final String text = new String(baos.toByteArray(), Charset.defaultCharset());
                     final String[] lines = text.split("[\\r\\n]+");
                     for (final String line : lines) {
-                        assertTrue(line
-                                .contains("DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
+                        assertTrue(line.contains(
+                                "DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
                     }
                 } finally {
                     Closer.close(in);
                 }
             }
         }
-        deleteDir();
     }
 
     private static void deleteDir() {
@@ -151,8 +159,8 @@ public class RollingAppenderSizeTest {
                 }
                 Files.delete(Paths.get(DIR));
             } catch (final IOException ioe) {
-                fail("Unable to delete " + fileName + " due to " + ioe.getClass().getSimpleName() + ": " +
-                        ioe.getMessage());
+                fail("Unable to delete " + fileName + " due to " + ioe.getClass().getSimpleName() + ": "
+                        + ioe.getMessage());
             }
         }
     }
