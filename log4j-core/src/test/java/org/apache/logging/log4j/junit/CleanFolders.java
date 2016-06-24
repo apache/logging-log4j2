@@ -61,7 +61,7 @@ public class CleanFolders extends ExternalResource {
                             fileName = path.toFile().getName();
                             Files.deleteIfExists(path);
                         }
-                        Files.delete(targetPath);
+                        Files.deleteIfExists(targetPath);
                     } catch (final IOException e) {
                         throw new IllegalStateException(fileName, e);
                     }
