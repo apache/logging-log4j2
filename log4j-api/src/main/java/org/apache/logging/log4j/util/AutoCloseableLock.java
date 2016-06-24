@@ -28,47 +28,75 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 2.6.2
  */
 public final class AutoCloseableLock implements AutoCloseable, Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     public static AutoCloseableLock wrap(final Lock lock) {
         return new AutoCloseableLock(lock);
     }
-    
+
     public static AutoCloseableLock forReentrantLock() {
         return wrap(new ReentrantLock());
     }
-    
+
     private final Lock lock;
 
-    public AutoCloseableLock(final Lock lock) {
+    private AutoCloseableLock(final Lock lock) {
         Objects.requireNonNull(lock, "lock");
         this.lock = lock;
     }
 
+    /**
+     * Delegates to {@link Lock#unlock()}.
+     */
     @Override
     public void close() {
         this.lock.unlock();
     }
 
+    /**
+     * Delegates to {@link Lock#lock()}.
+     * 
+     * @return
+     */
     public AutoCloseableLock lock() {
         this.lock.lock();
         return this;
     }
 
+    /**
+     * Delegates to {@link Lock#tryLock()}, do NOT use in a try block.
+     * 
+     * @return
+     */
     public boolean tryLock() {
         return this.lock.tryLock();
     }
 
+    /**
+     * Delegates to {@link Lock#lockInterruptibly()}, use in a try block.
+     * 
+     * @return
+     */
     public AutoCloseableLock lockInterruptibly() throws InterruptedException {
         this.lock.lockInterruptibly();
         return this;
     }
 
+    /**
+     * Delegates to {@link Lock#newCondition()}.
+     * 
+     * @return
+     */
     public Condition newCondition() {
         return this.lock.newCondition();
     }
 
+    /**
+     * Delegates to {@link Lock#unlock()}.
+     * 
+     * @return
+     */
     public void unlock() {
         this.lock.unlock();
     }
