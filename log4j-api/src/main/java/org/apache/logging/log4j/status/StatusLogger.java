@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -36,6 +35,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.AutoCloseableLock;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -76,7 +76,7 @@ public final class StatusLogger extends AbstractLogger {
 
     @SuppressWarnings("NonSerializableFieldInSerializableClass")
     // ReentrantLock is Serializable
-    private final Lock msgLock = new ReentrantLock();
+    private final AutoCloseableLock msgLock = AutoCloseableLock.forReentrantLock();
 
     private int listenersLevel;
 
@@ -187,23 +187,17 @@ public final class StatusLogger extends AbstractLogger {
      * @return The list of StatusData objects.
      */
     public List<StatusData> getStatusData() {
-        msgLock.lock();
-        try {
+        try (AutoCloseableLock lock = msgLock.lock()) {
             return new ArrayList<>(messages);
-        } finally {
-            msgLock.unlock();
-        }
+        } 
     }
 
     /**
      * Clears the list of status events.
      */
     public void clear() {
-        msgLock.lock();
-        try {
+        try (AutoCloseableLock lock = msgLock.lock()) {
             messages.clear();
-        } finally {
-            msgLock.unlock();
         }
     }
 
@@ -229,11 +223,8 @@ public final class StatusLogger extends AbstractLogger {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
         }
         final StatusData data = new StatusData(element, level, msg, t, null);
-        msgLock.lock();
-        try {
+        try (AutoCloseableLock lock = msgLock.lock()) {
             messages.add(data);
-        } finally {
-            msgLock.unlock();
         }
         if (listeners.size() > 0) {
             for (final StatusListener listener : listeners) {

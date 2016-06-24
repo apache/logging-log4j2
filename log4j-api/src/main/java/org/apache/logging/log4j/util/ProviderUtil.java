@@ -51,7 +51,7 @@ public final class ProviderUtil {
      *
      * @since 2.1
      */
-    protected static final Lock STARTUP_LOCK = new ReentrantLock();
+    protected static final AutoCloseableLock STARTUP_LOCK = AutoCloseableLock.forReentrantLock();
 
     private static final String API_VERSION = "Log4jAPIVersion";
     private static final String[] COMPATIBLE_API_VERSIONS = {"2.0.0", "2.1.0", "2.2.0", "2.3.0", "2.4.0", "2.5.0", "2.6.0"};
@@ -117,14 +117,9 @@ public final class ProviderUtil {
     protected static void lazyInit() {
         // noinspection DoubleCheckedLocking
         if (instance == null) {
-            try {
-                STARTUP_LOCK.lockInterruptibly();
-                try {
-                    if (instance == null) {
-                        instance = new ProviderUtil();
-                    }
-                } finally {
-                    STARTUP_LOCK.unlock();
+            try (AutoCloseableLock l = STARTUP_LOCK.lockInterruptibly()) {
+                if (instance == null) {
+                    instance = new ProviderUtil();
                 }
             } catch (final InterruptedException e) {
                 LOGGER.fatal("Interrupted before Log4j Providers could be loaded.", e);

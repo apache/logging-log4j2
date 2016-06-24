@@ -16,10 +16,28 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class AutoCloseableLock implements AutoCloseable {
+/**
+ * Wraps a Lock and makes this wrapper useable in a try-with-resources statement.
+ * 
+ * @since 2.6.2
+ */
+public final class AutoCloseableLock implements AutoCloseable, Serializable {
+    
+    private static final long serialVersionUID = 1L;
+
+    public static AutoCloseableLock create(Lock lock) {
+        return new AutoCloseableLock(lock);
+    }
+    
+    public static AutoCloseableLock forReentrantLock() {
+        return new AutoCloseableLock(new ReentrantLock());
+    }
+    
     public static AutoCloseableLock lock(final Lock lock) {
         Objects.requireNonNull(lock, "lock");
         lock.lock();
@@ -39,6 +57,15 @@ public class AutoCloseableLock implements AutoCloseable {
 
     public AutoCloseableLock lock() {
         this.lock.lock();
+        return this;
+    }
+
+    public void unlock() {
+        this.lock.unlock();
+    }
+
+    public AutoCloseableLock lockInterruptibly() throws InterruptedException {
+        this.lock.lockInterruptibly();
         return this;
     }
 }
