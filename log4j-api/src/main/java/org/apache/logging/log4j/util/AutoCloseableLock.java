@@ -25,6 +25,8 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Wraps a Lock and makes this wrapper useable in a try-with-resources statement.
  * 
+ * Alternative class names: AutoLock, LockResource, LockWrapper.
+ * 
  * @since 2.6.2
  */
 public final class AutoCloseableLock implements AutoCloseable, Serializable {
@@ -88,6 +90,7 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
      * Delegates to {@link Lock#lockInterruptibly()}, use in a try block.
      * 
      * @return
+     * @throws InterruptedException 
      */
     public AutoCloseableLock lockInterruptibly() throws InterruptedException {
         this.lock.lockInterruptibly();
