@@ -59,9 +59,7 @@ public class CleanFolders extends ExternalResource {
                     try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(targetPath)) {
                         for (final Path path : directoryStream) {
                             fileName = path.toFile().getName();
-                            if (Files.exists(path)) {
-                                Files.delete(path);
-                            }
+                            Files.deleteIfExists(path);
                         }
                         Files.delete(targetPath);
                     } catch (final IOException e) {
