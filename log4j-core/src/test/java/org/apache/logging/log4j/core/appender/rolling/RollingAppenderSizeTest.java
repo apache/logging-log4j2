@@ -76,11 +76,11 @@ public class RollingAppenderSizeTest {
     }
 
     @Rule
-    public LoggerContextRule init;
+    public LoggerContextRule loggerContextRule;
 
     public RollingAppenderSizeTest(final String configFile, final String fileExtension) {
         this.fileExtension = fileExtension;
-        this.init = new LoggerContextRule(configFile);
+        this.loggerContextRule = new LoggerContextRule(configFile);
     }
 
     @BeforeClass
@@ -95,7 +95,7 @@ public class RollingAppenderSizeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger(RollingAppenderSizeTest.class.getName());
+        this.logger = this.loggerContextRule.getLogger(RollingAppenderSizeTest.class.getName());
     }
 
     @Test
