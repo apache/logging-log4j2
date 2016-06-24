@@ -70,7 +70,7 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
     /**
      * Delegates to {@link Lock#lock()}.
      * 
-     * @return
+     * @return this
      */
     public AutoCloseableLock lock() {
         this.lock.lock();
@@ -80,7 +80,7 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
     /**
      * Delegates to {@link Lock#tryLock()}, do NOT use in a try block.
      * 
-     * @return
+     * @return See {@link Lock#tryLock()}.
      */
     public boolean tryLock() {
         return this.lock.tryLock();
@@ -89,7 +89,7 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
     /**
      * Delegates to {@link Lock#lockInterruptibly()}, use in a try block.
      * 
-     * @return
+     * @return this
      * @throws InterruptedException 
      */
     public AutoCloseableLock lockInterruptibly() throws InterruptedException {
@@ -100,7 +100,7 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
     /**
      * Delegates to {@link Lock#newCondition()}.
      * 
-     * @return
+     * @return See {@link Lock#newCondition()}.
      */
     public Condition newCondition() {
         return this.lock.newCondition();
@@ -108,8 +108,6 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
 
     /**
      * Delegates to {@link Lock#unlock()}.
-     * 
-     * @return
      */
     public void unlock() {
         this.lock.unlock();
