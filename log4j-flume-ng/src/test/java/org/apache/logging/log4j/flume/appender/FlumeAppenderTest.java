@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.AvailablePortFinder;
@@ -119,7 +123,7 @@ public class FlumeAppenderTest {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
-                null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
+                null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
                 null, null, null, null);
         avroAppender.start();
@@ -142,14 +146,24 @@ public class FlumeAppenderTest {
 
         eventSource.stop();
     }
-    
+
     @Test
     public void testLog4jAvroAppenderWithHostsParam() throws IOException {
         final String hosts = String.format("localhost:%s", testPort);
-        final FlumeAppender avroAppender = FlumeAppender.createAppender(null,
-                null, hosts, "false", "Avro", null, "1000", "1000", "1", "1000",
-                "avro", "false", null, null, null, null, null, "true", "1",
-                null, null, null, null);
+        final FlumeAppender avroAppender = FlumeAppender.newBuilder()
+            .setHosts(hosts)
+            .setEmbedded("false")
+            .setType("Avro")
+            .setConnectionTimeoutMillis("1000")
+            .setRequestTimeoutMillis("1000")
+            .setAgentRetries("1")
+            .setMaxDelayMillis("1000")
+            .setName("avro")
+            .setIgnore("false")
+            .setCompressBody("true")
+            .setBatchSize("1")
+            .build();
+        
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -176,7 +190,7 @@ public class FlumeAppenderTest {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
-                null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
+                null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, "ReqCtx_", null, "true",
                 "1", null, null, null, null);
         avroAppender.start();
@@ -215,7 +229,7 @@ public class FlumeAppenderTest {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
-                null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
+                null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
                 null, null, null, null);
         avroAppender.start();
@@ -250,7 +264,7 @@ public class FlumeAppenderTest {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
-                null, null, "false", "Avro", null, "1000", "1000", "1", "500",
+                null, "false", "Avro", null, "1000", "1000", "1", "500",
                 "avro", "false", null, null, null, null, null, "true", "10",
                 null, null, null, null);
         avroAppender.start();
@@ -290,7 +304,7 @@ public class FlumeAppenderTest {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
-                null, null, "false", "Avro", null, "1000", "1000", "1", "500",
+                null, "false", "Avro", null, "1000", "1000", "1", "500",
                 "avro", "false", null, null, null, null, null, "true", "10",
                 null, null, null, null);
         avroAppender.start();
@@ -324,7 +338,7 @@ public class FlumeAppenderTest {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
-                null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
+                null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "10",
                 null, null, null, null);
         avroAppender.start();
@@ -358,7 +372,7 @@ public class FlumeAppenderTest {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
-                null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
+                null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
                 null, null, null, null);
         avroAppender.start();
@@ -388,7 +402,7 @@ public class FlumeAppenderTest {
                 Agent.createAgent("localhost", testPort),
                 Agent.createAgent("localhost", altPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
-                null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
+                null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
                 null, null, null, null);
         avroAppender.start();
@@ -436,7 +450,7 @@ public class FlumeAppenderTest {
                 Agent.createAgent("localhost", testPort),
                 Agent.createAgent("localhost", altPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
-                null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
+                null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
                 null, null, null, null);
         avroAppender.start();
