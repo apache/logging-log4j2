@@ -54,7 +54,7 @@ class MyClass extends BaseClass with Logging {
                     <a href="http://docs.scala-lang.org/overviews/core/string-interpolation.html">string interpolation</a>
                     to achieve this:
                 </p>
-                <pre class="prettyprint">logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBrithday}")</pre>
+                <pre class="prettyprint">logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBirthday}")</pre>
                 <p>
                     Since the Scala Logger is implemented with macros, the String construction and method invocations
                     will only occur when debug logging is enabled.

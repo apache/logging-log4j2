@@ -54,7 +54,7 @@ object Logger {
   * to achieve this:
   *
   * {{{
-  * logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBrithday}")
+  * logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBirthday}")
   * }}}
   *
   * Since this wrapper is implemented with macros, the String construction and method invocations
