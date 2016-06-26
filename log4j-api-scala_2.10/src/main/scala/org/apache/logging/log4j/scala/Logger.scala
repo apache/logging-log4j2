@@ -54,7 +54,7 @@ object Logger {
   * to achieve this:
   *
   * {{{
-  * logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBrithday}")
+  * logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBirthday}")
   * }}}
   *
   * Since this wrapper is implemented with macros, the String construction and method invocations
@@ -294,7 +294,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param marker  the marker data specific to this log statement
     * @param message the message to be logged
     */
-  def log(level: Level, marker: Marker, message: Message): Unit =
+  def apply(level: Level, marker: Marker, message: Message): Unit =
   macro LoggerMacro.logMarkerMsg
 
   /**
@@ -304,7 +304,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param marker  the marker data specific to this log statement
     * @param message the message to be logged
     */
-  def log(level: Level, marker: Marker, message: CharSequence): Unit =
+  def apply(level: Level, marker: Marker, message: CharSequence): Unit =
   macro LoggerMacro.logMarkerCseq
 
   /**
@@ -314,7 +314,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param marker  the marker data specific to this log statement
     * @param message the message to be logged
     */
-  def log(level: Level, marker: Marker, message: AnyRef): Unit =
+  def apply(level: Level, marker: Marker, message: AnyRef): Unit =
   macro LoggerMacro.logMarkerObject
 
   /**
@@ -326,7 +326,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param message the message to be logged
     * @param cause   the cause
     */
-  def log(level: Level, marker: Marker, message: Message, cause: Throwable): Unit =
+  def apply(level: Level, marker: Marker, message: Message, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerMsgThrowable
 
   /**
@@ -338,7 +338,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param message the message to be logged
     * @param cause   the cause
     */
-  def log(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit =
+  def apply(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerCseqThrowable
 
   /**
@@ -350,7 +350,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param message the message to be logged
     * @param cause   the cause
     */
-  def log(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit =
+  def apply(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerObjectThrowable
 
   /**
@@ -359,7 +359,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param level   the logging level
     * @param message the message to be logged
     */
-  def log(level: Level, message: Message): Unit =
+  def apply(level: Level, message: Message): Unit =
   macro LoggerMacro.logMsg
 
   /**
@@ -368,7 +368,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param level   the logging level
     * @param message the message to be logged
     */
-  def log(level: Level, message: CharSequence): Unit =
+  def apply(level: Level, message: CharSequence): Unit =
   macro LoggerMacro.logCseq
 
   /**
@@ -377,7 +377,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param level   the logging level
     * @param message the message to be logged
     */
-  def log(level: Level, message: AnyRef): Unit =
+  def apply(level: Level, message: AnyRef): Unit =
   macro LoggerMacro.logObject
 
   /**
@@ -387,7 +387,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param message the message to be logged
     * @param cause   a [[Throwable]]
     */
-  def log(level: Level, message: Message, cause: Throwable): Unit =
+  def apply(level: Level, message: Message, cause: Throwable): Unit =
   macro LoggerMacro.logMsgThrowable
 
   /**
@@ -397,7 +397,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param message the message to be logged
     * @param cause   a [[Throwable]]
     */
-  def log(level: Level, message: CharSequence, cause: Throwable): Unit =
+  def apply(level: Level, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.logCseqThrowable
 
   /**
@@ -407,7 +407,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param message the message to be logged
     * @param cause   a [[Throwable]]
     */
-  def log(level: Level, message: AnyRef, cause: Throwable): Unit =
+  def apply(level: Level, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.logObjectThrowable
 
 
