@@ -56,7 +56,8 @@ class MyClass extends BaseClass with Logging {
                 </p>
                 <pre class="prettyprint">logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBrithday}")</pre>
                 <p>
-                    Since the Scala Logger is implemented with macros, the String construction and method invocations will only occur when debug logging is enabled.
+                    Since the Scala Logger is implemented with macros, the String construction and method invocations
+                    will only occur when debug logging is enabled.
                 </p>
 
                 <h4>Logger Names</h4>

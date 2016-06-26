@@ -16,11 +16,15 @@
  */
 package org.apache.logging.log4j.scala
 
-import org.apache.logging.log4j.LogManager
-
+/**
+  * Mix in this trait into classes from which you want to log,
+  * give you a `logger` value with a [[Logger]] named according to the class.
+  */
 trait Logging {
 
-  protected val logger: Logger =
-    new Logger(LogManager.getContext(getClass.getClassLoader, false).getLogger(getClass.getName))
+  /**
+    * A [[Logger]] named according to the class.
+    */
+  protected val logger: Logger = Logger(getClass)
 
 }

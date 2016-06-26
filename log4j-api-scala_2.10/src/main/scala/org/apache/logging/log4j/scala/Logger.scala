@@ -18,11 +18,49 @@ package org.apache.logging.log4j.scala
 
 import org.apache.logging.log4j.message.{EntryMessage, Message, MessageFactory2}
 import org.apache.logging.log4j.spi.ExtendedLogger
-import org.apache.logging.log4j.{Level, Marker}
+import org.apache.logging.log4j.{Level, LogManager, Marker}
 
 import scala.language.experimental.macros
 
-class Logger(val delegate: ExtendedLogger) {
+/**
+  * Factory for [[Logger]]s.
+  *
+  * The [[Logging]] trait provides a simple way to get a properly named logger into a class.
+  */
+object Logger {
+
+  /**
+    * Create a properly named [[Logger]] for a given class.
+    *
+    * @param clazz the class
+    */
+  def apply(clazz: Class[_]): Logger = Logger(LogManager.getContext(clazz.getClassLoader, false).getLogger(clazz.getName))
+
+  /**
+    * Create a [[Logger]] wrapping the given Log4j logger.
+    *
+    * @param delegate the Log4j logger to wrap
+    */
+  def apply(delegate: ExtendedLogger): Logger = new Logger(delegate)
+
+}
+
+/**
+  * Scala wrapper for the Log4j [[org.apache.logging.log4j.Logger]] interface.
+  *
+  * Frequently the purpose of logging is to provide information about what is happening in the system,
+  * which requires including information about the objects being manipulated. In Scala, you can use
+  * [[http://docs.scala-lang.org/overviews/core/string-interpolation.html string interpolation]]
+  * to achieve this:
+  *
+  * {{{
+  * logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBrithday}")
+  * }}}
+  *
+  * Since this wrapper is implemented with macros, the String construction and method invocations
+  * will only occur when debug logging is enabled.
+  */
+class Logger private(val delegate: ExtendedLogger) {
 
   private final val FQCN = classOf[Logger].getName
 
@@ -249,82 +287,293 @@ class Logger(val delegate: ExtendedLogger) {
   macro LoggerMacro.traceObjectThrowable
 
 
+  /**
+    * Logs a [[Message]] with the specific [[Marker]] at the given [[Level]].
+    *
+    * @param level   the logging level
+    * @param marker  the marker data specific to this log statement
+    * @param message the message to be logged
+    */
   def log(level: Level, marker: Marker, message: Message): Unit =
   macro LoggerMacro.logMarkerMsg
 
+  /**
+    * Logs a string with the specific [[Marker]] at the given [[Level]].
+    *
+    * @param level   the logging level
+    * @param marker  the marker data specific to this log statement
+    * @param message the message to be logged
+    */
   def log(level: Level, marker: Marker, message: CharSequence): Unit =
   macro LoggerMacro.logMarkerCseq
 
+  /**
+    * Logs an object with the specific [[Marker]] at the given [[Level]].
+    *
+    * @param level   the logging level
+    * @param marker  the marker data specific to this log statement
+    * @param message the message to be logged
+    */
   def log(level: Level, marker: Marker, message: AnyRef): Unit =
   macro LoggerMacro.logMarkerObject
 
+  /**
+    * Logs a [[Message]] with the specific [[Marker]] at the given [[Level]] including the stack trace
+    * of the given [[Throwable]].
+    *
+    * @param level   the logging level
+    * @param marker  the marker data specific to this log statement
+    * @param message the message to be logged
+    * @param cause   the cause
+    */
   def log(level: Level, marker: Marker, message: Message, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerMsgThrowable
 
+  /**
+    * Logs a string with the specific [[Marker]] at the given [[Level]] including the stack trace
+    * of the given [[Throwable]].
+    *
+    * @param level   the logging level
+    * @param marker  the marker data specific to this log statement
+    * @param message the message to be logged
+    * @param cause   the cause
+    */
   def log(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerCseqThrowable
 
+  /**
+    * Logs an object with the specific [[Marker]] at the given [[Level]] including the stack trace
+    * of the given [[Throwable]].
+    *
+    * @param level   the logging level
+    * @param marker  the marker data specific to this log statement
+    * @param message the message to be logged
+    * @param cause   the cause
+    */
   def log(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.logMarkerObjectThrowable
 
+  /**
+    * Logs a [[Message]] at the given [[Level]].
+    *
+    * @param level   the logging level
+    * @param message the message to be logged
+    */
   def log(level: Level, message: Message): Unit =
   macro LoggerMacro.logMsg
 
+  /**
+    * Logs a string at the given [[Level]].
+    *
+    * @param level   the logging level
+    * @param message the message to be logged
+    */
   def log(level: Level, message: CharSequence): Unit =
   macro LoggerMacro.logCseq
 
+  /**
+    * Logs an object at the given [[Level]].
+    *
+    * @param level   the logging level
+    * @param message the message to be logged
+    */
   def log(level: Level, message: AnyRef): Unit =
   macro LoggerMacro.logObject
 
+  /**
+    * Logs a [[Message]] at the given [[Level]] including the stack trace of the given [[Throwable]].
+    *
+    * @param level   the logging level
+    * @param message the message to be logged
+    * @param cause   a [[Throwable]]
+    */
   def log(level: Level, message: Message, cause: Throwable): Unit =
   macro LoggerMacro.logMsgThrowable
 
+  /**
+    * Logs a string at the given [[Level]] including the stack trace of the given [[Throwable]].
+    *
+    * @param level   the logging level
+    * @param message the message to be logged
+    * @param cause   a [[Throwable]]
+    */
   def log(level: Level, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.logCseqThrowable
 
+  /**
+    * Logs an object at the given [[Level]] including the stack trace of the given [[Throwable]].
+    *
+    * @param level   the logging level
+    * @param message the message to be logged
+    * @param cause   a [[Throwable]]
+    */
   def log(level: Level, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.logObjectThrowable
 
 
+  /**
+    * Checks whether this Logger is enabled for the the given [[Level]].
+    *
+    * Note that passing in [[Level.OFF]] always returns `true`.
+    *
+    * @param level the level to check
+    * @return boolean - `true` if this Logger is enabled for the level, `false` otherwise
+    */
   def isEnabled(level: Level): Boolean = delegate.isEnabled(level)
 
+  /**
+    * Checks whether this Logger is enabled for the the given [[Level]] and [[Marker]].
+    *
+    * @param level  the level to check
+    * @param marker The marker to check
+    * @return boolean - `true` if this Logger is enabled for the level, `false` otherwise
+    */
   def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
 
 
   // TODO fix FQCN for flow logging
 
+  /**
+    * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
+    * logged.
+    *
+    * @return The built [[EntryMessage]]
+    */
   def traceEntry(): EntryMessage = delegate.traceEntry()
 
+  /**
+    * Logs entry to a method along with its parameters.
+    *
+    * {{{
+    * def doSomething(foo: String, bar: Int): Unit = {
+    *   logger.traceEntry(foo, bar)
+    *   // do something
+    * }
+    * }}}
+    *
+    * @param params the parameters to the method.
+    * @return The built [[EntryMessage]]
+    */
   def traceEntry(params: Any*): EntryMessage =
   macro LoggerMacro.traceEntryParams
 
+  /**
+    * Logs entry to a method using a [[Message]] to describe the parameters.
+    *
+    * {{{
+    * def doSomething(foo: Request): Unit = {
+    *   logger.traceEntry(JsonMessage(foo))
+    *   // do something
+    * }
+    * }}}
+    *
+    * @param message the message
+    * @return The built [[EntryMessage]]
+    */
   def traceEntry(message: Message): EntryMessage =
   macro LoggerMacro.traceEntryMessage
 
+  /**
+    * Logs exit from a method with no result.
+    */
   def traceExit(): Unit = delegate.traceExit()
 
+  /**
+    * Logs exiting from a method with result.
+    *
+    * @param result The result being returned from the method call
+    * @return `result`
+    */
   def traceExit[R](result: R): R = delegate.traceExit(result)
 
+  /**
+    * Logs exiting from a method with no result.
+    *
+    * @param entryMessage the [[EntryMessage]] returned from one of the `traceEntry` methods
+    */
   def traceExit(entryMessage: EntryMessage): Unit = delegate.traceExit(entryMessage)
 
+  /**
+    * Logs exiting from a method with result.
+    *
+    * {{{
+    * def doSomething(foo: String, bar: Int): Int = {
+    *   val entryMessage = logger.traceEntry(foo, bar)
+    *   // do something
+    *   traceExit(entryMessage, value)
+    * }
+    * }}}
+    *
+    * @param entryMessage the [[EntryMessage]] returned from one of the `traceEntry` methods
+    * @param result       The result being returned from the method call
+    * @return `result`
+    */
   def traceExit[R](entryMessage: EntryMessage, result: R): R = delegate.traceExit(entryMessage, result)
 
+  /**
+    * Logs exiting from a method with result. Allows custom formatting of the result.
+    *
+    * @param message the Message containing the formatted result
+    * @param result  The result being returned from the method call.
+    * @return `result`
+    */
   def traceExit[R](message: Message, result: R): R =
   macro LoggerMacro.traceExitMessageResult[R]
 
+  /**
+    * Logs an exception or error to be thrown.
+    *
+    * {{{
+    *   throw logger.throwing(myException)
+    * }}}
+    *
+    * @param t the Throwable
+    * @return `t`
+    */
   def throwing[T <: Throwable](t: T): T = delegate.throwing(t)
 
+  /**
+    * Logs an exception or error to be thrown to a specific logging level.
+    *
+    * {{{
+    *   throw logger.throwing(Level.DEBUG, myException)
+    * }}}
+    *
+    * @param level the logging Level.
+    * @param t     the Throwable
+    * @return `t`
+    */
   def throwing[T <: Throwable](level: Level, t: T): T = delegate.throwing(level, t)
 
+  /**
+    * Logs an exception or error that has been caught.
+    *
+    * @param t the Throwable.
+    */
   def catching(t: Throwable): Unit = delegate.catching(t)
 
+  /**
+    * Logs an exception or error that has been caught to a specific logging level.
+    *
+    * @param level The logging Level.
+    * @param t     The Throwable.
+    */
   def catching(level: Level, t: Throwable): Unit = delegate.catching(level, t)
 
 
+  /**
+    * @return the [[Level]] associated with this Logger
+    */
   def level: Level = delegate.getLevel
 
+  /**
+    * @return the logger name
+    */
   def name: String = delegate.getName
 
+  /**
+    * @return the message factory used to convert message Objects and Strings/CharSequences into actual log Messages
+    */
   def messageFactory: MessageFactory2 = delegate.getMessageFactory.asInstanceOf[MessageFactory2]
 
 
