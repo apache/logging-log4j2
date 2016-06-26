@@ -119,10 +119,10 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
     @Override
     public void stop() {
         this.setStopping();
-       if (filter != null) {
-           filter.stop();
-       }
-       this.setStopped();
+        if (filter != null) {
+            filter.stop();
+        }
+        this.setStopped();
     }
 
     /**

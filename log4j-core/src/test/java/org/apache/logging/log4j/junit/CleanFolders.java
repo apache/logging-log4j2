@@ -18,48 +18,30 @@ package org.apache.logging.log4j.junit;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.rules.ExternalResource;
 
-import static org.junit.Assert.*;
-
 /**
- * A JUnit test rule to automatically delete files after a test is run.
+ * A JUnit test rule to automatically delete folders after a test is run.
  */
-public class CleanFiles extends ExternalResource {
+public class CleanFolders extends ExternalResource {
     private static final int MAX_TRIES = 10;
-    private final List<File> files;
+    private final List<File> folders;
 
-    public CleanFiles(final File... files) {
-        this.files = Arrays.asList(files);
+    public CleanFolders(final File... files) {
+        this.folders = Arrays.asList(files);
     }
 
-    public CleanFiles(final String... fileNames) {
-        this.files = new ArrayList<>(fileNames.length);
+    public CleanFolders(final String... fileNames) {
+        this.folders = new ArrayList<>(fileNames.length);
         for (final String fileName : fileNames) {
-            this.files.add(new File(fileName));
-        }
-    }
-
-    private void clean() {
-        for (final File file : files) {
-            for (int i = 0; i < MAX_TRIES; i++) {
-                if (file.exists()) {
-                    try {
-                        FileSystems.getDefault().provider().delete(file.toPath());
-                    } catch (final IOException e) {
-                        fail(e.toString());
-                    }
-                }
-                try {
-                    Thread.sleep(200);
-                } catch (final InterruptedException ignored) {
-                }
-            }
+            this.folders.add(new File(fileName));
         }
     }
 
@@ -68,11 +50,31 @@ public class CleanFiles extends ExternalResource {
         this.clean();
     }
 
+    private void clean() {
+        for (final File folder : folders) {
+            for (int i = 0; i < MAX_TRIES; i++) {
+                final Path targetPath = folder.toPath();
+                if (Files.exists(targetPath)) {
+                    String fileName = null;
+                    try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(targetPath)) {
+                        for (final Path path : directoryStream) {
+                            fileName = path.toFile().getName();
+                            Files.deleteIfExists(path);
+                        }
+                        Files.deleteIfExists(targetPath);
+                    } catch (final IOException e) {
+                        throw new IllegalStateException(fileName, e);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("CleanFiles [");
-        builder.append(files);
+        builder.append("CleanFolders [");
+        builder.append(folders);
         builder.append("]");
         return builder.toString();
     }

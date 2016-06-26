@@ -33,7 +33,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     protected final Layout<?> layout;
     protected ByteBuffer byteBuffer;
     private volatile OutputStream os;
-    private boolean skipFooter = false;
+    private boolean skipFooter;
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
@@ -60,7 +60,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
                 try {
                     this.os.write(header, 0, header.length);
                 } catch (final IOException e) {
-                    logError("unable to write header", e);
+                    logError("Unable to write header", e);
                 }
             }
         }
@@ -130,7 +130,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
                 os.write(header, 0, header.length);
                 this.os = os; // only update field if os.write() succeeded
             } catch (final IOException ioe) {
-                logError("unable to write header", ioe);
+                logError("Unable to write header", ioe);
             }
         } else {
             this.os = os;
@@ -261,7 +261,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         try {
             stream.close();
         } catch (final IOException ex) {
-            logError("unable to close stream", ex);
+            logError("Unable to close stream", ex);
         }
     }
 

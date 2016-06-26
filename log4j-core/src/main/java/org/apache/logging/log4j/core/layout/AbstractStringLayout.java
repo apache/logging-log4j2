@@ -80,12 +80,16 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
             threadLocal.set(result);
         }
-        if (result.length() > MAX_STRING_BUILDER_SIZE) {
-            result.setLength(MAX_STRING_BUILDER_SIZE);
-            result.trimToSize();
-        }
+        trimToMaxSize(result);
         result.setLength(0);
         return result;
+    }
+
+    protected static void trimToMaxSize(final StringBuilder stringBuilder) {
+        if (stringBuilder.length() > MAX_STRING_BUILDER_SIZE) {
+            stringBuilder.setLength(MAX_STRING_BUILDER_SIZE);
+            stringBuilder.trimToSize();
+        }
     }
 
     // LOG4J2-1151: If the built-in JDK 8 encoders are available we should use them.

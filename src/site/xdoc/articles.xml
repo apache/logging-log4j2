@@ -46,11 +46,20 @@
             <a href="http://www.infoq.com/cn/news/2014/08/apache-log4j2">Apache Log4j 2.0值得升级吗</a>
             (August 5, 2014)
           </li>
+          <li>
+            <a href="http://www.importnew.com/19467.html">Log4j2架构分析与实战</a>
+            (January 15, 2013)
+          </li>
         </ul>
       </subsection>
       <a name="English"/>
       <subsection name="English">
       <ul>
+        <li>
+          <a href="http://javaevangelist.blogspot.jp/2016/06/log4j2-javautillogging-jul-adapter.html">Log4j2
+            java.util.logging (JUL) Adapter Example</a>
+          (June 24, 2016)
+        </li>
         <li>
           <a href="https://www.infoq.com/news/2016/05/log4j-garbage-free">Log4j 2.6 Goes Garbage-Free</a>
           (May 30, 2016)

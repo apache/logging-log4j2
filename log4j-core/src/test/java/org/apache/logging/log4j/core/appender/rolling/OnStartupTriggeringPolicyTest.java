@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -51,19 +52,32 @@ public class OnStartupTriggeringPolicyTest {
         is.close();
         final long size = Files.size(target);
         assertTrue(size > 0);
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg")
-                .withConfiguration(configuration).build();
+        long timeStamp = System.currentTimeMillis() - 120000;
+        target.toFile().setLastModified(timeStamp);
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg").withConfiguration(configuration)
+                .build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
                 configuration);
-        final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy();
+        final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
         final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
                 policy, strategy, null, layout, 8192, true);
-        manager.initialize();
-        assertTrue(Files.exists(target));
-        assertTrue(Files.size(target) == 0);
-        assertTrue(Files.exists(rolled));
-        assertTrue(Files.size(rolled) == size);
+        try {
+            manager.initialize();
+            assertTrue(Files.exists(target));
+            assertTrue(Files.size(target) == 0);
+            assertTrue(Files.exists(rolled));
+            assertTrue(Files.size(rolled) == size);
+        } finally {
+            manager.release();
+        }
+    }
 
+    @AfterClass
+    public static void cleanup() throws Exception {
+        final Path target = Paths.get(TARGET_FILE);
+        final Path rolled = Paths.get(ROLLED_FILE);
+        Files.deleteIfExists(target);
+        Files.deleteIfExists(rolled);
     }
 
 }

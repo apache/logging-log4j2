@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,26 +43,25 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.junit.CleanFolders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
 
 /**
  *
  */
 @RunWith(Parameterized.class)
 public class RollingAppenderSizeTest {
+
+    @Rule
+    public RuleChain chain;
 
     private static final String DIR = "target/rolling1";
 
@@ -71,16 +79,17 @@ public class RollingAppenderSizeTest {
                 {"log4j-rolling-bzip2.xml", ".bz2"}, //
                 {"log4j-rolling-deflate.xml", ".deflate"}, //
                 {"log4j-rolling-pack200.xml", ".pack200"}, //
-                {"log4j-rolling-xz.xml", ".xz"},});
+                {"log4j-rolling-xz.xml", ".xz"}, //
+                });
                 // @formatter:on
     }
 
-    @Rule
-    public LoggerContextRule init;
+    private LoggerContextRule loggerContextRule;
 
     public RollingAppenderSizeTest(final String configFile, final String fileExtension) {
         this.fileExtension = fileExtension;
-        this.init = new LoggerContextRule(configFile);
+        this.loggerContextRule = new LoggerContextRule(configFile);
+        this.chain = RuleChain.outerRule(new CleanFolders(new File(DIR))).around(loggerContextRule);
     }
 
     @BeforeClass
@@ -95,7 +104,7 @@ public class RollingAppenderSizeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger(RollingAppenderSizeTest.class.getName());
+        this.logger = this.loggerContextRule.getLogger(RollingAppenderSizeTest.class.getName());
     }
 
     @Test
@@ -112,7 +121,7 @@ public class RollingAppenderSizeTest {
         final DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
         if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
                 || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
-            return; // commons compress cannot deflate zip? TODO test decompressing these formats
+            return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these formats
         }
         for (final File file : files) {
             if (file.getName().endsWith(fileExtension)) {
@@ -130,15 +139,14 @@ public class RollingAppenderSizeTest {
                     final String text = new String(baos.toByteArray(), Charset.defaultCharset());
                     final String[] lines = text.split("[\\r\\n]+");
                     for (final String line : lines) {
-                        assertTrue(line
-                                .contains("DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
+                        assertTrue(line.contains(
+                                "DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
                     }
                 } finally {
                     Closer.close(in);
                 }
             }
         }
-        deleteDir();
     }
 
     private static void deleteDir() {
@@ -151,8 +159,8 @@ public class RollingAppenderSizeTest {
                 }
                 Files.delete(Paths.get(DIR));
             } catch (final IOException ioe) {
-                fail("Unable to delete " + fileName + " due to " + ioe.getClass().getSimpleName() + ": " +
-                        ioe.getMessage());
+                fail("Unable to delete " + fileName + " due to " + ioe.getClass().getSimpleName() + ": "
+                        + ioe.getMessage());
             }
         }
     }

@@ -24,6 +24,10 @@
   </properties>
   <body>
     <release version="2.6.2" date="2016-MM-DD" description="GA Release 2.6.2">
+      <action issue="LOG4J2-1440" dev="rgoers">
+        Fix bug in OnStartupTriggeringPolicy that allowed it to roll over on every reconfiguration. Added
+        minSize attribute.
+      </action>
       <action issue="LOG4J2-1414" dev="rpopma" type="fix" due-to="Ralph Goers">
         Fixed minor issues with the 2.6.1 web site.
       </action>
@@ -46,6 +50,9 @@
       <action issue="LOG4J2-1422" dev="rpopma" type="fix">
         Fixed issue where AsyncAppenderQueueFullPolicyTest sometimes hangs.
       </action>
+      <action issue="LOG4J2-1445" dev="ggregory" type="fix" due-to="Ludovic HOCHET">
+        OnStartupTriggeringPolicyTest fails on Windows saying the file is used by another process.
+      </action>
       <action issue="LOG4J2-1437" dev="rpopma" type="add">
         (GC) ObjectMessage and ReusableObjectMessage now avoid calling toString() on auto-boxed primitive parameters.
       </action>
@@ -60,6 +67,9 @@
       </action>
       <action issue="LOG4J2-1433" dev="ggregory" type="update">
         Update Jansi from 1.11 to 1.13.
+      </action>
+      <action issue="LOG4J2-1444" dev="ggregory" type="update">
+        Update Apache Commons Compress from 1.11 to 1.12.
       </action>
     </release>
     <release version="2.6.1" date="2016-06-05" description="GA Release 2.6.1">
