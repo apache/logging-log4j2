@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
  */
 public class MessageStyledConverterTest {
 
-    private static final String EXPECTED = "\u001B[31mWarning!\u001B[m Pants on \u001B[31mfire!\u001B[m"
+    private static final String EXPECTED = "\u001B[31;1mWarning!\u001B[m Pants on \u001B[31;1mfire!\u001B[m"
             + Constants.LINE_SEPARATOR;
 
     @Rule

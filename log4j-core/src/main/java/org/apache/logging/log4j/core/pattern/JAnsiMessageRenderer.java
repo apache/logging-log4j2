@@ -61,15 +61,15 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
         Map<String, Code[]> map;
         if (formats.length > 1) {
             final String allStylesStr = formats[1];
-            final String[] allStylesArr = splitOnCommas(allStylesStr);
+            final String[] allStylesArr = allStylesStr.split(" ");
             map = new HashMap<>(allStylesArr.length);
             for (final String styleStr : allStylesArr) {
-                final String[] styleArr = styleStr.split("\\s*=\\s*");
+                final String[] styleArr = styleStr.split("=");
                 if (styleArr.length != 2) {
                     StatusLogger.getLogger().warn("{} style {} is expected to be of length 2, not {}",
                             getClass().getSimpleName(), styleStr, styleArr.length);
                 } else {
-                    final String[] codeNames = splitOnCommas(styleArr[1]);
+                    final String[] codeNames = styleArr[1].split(",");
                     final Code[] codes = new Code[codeNames.length];
                     for (int i = 0; i < codes.length; i++) {
                         codes[i] = toCode(codeNames[i]);
@@ -145,16 +145,12 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
                 target.append(input);
                 return;
             }
-            final String replacement = render(items[1], splitOnCommas(items[0]));
+            final String replacement = render(items[1], items[0].split(","));
 
             target.append(replacement);
 
             i = k + END_TOKEN_LEN;
         }
-    }
-
-    private String[] splitOnCommas(final String allStylesStr) {
-        return allStylesStr.split("\\s*,\\s*");
     }
 
     private Code toCode(final String name) {

@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.fusesource.jansi.AnsiRenderer;
 
 /**
  * Returns the event's rendered message in a StringBuilder.

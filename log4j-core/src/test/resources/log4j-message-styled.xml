@@ -20,7 +20,7 @@
   <Appenders>
     <List name="List">
        <PatternLayout>
-         <Pattern>%message{ansi}{WarningStyle=red, DataStyle=blue}%n</Pattern>
+         <Pattern>%message{ansi}{WarningStyle=red,bold DataStyle=blue}%n</Pattern>
       </PatternLayout>
     </List>
   </Appenders>

@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
  */
 public class MessageJansiConverterTest {
 
-    private static final String EXPECTED = "\u001B[31mWarning!\u001B[m Pants on \u001B[31mfire!\u001B[m"
+    private static final String EXPECTED = "\u001B[31;1mWarning!\u001B[m Pants on \u001B[31mfire!\u001B[m"
             + Constants.LINE_SEPARATOR;
 
     @Rule
@@ -51,7 +51,7 @@ public class MessageJansiConverterTest {
     @Test
     public void testReplacement() {
         // See org.fusesource.jansi.AnsiRenderer
-        logger.error("@|red Warning!|@ Pants on @|red fire!|@");
+        logger.error("@|red,bold Warning!|@ Pants on @|red fire!|@");
 
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
