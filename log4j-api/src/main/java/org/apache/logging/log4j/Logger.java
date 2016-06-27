@@ -3586,7 +3586,7 @@ public interface Logger {
      * public int doSomething(String foo, int bar) {
      *     Message m = LOGGER.traceEntry("doSomething(foo={}, bar={})", foo, bar);
      *     // do something
-     *     return traceExit(value, m);
+     *     return traceExit(m, value);
      * }
      * </pre>
      *
