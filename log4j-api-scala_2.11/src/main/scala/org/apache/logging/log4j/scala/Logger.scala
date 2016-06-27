@@ -46,7 +46,7 @@ object Logger {
 }
 
 /**
-  * Scala wrapper for the Log4j [[org.apache.logging.log4j.Logger]] interface.
+  * Scala wrapper for the Log4j `Logger` interface.
   *
   * Frequently the purpose of logging is to provide information about what is happening in the system,
   * which requires including information about the objects being manipulated. In Scala, you can use
@@ -288,7 +288,7 @@ class Logger private(val delegate: ExtendedLogger) {
 
 
   /**
-    * Logs a [[Message]] with the specific [[Marker]] at the given [[Level]].
+    * Logs a `Message` with the specific `Marker` at the given `Level`.
     *
     * @param level   the logging level
     * @param marker  the marker data specific to this log statement
@@ -298,7 +298,7 @@ class Logger private(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMarkerMsg
 
   /**
-    * Logs a string with the specific [[Marker]] at the given [[Level]].
+    * Logs a string with the specific `Marker` at the given `Level`.
     *
     * @param level   the logging level
     * @param marker  the marker data specific to this log statement
@@ -308,7 +308,7 @@ class Logger private(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMarkerCseq
 
   /**
-    * Logs an object with the specific [[Marker]] at the given [[Level]].
+    * Logs an object with the specific `Marker` at the given `Level`.
     *
     * @param level   the logging level
     * @param marker  the marker data specific to this log statement
@@ -318,8 +318,8 @@ class Logger private(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMarkerObject
 
   /**
-    * Logs a [[Message]] with the specific [[Marker]] at the given [[Level]] including the stack trace
-    * of the given [[Throwable]].
+    * Logs a `Message` with the specific `Marker` at the given `Level` including the stack trace
+    * of the given `Throwable`.
     *
     * @param level   the logging level
     * @param marker  the marker data specific to this log statement
@@ -330,8 +330,8 @@ class Logger private(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMarkerMsgThrowable
 
   /**
-    * Logs a string with the specific [[Marker]] at the given [[Level]] including the stack trace
-    * of the given [[Throwable]].
+    * Logs a string with the specific `Marker` at the given `Level` including the stack trace
+    * of the given `Throwable`.
     *
     * @param level   the logging level
     * @param marker  the marker data specific to this log statement
@@ -342,8 +342,8 @@ class Logger private(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMarkerCseqThrowable
 
   /**
-    * Logs an object with the specific [[Marker]] at the given [[Level]] including the stack trace
-    * of the given [[Throwable]].
+    * Logs an object with the specific `Marker` at the given `Level` including the stack trace
+    * of the given `Throwable`.
     *
     * @param level   the logging level
     * @param marker  the marker data specific to this log statement
@@ -354,7 +354,7 @@ class Logger private(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMarkerObjectThrowable
 
   /**
-    * Logs a [[Message]] at the given [[Level]].
+    * Logs a `Message` at the given `Level`.
     *
     * @param level   the logging level
     * @param message the message to be logged
@@ -363,7 +363,7 @@ class Logger private(val delegate: ExtendedLogger) {
   macro LoggerMacro.logMsg
 
   /**
-    * Logs a string at the given [[Level]].
+    * Logs a string at the given `Level`.
     *
     * @param level   the logging level
     * @param message the message to be logged
@@ -372,7 +372,7 @@ class Logger private(val delegate: ExtendedLogger) {
   macro LoggerMacro.logCseq
 
   /**
-    * Logs an object at the given [[Level]].
+    * Logs an object at the given `Level`.
     *
     * @param level   the logging level
     * @param message the message to be logged
@@ -381,40 +381,40 @@ class Logger private(val delegate: ExtendedLogger) {
   macro LoggerMacro.logObject
 
   /**
-    * Logs a [[Message]] at the given [[Level]] including the stack trace of the given [[Throwable]].
+    * Logs a `Message` at the given `Level` including the stack trace of the given `Throwable`.
     *
     * @param level   the logging level
     * @param message the message to be logged
-    * @param cause   a [[Throwable]]
+    * @param cause   a `Throwable`
     */
   def apply(level: Level, message: Message, cause: Throwable): Unit =
   macro LoggerMacro.logMsgThrowable
 
   /**
-    * Logs a string at the given [[Level]] including the stack trace of the given [[Throwable]].
+    * Logs a string at the given `Level` including the stack trace of the given `Throwable`.
     *
     * @param level   the logging level
     * @param message the message to be logged
-    * @param cause   a [[Throwable]]
+    * @param cause   a `Throwable`
     */
   def apply(level: Level, message: CharSequence, cause: Throwable): Unit =
   macro LoggerMacro.logCseqThrowable
 
   /**
-    * Logs an object at the given [[Level]] including the stack trace of the given [[Throwable]].
+    * Logs an object at the given `Level` including the stack trace of the given `Throwable`.
     *
     * @param level   the logging level
     * @param message the message to be logged
-    * @param cause   a [[Throwable]]
+    * @param cause   a `Throwable`
     */
   def apply(level: Level, message: AnyRef, cause: Throwable): Unit =
   macro LoggerMacro.logObjectThrowable
 
 
   /**
-    * Checks whether this Logger is enabled for the the given [[Level]].
+    * Checks whether this Logger is enabled for the the given `Level`.
     *
-    * Note that passing in [[Level.OFF]] always returns `true`.
+    * Note that passing in `Level.OFF` always returns `true`.
     *
     * @param level the level to check
     * @return boolean - `true` if this Logger is enabled for the level, `false` otherwise
@@ -422,7 +422,7 @@ class Logger private(val delegate: ExtendedLogger) {
   def isEnabled(level: Level): Boolean = delegate.isEnabled(level)
 
   /**
-    * Checks whether this Logger is enabled for the the given [[Level]] and [[Marker]].
+    * Checks whether this Logger is enabled for the the given `Level` and `Marker`.
     *
     * @param level  the level to check
     * @param marker The marker to check
@@ -437,7 +437,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
     * logged.
     *
-    * @return The built [[EntryMessage]]
+    * @return The built `EntryMessage`
     */
   def traceEntry(): EntryMessage = delegate.traceEntry()
 
@@ -452,13 +452,13 @@ class Logger private(val delegate: ExtendedLogger) {
     * }}}
     *
     * @param params the parameters to the method.
-    * @return The built [[EntryMessage]]
+    * @return The built `EntryMessage`
     */
   def traceEntry(params: Any*): EntryMessage =
   macro LoggerMacro.traceEntryParams
 
   /**
-    * Logs entry to a method using a [[Message]] to describe the parameters.
+    * Logs entry to a method using a `Message` to describe the parameters.
     *
     * {{{
     * def doSomething(foo: Request): Unit = {
@@ -468,7 +468,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * }}}
     *
     * @param message the message
-    * @return The built [[EntryMessage]]
+    * @return The built `EntryMessage`
     */
   def traceEntry(message: Message): EntryMessage =
   macro LoggerMacro.traceEntryMessage
@@ -489,7 +489,7 @@ class Logger private(val delegate: ExtendedLogger) {
   /**
     * Logs exiting from a method with no result.
     *
-    * @param entryMessage the [[EntryMessage]] returned from one of the `traceEntry` methods
+    * @param entryMessage the `EntryMessage` returned from one of the `traceEntry` methods
     */
   def traceExit(entryMessage: EntryMessage): Unit = delegate.traceExit(entryMessage)
 
@@ -504,7 +504,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * }
     * }}}
     *
-    * @param entryMessage the [[EntryMessage]] returned from one of the `traceEntry` methods
+    * @param entryMessage the `EntryMessage` returned from one of the `traceEntry` methods
     * @param result       The result being returned from the method call
     * @return `result`
     */
@@ -562,7 +562,7 @@ class Logger private(val delegate: ExtendedLogger) {
 
 
   /**
-    * @return the [[Level]] associated with this Logger
+    * @return the `Level` associated with this Logger
     */
   def level: Level = delegate.getLevel
 
