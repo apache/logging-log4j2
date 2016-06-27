@@ -83,6 +83,7 @@
     <module>flume-embedded</module>
     <module>configuration</module>
     <module>loggerProperties</module>
+    <module>scala-api</module>
   </modules>
   <build>
     <plugins>
