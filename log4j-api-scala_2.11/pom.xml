@@ -31,6 +31,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <projectDir>/scala_2.11</projectDir>
     <scala.version>2.11.7</scala.version>
+    <scala.maven.plugin.version>3.2.2</scala.maven.plugin.version>
   </properties>
   <dependencies>
     <dependency>
@@ -78,7 +79,7 @@
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>${scala.maven.plugin.version}</version>
         <executions>
           <execution>
             <goals>
@@ -138,6 +139,11 @@
         <configuration>
           <targetJdk>${maven.compile.target}</targetJdk>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>${scala.maven.plugin.version}</version>
       </plugin>
     </plugins>
   </reporting>
