@@ -54,12 +54,10 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         }
         final String format = formats[0];
         switch (format) {
-        case "jansi":
-            return new JAnsiMessageRenderer();
-        case "styled":
-            return new StyledMessageRenderer();
+        case "ansi":
+            return new JAnsiMessageRenderer(formats);
         case "html":
-            return new HtmlMessageRenderer();
+            return new HtmlMessageRenderer(formats);
         }
         return null;
 

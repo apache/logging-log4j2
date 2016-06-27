@@ -18,6 +18,10 @@ package org.apache.logging.log4j.core.pattern;
 
 public final class HtmlMessageRenderer implements MessageRenderer {
 
+    public HtmlMessageRenderer(String[] formats) {
+        // TODO Auto-generated constructor stub
+    }
+
     @Override
     public void render(StringBuilder source, StringBuilder target) {
         // TODO Auto-generated method stub

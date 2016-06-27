@@ -31,13 +31,13 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class MessageJansiConverterTest {
+public class MessageStyledConverterTest {
 
     private static final String EXPECTED = "\u001B[31mWarning!\u001B[m Pants on \u001B[31mfire!\u001B[m"
             + Constants.LINE_SEPARATOR;
 
     @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-message-ansi.xml");
+    public LoggerContextRule init = new LoggerContextRule("log4j-message-styled.xml");
 
     private Logger logger;
     private ListAppender app;
@@ -51,7 +51,7 @@ public class MessageJansiConverterTest {
     @Test
     public void testReplacement() {
         // See org.fusesource.jansi.AnsiRenderer
-        logger.error("@|red Warning!|@ Pants on @|red fire!|@");
+        logger.error("@|WarningStyle Warning!|@ Pants on @|WarningStyle fire!|@");
 
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);

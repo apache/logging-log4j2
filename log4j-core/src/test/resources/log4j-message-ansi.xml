@@ -20,7 +20,7 @@
   <Appenders>
     <List name="List">
        <PatternLayout>
-         <Pattern>%message{jansi}%n</Pattern>
+         <Pattern>%message{ansi}%n</Pattern>
       </PatternLayout>
     </List>
   </Appenders>
