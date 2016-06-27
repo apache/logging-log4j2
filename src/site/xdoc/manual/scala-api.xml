@@ -67,6 +67,10 @@ class MyClass extends BaseClass with Logging {
                     logger name, in a fashion very similar to the hierarchy used for Java/Scala package names.
                     The Logging trait will automatically name the Logger accordingly to the class it is being used in.
                 </p>
+
+                <h4>ScalaDoc</h4>
+                <p><a href="../log4j-api-scala_2.11/scaladocs/index.html#org.apache.logging.log4j.scala.package">ScalaDoc</a>.</p>
+
             </subsection>
         </section>
     </body>
