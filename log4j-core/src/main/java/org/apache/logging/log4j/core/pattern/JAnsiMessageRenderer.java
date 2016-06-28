@@ -44,6 +44,12 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  *   &#64;|bold,red Warning!|@
  * </pre>
  * 
+ * You can also define style names in the configuration:
+ * 
+ * <pre>
+ * %message{ansi}{WarningStyle=red,bold DataStyle=blue}%n
+ * </pre>
+ * 
  * Note: This class copied and tweaked code from JAnsi's AnsiRenderer (which is licensed as Apache 2.0.) If JAnsi makes
  * AnsiRenderer.render(String, String...) public, we can get rid of our copy. See
  * <a href=" https://github.com/fusesource/jansi/pull/61">PR #61</a>.
@@ -52,35 +58,60 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  */
 public final class JAnsiMessageRenderer implements MessageRenderer {
 
-    private static final int BEGIN_TOKEN_LEN = AnsiRenderer.BEGIN_TOKEN.length();
-
-    private static final int END_TOKEN_LEN = AnsiRenderer.END_TOKEN.length();
+    private final int beginTokenLen;
+    private final int endTokenLen;
+    private final String beginToken;
+    private final String endToken;
     private final Map<String, Code[]> styleMap;
 
     public JAnsiMessageRenderer(final String[] formats) {
+        String tempBeginToken = AnsiRenderer.BEGIN_TOKEN;
+        String tempEndToken = AnsiRenderer.END_TOKEN;
         Map<String, Code[]> map;
         if (formats.length > 1) {
             final String allStylesStr = formats[1];
-            final String[] allStylesArr = allStylesStr.split(" ");
-            map = new HashMap<>(allStylesArr.length);
-            for (final String styleStr : allStylesArr) {
-                final String[] styleArr = styleStr.split("=");
-                if (styleArr.length != 2) {
-                    StatusLogger.getLogger().warn("{} style {} is expected to be of length 2, not {}",
-                            getClass().getSimpleName(), styleStr, styleArr.length);
+            // Style def split
+            final String[] allStyleAssignmentsArr = allStylesStr.split(" ");
+            map = new HashMap<>(allStyleAssignmentsArr.length);
+            for (final String styleAssignmentStr : allStyleAssignmentsArr) {
+                final String[] styleAssignmentArr = styleAssignmentStr.split("=");
+                if (styleAssignmentArr.length != 2) {
+                    StatusLogger.getLogger().warn("{} parsing style \"{}\", expected format: StyleName=Code(,Code)*",
+                            getClass().getSimpleName(), styleAssignmentStr);
                 } else {
-                    final String[] codeNames = styleArr[1].split(",");
-                    final Code[] codes = new Code[codeNames.length];
-                    for (int i = 0; i < codes.length; i++) {
-                        codes[i] = toCode(codeNames[i]);
+                    final String styleName = styleAssignmentArr[0];
+                    final String codeListStr = styleAssignmentArr[1];
+                    final String[] codeNames = codeListStr.split(",");
+                    if (codeNames.length == 0) {
+                        StatusLogger.getLogger().warn(
+                                "{} parsing style \"{}\", expected format: StyleName=Code(,Code)*",
+                                getClass().getSimpleName(), styleAssignmentStr);
+                    } else {
+                        switch (styleName) {
+                        case "BeginToken":
+                            tempBeginToken = codeNames[0];
+                            break;
+                        case "EndToken":
+                            tempEndToken = codeNames[0];
+                            break;
+                        default:
+                            final Code[] codes = new Code[codeNames.length];
+                            for (int i = 0; i < codes.length; i++) {
+                                codes[i] = toCode(codeNames[i]);
+                            }
+                            map.put(styleName, codes);
+                        }
                     }
-                    map.put(styleArr[0], codes);
                 }
             }
         } else {
             map = new HashMap<>(0);
         }
         styleMap = map;
+        beginToken = tempBeginToken;
+        endToken = tempEndToken;
+        beginTokenLen = tempBeginToken.length();
+        endTokenLen = tempEndToken.length();
     }
 
     private void render(final Ansi ansi, final Code code) {
@@ -121,7 +152,7 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
         int j, k;
 
         while (true) {
-            j = input.indexOf(AnsiRenderer.BEGIN_TOKEN, i);
+            j = input.indexOf(beginToken, i);
             if (j == -1) {
                 if (i == 0) {
                     target.append(input);
@@ -131,13 +162,13 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
                 return;
             }
             target.append(input.substring(i, j));
-            k = input.indexOf(AnsiRenderer.END_TOKEN, j);
+            k = input.indexOf(endToken, j);
 
             if (k == -1) {
                 target.append(input);
                 return;
             }
-            j += BEGIN_TOKEN_LEN;
+            j += beginTokenLen;
             final String spec = input.substring(j, k);
 
             final String[] items = spec.split(AnsiRenderer.CODE_TEXT_SEPARATOR, 2);
@@ -149,7 +180,7 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
 
             target.append(replacement);
 
-            i = k + END_TOKEN_LEN;
+            i = k + endTokenLen;
         }
     }
 
