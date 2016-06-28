@@ -580,48 +580,57 @@ class Logger private(val delegate: ExtendedLogger) {
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
     *
+    * Should normally not be used directly from application code, but needs to be public for access by macros.
+    *
     * @param level   log level
     * @param marker  marker or `null`
     * @param message message
     * @param cause   cause or `null`
     */
-  private[scala] def logMessage(level: Level, marker: Marker, message: Message, cause: Throwable): Unit = {
+  def logMessage(level: Level, marker: Marker, message: Message, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, message, cause)
   }
 
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
     *
-    * @param level   log level
-    * @param marker  marker or `null`
-    * @param message message
-    * @param cause   cause or `null`
-    */
-  private[scala] def logMessage(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit = {
-    delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
-  }
-
-  /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
-    * level is enabled.
+    * Should normally not be used directly from application code, but needs to be public for access by macros.
     *
     * @param level   log level
     * @param marker  marker or `null`
     * @param message message
     * @param cause   cause or `null`
     */
-  private[scala] def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
+  def logMessage(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
   }
 
-  private[scala] def traceEntryParams(params: Any*): EntryMessage = {
+  /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
+    * level is enabled.
+    *
+    * Should normally not be used directly from application code, but needs to be public for access by macros.
+    *
+    * @param level   log level
+    * @param marker  marker or `null`
+    * @param message message
+    * @param cause   cause or `null`
+    */
+  def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
+    delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
+  }
+
+  /** Should normally not be used directly from application code, but needs to be public for access by macros. */
+  def traceEntryParams(params: Any*): EntryMessage = {
     delegate.traceEntry(null, params) // TODO should not do ifEnabled check
   }
 
-  private[scala] def traceEntryMessage(message: Message): EntryMessage = {
+  /** Should normally not be used directly from application code, but needs to be public for access by macros. */
+  def traceEntryMessage(message: Message): EntryMessage = {
     delegate.traceEntry(message) // TODO should not do ifEnabled check
   }
 
-  private[scala] def traceExitMessageResult[R](message: Message, result: R): Unit = {
+  /** Should normally not be used directly from application code, but needs to be public for access by macros. */
+  def traceExitMessageResult[R](message: Message, result: R): Unit = {
     delegate.traceExit(message, result) // TODO should not do ifEnabled check
   }
 
