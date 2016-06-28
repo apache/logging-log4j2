@@ -51,9 +51,9 @@ public class OnStartupTriggeringPolicyTest {
         final Path rolled = Paths.get(ROLLED_FILE);
         Files.deleteIfExists(target);
         Files.deleteIfExists(rolled);
-        final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"));
-        Files.copy(is, target);
-        is.close();
+        try (final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"))) {
+            Files.copy(is, target);
+        }
         final long size = Files.size(target);
         assertTrue(size > 0);
         long timeStamp = System.currentTimeMillis() - 120000;
