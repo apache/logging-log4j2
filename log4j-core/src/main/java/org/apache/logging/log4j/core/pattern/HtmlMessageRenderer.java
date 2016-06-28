@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+/**
+ * MIGHT BE DELETED ANY MOMENT FROM THIS BRANCH.
+ */
 public final class HtmlMessageRenderer implements MessageRenderer {
 
     public HtmlMessageRenderer(String[] formats) {
