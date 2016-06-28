@@ -50,9 +50,8 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  * %message{ansi}{WarningStyle=red,bold DataStyle=blue}%n
  * </pre>
  * 
- * Note: This class copied and tweaked code from JAnsi's AnsiRenderer (which is licensed as Apache 2.0.) If JAnsi makes
- * AnsiRenderer.render(String, String...) public, we can get rid of our copy. See
- * <a href=" https://github.com/fusesource/jansi/pull/61">PR #61</a>.
+ * Note: This class originally copied and then heavily modified code from JAnsi's AnsiRenderer (which is licensed as
+ * Apache 2.0.)
  * 
  * @see AnsiRenderer
  */
