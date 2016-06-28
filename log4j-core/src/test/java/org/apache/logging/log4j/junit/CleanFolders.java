@@ -21,33 +21,19 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.rules.ExternalResource;
 
 /**
  * A JUnit test rule to automatically delete folders before and after a test is run.
  */
-public class CleanFolders extends ExternalResource {
+public class CleanFolders extends AbstractExternalFileResources {
     private static final int MAX_TRIES = 10;
-    private final List<File> folders;
 
-    public CleanFolders(final File... files) {
-        this.folders = Arrays.asList(files);
+    public CleanFolders(final File... folders) {
+        super(folders);
     }
 
-    public CleanFolders(final String... fileNames) {
-        this.folders = new ArrayList<>(fileNames.length);
-        for (final String fileName : fileNames) {
-            this.folders.add(new File(fileName));
-        }
-    }
-
-    @Override
-    protected void before() {
-        this.clean();
+    public CleanFolders(final String... folderNames) {
+        super(folderNames);
     }
 
     @Override
@@ -55,8 +41,13 @@ public class CleanFolders extends ExternalResource {
         this.clean();
     }
 
+    @Override
+    protected void before() {
+        this.clean();
+    }
+
     private void clean() {
-        for (final File folder : folders) {
+        for (final File folder : getFiles()) {
             for (int i = 0; i < MAX_TRIES; i++) {
                 final Path targetPath = folder.toPath();
                 if (Files.exists(targetPath)) {
@@ -75,12 +66,4 @@ public class CleanFolders extends ExternalResource {
         }
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("CleanFolders [");
-        builder.append(folders);
-        builder.append("]");
-        return builder.toString();
-    }
 }

@@ -21,32 +21,28 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.rules.ExternalResource;
 
 /**
  * A JUnit test rule to automatically delete files after a test is run.
  */
-public class CleanFiles extends ExternalResource {
+public class CleanFiles extends AbstractExternalFileResources {
     private static final int MAX_TRIES = 10;
-    private final List<File> files;
-
+    
     public CleanFiles(final File... files) {
-        this.files = Arrays.asList(files);
+        super(files);
     }
 
     public CleanFiles(final String... fileNames) {
-        this.files = new ArrayList<>(fileNames.length);
-        for (final String fileName : fileNames) {
-            this.files.add(new File(fileName));
-        }
+        super(fileNames);
     }
 
+    @Override
+    protected void after() {
+        this.clean();
+    }
+    
     private void clean() {
-        for (final File file : files) {
+        for (final File file : getFiles()) {
             for (int i = 0; i < MAX_TRIES; i++) {
                 try {
                     Files.deleteIfExists(file.toPath());
@@ -61,17 +57,4 @@ public class CleanFiles extends ExternalResource {
         }
     }
 
-    @Override
-    protected void after() {
-        this.clean();
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("CleanFiles [");
-        builder.append(files);
-        builder.append("]");
-        return builder.toString();
-    }
 }
