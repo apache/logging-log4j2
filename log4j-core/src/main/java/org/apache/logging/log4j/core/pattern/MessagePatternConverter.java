@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -51,11 +53,11 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         if (formats != null && formats.length == 0) {
             return null;
         }
-        final String format = formats[0];
+        final String format = formats[0].toUpperCase(Locale.ROOT);
         switch (format) {
-        case "ansi":
+        case "ANSI":
             return new JAnsiMessageRenderer(formats);
-        case "html":
+        case "HTML":
             return new HtmlMessageRenderer(formats);
         }
         return null;
