@@ -83,6 +83,7 @@ public class RollingAppenderCronTest {
         final Path src = FileSystems.getDefault().getPath("target/test-classes/log4j-rolling-cron2.xml");
         final OutputStream os = new FileOutputStream("target/test-classes/log4j-rolling-cron.xml");
         Files.copy(src, os);
+        os.close();
         Thread.sleep(5000);
         // force a reconfiguration
         for (int i = 0; i < MAX_TRIES; ++i) {
