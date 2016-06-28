@@ -92,16 +92,6 @@ public class RollingAppenderSizeTest {
         this.chain = RuleChain.outerRule(new CleanFolders(new File(DIR))).around(loggerContextRule);
     }
 
-    @BeforeClass
-    public static void beforeClass() {
-        deleteDir();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        deleteDir();
-    }
-
     @Before
     public void setUp() throws Exception {
         this.logger = this.loggerContextRule.getLogger(RollingAppenderSizeTest.class.getName());
@@ -145,22 +135,6 @@ public class RollingAppenderSizeTest {
                 } finally {
                     Closer.close(in);
                 }
-            }
-        }
-    }
-
-    private static void deleteDir() {
-        if (Files.exists(Paths.get(DIR))) {
-            String fileName = null;
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-                for (final Path path : directoryStream) {
-                    fileName = path.toFile().getName();
-                    Files.delete(path);
-                }
-                Files.delete(Paths.get(DIR));
-            } catch (final IOException ioe) {
-                fail("Unable to delete " + fileName + " due to " + ioe.getClass().getSimpleName() + ": "
-                        + ioe.getMessage());
             }
         }
     }

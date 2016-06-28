@@ -28,7 +28,7 @@ import java.util.List;
 import org.junit.rules.ExternalResource;
 
 /**
- * A JUnit test rule to automatically delete folders after a test is run.
+ * A JUnit test rule to automatically delete folders before and after a test is run.
  */
 public class CleanFolders extends ExternalResource {
     private static final int MAX_TRIES = 10;
@@ -43,6 +43,11 @@ public class CleanFolders extends ExternalResource {
         for (final String fileName : fileNames) {
             this.folders.add(new File(fileName));
         }
+    }
+
+    @Override
+    protected void before() {
+        this.clean();
     }
 
     @Override
