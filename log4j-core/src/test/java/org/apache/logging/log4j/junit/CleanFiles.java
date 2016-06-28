@@ -19,6 +19,7 @@ package org.apache.logging.log4j.junit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,12 +49,10 @@ public class CleanFiles extends ExternalResource {
     private void clean() {
         for (final File file : files) {
             for (int i = 0; i < MAX_TRIES; i++) {
-                if (file.exists()) {
-                    try {
-                        FileSystems.getDefault().provider().delete(file.toPath());
-                    } catch (final IOException e) {
-                        fail(e.toString());
-                    }
+                try {
+                    Files.deleteIfExists(file.toPath());
+                } catch (final IOException e) {
+                    fail(e.toString());
                 }
                 try {
                     Thread.sleep(200);
