@@ -142,7 +142,6 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
             }
         }
         return ansi.a(text).reset().toString();
-
     }
 
     @Override
