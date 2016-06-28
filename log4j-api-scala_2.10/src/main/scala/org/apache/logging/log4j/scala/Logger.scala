@@ -60,7 +60,7 @@ object Logger {
   * Since this wrapper is implemented with macros, the String construction and method invocations
   * will only occur when debug logging is enabled.
   */
-class Logger private(val delegate: ExtendedLogger) {
+class Logger private(val delegate: ExtendedLogger) { // TODO extends AnyVal ?
 
   private final val FQCN = classOf[Logger].getName
 
@@ -618,6 +618,9 @@ class Logger private(val delegate: ExtendedLogger) {
   def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
   }
+
+
+  // TODO inline those to get FQCN correct? make macro of other trace methods as well
 
   /** Should normally not be used directly from application code, but needs to be public for access by macros. */
   def traceEntryParams(params: Any*): EntryMessage = {

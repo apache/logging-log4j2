@@ -431,7 +431,7 @@ class Logger private(val delegate: ExtendedLogger) {
   def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
 
 
-  // TODO fix FQCN for flow logging
+  // TODO fix FQCN for flow logging - Break out flow logging logic from AbstractLogger into somethimg accessible from Scala API ?
 
   /**
     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
