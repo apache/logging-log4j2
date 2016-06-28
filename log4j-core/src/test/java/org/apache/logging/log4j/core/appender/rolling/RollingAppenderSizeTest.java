@@ -28,12 +28,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -43,11 +38,8 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.junit.CleanFolders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -89,7 +81,7 @@ public class RollingAppenderSizeTest {
     public RollingAppenderSizeTest(final String configFile, final String fileExtension) {
         this.fileExtension = fileExtension;
         this.loggerContextRule = new LoggerContextRule(configFile);
-        this.chain = RuleChain.outerRule(new CleanFolders(new File(DIR))).around(loggerContextRule);
+        this.chain = loggerContextRule.withCleanFoldersRule(DIR);
     }
 
     @Before

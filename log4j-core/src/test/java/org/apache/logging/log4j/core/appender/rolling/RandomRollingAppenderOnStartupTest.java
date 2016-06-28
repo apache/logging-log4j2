@@ -54,15 +54,15 @@ public class RandomRollingAppenderOnStartupTest {
     }
 
     @Rule
-    public LoggerContextRule init;
+    public LoggerContextRule loggerContextRule;
 
     public RandomRollingAppenderOnStartupTest(final String configFile) {
-        this.init = new LoggerContextRule(configFile);
+        this.loggerContextRule = new LoggerContextRule(configFile);
     }
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger(RandomRollingAppenderOnStartupTest.class.getName());
+        this.logger = this.loggerContextRule.getLogger(RandomRollingAppenderOnStartupTest.class.getName());
     }
 
     @BeforeClass

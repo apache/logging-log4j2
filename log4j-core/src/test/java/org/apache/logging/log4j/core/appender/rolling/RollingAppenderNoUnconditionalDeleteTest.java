@@ -54,18 +54,18 @@ public class RollingAppenderNoUnconditionalDeleteTest {
     }
 
     @Rule
-    public LoggerContextRule init;
+    public LoggerContextRule loggerContextRule;
 
     public RollingAppenderNoUnconditionalDeleteTest(final String configFile, final String dir) {
         this.directory = new File(dir);
-        this.init = new LoggerContextRule(configFile);
+        this.loggerContextRule = new LoggerContextRule(configFile);
         deleteDir();
         deleteDirParent();
     }
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger();
+        this.logger = this.loggerContextRule.getLogger();
     }
 
     @Test

@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.List;
+
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -26,12 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.rules.RuleChain;
 
 /**
  *
@@ -44,21 +44,20 @@ public class PropertiesRoutingAppenderTest {
 
     private ListAppender app;
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule(CONFIG);
+    private LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
-    public CleanFiles files = new CleanFiles(UNKNOWN_LOG_FILE, ALERT_LOG_FILE, ACTIVITY_LOG_FILE);
+    public RuleChain rules = loggerContextRule.withCleanFilesRule(UNKNOWN_LOG_FILE, ALERT_LOG_FILE, ACTIVITY_LOG_FILE);
 
     @Before
     public void setUp() throws Exception {
-        this.app = this.init.getListAppender("List");
+        this.app = this.loggerContextRule.getListAppender("List");
     }
 
     @After
     public void tearDown() throws Exception {
         this.app.clear();
-        this.init.getContext().stop();
+        this.loggerContextRule.getContext().stop();
     }
 
     @Test

@@ -49,8 +49,6 @@ public class OnStartupTriggeringPolicyTest {
         final Configuration configuration = new DefaultConfiguration();
         final Path target = Paths.get(TARGET_FILE);
         final Path rolled = Paths.get(ROLLED_FILE);
-        Files.deleteIfExists(target);
-        Files.deleteIfExists(rolled);
         try (final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"))) {
             Files.copy(is, target);
         }
