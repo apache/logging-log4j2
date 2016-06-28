@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.junit;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.rules.ExternalResource;
-
-import static org.junit.Assert.*;
 
 /**
  * A JUnit test rule to automatically delete files after a test is run.
