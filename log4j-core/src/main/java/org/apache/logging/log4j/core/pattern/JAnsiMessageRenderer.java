@@ -47,7 +47,13 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  * You can also define style names in the configuration:
  * 
  * <pre>
- * %message{ansi}{WarningStyle=red,bold DataStyle=blue}%n
+ * %message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n
+ * </pre>
+ * 
+ * The call site can look like this:
+ * 
+ * <pre>
+ * logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());
  * </pre>
  * 
  * Note: This class originally copied and then heavily modified code from JAnsi's AnsiRenderer (which is licensed as
