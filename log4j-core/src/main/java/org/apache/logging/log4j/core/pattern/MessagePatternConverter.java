@@ -50,18 +50,16 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
     }
 
     private MessageRenderer loadMessageRenderer(String[] options) {
-        if (formats != null && formats.length == 0) {
-            return null;
-        }
-        final String format = formats[0].toUpperCase(Locale.ROOT);
-        switch (format) {
-        case "ANSI":
-            return new JAnsiMessageRenderer(formats);
-        case "HTML":
-            return new HtmlMessageRenderer(formats);
+        if (formats != null && formats.length > 0) {
+            final String format = formats[0].toUpperCase(Locale.ROOT);
+            switch (format) {
+            case "ANSI":
+                return new JAnsiMessageRenderer(formats);
+            case "HTML":
+                return new HtmlMessageRenderer(formats);
+            }
         }
         return null;
-
     }
 
     /**
