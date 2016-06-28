@@ -2317,23 +2317,22 @@ public interface Logger {
     boolean isDebugEnabled(Marker marker);
 
     /**
-     * Checks whether this Logger is enabled for the the given Level.
+     * Checks whether this Logger is enabled for the given Level.
      * <p>
      * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
      * </p>
      *
-     * @param level the level to check
+     * @param level the Level to check
      * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
      */
     boolean isEnabled(Level level);
 
     /**
-     * Checks whether this logger is enabled at the specified level and an optional Marker.
+     * Checks whether this Logger is enabled for the given Level and an optional Marker.
      *
-     * @param level The Level to check.
+     * @param level The Level to check
      * @param marker The marker data specific to this log statement.
-     * @return boolean - {@code true} if this Logger is enabled for level {@link Level#WARN WARN}, {@code false}
-     *         otherwise.
+     * @return boolean - {@code true} if this Logger is enabled for level and marker, {@code false} otherwise.
      */
     boolean isEnabled(Level level, Marker marker);
 
