@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.ByteArrayInputStream;
+import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.AfterClass;
+import org.apache.logging.log4j.junit.CleanFiles;
+import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -40,6 +41,9 @@ public class OnStartupTriggeringPolicyTest {
     private static final String ROLLED_FILE = "target/rolling1/test1-1.log";
     private static final String TEST_DATA = "Hello world!";
 
+    @Rule
+    public CleanFiles rule = new CleanFiles(TARGET_FILE, ROLLED_FILE);
+    
     @Test
     public void testPolicy() throws Exception {
         final Configuration configuration = new DefaultConfiguration();
@@ -70,14 +74,6 @@ public class OnStartupTriggeringPolicyTest {
         } finally {
             manager.release();
         }
-    }
-
-    @AfterClass
-    public static void cleanup() throws Exception {
-        final Path target = Paths.get(TARGET_FILE);
-        final Path rolled = Paths.get(ROLLED_FILE);
-        Files.deleteIfExists(target);
-        Files.deleteIfExists(rolled);
     }
 
 }
