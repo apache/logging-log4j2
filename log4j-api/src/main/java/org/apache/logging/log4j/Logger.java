@@ -2311,7 +2311,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#DEBUG DEBUG} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level DEBUG, {@code false} otherwise.
      */
     boolean isDebugEnabled(Marker marker);
@@ -2328,10 +2328,10 @@ public interface Logger {
     boolean isEnabled(Level level);
 
     /**
-     * Checks whether this Logger is enabled for the given Level and an optional Marker.
+     * Checks whether this Logger is enabled for the given Level and Marker.
      *
      * @param level The Level to check
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level and marker, {@code false} otherwise.
      */
     boolean isEnabled(Level level, Marker marker);
@@ -2347,7 +2347,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level {@link Level#ERROR ERROR}, {@code false}
      *         otherwise.
      */
@@ -2364,7 +2364,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#FATAL FATAL} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level {@link Level#FATAL FATAL}, {@code false}
      *         otherwise.
      */
@@ -2380,7 +2380,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#INFO INFO} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level INFO, {@code false} otherwise.
      */
     boolean isInfoEnabled(Marker marker);
@@ -2395,7 +2395,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#TRACE TRACE} level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level TRACE, {@code false} otherwise.
      */
     boolean isTraceEnabled(Marker marker);
@@ -2411,7 +2411,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#WARN WARN} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level {@link Level#WARN WARN}, {@code false}
      *         otherwise.
      */
