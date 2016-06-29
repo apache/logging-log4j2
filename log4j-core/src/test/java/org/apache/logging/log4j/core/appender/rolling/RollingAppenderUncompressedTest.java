@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.junit.CleanFolders;
@@ -39,7 +40,7 @@ public class RollingAppenderUncompressedTest {
     private static final String CONFIG = "log4j-rolling4.xml";
     private static final String DIR = "target/rolling4";
 
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger(RollingAppenderUncompressedTest.class.getName());
+    private Logger logger = LogManager.getLogger(RollingAppenderUncompressedTest.class.getName());
     
     @ClassRule
     public static CleanFolders rule = new CleanFolders(CONFIG);
