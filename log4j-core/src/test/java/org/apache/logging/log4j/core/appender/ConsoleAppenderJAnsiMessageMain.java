@@ -20,7 +20,6 @@ import static org.fusesource.jansi.Ansi.ansi;
 import static org.fusesource.jansi.Ansi.Color.CYAN;
 import static org.fusesource.jansi.Ansi.Color.RED;
 
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
