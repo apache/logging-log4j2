@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +34,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -44,15 +44,10 @@ public class RollingAppenderDeleteMaxDepthTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-maxdepth.xml";
     private static final String DIR = "target/rolling-with-delete-depth/test";
 
-    private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            deleteDir();
-        }
-    }).around(ctx);
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
@@ -62,7 +57,7 @@ public class RollingAppenderDeleteMaxDepthTest {
         final Path p3 = writeTextTo(DIR + "/1/2/test-4.log");
         final Path p4 = writeTextTo(DIR + "/1/2/3/test-4.log");
 
-        final Logger logger = ctx.getLogger();
+        final Logger logger = loggerContextRule.getLogger();
         for (int i = 0; i < 10; ++i) {
             // 30 chars per message: each message triggers a rollover
             logger.debug("This is a test message number " + i); // 30 chars:
@@ -96,17 +91,6 @@ public class RollingAppenderDeleteMaxDepthTest {
             buffy.flush();
         }
         return path;
-    }
-
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
-        }
     }
 
     public static void main(final String[] args) {

@@ -18,42 +18,43 @@ package org.apache.logging.log4j.junit;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.nio.file.Files;
 
-import org.junit.rules.ExternalResource;
-
-import static org.junit.Assert.*;
+import org.junit.Assert;
 
 /**
  * A JUnit test rule to automatically delete files after a test is run.
  */
-public class CleanFiles extends ExternalResource {
+public class CleanFiles extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;
-    private final List<File> files;
+
+    public CleanFiles(final boolean before, final boolean after, final File... files) {
+        super(before, after, files);
+    }
+
+    public CleanFiles(final boolean before, final boolean after, final String... fileNames) {
+        super(before, after, fileNames);
+    }
 
     public CleanFiles(final File... files) {
-        this.files = Arrays.asList(files);
+        super(true, true, files);
     }
 
     public CleanFiles(final String... fileNames) {
-        this.files = new ArrayList<>(fileNames.length);
-        for (final String fileName : fileNames) {
-            this.files.add(new File(fileName));
-        }
+        super(true, true, fileNames);
     }
 
-    private void clean() {
-        for (final File file : files) {
+    @Override
+    protected void clean() {
+        for (final File file : getFiles()) {
             for (int i = 0; i < MAX_TRIES; i++) {
-                if (file.exists()) {
-                    try {
-                        FileSystems.getDefault().provider().delete(file.toPath());
-                    } catch (final IOException e) {
-                        fail(e.toString());
+                try {
+                    if (Files.deleteIfExists(file.toPath())) {
+                        // Break from MAX_TRIES and move on to the next file.
+                        break;
                     }
+                } catch (final IOException e) {
+                    Assert.fail(file + ": " + e.toString());
                 }
                 try {
                     Thread.sleep(200);
@@ -63,17 +64,4 @@ public class CleanFiles extends ExternalResource {
         }
     }
 
-    @Override
-    protected void after() {
-        this.clean();
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("CleanFiles [");
-        builder.append(files);
-        builder.append("]");
-        return builder.toString();
-    }
 }

@@ -42,30 +42,27 @@ public class RollingAppenderOnStartupTest {
 
     private static final String DIR = "target/onStartup";
 
-    private final String fileExtension;
-
     private Logger logger;
 
     @Parameterized.Parameters(name = "{0} \u2192 {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { //
                 // @formatter:off
-                {"log4j-test4.xml", ".gz"},
-                {"log4j-test4.xml", ".gz"},});
+                {"log4j-test4.xml"},
+                {"log4j-test4.xml"},});
                 // @formatter:on
     }
 
     @Rule
-    public LoggerContextRule init;
+    public LoggerContextRule loggerContextRule;
 
-    public RollingAppenderOnStartupTest(final String configFile, final String fileExtension) {
-        this.fileExtension = fileExtension;
-        this.init = new LoggerContextRule(configFile);
+    public RollingAppenderOnStartupTest(final String configFile) {
+        this.loggerContextRule = new LoggerContextRule(configFile);
     }
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger(RollingAppenderOnStartupTest.class.getName());
+        this.logger = this.loggerContextRule.getLogger(RollingAppenderOnStartupTest.class.getName());
     }
 
     @BeforeClass

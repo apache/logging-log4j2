@@ -18,64 +18,76 @@ package org.apache.logging.log4j.junit;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
-import org.junit.rules.ExternalResource;
+import org.junit.Assert;
 
 /**
- * A JUnit test rule to automatically delete folders after a test is run.
+ * A JUnit test rule to automatically delete folders recursively before (optional) and after (optional) a test is run.
  */
-public class CleanFolders extends ExternalResource {
+public class CleanFolders extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;
-    private final List<File> folders;
 
-    public CleanFolders(final File... files) {
-        this.folders = Arrays.asList(files);
+    public CleanFolders(final boolean before, final boolean after, final File... files) {
+        super(before, after, files);
     }
 
-    public CleanFolders(final String... fileNames) {
-        this.folders = new ArrayList<>(fileNames.length);
-        for (final String fileName : fileNames) {
-            this.folders.add(new File(fileName));
-        }
+    public CleanFolders(final boolean before, final boolean after, final String... fileNames) {
+        super(before, after, fileNames);
+    }
+
+    public CleanFolders(final File... folders) {
+        super(true, true, folders);
+    }
+
+    public CleanFolders(final String... folderNames) {
+        super(true, true, folderNames);
     }
 
     @Override
-    protected void after() {
-        this.clean();
-    }
-
-    private void clean() {
-        for (final File folder : folders) {
+    protected void clean() {
+        IOException lastEx = null;
+        Path lastPath = null;
+        for (final File folder : getFiles()) {
+            final Path path = folder.toPath();
             for (int i = 0; i < MAX_TRIES; i++) {
-                final Path targetPath = folder.toPath();
-                if (Files.exists(targetPath)) {
-                    String fileName = null;
-                    try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(targetPath)) {
-                        for (final Path path : directoryStream) {
-                            fileName = path.toFile().getName();
-                            Files.deleteIfExists(path);
-                        }
-                        Files.deleteIfExists(targetPath);
-                    } catch (final IOException e) {
-                        throw new IllegalStateException(fileName, e);
-                    }
+                try {
+                    cleanFolder(path);
+                    // break from MAX_TRIES and goes to the next folder
+                    break;
+                } catch (final IOException e) {
+                    // We will try again.
+                    lastEx = e;
+                    lastPath = path;
                 }
             }
         }
+        if (lastEx != null) {
+            lastEx.printStackTrace();
+            Assert.fail(lastPath + ": " + lastEx);
+        }
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("CleanFolders [");
-        builder.append(folders);
-        builder.append("]");
-        return builder.toString();
+    private void cleanFolder(final Path folder) throws IOException {
+        if (Files.exists(folder) && Files.isDirectory(folder)) {
+            Files.walkFileTree(folder, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                    Files.deleteIfExists(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
     }
+
 }
