@@ -350,7 +350,7 @@ private object LoggerMacro {
       List(
         reify(Level.TRACE).tree,
         reify(AbstractLogger.ENTRY_MARKER).tree,
-        reify(null.asInstanceOf[AnyRef]).tree,
+        reify(null: AnyRef).tree,
         reify(null).tree
       )
     )
@@ -365,7 +365,7 @@ private object LoggerMacro {
 
   def traceEntryMessage(c: LoggerContext)(message: c.Expr[Message]): c.Expr[EntryMessage] =
     c.universe.reify(
-      if (c.prefix.splice.delegate.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)) {
+      if (c.prefix.splice.delegate.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null: AnyRef, null)) {
         c.prefix.splice.delegate.traceEntry(message.splice)  // TODO should not do ifEnabled check
       } else {
         null
