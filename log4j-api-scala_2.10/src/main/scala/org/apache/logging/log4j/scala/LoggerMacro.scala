@@ -338,6 +338,11 @@ private object LoggerMacro {
     )
 
 
+  def traceEntry(c: LoggerContext)(): c.Expr[EntryMessage] =
+    c.universe.reify(
+      c.prefix.splice.delegate.traceEntry()
+    )
+
   def traceEntryParams(c: LoggerContext)(params: c.Expr[Any]*): c.Expr[EntryMessage] = {
     import c.universe._
     val isEnabled = Apply(
@@ -361,17 +366,37 @@ private object LoggerMacro {
   def traceEntryMessage(c: LoggerContext)(message: c.Expr[Message]): c.Expr[EntryMessage] =
     c.universe.reify(
       if (c.prefix.splice.delegate.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)) {
-        c.prefix.splice.traceEntryMessage(message.splice)
+        c.prefix.splice.delegate.traceEntry(message.splice)  // TODO should not do ifEnabled check
       } else {
         null
       }
+    )
+
+  def traceExit(c: LoggerContext)(): c.Expr[Unit] =
+    c.universe.reify(
+      c.prefix.splice.delegate.traceExit()
+    )
+
+  def traceExitResult[R: c.WeakTypeTag](c: LoggerContext)(result: c.Expr[R]): c.Expr[R] =
+    c.universe.reify(
+      c.prefix.splice.delegate.traceExit(result.splice)
+    )
+
+  def traceExitEntryMessage(c: LoggerContext)(entryMessage: c.Expr[EntryMessage]): c.Expr[Unit] =
+    c.universe.reify(
+      c.prefix.splice.delegate.traceExit(entryMessage.splice)
+    )
+
+  def traceExitEntryMessageResult[R: c.WeakTypeTag](c: LoggerContext)(entryMessage: c.Expr[EntryMessage], result: c.Expr[R]): c.Expr[R] =
+    c.universe.reify(
+      c.prefix.splice.delegate.traceExit(entryMessage.splice, result.splice)
     )
 
   def traceExitMessageResult[R: c.WeakTypeTag](c: LoggerContext)(message: c.Expr[Message], result: c.Expr[R]): c.Expr[R] =
     c.universe.reify(
       {
         if (message.splice != null && c.prefix.splice.delegate.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, message.splice, null)) {
-          c.prefix.splice.traceExitMessageResult(message.splice, result.splice)
+          c.prefix.splice.delegate.traceExit(message.splice, result.splice)  // TODO should not do ifEnabled check
         }
         result.splice
       }

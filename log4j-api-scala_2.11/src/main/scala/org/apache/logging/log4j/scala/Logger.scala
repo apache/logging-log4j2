@@ -61,6 +61,7 @@ object Logger {
   * will only occur when debug logging is enabled.
   */
 class Logger private(val delegate: ExtendedLogger) {
+  // TODO extends AnyVal ?
 
   private final val FQCN = classOf[Logger].getName
 
@@ -431,15 +432,14 @@ class Logger private(val delegate: ExtendedLogger) {
   def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
 
 
-  // TODO fix FQCN for flow logging - Break out flow logging logic from AbstractLogger into somethimg accessible from Scala API ?
-
   /**
     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
     * logged.
     *
     * @return The built `EntryMessage`
     */
-  def traceEntry(): EntryMessage = delegate.traceEntry()
+  def traceEntry(): EntryMessage =
+  macro LoggerMacro.traceEntry
 
   /**
     * Logs entry to a method along with its parameters.
@@ -476,7 +476,8 @@ class Logger private(val delegate: ExtendedLogger) {
   /**
     * Logs exit from a method with no result.
     */
-  def traceExit(): Unit = delegate.traceExit()
+  def traceExit(): Unit =
+  macro LoggerMacro.traceExit
 
   /**
     * Logs exiting from a method with result.
@@ -484,14 +485,16 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param result The result being returned from the method call
     * @return `result`
     */
-  def traceExit[R](result: R): R = delegate.traceExit(result)
+  def traceExit[R](result: R): R =
+  macro LoggerMacro.traceExitResult[R]
 
   /**
     * Logs exiting from a method with no result.
     *
     * @param entryMessage the `EntryMessage` returned from one of the `traceEntry` methods
     */
-  def traceExit(entryMessage: EntryMessage): Unit = delegate.traceExit(entryMessage)
+  def traceExit(entryMessage: EntryMessage): Unit =
+  macro LoggerMacro.traceExitEntryMessage
 
   /**
     * Logs exiting from a method with result.
@@ -508,7 +511,8 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param result       The result being returned from the method call
     * @return `result`
     */
-  def traceExit[R](entryMessage: EntryMessage, result: R): R = delegate.traceExit(entryMessage, result)
+  def traceExit[R](entryMessage: EntryMessage, result: R): R =
+  macro LoggerMacro.traceExitEntryMessageResult[R]
 
   /**
     * Logs exiting from a method with result. Allows custom formatting of the result.
@@ -619,19 +623,10 @@ class Logger private(val delegate: ExtendedLogger) {
     delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
   }
 
+  // TODO inline this to get FQCN correct
   /** Should normally not be used directly from application code, but needs to be public for access by macros. */
   def traceEntryParams(params: Any*): EntryMessage = {
-    delegate.traceEntry(null, params) // TODO should not do ifEnabled check
-  }
-
-  /** Should normally not be used directly from application code, but needs to be public for access by macros. */
-  def traceEntryMessage(message: Message): EntryMessage = {
-    delegate.traceEntry(message) // TODO should not do ifEnabled check
-  }
-
-  /** Should normally not be used directly from application code, but needs to be public for access by macros. */
-  def traceExitMessageResult[R](message: Message, result: R): Unit = {
-    delegate.traceExit(message, result) // TODO should not do ifEnabled check
+    delegate.traceEntry(null: String, params) // TODO should not do ifEnabled check
   }
 
 }
