@@ -28,10 +28,10 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
  *
@@ -40,20 +40,16 @@ public class RollingAppenderTimeAndSizeTest {
 
     private static final String DIR = "target/rolling3/test";
 
-    @ClassRule
-    public static LoggerContextRule init = new LoggerContextRule("log4j-rolling3.xml");
+    public static LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-rolling3.xml");
+
+    @Rule
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     private Logger logger;
 
     @Before
     public void setUp() throws Exception {
-        this.logger = init.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
-        deleteDir();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        deleteDir();
+        this.logger = loggerContextRule.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
     }
 
     @Test
@@ -67,16 +63,5 @@ public class RollingAppenderTimeAndSizeTest {
         final File[] files = dir.listFiles();
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
-    }
-
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
-        }
     }
 }

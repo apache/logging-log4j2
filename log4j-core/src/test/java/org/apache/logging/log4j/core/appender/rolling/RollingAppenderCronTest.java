@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.hamcrest.Matcher;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExternalResource;
-import org.junit.rules.RuleChain;
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,11 +31,14 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.util.CronExpression;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.hamcrest.Matcher;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
  *
@@ -47,19 +48,14 @@ public class RollingAppenderCronTest {
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
 
-    private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            deleteDir();
-        }
-    }).around(ctx);
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
-        final Logger logger = ctx.getLogger();
+        final Logger logger = loggerContextRule.getLogger();
         logger.debug("This is test message number 1");
         Thread.sleep(2500);
         final File dir = new File(DIR);
@@ -81,15 +77,16 @@ public class RollingAppenderCronTest {
             fail("No compressed files found");
         }
         final Path src = FileSystems.getDefault().getPath("target/test-classes/log4j-rolling-cron2.xml");
-        final OutputStream os = new FileOutputStream("target/test-classes/log4j-rolling-cron.xml");
-        Files.copy(src, os);
+        try (final OutputStream os = new FileOutputStream("target/test-classes/log4j-rolling-cron.xml")) {
+            Files.copy(src, os);
+        }
         Thread.sleep(5000);
         // force a reconfiguration
         for (int i = 0; i < MAX_TRIES; ++i) {
             logger.debug("Adding new event {}", i);
         }
         Thread.sleep(1000);
-        final RollingFileAppender app = (RollingFileAppender) ctx.getContext().getConfiguration().getAppender("RollingFile");
+        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getContext().getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
         assertNotNull("No triggering policy", policy);
         assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);
@@ -98,14 +95,4 @@ public class RollingAppenderCronTest {
 
     }
 
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
-        }
-    }
 }

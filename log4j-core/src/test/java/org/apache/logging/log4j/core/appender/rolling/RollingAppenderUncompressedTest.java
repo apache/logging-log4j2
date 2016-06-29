@@ -16,18 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.junit.CleanFolders;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -37,19 +40,18 @@ public class RollingAppenderUncompressedTest {
     private static final String CONFIG = "log4j-rolling4.xml";
     private static final String DIR = "target/rolling4";
 
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger(RollingAppenderUncompressedTest.class.getName());
+    private Logger logger = LogManager.getLogger(RollingAppenderUncompressedTest.class.getName());
+    
+    @ClassRule
+    public static CleanFolders rule = new CleanFolders(CONFIG);
 
     @BeforeClass
     public static void setupClass() {
-        deleteDir();
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = LoggerContext.getContext();
-        final Configuration config = ctx.getConfiguration();
     }
 
     @AfterClass
     public static void cleanupClass() {
-        //deleteDir();
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
@@ -76,14 +78,4 @@ public class RollingAppenderUncompressedTest {
         assertTrue("No archived files found", found);
     }
 
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
-        }
-    }
 }
