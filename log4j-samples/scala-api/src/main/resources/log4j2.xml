@@ -20,12 +20,12 @@
     <Appenders>
         <Console name="Console">
             <PatternLayout>
-                <Pattern>%d %5p [%t] %c{1} %X - %m%n</Pattern>
+                <Pattern>%d %5p %c{1} %X %F:%L - %m%n</Pattern>
             </PatternLayout>
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="INFO">
+        <Root level="TRACE">
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>

@@ -454,7 +454,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param params the parameters to the method.
     * @return The built `EntryMessage`
     */
-  def traceEntry(params: Any*): EntryMessage =
+  def traceEntry(params: AnyRef*): EntryMessage =
   macro LoggerMacro.traceEntryParams
 
   /**
@@ -621,12 +621,6 @@ class Logger private(val delegate: ExtendedLogger) {
     */
   def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
     delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
-  }
-
-  // TODO inline this to get FQCN correct
-  /** Should normally not be used directly from application code, but needs to be public for access by macros. */
-  def traceEntryParams(params: Any*): EntryMessage = {
-    delegate.traceEntry(null: String, params) // TODO should not do ifEnabled check
   }
 
 }

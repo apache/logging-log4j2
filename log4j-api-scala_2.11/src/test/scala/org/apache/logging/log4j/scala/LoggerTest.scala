@@ -451,16 +451,16 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     val f = fixture
     when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)).thenReturn(true)
     val logger = Logger(f.mockLogger)
-    logger.traceEntry("foo", 17)
-    verify(f.mockLogger).traceEntry(anyString(), any[Array[AnyRef]])
+    logger.traceEntry("foo", "bar")
+    verify(f.mockLogger).traceEntry(null: String, "foo", "bar")
   }
 
   test("traceEntry disabled with params") {
     val f = fixture
     when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)).thenReturn(false)
     val logger = Logger(f.mockLogger)
-    logger.traceEntry("foo", 17)
-    verify(f.mockLogger, never).traceEntry(anyString(), any[Array[AnyRef]])
+    logger.traceEntry("foo", "bar")
+    verify(f.mockLogger, never).traceEntry(anyString(), anyString(), anyString())
   }
 
   test("traceEntry enabled with message") {
