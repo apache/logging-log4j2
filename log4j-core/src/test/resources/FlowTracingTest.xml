@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Appenders>
+    <Console name="Console">
+      <PatternLayout>
+        <Pattern>%p %c{1} %m%n</Pattern>
+      </PatternLayout>
+    </Console>
+  </Appenders>
+  
+  <Loggers>
+    <Root level="trace">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>
