@@ -2329,9 +2329,6 @@ public interface Logger {
 
     /**
      * Checks whether this Logger is enabled for the given Level and Marker.
-     * <p>
-     * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
-     * </p>
      *
      * @param level The Level to check
      * @param marker The Marker to check
