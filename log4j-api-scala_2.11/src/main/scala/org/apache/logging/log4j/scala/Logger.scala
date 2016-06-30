@@ -417,7 +417,7 @@ class Logger private(val delegate: ExtendedLogger) {
     *
     * Note that passing in `Level.OFF` always returns `true`.
     *
-    * @param level the level to check
+    * @param level the Level to check
     * @return boolean - `true` if this Logger is enabled for the level, `false` otherwise
     */
   def isEnabled(level: Level): Boolean = delegate.isEnabled(level)
@@ -425,9 +425,9 @@ class Logger private(val delegate: ExtendedLogger) {
   /**
     * Checks whether this Logger is enabled for the the given `Level` and `Marker`.
     *
-    * @param level  the level to check
-    * @param marker The marker to check
-    * @return boolean - `true` if this Logger is enabled for the level, `false` otherwise
+    * @param level  the Level to check
+    * @param marker the Marker to check
+    * @return boolean - `true` if this Logger is enabled for the level and marker, `false` otherwise
     */
   def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
 
