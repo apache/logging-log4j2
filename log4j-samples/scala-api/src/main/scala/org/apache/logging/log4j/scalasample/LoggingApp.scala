@@ -16,6 +16,6 @@ object LoggingApp extends App with Logging {
   logger.traceExit(s2)
   logger.traceExit(entryMessage)
   logger.traceExit(entryMessage, s2)
-  logger.traceExit(logger.messageFactory.newMessage("foobar": CharSequence), s2)
+  logger.traceExit(logger.messageFactory.newMessage("bonsai": CharSequence), s2)
 
 }
