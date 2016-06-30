@@ -3640,11 +3640,18 @@ public interface Logger {
      *     // do something
      * }
      * </pre>
+     * <p>
+     * Avoid passing a {@code ReusableMessage} to this method (therefore, also avoid passing messages created by
+     * calling {@code logger.getMessageFactory().newMessage("some message")}): Log4j will replace such messages with
+     * an immutable message to prevent situations where the reused message instance is modified by subsequent calls to
+     * the logger before the returned {@code EntryMessage} is fully processed.
+     * </p>
      *
-     * @param message The message.
+     * @param message The message. Avoid specifying a ReusableMessage, use immutable messages instead.
      * @return the built message
      *
      * @since 2.6
+     * @see org.apache.logging.log4j.message.ReusableMessage
      */
     EntryMessage traceEntry(Message message);
 

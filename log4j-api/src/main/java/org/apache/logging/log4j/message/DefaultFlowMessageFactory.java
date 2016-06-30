@@ -20,15 +20,15 @@ import java.io.Serializable;
 
 /**
  * Default factory for flow messages.
- * 
+ *
  * @since 2.6
  */
 public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializable {
-    
+
     private static final String EXIT_DEFAULT_PREFIX = "Exit";
     private static final String ENTRY_DEFAULT_PREFIX = "Enter";
     private static final long serialVersionUID = 8578655591131397576L;
-    
+
     private final String entryText;
     private final String exitText;
 
@@ -172,7 +172,14 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      */
     @Override
     public EntryMessage newEntryMessage(final Message message) {
-        return new SimpleEntryMessage(entryText, message);
+        return new SimpleEntryMessage(entryText, makeImmutable(message));
+    }
+
+    private Message makeImmutable(final Message message) {
+        if (!(message instanceof ReusableMessage)) {
+            return message;
+        }
+        return new SimpleMessage(message.getFormattedMessage());
     }
 
     /*
