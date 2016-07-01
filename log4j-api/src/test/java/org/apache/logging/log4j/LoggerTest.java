@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +34,12 @@ import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.*;
 /**
  *
  */
@@ -57,6 +54,7 @@ public class LoggerTest {
     }
 
     private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
+    private final Marker marker = MarkerManager.getMarker("test");
     private final List<String> results = logger.getEntries();
 
     @Test
@@ -487,6 +485,52 @@ public class LoggerTest {
     public void isWarnEnabled() {
         assertTrue("Incorrect level", logger.isWarnEnabled());
         assertTrue("Incorrect level", logger.isEnabled(Level.WARN));
+    }
+
+    @Test
+    public void isAllEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isEnabled(Level.ALL, marker));
+    }
+
+    @Test
+    public void isDebugEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isDebugEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.DEBUG, marker));
+    }
+
+    @Test
+    public void isErrorEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isErrorEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.ERROR, marker));
+    }
+
+    @Test
+    public void isFatalEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isFatalEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.FATAL, marker));
+    }
+
+    @Test
+    public void isInfoEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isInfoEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.INFO, marker));
+    }
+
+    @Test
+    public void isOffEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isEnabled(Level.OFF, marker));
+    }
+
+    @Test
+    public void isTraceEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isTraceEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.TRACE, marker));
+    }
+
+    @Test
+    public void isWarnEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isWarnEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.WARN, marker));
     }
 
     @Test
