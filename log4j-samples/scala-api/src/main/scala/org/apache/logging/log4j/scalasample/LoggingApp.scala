@@ -1,5 +1,6 @@
 package org.apache.logging.log4j.scalasample
 
+import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.message.MessageFactory2
 import org.apache.logging.log4j.scala.Logging
 
@@ -7,6 +8,8 @@ object LoggingApp extends App with Logging {
 
   val s1 = "foo"
   val s2 = "bar"
+  val t = new RuntimeException("error")
+
   logger.info(s"Hello, world: $s1 $s2")
 
   logger.traceEntry()
@@ -18,5 +21,11 @@ object LoggingApp extends App with Logging {
   logger.traceExit(entryMessage)
   logger.traceExit(entryMessage, s2)
   logger.traceExit(logger.delegate.getMessageFactory.asInstanceOf[MessageFactory2].newMessage("bonsai": CharSequence), s2)
+
+  logger.throwing(t)
+  logger.throwing(Level.INFO, t)
+
+  logger.catching(t)
+  logger.catching(Level.INFO, t)
 
 }

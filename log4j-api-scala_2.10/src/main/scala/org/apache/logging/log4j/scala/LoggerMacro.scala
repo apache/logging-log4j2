@@ -401,4 +401,25 @@ private object LoggerMacro {
         result.splice
       }
     )
+
+  def throwing[T <: Throwable: c.WeakTypeTag](c: LoggerContext)(t: c.Expr[T]): c.Expr[T] =
+    c.universe.reify(
+      c.prefix.splice.delegate.throwing(t.splice)
+    )
+
+  def throwingLevel[T <: Throwable: c.WeakTypeTag](c: LoggerContext)(level: c.Expr[Level], t: c.Expr[T]): c.Expr[T] =
+    c.universe.reify(
+      c.prefix.splice.delegate.throwing(level.splice, t.splice)
+    )
+
+  def catching(c: LoggerContext)(t: c.Expr[Throwable]): c.Expr[Unit] =
+    c.universe.reify(
+      c.prefix.splice.delegate.catching(t.splice)
+    )
+
+  def catchingLevel(c: LoggerContext)(level: c.Expr[Level], t: c.Expr[Throwable]): c.Expr[Unit] =
+    c.universe.reify(
+      c.prefix.splice.delegate.catching(level.splice, t.splice)
+    )
+
 }

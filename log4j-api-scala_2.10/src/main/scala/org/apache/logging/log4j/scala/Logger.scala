@@ -534,7 +534,8 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param t the Throwable
     * @return `t`
     */
-  def throwing[T <: Throwable](t: T): T = delegate.throwing(t)
+  def throwing[T <: Throwable](t: T): T =
+  macro LoggerMacro.throwing[T]
 
   /**
     * Logs an exception or error to be thrown to a specific logging level.
@@ -547,14 +548,16 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param t     the Throwable
     * @return `t`
     */
-  def throwing[T <: Throwable](level: Level, t: T): T = delegate.throwing(level, t)
+  def throwing[T <: Throwable](level: Level, t: T): T =
+  macro LoggerMacro.throwingLevel[T]
 
   /**
     * Logs an exception or error that has been caught.
     *
     * @param t the Throwable.
     */
-  def catching(t: Throwable): Unit = delegate.catching(t)
+  def catching(t: Throwable): Unit =
+  macro LoggerMacro.catching
 
   /**
     * Logs an exception or error that has been caught to a specific logging level.
@@ -562,7 +565,8 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param level The logging Level.
     * @param t     The Throwable.
     */
-  def catching(level: Level, t: Throwable): Unit = delegate.catching(level, t)
+  def catching(level: Level, t: Throwable): Unit =
+  macro LoggerMacro.catchingLevel
 
 
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified

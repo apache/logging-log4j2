@@ -559,4 +559,32 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     verify(f.mockLogger, never).traceExit(any[Message], any[AnyRef])
   }
 
+  test("throwing") {
+    val f = fixture
+    val logger = Logger(f.mockLogger)
+    logger.throwing(cause)
+    verify(f.mockLogger).throwing(eqv(cause))
+  }
+
+  test("throwing with level") {
+    val f = fixture
+    val logger = Logger(f.mockLogger)
+    logger.throwing(Level.INFO, cause)
+    verify(f.mockLogger).throwing(eqv(Level.INFO), eqv(cause))
+  }
+
+  test("catching") {
+    val f = fixture
+    val logger = Logger(f.mockLogger)
+    logger.catching(cause)
+    verify(f.mockLogger).catching(eqv(cause))
+  }
+
+  test("catching with level") {
+    val f = fixture
+    val logger = Logger(f.mockLogger)
+    logger.catching(Level.INFO, cause)
+    verify(f.mockLogger).catching(eqv(Level.INFO), eqv(cause))
+  }
+
 }
