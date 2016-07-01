@@ -575,11 +575,6 @@ class Logger private(val delegate: ExtendedLogger) {
     */
   def name: String = delegate.getName
 
-  /**
-    * @return the message factory used to convert message Objects and Strings/CharSequences into actual log Messages
-    */
-  def messageFactory: MessageFactory2 = delegate.getMessageFactory.asInstanceOf[MessageFactory2]
-
 
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
@@ -606,7 +601,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param cause   cause or `null`
     */
   def logMessage(level: Level, marker: Marker, message: CharSequence, cause: Throwable): Unit = {
-    delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
+    delegate.logMessage(FQCN, level, marker, delegate.getMessageFactory.asInstanceOf[MessageFactory2].newMessage(message), cause)
   }
 
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
@@ -620,7 +615,7 @@ class Logger private(val delegate: ExtendedLogger) {
     * @param cause   cause or `null`
     */
   def logMessage(level: Level, marker: Marker, message: AnyRef, cause: Throwable): Unit = {
-    delegate.logMessage(FQCN, level, marker, messageFactory.newMessage(message), cause)
+    delegate.logMessage(FQCN, level, marker, delegate.getMessageFactory.asInstanceOf[MessageFactory2].newMessage(message), cause)
   }
 
 }
