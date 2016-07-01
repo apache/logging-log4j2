@@ -46,21 +46,21 @@ public final class ThresholdFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+    public Result filter(final Logger logger, final Level testLevel, final Marker marker, final String msg,
                          final Object... params) {
-        return filter(level);
+        return filter(testLevel);
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
+    public Result filter(final Logger logger, final Level testLevel, final Marker marker, final Object msg,
                          final Throwable t) {
-        return filter(level);
+        return filter(testLevel);
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+    public Result filter(final Logger logger, final Level testLevel, final Marker marker, final Message msg,
                          final Throwable t) {
-        return filter(level);
+        return filter(testLevel);
     }
 
     @Override
@@ -68,8 +68,8 @@ public final class ThresholdFilter extends AbstractFilter {
         return filter(event.getLevel());
     }
 
-    private Result filter(final Level level) {
-        return level.isMoreSpecificThan(this.level) ? onMatch : onMismatch;
+    private Result filter(final Level testLevel) {
+        return testLevel.isMoreSpecificThan(this.level) ? onMatch : onMismatch;
     }
 
     public Level getLevel() {
