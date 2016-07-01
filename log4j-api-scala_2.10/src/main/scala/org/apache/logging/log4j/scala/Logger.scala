@@ -565,17 +565,6 @@ class Logger private(val delegate: ExtendedLogger) {
   def catching(level: Level, t: Throwable): Unit = delegate.catching(level, t)
 
 
-  /**
-    * @return the `Level` associated with this Logger
-    */
-  def level: Level = delegate.getLevel
-
-  /**
-    * @return the logger name
-    */
-  def name: String = delegate.getName
-
-
   /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
     * level is enabled.
     *
