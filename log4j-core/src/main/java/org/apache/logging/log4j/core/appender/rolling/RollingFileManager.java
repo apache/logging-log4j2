@@ -48,6 +48,7 @@ public class RollingFileManager extends FileManager {
     private final Semaphore semaphore = new Semaphore(1);
     private volatile TriggeringPolicy triggeringPolicy;
     private volatile RolloverStrategy rolloverStrategy;
+    private volatile boolean renameEmptyFiles = false;
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, TriggeringPolicy.class, "triggeringPolicy");
@@ -113,6 +114,14 @@ public class RollingFileManager extends FileManager {
     protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
         size += length;
         super.writeToDestination(bytes, offset, length);
+    }
+
+    public boolean isRenameEmptyFiles() {
+        return renameEmptyFiles;
+    }
+
+    public void setRenameEmptyFiles(boolean renameEmptyFiles) {
+        this.renameEmptyFiles = renameEmptyFiles;
     }
 
     /**
