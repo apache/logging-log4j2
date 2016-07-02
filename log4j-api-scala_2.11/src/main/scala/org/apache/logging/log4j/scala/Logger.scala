@@ -413,26 +413,6 @@ class Logger private(val delegate: ExtendedLogger) {
 
 
   /**
-    * Checks whether this Logger is enabled for the given `Level`.
-    *
-    * Note that passing in `Level.OFF` always returns `true`.
-    *
-    * @param level the Level to check
-    * @return boolean - `true` if this Logger is enabled for the level, `false` otherwise
-    */
-  def isEnabled(level: Level): Boolean = delegate.isEnabled(level)
-
-  /**
-    * Checks whether this Logger is enabled for the given `Level` and `Marker`.
-    *
-    * @param level  the Level to check
-    * @param marker the Marker to check
-    * @return boolean - `true` if this Logger is enabled for the level and marker, `false` otherwise
-    */
-  def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
-
-
-  /**
     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
     * logged.
     *
