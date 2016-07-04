@@ -79,6 +79,10 @@ public class RollingAppenderCronTest {
             Thread.sleep(100); // Allow time for rollover to complete
         }
         if (!succeeded) {
+            final File[] files = dir.listFiles();
+            for (File dirFile : files) {
+                logger.error("Found file: " + dirFile.getPath());
+            }
             fail("No compressed files found");
         }
         final Path src = FileSystems.getDefault().getPath("target/test-classes/log4j-rolling-cron2.xml");
