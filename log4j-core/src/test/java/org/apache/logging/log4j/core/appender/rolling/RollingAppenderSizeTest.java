@@ -94,6 +94,12 @@ public class RollingAppenderSizeTest {
         for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ie) {
+            // Ignore the error.
+        }
+
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();

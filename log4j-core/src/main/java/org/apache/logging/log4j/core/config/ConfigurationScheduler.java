@@ -115,9 +115,10 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing the next time the command will run.
      */
     public CronScheduledFuture<?> scheduleWithCron(final CronExpression cronExpression, final Runnable command) {
+        Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
         final CronRunnable runnable = new CronRunnable(command, cronExpression);
-        final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(cronExpression), TimeUnit.MILLISECONDS);
-        final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future);
+        final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
+        final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future, fireDate);
         runnable.setScheduledFuture(cronScheduledFuture);
         return cronScheduledFuture;
     }
@@ -152,7 +153,11 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         return executorService.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
-    private class CronRunnable implements Runnable {
+    public long nextFireInterval(Date fireDate) {
+        return fireDate.getTime() - new Date().getTime();
+    }
+
+    public class CronRunnable implements Runnable {
 
         private final CronExpression cronExpression;
         private final Runnable runnable;
@@ -167,6 +172,8 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             this.scheduledFuture = future;
         }
 
+
+
         @Override
         public void run() {
             try {
@@ -174,16 +181,11 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             } catch(final Throwable ex) {
                 LOGGER.error("Error running command", ex);
             } finally {
-                final ScheduledFuture<?> future = schedule(this, nextFireInterval(cronExpression), TimeUnit.MILLISECONDS);
-                scheduledFuture.setScheduledFuture(future);
+                Date fireDate = cronExpression.getNextInvalidTimeAfter(new Date());
+                final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
+                scheduledFuture.reset(future, fireDate);
             }
         }
-    }
-
-    private long nextFireInterval(final CronExpression cronExpression) {
-        final Date now = new Date();
-        final Date fireDate = cronExpression.getNextValidTimeAfter(now);
-        return fireDate.getTime() - now.getTime();
     }
 
 }
