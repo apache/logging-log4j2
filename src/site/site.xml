@@ -235,7 +235,7 @@
 
     </menu>
 
-    <menu name="Legacy" inherit="top">
+    <menu name="Legacy" inherit="top" img="icon-tags">
       <item name="Log4j 1.2" href="http://logging.apache.org/log4j/1.2/"/>
       <item name="Log4j 2.3" href="http://logging.apache.org/log4j/log4j-2.3/"/>
     </menu>
