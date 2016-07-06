@@ -45,7 +45,7 @@ or
 
 logger.error((Marker) null, “This is the log message”, throwable);
 
-Log4j 2.6 maintains binary compatibility with previous releases.
+Log4j 2.6.2 maintains binary compatibility with previous releases.
 
 ## Hack to improve layout: replace all pairs of spaces with a single new-line
 $release.description.replaceAll("  ", "
