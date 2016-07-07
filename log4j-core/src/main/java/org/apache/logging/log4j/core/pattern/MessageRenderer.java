@@ -16,8 +16,17 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+/**
+ * Renders an input to an output.
+ */
 public interface MessageRenderer {
 
-    void render(StringBuilder source, StringBuilder target);
+    /**
+     * Renders an input to an output.
+     * 
+     * @param input 
+     * @param output
+     */
+    void render(StringBuilder input, StringBuilder output);
 
 }
