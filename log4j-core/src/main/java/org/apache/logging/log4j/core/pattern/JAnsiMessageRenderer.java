@@ -47,6 +47,12 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  * You can also define style names in the configuration:
  * 
  * <pre>
+ * %message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n
+ * </pre>
+ * 
+ * For example:
+ * 
+ * <pre>
  * %message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n
  * </pre>
  * 
