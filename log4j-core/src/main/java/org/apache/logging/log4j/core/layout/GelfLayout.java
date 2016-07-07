@@ -189,7 +189,7 @@ public final class GelfLayout extends AbstractStringLayout {
         JsonUtils.quoteAsString(toNullSafeString(host), builder);
         builder.append(QC);
         builder.append("\"timestamp\":").append(formatTimestamp(event.getTimeMillis())).append(C);
-        builder.append("\"level\":").append(formatLevel(event.getLevel())).append(C);
+        builder.append("\"level\":").append(event.getLevel().intLevel()).append(C);
         if (event.getThreadName() != null) {
             builder.append("\"_thread\":\"");
             JsonUtils.quoteAsString(event.getThreadName(), builder);
