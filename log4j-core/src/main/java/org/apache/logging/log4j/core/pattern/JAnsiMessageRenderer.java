@@ -26,6 +26,8 @@ import org.fusesource.jansi.AnsiRenderer;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
 /**
+ * Renders an input as ANSI escaped output.
+ * 
  * Uses the JAnsi rendering syntax to render a message into an ANSI escaped string.
  * 
  * The syntax for embedded ANSI codes is:
@@ -157,7 +159,7 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
     }
 
     @Override
-    public void render(final StringBuilder input, final StringBuilder target) throws IllegalArgumentException {
+    public void render(final StringBuilder input, final StringBuilder output) throws IllegalArgumentException {
         int i = 0;
         int j, k;
 
@@ -165,17 +167,17 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
             j = input.indexOf(beginToken, i);
             if (j == -1) {
                 if (i == 0) {
-                    target.append(input);
+                    output.append(input);
                     return;
                 }
-                target.append(input.substring(i, input.length()));
+                output.append(input.substring(i, input.length()));
                 return;
             }
-            target.append(input.substring(i, j));
+            output.append(input.substring(i, j));
             k = input.indexOf(endToken, j);
 
             if (k == -1) {
-                target.append(input);
+                output.append(input);
                 return;
             }
             j += beginTokenLen;
@@ -183,12 +185,12 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
 
             final String[] items = spec.split(AnsiRenderer.CODE_TEXT_SEPARATOR, 2);
             if (items.length == 1) {
-                target.append(input);
+                output.append(input);
                 return;
             }
             final String replacement = render(items[1], items[0].split(","));
 
-            target.append(replacement);
+            output.append(replacement);
 
             i = k + endTokenLen;
         }

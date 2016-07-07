@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 /**
- * MIGHT BE DELETED ANY MOMENT FROM THIS BRANCH.
+ * TODO Renders an input as HTML output.
  */
 public final class HtmlMessageRenderer implements MessageRenderer {
 
@@ -26,7 +26,7 @@ public final class HtmlMessageRenderer implements MessageRenderer {
     }
 
     @Override
-    public void render(StringBuilder source, StringBuilder target) {
+    public void render(StringBuilder input, StringBuilder output) {
         // TODO Auto-generated method stub
     }
 
