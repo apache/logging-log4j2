@@ -40,6 +40,12 @@ o LOG4J2-1415:  (GC) ParameterFormatter now avoids calling toString() on auto-bo
 o LOG4J2-1412:  Unbox utility's ringbuffer of StringBuilders is now configurable. 
 
 Fixed Bugs:
+o LOG4J2-904:  If copy and delete fails in rename action then resort to truncating the source file after copying it. Thanks to Bernhard Mähr. 
+o LOG4J2-1250:  CronTriggeringPolicy was not properly setting the prevFileTime value for the PatternProcessor so
+        file dates and times on rolled files were incorrect. 
+o LOG4J2-1452:  Fixed issue where reusable messages broke flow tracing logic. Thanks to Mikael Ståldal. 
+o LOG4J2-1440:  Fix bug in OnStartupTriggeringPolicy that allowed it to roll over on every reconfiguration. Added
+        minSize attribute. 
 o LOG4J2-1414:  Fixed minor issues with the 2.6.1 web site. Thanks to Ralph Goers. 
 o LOG4J2-1434:  Ensure that the thread-local StringBuilders used by Layouts to format log events to text will not
         retain excessive memory after a large message was logged. Thanks to Luke Butters. 

@@ -29,17 +29,17 @@
       </action>
     </release>
     <release version="2.6.2" date="2016-07-05" description="GA Release 2.6.2">
-      <action issue="LOG4J2-904" dev="rgoers" due-to="Bernhard Mähr">
+      <action issue="LOG4J2-904" dev="rgoers" type="fix" due-to="Bernhard Mähr">
         If copy and delete fails in rename action then resort to truncating the source file after copying it.
       </action>
-      <action issue="LOG4J2-1250" dev="rgoers">
+      <action issue="LOG4J2-1250" dev="rgoers" type="fix">
         CronTriggeringPolicy was not properly setting the prevFileTime value for the PatternProcessor so
         file dates and times on rolled files were incorrect.
       </action>
-      <action issue="LOG4J2-1452" dev="rpopma" due-to="Mikael Ståldal">
+      <action issue="LOG4J2-1452" dev="rpopma" type="fix" due-to="Mikael Ståldal">
         Fixed issue where reusable messages broke flow tracing logic.
       </action>
-      <action issue="LOG4J2-1440" dev="rgoers">
+      <action issue="LOG4J2-1440" dev="rgoers" type="fix">
         Fix bug in OnStartupTriggeringPolicy that allowed it to roll over on every reconfiguration. Added
         minSize attribute.
       </action>
