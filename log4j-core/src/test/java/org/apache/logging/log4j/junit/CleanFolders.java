@@ -23,6 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 
@@ -50,25 +52,36 @@ public class CleanFolders extends AbstractExternalFileCleaner {
 
     @Override
     protected void clean() {
-        IOException lastEx = null;
-        Path lastPath = null;
+        Map<Path, IOException> failures = new HashMap<>();
+
         for (final File folder : getFiles()) {
             final Path path = folder.toPath();
             for (int i = 0; i < MAX_TRIES; i++) {
                 try {
                     cleanFolder(path);
+                    if (failures.containsKey(path)) {
+                        failures.remove(path);
+                    }
                     // break from MAX_TRIES and goes to the next folder
                     break;
                 } catch (final IOException e) {
                     // We will try again.
-                    lastEx = e;
-                    lastPath = path;
+                    failures.put(path, e);
                 }
             }
         }
-        if (lastEx != null) {
-            lastEx.printStackTrace();
-            Assert.fail(lastPath + ": " + lastEx);
+        if (failures.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            for (Map.Entry<Path, IOException> failure : failures.entrySet()) {
+                failure.getValue().printStackTrace();
+                if (!first) {
+                    sb.append(", ");
+                }
+                sb.append(failure.getKey()).append(" failed with ").append(failure.getValue());
+                first = false;
+            }
+            Assert.fail(sb.toString());
         }
     }
 
@@ -89,5 +102,4 @@ public class CleanFolders extends AbstractExternalFileCleaner {
             });
         }
     }
-
 }

@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.util.CronExpression;
+import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
@@ -47,6 +48,8 @@ public class RollingAppenderCronTest {
 
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
+    private static final String FILE = "target/rolling-cron/rollingtest.log";
+    private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yy-HH-mm-ss");
 
     private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
@@ -56,6 +59,8 @@ public class RollingAppenderCronTest {
     @Test
     public void testAppender() throws Exception {
         final Logger logger = loggerContextRule.getLogger();
+        File file = new File(FILE);
+        assertTrue("Log file does not exist", file.exists());
         logger.debug("This is test message number 1");
         Thread.sleep(2500);
         final File dir = new File(DIR);
@@ -74,6 +79,10 @@ public class RollingAppenderCronTest {
             Thread.sleep(100); // Allow time for rollover to complete
         }
         if (!succeeded) {
+            final File[] files = dir.listFiles();
+            for (File dirFile : files) {
+                logger.error("Found file: " + dirFile.getPath());
+            }
             fail("No compressed files found");
         }
         final Path src = FileSystems.getDefault().getPath("target/test-classes/log4j-rolling-cron2.xml");
