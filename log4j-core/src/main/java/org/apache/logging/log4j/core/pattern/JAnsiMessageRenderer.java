@@ -28,25 +28,27 @@ import org.fusesource.jansi.AnsiRenderer.Code;
 /**
  * Renders an input as ANSI escaped output.
  * 
- * Uses the JAnsi rendering syntax to render a message into an ANSI escaped string.
+ * Uses the JAnsi rendering syntax as the default to render a message into an ANSI escaped string.
  * 
- * The syntax for embedded ANSI codes is:
+ * The default syntax for embedded ANSI codes is:
  *
  * <pre>
  *   &#64;|<em>code</em>(,<em>code</em>)* <em>text</em>|@
  * </pre>
  *
- * Examples:
+ * For example, to render the message {@code "Hello"} in green, use:
  *
  * <pre>
- *   &#64;|bold Hello|@
+ *   &#64;|green Hello|@
  * </pre>
+ *
+ * To render the message {@code "Hello"} in bold and red, use:
  *
  * <pre>
  *   &#64;|bold,red Warning!|@
  * </pre>
  * 
- * You can also define style names in the configuration:
+ * You can also define custom style names in the configuration with the syntax:
  * 
  * <pre>
  * %message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n
