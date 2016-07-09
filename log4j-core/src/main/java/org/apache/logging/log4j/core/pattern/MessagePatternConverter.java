@@ -21,8 +21,10 @@ import java.util.Locale;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
@@ -54,7 +56,12 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
             final String format = formats[0].toUpperCase(Locale.ROOT);
             switch (format) {
             case "ANSI":
-                return new JAnsiMessageRenderer(formats);
+                if (Loader.isClassAvailable("org.fusesource.jansi.AnsiRenderer")) {
+                    return new JAnsiMessageRenderer(formats);
+                }
+                StatusLogger.getLogger()
+                        .warn("You requested ANSI message rendering but JANSI is not on the classpath.");
+                return null;
             case "HTML":
                 return new HtmlMessageRenderer(formats);
             }
