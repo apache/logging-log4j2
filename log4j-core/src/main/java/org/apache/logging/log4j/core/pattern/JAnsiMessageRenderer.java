@@ -73,10 +73,10 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  */
 public final class JAnsiMessageRenderer implements MessageRenderer {
 
-    private final int beginTokenLen;
-    private final int endTokenLen;
     private final String beginToken;
+    private final int beginTokenLen;
     private final String endToken;
+    private final int endTokenLen;
     private final Map<String, Code[]> styleMap;
 
     public JAnsiMessageRenderer(final String[] formats) {
