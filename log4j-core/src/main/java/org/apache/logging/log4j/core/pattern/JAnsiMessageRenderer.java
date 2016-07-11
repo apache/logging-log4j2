@@ -202,4 +202,10 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
         return Code.valueOf(name.toUpperCase(Locale.ENGLISH));
     }
 
+    @Override
+    public String toString() {
+        return "JAnsiMessageRenderer [beginToken=" + beginToken + ", beginTokenLen=" + beginTokenLen + ", endToken="
+                + endToken + ", endTokenLen=" + endTokenLen + ", styleMap=" + styleMap + "]";
+    }
+
 }
