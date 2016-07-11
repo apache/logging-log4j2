@@ -81,7 +81,6 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
                     }
                 }
                 toAppendTo.append(sb.toString());
-
             } else {
                 toAppendTo.append(extStackTrace);
             }
