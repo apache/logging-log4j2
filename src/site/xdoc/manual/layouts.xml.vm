@@ -1026,27 +1026,27 @@ WARN  [main]: Message 2</pre>
                 <p>
                   The default syntax for embedded ANSI codes is:
                 </p>
-                <pre>&#64;|<em>code</em>(,<em>code</em>)* <em>text</em>|@</pre>
+                <pre class="prettyprint linenums">&#64;|<em>code</em>(,<em>code</em>)* <em>text</em>|@</pre>
                 <p>
                   For example, to render the message <code>"Hello"</code> in green, use:
                 </p>
-                <pre>&#64;|green Hello|@</pre>
+                <pre class="prettyprint linenums">&#64;|green Hello|@</pre>
                 <p>
                   To render the message <code>"Hello"</code> in bold and red, use:
                 </p>
-                <pre>&#64;|bold,red Warning!|@</pre>
+                <pre class="prettyprint linenums">&#64;|bold,red Warning!|@</pre>
                 <p>
                   You can also define custom style names in the configuration with the syntax:
                 </p>
-                <pre>%message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n</pre>
+                <pre class="prettyprint linenums">%message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n</pre>
                 <p>
                   For example:
                 </p>
-                <pre>%message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n</pre>
+                <pre class="prettyprint linenums">%message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n</pre>
                 <p>
                   The call site can look like this:
                 </p>
-                <pre>logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());</pre>
+                <pre class="prettyprint linenums">logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());</pre>
               </td>
             </tr>
             <tr>
