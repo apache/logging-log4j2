@@ -223,7 +223,8 @@ public class MyApp {
       <h4>ObjectMessage</h4>
         <a name="ObjectMessage"/>
         <p>
-          Formats an Object by calling its toString method.
+          Formats an Object by calling its toString method. Since Log4j 2.6, Layouts trying to be low-garbage or
+          garbage-free will call the <tt>formatTo(StringBuilder)</tt> method instead.
         </p>
       <h4>ParameterizedMessage</h4>
         <a name="ParameterizedMessage"/>
@@ -232,10 +233,29 @@ public class MyApp {
           handles messages that contain "{}" in the format to represent replaceable tokens and the replacement
           parameters.
         </p>
+      <h4>ReusableObjectMessage</h4>
+        <a name="ReusableObjectMessage"/>
+        <p>
+          In garbage-free mode, this message is used to pass logged Objects to the Layout and Appenders.
+          Functionally equivalent to <a href="#ObjectMessage">ObjectMessage</a>.
+        </p>
+      <h4>ReusableObjectMessage</h4>
+        <a name="ReusableParameterizedMessage"/>
+        <p>
+          In garbage-free mode, this message is used to handle messages that contain "{}" in the format to
+          represent replaceable tokens and the replacement parameters.
+          Functionally equivalent to <a href="#ParameterizedMessage">ParameterizedMessage</a>.
+        </p>
+      <h4>ReusableSimpleMessage</h4>
+        <a name="ReusableSimpleMessage"/>
+        <p>
+          In garbage-free mode, this message is used to pass logged Strings and CharSequences to the Layout and Appenders.
+          Functionally equivalent to <a href="#SimpleMessage">SimpleMessage</a>.
+        </p>
       <h4>SimpleMessage</h4>
         <a name="SimpleMessage"/>
         <p>
-          SimpleMessage contains a String that requires no formatting.
+          SimpleMessage contains a String or CharSequence that requires no formatting.
         </p>
       <h4>StringFormattedMessage</h4>
         <a name="StringFormattedMessage"/>

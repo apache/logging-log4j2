@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -35,15 +36,10 @@ public class RollingAppenderDeleteScriptFri13thTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-script-fri13th.xml";
     private static final String DIR = "target/rolling-with-delete-script-fri13th/test";
 
-    private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            deleteDir();
-        }
-    }).around(ctx);
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
@@ -55,7 +51,7 @@ public class RollingAppenderDeleteScriptFri13thTest {
         }
         assertEquals("Dir " + DIR + " filecount", 30, dir.listFiles().length);
 
-        final Logger logger = ctx.getLogger();
+        final Logger logger = loggerContextRule.getLogger();
         // Trigger the rollover
         while (dir.listFiles().length < 32) {
             // 60+ chars per message: each message should trigger a rollover
@@ -72,17 +68,6 @@ public class RollingAppenderDeleteScriptFri13thTest {
             assertTrue(file.getName() + " ends with '.log'", file.getName().endsWith(".log"));
             final String strDate = file.getName().substring(5, 13);
             assertFalse(file + " is not Fri 13th", strDate.endsWith("20151113"));
-        }
-    }
-
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
         }
     }
 }

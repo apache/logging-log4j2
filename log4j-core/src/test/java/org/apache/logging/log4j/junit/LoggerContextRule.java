@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.junit;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
@@ -29,6 +26,7 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -36,27 +34,27 @@ import org.junit.runners.model.Statement;
 import static org.junit.Assert.*;
 
 /**
- * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file.
- * If the system property {@code EBUG} is set (e.g., through the command line option {@code -DEBUG}), then the
- * StatusLogger will be set to the debug level. This allows for more debug messages as the StatusLogger will be in the
- * error level until a configuration file has been read and parsed into a tree of Nodes.
+ * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file. If the system
+ * property {@code EBUG} is set (e.g., through the command line option {@code -DEBUG}), then the StatusLogger will be
+ * set to the debug level. This allows for more debug messages as the StatusLogger will be in the error level until a
+ * configuration file has been read and parsed into a tree of Nodes.
  */
 public class LoggerContextRule implements TestRule {
 
-    private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
     private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
+    private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
     private final String configLocation;
-    private final Class<? extends ContextSelector> contextSelectorClass;
-    private final Map<String, String> systemProperties = new ConcurrentHashMap<>();
-
     private LoggerContext context;
+
+    private Class<? extends ContextSelector> contextSelectorClass;
 
     private String testClassName;
 
     /**
      * Constructs a new LoggerContextRule for a given configuration file.
      *
-     * @param configLocation path to configuration file
+     * @param configLocation
+     *            path to configuration file
      */
     public LoggerContextRule(final String configLocation) {
         this(configLocation, null);
@@ -65,8 +63,10 @@ public class LoggerContextRule implements TestRule {
     /**
      * Constructs a new LoggerContextRule for a given configuration file and a custom {@link ContextSelector} class.
      *
-     * @param configLocation       path to configuration file
-     * @param contextSelectorClass custom ContextSelector class to use instead of default
+     * @param configLocation
+     *            path to configuration file
+     * @param contextSelectorClass
+     *            custom ContextSelector class to use instead of default
      * @since 2.5
      */
     public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass) {
@@ -74,22 +74,9 @@ public class LoggerContextRule implements TestRule {
         this.contextSelectorClass = contextSelectorClass;
     }
 
-    /**
-     * Sets a system property before the test and clears that property after the test.
-     *
-     * @param key   system property key
-     * @param value system property value
-     * @return {@code this}
-     * @since 2.7
-     */
-    public LoggerContextRule withSystemProperty(final String key, final String value) {
-        this.systemProperties.put(key, value);
-        return this;
-    }
-
     @Override
     public Statement apply(final Statement base, final Description description) {
-        // Hack: Using -DEBUG as a JVM param sets a property called "EBUG"... 
+        // Hack: Using -DEBUG as a JVM param sets a property called "EBUG"...
         if (System.getProperties().containsKey("EBUG")) {
             StatusLogger.getLogger().setLevel(Level.DEBUG);
         }
@@ -102,34 +89,29 @@ public class LoggerContextRule implements TestRule {
                 }
                 System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
                 System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
-                for (final Map.Entry<String, String> systemProperty : systemProperties.entrySet()) {
-                    System.setProperty(systemProperty.getKey(), systemProperty.getValue());
-                }
-                context = Configurator.initialize(
-                    description.getDisplayName(),
-                    description.getTestClass().getClassLoader(),
-                    configLocation
-                );
+                context = Configurator.initialize(description.getDisplayName(),
+                        description.getTestClass().getClassLoader(), configLocation);
                 try {
                     base.evaluate();
                 } finally {
                     Configurator.shutdown(context);
+                    context = null;
+                    contextSelectorClass = null;
                     StatusLogger.getLogger().reset();
                     System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
                     System.clearProperty(SYS_PROP_KEY_CLASS_NAME);
                     System.clearProperty(SYS_PROP_KEY_DISPLAY_NAME);
-                    for (final String systemPropertyKey : systemProperties.keySet()) {
-                        System.clearProperty(systemPropertyKey);
-                    }
                 }
             }
         };
+
     }
 
     /**
      * Gets a named Appender for this LoggerContext.
      *
-     * @param name the name of the Appender to look up.
+     * @param name
+     *            the name of the Appender to look up.
      * @return the named Appender or {@code null} if it wasn't defined in the configuration.
      */
     public Appender getAppender(final String name) {
@@ -139,9 +121,12 @@ public class LoggerContextRule implements TestRule {
     /**
      * Gets a named Appender for this LoggerContext.
      *
-     * @param <T>  The target Appender class
-     * @param name the name of the Appender to look up.
-     * @param cls  The target Appender class
+     * @param <T>
+     *            The target Appender class
+     * @param name
+     *            the name of the Appender to look up.
+     * @param cls
+     *            The target Appender class
      * @return the named Appender or {@code null} if it wasn't defined in the configuration.
      */
     public <T extends Appender> T getAppender(final String name, final Class<T> cls) {
@@ -169,9 +154,11 @@ public class LoggerContextRule implements TestRule {
     /**
      * Gets a named ListAppender or throws an exception for this LoggerContext.
      *
-     * @param name the name of the ListAppender to look up.
+     * @param name
+     *            the name of the ListAppender to look up.
      * @return the named ListAppender.
-     * @throws AssertionError if the named ListAppender doesn't exist or isn't a ListAppender.
+     * @throws AssertionError
+     *             if the named ListAppender doesn't exist or isn't a ListAppender.
      */
     public ListAppender getListAppender(final String name) {
         final Appender appender = getAppender(name);
@@ -193,7 +180,8 @@ public class LoggerContextRule implements TestRule {
     /**
      * Gets a named Logger in this LoggerContext.
      *
-     * @param name the name of the Logger to look up or create.
+     * @param name
+     *            the name of the Logger to look up or create.
      * @return the named Logger.
      */
     public Logger getLogger(final String name) {
@@ -203,9 +191,11 @@ public class LoggerContextRule implements TestRule {
     /**
      * Gets a named Appender or throws an exception for this LoggerContext.
      *
-     * @param name the name of the Appender to look up.
+     * @param name
+     *            the name of the Appender to look up.
      * @return the named Appender.
-     * @throws AssertionError if the Appender doesn't exist.
+     * @throws AssertionError
+     *             if the Appender doesn't exist.
      */
     public Appender getRequiredAppender(final String name) {
         final Appender appender = getAppender(name);
@@ -216,11 +206,15 @@ public class LoggerContextRule implements TestRule {
     /**
      * Gets a named Appender or throws an exception for this LoggerContext.
      *
-     * @param <T>  The target Appender class
-     * @param name the name of the Appender to look up.
-     * @param cls  The target Appender class
+     * @param <T>
+     *            The target Appender class
+     * @param name
+     *            the name of the Appender to look up.
+     * @param cls
+     *            The target Appender class
      * @return the named Appender.
-     * @throws AssertionError if the Appender doesn't exist.
+     * @throws AssertionError
+     *             if the Appender doesn't exist.
      */
     public <T extends Appender> T getRequiredAppender(final String name, final Class<T> cls) {
         final T appender = getAppender(name, cls);
@@ -247,4 +241,17 @@ public class LoggerContextRule implements TestRule {
         builder.append("]");
         return builder.toString();
     }
+
+    public RuleChain withCleanFilesRule(final String... files) {
+        return RuleChain.outerRule(new CleanFiles(files)).around(this);
+    }
+
+    public RuleChain withCleanFoldersRule(final boolean before, final boolean after, final String... folders) {
+        return RuleChain.outerRule(new CleanFolders(before, after, folders)).around(this);
+    }
+
+    public RuleChain withCleanFoldersRule(final String... folders) {
+        return RuleChain.outerRule(new CleanFolders(folders)).around(this);
+    }
+
 }

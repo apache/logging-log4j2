@@ -56,7 +56,7 @@ public final class CommonsCompressAction extends AbstractAction {
 
     /**
      * Creates new instance of Bzip2CompressAction.
-     * 
+     *
      * @param name the compressor name. One of "gz", "bzip2", "xz", "pack200", or "deflate".
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
@@ -86,7 +86,7 @@ public final class CommonsCompressAction extends AbstractAction {
 
     /**
      * Compresses a file.
-     * 
+     *
      * @param name the compressor name, i.e. "gz", "bzip2", "xz", "pack200", or "deflate".
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
@@ -101,6 +101,7 @@ public final class CommonsCompressAction extends AbstractAction {
         if (!source.exists()) {
             return false;
         }
+        LOGGER.debug("Starting {} compression of {}", name, source.getPath() );
         try (final FileInputStream input = new FileInputStream(source);
                 final BufferedOutputStream output = new BufferedOutputStream(
                         new CompressorStreamFactory().createCompressorOutputStream(name, new FileOutputStream(
@@ -108,10 +109,14 @@ public final class CommonsCompressAction extends AbstractAction {
             IOUtils.copy(input, output, BUF_SIZE);
         } catch (final CompressorException e) {
             throw new IOException(e);
+        } finally {
+            LOGGER.debug("Finished {} compression of {}", name, source.getPath() );
         }
 
         if (deleteSource && !source.delete()) {
             LOGGER.warn("Unable to delete " + source.toString() + '.');
+        } else {
+            LOGGER.debug("Deleted {}", source.toString());
         }
         return true;
     }

@@ -2305,9 +2305,25 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               </table>
             <h5>OnStartup Triggering Policy</h5>
               <p>
-                The <code>OnStartupTriggeringPolicy</code> policy takes no parameters and causes a rollover if the log
-                file is older than the current JVM's start time.
+                The <code>OnStartupTriggeringPolicy</code> policy causes a rollover if the log file is older than the
+                current JVM's start time and the minimum file size is met or exceeded.
               </p>
+                <table>
+                  <caption align="top">OnStartupTriggeringPolicy Parameters</caption>
+                  <tr>
+                    <th>Parameter Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td>minSize</td>
+                    <td>long</td>
+                    <td>
+                      The minimum size the file must have to roll over. A size of zero will cause a roll over no matter
+                      what the file size is. The default value is 1, which will prevent rolling over an empty file.
+                    </td>
+                  </tr>
+                </table>
               <p>
                 <em>Google App Engine note:</em><br />
                 When running in Google App Engine, the OnStartup policy causes a rollover if the log file is older

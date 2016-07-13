@@ -334,7 +334,7 @@ public final class StubAppender extends OutputStreamAppender {
             </p>
             <p>
               Every Layout must declare itself as a plugin using the Plugin annotation. The type must be "Core",
-              and the elementType must be "Layout". printObject should be set to true if the plugin's toString
+              and the elementType must be "layout". printObject should be set to true if the plugin's toString
               method will provide a representation of the object and its parameters. The name of the plugin must
               match the value users should use to specify it as an element in their Appender configuration.
               The plugin also must provide a static method annotated as a PluginFactory and with each of the

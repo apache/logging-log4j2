@@ -48,6 +48,7 @@ public class RollingFileManager extends FileManager {
     private final Semaphore semaphore = new Semaphore(1);
     private volatile TriggeringPolicy triggeringPolicy;
     private volatile RolloverStrategy rolloverStrategy;
+    private volatile boolean renameEmptyFiles = false;
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, TriggeringPolicy.class, "triggeringPolicy");
@@ -74,6 +75,7 @@ public class RollingFileManager extends FileManager {
         this.triggeringPolicy = triggeringPolicy;
         this.rolloverStrategy = rolloverStrategy;
         this.patternProcessor = new PatternProcessor(pattern);
+        this.patternProcessor.setPrevFileTime(time);
     }
 
     public void initialize() {
@@ -115,6 +117,14 @@ public class RollingFileManager extends FileManager {
         super.writeToDestination(bytes, offset, length);
     }
 
+    public boolean isRenameEmptyFiles() {
+        return renameEmptyFiles;
+    }
+
+    public void setRenameEmptyFiles(boolean renameEmptyFiles) {
+        this.renameEmptyFiles = renameEmptyFiles;
+    }
+
     /**
      * Returns the current size of the file.
      * @return The size of the file in bytes.
@@ -148,14 +158,13 @@ public class RollingFileManager extends FileManager {
                 initialTime = System.currentTimeMillis();
                 createFileAfterRollover();
             } catch (final IOException e) {
-                logError("failed to create file after rollover", e);
+                logError("Failed to create file after rollover", e);
             }
         }
     }
 
     protected void createFileAfterRollover() throws IOException  {
-        final OutputStream os = new FileOutputStream(getFileName(), isAppend());
-        setOutputStream(os);
+        setOutputStream(new FileOutputStream(getFileName(), isAppend()));
     }
 
     /**
@@ -217,7 +226,7 @@ public class RollingFileManager extends FileManager {
                     try {
                         success = descriptor.getSynchronous().execute();
                     } catch (final Exception ex) {
-                        logError("caught error in synchronous task", ex);
+                        logError("Caught error in synchronous task", ex);
                     }
                 }
 

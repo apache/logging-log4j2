@@ -42,32 +42,27 @@ public class RandomRollingAppenderOnStartupTest {
 
     private static final String DIR = "target/onStartup";
 
-    private final String fileExtension;
-
     private Logger logger;
-
-    private static volatile int counter = 0;
 
     @Parameterized.Parameters(name = "{0} \u2192 {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { //
                 // @formatter:off
-                {"log4j-test5.xml", ".gz"},
-                {"log4j-test5.xml", ".gz"},});
+                {"log4j-test5.xml"},
+                {"log4j-test5.xml"},});
                 // @formatter:on
     }
 
     @Rule
-    public LoggerContextRule init;
+    public LoggerContextRule loggerContextRule;
 
-    public RandomRollingAppenderOnStartupTest(final String configFile, final String fileExtension) {
-        this.fileExtension = fileExtension;
-        this.init = new LoggerContextRule(configFile);
+    public RandomRollingAppenderOnStartupTest(final String configFile) {
+        this.loggerContextRule = new LoggerContextRule(configFile);
     }
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger(RandomRollingAppenderOnStartupTest.class.getName());
+        this.logger = this.loggerContextRule.getLogger(RandomRollingAppenderOnStartupTest.class.getName());
     }
 
     @BeforeClass

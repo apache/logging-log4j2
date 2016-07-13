@@ -115,7 +115,7 @@
           <a name="Core"/>
           <p>
             Core plugins are those that are directly represented by an element in a configuration file, such as an
-            Appender, Logger or Filter. Custom plugins that conform to the rules laid out in the next paragraph
+            Appender, Layout, Logger or Filter. Custom plugins that conform to the rules laid out in the next paragraph
             may simply be referenced in the configuration, provided they are appropriate configured to be
             loaded by the PluginManager.
           </p>

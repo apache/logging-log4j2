@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +37,7 @@ import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests that sibling conditions are invoked in configured order.
@@ -46,15 +47,10 @@ public class RollingAppenderDeleteAccumulatedCount2Test {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-accum-count2.xml";
     private static final String DIR = "target/rolling-with-delete-accum-count2/test";
 
-    private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            deleteDir();
-        }
-    }).around(ctx);
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
@@ -64,7 +60,7 @@ public class RollingAppenderDeleteAccumulatedCount2Test {
         final Path p4 = writeTextTo(DIR + "/my-4.log");
         final Path p5 = writeTextTo(DIR + "/my-5.log");
 
-        final Logger logger = ctx.getLogger();
+        final Logger logger = loggerContextRule.getLogger();
         for (int i = 0; i < 10; ++i) {
             updateLastModified(p1, p2, p3, p4, p5); // make my-*.log files most recent
 
@@ -107,16 +103,5 @@ public class RollingAppenderDeleteAccumulatedCount2Test {
             buffy.flush();
         }
         return path;
-    }
-
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
-        }
     }
 }

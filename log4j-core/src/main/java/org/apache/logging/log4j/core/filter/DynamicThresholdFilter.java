@@ -114,7 +114,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     }
 
     private Result filter(final Level level, final Map<String, String> contextMap) {
-        final Object value = contextMap.get(key);
+        final String value = contextMap.get(key);
         if (value != null) {
             Level ctxLevel = levelMap.get(value);
             if (ctxLevel == null) {

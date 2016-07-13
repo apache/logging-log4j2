@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.fusesource.jansi.Ansi.*;
-import static org.fusesource.jansi.Ansi.Color.*;
+import static org.fusesource.jansi.Ansi.ansi;
+import static org.fusesource.jansi.Ansi.Color.CYAN;
+import static org.fusesource.jansi.Ansi.Color.RED;
+
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +42,7 @@ import org.junit.Test;
  * or, on Windows:
  * 
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOMEDRIVE%\%HOMEPATH%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiMessageMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%USERPROFILE%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiMessageMain log4j-core/src/test/resources/log4j2-console-msg-ansi.xml
  * </pre>
  * 
  */
@@ -59,7 +62,7 @@ public class ConsoleAppenderJAnsiMessageMain {
 
     public void test(final String[] args) {
         // System.out.println(System.getProperty("java.class.path"));
-        final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml"
+        final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-msg-ansi.xml"
                 : args[0];
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
         final Logger logger = LogManager.getLogger(ConsoleAppenderJAnsiMessageMain.class);
@@ -67,6 +70,9 @@ public class ConsoleAppenderJAnsiMessageMain {
             logger.info(ansi().fg(RED).a("Hello").fg(CYAN).a(" World").reset());
             // JAnsi format:
             // logger.info("@|red Hello|@ @|cyan World|@");
+            for (Entry<Object, Object> entry : System.getProperties().entrySet()) {
+                logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());
+            }
         } finally {
             Configurator.shutdown(ctx);
         }

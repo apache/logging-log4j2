@@ -35,7 +35,7 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
+     * @param p0 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */
@@ -45,8 +45,8 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
-     * @param p1 the message parameters
+     * @param p0 a message parameter
+     * @param p1 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */
@@ -56,9 +56,9 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
-     * @param p1 the message parameters
-     * @param p2 the message parameters
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */
@@ -68,10 +68,10 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
-     * @param p1 the message parameters
-     * @param p2 the message parameters
-     * @param p3 the message parameters
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */
@@ -81,11 +81,11 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
-     * @param p1 the message parameters
-     * @param p2 the message parameters
-     * @param p3 the message parameters
-     * @param p4 the message parameters
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */
@@ -95,12 +95,12 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
-     * @param p1 the message parameters
-     * @param p2 the message parameters
-     * @param p3 the message parameters
-     * @param p4 the message parameters
-     * @param p5 the message parameters
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */
@@ -110,13 +110,13 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
-     * @param p1 the message parameters
-     * @param p2 the message parameters
-     * @param p3 the message parameters
-     * @param p4 the message parameters
-     * @param p5 the message parameters
-     * @param p6 the message parameters
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
+     * @param p6 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */
@@ -126,14 +126,14 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
-     * @param p1 the message parameters
-     * @param p2 the message parameters
-     * @param p3 the message parameters
-     * @param p4 the message parameters
-     * @param p5 the message parameters
-     * @param p6 the message parameters
-     * @param p7 the message parameters
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
+     * @param p6 a message parameter
+     * @param p7 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */
@@ -144,15 +144,15 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
-     * @param p1 the message parameters
-     * @param p2 the message parameters
-     * @param p3 the message parameters
-     * @param p4 the message parameters
-     * @param p5 the message parameters
-     * @param p6 the message parameters
-     * @param p7 the message parameters
-     * @param p8 the message parameters
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
+     * @param p6 a message parameter
+     * @param p7 a message parameter
+     * @param p8 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */
@@ -163,16 +163,16 @@ public interface MessageFactory2 extends MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message a message template, the kind of message template depends on the implementation.
-     * @param p0 the message parameters
-     * @param p1 the message parameters
-     * @param p2 the message parameters
-     * @param p3 the message parameters
-     * @param p4 the message parameters
-     * @param p5 the message parameters
-     * @param p6 the message parameters
-     * @param p7 the message parameters
-     * @param p8 the message parameters
-     * @param p9 the message parameters
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
+     * @param p6 a message parameter
+     * @param p7 a message parameter
+     * @param p8 a message parameter
+     * @param p9 a message parameter
      * @return a new message
      * @see ParameterizedMessageFactory
      */

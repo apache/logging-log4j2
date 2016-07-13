@@ -16,16 +16,57 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.lang.reflect.Method;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Triggers a rollover on every restart, but only if the file size is greater than zero.
  */
 @Plugin(name = "OnStartupTriggeringPolicy", category = "Core", printObject = true)
 public class OnStartupTriggeringPolicy implements TriggeringPolicy {
-    private RollingFileManager manager;
+
+    private static final long JVM_START_TIME = initStartTime();
+
+    private final long minSize;
+
+    private OnStartupTriggeringPolicy(long minSize) {
+        this.minSize = minSize;
+    }
+
+    /**
+     * Returns the result of {@code ManagementFactory.getRuntimeMXBean().getStartTime()},
+     * or the current system time if JMX is not available.
+     */
+    private static long initStartTime() {
+        // LOG4J2-379:
+        // We'd like to call ManagementFactory.getRuntimeMXBean().getStartTime(),
+        // but Google App Engine throws a java.lang.NoClassDefFoundError
+        // "java.lang.management.ManagementFactory is a restricted class".
+        // The reflection is necessary because without it, Google App Engine
+        // will refuse to initialize this class.
+        try {
+            final Class<?> factoryClass = Loader.loadSystemClass("java.lang.management.ManagementFactory");
+            final Method getRuntimeMXBean = factoryClass.getMethod("getRuntimeMXBean");
+            final Object runtimeMXBean = getRuntimeMXBean.invoke(null);
+
+            final Class<?> runtimeMXBeanClass = Loader.loadSystemClass("java.lang.management.RuntimeMXBean");
+            final Method getStartTime = runtimeMXBeanClass.getMethod("getStartTime");
+            final Long result = (Long) getStartTime.invoke(runtimeMXBean);
+
+            return result;
+        } catch (final Throwable t) {
+            StatusLogger.getLogger().error("Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), "
+                    + "using system time for OnStartupTriggeringPolicy", t);
+            // We have little option but to declare "now" as the beginning of time.
+            return System.currentTimeMillis();
+        }
+    }
 
     /**
      * Provide the RollingFileManager to the policy.
@@ -33,8 +74,10 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
      */
     @Override
     public void initialize(final RollingFileManager manager) {
-        this.manager = manager;
-        if (manager.getFileSize() > 0) {
+        if (manager.getFileTime() < JVM_START_TIME && manager.getFileSize() >= minSize) {
+            if (minSize == 0) {
+                manager.setRenameEmptyFiles(true);
+            }
             manager.skipFooter(true);
             manager.rollover();
             manager.skipFooter(false);
@@ -57,7 +100,8 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
     }
 
     @PluginFactory
-    public static OnStartupTriggeringPolicy createPolicy() {
-        return new OnStartupTriggeringPolicy();
+    public static OnStartupTriggeringPolicy createPolicy(
+            @PluginAttribute(value = "minSize", defaultLong = 1) final long minSize) {
+        return new OnStartupTriggeringPolicy(minSize);
     }
 }
