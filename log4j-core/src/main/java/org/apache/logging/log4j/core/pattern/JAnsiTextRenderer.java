@@ -83,7 +83,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
             Map<String, Code[]> temp = new HashMap<>();
             temp.put("Prefix", new Code[] { Code.WHITE });
             temp.put("Name", new Code[] { Code.RED });
-            temp.put("Message", new Code[] { Code.RED });
+            temp.put("Message", new Code[] { Code.RED, Code.BOLD });
             temp.put("At", new Code[] { Code.WHITE });
             temp.put("CauseLabel", new Code[] { Code.WHITE });
             temp.put("Text", new Code[] { Code.WHITE });

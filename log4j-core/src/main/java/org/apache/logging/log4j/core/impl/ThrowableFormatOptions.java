@@ -74,7 +74,7 @@ public final class ThrowableFormatOptions {
     /**
      * The list of packages to filter.
      */
-    private final List<String> packages;
+    private final List<String> ignorePackages;
 
     public static final String CLASS_NAME = "short.className";
     public static final String METHOD_NAME = "short.methodName";
@@ -90,16 +90,16 @@ public final class ThrowableFormatOptions {
      *            The number of lines.
      * @param separator
      *            The stack trace separator.
-     * @param packages
+     * @param ignorePackages
      *            The packages to filter.
      * @param textRenderer
      *            The ANSI renderer
      */
-    protected ThrowableFormatOptions(final int lines, final String separator, final List<String> packages,
+    protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
             TextRenderer textRenderer) {
         this.lines = lines;
         this.separator = separator == null ? Constants.LINE_SEPARATOR : separator;
-        this.packages = packages;
+        this.ignorePackages = ignorePackages;
         this.textRenderer = textRenderer == null ? PlainTextRenderer.getInstance() : textRenderer;
     }
 
@@ -148,12 +148,12 @@ public final class ThrowableFormatOptions {
     }
 
     /**
-     * Returns the list of packages to filter.
+     * Returns the list of packages to ignore (filter out).
      * 
-     * @return The list of packages to filter.
+     * @return The list of packages to ignore (filter out).
      */
-    public List<String> getPackages() {
-        return this.packages;
+    public List<String> getIgnorePackages() {
+        return this.ignorePackages;
     }
 
     /**
@@ -191,7 +191,7 @@ public final class ThrowableFormatOptions {
      * @return true if there are packages, false otherwise.
      */
     public boolean hasPackages() {
-        return this.packages != null && !this.packages.isEmpty();
+        return this.ignorePackages != null && !this.ignorePackages.isEmpty();
     }
 
     /**
@@ -206,7 +206,7 @@ public final class ThrowableFormatOptions {
         s.append("{separator(").append(this.separator).append(")}");
         if (hasPackages()) {
             s.append("{filters(");
-            for (final String p : this.packages) {
+            for (final String p : this.ignorePackages) {
                 s.append(p).append(',');
             }
             s.deleteCharAt(s.length() - 1);
@@ -245,7 +245,7 @@ public final class ThrowableFormatOptions {
 
         int lines = DEFAULT.lines;
         String separator = DEFAULT.separator;
-        List<String> packages = DEFAULT.packages;
+        List<String> packages = DEFAULT.ignorePackages;
         TextRenderer ansiRenderer = DEFAULT.textRenderer;
         for (final String rawOption : options) {
             if (rawOption != null) {

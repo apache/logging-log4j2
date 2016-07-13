@@ -374,7 +374,7 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted Throwable that caused this Throwable.
      */
     public String getCauseStackTraceAsString(final List<String> packages) {
-        return getCauseStackTraceAsString(null, PlainTextRenderer.getInstance());
+        return getCauseStackTraceAsString(packages, PlainTextRenderer.getInstance());
     }
 
     /**
@@ -450,7 +450,7 @@ public class ThrowableProxy implements Serializable {
     public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer) {
         final StringBuilder sb = new StringBuilder(1024);
         textRenderer.render(name, sb, "Name");
-        textRenderer.render(": ", sb, "Name");
+        textRenderer.render(": ", sb, "Text");
         textRenderer.render(this.message, sb, "Message");
         textRenderer.render(EOL_STR, sb, "Text");
         final StackTraceElement[] causedTrace = this.throwable != null ? this.throwable.getStackTrace() : null;

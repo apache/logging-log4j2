@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -61,11 +64,10 @@ public class ConsoleAppenderJAnsiXExceptionMain {
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
         final Logger logger = LogManager.getLogger(ConsoleAppenderJAnsiXExceptionMain.class);
         try {
-            IllegalArgumentException e = new IllegalArgumentException("Bad argument foo");
-            e.fillInStackTrace();
-            throw new IllegalStateException("You're going down!", e);
+            Files.getFileStore(Paths.get("?BOGUS?"));
         } catch (Exception e) {
-            logger.info("Gotcha!", e);
+            IllegalArgumentException logE = new IllegalArgumentException("Bad argument foo", e);
+            logger.info("Gotcha!", logE);
         } finally {
             Configurator.shutdown(ctx);
         }

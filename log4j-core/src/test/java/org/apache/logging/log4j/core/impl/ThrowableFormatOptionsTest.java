@@ -41,7 +41,7 @@ public final class ThrowableFormatOptionsTest {
         final ThrowableFormatOptions o = ThrowableFormatOptions.newInstance(options);
         assertEquals("getLines", expectedLines, o.getLines());
         assertEquals("getSeparator", expectedSeparator, o.getSeparator());
-        assertEquals("getPackages", expectedPackages, o.getPackages());
+        assertEquals("getPackages", expectedPackages, o.getIgnorePackages());
         assertEquals("allLines", expectedLines == Integer.MAX_VALUE, o.allLines());
         assertEquals("anyLines", expectedLines != 0, o.anyLines());
         assertEquals("minLines", 0, o.minLines(0));
