@@ -18,6 +18,9 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
+import org.apache.logging.log4j.core.pattern.TextRenderer;
+
 /**
  * Class and package data used with a {@link StackTraceElement} in a {@link ExtendedStackTraceElement}.
  */
@@ -99,17 +102,21 @@ public final class ExtendedClassInfo implements Serializable {
         return result;
     }
 
+    public void renderOn(StringBuilder output, TextRenderer textRenderer) {
+        if (!this.exact) {
+            textRenderer.render("~", output, "ExtraClassInfo.Inexact");
+        }
+        textRenderer.render("[", output, "ExtraClassInfo.Container");
+        textRenderer.render(this.location, output, "ExtraClassInfo.Location");
+        textRenderer.render(":", output, "ExtraClassInfo.ContainerSeparator");
+        textRenderer.render(this.version, output, "ExtraClassInfo.Version");
+        textRenderer.render("]", output, "ExtraClassInfo.Container");
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        if (!this.exact) {
-            sb.append('~');
-        }
-        sb.append('[');
-        sb.append(this.location);
-        sb.append(':');
-        sb.append(this.version);
-        sb.append(']');
+        renderOn(sb, PlainTextRenderer.getInstance());
         return sb.toString();
     }
 

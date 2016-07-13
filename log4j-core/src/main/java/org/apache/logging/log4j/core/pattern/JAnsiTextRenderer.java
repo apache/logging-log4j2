@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -71,7 +72,46 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  * 
  * @see AnsiRenderer
  */
-public final class JAnsiMessageRenderer implements MessageRenderer {
+public final class JAnsiTextRenderer implements TextRenderer {
+
+    public static final Map<String, Code[]> DefaultExceptionStyleMap;
+    public static final Map<String, Code[]> DefaultMessageStyleMap;
+
+    static {
+        {
+            // TODO Should the keys be in an enum?
+            Map<String, Code[]> temp = new HashMap<>();
+            temp.put("Prefix", new Code[] { Code.WHITE });
+            temp.put("Name", new Code[] { Code.RED });
+            temp.put("Message", new Code[] { Code.RED });
+            temp.put("At", new Code[] { Code.WHITE });
+            temp.put("CauseLabel", new Code[] { Code.WHITE });
+            temp.put("Text", new Code[] { Code.WHITE });
+            // StackTraceElement
+            temp.put("StackTraceElement.ClassName", new Code[] { Code.YELLOW });
+            temp.put("StackTraceElement.ClassMethodSeparator", new Code[] { Code.YELLOW });
+            temp.put("StackTraceElement.MethodName", new Code[] { Code.YELLOW });
+            temp.put("StackTraceElement.NativeMethod", new Code[] { Code.YELLOW });
+            temp.put("StackTraceElement.FileName", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.LineNumber", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.Container", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.ContainerSeparator", new Code[] { Code.MAGENTA});
+            temp.put("StackTraceElement.UnknownSource", new Code[] { Code.MAGENTA });
+            // ExtraClassInfo
+            temp.put("ExtraClassInfo.Inexact", new Code[] { Code.GREEN });
+            temp.put("ExtraClassInfo.Container", new Code[] { Code.GREEN, Code.INTENSITY_FAINT });
+            temp.put("ExtraClassInfo.ContainerSeparator", new Code[] { Code.GREEN, Code.INTENSITY_FAINT });
+            temp.put("ExtraClassInfo.Location", new Code[] { Code.GREEN });
+            temp.put("ExtraClassInfo.Version", new Code[] { Code.GREEN });
+            // Save
+            DefaultExceptionStyleMap = Collections.unmodifiableMap(temp);
+        }
+        {
+            Map<String, Code[]> temp = new HashMap<>();
+            // TODO
+            DefaultMessageStyleMap = Collections.unmodifiableMap(temp);
+        }
+    }
 
     private final String beginToken;
     private final int beginTokenLen;
@@ -79,7 +119,7 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
     private final int endTokenLen;
     private final Map<String, Code[]> styleMap;
 
-    public JAnsiMessageRenderer(final String[] formats) {
+    public JAnsiTextRenderer(final String[] formats, Map<String, Code[]> defaultStyleMap) {
         String tempBeginToken = AnsiRenderer.BEGIN_TOKEN;
         String tempEndToken = AnsiRenderer.END_TOKEN;
         Map<String, Code[]> map;
@@ -87,7 +127,8 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
             final String allStylesStr = formats[1];
             // Style def split
             final String[] allStyleAssignmentsArr = allStylesStr.split(" ");
-            map = new HashMap<>(allStyleAssignmentsArr.length);
+            map = new HashMap<>(allStyleAssignmentsArr.length + defaultStyleMap.size());
+            map.putAll(defaultStyleMap);
             for (final String styleAssignmentStr : allStyleAssignmentsArr) {
                 final String[] styleAssignmentArr = styleAssignmentStr.split("=");
                 if (styleAssignmentArr.length != 2) {
@@ -120,7 +161,7 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
                 }
             }
         } else {
-            map = new HashMap<>(0);
+            map = defaultStyleMap;
         }
         styleMap = map;
         beginToken = tempBeginToken;
@@ -147,6 +188,15 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
         }
     }
 
+    /**
+     * Renders the given text with the given names which can be ANSI code names or Log4j style names.
+     * 
+     * @param text
+     *            The text to render
+     * @param names
+     *            ANSI code names or Log4j style names.
+     * @return A rendered string containing ANSI codes.
+     */
     private String render(final String text, final String... names) {
         final Ansi ansi = Ansi.ansi();
         for (final String name : names) {
@@ -196,6 +246,13 @@ public final class JAnsiMessageRenderer implements MessageRenderer {
 
             i = k + endTokenLen;
         }
+    }
+
+    // EXACT COPY OF StringBuilder version of the method but typed as String for input
+    @Override
+    public void render(final String input, final StringBuilder output, final String styleName)
+            throws IllegalArgumentException {
+        output.append(render(input, styleName));
     }
 
     private Code toCode(final String name) {

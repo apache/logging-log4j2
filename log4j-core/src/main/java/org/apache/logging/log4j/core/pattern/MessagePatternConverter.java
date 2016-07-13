@@ -36,7 +36,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
 
     private final String[] formats;
     private final Configuration config;
-    private final MessageRenderer messageRenderer;
+    private final TextRenderer textRenderer;
 
     /**
      * Private constructor.
@@ -48,22 +48,22 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         super("Message", "message");
         this.formats = options;
         this.config = config;
-        this.messageRenderer = loadMessageRenderer(options);
+        this.textRenderer = loadMessageRenderer(options);
     }
 
-    private MessageRenderer loadMessageRenderer(String[] options) {
+    private TextRenderer loadMessageRenderer(String[] options) {
         if (formats != null && formats.length > 0) {
             final String format = formats[0].toUpperCase(Locale.ROOT);
             switch (format) {
             case "ANSI":
-                if (Loader.isClassAvailable("org.fusesource.jansi.AnsiRenderer")) {
-                    return new JAnsiMessageRenderer(formats);
+                if (Loader.isJansiAvailable()) {
+                    return new JAnsiTextRenderer(formats, JAnsiTextRenderer.DefaultMessageStyleMap);
                 }
                 StatusLogger.getLogger()
                         .warn("You requested ANSI message rendering but JANSI is not on the classpath.");
                 return null;
             case "HTML":
-                return new HtmlMessageRenderer(formats);
+                return new HtmlTextRenderer(formats);
             }
         }
         return null;
@@ -90,7 +90,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         final Message msg = event.getMessage();
         if (msg instanceof StringBuilderFormattable) {
 
-            boolean doRender = messageRenderer != null;
+            boolean doRender = textRenderer != null;
             StringBuilder workingBuilder = doRender ? new StringBuilder(80) : toAppendTo;
 
             StringBuilderFormattable stringBuilderFormattable = (StringBuilderFormattable) msg;
@@ -108,7 +108,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
                 }
             }
             if (doRender) {
-                messageRenderer.render(workingBuilder, toAppendTo);
+                textRenderer.render(workingBuilder, toAppendTo);
             }
             return;
         }

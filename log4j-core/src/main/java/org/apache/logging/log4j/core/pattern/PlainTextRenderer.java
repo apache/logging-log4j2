@@ -17,17 +17,24 @@
 package org.apache.logging.log4j.core.pattern;
 
 /**
- * TODO Renders an input as HTML output.
+ Renders input unchanged.
  */
-public final class HtmlMessageRenderer implements MessageRenderer {
+public final class PlainTextRenderer implements TextRenderer {
+    
+    private static final PlainTextRenderer INSTANCE = new PlainTextRenderer();
 
-    public HtmlMessageRenderer(String[] formats) {
-        // TODO Auto-generated constructor stub
+    public static PlainTextRenderer getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public void render(String input, StringBuilder output, String styleName) {
+        output.append(input);
     }
 
     @Override
     public void render(StringBuilder input, StringBuilder output) {
-        // TODO Auto-generated method stub
+        output.append(input);
     }
 
 }
