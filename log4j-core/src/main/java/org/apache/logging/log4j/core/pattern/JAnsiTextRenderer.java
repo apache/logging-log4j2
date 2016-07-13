@@ -85,8 +85,8 @@ public final class JAnsiTextRenderer implements TextRenderer {
             // TODO Should the keys be in an enum?
             Map<String, Code[]> temp = new HashMap<>();
             temp.put("Prefix", new Code[] { Code.WHITE });
-            temp.put("Name", new Code[] { Code.RED });
-            temp.put("Message", new Code[] { Code.RED, Code.BOLD });
+            temp.put("Name", new Code[] { Code.BG_RED, Code.WHITE });
+            temp.put("Message", new Code[] { Code.BG_RED, Code.WHITE, Code.BOLD });
             temp.put("At", new Code[] { Code.WHITE });
             temp.put("CauseLabel", new Code[] { Code.WHITE });
             temp.put("Text", new Code[] { Code.WHITE });
@@ -95,14 +95,14 @@ public final class JAnsiTextRenderer implements TextRenderer {
             temp.put("StackTraceElement.ClassMethodSeparator", new Code[] { Code.YELLOW });
             temp.put("StackTraceElement.MethodName", new Code[] { Code.YELLOW });
             temp.put("StackTraceElement.NativeMethod", new Code[] { Code.YELLOW });
-            temp.put("StackTraceElement.FileName", new Code[] { Code.MAGENTA });
-            temp.put("StackTraceElement.LineNumber", new Code[] { Code.MAGENTA });
-            temp.put("StackTraceElement.Container", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.FileName", new Code[] { Code.CYAN });
+            temp.put("StackTraceElement.LineNumber", new Code[] { Code.CYAN });
+            temp.put("StackTraceElement.Container", new Code[] { Code.CYAN });
             temp.put("StackTraceElement.ContainerSeparator", new Code[] { Code.WHITE});
-            temp.put("StackTraceElement.UnknownSource", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.UnknownSource", new Code[] { Code.CYAN });
             // ExtraClassInfo
             temp.put("ExtraClassInfo.Inexact", new Code[] { Code.CYAN });
-            temp.put("ExtraClassInfo.Container", new Code[] { Code.GREEN, Code.INTENSITY_FAINT });
+            temp.put("ExtraClassInfo.Container", new Code[] { Code.GREEN });
             temp.put("ExtraClassInfo.ContainerSeparator", new Code[] { Code.WHITE });
             temp.put("ExtraClassInfo.Location", new Code[] { Code.GREEN });
             temp.put("ExtraClassInfo.Version", new Code[] { Code.GREEN });
