@@ -75,9 +75,12 @@ import org.fusesource.jansi.AnsiRenderer.Code;
 public final class JAnsiTextRenderer implements TextRenderer {
 
     public static final Map<String, Code[]> DefaultExceptionStyleMap;
-    public static final Map<String, Code[]> DefaultMessageStyleMap;
+    static final Map<String, Code[]> DefaultMessageStyleMap;
+    private static final Map<String,Map<String, Code[]>> PrefedinedStyleMaps;
 
     static {
+        Map<String,Map<String, Code[]>> tempPreDefs  = new HashMap<>();
+        // Default: Spock
         {
             // TODO Should the keys be in an enum?
             Map<String, Code[]> temp = new HashMap<>();
@@ -95,22 +98,53 @@ public final class JAnsiTextRenderer implements TextRenderer {
             temp.put("StackTraceElement.FileName", new Code[] { Code.MAGENTA });
             temp.put("StackTraceElement.LineNumber", new Code[] { Code.MAGENTA });
             temp.put("StackTraceElement.Container", new Code[] { Code.MAGENTA });
-            temp.put("StackTraceElement.ContainerSeparator", new Code[] { Code.MAGENTA});
+            temp.put("StackTraceElement.ContainerSeparator", new Code[] { Code.WHITE});
             temp.put("StackTraceElement.UnknownSource", new Code[] { Code.MAGENTA });
             // ExtraClassInfo
-            temp.put("ExtraClassInfo.Inexact", new Code[] { Code.GREEN });
+            temp.put("ExtraClassInfo.Inexact", new Code[] { Code.CYAN });
             temp.put("ExtraClassInfo.Container", new Code[] { Code.GREEN, Code.INTENSITY_FAINT });
-            temp.put("ExtraClassInfo.ContainerSeparator", new Code[] { Code.GREEN, Code.INTENSITY_FAINT });
+            temp.put("ExtraClassInfo.ContainerSeparator", new Code[] { Code.WHITE });
             temp.put("ExtraClassInfo.Location", new Code[] { Code.GREEN });
             temp.put("ExtraClassInfo.Version", new Code[] { Code.GREEN });
             // Save
             DefaultExceptionStyleMap = Collections.unmodifiableMap(temp);
+            tempPreDefs.put("Spock", DefaultExceptionStyleMap);
+        }
+        // Kirk
+        {
+            // TODO Should the keys be in an enum?
+            Map<String, Code[]> temp = new HashMap<>();
+            temp.put("Prefix", new Code[] { Code.WHITE });
+            temp.put("Name", new Code[] { Code.RED });
+            temp.put("Message", new Code[] { Code.RED, Code.BOLD });
+            temp.put("At", new Code[] { Code.WHITE });
+            temp.put("CauseLabel", new Code[] { Code.WHITE });
+            temp.put("Text", new Code[] { Code.WHITE });
+            // StackTraceElement
+            temp.put("StackTraceElement.ClassName", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.ClassMethodSeparator", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.MethodName", new Code[] { Code.YELLOW });
+            temp.put("StackTraceElement.NativeMethod", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.FileName", new Code[] { Code.CYAN });
+            temp.put("StackTraceElement.LineNumber", new Code[] { Code.CYAN });
+            temp.put("StackTraceElement.Container", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.ContainerSeparator", new Code[] { Code.MAGENTA});
+            temp.put("StackTraceElement.UnknownSource", new Code[] { Code.MAGENTA });
+            // ExtraClassInfo
+            temp.put("ExtraClassInfo.Inexact", new Code[] { Code.BG_CYAN });
+            temp.put("ExtraClassInfo.Container", new Code[] { Code.BG_CYAN });
+            temp.put("ExtraClassInfo.ContainerSeparator", new Code[] { Code.BG_CYAN });
+            temp.put("ExtraClassInfo.Location", new Code[] { Code.BG_CYAN });
+            temp.put("ExtraClassInfo.Version", new Code[] { Code.BG_CYAN });
+            // Save
+            tempPreDefs.put("Kirk", Collections.unmodifiableMap(temp));
         }
         {
             Map<String, Code[]> temp = new HashMap<>();
             // TODO
             DefaultMessageStyleMap = Collections.unmodifiableMap(temp);
         }
+        PrefedinedStyleMaps = Collections.unmodifiableMap(tempPreDefs);
     }
 
     private final String beginToken;
@@ -149,6 +183,16 @@ public final class JAnsiTextRenderer implements TextRenderer {
                             break;
                         case "EndToken":
                             tempEndToken = codeNames[0];
+                            break;
+                        case "StyleMapName":
+                            final String predefinedMapName = codeNames[0];
+                            Map<String, Code[]> predefinedMap = PrefedinedStyleMaps.get(predefinedMapName);
+                            if (predefinedMap != null) {
+                                map.putAll(predefinedMap);
+                            } else {
+                                StatusLogger.getLogger().warn("Unknown predefined map name {}, pick one of {}",
+                                        predefinedMapName, null);
+                            }
                             break;
                         default:
                             final Code[] codes = new Code[codeNames.length];
