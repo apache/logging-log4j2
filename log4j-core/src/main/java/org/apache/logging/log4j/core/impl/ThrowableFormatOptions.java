@@ -275,14 +275,15 @@ public final class ThrowableFormatOptions {
                         || option.equalsIgnoreCase(FILE_NAME) || option.equalsIgnoreCase(MESSAGE)
                         || option.equalsIgnoreCase(LOCALIZED_MESSAGE)) {
                     lines = 2;
-                } else if (option.startsWith("ansi(") && option.endsWith(")")) {
+                } else if (option.startsWith("ansi(") && option.endsWith(")") || option.equals("ansi")) {
                     if (Loader.isJansiAvailable()) {
-                        ansiRenderer = new JAnsiTextRenderer(
-                                new String[] { null, option.substring("ansi(".length(), option.length() - 1) },
+                        String styleMapStr = option.equals("ansi") ? Strings.EMPTY
+                                : option.substring("ansi(".length(), option.length() - 1);
+                        ansiRenderer = new JAnsiTextRenderer(new String[] { null, styleMapStr },
                                 JAnsiTextRenderer.DefaultExceptionStyleMap);
                     } else {
-                        StatusLogger.getLogger()
-                                .warn("You requested ANSI exception rendering but JANSI is not on the classpath.");
+                        StatusLogger.getLogger().warn(
+                                "You requested ANSI exception rendering but JANSI is not on the classpath. Please see https://logging.apache.org/log4j/2.x/runtime-dependencies.html");
                     }
                 } else if (!option.equalsIgnoreCase(FULL)) {
                     lines = Integer.parseInt(option);

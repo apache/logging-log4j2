@@ -78,7 +78,7 @@ public class ThrowableProxy implements Serializable {
 
     private static final char EOL = '\n';
 
-    private static final String EOL_STR = "\n";
+    private static final String EOL_STR = String.valueOf(EOL);
 
     private static final long serialVersionUID = -2752771578252251910L;
 
@@ -275,9 +275,9 @@ public class ThrowableProxy implements Serializable {
 		}
 		if (commonCount != 0) {
             textRenderer.render(prefix, sb, "Prefix");
-            textRenderer.render("\t... ", sb, "Text");
-            textRenderer.render(Integer.toString(commonCount), sb, "Text");
-            textRenderer.render(" more", sb, "Text");
+            textRenderer.render("\t... ", sb, "More");
+            textRenderer.render(Integer.toString(commonCount), sb, "More");
+            textRenderer.render(" more", sb, "More");
             textRenderer.render(EOL_STR, sb, "Text");
 		}
 	}
@@ -285,11 +285,11 @@ public class ThrowableProxy implements Serializable {
     private void appendSuppressedCount(final StringBuilder sb, final String prefix, final int count, TextRenderer textRenderer) {
         textRenderer.render(prefix, sb, "Prefix");
         if (count == 1) {
-            textRenderer.render("\t... ", sb, "Text");
+            textRenderer.render("\t... ", sb, "Suppressed");
         } else {
-            textRenderer.render("\t... suppressed ", sb, "Text");
-            textRenderer.render(Integer.toString(count), sb, "Text");
-            textRenderer.render(" lines", sb, "Text");
+            textRenderer.render("\t... suppressed ", sb, "Suppressed");
+            textRenderer.render(Integer.toString(count), sb, "Suppressed");
+            textRenderer.render(" lines", sb, "Suppressed");
         }
         textRenderer.render(EOL_STR, sb, "Text");
     }

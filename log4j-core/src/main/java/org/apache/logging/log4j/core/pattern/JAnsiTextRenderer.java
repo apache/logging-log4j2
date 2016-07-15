@@ -80,7 +80,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
 
     static {
         Map<String,Map<String, Code[]>> tempPreDefs  = new HashMap<>();
-        // Default: Spock
+        // Default style: Spock
         {
             // TODO Should the keys be in an enum?
             Map<String, Code[]> temp = new HashMap<>();
@@ -90,6 +90,8 @@ public final class JAnsiTextRenderer implements TextRenderer {
             temp.put("At", new Code[] { Code.WHITE });
             temp.put("CauseLabel", new Code[] { Code.WHITE });
             temp.put("Text", new Code[] { Code.WHITE });
+            temp.put("More", new Code[] { Code.WHITE });
+            temp.put("Suppressed", new Code[] { Code.WHITE });
             // StackTraceElement
             temp.put("StackTraceElement.ClassName", new Code[] { Code.YELLOW });
             temp.put("StackTraceElement.ClassMethodSeparator", new Code[] { Code.YELLOW });
@@ -110,32 +112,34 @@ public final class JAnsiTextRenderer implements TextRenderer {
             DefaultExceptionStyleMap = Collections.unmodifiableMap(temp);
             tempPreDefs.put("Spock", DefaultExceptionStyleMap);
         }
-        // Kirk
+        // Style: Kirk
         {
             // TODO Should the keys be in an enum?
             Map<String, Code[]> temp = new HashMap<>();
             temp.put("Prefix", new Code[] { Code.WHITE });
-            temp.put("Name", new Code[] { Code.RED });
-            temp.put("Message", new Code[] { Code.RED, Code.BOLD });
+            temp.put("Name", new Code[] { Code.BG_RED, Code.YELLOW });
+            temp.put("Message", new Code[] { Code.BG_RED, Code.WHITE, Code.BOLD });
             temp.put("At", new Code[] { Code.WHITE });
             temp.put("CauseLabel", new Code[] { Code.WHITE });
             temp.put("Text", new Code[] { Code.WHITE });
+            temp.put("More", new Code[] { Code.WHITE });
+            temp.put("Suppressed", new Code[] { Code.WHITE });
             // StackTraceElement
-            temp.put("StackTraceElement.ClassName", new Code[] { Code.MAGENTA });
-            temp.put("StackTraceElement.ClassMethodSeparator", new Code[] { Code.MAGENTA });
-            temp.put("StackTraceElement.MethodName", new Code[] { Code.YELLOW });
-            temp.put("StackTraceElement.NativeMethod", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.ClassName", new Code[] { Code.BG_RED, Code.WHITE });
+            temp.put("StackTraceElement.ClassMethodSeparator", new Code[] { Code.BG_RED, Code.YELLOW });
+            temp.put("StackTraceElement.MethodName", new Code[] { Code.BG_RED, Code.YELLOW });
+            temp.put("StackTraceElement.NativeMethod", new Code[] { Code.BG_RED, Code.YELLOW });
             temp.put("StackTraceElement.FileName", new Code[] { Code.CYAN });
             temp.put("StackTraceElement.LineNumber", new Code[] { Code.CYAN });
-            temp.put("StackTraceElement.Container", new Code[] { Code.MAGENTA });
-            temp.put("StackTraceElement.ContainerSeparator", new Code[] { Code.MAGENTA});
-            temp.put("StackTraceElement.UnknownSource", new Code[] { Code.MAGENTA });
+            temp.put("StackTraceElement.Container", new Code[] { Code.CYAN });
+            temp.put("StackTraceElement.ContainerSeparator", new Code[] { Code.WHITE});
+            temp.put("StackTraceElement.UnknownSource", new Code[] { Code.CYAN });
             // ExtraClassInfo
-            temp.put("ExtraClassInfo.Inexact", new Code[] { Code.BG_CYAN });
-            temp.put("ExtraClassInfo.Container", new Code[] { Code.BG_CYAN });
-            temp.put("ExtraClassInfo.ContainerSeparator", new Code[] { Code.BG_CYAN });
-            temp.put("ExtraClassInfo.Location", new Code[] { Code.BG_CYAN });
-            temp.put("ExtraClassInfo.Version", new Code[] { Code.BG_CYAN });
+            temp.put("ExtraClassInfo.Inexact", new Code[] { Code.CYAN });
+            temp.put("ExtraClassInfo.Container", new Code[] { Code.GREEN });
+            temp.put("ExtraClassInfo.ContainerSeparator", new Code[] { Code.WHITE });
+            temp.put("ExtraClassInfo.Location", new Code[] { Code.GREEN });
+            temp.put("ExtraClassInfo.Version", new Code[] { Code.GREEN });
             // Save
             tempPreDefs.put("Kirk", Collections.unmodifiableMap(temp));
         }
@@ -214,6 +218,10 @@ public final class JAnsiTextRenderer implements TextRenderer {
         endTokenLen = tempEndToken.length();
     }
 
+    public Map<String, Code[]> getStyleMap() {
+        return styleMap;
+    }
+
     private void render(final Ansi ansi, final Code code) {
         if (code.isColor()) {
             if (code.isBackground()) {
@@ -254,6 +262,13 @@ public final class JAnsiTextRenderer implements TextRenderer {
         return ansi.a(text).reset().toString();
     }
 
+    // EXACT COPY OF StringBuilder version of the method but typed as String for input
+    @Override
+    public void render(final String input, final StringBuilder output, final String styleName)
+            throws IllegalArgumentException {
+        output.append(render(input, styleName));
+    }
+
     @Override
     public void render(final StringBuilder input, final StringBuilder output) throws IllegalArgumentException {
         int i = 0;
@@ -290,13 +305,6 @@ public final class JAnsiTextRenderer implements TextRenderer {
 
             i = k + endTokenLen;
         }
-    }
-
-    // EXACT COPY OF StringBuilder version of the method but typed as String for input
-    @Override
-    public void render(final String input, final StringBuilder output, final String styleName)
-            throws IllegalArgumentException {
-        output.append(render(input, styleName));
     }
 
     private Code toCode(final String name) {
