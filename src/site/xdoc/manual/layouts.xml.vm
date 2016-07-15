@@ -1435,9 +1435,11 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternExtendedException"/>
-                <b>xEx</b>{"none"|"short"|"full"|depth],[filters(packages)}<br />
-                <b>xException</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
-                <b>xThrowable</b>["none"|"short"|"full"|depth],[filters(packages)}
+                <b>xEx</b>|<b>xException</b>|<b>xThrowable</b><br/>
+                &nbsp;&nbsp;{<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;["none"|"short"|"full"|depth]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;[,filters(package,package,...)]<br/>
+                &nbsp;&nbsp;}
               </td>
               <td>
                 <p>The same as the %throwable conversion word but also includes class packaging information.
@@ -1451,8 +1453,8 @@ WARN  [main]: Message 2</pre>
                   <b>%xEx{short}</b>
                   which will only output the first line of the Throwable or <b>%xEx{n}</b> where
                   the first n lines of the stacktrace will be printed. The conversion word can also be
-                  followed by "filters(packages)" where packages is a list of package names that should
-                  be suppressed from stack traces. Specifying <b>%xEx{none}</b>
+                  followed by "filters(packages)" where packages is a comma-sepaarted list of package names that 
+                  should be suppressed from stack traces. Specifying <b>%xEx{none}</b>
                   or <b>%xEx{0}</b> will suppress printing of the exception.
                 </p>
               </td>
