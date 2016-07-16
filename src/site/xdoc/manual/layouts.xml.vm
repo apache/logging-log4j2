@@ -1439,7 +1439,12 @@ WARN  [main]: Message 2</pre>
                 &nbsp;&nbsp;{<br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;["none"|"short"|"full"|depth]<br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;[,filters(package,package,...)]<br/>
-                &nbsp;&nbsp;}
+                &nbsp;&nbsp;}<br/>
+                &nbsp;&nbsp;{ansi(<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;...)<br/>
+                &nbsp;&nbsp;}<br/>
               </td>
               <td>
                 <p>The same as the %throwable conversion word but also includes class packaging information.
@@ -1456,6 +1461,44 @@ WARN  [main]: Message 2</pre>
                   followed by "filters(packages)" where packages is a comma-sepaarted list of package names that 
                   should be suppressed from stack traces. Specifying <b>%xEx{none}</b>
                   or <b>%xEx{0}</b> will suppress printing of the exception.
+                </p>
+                <p>
+                 The <code>ansi</code> option renders stack traces with ANSI escapes code using the JAnsi library.
+                 Use <code>{ansi}</code> to use the default color mapping. You can specify your own mappings with
+                 <code>key=value</code> pairs. The keys are:
+                </p>
+                  <ul>
+                    <li>Prefix</li>
+                    <li>Name</li>
+                    <li>Message</li>
+                    <li>At</li>
+                    <li>CauseLabel</li>
+                    <li>Text</li>
+                    <li>More</li>
+                    <li>Suppressed</li>
+                    <li>StackTraceElement.ClassName</li>
+                    <li>StackTraceElement.ClassMethodSeparator</li>
+                    <li>StackTraceElement.MethodName</li>
+                    <li>StackTraceElement.NativeMethod</li>
+                    <li>StackTraceElement.FileName</li>
+                    <li>StackTraceElement.LineNumber</li>
+                    <li>StackTraceElement.Container</li>
+                    <li>StackTraceElement.ContainerSeparator</li>
+                    <li>StackTraceElement.UnknownSource</li>
+                    <li>ExtraClassInfo.Inexact</li>
+                    <li>ExtraClassInfo.Container</li>
+                    <li>ExtraClassInfo.ContainerSeparator</li>
+                    <li>ExtraClassInfo.Location</li>
+                    <li>ExtraClassInfo.Version</li>                   
+                  </ul> 
+                <p>
+                  The values are names from JAnsi's 
+                  <a href="https://fusesource.github.io/jansi/documentation/api/org/fusesource/jansi/AnsiRenderer.Code.html">Code</a>
+                  class like <code>blue</code>, <code>bg_red</code>, and so on (Log4j ignores case.)                  
+                </p>
+                <p>
+                  The special key <code>StyleMapName</code> can be set to one of the following prefedined maps: 
+                  <code>Spock</code>, <code>Kirk</code>.
                 </p>
               </td>
             </tr>
