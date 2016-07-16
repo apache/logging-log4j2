@@ -67,7 +67,7 @@ public class ConsoleAppenderJAnsiXExceptionMain {
             Files.getFileStore(Paths.get("?BOGUS?"));
         } catch (Exception e) {
             IllegalArgumentException logE = new IllegalArgumentException("Bad argument foo", e);
-            logger.info("Gotcha!", logE);
+            logger.error("Gotcha!", logE);
         } finally {
             Configurator.shutdown(ctx);
         }
