@@ -135,7 +135,7 @@ public final class ThrowableFormatOptionsTest {
     }
 
     /**
-     * Test {@code %throwable{full}{ansi(ansi(Warning=red))} }
+     * Test {@code %throwable{full}{ansi(Warning=red))} }
      */
     @Test
     public void testFullAnsiWithCustomStyle() {
@@ -150,7 +150,7 @@ public final class ThrowableFormatOptionsTest {
     }
 
     /**
-     * Test {@code %throwable{full}{ansi(ansi(Warning=red Key=blue Value=cyan))} }
+     * Test {@code %throwable{full}{ansi(Warning=red Key=blue Value=cyan))} }
      */
     @Test
     public void testFullAnsiWithCustomStyles() {
