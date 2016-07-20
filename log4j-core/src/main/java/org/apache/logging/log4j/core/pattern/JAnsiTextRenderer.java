@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.fusesource.jansi.AnsiRenderer.Code.BG_RED;
+import static org.fusesource.jansi.AnsiRenderer.Code.BOLD;
+import static org.fusesource.jansi.AnsiRenderer.Code.CYAN;
+import static org.fusesource.jansi.AnsiRenderer.Code.GREEN;
+import static org.fusesource.jansi.AnsiRenderer.Code.RED;
+import static org.fusesource.jansi.AnsiRenderer.Code.WHITE;
+import static org.fusesource.jansi.AnsiRenderer.Code.YELLOW;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -76,72 +84,78 @@ public final class JAnsiTextRenderer implements TextRenderer {
 
     public static final Map<String, Code[]> DefaultExceptionStyleMap;
     static final Map<String, Code[]> DefaultMessageStyleMap;
-    private static final Map<String,Map<String, Code[]>> PrefedinedStyleMaps;
+    private static final Map<String, Map<String, Code[]>> PrefedinedStyleMaps;
+
+    private static void put(Map<String, Code[]> map, String name, Code... codes) {
+        map.put(name, codes);
+    }
 
     static {
-        Map<String,Map<String, Code[]>> tempPreDefs  = new HashMap<>();
+        Map<String, Map<String, Code[]>> tempPreDefs = new HashMap<>();
         // Default style: Spock
         {
             // TODO Should the keys be in an enum?
-            Map<String, Code[]> temp = new HashMap<>();
-            temp.put("Prefix", new Code[] { Code.WHITE });
-            temp.put("Name", new Code[] { Code.BG_RED, Code.WHITE });
-            temp.put("Message", new Code[] { Code.BG_RED, Code.WHITE, Code.BOLD });
-            temp.put("At", new Code[] { Code.WHITE });
-            temp.put("CauseLabel", new Code[] { Code.WHITE });
-            temp.put("Text", new Code[] { Code.WHITE });
-            temp.put("More", new Code[] { Code.WHITE });
-            temp.put("Suppressed", new Code[] { Code.WHITE });
+            Map<String, Code[]> map = new HashMap<>();
+            put(map, "Prefix", WHITE);
+            put(map, "Name", BG_RED, WHITE);
+            put(map, "NameMessageSeparator", BG_RED, WHITE);
+            put(map, "Message", BG_RED, WHITE, BOLD);
+            put(map, "At", WHITE);
+            put(map, "CauseLabel", WHITE);
+            put(map, "Text", WHITE);
+            put(map, "More", WHITE);
+            put(map, "Suppressed", WHITE);
             // StackTraceElement
-            temp.put("StackTraceElement.ClassName", new Code[] { Code.YELLOW });
-            temp.put("StackTraceElement.ClassMethodSeparator", new Code[] { Code.YELLOW });
-            temp.put("StackTraceElement.MethodName", new Code[] { Code.YELLOW });
-            temp.put("StackTraceElement.NativeMethod", new Code[] { Code.YELLOW });
-            temp.put("StackTraceElement.FileName", new Code[] { Code.CYAN });
-            temp.put("StackTraceElement.LineNumber", new Code[] { Code.CYAN });
-            temp.put("StackTraceElement.Container", new Code[] { Code.CYAN });
-            temp.put("StackTraceElement.ContainerSeparator", new Code[] { Code.WHITE});
-            temp.put("StackTraceElement.UnknownSource", new Code[] { Code.CYAN });
+            put(map, "StackTraceElement.ClassName", YELLOW);
+            put(map, "StackTraceElement.ClassMethodSeparator", YELLOW);
+            put(map, "StackTraceElement.MethodName", YELLOW);
+            put(map, "StackTraceElement.NativeMethod", YELLOW);
+            put(map, "StackTraceElement.FileName", RED);
+            put(map, "StackTraceElement.LineNumber", RED);
+            put(map, "StackTraceElement.Container", RED);
+            put(map, "StackTraceElement.ContainerSeparator", WHITE);
+            put(map, "StackTraceElement.UnknownSource", RED);
             // ExtraClassInfo
-            temp.put("ExtraClassInfo.Inexact", new Code[] { Code.CYAN });
-            temp.put("ExtraClassInfo.Container", new Code[] { Code.GREEN });
-            temp.put("ExtraClassInfo.ContainerSeparator", new Code[] { Code.WHITE });
-            temp.put("ExtraClassInfo.Location", new Code[] { Code.GREEN });
-            temp.put("ExtraClassInfo.Version", new Code[] { Code.GREEN });
+            put(map, "ExtraClassInfo.Inexact", YELLOW);
+            put(map, "ExtraClassInfo.Container", YELLOW);
+            put(map, "ExtraClassInfo.ContainerSeparator", YELLOW);
+            put(map, "ExtraClassInfo.Location", YELLOW);
+            put(map, "ExtraClassInfo.Version", YELLOW);
             // Save
-            DefaultExceptionStyleMap = Collections.unmodifiableMap(temp);
+            DefaultExceptionStyleMap = Collections.unmodifiableMap(map);
             tempPreDefs.put("Spock", DefaultExceptionStyleMap);
         }
         // Style: Kirk
         {
             // TODO Should the keys be in an enum?
-            Map<String, Code[]> temp = new HashMap<>();
-            temp.put("Prefix", new Code[] { Code.WHITE });
-            temp.put("Name", new Code[] { Code.BG_RED, Code.YELLOW });
-            temp.put("Message", new Code[] { Code.BG_RED, Code.WHITE, Code.BOLD });
-            temp.put("At", new Code[] { Code.WHITE });
-            temp.put("CauseLabel", new Code[] { Code.WHITE });
-            temp.put("Text", new Code[] { Code.WHITE });
-            temp.put("More", new Code[] { Code.WHITE });
-            temp.put("Suppressed", new Code[] { Code.WHITE });
+            Map<String, Code[]> map = new HashMap<>();
+            put(map, "Prefix", WHITE);
+            put(map, "Name", BG_RED, YELLOW, BOLD);
+            put(map, "NameMessageSeparator", BG_RED, YELLOW);
+            put(map, "Message", BG_RED, WHITE, BOLD);
+            put(map, "At", WHITE);
+            put(map, "CauseLabel", WHITE);
+            put(map, "Text", WHITE);
+            put(map, "More", WHITE);
+            put(map, "Suppressed", WHITE);
             // StackTraceElement
-            temp.put("StackTraceElement.ClassName", new Code[] { Code.BG_RED, Code.WHITE });
-            temp.put("StackTraceElement.ClassMethodSeparator", new Code[] { Code.BG_RED, Code.YELLOW });
-            temp.put("StackTraceElement.MethodName", new Code[] { Code.BG_RED, Code.YELLOW });
-            temp.put("StackTraceElement.NativeMethod", new Code[] { Code.BG_RED, Code.YELLOW });
-            temp.put("StackTraceElement.FileName", new Code[] { Code.CYAN });
-            temp.put("StackTraceElement.LineNumber", new Code[] { Code.CYAN });
-            temp.put("StackTraceElement.Container", new Code[] { Code.CYAN });
-            temp.put("StackTraceElement.ContainerSeparator", new Code[] { Code.WHITE});
-            temp.put("StackTraceElement.UnknownSource", new Code[] { Code.CYAN });
+            put(map, "StackTraceElement.ClassName", BG_RED, WHITE);
+            put(map, "StackTraceElement.ClassMethodSeparator", BG_RED, YELLOW);
+            put(map, "StackTraceElement.MethodName", BG_RED, YELLOW);
+            put(map, "StackTraceElement.NativeMethod", BG_RED, YELLOW);
+            put(map, "StackTraceElement.FileName", RED);
+            put(map, "StackTraceElement.LineNumber", RED);
+            put(map, "StackTraceElement.Container", RED);
+            put(map, "StackTraceElement.ContainerSeparator", WHITE);
+            put(map, "StackTraceElement.UnknownSource", RED);
             // ExtraClassInfo
-            temp.put("ExtraClassInfo.Inexact", new Code[] { Code.CYAN });
-            temp.put("ExtraClassInfo.Container", new Code[] { Code.GREEN });
-            temp.put("ExtraClassInfo.ContainerSeparator", new Code[] { Code.WHITE });
-            temp.put("ExtraClassInfo.Location", new Code[] { Code.GREEN });
-            temp.put("ExtraClassInfo.Version", new Code[] { Code.GREEN });
+            put(map, "ExtraClassInfo.Inexact", YELLOW);
+            put(map, "ExtraClassInfo.Container", WHITE);
+            put(map, "ExtraClassInfo.ContainerSeparator", WHITE);
+            put(map, "ExtraClassInfo.Location", YELLOW);
+            put(map, "ExtraClassInfo.Version", YELLOW);
             // Save
-            tempPreDefs.put("Kirk", Collections.unmodifiableMap(temp));
+            tempPreDefs.put("Kirk", Collections.unmodifiableMap(map));
         }
         {
             Map<String, Code[]> temp = new HashMap<>();

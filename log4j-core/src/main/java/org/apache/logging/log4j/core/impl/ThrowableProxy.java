@@ -234,7 +234,7 @@ public class ThrowableProxy implements Serializable {
         final String msg = this.message;
         textRenderer.render(this.name, output, "Name");
         if (msg != null) {
-            textRenderer.render(": ", output, "Text");
+            textRenderer.render(": ", output, "NameMessageSeparator");
             textRenderer.render(msg, output, "Message");
         }
     }
@@ -450,7 +450,7 @@ public class ThrowableProxy implements Serializable {
     public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer) {
         final StringBuilder sb = new StringBuilder(1024);
         textRenderer.render(name, sb, "Name");
-        textRenderer.render(": ", sb, "Text");
+        textRenderer.render(": ", sb, "NameMessageSeparator");
         textRenderer.render(this.message, sb, "Message");
         textRenderer.render(EOL_STR, sb, "Text");
         final StackTraceElement[] causedTrace = this.throwable != null ? this.throwable.getStackTrace() : null;

@@ -1470,6 +1470,7 @@ WARN  [main]: Message 2</pre>
                   <ul>
                     <li>Prefix</li>
                     <li>Name</li>
+                    <li>NameMessageSeparator</li>
                     <li>Message</li>
                     <li>At</li>
                     <li>CauseLabel</li>
