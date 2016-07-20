@@ -49,7 +49,6 @@ public class RollingAppenderCronTest {
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
     private static final String FILE = "target/rolling-cron/rollingtest.log";
-    private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yy-HH-mm-ss");
 
     private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
