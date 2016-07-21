@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  * Alternative class names: AutoLock, LockResource, LockWrapper.
  * 
- * @since 2.6.2
+ * @since 2.7
  */
 public final class AutoCloseableLock implements AutoCloseable, Serializable {
 
