@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.Closeable;
 import java.io.File;
 import java.net.URI;
 import java.util.Collection;
@@ -48,15 +49,13 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
-import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
-
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
  * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
  * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
 public class LoggerContext extends AbstractLifeCycle
-        implements org.apache.logging.log4j.spi.LoggerContext, Closeable, Terminable, ConfigurationListener {
+        implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener {
 
     /**
      * Property name of the property change event fired if the configuration is changed.
