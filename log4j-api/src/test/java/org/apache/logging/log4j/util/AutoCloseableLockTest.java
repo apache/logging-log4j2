@@ -16,36 +16,40 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.Before;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.junit.Test;
 
 public class AutoCloseableLockTest {
 
-    private AutoCloseableLock lock;
-
-    @Before
-    public void setUp() {
-        lock = AutoCloseableLock.forReentrantLock();
+    @Test(timeout = 100)
+    public void sanityCheck() {
+        final Lock lock = new ReentrantLock();
+        lock.lock();
+        lock.unlock();
     }
 
     @Test(timeout = 100)
     public void testLockInTryWithResources() {
+        final AutoCloseableLock lock = AutoCloseableLock.forReentrantLock();
         try (AutoCloseableLock l = lock.lock()) {
             // ...
         }
         lock.tryLock();
+        lock.unlock();
     }
 
     @Test(timeout = 100)
     public void testNewLockInTryWithResources() {
-        try (AutoCloseableLock l = AutoCloseableLock.forReentrantLock()) {
+        try (AutoCloseableLock l = AutoCloseableLock.forReentrantLock().lock()) {
             // ...
         }
     }
 
     @Test(timeout = 100)
     public void testNewLockWithTryWithResources() {
-        final AutoCloseableLock localLock = AutoCloseableLock.forReentrantLock();
+        final AutoCloseableLock localLock = AutoCloseableLock.forReentrantLock().lock();
         try (AutoCloseableLock l = localLock) {
             // ...
         }
