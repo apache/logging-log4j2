@@ -16,43 +16,50 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.ByteArrayInputStream;
+import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.AfterClass;
+import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
  */
 public class OnStartupTriggeringPolicyTest {
 
-    private static final String TARGET_FILE = "target/testfile";
-    private static final String TARGET_PATTERN = "target/rolling1/test1-%i.log";
-    private static final String ROLLED_FILE = "target/rolling1/test1-1.log";
+    private static final String TARGET_FILE = "target/rollOnStartup/testfile";
+    private static final String TARGET_PATTERN = "target/rollOnStartup/test1-%d{MM-dd-yyyy}-%i.log";
+    private static final String ROLLED_FILE_PREFIX = "target/rollOnStartup/test1-";
+    private static final String ROLLED_FILE_SUFFIX = "-1.log";
     private static final String TEST_DATA = "Hello world!";
+    private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yyyy");
+
+    //@Rule
+    //public CleanFiles rule = new CleanFolders("target/rollOnStartup");
 
     @Test
     public void testPolicy() throws Exception {
         final Configuration configuration = new DefaultConfiguration();
         final Path target = Paths.get(TARGET_FILE);
-        final Path rolled = Paths.get(ROLLED_FILE);
-        Files.deleteIfExists(target);
-        Files.deleteIfExists(rolled);
-        final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"));
-        Files.copy(is, target);
-        is.close();
+        target.toFile().getParentFile().mkdirs();
+        final long timeStamp = System.currentTimeMillis() - (1000 * 60 * 60 * 24);
+        final String expectedDate = formatter.format(timeStamp);
+        final String rolledFileName = ROLLED_FILE_PREFIX + expectedDate + ROLLED_FILE_SUFFIX;
+        final Path rolled = Paths.get(rolledFileName);
+        try (final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"))) {
+            Files.copy(is, target);
+        }
         final long size = Files.size(target);
         assertTrue(size > 0);
-        long timeStamp = System.currentTimeMillis() - 120000;
+
         target.toFile().setLastModified(timeStamp);
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg").withConfiguration(configuration)
                 .build();
@@ -70,14 +77,6 @@ public class OnStartupTriggeringPolicyTest {
         } finally {
             manager.release();
         }
-    }
-
-    @AfterClass
-    public static void cleanup() throws Exception {
-        final Path target = Paths.get(TARGET_FILE);
-        final Path rolled = Paths.get(ROLLED_FILE);
-        Files.deleteIfExists(target);
-        Files.deleteIfExists(rolled);
     }
 
 }

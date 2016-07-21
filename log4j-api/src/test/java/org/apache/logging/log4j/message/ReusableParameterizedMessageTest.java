@@ -26,6 +26,12 @@ import static org.junit.Assert.*;
  */
 public class ReusableParameterizedMessageTest {
 
+    public static ReusableParameterizedMessage set(final ReusableParameterizedMessage msg, final String format,
+            final Object... params) {
+
+        return msg.set(format, params);
+    }
+
     @Test
     public void testNoArgs() {
         final String testMsg = "Test message {}";

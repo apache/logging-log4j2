@@ -181,7 +181,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     /**
      * Create the DefaultRolloverStrategy.
-     * 
+     *
      * @param max The maximum number of files to keep.
      * @param min The minimum number of files to keep.
      * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a smaller
@@ -243,7 +243,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     /**
      * Constructs a new instance.
-     * 
+     *
      * @param minIndex The minimum index.
      * @param maxIndex The maximum index.
      * @param customActions custom actions to perform asynchronously after rollover
@@ -510,7 +510,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     /**
      * Perform the rollover.
-     * 
+     *
      * @param manager The RollingFileManager name for current active log file.
      * @return A RolloverDescription.
      * @throws SecurityException if an error occurs.
@@ -545,7 +545,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
         }
 
-        final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo), false);
+        final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo),
+                manager.isRenameEmptyFiles());
 
         final Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
         return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction);

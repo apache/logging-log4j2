@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -31,6 +32,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
  * Testing Routing appender purge facilities
@@ -50,27 +52,26 @@ public class RoutingAppenderWithPurgingTest {
     private RoutingAppender routingAppenderIdleWithHangingAppender;
     private RoutingAppender routingAppenderManual;
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule(CONFIG);
+    private LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
-    public CleanFiles files = new CleanFiles(IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3,
+    public RuleChain chain = loggerContextRule.withCleanFilesRule(IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3,
     		MANUAL_LOG_FILE1, MANUAL_LOG_FILE2, MANUAL_LOG_FILE3);
 
 
     @Before
     public void setUp() throws Exception {
-        this.app = this.init.getListAppender("List");
-        this.routingAppenderIdle = this.init.getRequiredAppender("RoutingPurgeIdle", RoutingAppender.class);
+        this.app = this.loggerContextRule.getListAppender("List");
+        this.routingAppenderIdle = this.loggerContextRule.getRequiredAppender("RoutingPurgeIdle", RoutingAppender.class);
         this.routingAppenderIdleWithHangingAppender =
-                this.init.getRequiredAppender("RoutingPurgeIdleWithHangingAppender", RoutingAppender.class);
-        this.routingAppenderManual = this.init.getRequiredAppender("RoutingPurgeManual", RoutingAppender.class);
+                this.loggerContextRule.getRequiredAppender("RoutingPurgeIdleWithHangingAppender", RoutingAppender.class);
+        this.routingAppenderManual = this.loggerContextRule.getRequiredAppender("RoutingPurgeManual", RoutingAppender.class);
     }
 
     @After
     public void tearDown() throws Exception {
         this.app.clear();
-        this.init.getContext().stop();
+        this.loggerContextRule.getContext().stop();
     }
 
     @Test(timeout = 5000)

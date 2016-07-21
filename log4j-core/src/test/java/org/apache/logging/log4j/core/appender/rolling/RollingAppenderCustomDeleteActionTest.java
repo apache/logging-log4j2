@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -24,10 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -37,19 +37,14 @@ public class RollingAppenderCustomDeleteActionTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete.xml";
     private static final String DIR = "target/rolling-with-delete/test";
 
-    private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            deleteDir();
-        }
-    }).around(ctx);
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
-        final Logger logger = ctx.getLogger();
+        final Logger logger = loggerContextRule.getLogger();
         // Trigger the rollover
         for (int i = 0; i < 10; ++i) {
             // 30 chars per message: each message triggers a rollover
@@ -78,17 +73,6 @@ public class RollingAppenderCustomDeleteActionTest {
             Thread.sleep(100); // Allow time for rollover to complete
         }
         fail("No rollover files found");
-    }
-
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
-        }
     }
 
     public static void main(final String[] args) {

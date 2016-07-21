@@ -53,8 +53,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
  * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
-public class LoggerContext extends AbstractLifeCycle implements org.apache.logging.log4j.spi.LoggerContext, Terminable,
-        ConfigurationListener {
+public class LoggerContext extends AbstractLifeCycle
+        implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener {
 
     /**
      * Property name of the property change event fired if the configuration is changed.
@@ -278,6 +278,11 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 }
             }
         }
+    }
+
+    @Override
+    public void close() {
+        stop();
     }
 
     @Override

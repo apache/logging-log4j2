@@ -27,8 +27,10 @@ import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFactory2;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
@@ -601,10 +603,10 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             if (Strings.isEmpty(format)) {
                 return flowMessageFactory.newEntryMessage(null);
             }
-            return flowMessageFactory.newEntryMessage(messageFactory.newMessage(format));
+            return flowMessageFactory.newEntryMessage(new SimpleMessage(format));
         }
         if (format != null) {
-            return flowMessageFactory.newEntryMessage(messageFactory.newMessage(format, params));
+            return flowMessageFactory.newEntryMessage(new ParameterizedMessage(format, params));
         }
         final StringBuilder sb = new StringBuilder();
         sb.append("params(");
@@ -616,7 +618,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             sb.append(parm instanceof Message ? ((Message) parm).getFormattedMessage() : String.valueOf(parm));
         }
         sb.append(')');
-        return flowMessageFactory.newEntryMessage(messageFactory.newMessage(sb.toString()));
+        return flowMessageFactory.newEntryMessage(new SimpleMessage(sb));
     }
 
     protected EntryMessage entryMsg(final String format, final MessageSupplier... paramSuppliers) {

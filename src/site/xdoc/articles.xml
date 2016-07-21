@@ -56,6 +56,15 @@
       <subsection name="English">
       <ul>
         <li>
+          <a href="http://javaevangelist.blogspot.jp/2016/06/log4j2-javautillogging-jul-adapter.html">Log4j2
+            java.util.logging (JUL) Adapter Example</a>
+          (June 24, 2016)
+        </li>
+        <li>
+          <a href="https://springframework.guru/using-log4j-2-spring-boot/">Using Log4j 2 with Sprint Boot</a>
+          (April 7, 2016)
+        </li>
+        <li>
           <a href="https://www.infoq.com/news/2016/05/log4j-garbage-free">Log4j 2.6 Goes Garbage-Free</a>
           (May 30, 2016)
         </li>
@@ -68,8 +77,40 @@
           (March 31, 2016)
         </li>
         <li>
+          <a href="https://springframework.guru/log4j-2-configuration-using-yaml/">Log4J 2 Configuration: Using YAML</a>
+          (March 26, 2016)
+        </li>
+        <li>
+          <a href="https://springframework.guru/log4j-2-configuration-using-json/">Log4J 2 Configuration: Using JSON</a>
+          (March 23, 2016)
+        </li>
+        <li>
+          <a href="https://qbox.io/blog/getting-logstash-2x-ready-for-log4j2">Getting Logstash 2.x Ready for Log4j2</a>
+          (March 10, 2016)
+        </li>
+        <li>
+          <a href="https://springframework.guru/log4j-2-configuration-using-xml/">Log4J 2 Configuration: Using XML</a>
+          (March 10, 2016)
+        </li>
+        <li>
+          <a href="https://springframework.guru/log4j-2-configuration-using-properties-file/">Log4J 2 Configuration: Using Properties File</a>
+          (March 8, 2016)
+        </li>
+        <li>
+          <a href="https://springframework.guru/introducing-log4j-enterprise-class-logging/">Introducing Log4j 2 – Enterprise Class Logging</a>
+          (February 8, 2016)
+        </li>
+        <li>
+          <a href="https://www.javacodegeeks.com/2015/10/better-performing-non-logging-logger-calls-in-log4j2.html">Better Performing Non-Logging Logger Calls in Log4j2</a>
+          (October 20, 2015)
+        </li>
+        <li>
           <a href="http://marxsoftware.blogspot.com/2015/10/log4j2-non-logging-performance.html">Better Performing Non-Logging Logger Calls in Log4j2</a>
           (October 15, 2015)
+        </li>
+        <li>
+          <a href="https://www.javacodegeeks.com/2015/10/easy-and-consistent-log4j2-logger-naming.html">Easy and Consistent Log4j2 Logger Naming</a>
+          (October 10, 2015)
         </li>
         <li>
           <a href="https://garygregory.wordpress.com/2015/09/16/a-gentle-introduction-to-the-log4j-api-and-lambda-basics/">Writing clean logging code using Java 8 lambdas</a>
@@ -118,12 +159,16 @@
           (February 20, 2015)
         </li>
         <li>
+          <a href="https://blog.logentries.com/2015/02/logging-from-your-java-application-using-log4j2/?utm_content=11878557&amp;utm_medium=social&amp;utm_source=facebook">Logging From Your Java Application Using Log4j2</a>
+          (February 5, 2015)
+        </li>
+        <li>
           <a href="http://blogs.mulesoft.com/dev/mule-dev/mule-3-6-asynchronous-logging/">Asynchronous Logging in Mule 3.6</a>
           (January 20, 2015)
         </li>
         <li>
           <a href="http://www.infoq.com/news/2014/07/apache-log4j2">Apache Log4j 2.0 - Worth the Upgrade?</a>
-          (Jul 31, 2014)
+          (July 31, 2014)
         </li>
         <li>
           <a href="http://tech.finn.no/2014/07/01/log4j2-in-production-making-it-fly/">Log4j 2 in Production – Making it Fly</a>
@@ -132,6 +177,10 @@
         <li>
           <a href="http://www.grobmeier.de/log4j-2-performance-close-to-insane-20072013.html">Log4j 2: Performance Close to Insane</a>
           (July 20, 2013)
+        </li>
+        <li>
+          <a href="https://news.ycombinator.com/item?id=5612035">Hacker News: Asynchronous Loggers for Low-Latency Logging</a>
+          (April 26, 2013)
         </li>
         <li>
           <a href="http://www.grobmeier.de/the-new-log4j-2-0-05122012.html">The New Log4j 2.0</a>

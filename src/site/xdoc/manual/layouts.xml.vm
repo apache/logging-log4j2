@@ -1011,11 +1011,42 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternMessage"/>
-                <b>m</b><br />
-                <b>msg</b><br />
-                <b>message</b>
+                <b>m</b>{ansi}<br />
+                <b>msg</b>{ansi}<br />
+                <b>message</b>{ansi}
               </td>
-              <td>Outputs the application supplied message associated with the logging event.
+              <td>
+                <p>
+                  Outputs the application supplied message associated with the logging event.
+                </p>
+                <!-- Copied and tweaked from Javadoc for org.apache.logging.log4j.core.pattern.JAnsiMessageRenderer -->
+                <p>
+                  Add <code>{ansi}</code> to render messages with ANSI escape codes (requires JAnsi.)
+                </p>
+                <p>
+                  The default syntax for embedded ANSI codes is:
+                </p>
+                <pre class="prettyprint linenums">&#64;|<em>code</em>(,<em>code</em>)* <em>text</em>|@</pre>
+                <p>
+                  For example, to render the message <code>"Hello"</code> in green, use:
+                </p>
+                <pre class="prettyprint linenums">&#64;|green Hello|@</pre>
+                <p>
+                  To render the message <code>"Hello"</code> in bold and red, use:
+                </p>
+                <pre class="prettyprint linenums">&#64;|bold,red Warning!|@</pre>
+                <p>
+                  You can also define custom style names in the configuration with the syntax:
+                </p>
+                <pre class="prettyprint linenums">%message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n</pre>
+                <p>
+                  For example:
+                </p>
+                <pre class="prettyprint linenums">%message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n</pre>
+                <p>
+                  The call site can look like this:
+                </p>
+                <pre class="prettyprint linenums">logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());</pre>
               </td>
             </tr>
             <tr>

@@ -28,12 +28,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -43,11 +38,8 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.junit.CleanFolders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -89,17 +81,7 @@ public class RollingAppenderSizeTest {
     public RollingAppenderSizeTest(final String configFile, final String fileExtension) {
         this.fileExtension = fileExtension;
         this.loggerContextRule = new LoggerContextRule(configFile);
-        this.chain = RuleChain.outerRule(new CleanFolders(new File(DIR))).around(loggerContextRule);
-    }
-
-    @BeforeClass
-    public static void beforeClass() {
-        deleteDir();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        deleteDir();
+        this.chain = loggerContextRule.withCleanFoldersRule(DIR);
     }
 
     @Before
@@ -112,6 +94,12 @@ public class RollingAppenderSizeTest {
         for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ie) {
+            // Ignore the error.
+        }
+
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
@@ -145,22 +133,6 @@ public class RollingAppenderSizeTest {
                 } finally {
                     Closer.close(in);
                 }
-            }
-        }
-    }
-
-    private static void deleteDir() {
-        if (Files.exists(Paths.get(DIR))) {
-            String fileName = null;
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-                for (final Path path : directoryStream) {
-                    fileName = path.toFile().getName();
-                    Files.delete(path);
-                }
-                Files.delete(Paths.get(DIR));
-            } catch (final IOException ioe) {
-                fail("Unable to delete " + fileName + " due to " + ioe.getClass().getSimpleName() + ": "
-                        + ioe.getMessage());
             }
         }
     }
