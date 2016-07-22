@@ -80,7 +80,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        ProviderUtil.STARTUP_LOCK.lock();
+        ProviderUtil.STARTUP_LOCK.autoLock();
         lockingProviderUtil = true;
         final BundleWiring self = context.getBundle().adapt(BundleWiring.class);
         final List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());

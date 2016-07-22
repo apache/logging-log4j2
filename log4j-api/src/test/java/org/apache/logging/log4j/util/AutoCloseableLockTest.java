@@ -33,7 +33,7 @@ public class AutoCloseableLockTest {
     @Test(timeout = 100)
     public void testLockInTryWithResources() {
         final AutoCloseableLock lock = AutoCloseableLock.forReentrantLock();
-        try (AutoCloseableLock l = lock.lock()) {
+        try (AutoCloseableLock l = lock.autoLock()) {
             // ...
         }
         lock.tryLock();
@@ -42,14 +42,14 @@ public class AutoCloseableLockTest {
 
     @Test(timeout = 100)
     public void testNewLockInTryWithResources() {
-        try (AutoCloseableLock l = AutoCloseableLock.forReentrantLock().lock()) {
+        try (AutoCloseableLock l = AutoCloseableLock.forReentrantLock().autoLock()) {
             // ...
         }
     }
 
     @Test(timeout = 100)
     public void testNewLockWithTryWithResources() {
-        final AutoCloseableLock localLock = AutoCloseableLock.forReentrantLock().lock();
+        final AutoCloseableLock localLock = AutoCloseableLock.forReentrantLock().autoLock();
         try (AutoCloseableLock l = localLock) {
             // ...
         }

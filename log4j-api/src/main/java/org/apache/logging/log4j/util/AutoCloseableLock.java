@@ -30,9 +30,18 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  * @since 2.7
  */
-public final class AutoCloseableLock implements AutoCloseable, Serializable {
+public final class AutoCloseableLock implements AutoCloseable, Lock, Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Create a new wrapper for a new {@link ReentrantLock}.
+     * 
+     * @return a new wrapper for a new {@link ReentrantLock}.
+     */
+    public static AutoCloseableLock forReentrantLock() {
+        return wrap(new ReentrantLock());
+    }
 
     /**
      * Wraps the given Lock.
@@ -44,20 +53,32 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
         return new AutoCloseableLock(lock);
     }
 
-    /**
-     * Create a new wrapper for a new {@link ReentrantLock}.
-     * 
-     * @return a new wrapper for a new {@link ReentrantLock}.
-     */
-    public static AutoCloseableLock forReentrantLock() {
-        return wrap(new ReentrantLock());
-    }
-
     private final Lock lock;
 
     private AutoCloseableLock(final Lock lock) {
         Objects.requireNonNull(lock, "lock");
         this.lock = lock;
+    }
+
+    /**
+     * Delegates to {@link Lock#lock()}.
+     * 
+     * @return this
+     */
+    public AutoCloseableLock autoLock() {
+        this.lock.lock();
+        return this;
+    }
+
+    /**
+     * Delegates to {@link Lock#lockInterruptibly()}, use in a try block.
+     * 
+     * @return this
+     * @throws InterruptedException
+     */
+    public AutoCloseableLock autoLockInterruptibly() throws InterruptedException {
+        this.lock.lockInterruptibly();
+        return this;
     }
 
     /**
@@ -70,12 +91,30 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
 
     /**
      * Delegates to {@link Lock#lock()}.
-     * 
-     * @return this
      */
-    public AutoCloseableLock lock() {
+    @Override
+    public void lock() {
         this.lock.lock();
-        return this;
+    }
+
+    /**
+     * Delegates to {@link Lock#lockInterruptibly()}, use in a try block.
+     * 
+     * @throws InterruptedException
+     */
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+        this.lock.lockInterruptibly();
+    }
+
+    /**
+     * Delegates to {@link Lock#newCondition()}.
+     * 
+     * @return See {@link Lock#newCondition()}.
+     */
+    @Override
+    public Condition newCondition() {
+        return this.lock.newCondition();
     }
 
     /**
@@ -83,6 +122,7 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
      * 
      * @return See {@link Lock#tryLock()}.
      */
+    @Override
     public boolean tryLock() {
         return this.lock.tryLock();
     }
@@ -97,33 +137,15 @@ public final class AutoCloseableLock implements AutoCloseable, Serializable {
      * @return See {@link Lock#tryLock()}.
      * @throws InterruptedException
      */
+    @Override
     public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
         return this.lock.tryLock(time, unit);
     }
 
     /**
-     * Delegates to {@link Lock#lockInterruptibly()}, use in a try block.
-     * 
-     * @return this
-     * @throws InterruptedException
-     */
-    public AutoCloseableLock lockInterruptibly() throws InterruptedException {
-        this.lock.lockInterruptibly();
-        return this;
-    }
-
-    /**
-     * Delegates to {@link Lock#newCondition()}.
-     * 
-     * @return See {@link Lock#newCondition()}.
-     */
-    public Condition newCondition() {
-        return this.lock.newCondition();
-    }
-
-    /**
      * Delegates to {@link Lock#unlock()}.
      */
+    @Override
     public void unlock() {
         this.lock.unlock();
     }

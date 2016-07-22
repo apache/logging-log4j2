@@ -293,7 +293,7 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public void stop() {
         LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
-        try (final AutoCloseableLock l = configLock.lock()) {
+        try (final AutoCloseableLock l = configLock.autoLock()) {
             if (this.isStopped()) {
                 return;
             }
@@ -481,7 +481,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     private Configuration setConfiguration(final Configuration config) {
         Objects.requireNonNull(config, "No Configuration was provided");
-        try (final AutoCloseableLock l = configLock.lock()) {
+        try (final AutoCloseableLock l = configLock.autoLock()) {
             final Configuration prev = this.configuration;
             config.addListener(this);
             final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);

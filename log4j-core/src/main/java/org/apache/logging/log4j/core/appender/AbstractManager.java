@@ -66,7 +66,7 @@ public abstract class AbstractManager {
      */
     public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory,
                                                               final T data) {
-        try (final AutoCloseableLock l = LOCK.lock()) {
+        try (final AutoCloseableLock l = LOCK.autoLock()) {
             @SuppressWarnings("unchecked")
             M manager = (M) MAP.get(name);
             if (manager == null) {
@@ -93,7 +93,7 @@ public abstract class AbstractManager {
      * @return True if the Manager exists, false otherwise.
      */
     public static boolean hasManager(final String name) {
-        try (final AutoCloseableLock l = LOCK.lock()) {
+        try (final AutoCloseableLock l = LOCK.autoLock()) {
             return MAP.containsKey(name);
         }
     }
@@ -113,7 +113,7 @@ public abstract class AbstractManager {
      * Called to signify that this Manager is no longer required by an Appender.
      */
     public void release() {
-        try (final AutoCloseableLock l = LOCK.lock()) {
+        try (final AutoCloseableLock l = LOCK.autoLock()) {
             --count;
             if (count <= 0) {
                 MAP.remove(name);

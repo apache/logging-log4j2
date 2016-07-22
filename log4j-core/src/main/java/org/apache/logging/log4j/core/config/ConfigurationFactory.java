@@ -132,7 +132,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         // volatile works in Java 1.6+, so double-checked locking also works properly
         //noinspection DoubleCheckedLocking
         if (factories == null) {
-            try (final AutoCloseableLock l = LOCK.lock()) {
+            try (final AutoCloseableLock l = LOCK.autoLock()) {
                 if (factories == null) {
                     final List<ConfigurationFactory> list = new ArrayList<>();
                     final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);

@@ -111,7 +111,7 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
     }
 
     private void signalCompletionIfShutdown() {
-        try (final AutoCloseableLock l = shutdownLock.lock()) {
+        try (final AutoCloseableLock l = shutdownLock.autoLock()) {
             noLogEvents.signalAll();
         }
     }
@@ -130,7 +130,7 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
      * Waits for all log events to complete before returning.
      */
     private void waitForCompletion() {
-        try (final AutoCloseableLock l = shutdownLock.lock()) {
+        try (final AutoCloseableLock l = shutdownLock.autoLock()) {
             if (shutdown.compareAndSet(false, true)) {
                 int retries = 0;
                 // repeat while counter is non-zero

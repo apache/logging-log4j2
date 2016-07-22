@@ -117,7 +117,7 @@ public final class ProviderUtil {
     protected static void lazyInit() {
         // noinspection DoubleCheckedLocking
         if (instance == null) {
-            try (AutoCloseableLock l = STARTUP_LOCK.lockInterruptibly()) {
+            try (AutoCloseableLock l = STARTUP_LOCK.autoLockInterruptibly()) {
                 if (instance == null) {
                     instance = new ProviderUtil();
                 }

@@ -76,7 +76,7 @@ public final class WebLoggerContextUtils {
      * @since 2.0.1
      */
     public static Log4jWebLifeCycle getWebLifeCycle(final ServletContext servletContext) {
-        try (final AutoCloseableLock l = WEB_SUPPORT_LOOKUP.lock()) {
+        try (final AutoCloseableLock l = WEB_SUPPORT_LOOKUP.autoLock()) {
             Log4jWebLifeCycle webLifeCycle = (Log4jWebLifeCycle) servletContext.getAttribute(
                 Log4jWebSupport.SUPPORT_ATTRIBUTE);
             if (webLifeCycle == null) {

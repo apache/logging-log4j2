@@ -187,7 +187,7 @@ public final class StatusLogger extends AbstractLogger {
      * @return The list of StatusData objects.
      */
     public List<StatusData> getStatusData() {
-        try (final AutoCloseableLock lock = msgLock.lock()) {
+        try (final AutoCloseableLock lock = msgLock.autoLock()) {
             return new ArrayList<>(messages);
         } 
     }
@@ -196,7 +196,7 @@ public final class StatusLogger extends AbstractLogger {
      * Clears the list of status events.
      */
     public void clear() {
-        try (final AutoCloseableLock lock = msgLock.lock()) {
+        try (final AutoCloseableLock lock = msgLock.autoLock()) {
             messages.clear();
         }
     }
@@ -223,7 +223,7 @@ public final class StatusLogger extends AbstractLogger {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
         }
         final StatusData data = new StatusData(element, level, msg, t, null);
-        try (final AutoCloseableLock lock = msgLock.lock()) {
+        try (final AutoCloseableLock lock = msgLock.autoLock()) {
             messages.add(data);
         }
         if (listeners.size() > 0) {
