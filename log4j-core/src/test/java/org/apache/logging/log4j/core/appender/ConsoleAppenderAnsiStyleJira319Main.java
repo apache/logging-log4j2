@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.Configurator;
  * <p>
  * Running from a Windows command line from the root of the project:
  * </p>
+ * 
  * <pre>
  * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleJira319Main log4j-core/target/test-classes/log4j2-319.xml
  * </pre>
@@ -38,8 +39,8 @@ public class ConsoleAppenderAnsiStyleJira319Main {
     public static void main(final String[] args) {
         // System.out.println(System.getProperty("java.class.path"));
         final String config = args.length == 0 ? "target/test-classes/log4j2-319.xml" : args[0];
-        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
-        try {
+        try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
+                config)) {
             LOG.fatal("Fatal message.");
             LOG.error("Error message.");
             LOG.warn("Warning message.");
@@ -54,8 +55,6 @@ public class ConsoleAppenderAnsiStyleJira319Main {
             }
             LOG.warn("this is ok \n And all \n this have only\t\tblack colour \n and here is colour again?");
             LOG.info("Information message.");
-        } finally {
-            Configurator.shutdown(ctx);
         }
     }
 

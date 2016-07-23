@@ -28,8 +28,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
-import org.apache.logging.log4j.junit.CleanFiles;
-import org.junit.Rule;
 import org.junit.Test;
 
 /**
