@@ -193,6 +193,8 @@ public final class HighlightConverter extends LogEventPatternConverter implement
 
     private final boolean noAnsi;
 
+    private final String defaultStyle;
+
     /**
      * Construct the converter.
      *
@@ -205,6 +207,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         super("style", "style");
         this.patternFormatters = patternFormatters;
         this.levelStyles = levelStyles;
+        this.defaultStyle = AnsiEscape.getDefaultStyle();
         this.noAnsi = noAnsi;
     }
 
@@ -213,17 +216,24 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : patternFormatters) {
-            formatter.format(event, buf);
+        int start = 0;
+        int end = 0;
+        if (!noAnsi) {
+            start = toAppendTo.length();
+            toAppendTo.append(levelStyles.get(event.getLevel()));
+            end = toAppendTo.length();
         }
 
-        if (buf.length() > 0) {
-            if (noAnsi) {
-                toAppendTo.append(buf.toString());
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0, size = patternFormatters.size(); i <  size; i++) {
+            patternFormatters.get(i).format(event, toAppendTo);
+        }
+
+        if (!noAnsi) {
+            if (toAppendTo.length() == end) {
+                toAppendTo.setLength(start);
             } else {
-                toAppendTo.append(levelStyles.get(event.getLevel())).append(buf.toString()).
-                    append(AnsiEscape.getDefaultStyle());
+                toAppendTo.append(defaultStyle);
             }
         }
     }

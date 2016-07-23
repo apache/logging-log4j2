@@ -234,6 +234,14 @@
               </td>
             </tr>
             <tr>
+              <td>%hightlight{pattern}{style}</td>
+              <td>Adds ANSI colors (unless child pattern is not garbage free)</td>
+            </tr>
+            <tr>
+              <td>style{pattern}{ANSI style}</td>
+              <td>Style the message (unless child pattern is not garbage free)</td>
+            </tr>
+            <tr>
               <td>%m, %msg, %message</td>
               <td>Log message (unless message text contains '${')</td>
             </tr>
