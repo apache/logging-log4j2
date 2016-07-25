@@ -49,8 +49,9 @@ public class ConfigurationAssemblerTest {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         CustomConfigurationFactory.addTestFixtures("config name", builder);
         final Configuration configuration = builder.build();
-        Configurator.initialize(configuration);
-        validate(configuration);
+        try (LoggerContext ctx = Configurator.initialize(configuration)) {
+            validate(configuration);
+        }
     }
 
     @Test

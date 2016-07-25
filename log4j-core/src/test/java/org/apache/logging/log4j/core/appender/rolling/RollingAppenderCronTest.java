@@ -34,7 +34,6 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
@@ -49,7 +48,6 @@ public class RollingAppenderCronTest {
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
     private static final String FILE = "target/rolling-cron/rollingtest.log";
-    private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yy-HH-mm-ss");
 
     private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 

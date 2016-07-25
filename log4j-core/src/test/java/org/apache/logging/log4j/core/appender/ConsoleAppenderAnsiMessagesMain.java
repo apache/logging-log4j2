@@ -24,13 +24,14 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
 /**
- * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest of the log entry
- * (time stamp for example) is in the default color for that console.
+ * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
+ * of the log entry (time stamp for example) is in the default color for that console.
  * <p>
  * Running from a Windows command line from the root of the project:
  * </p>
+ * 
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiMessagesMain log4j-core/target/test-classes/log4j2-console.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiMessagesMain log4j-core/target/test-classes/log4j2-console.xml
  * </pre>
  */
 public class ConsoleAppenderAnsiMessagesMain {
@@ -38,9 +39,8 @@ public class ConsoleAppenderAnsiMessagesMain {
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiMessagesMain.class);
 
     public static void main(final String[] args) {
-        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
-                "target/test-classes/log4j2-console.xml");
-        try {
+        try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
+                "target/test-classes/log4j2-console.xml")) {
             LOG.fatal("\u001b[1;35mFatal message.\u001b[0m");
             LOG.error("\u001b[1;31mError message.\u001b[0m");
             LOG.warn("\u001b[0;33mWarning message.\u001b[0m");
@@ -48,8 +48,6 @@ public class ConsoleAppenderAnsiMessagesMain {
             LOG.debug("\u001b[0;36mDebug message.\u001b[0m");
             LOG.trace("\u001b[0;30mTrace message.\u001b[0m");
             LOG.error("\u001b[1;31mError message.\u001b[0m", new IOException("test"));
-        } finally {
-            Configurator.shutdown(ctx);
         }
     }
 

@@ -318,4 +318,9 @@ public final class Loader {
             return false;
         }
     }
+
+    public static boolean isJansiAvailable() {
+        return isClassAvailable("org.fusesource.jansi.AnsiRenderer");
+    }
+
 }

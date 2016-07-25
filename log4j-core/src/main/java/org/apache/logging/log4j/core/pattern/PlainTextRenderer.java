@@ -14,28 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.lookup;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configurator;
+package org.apache.logging.log4j.core.pattern;
 
 /**
- * Tests {@link org.apache.logging.log4j.core.lookup.MainMapLookup#MAIN_SINGLETON} from the command line, not a real
- * JUnit test.
- * 
- * From an IDE or CLI: --file foo.txt
- * 
- * @since 2.4
+ Renders input unchanged.
  */
-public class MainInputArgumentsLookupTest {
+public final class PlainTextRenderer implements TextRenderer {
+    
+    private static final PlainTextRenderer INSTANCE = new PlainTextRenderer();
 
-    public static void main(final String[] args) {
-        MainMapLookup.setMainArguments(args);
-        try (final LoggerContext ctx = Configurator.initialize(MainInputArgumentsLookupTest.class.getName(),
-                "target/test-classes/log4j-lookup-main.xml")) {
-            LogManager.getLogger().error("this is an error message");
-        }
+    public static PlainTextRenderer getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public void render(String input, StringBuilder output, String styleName) {
+        output.append(input);
+    }
+
+    @Override
+    public void render(StringBuilder input, StringBuilder output) {
+        output.append(input);
     }
 
 }

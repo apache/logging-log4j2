@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,18 +33,20 @@ import org.junit.Test;
  * </p>
  *
  * <pre>
- * mvn -Dtest=org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain test
+ * mvn -Dtest=org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiXExceptionMain test
  * </pre>
- * or:
+ * 
+ * or, on Windows:
+ * 
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%USERPROFILE%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiXExceptionMain log4j-core/src/test/resources/log4j2-console-xex-ansi.xml
  * </pre>
  * 
  */
-public class ConsoleAppenderAnsiStyleLayoutMain {
+public class ConsoleAppenderJAnsiXExceptionMain {
 
     public static void main(final String[] args) {
-        new ConsoleAppenderAnsiStyleLayoutMain().test(args);
+        new ConsoleAppenderJAnsiXExceptionMain().test(args);
     }
 
     /**
@@ -56,17 +59,17 @@ public class ConsoleAppenderAnsiStyleLayoutMain {
 
     public void test(final String[] args) {
         // System.out.println(System.getProperty("java.class.path"));
-        final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml"
+        final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-xex-ansi.xml"
                 : args[0];
-        try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config)) {
-            final Logger logger = LogManager.getLogger(ConsoleAppenderAnsiStyleLayoutMain.class);
-            logger.fatal("Fatal message.");
-            logger.error("Error message.");
-            logger.warn("Warning message.");
-            logger.info("Information message.");
-            logger.debug("Debug message.");
-            logger.trace("Trace message.");
-            logger.error("Error message.", new IOException("test"));
+        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
+        final Logger logger = LogManager.getLogger(ConsoleAppenderJAnsiXExceptionMain.class);
+        try {
+            Files.getFileStore(Paths.get("?BOGUS?"));
+        } catch (Exception e) {
+            IllegalArgumentException logE = new IllegalArgumentException("Bad argument foo", e);
+            logger.error("Gotcha!", logE);
+        } finally {
+            Configurator.shutdown(ctx);
         }
     }
 
