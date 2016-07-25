@@ -18,10 +18,12 @@
 <Configuration status="OFF" strict="false" name="DSI">
   <Properties>
      <Property name="test2">test2default</Property>
+     <Property name="attribKey" value="attribValue" />
+     <Property name="duplicateKey" value="attribValue">nodeValue</Property>
   </Properties>
   <Appenders>
     <List name="List">
-        <PatternLayout pattern="[%-5level] %c{1.} user=%X{user} phrasex=%X{phrasex} test=%X{test} test2=$${sys:test2} test3=$${sys:test3:-Unknown} %msg%n" />
+        <PatternLayout pattern="[%-5level] %c{1.} user=%X{user} phrasex=%X{phrasex} test=%X{test} test2=$${sys:test2} test3=$${sys:test3:-Unknown} attribKey=$${attribKey} duplicateKey=$${duplicateKey}%msg%n" />
     </List>
   </Appenders>
 

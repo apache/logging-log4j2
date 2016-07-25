@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * PluginVisitor implementation for {@link PluginValue}.
@@ -35,8 +36,8 @@ public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
     public Object visit(final Configuration configuration, final Node node, final LogEvent event,
                         final StringBuilder log) {
         final String name = this.annotation.value();
-        final String rawValue = node.getValue() != null ? node.getValue() :
-            removeAttributeValue(node.getAttributes(), "value");
+        final String rawValue = Strings.isNotEmpty(node.getValue()) ? node.getValue() :
+                removeAttributeValue(node.getAttributes(), "value");
         final String value = this.substitutor.replace(event, rawValue);
         StringBuilders.appendKeyDqValue(log, name, value);
         return value;
