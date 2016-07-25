@@ -380,7 +380,8 @@
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+                of "%m%n" will be used.</td>
             </tr>
             <tr>
               <td>locking</td>
@@ -1439,7 +1440,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
             <td>layout</td>
             <td>Layout</td>
-            <td>The Layout to use to format the LogEvent</td>
+            <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
           </tr>
           <tr>
             <td>name</td>
@@ -1848,7 +1850,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
 						<td>layout</td>
 						<td>Layout</td>
-						<td>The Layout to use to format the LogEvent</td>
+						<td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
 					</tr>
           <tr>
 						<td>name</td>
@@ -2159,7 +2162,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+                of "%m%n" will be used.</td>
             </tr>
 
             <tr>
@@ -3045,7 +3049,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
 						<td>layout</td>
 						<td>Layout</td>
-						<td>The Layout to use to format the LogEvent</td>
+						<td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
 					</tr>
 
           <tr>
@@ -3342,7 +3347,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent. The default is SerializedLayout.</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied <a href="layouts.html#HTMLLayout">HTML layout</a> will be used.</td>
             </tr>
             <tr>
               <td>name</td>
@@ -3805,9 +3810,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>Layout</td>
               <td>layout</td>
-              <td>The Layout of the Appender. If you do not specify a layout, the appender uses the default
-              pattern appender returned by
-              <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html#createDefaultLayout()">PatternLayout.createDefaultLayout()</a>.</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+                of "%m%n" will be used.</td>
             </tr>
             <tr>
               <td>Filters</td>
