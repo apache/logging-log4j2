@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.util.Map;
-
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
@@ -27,7 +26,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.AbstractLogEvent;
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextDataAttributeConverter;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -219,10 +220,20 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     /**
      * A no-op mutator to satisfy JPA requirements, as this entity is write-only.
      *
-     * @param contextMap Ignored.
+     * @param contextData Ignored.
      */
     @SuppressWarnings("unused")
-    public void setContextMap(final Map<String, String> contextMap) {
+    public void setContextData(final ContextData contextData) {
+        // this entity is write-only
+    }
+
+    /**
+     * A no-op mutator to satisfy JPA requirements, as this entity is write-only.
+     *
+     * @param map Ignored.
+     */
+    @SuppressWarnings("unused")
+    public void setContextMap(final Map<String, String> map) {
         // this entity is write-only
     }
 
@@ -278,6 +289,20 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     @Override
     public final void setEndOfBatch(final boolean endOfBatch) {
         this.getWrappedEvent().setEndOfBatch(endOfBatch);
+    }
+
+    /**
+     * Gets the context map. Transient, since the String version of the data is obtained via ContextMap.
+     *
+     * @return the context data.
+     * @see ContextDataAttributeConverter
+     * @see org.apache.logging.log4j.core.appender.db.jpa.converter.ContextDataAttributeConverter
+     */
+    @Override
+    @Transient
+    //@Convert(converter = ContextDataAttributeConverter.class)
+    public ContextData getContextData() {
+        return this.getWrappedEvent().getContextData();
     }
 
     /**
