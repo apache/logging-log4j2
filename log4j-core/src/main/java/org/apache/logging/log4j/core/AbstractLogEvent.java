@@ -34,6 +34,11 @@ public abstract class AbstractLogEvent implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
+    @Override
+    public ContextData getContextData() {
+        return null;
+    }
+
     /**
      * Returns {@link Collections#emptyMap()}.
      */
