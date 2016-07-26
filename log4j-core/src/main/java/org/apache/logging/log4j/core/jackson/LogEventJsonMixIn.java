@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
@@ -45,12 +46,23 @@ abstract class LogEventJsonMixIn implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
-    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
+//    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
+//    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
 //    @JsonSerialize(using = MapSerializer.class)
 //    @JsonDeserialize(using = MapDeserializer.class)
     @Override
+    @JsonIgnore
+//    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
+//    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
     public abstract Map<String, String> getContextMap();
+
+    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
+    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
+    @JsonSerialize(using = ContextDataSerializer.class)
+    @JsonDeserialize(using = ContextDataDeserializer.class)
+    //@JsonIgnore
+    @Override
+    public abstract ContextData getContextData();
 
     @JsonProperty(JsonConstants.ELT_CONTEXT_STACK)
     @JacksonXmlElementWrapper(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_STACK)

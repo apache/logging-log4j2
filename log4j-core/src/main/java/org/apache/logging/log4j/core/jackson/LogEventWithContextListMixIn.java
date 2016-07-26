@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
@@ -41,16 +42,25 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
 @JsonPropertyOrder({ "timeMillis", "threadName", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
         JsonConstants.ELT_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
-abstract class LogEventMixIn implements LogEvent {
+abstract class LogEventWithContextListMixIn implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
+//    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
+//    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
+//    @JsonSerialize(using = ListOfMapEntrySerializer.class)
+//    @JsonDeserialize(using = ListOfMapEntryDeserializer.class)
+    @Override
+    @JsonIgnore
+    public abstract Map<String, String> getContextMap();
+
     @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
-    @JsonSerialize(using = ListOfMapEntrySerializer.class)
-    @JsonDeserialize(using = ListOfMapEntryDeserializer.class)
+    @JsonSerialize(using = ContextDataAsEntryListSerializer.class)
+    @JsonDeserialize(using = ContextDataAsEntryListDeserializer.class)
+//    @JsonIgnore
     @Override
-    public abstract Map<String, String> getContextMap();
+    public abstract ContextData getContextData();
 
     @JsonProperty(JsonConstants.ELT_CONTEXT_STACK)
     @JacksonXmlElementWrapper(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_STACK)
