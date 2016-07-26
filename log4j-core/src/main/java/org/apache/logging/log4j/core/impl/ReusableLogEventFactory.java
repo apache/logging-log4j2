@@ -38,6 +38,8 @@ public class ReusableLogEventFactory implements LogEventFactory {
     private static final Clock CLOCK = ClockFactory.getClock();
 
     private static ThreadLocal<MutableLogEvent> mutableLogEventThreadLocal = new ThreadLocal<>();
+    private final ContextDataInjector injector = ContextDataInjectorFactory.getInjector();
+
     /**
      * Creates a log event.
      *
@@ -72,7 +74,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.setLevel(level == null ? Level.OFF : level);
         result.setMessage(message);
         result.setThrown(t);
-        result.setContextMap(Log4jLogEvent.createMap(properties));
+        injector.injectContextData(properties, (MutableContextData) result.getContextData());
         result.setContextStack(ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack());// mutable copy
         result.setTimeMillis(message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()
