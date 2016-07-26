@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.impl.ContextDataInjector;
+import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.impl.MutableContextData;
 import org.apache.logging.log4j.message.Message;
 
 import com.lmax.disruptor.EventTranslator;
@@ -34,6 +35,7 @@ import com.lmax.disruptor.EventTranslator;
 public class RingBufferLogEventTranslator implements
         EventTranslator<RingBufferLogEvent> {
 
+    private final ContextDataInjector injector = ContextDataInjectorFactory.getInjector();
     private AsyncLogger asyncLogger;
     private String loggerName;
     protected Marker marker;
@@ -41,7 +43,6 @@ public class RingBufferLogEventTranslator implements
     protected Level level;
     protected Message message;
     protected Throwable thrown;
-    private Map<String, String> contextMap;
     private ContextStack contextStack;
     private long threadId = Thread.currentThread().getId();
     private String threadName = Thread.currentThread().getName();
@@ -53,8 +54,12 @@ public class RingBufferLogEventTranslator implements
     // @Override
     @Override
     public void translateTo(final RingBufferLogEvent event, final long sequence) {
-        event.setValues(asyncLogger, loggerName, marker, fqcn, level, message, thrown, contextMap, contextStack,
+        event.setValues(asyncLogger, loggerName, marker, fqcn, level, message, thrown, contextStack,
                 threadId, threadName, threadPriority, location, currentTimeMillis, nanoTime);
+
+        // config properties are taken care of in the EventHandler thread
+        // in the AsyncLogger#actualAsyncLog method
+        injector.injectContextData(null, (MutableContextData) event.getContextData());
         clear();
     }
 
@@ -69,7 +74,6 @@ public class RingBufferLogEventTranslator implements
                 null, // level
                 null, // data
                 null, // t
-                null, // map
                 null, // contextStack
                 null, // location
                 0, // currentTimeMillis
@@ -79,7 +83,7 @@ public class RingBufferLogEventTranslator implements
 
     public void setBasicValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
             final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-            final Map<String, String> aMap, final ContextStack aContextStack, final StackTraceElement aLocation,
+            final ContextStack aContextStack, final StackTraceElement aLocation,
             final long aCurrentTimeMillis, final long aNanoTime) {
         this.asyncLogger = anAsyncLogger;
         this.loggerName = aLoggerName;
@@ -88,7 +92,6 @@ public class RingBufferLogEventTranslator implements
         this.level = aLevel;
         this.message = msg;
         this.thrown = aThrowable;
-        this.contextMap = aMap;
         this.contextStack = aContextStack;
         this.location = aLocation;
         this.currentTimeMillis = aCurrentTimeMillis;
