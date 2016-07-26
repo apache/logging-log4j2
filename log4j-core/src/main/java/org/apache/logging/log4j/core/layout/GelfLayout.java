@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.TriConsumer;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -208,13 +209,7 @@ public final class GelfLayout extends AbstractStringLayout {
             JsonUtils.quoteAsString(toNullSafeString(additionalField.getValue()), builder);
             builder.append(QC);
         }
-        for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
-            builder.append(QU);
-            JsonUtils.quoteAsString(entry.getKey(), builder);
-            builder.append("\":\"");
-            JsonUtils.quoteAsString(toNullSafeString(entry.getValue()), builder);
-            builder.append(QC);
-        }
+        event.getContextData().forEach(WRITE_KEY_VALUES_INTO, builder);
         if (event.getThrown() != null) {
             builder.append("\"full_message\":\"");
             if (includeStacktrace) {
@@ -245,6 +240,17 @@ public final class GelfLayout extends AbstractStringLayout {
         return builder;
     }
 
+    private static final TriConsumer<String, Object, StringBuilder> WRITE_KEY_VALUES_INTO = new TriConsumer<String, Object, StringBuilder>() {
+        @Override
+        public void accept(final String key, final Object value, final StringBuilder stringBuilder) {
+            stringBuilder.append(QU);
+            JsonUtils.quoteAsString(key, stringBuilder);
+            stringBuilder.append("\":\"");
+            JsonUtils.quoteAsString(toNullSafeString(String.valueOf(value)), stringBuilder);
+            stringBuilder.append(QC);
+        }
+    };
+
     private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
 
     private static StringBuilder getMessageStringBuilder() {
@@ -257,7 +263,7 @@ public final class GelfLayout extends AbstractStringLayout {
         return result;
     }
 
-    private CharSequence toNullSafeString(final CharSequence s) {
+    private static CharSequence toNullSafeString(final CharSequence s) {
         return s == null ? Strings.EMPTY : s;
     }
 
