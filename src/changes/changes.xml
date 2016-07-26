@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.7.0" date="2016-MM-DD" description="GA Release 2.7.0">
+      <action issue="LOG4J2-1471" dev="ggregory" type="add" due-to="Gary Gregory">
+        [PatternLayout] Add an ANSI option to %xThrowable.
+      </action>
+      <action issue="LOG4J2-1313" dev="rpopma" type="fix" due-to="Philipp Knobel">
+        Properties declared in configuration can now have their value either in the element body or in an attribute named "value".
+      </action>
       <action issue="LOG4J2-1472" dev="ggregory" type="add" due-to="Gary Gregory">
         Make org.apache.logging.log4j.core.LoggerContext implement Closeable.
       </action>
