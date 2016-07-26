@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.TriConsumer;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Able to handle the contents of the LogEvent's MDC and either
@@ -33,6 +33,11 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "MdcPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "X", "mdc", "MDC" })
 public final class MdcPatternConverter extends LogEventPatternConverter {
+
+    private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
+    private static final int DEFAULT_STRING_BUILDER_SIZE = 64;
+    private static final int MAX_STRING_BUILDER_SIZE = Constants.MAX_REUSABLE_MESSAGE_SIZE;
+
     /**
      * Name of property to output.
      */
@@ -51,6 +56,9 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
             full = false;
             if (options[0].indexOf(',') > 0) {
                 keys = options[0].split(",");
+                for (int i = 0; i < keys.length; i++) {
+                    keys[i] = keys[i].trim();
+                }
                 key = null;
             } else {
                 keys = null;
@@ -73,57 +81,91 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
         return new MdcPatternConverter(options);
     }
 
+    private static final TriConsumer<String, Object, StringBuilder> WRITE_KEY_VALUES_INTO = new TriConsumer<String, Object, StringBuilder>() {
+        @Override
+        public void accept(final String key, final Object value, final StringBuilder sb) {
+            if (sb.length() > 1) {
+                sb.append(", ");
+            }
+            sb.append(key).append('=');
+            StringBuilders.appendValue(sb, value);
+        }
+    };
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final Map<String, String> contextMap = event.getContextMap();
+        final ContextData contextData = event.getContextData();
         // if there is no additional options, we output every single
         // Key/Value pair for the MDC in a similar format to Hashtable.toString()
         if (full) {
-            if (contextMap == null || contextMap.isEmpty()) {
+            if (contextData == null || contextData.size() == 0) {
                 toAppendTo.append("{}");
                 return;
             }
-            final StringBuilder sb = new StringBuilder("{");
-            final Set<String> eventKeys = new TreeSet<>(contextMap.keySet());
-            for (final String eventKey : eventKeys) {
-                if (sb.length() > 1) {
-                    sb.append(", ");
-                }
-                sb.append(eventKey).append('=').append(contextMap.get(eventKey));
-
-            }
-            sb.append('}');
-            toAppendTo.append(sb);
+            appendFully(contextData, toAppendTo);
         } else {
             if (keys != null) {
-                if (contextMap == null || contextMap.isEmpty()) {
+                if (contextData == null || contextData.size() == 0) {
                     toAppendTo.append("{}");
                     return;
                 }
-                // Print all the keys in the array that have a value.
-                final StringBuilder sb = new StringBuilder("{");
-                for (String key : keys) {
-                    key = key.trim();
-                    if (contextMap.containsKey(key)) {
-                        if (sb.length() > 1) {
-                            sb.append(", ");
-                        }
-                        sb.append(key).append('=').append(contextMap.get(key));
-                    }
-                }
-                sb.append('}');
-                toAppendTo.append(sb);
-            } else if (contextMap != null){
+                appendSelectedKeys(keys, contextData, toAppendTo);
+            } else if (contextData != null){
                 // otherwise they just want a single key output
-                final Object val = contextMap.get(key);
-
-                if (val != null) {
-                    toAppendTo.append(val);
+                final Object value = contextData.getValue(key);
+                if (value != null) {
+                    StringBuilders.appendValue(toAppendTo, value);
                 }
             }
+        }
+    }
+
+    private static void appendFully(final ContextData contextData, final StringBuilder toAppendTo) {
+        final StringBuilder sb = getStringBuilder();
+        sb.append("{");
+        contextData.forEach(WRITE_KEY_VALUES_INTO, sb);
+        sb.append('}');
+        toAppendTo.append(sb);
+        trimToMaxSize(sb);
+    }
+
+    private static void appendSelectedKeys(final String[] keys, final ContextData contextData, final StringBuilder toAppendTo) {
+        // Print all the keys in the array that have a value.
+        final StringBuilder sb = getStringBuilder();
+        sb.append("{");
+        for (int i = 0; i < keys.length; i++) {
+            final String theKey = keys[i];
+            final Object value = contextData.getValue(theKey);
+            if (value != null) { // !contextData.containskey(theKey)
+                if (sb.length() > 1) {
+                    sb.append(", ");
+                }
+                sb.append(theKey).append('=');
+                StringBuilders.appendValue(sb, value);
+            }
+        }
+        sb.append('}');
+        toAppendTo.append(sb);
+        trimToMaxSize(sb);
+    }
+
+    private static StringBuilder getStringBuilder() {
+        StringBuilder result = threadLocal.get();
+        if (result == null) {
+            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+            threadLocal.set(result);
+        }
+        result.setLength(0);
+        return result;
+    }
+
+    private static void trimToMaxSize(final StringBuilder stringBuilder) {
+        if (stringBuilder.length() > MAX_STRING_BUILDER_SIZE) {
+            stringBuilder.setLength(MAX_STRING_BUILDER_SIZE);
+            stringBuilder.trimToSize();
         }
     }
 }
