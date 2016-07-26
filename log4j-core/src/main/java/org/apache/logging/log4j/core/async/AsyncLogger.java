@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableContextData;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -186,14 +187,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 // don't construct ThrowableProxy until required
                 thrown,
 
-                // config properties are taken care of in the EventHandler thread
-                // in the AsyncLogger#actualAsyncLog method
-
-                // needs shallow copy to be fast (LOG4J2-154)
-                ThreadContext.getImmutableContext(), //
-
                 // needs shallow copy to be fast (LOG4J2-154)
                 ThreadContext.getImmutableStack(), //
+
                 // location (expensive to calculate)
                 calcLocationIfRequested(fqcn), //
                 CLOCK.currentTimeMillis(), //
@@ -268,14 +264,11 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         final Throwable thrown = (Throwable) args[6];
 
         // needs shallow copy to be fast (LOG4J2-154)
-        final Map<String, String> contextMap = ThreadContext.getImmutableContext();
-
-        // needs shallow copy to be fast (LOG4J2-154)
         final ContextStack contextStack = ThreadContext.getImmutableStack();
 
         final Thread currentThread = Thread.currentThread();
         final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
-        event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown, contextMap,
+        event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown,
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
                 CLOCK.currentTimeMillis(), nanoClock.nanoTime());
     }
@@ -299,12 +292,28 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
     /**
      * This method is called by the EventHandler that processes the RingBufferLogEvent in a separate thread.
+     * Merges the contents of the configuration map into the contextData, after replacing any variables in the property
+     * values with the StrSubstitutor-supplied actual values.
      *
      * @param event the event to log
      */
     public void actualAsyncLog(final RingBufferLogEvent event) {
         final Map<Property, Boolean> properties = privateConfig.loggerConfig.getProperties();
-        event.mergePropertiesIntoContextMap(properties, privateConfig.config.getStrSubstitutor());
+
+        if (properties != null) {
+            MutableContextData contextData = (MutableContextData) event.getContextData();
+            for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
+                final Property prop = entry.getKey();
+                if (contextData.getValue(prop.getName()) != null) {
+                    continue; // contextMap overrides config properties
+                }
+                final String value = entry.getValue() //
+                        ? privateConfig.config.getStrSubstitutor().replace(event, prop.getValue()) //
+                        : prop.getValue();
+                contextData.putValue(prop.getName(), prop.getValue());
+            }
+        }
+
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, event);
     }
