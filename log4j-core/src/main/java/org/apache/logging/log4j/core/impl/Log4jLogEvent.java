@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.impl;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +26,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -60,7 +59,7 @@ public class Log4jLogEvent implements LogEvent {
     private final long timeMillis;
     private final transient Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private final Map<String, String> contextMap;
+    private final MutableContextData contextData;
     private final ThreadContext.ContextStack contextStack;
     private long threadId;
     private String threadName;
@@ -82,7 +81,7 @@ public class Log4jLogEvent implements LogEvent {
         private Throwable thrown;
         private long timeMillis = CLOCK.currentTimeMillis();
         private ThrowableProxy thrownProxy;
-        private Map<String, String> contextMap = ThreadContext.getImmutableContext();
+        private MutableContextData contextData = createContextData((List<Property>) null);
         private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
         private long threadId;
         private String threadName;
@@ -112,7 +111,6 @@ public class Log4jLogEvent implements LogEvent {
             this.message = other.getMessage();
             this.timeMillis = other.getTimeMillis();
             this.thrown = other.getThrown();
-            this.contextMap = other.getContextMap();
             this.contextStack = other.getContextStack();
             this.includeLocation = other.isIncludeLocation();
             this.endOfBatch = other.isEndOfBatch();
@@ -121,12 +119,19 @@ public class Log4jLogEvent implements LogEvent {
             // Avoid unnecessarily initializing thrownProxy, threadName and source if possible
             if (other instanceof Log4jLogEvent) {
                 final Log4jLogEvent evt = (Log4jLogEvent) other;
+                this.contextData = evt.contextData;
                 this.thrownProxy = evt.thrownProxy;
                 this.source = evt.source;
                 this.threadId = evt.threadId;
                 this.threadName = evt.threadName;
                 this.threadPriority = evt.threadPriority;
             } else {
+                if (other.getContextData() instanceof MutableContextData) {
+                    this.contextData = (MutableContextData) other.getContextData();
+                } else {
+                    this.contextData.clear();
+                    this.contextData.putAll(other.getContextData());
+                }
                 this.thrownProxy = other.getThrownProxy();
                 this.source = other.getSource();
                 this.threadId = other.getThreadId();
@@ -175,8 +180,20 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
+        @SuppressWarnings("unchecked")
+        @Deprecated
         public Builder setContextMap(final Map<String, String> contextMap) {
-            this.contextMap = contextMap;
+            contextData = ContextDataFactory.getContextData(); // replace with new instance
+            if (contextMap != null) {
+                for (Map.Entry<String, String> entry : contextMap.entrySet()) {
+                    contextData.putValue(entry.getKey(), entry.getValue());
+                }
+            }
+            return this;
+        }
+
+        public Builder setContextData(final MutableContextData contextData) {
+            this.contextData = contextData;
             return this;
         }
 
@@ -229,7 +246,8 @@ public class Log4jLogEvent implements LogEvent {
         @Override
         public Log4jLogEvent build() {
             final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFqcn, level, message, thrown,
-                    thrownProxy, contextMap, contextStack, threadId, threadName, threadPriority, source, timeMillis, nanoTime);
+                    thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, timeMillis,
+                    nanoTime);
             result.setIncludeLocation(includeLocation);
             result.setEndOfBatch(endOfBatch);
             return result;
@@ -282,14 +300,13 @@ public class Log4jLogEvent implements LogEvent {
     * @param loggerFQCN The fully qualified class name of the caller.
     * @param level The logging Level.
     * @param message The Message.
-    * @param properties properties to add to the event.
+    * @param properties the properties to be merged with ThreadContext key-value pairs into the event's ContextData.
     * @param t A Throwable or null.
     */
    // This constructor is called from LogEventFactories.
    public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
                         final Message message, final List<Property> properties, final Throwable t) {
-       this(loggerName, marker, loggerFQCN, level, message, t, null,
-           createMap(properties),
+       this(loggerName, marker, loggerFQCN, level, message, t, null, createContextData(properties),
            ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
            0, // thread name
            null, // stack trace element
@@ -316,11 +333,11 @@ public class Log4jLogEvent implements LogEvent {
     * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
     */
    @Deprecated
-public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
+   public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
                         final Message message, final Throwable t, final Map<String, String> mdc,
                         final ThreadContext.ContextStack ndc, final String threadName,
                         final StackTraceElement location, final long timestampMillis) {
-       this(loggerName, marker, loggerFQCN, level, message, t, null, mdc, ndc, 0,
+       this(loggerName, marker, loggerFQCN, level, message, t, null, createContextData(mdc), ndc, 0,
                threadName, 0, location, timestampMillis, nanoClock.nanoTime());
    }
 
@@ -349,7 +366,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
                                             final String threadName, final StackTraceElement location,
                                             final long timestamp) {
         final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown,
-                thrownProxy, mdc, ndc, 0, threadName, 0, location, timestamp, nanoClock.nanoTime());
+                thrownProxy, createContextData(mdc), ndc, 0, threadName, 0, location, timestamp, nanoClock.nanoTime());
         return result;
     }
 
@@ -362,7 +379,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
      * @param message The Message.
      * @param thrown A Throwable or null.
      * @param thrownProxy A ThrowableProxy or null.
-     * @param contextMap The mapped diagnostic context.
+     * @param contextData The key-value pairs from the context.
      * @param contextStack the nested diagnostic context.
      * @param threadId the thread ID
      * @param threadName The name of the thread.
@@ -374,9 +391,9 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
      */
     private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
             final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
-            final Map<String, String> contextMap, final ThreadContext.ContextStack contextStack, final long threadId,
-            final String threadName, final int threadPriority, final StackTraceElement source, final long timestampMillis,
-            final long nanoTime) {
+            final MutableContextData contextData, final ThreadContext.ContextStack contextStack, final long threadId,
+            final String threadName, final int threadPriority, final StackTraceElement source,
+            final long timestampMillis, final long nanoTime) {
         this.loggerName = loggerName;
         this.marker = marker;
         this.loggerFqcn = loggerFQCN;
@@ -384,7 +401,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         this.message = message;
         this.thrown = thrown;
         this.thrownProxy = thrownProxy;
-        this.contextMap = contextMap == null ? ThreadContext.EMPTY_MAP : contextMap;
+        this.contextData = contextData == null ? ContextDataFactory.getContextData() : contextData;
         this.contextStack = contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
         this.timeMillis = message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()
@@ -399,19 +416,21 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         this.nanoTime = nanoTime;
     }
 
-    static Map<String, String> createMap(final List<Property> properties) {
-        final Map<String, String> contextMap = ThreadContext.getImmutableContext();
-        if (properties == null || properties.isEmpty()) {
-            return contextMap; // may be ThreadContext.EMPTY_MAP but not null
-        }
-        final Map<String, String> map = new HashMap<>(contextMap);
-
-        for (final Property prop : properties) {
-            if (!map.containsKey(prop.getName())) {
-                map.put(prop.getName(), prop.getValue());
+    private static MutableContextData createContextData(final Map<String, String> contextMap) {
+        final MutableContextData result = ContextDataFactory.getContextData();
+        if (contextMap != null) {
+            for (Map.Entry<String, String> entry : contextMap.entrySet()) {
+                result.putValue(entry.getKey(), entry.getValue());
             }
         }
-        return Collections.unmodifiableMap(map);
+        return result;
+    }
+
+    private static MutableContextData createContextData(final List<Property> properties) {
+        final MutableContextData result = ContextDataFactory.getContextData();
+        final ContextDataInjector injector = ContextDataInjectorFactory.getInjector();
+        injector.injectContextData(properties, result);
+        return result;
     }
 
     /**
@@ -552,12 +571,21 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
     }
 
     /**
+     * Returns the {@code ContextData} containing context data key-value pairs.
+     * @return the {@code ContextData} containing context data key-value pairs
+     * @since 2.7
+     */
+    @Override
+    public ContextData getContextData() {
+        return contextData;
+    }
+    /**
      * Returns the immutable copy of the ThreadContext Map.
      * @return The context Map.
      */
     @Override
     public Map<String, String> getContextMap() {
-        return contextMap;
+        return contextData.asMap();
     }
 
     /**
@@ -678,7 +706,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             final LogEventProxy proxy = (LogEventProxy) event;
             final Log4jLogEvent result = new Log4jLogEvent(proxy.loggerName, proxy.marker,
                     proxy.loggerFQCN, proxy.level, proxy.message,
-                    proxy.thrown, proxy.thrownProxy, proxy.contextMap, proxy.contextStack, proxy.threadId,
+                    proxy.thrown, proxy.thrownProxy, proxy.contextData, proxy.contextStack, proxy.threadId,
                     proxy.threadName, proxy.threadPriority, proxy.source, proxy.timeMillis, proxy.nanoTime);
             result.setEndOfBatch(proxy.isEndOfBatch);
             result.setIncludeLocation(proxy.isLocationRequired);
@@ -746,7 +774,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         if (marker != null ? !marker.equals(that.marker) : that.marker != null) {
             return false;
         }
-        if (contextMap != null ? !contextMap.equals(that.contextMap) : that.contextMap != null) {
+        if (contextData != null ? !contextData.equals(that.contextData) : that.contextData != null) {
             return false;
         }
         if (!message.equals(that.message)) {
@@ -789,7 +817,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         result = 31 * result + (int) (nanoTime ^ (nanoTime >>> 32));
         result = 31 * result + (thrown != null ? thrown.hashCode() : 0);
         result = 31 * result + (thrownProxy != null ? thrownProxy.hashCode() : 0);
-        result = 31 * result + (contextMap != null ? contextMap.hashCode() : 0);
+        result = 31 * result + (contextData != null ? contextData.hashCode() : 0);
         result = 31 * result + (contextStack != null ? contextStack.hashCode() : 0);
         result = 31 * result + (int) (threadId ^ (threadId >>> 32));
         result = 31 * result + (threadName != null ? threadName.hashCode() : 0);
@@ -815,7 +843,8 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         private final long timeMillis;
         private final transient Throwable thrown;
         private final ThrowableProxy thrownProxy;
-        private final Map<String, String> contextMap;
+        /** @since 2.7 */
+        private final MutableContextData contextData;
         private final ThreadContext.ContextStack contextStack;
         /** @since 2.6 */
         private final long threadId;
@@ -839,7 +868,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             this.timeMillis = event.timeMillis;
             this.thrown = event.thrown;
             this.thrownProxy = event.thrownProxy;
-            this.contextMap = event.contextMap;
+            this.contextData = event.contextData;
             this.contextStack = event.contextStack;
             this.source = includeLocation ? event.getSource() : null;
             this.threadId = event.getThreadId();
@@ -863,7 +892,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             this.timeMillis = event.getTimeMillis();
             this.thrown = event.getThrown();
             this.thrownProxy = event.getThrownProxy();
-            this.contextMap = event.getContextMap();
+            this.contextData = memento(event.getContextData());
             this.contextStack = event.getContextStack();
             this.source = includeLocation ? event.getSource() : null;
             this.threadId = event.getThreadId();
@@ -874,8 +903,12 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             this.nanoTime = event.getNanoTime();
         }
 
-        private Message memento(final ReusableMessage message) {
+        private static Message memento(final ReusableMessage message) {
             return message.memento();
+        }
+
+        private static MutableContextData memento(final ContextData data) {
+            return new ArrayContextData(data); // TODO necessary to construct new instance?
         }
 
         /**
@@ -884,7 +917,8 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
          */
         protected Object readResolve() {
             final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown,
-                    thrownProxy, contextMap, contextStack, threadId, threadName, threadPriority, source, timeMillis, nanoTime);
+                    thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, timeMillis,
+                    nanoTime);
             result.setEndOfBatch(isEndOfBatch);
             result.setIncludeLocation(isLocationRequired);
             return result;

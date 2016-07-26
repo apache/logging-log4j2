@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
@@ -54,7 +55,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private Object[] parameters;
     private Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private Map<String, String> contextMap;
+    private MutableContextData contextData = ContextDataFactory.getContextData();
     private Marker marker;
     private String loggerFqcn;
     private StackTraceElement source;
@@ -87,7 +88,11 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         this.timeMillis = event.getTimeMillis();
         this.thrown = event.getThrown();
         this.thrownProxy = event.getThrownProxy();
-        this.contextMap = event.getContextMap();
+        if (event.getContextData() instanceof MutableContextData) {
+            this.contextData = (MutableContextData) event.getContextData();
+        } else {
+            this.contextData.putAll(event.getContextData());
+        }
         this.contextStack = event.getContextStack();
         this.source = event.isIncludeLocation() ? event.getSource() : null;
         this.threadId = event.getThreadId();
@@ -101,6 +106,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     /**
      * Clears all references this event has to other objects.
+     *
      */
     public void clear() {
         loggerFqcn = null;
@@ -111,7 +117,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         thrown = null;
         thrownProxy = null;
         source = null;
-        contextMap = null;
+        if (contextData != null) {
+            contextData.clear();
+        }
         contextStack = null;
 
         // ThreadName should not be cleared: this field is set in the ReusableLogEventFactory
@@ -333,13 +341,19 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return source;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, String> getContextMap() {
-        return contextMap;
+    public ContextData getContextData() {
+        return contextData;
     }
 
-    public void setContextMap(final Map<String, String> contextMap) {
-        this.contextMap = contextMap;
+    @Override
+    public Map<String, String> getContextMap() {
+        return contextData.asMap();
+    }
+
+    public void setContextData(final MutableContextData mutableContextData) {
+        this.contextData = mutableContextData;
     }
 
     @Override
@@ -434,7 +448,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
      * @param builder the builder whose fields to populate
      */
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
-        builder.setContextMap(contextMap) //
+        builder.setContextData(contextData) //
                 .setContextStack(contextStack) //
                 .setEndOfBatch(endOfBatch) //
                 .setIncludeLocation(includeLocation) //

@@ -23,14 +23,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.MutableContextData;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -53,13 +52,12 @@ public class RingBufferLogEventTest {
         final Level level = null;
         final Message data = null;
         final Throwable t = null;
-        final Map<String, String> map = null;
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
         final long currentTimeMillis = 0;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
         assertEquals(Level.OFF, evt.getLevel());
     }
@@ -73,13 +71,12 @@ public class RingBufferLogEventTest {
         final Level level = null;
         final Message data = null;
         final Throwable t = null;
-        final Map<String, String> map = null;
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
         final long currentTimeMillis = 0;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
         assertNotNull(evt.getMessage());
     }
@@ -93,13 +90,12 @@ public class RingBufferLogEventTest {
         final Level level = null;
         final Message data = null;
         final Throwable t = null;
-        final Map<String, String> map = null;
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
         final long currentTimeMillis = 123;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
         assertEquals(123, evt.getTimeMillis());
     }
@@ -113,19 +109,19 @@ public class RingBufferLogEventTest {
         final Level level = Level.TRACE;
         final Message data = new SimpleMessage("message");
         final Throwable t = new InternalError("not a real error");
-        final Map<String, String> map = null;
         final ContextStack contextStack = null;
         final String threadName = "main";
         final StackTraceElement location = null;
         final long currentTimeMillis = 12345;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
-        
+        ((MutableContextData) evt.getContextData()).putValue("key", "value");
+
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(evt);
-        
+
         final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         final RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
         assertEquals(loggerName, other.getLoggerName());
@@ -135,13 +131,13 @@ public class RingBufferLogEventTest {
         assertEquals(data, other.getMessage());
         assertNull("null after serialization", other.getThrown());
         assertEquals(new ThrowableProxy(t), other.getThrownProxy());
-        assertEquals(map, other.getContextMap());
+        assertEquals(evt.getContextData(), other.getContextData());
         assertEquals(contextStack, other.getContextStack());
         assertEquals(threadName, other.getThreadName());
         assertEquals(location, other.getSource());
         assertEquals(currentTimeMillis, other.getTimeMillis());
     }
-    
+
     @Test
     public void testCreateMementoReturnsCopy() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
@@ -151,16 +147,15 @@ public class RingBufferLogEventTest {
         final Level level = Level.TRACE;
         final Message data = new SimpleMessage("message");
         final Throwable t = new InternalError("not a real error");
-        final Map<String, String> map = new HashMap<>();
-        map.put("key", "value");
         final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
         final String threadName = "main";
         final StackTraceElement location = null;
         final long currentTimeMillis = 12345;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
-        
+        ((MutableContextData) evt.getContextData()).putValue("key", "value");
+
         final LogEvent actual = evt.createMemento();
         assertEquals(evt.getLoggerName(), actual.getLoggerName());
         assertEquals(evt.getMarker(), actual.getMarker());

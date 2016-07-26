@@ -25,7 +25,6 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
@@ -264,7 +263,56 @@ public class Log4jLogEventTest {
                 .setTimeMillis(987654321L)
                 .build();
 
-        assertSame(contextMap, event.getContextMap());
+        assertEquals(contextMap, event.getContextMap());
+        assertSame(contextStack, event.getContextStack());
+        assertEquals(true, event.isEndOfBatch());
+        assertEquals(true, event.isIncludeLocation());
+        assertSame(Level.FATAL, event.getLevel());
+        assertSame(fqcn, event.getLoggerFqcn());
+        assertSame(name, event.getLoggerName());
+        assertSame(marker, event.getMarker());
+        assertSame(message, event.getMessage());
+        assertEquals(1234567890L, event.getNanoTime());
+        assertSame(stackTraceElement, event.getSource());
+        assertSame(threadName, event.getThreadName());
+        assertSame(exception, event.getThrown());
+        assertEquals(987654321L, event.getTimeMillis());
+
+        final LogEvent event2 = new Log4jLogEvent.Builder(event).build();
+        assertEquals("copy constructor builder", event2, event);
+        assertEquals("same hashCode", event2.hashCode(), event.hashCode());
+    }
+
+    @Test
+    public void testBuilderCorrectlyCopiesAllEventAttributesInclContextData() {
+        final MutableContextData contextData = new ArrayContextData();
+        contextData.putValue("A", "B");
+        final ContextStack contextStack = ThreadContext.getImmutableStack();
+        final Exception exception = new Exception("test");
+        final Marker marker = MarkerManager.getMarker("EVENTTEST");
+        final Message message = new SimpleMessage("foo");
+        final StackTraceElement stackTraceElement = new StackTraceElement("A", "B", "file", 123);
+        final String fqcn = "qualified";
+        final String name = "Ceci n'est pas une pipe";
+        final String threadName = "threadName";
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
+                .setContextData(contextData) //
+                .setContextStack(contextStack) //
+                .setEndOfBatch(true) //
+                .setIncludeLocation(true) //
+                .setLevel(Level.FATAL) //
+                .setLoggerFqcn(fqcn) //
+                .setLoggerName(name) //
+                .setMarker(marker) //
+                .setMessage(message) //
+                .setNanoTime(1234567890L) //
+                .setSource(stackTraceElement) //
+                .setThreadName(threadName) //
+                .setThrown(exception) //
+                .setTimeMillis(987654321L)
+                .build();
+
+        assertSame(contextData, event.getContextData());
         assertSame(contextStack, event.getContextStack());
         assertEquals(true, event.isEndOfBatch());
         assertEquals(true, event.isIncludeLocation());
@@ -286,8 +334,8 @@ public class Log4jLogEventTest {
 
     @Test
     public void testBuilderCorrectlyCopiesMutableLogEvent() throws Exception {
-        final Map<String, String> contextMap = new HashMap<>();
-        contextMap.put("A", "B");
+        final MutableContextData contextData = new ArrayContextData();
+        contextData.putValue("A", "B");
         final ContextStack contextStack = ThreadContext.getImmutableStack();
         final Exception exception = new Exception("test");
         final Marker marker = MarkerManager.getMarker("EVENTTEST");
@@ -297,7 +345,7 @@ public class Log4jLogEventTest {
         final String name = "Ceci n'est pas une pipe";
         final String threadName = "threadName";
         final MutableLogEvent event = new MutableLogEvent();
-        event.setContextMap(contextMap);
+        event.setContextData(contextData);
         event.setContextStack(contextStack);
         event.setEndOfBatch(true);
         event.setIncludeLocation(true);
@@ -312,7 +360,7 @@ public class Log4jLogEventTest {
         event.setThrown(exception);
         event.setTimeMillis(987654321L);
 
-        assertSame(contextMap, event.getContextMap());
+        assertSame(contextData, event.getContextData());
         assertSame(contextStack, event.getContextStack());
         assertEquals(true, event.isEndOfBatch());
         assertEquals(true, event.isIncludeLocation());
@@ -328,7 +376,7 @@ public class Log4jLogEventTest {
         assertEquals(987654321L, event.getTimeMillis());
 
         final LogEvent e2 = new Log4jLogEvent.Builder(event).build();
-        assertSame(contextMap, e2.getContextMap());
+        assertEquals(contextData, e2.getContextData());
         assertSame(contextStack, e2.getContextStack());
         assertEquals(true, e2.isEndOfBatch());
         assertEquals(true, e2.isIncludeLocation());
@@ -381,7 +429,7 @@ public class Log4jLogEventTest {
                 .setTimeMillis(987654321L)
                 .build();
 
-        assertSame(contextMap, event.getContextMap());
+        assertEquals(contextMap, event.getContextMap());
         assertSame(contextStack, event.getContextStack());
         assertEquals(true, event.isEndOfBatch());
         assertEquals(true, event.isIncludeLocation());
@@ -400,7 +448,7 @@ public class Log4jLogEventTest {
         assertEquals("copy constructor builder", event2, event);
         assertEquals("same hashCode", event2.hashCode(), event.hashCode());
 
-        assertSame(contextMap, event2.getContextMap());
+        assertEquals(contextMap, event2.getContextMap());
         assertSame(contextStack, event2.getContextStack());
         assertEquals(true, event2.isEndOfBatch());
         assertEquals(true, event2.isIncludeLocation());

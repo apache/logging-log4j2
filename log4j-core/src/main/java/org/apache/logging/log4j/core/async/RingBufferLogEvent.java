@@ -18,17 +18,17 @@ package org.apache.logging.log4j.core.async;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableContextData;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -82,7 +82,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private Object[] parameters;
     private transient Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private Map<String, String> contextMap;
+    private final MutableContextData contextData = ContextDataFactory.getContextData();
     private Marker marker;
     private String fqcn;
     private StackTraceElement location;
@@ -92,8 +92,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
             final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-            final Map<String, String> aMap, final ContextStack aContextStack, final long threadId,
-            final String threadName, final int threadPriority, final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
+            final ContextStack aContextStack, final long threadId, final String threadName, final int threadPriority,
+            final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
         this.threadPriority = threadPriority;
         this.threadId = threadId;
         this.currentTimeMillis = aCurrentTimeMillis;
@@ -104,11 +104,11 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         setMessage(msg);
         this.thrown = aThrowable;
         this.thrownProxy = null;
-        this.contextMap = aMap;
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.location = aLocation;
         this.contextStack = aContextStack;
+        // contextData is never replaced, only its contents are modified
         this.asyncLogger = anAsyncLogger;
     }
 
@@ -319,9 +319,16 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return this.thrownProxy;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public ContextData getContextData() {
+        return contextData;
+    }
+
+    @SuppressWarnings("unchecked")
     @Override
     public Map<String, String> getContextMap() {
-        return contextMap;
+        return contextData.asMap();
     }
 
     @Override
@@ -360,34 +367,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     }
 
     /**
-     * Merges the contents of the specified map into the contextMap, after replacing any variables in the property
-     * values with the StrSubstitutor-supplied actual values.
-     *
-     * @param properties configured properties
-     * @param strSubstitutor used to lookup values of variables in properties
-     */
-    public void mergePropertiesIntoContextMap(final Map<Property, Boolean> properties,
-            final StrSubstitutor strSubstitutor) {
-        if (properties == null) {
-            return; // nothing to do
-        }
-
-        final Map<String, String> map = contextMap == null ? new HashMap<String, String>()
-                : new HashMap<>(contextMap);
-
-        for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
-            final Property prop = entry.getKey();
-            if (map.containsKey(prop.getName())) {
-                continue; // contextMap overrides config properties
-            }
-            final String value = entry.getValue().booleanValue() ? strSubstitutor.replace(prop.getValue()) : prop
-                    .getValue();
-            map.put(prop.getName(), value);
-        }
-        contextMap = map;
-    }
-
-    /**
      * Release references held by ring buffer to allow objects to be garbage-collected.
      */
     public void clear() {
@@ -399,7 +378,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.message = null;
         this.thrown = null;
         this.thrownProxy = null;
-        this.contextMap = null;
+        this.contextData.clear();
         this.contextStack = null;
         this.location = null;
 
@@ -440,7 +419,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      * @param builder the builder whose fields to populate
      */
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
-        builder.setContextMap(contextMap) //
+        builder.setContextData(contextData) //
                 .setContextStack(contextStack) //
                 .setEndOfBatch(endOfBatch) //
                 .setIncludeLocation(includeLocation) //

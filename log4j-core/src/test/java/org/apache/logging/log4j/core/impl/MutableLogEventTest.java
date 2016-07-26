@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
@@ -40,13 +38,13 @@ import static org.junit.Assert.*;
  * Tests the MutableLogEvent class.
  */
 public class MutableLogEventTest {
-    private static final Map<String, String> CONTEXTMAP = createContextMap();
+    private static final MutableContextData CONTEXT_DATA = createContextData();
     private static final ThreadContext.ContextStack STACK = new MutableThreadContextStack(Arrays.asList("abc", "xyz"));
 
-    private static Map<String,String> createContextMap() {
-        final Map<String,String> result = new HashMap<>();
-        result.put("a", "1");
-        result.put("b", "2");
+    private static MutableContextData createContextData() {
+        final MutableContextData result = new ArrayContextData();
+        result.putValue("a", "1");
+        result.putValue("b", "2");
         return result;
     }
 
@@ -54,7 +52,7 @@ public class MutableLogEventTest {
     public void testInitFromCopiesAllFields() {
 //        private ThrowableProxy thrownProxy;
         final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
-                .setContextMap(CONTEXTMAP) //
+                .setContextData(CONTEXT_DATA) //
                 .setContextStack(STACK) //
                 .setEndOfBatch(true) //
                 .setIncludeLocation(true) //
@@ -71,7 +69,7 @@ public class MutableLogEventTest {
                 .build();
         final MutableLogEvent mutable = new MutableLogEvent();
         mutable.initFrom(source);
-        assertEquals("contextMap", CONTEXTMAP, mutable.getContextMap());
+        assertEquals("contextMap", CONTEXT_DATA, mutable.getContextData());
         assertEquals("stack", STACK, mutable.getContextStack());
         assertEquals("endOfBatch", true, mutable.isEndOfBatch());
         assertEquals("IncludeLocation()", true, mutable.isIncludeLocation());
@@ -93,7 +91,7 @@ public class MutableLogEventTest {
     @Test
     public void testClear() {
         final MutableLogEvent mutable = new MutableLogEvent();
-        assertNull("context map", mutable.getContextMap());
+        assertEquals("context data", 0, mutable.getContextData().size());
         assertNull("context stack", mutable.getContextStack());
         assertFalse("end of batch", mutable.isEndOfBatch());
         assertFalse("incl loc", mutable.isIncludeLocation());
@@ -112,7 +110,7 @@ public class MutableLogEventTest {
         assertNull("source", mutable.getSource());
         assertNull("thrownProxy", mutable.getThrownProxy());
 
-        mutable.setContextMap(CONTEXTMAP);
+        mutable.setContextData(CONTEXT_DATA);
         mutable.setContextStack(STACK);
         mutable.setEndOfBatch(true);
         mutable.setIncludeLocation(true);
@@ -148,7 +146,7 @@ public class MutableLogEventTest {
         assertNotNull("thrownProxy", mutable.getThrownProxy());
 
         mutable.clear();
-        assertNull("context map", mutable.getContextMap());
+        assertEquals("context map", 0, mutable.getContextData().size());
         assertNull("context stack", mutable.getContextStack());
         assertSame("level", Level.OFF, mutable.getLevel());
         assertNull("fqcn", mutable.getLoggerFqcn());
@@ -175,7 +173,7 @@ public class MutableLogEventTest {
     @Test
     public void testJavaIoSerializable() throws Exception {
         final MutableLogEvent evt = new MutableLogEvent();
-        evt.setContextMap(CONTEXTMAP);
+        evt.setContextData(CONTEXT_DATA);
         evt.setContextStack(STACK);
         evt.setEndOfBatch(true);
         evt.setIncludeLocation(true);
@@ -199,6 +197,7 @@ public class MutableLogEventTest {
         assertEquals(evt.getLevel(), evt2.getLevel());
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
+        assertEquals(evt.getContextData(), evt2.getContextData());
         assertEquals(evt.getContextMap(), evt2.getContextMap());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());
@@ -218,7 +217,7 @@ public class MutableLogEventTest {
     public void testJavaIoSerializableWithThrown() throws Exception {
         final Error thrown = new InternalError("test error");
         final MutableLogEvent evt = new MutableLogEvent();
-        evt.setContextMap(CONTEXTMAP);
+        evt.setContextData(CONTEXT_DATA);
         evt.setContextStack(STACK);
         evt.setEndOfBatch(true);
         evt.setIncludeLocation(true);
