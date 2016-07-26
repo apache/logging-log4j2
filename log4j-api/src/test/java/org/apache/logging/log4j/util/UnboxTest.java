@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.util;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -25,6 +26,10 @@ import static org.junit.Assert.*;
  * Tests the Unbox class.
  */
 public class UnboxTest {
+    @BeforeClass
+    public static void beforeClass() {
+        System.clearProperty("log4j.unbox.ringbuffer.size");
+    }
 
     @Test
     public void testBoxClaimsItHas32Slots() throws Exception {
