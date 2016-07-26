@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.7.0" date="2016-MM-DD" description="GA Release 2.7.0">
+      <action issue="LOG4J2-1467" dev="rpopma, ggregory" type="fix" due-to="Ralf, Gary Gregory">
+        [OSGi] Missing import package.
+      </action>
+      <action issue="LOG4J2-351" dev="rpopma, ggregory" type="fix" due-to="Roland Weiglhofer">
+        [OSGi] wrong Fragment-Host in manifest files.
+      </action>
       <action issue="LOG4J2-1471" dev="ggregory" type="add" due-to="Gary Gregory">
         [PatternLayout] Add an ANSI option to %xThrowable.
       </action>

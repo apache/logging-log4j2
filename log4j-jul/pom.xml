@@ -83,6 +83,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
             <Export-Package>org.apache.logging.log4j.jul</Export-Package>
           </instructions>
         </configuration>
