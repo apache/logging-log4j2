@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ArrayContextData;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -80,9 +81,10 @@ class LogEventFixtures {
         return expected;
     }
 
-    static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource, 
+    static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
             final boolean includeContext) {
         assertEquals(expected.getClass(), actual.getClass());
+        assertEquals(includeContext ? expected.getContextData() : new ArrayContextData(), actual.getContextData());
         assertEquals(includeContext ? expected.getContextMap() : Collections.EMPTY_MAP, actual.getContextMap());
         assertEquals(expected.getContextStack(), actual.getContextStack());
         assertEquals(expected.getLevel(), actual.getLevel());
