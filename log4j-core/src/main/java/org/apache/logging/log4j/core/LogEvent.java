@@ -45,8 +45,16 @@ public interface LogEvent extends Serializable {
      * Gets the context map (also know as Mapped Diagnostic Context or MDC).
      *
      * @return The context map, never {@code null}.
+     * @deprecated use {@link #getContextData()} instead
      */
     Map<String, String> getContextMap();
+
+    /**
+     * Returns the {@code ContextData} object holding context key-value pairs.
+     * @return the {@code ContextData} object holding context key-value pairs
+     * @since 2.7
+     */
+    ContextData getContextData();
 
     /**
      * Gets the context stack (also known as Nested Diagnostic Context or NDC).
