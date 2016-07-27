@@ -24,7 +24,6 @@ import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableParameterizedMessageTest;
-import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.Test;
