@@ -67,7 +67,6 @@ public class CsvParameterLayoutTest {
 
     @AfterClass
     public static void cleanupClass() {
-//        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, null);
         ThreadContext.clearAll();
     }
 
