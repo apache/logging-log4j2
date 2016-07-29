@@ -65,4 +65,9 @@ public class OsgiRule extends ExternalResource {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "OsgiRule [factory=" + factory + ", framework=" + framework + "]";
+    }
 }
