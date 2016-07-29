@@ -6,13 +6,13 @@
     </Console>
     <File name="File" fileName="target/gcfreefile.log" bufferedIO="false">
       <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+        <Pattern>%d{DEFAULT}{UTC} %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </File>
     <RollingFile name="RollingFile" fileName="target/gcfreeRollingFile.log"
         filePattern="target/gcfree-%d{MM-dd-yy-HH-mm-ss}.log.gz">
       <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+        <Pattern>%d{DEFAULT}{UTC} %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
         <SizeBasedTriggeringPolicy size="50M" />
@@ -20,7 +20,7 @@
     </RollingFile>
     <RandomAccessFile name="RandomAccessFile" fileName="target/gcfreeRAF.log" immediateFlush="false" append="false">
       <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %ex%n</Pattern>
+        <Pattern>%d{DEFAULT}{UTC} %p %c{1.} [%t] %X{aKey} %m %ex%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
     <RollingRandomAccessFile name="RollingRandomAccessFile"
@@ -28,7 +28,7 @@
         filePattern="target/afterRollover-%i.log" append="false"
         immediateFlush="false">
       <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</Pattern>
+        <Pattern>%d{DEFAULT}{UTC} %p %c{1.} [%t] %X{aKey} %m %location %ex%n</Pattern>
       </PatternLayout>
       <Policies>
         <SizeBasedTriggeringPolicy size="50 M"/>
@@ -38,7 +38,7 @@
         fileName="target/gcfreemmap.log"
         immediateFlush="false" append="false">
       <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m%ex%n</Pattern>
+        <Pattern>%d{DEFAULT}{UTC} %p %c{1.} [%t] %X{aKey} %m%ex%n</Pattern>
       </PatternLayout>
     </MemoryMappedFile>
     <RandomAccessFile name="RandomAccessFileGelf" fileName="target/gcfree.json" immediateFlush="false" append="false">
