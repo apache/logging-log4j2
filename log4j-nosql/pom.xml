@@ -71,6 +71,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
             <Export-Package>*</Export-Package>
           </instructions>
         </configuration>
