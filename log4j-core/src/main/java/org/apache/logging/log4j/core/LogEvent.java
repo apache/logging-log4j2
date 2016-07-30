@@ -38,6 +38,12 @@ import org.apache.logging.log4j.message.Message;
  * call, then it is provided via {@link #getThrown()}. When this class is serialized, the attached Throwable will
  * be wrapped into a {@link org.apache.logging.log4j.core.impl.ThrowableProxy} so that it may be safely serialized
  * and deserialized properly without causing problems if the exception class is not available on the other end.
+ * <p>
+ * Since version 2.7, {@link #getContextMap()} is deprecated in favor of {@link #getContextData()}, which
+ * can carry both {@code ThreadContext} data as well as other context data supplied by the
+ * {@linkplain org.apache.logging.log4j.core.impl.ContextDataInjectorFactory configured}
+ * {@link org.apache.logging.log4j.core.impl.ContextDataInjector}.
+ * </p>
  */
 public interface LogEvent extends Serializable {
 
