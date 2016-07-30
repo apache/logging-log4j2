@@ -33,7 +33,7 @@ public class ContextDataInjectorFactory {
 
     /**
      * Returns a new {@code ContextDataInjector} instance based on the value of system property
-     * {@code log4j.ContextDataInjector}. If not value was specified this method returns a new
+     * {@code log4j2.ContextDataInjector}. If not value was specified this method returns a new
      * {@link ThreadContextDataInjector}.
      * <p>
      * Users may use this system property to specify the fully qualified class name of a class that implements the
@@ -42,7 +42,7 @@ public class ContextDataInjectorFactory {
      * @return a ContextDataInjector that populates the {@code ContextData} of all {@code LogEvent} objects
      */
     public static ContextDataInjector getInjector() {
-        final String className = PropertiesUtil.getProperties().getStringProperty("log4j.ContextDataInjector");
+        final String className = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextDataInjector");
         if (className == null) {
             return new ThreadContextDataInjector();
         }
