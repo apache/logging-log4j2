@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.7" date="2016-MM-DD" description="GA Release 2.7">
+      <action issue="LOG4J2-1199" dev="rpopma" type="fix">
+        Document that JVM Input Arguments Lookup (JMX) is not available on Google App Engine.
+      </action>
       <action issue="LOG4J2-1438" dev="rpopma" type="fix">
         (GC) Add method getParameter() to ObjectMessage (and ReusableObjectMessage).
       </action>
