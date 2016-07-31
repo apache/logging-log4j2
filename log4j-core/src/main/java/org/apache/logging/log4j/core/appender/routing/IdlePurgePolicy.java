@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Policy is purging appenders that were not in use specified time in minutes
@@ -39,6 +41,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Scheduled
 public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, Runnable {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private final long timeToLive;
     private final long checkInterval;    
     private final ConcurrentMap<String, Long> appendersUsage = new ConcurrentHashMap<>();
@@ -46,7 +49,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     private final ConfigurationScheduler scheduler;
     private volatile ScheduledFuture<?> future = null;
 
-    public IdlePurgePolicy(long timeToLive, long checkInterval, final ConfigurationScheduler scheduler) {
+    public IdlePurgePolicy(final long timeToLive, final long checkInterval, final ConfigurationScheduler scheduler) {
         this.timeToLive = timeToLive;
         this.checkInterval = checkInterval;
         this.scheduler = scheduler;
