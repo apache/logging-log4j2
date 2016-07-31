@@ -78,7 +78,12 @@ public class FixedDateFormat {
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSS"}.
          */
-        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1);
+        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1),
+
+        /**
+         * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss.SSS"}.
+         */
+        ISO8601_PERIOD("yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1);
 
         private final String pattern;
         private final String datePattern;
