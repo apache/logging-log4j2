@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.util.datetime;
 
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.TimeZone;
 
 /**
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
@@ -77,7 +78,12 @@ public class FixedDateFormat {
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSS"}.
          */
-        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1);
+        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1),
+
+        /**
+         * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss.SSS"}.
+         */
+        ISO8601_PERIOD("yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1);
 
         private final String pattern;
         private final String datePattern;
@@ -156,11 +162,23 @@ public class FixedDateFormat {
          * @return the {@code FastDateFormat} object for formatting the date part of the pattern or {@code null}
          */
         public FastDateFormat getFastDateFormat() {
-            return getDatePattern() == null ? null : FastDateFormat.getInstance(getDatePattern());
+            return getFastDateFormat(null);
+        }
+
+        /**
+         * Returns the {@code FastDateFormat} object for formatting the date part of the pattern or {@code null} if the
+         * pattern does not have a date part.
+         *
+         * @param tz the time zone to use
+         * @return the {@code FastDateFormat} object for formatting the date part of the pattern or {@code null}
+         */
+        public FastDateFormat getFastDateFormat(TimeZone tz) {
+            return getDatePattern() == null ? null : FastDateFormat.getInstance(getDatePattern(), tz);
         }
     }
 
     private final FixedFormat fixedFormat;
+    private final TimeZone timeZone;
     private final int length;
     private final FastDateFormat fastDateFormat; // may be null
     private final char timeSeparatorChar;
@@ -186,35 +204,57 @@ public class FixedDateFormat {
      *
      * @param fixedFormat the fixed format
      */
-    FixedDateFormat(final FixedFormat fixedFormat) {
+    FixedDateFormat(final FixedFormat fixedFormat, final TimeZone tz) {
         this.fixedFormat = Objects.requireNonNull(fixedFormat);
+        this.timeZone = Objects.requireNonNull(tz);
         this.timeSeparatorChar = fixedFormat.timeSeparatorChar;
         this.timeSeparatorLength = fixedFormat.timeSeparatorLength;
         this.millisSeparatorChar = fixedFormat.millisSeparatorChar;
         this.millisSeparatorLength = fixedFormat.millisSeparatorLength;
         this.length = fixedFormat.getLength();
-        this.fastDateFormat = fixedFormat.getFastDateFormat();
+        this.fastDateFormat = fixedFormat.getFastDateFormat(tz);
     }
 
     public static FixedDateFormat createIfSupported(final String... options) {
         if (options == null || options.length == 0 || options[0] == null) {
-            return new FixedDateFormat(FixedFormat.DEFAULT);
+            return new FixedDateFormat(FixedFormat.DEFAULT, TimeZone.getDefault());
         }
+        final TimeZone tz;
         if (options.length > 1) {
-            return null; // time zone not supported
+            if (options[1] != null){
+                tz = TimeZone.getTimeZone(options[1]);
+            } else {
+                tz = TimeZone.getDefault();
+            }
+        } else if (options.length > 2) {
+            return null;
+        } else {
+            tz = TimeZone.getDefault();
         }
+
         final FixedFormat type = FixedFormat.lookup(options[0]);
-        return type == null ? null : new FixedDateFormat(type);
+        return type == null ? null : new FixedDateFormat(type, tz);
     }
 
     /**
-     * Returns a new {@code FixedDateFormat} object for the specified {@code FixedFormat} and a {@code null} TimeZone.
+     * Returns a new {@code FixedDateFormat} object for the specified {@code FixedFormat} and a {@code TimeZone.getDefault()} TimeZone.
      *
      * @param format the format to use
      * @return a new {@code FixedDateFormat} object
      */
     public static FixedDateFormat create(final FixedFormat format) {
-        return new FixedDateFormat(format);
+        return new FixedDateFormat(format, TimeZone.getDefault());
+    }
+
+    /**
+     * Returns a new {@code FixedDateFormat} object for the specified {@code FixedFormat} and TimeZone.
+     *
+     * @param format the format to use
+     * @param tz the time zone to use
+     * @return a new {@code FixedDateFormat} object
+     */
+    public static FixedDateFormat create(final FixedFormat format, final TimeZone tz) {
+        return new FixedDateFormat(format, tz != null ? tz : TimeZone.getDefault());
     }
 
     /**
@@ -224,6 +264,16 @@ public class FixedDateFormat {
      */
     public String getFormat() {
         return fixedFormat.getPattern();
+    }
+
+    /**
+     * Returns the time zone.
+     *
+     * @return the time zone
+     */
+
+    public TimeZone getTimeZone() {
+        return timeZone;
     }
 
     // Profiling showed this method is important to log4j performance. Modify with care!
@@ -243,8 +293,8 @@ public class FixedDateFormat {
         midnightTomorrow = calcMidnightMillis(now, 1);
     }
 
-    static long calcMidnightMillis(final long time, final int addDays) {
-        final Calendar cal = Calendar.getInstance();
+    private long calcMidnightMillis(final long time, final int addDays) {
+        final Calendar cal = Calendar.getInstance(timeZone);
         cal.setTimeInMillis(time);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);

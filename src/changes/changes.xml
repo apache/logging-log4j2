@@ -23,7 +23,25 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.7.0" date="2016-MM-DD" description="GA Release 2.7.0">
+    <release version="2.7" date="2016-MM-DD" description="GA Release 2.7">
+      <action issue="LOG4J2-1199" dev="rpopma" type="fix">
+        Document that JVM Input Arguments Lookup (JMX) is not available on Google App Engine.
+      </action>
+      <action issue="LOG4J2-1438" dev="rpopma" type="fix">
+        (GC) Add method getParameter() to ObjectMessage (and ReusableObjectMessage).
+      </action>
+      <action issue="LOG4J2-1488" dev="rpopma" type="fix" due-to="Richard Zschech">
+        (GC) Fixed ISO8601 %date conversion pattern with a period '.' separator for milliseconds is now garbage free.
+      </action>
+      <action issue="LOG4J2-1489" dev="rpopma" type="fix" due-to="Richard Zschech">
+        (GC) Fixed %date conversion patterns with a timezone parameter are now garbage free.
+      </action>
+      <action issue="LOG4J2-1279" dev="rpopma" type="fix" due-to="Tony Baines">
+        Prevent NullPointerException in FastDateParser$TimeZoneStrategy.
+      </action>
+      <action issue="LOG4J2-1341" dev="rpopma" type="fix" due-to="Richard Zschech">
+        (GC) HighlightConverter and StyleConverter are now GC-free.
+      </action>
       <action issue="LOG4J2-1467" dev="rpopma, ggregory" type="fix" due-to="Ralf, Gary Gregory">
         [OSGi] Missing import package.
       </action>
