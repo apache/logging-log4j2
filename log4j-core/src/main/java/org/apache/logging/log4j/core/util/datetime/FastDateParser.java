@@ -119,7 +119,7 @@ public class FastDateParser implements DateParser, Serializable {
      * <p>
      * Constructs a new FastDateParser.
      * </p>
-     * 
+     *
      * Use {@link FastDateFormat#getInstance(String, TimeZone, Locale)} or another variation of the factory methods of
      * {@link FastDateFormat} to get a cached FastDateParser instance.
      *
@@ -236,7 +236,7 @@ public class FastDateParser implements DateParser, Serializable {
     // -----------------------------------------------------------------------
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.commons.lang3.time.DateParser#getPattern()
      */
     @Override
@@ -246,7 +246,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.commons.lang3.time.DateParser#getTimeZone()
      */
     @Override
@@ -256,7 +256,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.commons.lang3.time.DateParser#getLocale()
      */
     @Override
@@ -334,7 +334,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.commons.lang3.time.DateParser#parseObject(java.lang.String)
      */
     @Override
@@ -344,7 +344,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.commons.lang3.time.DateParser#parse(java.lang.String)
      */
     @Override
@@ -363,7 +363,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.commons.lang3.time.DateParser#parseObject(java.lang.String, java.text.ParsePosition)
      */
     @Override
@@ -431,7 +431,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * Escape constant fields into regular expression
-     * 
+     *
      * @param regex The destination regex
      * @param value The source field
      * @param unquote If true, replace two success quotes ('') with single quote (')
@@ -457,7 +457,7 @@ public class FastDateParser implements DateParser, Serializable {
                 /*
                  * If we have found \E, we replace it with \E\\E\Q, i.e. we stop the quoting, quote the \ in \E, then
                  * restart the quoting.
-                 * 
+                 *
                  * Otherwise we just output the two characters. In each case the initial \ needs to be output and the
                  * final char is done at the end
                  */
@@ -479,7 +479,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * Get the short and long values displayed for a field
-     * 
+     *
      * @param field The field of interest
      * @param definingCalendar The calendar to obtain the short and long values
      * @param locale The locale of display names
@@ -492,7 +492,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * Adjust dates to be within appropriate century
-     * 
+     *
      * @param twoDigitYear The year to adjust
      * @return A value between centuryStart(inclusive) to centuryStart+100(exclusive)
      */
@@ -503,7 +503,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * Is the next field a number?
-     * 
+     *
      * @return true, if next field will be a number
      */
     boolean isNextNumber() {
@@ -512,7 +512,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * What is the width of the current field?
-     * 
+     *
      * @return The number of characters in the current format field
      */
     int getFieldWidth() {
@@ -549,7 +549,7 @@ public class FastDateParser implements DateParser, Serializable {
         /**
          * Generate a <code>Pattern</code> regular expression to the <code>StringBuilder</code> which will accept this
          * field
-         * 
+         *
          * @param parser The parser calling this strategy
          * @param regex The <code>StringBuilder</code> to append to
          * @return true, if this field will set the calendar; false, if this field is a constant value
@@ -566,7 +566,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * Obtain a Strategy given a field from a SimpleDateFormat pattern
-     * 
+     *
      * @param formatField A sub-sequence of the SimpleDateFormat pattern
      * @param definingCalendar The calendar to obtain the short and long values
      * @return The Strategy that will handle parsing for the field
@@ -635,7 +635,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * Get a cache of Strategies for a particular field
-     * 
+     *
      * @param field The Calendar field
      * @return a cache of Locale to Strategy
      */
@@ -650,7 +650,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * Construct a Strategy that parses a Text field
-     * 
+     *
      * @param field The Calendar field
      * @param definingCalendar The calendar to obtain the short and long values
      * @return a TextStrategy for the field and Locale
@@ -677,7 +677,7 @@ public class FastDateParser implements DateParser, Serializable {
 
         /**
          * Construct a Strategy that ensures the formatField has literal text
-         * 
+         *
          * @param formatField The literal text to match
          */
         CopyQuotedStrategy(final String formatField) {
@@ -716,7 +716,7 @@ public class FastDateParser implements DateParser, Serializable {
 
         /**
          * Construct a Strategy that parses a Text field
-         * 
+         *
          * @param field The Calendar field
          * @param definingCalendar The Calendar to use
          * @param locale The Locale to use
@@ -772,7 +772,7 @@ public class FastDateParser implements DateParser, Serializable {
 
         /**
          * Construct a Strategy that parses a Number field
-         * 
+         *
          * @param field The Calendar field
          */
         NumberStrategy(final int field) {
@@ -811,7 +811,7 @@ public class FastDateParser implements DateParser, Serializable {
 
         /**
          * Make any modifications to parsed integer
-         * 
+         *
          * @param iValue The parsed integer
          * @return The modified value
          */
@@ -838,7 +838,7 @@ public class FastDateParser implements DateParser, Serializable {
 
         /**
          * Construct a Strategy that parses a TimeZone
-         * 
+         *
          * @param locale The Locale
          */
         TimeZoneStrategy(final Locale locale) {
@@ -855,7 +855,11 @@ public class FastDateParser implements DateParser, Serializable {
                 }
                 final TimeZone tz = TimeZone.getTimeZone(tzId);
                 for (int i = 1; i < zoneNames.length; ++i) {
-                    final String zoneName = zoneNames[i].toLowerCase(locale);
+                    final String currentZoneName = zoneNames[i];
+                    if (currentZoneName == null) {
+                        continue;
+                    }
+                    final String zoneName = currentZoneName.toLowerCase(locale);
                     if (!tzNames.containsKey(zoneName)) {
                         tzNames.put(zoneName, tz);
                         simpleQuote(sb.append('|'), zoneName);
@@ -902,7 +906,7 @@ public class FastDateParser implements DateParser, Serializable {
 
         /**
          * Construct a Strategy that parses a TimeZone
-         * 
+         *
          * @param pattern The Pattern
          */
         ISO8601TimeZoneStrategy(final String pattern) {
@@ -936,7 +940,7 @@ public class FastDateParser implements DateParser, Serializable {
 
         /**
          * Factory method for ISO8601TimeZoneStrategies.
-         * 
+         *
          * @param tokenLen a token indicating the length of the TimeZone String to be formatted.
          * @return a ISO8601TimeZoneStrategy that can format TimeZone String of length {@code tokenLen}. If no such
          *         strategy exists, an IllegalArgumentException will be thrown.

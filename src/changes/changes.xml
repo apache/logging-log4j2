@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.7" date="2016-MM-DD" description="GA Release 2.7.0">
+      <action issue="LOG4J2-1279" dev="rpopma" type="fix" due-to="Tony Baines">
+        Prevent NullPointerException in FastDateParser$TimeZoneStrategy.
+      </action>
       <action issue="LOG4J2-1341" dev="rpopma" type="fix" due-to="Richard Zschech">
         (GC) HighlightConverter and StyleConverter are now GC-free.
       </action>
