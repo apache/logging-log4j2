@@ -216,9 +216,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final int start = toAppendTo.length();
+        int start = 0;
         int end = 0;
         if (!noAnsi) { // use ANSI: set prefix
+            start = toAppendTo.length();
             toAppendTo.append(levelStyles.get(event.getLevel()));
             end = toAppendTo.length();
         }
