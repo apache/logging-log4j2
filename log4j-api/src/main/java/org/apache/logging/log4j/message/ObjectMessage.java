@@ -97,6 +97,7 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
      * Returns the object parameter.
      *
      * @return The object.
+     * @since 2.7
      */
     public Object getParameter() {
         return obj;
