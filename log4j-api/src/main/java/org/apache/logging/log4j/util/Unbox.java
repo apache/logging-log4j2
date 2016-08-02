@@ -43,6 +43,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * If more slots are required, set system property {@code log4j.unbox.ringbuffer.size} to the desired ring buffer size.
  * Note that the specified number will be rounded up to the nearest power of 2.
  * </p>
+ * @since 2.6
  */
 @PerformanceSensitive("allocation")
 public class Unbox {
