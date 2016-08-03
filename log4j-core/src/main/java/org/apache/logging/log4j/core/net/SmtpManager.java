@@ -171,7 +171,7 @@ public class SmtpManager extends AbstractManager {
 
             sendMultipartMessage(message, mp);
         } catch (final MessagingException | IOException | RuntimeException e) {
-            logError("caught exception while sending e-mail notification.", e);
+            logError("Caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }
     }
