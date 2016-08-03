@@ -142,7 +142,7 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
-     * Determine if a rollover should occur.
+     * Determines if a rollover should occur.
      * @param event The LogEvent.
      */
     public synchronized void checkRollover(final LogEvent event) {
@@ -265,7 +265,7 @@ public class RollingFileManager extends FileManager {
         }
 
         /**
-         * Perform an action.
+         * Executes an action.
          *
          * @return true if action was successful.  A return value of false will cause
          *         the rollover to be aborted if possible.
