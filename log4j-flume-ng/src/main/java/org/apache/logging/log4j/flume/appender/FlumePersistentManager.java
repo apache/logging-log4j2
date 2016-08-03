@@ -221,7 +221,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         LOGGER.debug("Shutting down FlumePersistentManager");
         worker.shutdown();
         try {
-            worker.join(SHUTDOWN_WAIT_SECONDS * MILLIS_PER_SECOND);
+            worker.join(TimeUnit.SECONDS.toMillis(SHUTDOWN_WAIT_SECONDS));
         } catch (final InterruptedException ie) {
             // Ignore the exception and shutdown.
         }
