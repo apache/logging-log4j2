@@ -74,7 +74,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
-    private static final int SHUTDOWN_WAIT = 60;
+    private static final int SHUTDOWN_WAIT_SECONDS = 60;
 
     private static final int MILLIS_PER_SECOND = 1000;
 
@@ -221,13 +221,13 @@ public class FlumePersistentManager extends FlumeAvroManager {
         LOGGER.debug("Shutting down FlumePersistentManager");
         worker.shutdown();
         try {
-            worker.join(SHUTDOWN_WAIT * MILLIS_PER_SECOND);
+            worker.join(SHUTDOWN_WAIT_SECONDS * MILLIS_PER_SECOND);
         } catch (final InterruptedException ie) {
             // Ignore the exception and shutdown.
         }
         threadPool.shutdown();
         try {
-            threadPool.awaitTermination(SHUTDOWN_WAIT, TimeUnit.SECONDS);
+            threadPool.awaitTermination(SHUTDOWN_WAIT_SECONDS, TimeUnit.SECONDS);
         } catch (final InterruptedException e) {
             logWarn("PersistentManager Thread pool failed to shut down", e);
         }
