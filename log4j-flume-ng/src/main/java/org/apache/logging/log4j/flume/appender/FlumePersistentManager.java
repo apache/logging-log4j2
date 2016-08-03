@@ -76,8 +76,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final int SHUTDOWN_WAIT_SECONDS = 60;
 
-    private static final int MILLIS_PER_SECOND = 1000;
-
     private static final int LOCK_TIMEOUT_SLEEP_MILLIS = 500;
 
     private static BDBManagerFactory factory = new BDBManagerFactory();
