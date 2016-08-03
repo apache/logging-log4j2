@@ -88,7 +88,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
             try {
                 this.shutdownInternal();
             } catch (final Exception e) {
-                logWarn("caught exception while performing database shutdown operations", e);
+                logWarn("Caught exception while performing database shutdown operations", e);
             } finally {
                 this.running = false;
             }

@@ -240,13 +240,13 @@ public class FlumePersistentManager extends FlumeAvroManager {
             LOGGER.debug("FlumePersistenceManager dataset status: {}", database.getStats(new StatsConfig()));
             database.close();
         } catch (final Exception ex) {
-            logWarn("failed to close database", ex);
+            logWarn("Failed to close database", ex);
         }
         try {
             environment.cleanLog();
             environment.close();
         } catch (final Exception ex) {
-            logWarn("failed to close environment", ex);
+            logWarn("Failed to close environment", ex);
         }
         super.releaseSub();
     }
