@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * created by this factory is used in AsyncLogger, AsyncLoggerConfig and AsyncAppender
  * to control if events are logged in the current thread, the background thread, or discarded.
  * <p>
- * Property {@code "log4j2.AsyncQueueFullPolicy"} controls the routing behaviour. If this property is not specified or has
+ * Property {@code "log4j2.AsyncQueueFullPolicy"} controls the routing behavior. If this property is not specified or has
  * value {@code "Default"}, this factory creates {@link DefaultAsyncQueueFullPolicy} objects.
  * </p> <p>
  * If this property has value {@code "Discard"}, this factory creates {@link DiscardingAsyncQueueFullPolicy} objects.
@@ -53,7 +53,7 @@ public class AsyncQueueFullPolicyFactory {
     /**
      * Creates and returns {@link AsyncQueueFullPolicy} instances based on user-specified system properties.
      * <p>
-     * Property {@code "log4j2.AsyncQueueFullPolicy"} controls the routing behaviour. If this property is not specified or
+     * Property {@code "log4j2.AsyncQueueFullPolicy"} controls the routing behavior. If this property is not specified or
      * has value {@code "Default"}, this method returns {@link DefaultAsyncQueueFullPolicy} objects.
      * </p> <p>
      * If this property has value {@code "Discard"}, this method returns {@link DiscardingAsyncQueueFullPolicy} objects.
