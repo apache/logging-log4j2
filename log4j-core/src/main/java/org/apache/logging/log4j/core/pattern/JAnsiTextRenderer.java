@@ -18,8 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import static org.fusesource.jansi.AnsiRenderer.Code.BG_RED;
 import static org.fusesource.jansi.AnsiRenderer.Code.BOLD;
-import static org.fusesource.jansi.AnsiRenderer.Code.CYAN;
-import static org.fusesource.jansi.AnsiRenderer.Code.GREEN;
 import static org.fusesource.jansi.AnsiRenderer.Code.RED;
 import static org.fusesource.jansi.AnsiRenderer.Code.WHITE;
 import static org.fusesource.jansi.AnsiRenderer.Code.YELLOW;

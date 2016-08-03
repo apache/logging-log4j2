@@ -63,4 +63,9 @@ public class BundleTestInfo {
         return project.getVersion();
     }
 
+    @Override
+    public String toString() {
+        return "BundleTestInfo [project=" + project + "]";
+    }
+
 }
