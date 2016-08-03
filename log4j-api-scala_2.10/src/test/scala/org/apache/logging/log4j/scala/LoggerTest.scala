@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.scala
 
-import org.apache.logging.log4j.message.{DefaultFlowMessageFactory, EntryMessage, Message, ParameterizedMessage, ParameterizedMessageFactory}
+import org.apache.logging.log4j.message.{DefaultFlowMessageFactory, Message, ParameterizedMessage, ParameterizedMessageFactory}
 import org.apache.logging.log4j.spi.{AbstractLogger, ExtendedLogger}
 import org.apache.logging.log4j.{Level, Marker, MarkerManager}
 import org.junit.runner.RunWith
@@ -431,20 +431,12 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
   }
 
 
-  test("traceEntry enabled") {
+  test("traceEntry") {
     val f = fixture
     when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)).thenReturn(true)
     val logger = Logger(f.mockLogger)
     logger.traceEntry()
     verify(f.mockLogger).traceEntry()
-  }
-
-  ignore("traceEntry disabled") {
-    val f = fixture
-    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.ENTRY_MARKER, null.asInstanceOf[AnyRef], null)).thenReturn(false)
-    val logger = Logger(f.mockLogger)
-    logger.traceEntry()
-    verify(f.mockLogger, never).traceEntry()
   }
 
   test("traceEntry enabled with params") {
@@ -479,7 +471,7 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     verify(f.mockLogger, never).traceEntry(any[Message])
   }
 
-  test("traceExit enabled") {
+  test("traceExit") {
     val f = fixture
     when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(true)
     val logger = Logger(f.mockLogger)
@@ -487,15 +479,7 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     verify(f.mockLogger).traceExit()
   }
 
-  ignore("traceExit disabled") {
-    val f = fixture
-    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(false)
-    val logger = Logger(f.mockLogger)
-    logger.traceExit()
-    verify(f.mockLogger, never).traceExit()
-  }
-
-  test("traceExit enabled with result") {
+  test("traceExit with result") {
     val f = fixture
     when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(true)
     val logger = Logger(f.mockLogger)
@@ -503,15 +487,7 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     verify(f.mockLogger).traceExit(result)
   }
 
-  ignore("traceExit disabled with result") {
-    val f = fixture
-    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(false)
-    val logger = Logger(f.mockLogger)
-    logger.traceExit(result)
-    verify(f.mockLogger, never).traceExit(anyString())
-  }
-
-  test("traceExit enabled with entrymessage") {
+  test("traceExit with entrymessage") {
     val f = fixture
     when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(true)
     val logger = Logger(f.mockLogger)
@@ -519,28 +495,12 @@ class LoggerTest extends FunSuite with Matchers with MockitoSugar {
     verify(f.mockLogger).traceExit(entryMsg)
   }
 
-  ignore("traceExit disabled with entrymessage") {
-    val f = fixture
-    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(false)
-    val logger = Logger(f.mockLogger)
-    logger.traceExit(entryMsg)
-    verify(f.mockLogger, never).traceExit(any[EntryMessage])
-  }
-
-  test("traceExit enabled with entrymessage and result") {
+  test("traceExit with entrymessage and result") {
     val f = fixture
     when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(true)
     val logger = Logger(f.mockLogger)
     logger.traceExit(entryMsg, result)
     verify(f.mockLogger).traceExit(entryMsg, result)
-  }
-
-  ignore("traceExit disabled with entrymessage and result") {
-    val f = fixture
-    when(f.mockLogger.isEnabled(Level.TRACE, AbstractLogger.EXIT_MARKER, msg, null)).thenReturn(false)
-    val logger = Logger(f.mockLogger)
-    logger.traceExit(entryMsg, result)
-    verify(f.mockLogger, never).traceExit(any[EntryMessage], anyString())
   }
 
   test("traceExit enabled with message") {
