@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.7" date="2016-MM-DD" description="GA Release 2.7">
+      <action issue="LOG4J2-1482" dev="ggregory" type="fix" due-to="Gary Gregory, Sumit Singhal">
+        Improper header in CsvParameterLayout.
+      </action>
       <action issue="LOG4J2-1199" dev="rpopma" type="fix">
         Document that JVM Input Arguments Lookup (JMX) is not available on Google App Engine.
       </action>

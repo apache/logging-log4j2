@@ -29,6 +29,11 @@ import org.apache.logging.log4j.message.Message;
  */
 public class DefaultLogEventFactory implements LogEventFactory {
 
+    private static final DefaultLogEventFactory instance = new DefaultLogEventFactory();
+
+    public static DefaultLogEventFactory getInstance() {
+        return instance;
+    }
 
     /**
      * Creates a log event.
