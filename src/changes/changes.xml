@@ -66,6 +66,9 @@
       <action issue="LOG4J2-1458" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Jackson from 2.7.5 to 2.8.0.
       </action>
+      <action issue="LOG4J2-1494" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update Jackson from 2.8.0 to 2.8.1.
+      </action>
     </release>
     <release version="2.6.2" date="2016-07-05" description="GA Release 2.6.2">
       <action issue="LOG4J2-904" dev="rgoers" type="fix" due-to="Bernhard Mähr">
