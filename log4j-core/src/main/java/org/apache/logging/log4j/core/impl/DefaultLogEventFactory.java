@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.message.Message;
 
 /**
- *
+ * Always creates new LogEvent instances.
  */
 public class DefaultLogEventFactory implements LogEventFactory {
 
