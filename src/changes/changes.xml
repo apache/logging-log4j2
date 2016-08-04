@@ -72,6 +72,9 @@
       <action issue="LOG4J2-1495" dev="ggregory" type="update" due-to="Gary Gregory">
         Update LMAX Disruptor from 3.3.4 to 3.3.5.
       </action>
+      <action issue="LOG4J2-1496" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update Kafka client from 0.9.1.0 to 0.10.0.0.
+      </action>
     </release>
     <release version="2.6.2" date="2016-07-05" description="GA Release 2.6.2">
       <action issue="LOG4J2-904" dev="rgoers" type="fix" due-to="Bernhard Mähr">
