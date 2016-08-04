@@ -75,6 +75,9 @@
       <action issue="LOG4J2-1496" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Kafka client from 0.9.1.0 to 0.10.0.0.
       </action>
+      <action issue="LOG4J2-1487" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update JMS test from ActiveMQ 5.13.3 to 5.13.4.
+      </action>
     </release>
     <release version="2.6.2" date="2016-07-05" description="GA Release 2.6.2">
       <action issue="LOG4J2-904" dev="rgoers" type="fix" due-to="Bernhard Mähr">
