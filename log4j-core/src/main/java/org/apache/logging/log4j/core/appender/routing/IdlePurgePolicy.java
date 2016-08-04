@@ -63,7 +63,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     @Override
     public void stop() {
         super.stop();
-        if(future != null) {
+        if (future != null) {
             future.cancel(true);
         }
     }
@@ -77,7 +77,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
         for (final Entry<String, Long> entry : appendersUsage.entrySet()) {
             if (entry.getValue() < createTime) {
                 LOGGER.debug("Removing appender " + entry.getKey());
-                if(appendersUsage.remove(entry.getKey(), entry.getValue())) {
+                if (appendersUsage.remove(entry.getKey(), entry.getValue())) {
                     routingAppender.deleteAppender(entry.getKey());
                 }
             }
@@ -153,17 +153,17 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
         }
 
         long ttl = units.toMillis(Long.parseLong(timeToLive));
-        if(ttl < 0) {
+        if (ttl < 0) {
             LOGGER.error("timeToLive must be positive. timeToLive set to 0");
             ttl = 0;
         }
         
         long ci;
-        if(checkInterval == null) {
+        if (checkInterval == null) {
             ci = ttl;
         } else {
             ci = units.toMillis(Long.parseLong(checkInterval));
-            if(ci < 0) {
+            if (ci < 0) {
                 LOGGER.error("checkInterval must be positive. checkInterval set equal to timeToLive = {}", ttl);
                 ci = ttl;
             }
