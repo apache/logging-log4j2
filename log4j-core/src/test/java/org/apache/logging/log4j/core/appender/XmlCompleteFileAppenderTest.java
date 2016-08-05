@@ -23,45 +23,68 @@ import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
+import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.selector.BasicContextSelector;
+import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
+import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.junit.CleanFiles;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import static org.junit.Assert.*;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
+@RunWith(Parameterized.class)
 public class XmlCompleteFileAppenderTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "XmlCompleteFileAppenderTest.xml");
+    public XmlCompleteFileAppenderTest(Class<ContextSelector> contextSelector) {
+        this.loggerContextRule = new LoggerContextRule("XmlCompleteFileAppenderTest.xml", contextSelector);
+        this.cleanFiles = new CleanFiles(logFile);
+        this.ruleChain = RuleChain.outerRule(cleanFiles).around(loggerContextRule);
     }
+
+    @Parameters(name = "{0}")
+    public static Class<?>[] getParameters() {
+        return new Class<?>[] { ClassLoaderContextSelector.class, BasicContextSelector.class, AsyncLoggerContextSelector.class };
+    }
+
+    private final File logFile = new File("target", "XmlCompleteFileAppenderTest.log");
+    private final LoggerContextRule loggerContextRule;
+    private final CleanFiles cleanFiles;
+
+    @Rule
+    public RuleChain ruleChain;
 
     @Test
     public void testFlushAtEndOfBatch() throws Exception {
-        final File file = new File("target", "XmlCompleteFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
-        file.delete();
+        logFile.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String logMsg = "Message flushed with immediate flush=false";
         log.info(logMsg);
-        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(false, logFile); // stop async thread
 
         String line1;
         String line2;
         String line3;
         String line4;
-        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (final BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
             line1 = reader.readLine();
             line2 = reader.readLine();
             reader.readLine(); // ignore the empty line after the <Events> root
             line3 = reader.readLine();
             line4 = reader.readLine();
         } finally {
-            file.delete();
+            logFile.delete();
         }
         assertNotNull("line1", line1);
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
