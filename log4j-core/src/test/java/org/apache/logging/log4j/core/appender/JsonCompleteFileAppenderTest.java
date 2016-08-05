@@ -44,9 +44,9 @@ import org.junit.runners.Parameterized.Parameters;
 public class JsonCompleteFileAppenderTest {
 
     public JsonCompleteFileAppenderTest(Class<ContextSelector> contextSelector) {
-        this.init = new LoggerContextRule("JsonCompleteFileAppenderTest.xml", contextSelector);
-        this.files = new CleanFiles(logFile);
-        this.chain = RuleChain.outerRule(files).around(init);
+        this.loggerContextRule = new LoggerContextRule("JsonCompleteFileAppenderTest.xml", contextSelector);
+        this.cleanFiles = new CleanFiles(logFile);
+        this.ruleChain = RuleChain.outerRule(cleanFiles).around(loggerContextRule);
     }
 
     @Parameters(name = "{0}")
@@ -55,19 +55,19 @@ public class JsonCompleteFileAppenderTest {
     }
 
     private final File logFile = new File("target", "JsonCompleteFileAppenderTest.log");
-    private final LoggerContextRule init;
-    private final CleanFiles files;
+    private final LoggerContextRule loggerContextRule;
+    private final CleanFiles cleanFiles;
 
     @Rule
-    public RuleChain chain;
+    public RuleChain ruleChain;
 
     @Test
     public void testFlushAtEndOfBatch() throws Exception {
-        final Logger log = this.init.getLogger("com.foo.Bar");
+        final Logger log = this.loggerContextRule.getLogger("com.foo.Bar");
         final String logMsg = "Message flushed with immediate flush=true";
         log.info(logMsg);
         log.error(logMsg, new IllegalArgumentException("badarg"));
-        this.init.getContext().stop(); // stops async thread
+        this.loggerContextRule.getContext().stop(); // stops async thread
         String line1;
         String line2;
         String line3;
