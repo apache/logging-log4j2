@@ -65,12 +65,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
-    private Encoder<StringBuilder> textEncoder;
-
-    private static int size(final String property, final int defaultValue) {
-        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
-    }
-
     /**
      * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
      *
@@ -87,13 +81,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return result;
     }
 
-    protected static void trimToMaxSize(final StringBuilder stringBuilder) {
-        if (stringBuilder.length() > MAX_STRING_BUILDER_SIZE) {
-            stringBuilder.setLength(MAX_STRING_BUILDER_SIZE);
-            stringBuilder.trimToSize();
-        }
-    }
-
     // LOG4J2-1151: If the built-in JDK 8 encoders are available we should use them.
     private static boolean isPreJava8() {
         final String version = System.getProperty("java.version");
@@ -105,6 +92,19 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             return true;
         }
     }
+
+    private static int size(final String property, final int defaultValue) {
+        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    }
+
+    protected static void trimToMaxSize(final StringBuilder stringBuilder) {
+        if (stringBuilder.length() > MAX_STRING_BUILDER_SIZE) {
+            stringBuilder.setLength(MAX_STRING_BUILDER_SIZE);
+            stringBuilder.trimToSize();
+        }
+    }
+
+    private Encoder<StringBuilder> textEncoder;
     /**
      * The charset for the formatted message.
      */
@@ -161,18 +161,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
     }
 
-    /**
-     * Returns a {@code Encoder<StringBuilder>} that this Layout implementation can use for encoding log events.
-     *
-     * @return a {@code Encoder<StringBuilder>}
-     */
-    protected Encoder<StringBuilder> getStringBuilderEncoder() {
-        if (textEncoder == null) {
-            textEncoder = new StringBuilderEncoder(getCharset());
-        }
-        return textEncoder;
-    }
-
     protected byte[] getBytes(final String s) {
         if (useCustomEncoding) { // rely on branch prediction to eliminate this check if false
             return StringEncoder.encodeSingleByteChars(s);
@@ -223,6 +211,18 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     public Serializer getHeaderSerializer() {
         return headerSerializer;
+    }
+
+    /**
+     * Returns a {@code Encoder<StringBuilder>} that this Layout implementation can use for encoding log events.
+     *
+     * @return a {@code Encoder<StringBuilder>}
+     */
+    protected Encoder<StringBuilder> getStringBuilderEncoder() {
+        if (textEncoder == null) {
+            textEncoder = new StringBuilderEncoder(getCharset());
+        }
+        return textEncoder;
     }
 
     protected byte[] serializeToBytes(final Serializer serializer, final byte[] defaultValue, final LogEventFactory logEventFactory) {
