@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -729,7 +728,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
             return null;
         }
         final StringBuilder buf = new StringBuilder();
-        final String str = serializeToString(getHeaderSerializer(), DefaultLogEventFactory.getInstance());
+        final String str = serializeToString(getHeaderSerializer());
         if (str != null) {
             buf.append(str);
         }
@@ -749,7 +748,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
         }
         final StringBuilder buf = new StringBuilder();
         buf.append(this.eol);
-        final String str = serializeToString(getFooterSerializer(), DefaultLogEventFactory.getInstance());
+        final String str = serializeToString(getFooterSerializer());
         if (str != null) {
             buf.append(str);
         }

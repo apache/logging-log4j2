@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
-import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -192,7 +191,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      */
     @Override
     public byte[] getFooter() {
-        return serializeToBytes(footerSerializer, super.getFooter(), DefaultLogEventFactory.getInstance());
+        return serializeToBytes(footerSerializer, super.getFooter());
     }
 
     public Serializer getFooterSerializer() {
@@ -206,11 +205,15 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      */
     @Override
     public byte[] getHeader() {
-        return serializeToBytes(headerSerializer, super.getHeader(), DefaultLogEventFactory.getInstance());
+        return serializeToBytes(headerSerializer, super.getHeader());
     }
 
     public Serializer getHeaderSerializer() {
         return headerSerializer;
+    }
+
+    protected DefaultLogEventFactory getLogEventFactory() {
+        return DefaultLogEventFactory.getInstance();
     }
 
     /**
@@ -225,21 +228,21 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return textEncoder;
     }
 
-    protected byte[] serializeToBytes(final Serializer serializer, final byte[] defaultValue, final LogEventFactory logEventFactory) {
-        final String serializable = serializeToString(serializer, logEventFactory);
+    protected byte[] serializeToBytes(final Serializer serializer, final byte[] defaultValue) {
+        final String serializable = serializeToString(serializer);
         if (serializer == null) {
             return defaultValue;
         }
         return StringEncoder.toBytes(serializable, getCharset());
     }
 
-    protected String serializeToString(final Serializer serializer, final LogEventFactory logEventFactory) {
+    protected String serializeToString(final Serializer serializer) {
         if (serializer == null) {
             return null;
         }
         final LoggerConfig rootLogger = getConfiguration().getRootLogger();
         // Using "" for the FQCN, does it matter?
-        final LogEvent logEvent = logEventFactory.createEvent(rootLogger.getName(), null, Strings.EMPTY,
+        final LogEvent logEvent = getLogEventFactory().createEvent(rootLogger.getName(), null, Strings.EMPTY,
                 rootLogger.getLevel(), null, null, null);
         return serializer.toSerializable(logEvent);
     }
