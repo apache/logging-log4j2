@@ -125,18 +125,16 @@ public class XmlCompleteFileAppenderTest {
      */
     @Test
     public void testChildElementsAreCorrectlyIndented() throws Exception {
-        final File file = new File("target", "XmlCompleteFileAppenderTest.log");
-        file.delete();
-        final Logger log = LogManager.getLogger("com.foo.Bar");
+        final Logger logger = this.loggerContextRule.getLogger("com.foo.Bar");
         final String firstLogMsg = "First Msg tag must be in level 2 after correct indentation";
-        log.info(firstLogMsg);
+        logger.info(firstLogMsg);
         final String secondLogMsg = "Second Msg tag must also be in level 2 after correct indentation";
-        log.info(secondLogMsg);
-        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
+        logger.info(secondLogMsg);
+        CoreLoggerContexts.stopLoggerContext(false, logFile); // stop async thread
 
         final String[] lines = new String[9];
 
-        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (final BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
 
             int usefulLinesIndex = 0;
             String readLine;
@@ -148,7 +146,7 @@ public class XmlCompleteFileAppenderTest {
                 }
             }
         } finally {
-            file.delete();
+            logFile.delete();
         }
 
         String currentLine = lines[0];
