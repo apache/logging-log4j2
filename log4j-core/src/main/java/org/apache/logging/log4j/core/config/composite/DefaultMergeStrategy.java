@@ -260,10 +260,12 @@ public class DefaultMergeStrategy implements MergeStrategy {
     }
 
     private boolean isSameName(final Node node1, final Node node2) {
-        return node1.getAttributes().get(NAME).toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
+        return node1.getAttributes().get(NAME) != null &&
+                node1.getAttributes().get(NAME).toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
     }
 
     private boolean isSameReference(final Node node1, final Node node2) {
-        return node1.getAttributes().get(REF).toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
+        return node1.getAttributes().get(REF) != null &&
+                node1.getAttributes().get(REF).toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
     }
 }
