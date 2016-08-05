@@ -116,7 +116,7 @@ public final class RoutingAppender extends AbstractAppender {
         if (control != null) {
             control.callAppender(event);
         }
-        
+
         if (purgePolicy != null) {
             purgePolicy.update(key, event);
         }
@@ -171,20 +171,17 @@ public final class RoutingAppender extends AbstractAppender {
         LOGGER.error("No Appender was configured for route " + route.getKey());
         return null;
     }
-    
+
     public Map<String, AppenderControl> getAppenders() {
         return Collections.unmodifiableMap(appenders);
     }
-    
+
     /**
      * Delete specified appender
-     * 
+     *
      * @param key The appender's key
      */
     public void deleteAppender(final String key) {
-        LOGGER.debug("Stopping route with key" + key);
-        AppenderControl control = appenders.remove(key);
-        control.getAppender().stop();
         LOGGER.debug("Deleting route with " + key + " key ");
         final AppenderControl control = appenders.remove(key);
         if (null != control) {
