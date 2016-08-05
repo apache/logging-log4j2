@@ -87,6 +87,8 @@ public class LoggerContextRule implements TestRule {
                 if (contextSelectorClass != null) {
                     System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, contextSelectorClass.getName());
                 }
+                // TODO Consider instead of the above:
+                // LogManager.setFactory(new Log4jContextFactory(LoaderUtil.newInstanceOf(contextSelectorClass)));
                 System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
                 System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
                 context = Configurator.initialize(description.getDisplayName(),
