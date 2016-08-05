@@ -24,10 +24,8 @@ import java.io.File;
 import java.io.FileReader;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.selector.BasicContextSelector;
-import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.selector.CoreContextSelectors;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
@@ -51,7 +49,7 @@ public class JsonCompleteFileAppenderTest {
 
     @Parameters(name = "{0}")
     public static Class<?>[] getParameters() {
-        return new Class<?>[] { ClassLoaderContextSelector.class, BasicContextSelector.class, AsyncLoggerContextSelector.class };
+        return CoreContextSelectors.CLASSES;
     }
 
     private final File logFile = new File("target", "JsonCompleteFileAppenderTest.log");
