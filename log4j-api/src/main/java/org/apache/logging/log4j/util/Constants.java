@@ -35,6 +35,7 @@ public final class Constants {
      * <p>
      * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
      * "log4j2.enable.threadlocals" to "false".
+     * </p>
      */
     public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
             "log4j2.enable.threadlocals", true);
