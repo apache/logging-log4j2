@@ -16,31 +16,48 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
+import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests a "complete" JSON file.
  */
+@RunWith(Parameterized.class)
 public class JsonCompleteFileAppenderTest {
 
-    private final File logFile = new File("target", "JsonCompleteFileAppenderTest.log");
+    public JsonCompleteFileAppenderTest(Class<ContextSelector> contextSelector) {
+        this.init = new LoggerContextRule("JsonCompleteFileAppenderTest.xml", contextSelector);
+        this.files = new CleanFiles(logFile);
+        this.chain = RuleChain.outerRule(files).around(init);
+    }
 
-    private final LoggerContextRule init = new LoggerContextRule("JsonCompleteFileAppenderTest.xml");
-    private final CleanFiles files = new CleanFiles(logFile);
+    @Parameters(name = "{0}")
+    public static Class<?>[] getParameters() {
+        return new Class<?>[] { ClassLoaderContextSelector.class };
+    }
+
+    private final File logFile = new File("target", "JsonCompleteFileAppenderTest.log");
+    private final LoggerContextRule init;
+    private final CleanFiles files;
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(files).around(init);
+    public RuleChain chain;
 
     @Test
     public void testFlushAtEndOfBatch() throws Exception {
