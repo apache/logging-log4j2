@@ -23,6 +23,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +40,7 @@ import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -171,6 +174,7 @@ public class FileAppenderTest {
                 "false", "false", null, layout, null, "false", null, null);
         app.start();
         assertTrue("Appender did not start", app.isStarted());
+        Assert.assertTrue(Files.exists(Paths.get(FILENAME)));
         for (int i = 0; i < count; ++i) {
             final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger")
                     .setLoggerFqcn(FileAppenderTest.class.getName()).setLevel(Level.INFO)
