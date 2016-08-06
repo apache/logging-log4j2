@@ -98,11 +98,8 @@ public class FileManager extends OutputStreamManager {
                    file is already locked by another FileChannel in the same JVM. Hopefully, that will
                    be avoided since every file should have a single file manager - unless two different
                    files strings are configured that somehow map to the same file.*/
-                final FileLock lock = channel.lock(0, Long.MAX_VALUE, false);
-                try {
+                try (final FileLock lock = channel.lock(0, Long.MAX_VALUE, false)) {
                     super.write(bytes, offset, length, immediateFlush);
-                } finally {
-                    lock.release();
                 }
             } catch (final IOException ex) {
                 throw new AppenderLoggingException("Unable to obtain lock on " + getName(), ex);
