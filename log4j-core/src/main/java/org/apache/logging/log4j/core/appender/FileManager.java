@@ -202,6 +202,7 @@ public class FileManager extends OutputStreamManager {
          * @param data The FactoryData
          * @return The FileManager for the File.
          */
+        @SuppressWarnings("resource")
         @Override
         public FileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
@@ -211,12 +212,11 @@ public class FileManager extends OutputStreamManager {
             }
 
             final boolean writeHeader = !data.append || !file.exists();
-            OutputStream os;
             try {
-                os = new FileOutputStream(name, data.append);
+                final FileOutputStream fos = new FileOutputStream(name, data.append);
                 final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
-                return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout,
+                return new FileManager(name, fos, data.append, data.locking, data.advertiseURI, data.layout,
                         writeHeader, buffer);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);
