@@ -26,9 +26,10 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Booleans;
@@ -160,116 +161,351 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      *
      * @return A Flume Avro Appender.
      */
-    @PluginFactory
-    public static FlumeAppender createAppender(@PluginElement("Agents") Agent[] agents,
-                                               @PluginElement("Properties") final Property[] properties,
-                                               @PluginAttribute("embedded") final String embedded,
-                                               @PluginAttribute("type") final String type,
-                                               @PluginAttribute("dataDir") final String dataDir,
+    @Deprecated
+    public static FlumeAppender createAppender(Agent[] agents,
+                                               final Property[] properties,
+                                               final String embedded,
+                                               final String type,
+                                               final String dataDir,
                                                @PluginAliases("connectTimeout")
-                                               @PluginAttribute("connectTimeoutMillis") final String connectionTimeoutMillis,
+                                               final String connectionTimeoutMillis,
                                                @PluginAliases("requestTimeout")
-                                               @PluginAttribute("requestTimeoutMillis") final String requestTimeoutMillis,
-                                               @PluginAttribute("agentRetries") final String agentRetries,
-                                               @PluginAliases("maxDelay") // deprecated
-                                               @PluginAttribute("maxDelayMillis") final String maxDelayMillis,
-                                               @PluginAttribute("name") final String name,
-                                               @PluginAttribute("ignoreExceptions") final String ignore,
-                                               @PluginAttribute("mdcExcludes") final String excludes,
-                                               @PluginAttribute("mdcIncludes") final String includes,
-                                               @PluginAttribute("mdcRequired") final String required,
-                                               @PluginAttribute("mdcPrefix") final String mdcPrefix,
-                                               @PluginAttribute("eventPrefix") final String eventPrefix,
-                                               @PluginAttribute("compress") final String compressBody,
-                                               @PluginAttribute("batchSize") final String batchSize,
-                                               @PluginAttribute("lockTimeoutRetries") final String lockTimeoutRetries,
-                                               @PluginElement("FlumeEventFactory") final FlumeEventFactory factory,
-                                               @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                               @PluginElement("Filter") final Filter filter) {
+                                               final String requestTimeoutMillis,
+                                               final String agentRetries,
+                                               // deprecated
+                                               final String maxDelayMillis,
+                                               final String name,
+                                               final String ignore,
+                                               final String excludes,
+                                               final String includes,
+                                               final String required,
+                                               final String mdcPrefix,
+                                               final String eventPrefix,
+                                               final String compressBody,
+                                               final String batchSize,
+                                               final String lockTimeoutRetries,
+                                               final FlumeEventFactory factory,
+                                               Layout<? extends Serializable> layout,
+                                               final Filter filter) {
 
-        final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
-            (agents == null || agents.length == 0) && properties != null && properties.length > 0;
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final boolean compress = Booleans.parseBoolean(compressBody, true);
-        ManagerType managerType;
-        if (type != null) {
-            if (embed && embedded != null) {
-                try {
-                    managerType = ManagerType.getType(type);
-                    LOGGER.warn("Embedded and type attributes are mutually exclusive. Using type " + type);
-                } catch (final Exception ex) {
-                    LOGGER.warn("Embedded and type attributes are mutually exclusive and type " + type +
-                        " is invalid.");
-                    managerType = ManagerType.EMBEDDED;
+
+      return newBuilder().setAgents(agents).setProperties(properties)
+              .setEmbedded(embedded)
+              .setType(type)
+              .setDataDir(dataDir)
+              .setConnectionTimeoutMillis(connectionTimeoutMillis)
+              .setRequestTimeoutMillis(requestTimeoutMillis)
+              .setAgentRetries(agentRetries)
+              .setMaxDelayMillis(maxDelayMillis)
+              .setName(name)
+              .setIgnore(ignore)
+              .setExcludes(excludes)
+              .setIncludes(includes)
+              .setMdcPrefix(mdcPrefix)
+              .setEventPrefix(eventPrefix)
+              .setCompressBody(compressBody)
+              .setBatchSize(batchSize)
+              .setLockTimeoutRetries(lockTimeoutRetries)
+              .setFactory(factory)
+              .setLayout(layout)
+              .setFilter(filter)
+              .build();
+    }
+
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * Builds FlumeAppender instances.
+     */
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<FlumeAppender> {
+
+        @PluginElement("Layout")
+        @Required
+        private Layout<? extends Serializable> layout;
+
+        @PluginElement("Filter")
+        private Filter filter;
+
+        @PluginBuilderAttribute
+        @Required
+        private String name;
+
+        @PluginElement("Agents")
+        private Agent[] agents;
+
+        @PluginElement("Properties")
+        private Property[] properties;
+
+        @PluginBuilderAttribute
+         private String hosts;
+
+        @PluginBuilderAttribute
+        private String embedded;
+
+        @PluginBuilderAttribute
+        private String type;
+
+        @PluginBuilderAttribute
+        private String dataDir;
+
+        @PluginAliases("connectTimeout")
+        @PluginBuilderAttribute
+        private String connectionTimeoutMillis;
+
+        @PluginAliases("requestTimeout")
+
+        @PluginBuilderAttribute
+        private String requestTimeoutMillis;
+
+        @PluginBuilderAttribute
+        private String agentRetries;
+
+        @PluginAliases("maxDelay") // deprecated
+        @PluginBuilderAttribute
+        private String maxDelayMillis;
+
+        @PluginBuilderAttribute
+        private String ignore;
+
+        @PluginBuilderAttribute
+        private String excludes;
+
+        @PluginBuilderAttribute
+        private String includes;
+
+        @PluginBuilderAttribute
+        private String required;
+
+        @PluginBuilderAttribute
+        private String mdcPrefix;
+
+        @PluginBuilderAttribute
+        private String eventPrefix;
+
+        @PluginBuilderAttribute
+        private String compressBody;
+
+        @PluginBuilderAttribute
+        private String batchSize;
+
+        @PluginBuilderAttribute
+        private String lockTimeoutRetries;
+
+        @PluginElement("FlumeEventFactory")
+        private FlumeEventFactory factory;
+
+        public Builder setLayout(final Layout<? extends Serializable> aLayout) {
+            this.layout = aLayout;
+            return this;
+        }
+
+        public Builder setFilter(final Filter aFilter) {
+            this.filter = aFilter;
+            return this;
+        }
+
+        public Builder setName(final String aName) {
+            this.name = aName;
+            return this;
+        }
+
+        public Builder setAgents(final Agent[] agents) {
+            this.agents = agents;
+            return this;
+        }
+
+        public Builder setProperties(final Property[] properties) {
+            this.properties = properties;
+            return this;
+        }
+
+        public Builder setHosts(final String hosts) {
+            this.hosts = hosts;
+            return this;
+        }
+
+        public Builder setEmbedded(final String embedded) {
+            this.embedded = embedded;
+            return this;
+        }
+
+        public Builder setType(final String type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder setDataDir(final String dataDir) {
+            this.dataDir = dataDir;
+            return this;
+        }
+
+        public Builder setConnectionTimeoutMillis(final String connectionTimeoutMillis) {
+            this.connectionTimeoutMillis = connectionTimeoutMillis;
+            return this;
+        }
+
+        public Builder setRequestTimeoutMillis(final String requestTimeoutMillis) {
+            this.requestTimeoutMillis = requestTimeoutMillis;
+            return this;
+        }
+
+        public Builder setAgentRetries(final String agentRetries) {
+            this.agentRetries = agentRetries;
+            return this;
+        }
+
+        public Builder setMaxDelayMillis(final String maxDelayMillis) {
+            this.maxDelayMillis = maxDelayMillis;
+            return this;
+        }
+
+        public Builder setIgnore(final String ignore) {
+            this.ignore = ignore;
+            return this;
+        }
+
+        public Builder setExcludes(final String excludes) {
+            this.excludes = excludes;
+            return this;
+        }
+
+        public Builder setIncludes(final String includes) {
+            this.includes = includes;
+            return this;
+        }
+
+        public Builder setRequired(final String required) {
+            this.required = required;
+            return this;
+        }
+
+        public Builder setMdcPrefix(final String mdcPrefix) {
+            this.mdcPrefix = mdcPrefix;
+            return this;
+        }
+
+        public Builder setEventPrefix(final String eventPrefix) {
+            this.eventPrefix = eventPrefix;
+            return this;
+        }
+
+        public Builder setCompressBody(final String compressBody) {
+            this.compressBody = compressBody;
+            return this;
+        }
+
+        public Builder setBatchSize(final String batchSize) {
+            this.batchSize = batchSize;
+            return this;
+        }
+
+        public Builder setLockTimeoutRetries(final String lockTimeoutRetries) {
+            this.lockTimeoutRetries = lockTimeoutRetries;
+            return this;
+        }
+
+        public Builder setFactory(final FlumeEventFactory factory) {
+            this.factory = factory;
+            return this;
+        }
+
+        @Override
+        public FlumeAppender build() {
+            final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
+                (agents == null || agents.length == 0 || hosts == null || hosts.isEmpty()) && properties != null && properties.length > 0;
+            final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
+            final boolean compress = Booleans.parseBoolean(compressBody, true);
+            ManagerType managerType;
+            if (type != null) {
+                if (embed && embedded != null) {
+                    try {
+                        managerType = ManagerType.getType(type);
+                        LOGGER.warn("Embedded and type attributes are mutually exclusive. Using type " + type);
+                    } catch (final Exception ex) {
+                        LOGGER.warn("Embedded and type attributes are mutually exclusive and type " + type +
+                            " is invalid.");
+                        managerType = ManagerType.EMBEDDED;
+                    }
+                } else {
+                    try {
+                        managerType = ManagerType.getType(type);
+                    } catch (final Exception ex) {
+                        LOGGER.warn("Type " + type + " is invalid.");
+                        managerType = ManagerType.EMBEDDED;
+                    }
+                }
+            }  else if (embed) {
+               managerType = ManagerType.EMBEDDED;
+            }  else {
+               managerType = ManagerType.AVRO;
+            }
+
+            final int batchCount = Integers.parseInt(batchSize, 1);
+            final int connectTimeoutMillis = Integers.parseInt(connectionTimeoutMillis, 0);
+            final int reqTimeoutMillis = Integers.parseInt(requestTimeoutMillis, 0);
+            final int retries = Integers.parseInt(agentRetries, 0);
+            final int lockTimeoutRetryCount = Integers.parseInt(lockTimeoutRetries, DEFAULT_LOCK_TIMEOUT_RETRY_COUNT);
+            final int delayMillis = Integers.parseInt(maxDelayMillis, DEFAULT_MAX_DELAY);
+
+            if (layout == null) {
+                final int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
+                layout = Rfc5424Layout.createLayout(Facility.LOCAL0, null, enterpriseNumber, true, Rfc5424Layout.DEFAULT_MDCID,
+                        mdcPrefix, eventPrefix, false, null, null, null, excludes, includes, required, null, false, null,
+                        null);
+            }
+
+            if (name == null) {
+                LOGGER.error("No name provided for Appender");
+                return null;
+            }
+
+            AbstractFlumeManager manager;
+
+            switch (managerType) {
+                case EMBEDDED:
+                    manager = FlumeEmbeddedManager.getManager(name, agents, properties, batchCount, dataDir);
+                    break;
+                case AVRO:
+                    manager = FlumeAvroManager.getManager(name, getAgents(agents, hosts), batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
+                    break;
+                case PERSISTENT:
+                    manager = FlumePersistentManager.getManager(name, getAgents(agents, hosts), properties, batchCount, retries,
+                        connectTimeoutMillis, reqTimeoutMillis, delayMillis, lockTimeoutRetryCount, dataDir);
+                    break;
+                default:
+                    LOGGER.debug("No manager type specified. Defaulting to AVRO");
+                    manager = FlumeAvroManager.getManager(name, getAgents(agents, hosts), batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
+            }
+
+            if (manager == null) {
+                return null;
+            }
+
+            return new FlumeAppender(name, filter, layout,  ignoreExceptions, includes,
+                excludes, required, mdcPrefix, eventPrefix, compress, factory, manager);
+        }
+    }
+    
+    private static Agent[] getAgents(Agent[] agents, String hosts) {
+        if (agents == null || agents.length == 0) {
+            if(hosts != null && !hosts.isEmpty()) {
+                LOGGER.debug("Parsing agents from hosts parameter");
+                String[] hostports = hosts.split(",");
+                agents = new Agent[hostports.length];
+                for(int i = 0; i < hostports.length; ++i) {
+                    String[] h = hostports[i].split(":");
+                    agents[i] = Agent.createAgent(h[0], h.length > 1 ? h[1] : null);
                 }
             } else {
-                try {
-                    managerType = ManagerType.getType(type);
-                } catch (final Exception ex) {
-                    LOGGER.warn("Type " + type + " is invalid.");
-                    managerType = ManagerType.EMBEDDED;
-                }
+                LOGGER.debug("No agents provided, using defaults");
+                agents = new Agent[] {Agent.createAgent(null, null)};
             }
-        }  else if (embed) {
-           managerType = ManagerType.EMBEDDED;
-        }  else {
-           managerType = ManagerType.AVRO;
         }
-
-        final int batchCount = Integers.parseInt(batchSize, 1);
-        final int connectTimeoutMillis = Integers.parseInt(connectionTimeoutMillis, 0);
-        final int reqTimeoutMillis = Integers.parseInt(requestTimeoutMillis, 0);
-        final int retries = Integers.parseInt(agentRetries, 0);
-        final int lockTimeoutRetryCount = Integers.parseInt(lockTimeoutRetries, DEFAULT_LOCK_TIMEOUT_RETRY_COUNT);
-        final int delayMillis = Integers.parseInt(maxDelayMillis, DEFAULT_MAX_DELAY);
-
-        if (layout == null) {
-            final int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
-            layout = Rfc5424Layout.createLayout(Facility.LOCAL0, null, enterpriseNumber, true, Rfc5424Layout.DEFAULT_MDCID,
-                    mdcPrefix, eventPrefix, false, null, null, null, excludes, includes, required, null, false, null,
-                    null);
-        }
-
-        if (name == null) {
-            LOGGER.error("No name provided for Appender");
-            return null;
-        }
-
-        AbstractFlumeManager manager;
-
-        switch (managerType) {
-            case EMBEDDED:
-                manager = FlumeEmbeddedManager.getManager(name, agents, properties, batchCount, dataDir);
-                break;
-            case AVRO:
-                if (agents == null || agents.length == 0) {
-                    LOGGER.debug("No agents provided, using defaults");
-                    agents = new Agent[] {Agent.createAgent(null, null)};
-                }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
-                break;
-            case PERSISTENT:
-                if (agents == null || agents.length == 0) {
-                    LOGGER.debug("No agents provided, using defaults");
-                    agents = new Agent[] {Agent.createAgent(null, null)};
-                }
-                manager = FlumePersistentManager.getManager(name, agents, properties, batchCount, retries,
-                    connectTimeoutMillis, reqTimeoutMillis, delayMillis, lockTimeoutRetryCount, dataDir);
-                break;
-            default:
-                LOGGER.debug("No manager type specified. Defaulting to AVRO");
-                if (agents == null || agents.length == 0) {
-                    LOGGER.debug("No agents provided, using defaults");
-                    agents = new Agent[] {Agent.createAgent(null, null)};
-                }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
-        }
-
-        if (manager == null) {
-            return null;
-        }
-
-        return new FlumeAppender(name, filter, layout,  ignoreExceptions, includes,
-            excludes, required, mdcPrefix, eventPrefix, compress, factory, manager);
+        
+        LOGGER.debug("Using agents {}", agents);
+        return agents;
     }
 }

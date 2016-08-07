@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.AvailablePortFinder;
@@ -122,6 +126,44 @@ public class FlumeAppenderTest {
                 null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
                 null, null, null, null);
+        avroAppender.start();
+        avroLogger.addAppender(avroAppender);
+        avroLogger.setLevel(Level.ALL);
+
+        Assert.assertNotNull(avroLogger);
+
+        avroLogger.info("Test message");
+
+        final Transaction transaction = channel.getTransaction();
+        transaction.begin();
+
+        final Event event = channel.take();
+        Assert.assertNotNull(event);
+        Assert.assertTrue("Channel contained event, but not expected message",
+                getBody(event).endsWith("Test message"));
+        transaction.commit();
+        transaction.close();
+
+        eventSource.stop();
+    }
+
+    @Test
+    public void testLog4jAvroAppenderWithHostsParam() throws IOException {
+        final String hosts = String.format("localhost:%s", testPort);
+        final FlumeAppender avroAppender = FlumeAppender.newBuilder()
+            .setHosts(hosts)
+            .setEmbedded("false")
+            .setType("Avro")
+            .setConnectionTimeoutMillis("1000")
+            .setRequestTimeoutMillis("1000")
+            .setAgentRetries("1")
+            .setMaxDelayMillis("1000")
+            .setName("avro")
+            .setIgnore("false")
+            .setCompressBody("true")
+            .setBatchSize("1")
+            .build();
+        
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
