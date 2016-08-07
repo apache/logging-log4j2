@@ -59,6 +59,7 @@ public class CleanFiles extends AbstractExternalFileCleaner {
                 try {
                     Thread.sleep(200);
                 } catch (final InterruptedException ignored) {
+                    // ignore
                 }
             }
         }
