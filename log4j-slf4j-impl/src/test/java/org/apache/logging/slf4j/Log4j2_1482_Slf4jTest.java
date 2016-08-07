@@ -14,44 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.slf4j;
 
-import org.junit.Test;
+import org.apache.logging.log4j.core.layout.Log4j2_1482_Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 /**
- * Tests logging during shutdown.
+ * Tests https://issues.apache.org/jira/browse/LOG4J2-1482
  */
-public class Log4j1222Test
-{
+public class Log4j2_1482_Slf4jTest extends Log4j2_1482_Test {
 
-	@Test
-	public void homepageRendersSuccessfully()
-	{
-        System.setProperty("log4j.configurationFile", "log4j2-console.xml");
-		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+	@Override
+	protected void log(int runNumber) {
+		if (runNumber == 2) {
+			// System.out.println("Set a breakpoint here.");
+		}
+		final Logger logger = LoggerFactory.getLogger("auditcsvfile");
+		final int val1 = 9, val2 = 11, val3 = 12;
+		logger.info("Info Message!", val1, val2, val3);
+		logger.info("Info Message!", val1, val2, val3);
+		logger.info("Info Message!", val1, val2, val3);
 	}
 
-	private static class ShutdownHook extends Thread {
-
-		private static class Holder {
-			private static final Logger LOGGER = LoggerFactory.getLogger(Log4j1222Test.class);
-		}
-
-		@Override
-		public void run()
-		{
-			super.run();
-			trigger();
-		}
-
-		private void trigger() {
-			Holder.LOGGER.info("Attempt to trigger");
-			assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof Log4jLogger);
-
-		}
-	}
 }

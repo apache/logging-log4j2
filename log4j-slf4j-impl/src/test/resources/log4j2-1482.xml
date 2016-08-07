@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Properties>
+    <Property name="audit-path">target/log4j2-1482</Property>
+    <Property name="file-name">audit</Property>
+    <Property name="file-header">param1,param2,param3${sys:line.separator}
+    </Property>
+  </Properties>
+
+  <Appenders>
+    <RollingFile name="auditfile" fileName="${audit-path}/${file-name}.tmp"
+      filePattern="${audit-path}/${file-name}-%d{yyyy-MM-dd}-%i.csv">
+      <CsvParameterLayout delimiter="," header="${file-header}">
+      </CsvParameterLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="80 B" />
+      </Policies>
+      <DefaultRolloverStrategy max="2" />
+    </RollingFile>
+  </Appenders>
+
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="auditfile" />
+    </Root>
+  </Loggers>
+</Configuration>

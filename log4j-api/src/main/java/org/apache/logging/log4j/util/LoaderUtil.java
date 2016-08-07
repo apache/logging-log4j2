@@ -126,6 +126,26 @@ public final class LoaderUtil {
     /**
      * Loads and instantiates a Class using the default constructor.
      *
+     * @param clazz The class.
+     * @return new instance of the class.
+     * @throws IllegalAccessException if the class can't be instantiated through a public constructor
+     * @throws InstantiationException if there was an exception whilst instantiating the class
+     * @throws InvocationTargetException if there was an exception whilst constructing the class
+     * @since 2.7
+     */
+    public static <T> T newInstanceOf(final Class<T> clazz)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        try {
+            return clazz.getConstructor().newInstance();
+        } catch (final NoSuchMethodException ignored) {
+            // FIXME: looking at the code for Class.newInstance(), this seems to do the same thing as above
+            return clazz.newInstance();
+        }
+    }
+
+    /**
+     * Loads and instantiates a Class using the default constructor.
+     *
      * @param className The class name.
      * @return new instance of the class.
      * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
@@ -138,13 +158,7 @@ public final class LoaderUtil {
     @SuppressWarnings("unchecked")
     public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
             InstantiationException, NoSuchMethodException, InvocationTargetException {
-        final Class<?> clazz = loadClass(className);
-        try {
-            return (T) clazz.getConstructor().newInstance();
-        } catch (final NoSuchMethodException ignored) {
-            // FIXME: looking at the code for Class.newInstance(), this seems to do the same thing as above
-            return (T) clazz.newInstance();
-        }
+        return newInstanceOf((Class<T>) loadClass(className));
     }
 
     /**

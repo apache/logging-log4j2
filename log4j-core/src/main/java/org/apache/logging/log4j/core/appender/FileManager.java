@@ -90,24 +90,19 @@ public class FileManager extends OutputStreamManager {
 
         if (isLocking) {
             final FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
-            try {
-                /* Lock the whole file. This could be optimized to only lock from the current file
-                   position. Note that locking may be advisory on some systems and mandatory on others,
-                   so locking just from the current position would allow reading on systems where
-                   locking is mandatory.  Also, Java 6 will throw an exception if the region of the
-                   file is already locked by another FileChannel in the same JVM. Hopefully, that will
-                   be avoided since every file should have a single file manager - unless two different
-                   files strings are configured that somehow map to the same file.*/
-                final FileLock lock = channel.lock(0, Long.MAX_VALUE, false);
-                try {
-                    super.write(bytes, offset, length, immediateFlush);
-                } finally {
-                    lock.release();
-                }
+            /*
+             * Lock the whole file. This could be optimized to only lock from the current file position. Note that
+             * locking may be advisory on some systems and mandatory on others, so locking just from the current
+             * position would allow reading on systems where locking is mandatory. Also, Java 6 will throw an exception
+             * if the region of the file is already locked by another FileChannel in the same JVM. Hopefully, that will
+             * be avoided since every file should have a single file manager - unless two different files strings are
+             * configured that somehow map to the same file.
+             */
+            try (final FileLock lock = channel.lock(0, Long.MAX_VALUE, false)) {
+                super.write(bytes, offset, length, immediateFlush);
             } catch (final IOException ex) {
                 throw new AppenderLoggingException("Unable to obtain lock on " + getName(), ex);
             }
-
         } else {
             super.write(bytes, offset, length, immediateFlush);
         }
@@ -202,6 +197,7 @@ public class FileManager extends OutputStreamManager {
          * @param data The FactoryData
          * @return The FileManager for the File.
          */
+        @SuppressWarnings("resource")
         @Override
         public FileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
@@ -211,12 +207,11 @@ public class FileManager extends OutputStreamManager {
             }
 
             final boolean writeHeader = !data.append || !file.exists();
-            OutputStream os;
             try {
-                os = new FileOutputStream(name, data.append);
+                final FileOutputStream fos = new FileOutputStream(name, data.append);
                 final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
-                return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout,
+                return new FileManager(name, fos, data.append, data.locking, data.advertiseURI, data.layout,
                         writeHeader, buffer);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);

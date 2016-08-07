@@ -71,7 +71,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                 randomAccessFile.write(header, 0, header.length);
             }
         } catch (final IOException e) {
-            logError("unable to write header", e);
+            logError("Unable to write header", e);
         }
     }
 
@@ -129,7 +129,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         try {
             randomAccessFile.close();
         } catch (final IOException e) {
-            logError("unable to close RandomAccessFile", e);
+            logError("Unable to close RandomAccessFile", e);
         }
     }
 

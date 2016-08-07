@@ -100,7 +100,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
         try {
             randomAccessFile.close();
         } catch (final IOException ex) {
-            logError("unable to close RandomAccessFile", ex);
+            logError("Unable to close RandomAccessFile", ex);
         }
     }
 

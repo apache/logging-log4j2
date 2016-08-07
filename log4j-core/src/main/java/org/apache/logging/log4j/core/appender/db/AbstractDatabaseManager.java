@@ -64,7 +64,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
                 this.startupInternal();
                 this.running = true;
             } catch (final Exception e) {
-                logError("could not perform database startup operations", e);
+                logError("Could not perform database startup operations", e);
             }
         }
     }
@@ -88,7 +88,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
             try {
                 this.shutdownInternal();
             } catch (final Exception e) {
-                logWarn("caught exception while performing database shutdown operations", e);
+                logWarn("Caught exception while performing database shutdown operations", e);
             } finally {
                 this.running = false;
             }

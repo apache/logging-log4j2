@@ -31,17 +31,19 @@ import org.junit.Test;
 
 public class JeroMqAppenderTest {
 
+    private static final int DEFAULT_TIMEOUT_MILLIS = 30000;
+    
     @ClassRule
     public static LoggerContextRule ctx = new LoggerContextRule("JeroMqAppenderTest.xml");
 
-    @Test(timeout = 10000)
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testAppenderLifeCycle() throws Exception {
         // do nothing to make sure the appender starts and stops without
         // locking up resources.
         Assert.assertNotNull(JeroMqManager.getContext());
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testClientServer() throws Exception {
         final JeroMqAppender appender = ctx.getRequiredAppender("JeroMQAppender", JeroMqAppender.class);
         final int expectedReceiveCount = 3;
@@ -67,7 +69,7 @@ public class JeroMqAppenderTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testMultiThreadedServer() throws Exception {
         final int nThreads = 10;
         final JeroMqAppender appender = ctx.getRequiredAppender("JeroMQAppender", JeroMqAppender.class);
@@ -114,7 +116,7 @@ public class JeroMqAppenderTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testServerOnly() throws Exception {
         final Logger logger = ctx.getLogger(getClass().getName());
         final JeroMqAppender appender = ctx.getRequiredAppender("JeroMQAppender", JeroMqAppender.class);

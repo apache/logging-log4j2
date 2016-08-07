@@ -25,10 +25,15 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.message.Message;
 
 /**
- *
+ * Always creates new LogEvent instances.
  */
 public class DefaultLogEventFactory implements LogEventFactory {
 
+    private static final DefaultLogEventFactory instance = new DefaultLogEventFactory();
+
+    public static DefaultLogEventFactory getInstance() {
+        return instance;
+    }
 
     /**
      * Creates a log event.

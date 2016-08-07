@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.7" date="2016-MM-DD" description="GA Release 2.7">
+      <action issue="LOG4J2-1500" dev="ggregory" type="fix" due-to="Jose Leon">
+        Merging configurations fail with an NPE when comparing Nodes with different attributes.
+      </action>
+      <action issue="LOG4J2-1482" dev="ggregory" type="fix" due-to="Gary Gregory, Sumit Singhal">
+        Improper header in CsvParameterLayout.
+      </action>
       <action issue="LOG4J2-1199" dev="rpopma" type="fix">
         Document that JVM Input Arguments Lookup (JMX) is not available on Google App Engine.
       </action>
@@ -62,6 +68,18 @@
       </action>
       <action issue="LOG4J2-1458" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Jackson from 2.7.5 to 2.8.0.
+      </action>
+      <action issue="LOG4J2-1494" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update Jackson from 2.8.0 to 2.8.1.
+      </action>
+      <action issue="LOG4J2-1495" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update LMAX Disruptor from 3.3.4 to 3.3.5.
+      </action>
+      <action issue="LOG4J2-1496" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update Kafka client from 0.9.1.0 to 0.10.0.0.
+      </action>
+      <action issue="LOG4J2-1487" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update JMS test from ActiveMQ 5.13.3 to 5.13.4.
       </action>
     </release>
     <release version="2.6.2" date="2016-07-05" description="GA Release 2.6.2">

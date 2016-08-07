@@ -79,7 +79,7 @@ public final class Constants {
     public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.IS_WEB_APP;
 
     /**
-     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
+     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behavior.
      * <p>
      * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
      * "log4j2.enable.threadlocals" to "false".
@@ -89,7 +89,7 @@ public final class Constants {
     public static final boolean ENABLE_THREADLOCALS = org.apache.logging.log4j.util.Constants.ENABLE_THREADLOCALS;
 
     /**
-     * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into
+     * Kill switch for garbage-free Layout behavior that encodes LogEvents directly into
      * {@link org.apache.logging.log4j.core.layout.ByteBufferDestination}s without creating intermediate temporary
      * Objects.
      * <p>

@@ -200,7 +200,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public Message getMessage() {
         if (message == null) {
-            return (messageText == null) ? EMPTY : this;
+            return messageText == null ? EMPTY : this;
         }
         return message;
     }

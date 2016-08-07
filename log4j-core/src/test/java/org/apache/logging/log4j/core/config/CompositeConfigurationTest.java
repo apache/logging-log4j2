@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -106,6 +108,23 @@ public class CompositeConfigurationTest {
                         appendersMap.size());
                 assertTrue(appendersMap.get("File") instanceof FileAppender);
                 assertTrue(appendersMap.get("STDOUT") instanceof ConsoleAppender);
+            }
+        };
+        runTest(lcr, test);
+    }
+
+    @Test
+    public void testAttributeCheckWhenMergingConfigurations() {
+        final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-root-loggers.xml,log4j-comp-logger.json");
+        final Statement test = new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                try {
+                    final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
+                    Assert.assertNotNull(config);
+                } catch (NullPointerException e) {
+                    fail("Should not throw NullPointerException when there are different nodes.");
+                }
             }
         };
         runTest(lcr, test);
