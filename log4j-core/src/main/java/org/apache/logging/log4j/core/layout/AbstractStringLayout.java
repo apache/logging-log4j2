@@ -212,7 +212,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return headerSerializer;
     }
 
-    protected DefaultLogEventFactory getLogEventFactory() {
+    private DefaultLogEventFactory getLogEventFactory() {
         return DefaultLogEventFactory.getInstance();
     }
 
