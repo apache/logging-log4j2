@@ -356,7 +356,8 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(keys[i]).append('=').append(values[i]);
+            sb.append(keys[i]).append('=');
+            sb.append(values[i] == this ? "(this map)" : values[i]);
         }
         sb.append('}');
         return sb.toString();
