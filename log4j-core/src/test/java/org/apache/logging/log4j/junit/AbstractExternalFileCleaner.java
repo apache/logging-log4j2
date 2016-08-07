@@ -17,30 +17,38 @@
 package org.apache.logging.log4j.junit;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.rules.ExternalResource;
 
 public abstract class AbstractExternalFileCleaner extends ExternalResource {
 
+    private static final int SLEEP_RETRY_MILLIS = 200;
     private final boolean cleanAfter;
     private final boolean cleanBefore;
-    private final List<File> files;
+    private final Set<File> files;
     private final int maxTries;
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries, final File... files) {
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
+            final File... files) {
         this.cleanBefore = before;
         this.cleanAfter = after;
-        this.files = Arrays.asList(files);
+        this.files = new HashSet<>(Arrays.asList(files));
         this.maxTries = maxTries;
     }
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
+            final String... fileNames) {
         this.cleanBefore = before;
         this.cleanAfter = after;
-        this.files = new ArrayList<>(fileNames.length);
+        this.files = new HashSet<>(fileNames.length);
         for (final String fileName : fileNames) {
             this.files.add(new File(fileName));
         }
@@ -61,7 +69,50 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
         }
     }
 
-    abstract protected void clean();
+    protected void clean() {
+        Map<Path, IOException> failures = new HashMap<>();
+        // Clean and gather failures
+        for (final File file : getFiles()) {
+            if (file.exists()) {
+                final Path path = file.toPath();
+                for (int i = 0; i < getMaxTries(); i++) {
+                    try {
+                        if (clean(path, i)) {
+                            if (failures.containsKey(path)) {
+                                failures.remove(path);
+                            }
+                            break;
+                        }
+                    } catch (final IOException e) {
+                        // We will try again.
+                        failures.put(path, e);
+                    }
+                    try {
+                        Thread.sleep(SLEEP_RETRY_MILLIS);
+                    } catch (final InterruptedException ignored) {
+                        // ignore
+                    }
+                }
+            }
+        }
+        // Fail on failures
+        if (failures.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            for (Map.Entry<Path, IOException> failure : failures.entrySet()) {
+                failure.getValue().printStackTrace();
+                if (!first) {
+                    sb.append(", ");
+                }
+                sb.append(failure.getKey()).append(" failed with ").append(failure.getValue());
+                first = false;
+            }
+            Assert.fail(sb.toString());
+        }
+
+    }
+
+    protected abstract boolean clean(Path path, int tryIndex) throws IOException;
 
     public boolean cleanAfter() {
         return cleanAfter;
@@ -71,7 +122,7 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
         return cleanBefore;
     }
 
-    public List<File> getFiles() {
+    public Set<File> getFiles() {
         return files;
     }
 

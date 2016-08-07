@@ -19,8 +19,7 @@ package org.apache.logging.log4j.junit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-
-import org.junit.Assert;
+import java.nio.file.Path;
 
 /**
  * A JUnit test rule to automatically delete files after a test is run.
@@ -45,26 +44,8 @@ public class CleanFiles extends AbstractExternalFileCleaner {
     }
 
     @Override
-    protected void clean() {
-        for (final File file : getFiles()) {
-            if (file.exists()) {
-                for (int i = 0; i < getMaxTries(); i++) {
-                    try {
-                        if (Files.deleteIfExists(file.toPath())) {
-                            // Break from MAX_TRIES and move on to the next file.
-                            break;
-                        }
-                    } catch (final IOException e) {
-                        Assert.fail(file + ": " + e.toString());
-                    }
-                    try {
-                        Thread.sleep(200);
-                    } catch (final InterruptedException ignored) {
-                        // ignore
-                    }
-                }
-            }
-        }
+    protected boolean clean(Path path, int tryIndex) throws IOException {
+        return Files.deleteIfExists(path);
     }
 
 }
