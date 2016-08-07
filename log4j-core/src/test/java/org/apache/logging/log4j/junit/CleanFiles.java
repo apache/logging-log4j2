@@ -47,19 +47,21 @@ public class CleanFiles extends AbstractExternalFileCleaner {
     @Override
     protected void clean() {
         for (final File file : getFiles()) {
-            for (int i = 0; i < MAX_TRIES; i++) {
-                try {
-                    if (Files.deleteIfExists(file.toPath())) {
-                        // Break from MAX_TRIES and move on to the next file.
-                        break;
+            if (file.exists()) {
+                for (int i = 0; i < MAX_TRIES; i++) {
+                    try {
+                        if (Files.deleteIfExists(file.toPath())) {
+                            // Break from MAX_TRIES and move on to the next file.
+                            break;
+                        }
+                    } catch (final IOException e) {
+                        Assert.fail(file + ": " + e.toString());
                     }
-                } catch (final IOException e) {
-                    Assert.fail(file + ": " + e.toString());
-                }
-                try {
-                    Thread.sleep(200);
-                } catch (final InterruptedException ignored) {
-                    // ignore
+                    try {
+                        Thread.sleep(200);
+                    } catch (final InterruptedException ignored) {
+                        // ignore
+                    }
                 }
             }
         }

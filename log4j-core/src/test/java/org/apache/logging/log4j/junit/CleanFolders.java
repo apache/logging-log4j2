@@ -55,18 +55,20 @@ public class CleanFolders extends AbstractExternalFileCleaner {
         Map<Path, IOException> failures = new HashMap<>();
 
         for (final File folder : getFiles()) {
-            final Path path = folder.toPath();
-            for (int i = 0; i < MAX_TRIES; i++) {
-                try {
-                    cleanFolder(path);
-                    if (failures.containsKey(path)) {
-                        failures.remove(path);
+            if (folder.exists()) {
+                final Path path = folder.toPath();
+                for (int i = 0; i < MAX_TRIES; i++) {
+                    try {
+                        cleanFolder(path);
+                        if (failures.containsKey(path)) {
+                            failures.remove(path);
+                        }
+                        // break from MAX_TRIES and goes to the next folder
+                        break;
+                    } catch (final IOException e) {
+                        // We will try again.
+                        failures.put(path, e);
                     }
-                    // break from MAX_TRIES and goes to the next folder
-                    break;
-                } catch (final IOException e) {
-                    // We will try again.
-                    failures.put(path, e);
                 }
             }
         }
