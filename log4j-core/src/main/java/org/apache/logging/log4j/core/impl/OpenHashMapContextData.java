@@ -655,11 +655,6 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     /**
      * Returns a hash code for this map.
      *
-     * This method overrides the generic method provided by the superclass.
-     * Since <code>equals()</code> is not overriden, it is important that the
-     * value returned by this method is the same value as the one returned by
-     * the overriden method.
-     *
      * @return a hash code for this map.
      */
     public int hashCode() {
