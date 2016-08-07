@@ -56,9 +56,18 @@ public interface ContextData extends Serializable {
     /**
      * Performs the given action for each key-value pair in this data structure
      * until all entries have been processed or the action throws an exception.
+     * <p>
+     * Some implementations may not support structural modifications (adding new elements or removing elements) while
+     * iterating over the contents. In such implementations, attempts to add or remove elements from the
+     * {@code BiConsumer}'s {@link BiConsumer#accept(Object, Object)} accept} method may cause a
+     * {@code ConcurrentModificationException} to be thrown.
+     * </p>
      *
      * @param action The action to be performed for each key-value pair in this collection
      * @param <V> type of the value
+     * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
+     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          {@link #forEach(TriConsumer, Object)}.
      */
     <V> void forEach(final BiConsumer<String, ? super V> action);
 
@@ -69,12 +78,21 @@ public interface ContextData extends Serializable {
      * The third parameter lets callers pass in a stateful object to be modified with the key-value pairs,
      * so the TriConsumer implementation itself can be stateless and potentially reusable.
      * </p>
+     * <p>
+     * Some implementations may not support structural modifications (adding new elements or removing elements) while
+     * iterating over the contents. In such implementations, attempts to add or remove elements from the
+     * {@code TriConsumer}'s {@link TriConsumer#accept(Object, Object, Object) accept} method may cause a
+     * {@code ConcurrentModificationException} to be thrown.
+     * </p>
      *
      * @param action The action to be performed for each key-value pair in this collection
      * @param state the object to be passed as the third parameter to each invocation on the specified
      *          triconsumer
      * @param <V> type of the value
      * @param <S> type of the third parameter
+     * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
+     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          {@link #forEach(TriConsumer, Object)}.
      */
     <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state);
 
