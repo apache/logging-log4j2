@@ -28,27 +28,27 @@ import org.junit.Assert;
 public class CleanFiles extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;
 
-    public CleanFiles(final boolean before, final boolean after, final File... files) {
-        super(before, after, files);
+    public CleanFiles(final boolean before, final boolean after, final int maxTries, final File... files) {
+        super(before, after, maxTries, files);
     }
 
-    public CleanFiles(final boolean before, final boolean after, final String... fileNames) {
-        super(before, after, fileNames);
+    public CleanFiles(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
+        super(before, after, maxTries, fileNames);
     }
 
     public CleanFiles(final File... files) {
-        super(true, true, files);
+        super(true, true, MAX_TRIES, files);
     }
 
     public CleanFiles(final String... fileNames) {
-        super(true, true, fileNames);
+        super(true, true, MAX_TRIES, fileNames);
     }
 
     @Override
     protected void clean() {
         for (final File file : getFiles()) {
             if (file.exists()) {
-                for (int i = 0; i < MAX_TRIES; i++) {
+                for (int i = 0; i < getMaxTries(); i++) {
                     try {
                         if (Files.deleteIfExists(file.toPath())) {
                             // Break from MAX_TRIES and move on to the next file.

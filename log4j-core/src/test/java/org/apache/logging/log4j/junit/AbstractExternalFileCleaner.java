@@ -28,20 +28,23 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
     private final boolean cleanAfter;
     private final boolean cleanBefore;
     private final List<File> files;
+    private final int maxTries;
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final File... files) {
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries, final File... files) {
         this.cleanBefore = before;
         this.cleanAfter = after;
         this.files = Arrays.asList(files);
+        this.maxTries = maxTries;
     }
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final String... fileNames) {
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
         this.cleanBefore = before;
         this.cleanAfter = after;
         this.files = new ArrayList<>(fileNames.length);
         for (final String fileName : fileNames) {
             this.files.add(new File(fileName));
         }
+        this.maxTries = maxTries;
     }
 
     @Override
@@ -70,6 +73,10 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
 
     public List<File> getFiles() {
         return files;
+    }
+
+    public int getMaxTries() {
+        return maxTries;
     }
 
     @Override

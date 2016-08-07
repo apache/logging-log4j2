@@ -34,20 +34,20 @@ import org.junit.Assert;
 public class CleanFolders extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;
 
-    public CleanFolders(final boolean before, final boolean after, final File... files) {
-        super(before, after, files);
+    public CleanFolders(final boolean before, final boolean after, final int maxTries, final File... files) {
+        super(before, after, maxTries, files);
     }
 
-    public CleanFolders(final boolean before, final boolean after, final String... fileNames) {
-        super(before, after, fileNames);
+    public CleanFolders(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
+        super(before, after, maxTries, fileNames);
     }
 
     public CleanFolders(final File... folders) {
-        super(true, true, folders);
+        super(true, true, MAX_TRIES, folders);
     }
 
     public CleanFolders(final String... folderNames) {
-        super(true, true, folderNames);
+        super(true, true, MAX_TRIES, folderNames);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class CleanFolders extends AbstractExternalFileCleaner {
         for (final File folder : getFiles()) {
             if (folder.exists()) {
                 final Path path = folder.toPath();
-                for (int i = 0; i < MAX_TRIES; i++) {
+                for (int i = 0; i < getMaxTries(); i++) {
                     try {
                         cleanFolder(path);
                         if (failures.containsKey(path)) {

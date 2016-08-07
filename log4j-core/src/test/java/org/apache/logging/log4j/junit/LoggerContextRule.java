@@ -248,8 +248,8 @@ public class LoggerContextRule implements TestRule {
         return RuleChain.outerRule(new CleanFiles(files)).around(this);
     }
 
-    public RuleChain withCleanFoldersRule(final boolean before, final boolean after, final String... folders) {
-        return RuleChain.outerRule(new CleanFolders(before, after, folders)).around(this);
+    public RuleChain withCleanFoldersRule(final boolean before, final boolean after, final int maxTries, final String... folders) {
+        return RuleChain.outerRule(new CleanFolders(before, after, maxTries, folders)).around(this);
     }
 
     public RuleChain withCleanFoldersRule(final String... folders) {
