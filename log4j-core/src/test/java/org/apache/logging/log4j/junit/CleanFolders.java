@@ -42,6 +42,10 @@ public class CleanFolders extends AbstractExternalFileCleaner {
         super(true, true, MAX_TRIES, folders);
     }
 
+    public CleanFolders(final Path... paths) {
+        super(true, true, MAX_TRIES, paths);
+    }
+
     public CleanFolders(final String... folderNames) {
         super(true, true, MAX_TRIES, folderNames);
     }
