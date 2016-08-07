@@ -245,7 +245,7 @@ public class FlumeAppenderTest {
         eventSource.stop();
     }
 
-    @Ignore
+    //@Ignore //(Remko: this test hangs my build...)
     @Test
     public void testIncompleteBatch() throws IOException {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
