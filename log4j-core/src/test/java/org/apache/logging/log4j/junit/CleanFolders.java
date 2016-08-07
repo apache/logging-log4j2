@@ -53,7 +53,7 @@ public class CleanFolders extends AbstractExternalFileCleaner {
     @Override
     protected void clean() {
         Map<Path, IOException> failures = new HashMap<>();
-
+        // Clean and gather failures
         for (final File folder : getFiles()) {
             if (folder.exists()) {
                 final Path path = folder.toPath();
@@ -72,6 +72,7 @@ public class CleanFolders extends AbstractExternalFileCleaner {
                 }
             }
         }
+        // Fail on failures
         if (failures.size() > 0) {
             StringBuilder sb = new StringBuilder();
             boolean first = true;
