@@ -93,6 +93,7 @@ public class FileAppenderTest {
                 .build();
         final FileAppender appender = FileAppender.createAppender(FILE_NAME, true, false, "test", false, false, false,
                 1, layout, null, false, null, lazyCreate, null);
+        Assert.assertEquals(lazyCreate, appender.getManager().isLazyCreate());
         try {
             Assert.assertNotEquals(lazyCreate, Files.exists(PATH));
             appender.start();
@@ -209,6 +210,7 @@ public class FileAppenderTest {
                 .build();
         final FileAppender appender = FileAppender.createAppender(FILE_NAME, true, lock, "test", false, false, false,
                 FileAppender.DEFAULT_BUFFER_SIZE, layout, null, false, null, lazyCreate, null);
+        Assert.assertEquals(lazyCreate, appender.getManager().isLazyCreate());
         try {
             appender.start();
             assertTrue("Appender did not start", appender.isStarted());

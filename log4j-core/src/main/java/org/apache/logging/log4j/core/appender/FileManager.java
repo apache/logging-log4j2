@@ -40,6 +40,7 @@ public class FileManager extends OutputStreamManager {
     private static final FileManagerFactory FACTORY = new FileManagerFactory();
 
     private final boolean isAppend;
+    private final boolean isLazyCreate;
     private final boolean isLocking;
     private final String advertiseURI;
     private final int bufferSize;
@@ -61,6 +62,7 @@ public class FileManager extends OutputStreamManager {
             final ByteBuffer buffer) {
         super(os, fileName, layout, writeHeader, buffer);
         this.isAppend = append;
+        this.isLazyCreate = false;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
         this.bufferSize = buffer.capacity();
@@ -75,6 +77,7 @@ public class FileManager extends OutputStreamManager {
             final ByteBuffer buffer) throws IOException {
         super(fileName, lazyCreate, layout, writeHeader, buffer);
         this.isAppend = append;
+        this.isLazyCreate = lazyCreate;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
         this.bufferSize = buffer.capacity();
@@ -150,6 +153,14 @@ public class FileManager extends OutputStreamManager {
      */
     public boolean isAppend() {
         return isAppend;
+    }
+
+    /**
+     * Returns the lazy-create.
+     * @return true if the file will be lazy-created.
+     */
+    public boolean isLazyCreate() {
+        return isLazyCreate;
     }
 
     /**
