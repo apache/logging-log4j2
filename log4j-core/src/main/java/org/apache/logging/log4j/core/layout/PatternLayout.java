@@ -424,7 +424,7 @@ public final class PatternLayout extends AbstractStringLayout {
         private boolean alwaysWriteExceptions = true;
 
         @PluginBuilderAttribute
-        private boolean noConsoleNoAnsi = false;
+        private boolean noConsoleNoAnsi;
 
         @PluginBuilderAttribute
         private String header;
