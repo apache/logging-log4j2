@@ -80,8 +80,8 @@ public class CustomConfigurationTest {
             .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
             .withConfiguration(config)
             .build();
-        final Appender appender = FileAppender.createAppender(LOG_FILE, "false", "false", "File", "true",
-            "false", "false", "4000", layout, null, "false", null, config);
+        final Appender appender = FileAppender.createAppender(LOG_FILE, false, false, "File", true,
+            false, false, 4000, layout, null, false, null, false, config);
         appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
