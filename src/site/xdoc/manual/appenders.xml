@@ -1261,7 +1261,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
         <a name="KafkaAppender"/>
         <subsection name="KafkaAppender">
-          <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.</p>
+          <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.</p> Each log event is sent as a Kafka record with no key.
           <table>
             <caption align="top">KafkaAppender Parameters</caption>
             <tr>
@@ -1306,8 +1306,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>properties</td>
               <td>Property[]</td>
               <td>
-                You can set any properties in <a href="http://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>.
+                You can set properties in <a href="http://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>.
                 You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others.
+                Do not set the <code>value.serializer</code> property.
               </td>
             </tr>
           </table>
