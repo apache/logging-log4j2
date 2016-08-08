@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -89,10 +90,19 @@ public class FileAppenderTest {
 
     @Test
     public void testLazyCreate() throws Exception {
-        final Layout<String> layout = PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-                .build();
-        final FileAppender appender = FileAppender.createAppender(FILE_NAME, true, false, "test", false, false, false,
-                1, layout, null, false, null, lazyCreate, null);
+        final Layout<String> layout = createPatternLayout();
+        // @formatter:off
+        final FileAppender appender = FileAppender.newBuilder()
+            .withFileName(FILE_NAME)
+            .withName("test")
+            .withImmediateFlush(false)
+            .withIgnoreExceptions(false)
+            .withBufferedIo(false)
+            .withBufferSize(1)
+            .withLayout(layout)
+            .withLazyCreate(lazyCreate)
+            .build();
+        // @formatter:on
         Assert.assertEquals(lazyCreate, appender.getManager().isLazyCreate());
         try {
             Assert.assertNotEquals(lazyCreate, Files.exists(PATH));
@@ -104,12 +114,26 @@ public class FileAppenderTest {
         Assert.assertNotEquals(lazyCreate, Files.exists(PATH));
     }
 
+    private static PatternLayout createPatternLayout() {
+        return PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+                .build();
+    }
+
     @Test
     public void testSmallestBufferSize() throws Exception {
-        final Layout<String> layout = PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-                .build();
-        final FileAppender appender = FileAppender.createAppender(FILE_NAME, true, false, "test", false, false, false,
-                1, layout, null, false, null, lazyCreate, null);
+        final Layout<String> layout = createPatternLayout();
+        // @formatter:off
+        final FileAppender appender = FileAppender.newBuilder()
+            .withFileName(FILE_NAME)
+            .withName("test")
+            .withImmediateFlush(false)
+            .withIgnoreExceptions(false)
+            .withBufferedIo(false)
+            .withBufferSize(1)
+            .withLayout(layout)
+            .withLazyCreate(lazyCreate)
+            .build();
+        // @formatter:on
         try {
             appender.start();
             final File file = new File(FILE_NAME);
@@ -204,12 +228,21 @@ public class FileAppenderTest {
         verifyFile(logEventCount * processCount);
     }
 
-    private static void writer(final boolean lock, final int logEventCount, final String name, boolean lazyCreate,
+    private static void writer(final boolean locking, final int logEventCount, final String name, boolean lazyCreate,
             boolean concurrent) throws Exception {
-        final Layout<String> layout = PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-                .build();
-        final FileAppender appender = FileAppender.createAppender(FILE_NAME, true, lock, "test", false, false, false,
-                FileAppender.DEFAULT_BUFFER_SIZE, layout, null, false, null, lazyCreate, null);
+        final Layout<String> layout = createPatternLayout();
+        // @formatter:off
+        final FileAppender appender = FileAppender.newBuilder()
+            .withFileName(FILE_NAME)
+            .withName("test")
+            .withImmediateFlush(false)
+            .withIgnoreExceptions(false)
+            .withLocking(locking)
+            .withBufferedIo(false)
+            .withLayout(layout)
+            .withLazyCreate(lazyCreate)
+            .build();
+        // @formatter:on
         Assert.assertEquals(lazyCreate, appender.getManager().isLazyCreate());
         try {
             appender.start();
