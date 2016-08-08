@@ -181,10 +181,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         private String name;
 
         @PluginBuilderAttribute
-        private boolean follow = false;
+        private boolean follow;
 
         @PluginBuilderAttribute
-        private boolean direct = false;
+        private boolean direct;
 
         @PluginBuilderAttribute
         private boolean ignoreExceptions = true;
