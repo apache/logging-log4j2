@@ -57,11 +57,11 @@
       <action issue="LOG4J2-351" dev="rpopma, ggregory" type="fix" due-to="Roland Weiglhofer">
         [OSGi] wrong Fragment-Host in manifest files.
       </action>
-      <action issue="LOG4J2-1471" dev="ggregory" type="add" due-to="Gary Gregory">
-        [PatternLayout] Add an ANSI option to %xThrowable.
-      </action>
       <action issue="LOG4J2-1313" dev="rpopma" type="fix" due-to="Philipp Knobel">
         Properties declared in configuration can now have their value either in the element body or in an attribute named "value".
+      </action>
+      <action issue="LOG4J2-1471" dev="ggregory" type="add" due-to="Gary Gregory">
+        [PatternLayout] Add an ANSI option to %xThrowable.
       </action>
       <action issue="LOG4J2-1472" dev="ggregory" type="add" due-to="Gary Gregory">
         Make org.apache.logging.log4j.core.LoggerContext implement Closeable.
