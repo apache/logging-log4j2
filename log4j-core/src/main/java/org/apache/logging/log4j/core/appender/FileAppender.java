@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
@@ -45,6 +46,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<FileAppender> {
 
         @PluginBuilderAttribute
+        @Required
         private String fileName;
 
         @PluginBuilderAttribute
@@ -54,6 +56,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         private boolean locking;
 
         @PluginBuilderAttribute
+        @Required
         private String name;
 
         @PluginBuilderAttribute
@@ -94,14 +97,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             }
             if (!bufferedIo && bufferSize > 0) {
                 LOGGER.warn("The bufferSize is set to {} but bufferedIo is not true: {}", bufferSize, bufferedIo);
-            }
-            if (name == null) {
-                LOGGER.error("No name provided for FileAppender");
-                return null;
-            }
-            if (fileName == null) {
-                LOGGER.error("No filename provided for FileAppender with name {}", name);
-                return null;
             }
             if (layout == null) {
                 layout = PatternLayout.createDefaultLayout();
