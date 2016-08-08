@@ -28,6 +28,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
+import org.apache.logging.log4j.junit.CleanFiles;
+import org.apache.logging.log4j.junit.CleanFolders;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -42,8 +45,8 @@ public class OnStartupTriggeringPolicyTest {
     private static final String TEST_DATA = "Hello world!";
     private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yyyy");
 
-    //@Rule
-    //public CleanFiles rule = new CleanFolders("target/rollOnStartup");
+    // @Rule
+    // public CleanFolders rule = new CleanFolders("target/rollOnStartup");
 
     @Test
     public void testPolicy() throws Exception {
@@ -67,7 +70,7 @@ public class OnStartupTriggeringPolicyTest {
                 configuration);
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
         final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
-                policy, strategy, null, layout, 8192, true);
+                policy, strategy, null, layout, 8192, true, false);
         try {
             manager.initialize();
             assertTrue(Files.exists(target));
