@@ -88,7 +88,7 @@ public class FileAppenderTest {
     }
 
     @Test
-    public void testLazyStart() throws Exception {
+    public void testLazyCreate() throws Exception {
         final Layout<String> layout = PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         final FileAppender appender = FileAppender.createAppender(FILE_NAME, true, false, "test", false, false, false,
