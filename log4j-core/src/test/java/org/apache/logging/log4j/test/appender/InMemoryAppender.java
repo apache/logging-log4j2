@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.test.appender;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.core.Layout;
@@ -48,7 +49,11 @@ public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppen
 
         @Override
         public String toString() {
-            return getOutputStream().toString();
+            try {
+                return getOutputStream().toString();
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 }

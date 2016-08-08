@@ -60,6 +60,9 @@
       <action issue="LOG4J2-1313" dev="rpopma" type="fix" due-to="Philipp Knobel">
         Properties declared in configuration can now have their value either in the element body or in an attribute named "value".
       </action>
+      <action issue="LOG4J2-1501" dev="ggregory" type="add" due-to="Gary Gregory">
+        [LOG4J2-1501] FileAppender should be able to create files lazily.        
+      </action>
       <action issue="LOG4J2-1471" dev="ggregory" type="add" due-to="Gary Gregory">
         [PatternLayout] Add an ANSI option to %xThrowable.
       </action>
