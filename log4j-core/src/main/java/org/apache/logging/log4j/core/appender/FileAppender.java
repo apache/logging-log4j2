@@ -101,19 +101,19 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
     @Deprecated
     public static FileAppender createAppender(
             // @formatter:off
-            @PluginAttribute("fileName") final String fileName,
-            @PluginAttribute("append") final String append,
-            @PluginAttribute("locking") final String locking,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("immediateFlush") final String immediateFlush,
-            @PluginAttribute("ignoreExceptions") final String ignore,
-            @PluginAttribute("bufferedIo") final String bufferedIo,
-            @PluginAttribute("bufferSize") final String bufferSizeStr,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("advertise") final String advertise,
-            @PluginAttribute("advertiseUri") final String advertiseUri,
-            @PluginConfiguration final Configuration config) {
+            final String fileName,
+            final String append,
+            final String locking,
+            final String name,
+            final String immediateFlush,
+            final String ignore,
+            final String bufferedIo,
+            final String bufferSizeStr,
+            Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String advertise,
+            final String advertiseUri,
+            final Configuration config) {
         // @formatter:on
         final boolean isAppend = Booleans.parseBoolean(append, true);
         final boolean isLocking = Boolean.parseBoolean(locking);
