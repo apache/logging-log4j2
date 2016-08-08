@@ -93,8 +93,8 @@ public class OutputStreamAppenderTest {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
         final Layout<?> layout = PatternLayout.createDefaultLayout();
-        final Appender appender = FileAppender.createAppender("target/" + getClass().getName() + ".log", "false",
-                "false", "File", "true", "false", "false", "4000", layout, null, "false", null, config);
+        final Appender appender = FileAppender.createAppender("target/" + getClass().getName() + ".log", false,
+                false, "File", true, false, false, 4000, layout, null, false, null, false, config);
         appender.start();
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);
