@@ -94,7 +94,7 @@ public class FileManager extends OutputStreamManager {
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
-            final boolean bufferedIo, boolean lazyCreate, final String advertiseUri,
+            final boolean bufferedIo, final boolean lazyCreate, final String advertiseUri,
             final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush) {
 
         if (locking && bufferedIo) {
