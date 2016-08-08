@@ -76,7 +76,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     }
 
     /**
-     * Write the log entry rolling over the file when required.
+     * Writes the log entry rolling over the file when required.
 
      * @param event The LogEvent.
      */
@@ -112,7 +112,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     }
 
     /**
-     * Create a RollingFileAppender.
+     * Creates a RollingFileAppender.
      * @param fileName The name of the file that is actively written to. (required).
      * @param filePattern The pattern of the file name to use on rollover. (required).
      * @param append If true, events are appended to the file. If false, the file
