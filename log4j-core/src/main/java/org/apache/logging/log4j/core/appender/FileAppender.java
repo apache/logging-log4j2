@@ -250,7 +250,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
      * @param name The name of the Appender.
      * @param immediateFlush "true" if the contents should be flushed on every write, "false" otherwise. The default
      * is "true".
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
      * @param bufferedIo "true" if I/O should be buffered, "false" otherwise. The default is "true".
      * @param bufferSizeStr buffer size for buffered IO (default is 8192).
@@ -271,7 +271,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             final String locking,
             final String name,
             final String immediateFlush,
-            final String ignore,
+            final String ignoreExceptions,
             final String bufferedIo,
             final String bufferSizeStr,
             final Layout<? extends Serializable> layout,
@@ -288,7 +288,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             .withConfig(config)
             .withFileName(fileName)
             .withFilter(filter)
-            .withIgnoreExceptions(Booleans.parseBoolean(ignore, true))
+            .withIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
             .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
             .withLayout(layout)
             .withLocking(Boolean.parseBoolean(locking))
