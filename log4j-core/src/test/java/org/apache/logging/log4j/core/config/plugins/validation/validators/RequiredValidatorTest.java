@@ -38,6 +38,7 @@ public class RequiredValidatorTest {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<ValidatingPlugin>) manager.getPluginType("Validator");
+        assertNotNull("Rebuild this module to make sure annotaion processing kicks in.", plugin);
         node = new Node(null, "Validator", plugin);
     }
 
