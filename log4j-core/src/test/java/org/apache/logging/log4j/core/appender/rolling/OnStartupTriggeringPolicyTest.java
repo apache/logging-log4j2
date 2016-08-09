@@ -16,29 +16,35 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
+ * Tests {@link OnStartupTriggeringPolicy}.
  */
+//@Ignore
 public class OnStartupTriggeringPolicyTest {
 
-    private static final String TARGET_FILE = "target/rollOnStartup/testfile";
-    private static final String TARGET_PATTERN = "target/rollOnStartup/test1-%d{MM-dd-yyyy}-%i.log";
-    private static final String ROLLED_FILE_PREFIX = "target/rollOnStartup/test1-";
+    private static final String TARGET_FOLDER = "target/rollOnStartup";
+    private static final String TARGET_FILE = TARGET_FOLDER + "/testfile";
+    private static final String TARGET_PATTERN = TARGET_FOLDER + "/test1-%d{MM-dd-yyyy}-%i.log";
+    private static final String ROLLED_FILE_PREFIX = TARGET_FOLDER + "/test1-";
     private static final String ROLLED_FILE_SUFFIX = "-1.log";
     private static final String TEST_DATA = "Hello world!";
     private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yyyy");
@@ -55,13 +61,15 @@ public class OnStartupTriggeringPolicyTest {
         final String expectedDate = formatter.format(timeStamp);
         final String rolledFileName = ROLLED_FILE_PREFIX + expectedDate + ROLLED_FILE_SUFFIX;
         final Path rolled = Paths.get(rolledFileName);
+        final long copied;
         try (final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"))) {
-            Files.copy(is, target);
+            copied = Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
         }
         final long size = Files.size(target);
         assertTrue(size > 0);
+        assertEquals(copied, size);
 
-        target.toFile().setLastModified(timeStamp);
+        Assert.assertTrue(target.toFile().setLastModified(timeStamp));
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg").withConfiguration(configuration)
                 .build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
@@ -71,10 +79,11 @@ public class OnStartupTriggeringPolicyTest {
                 policy, strategy, null, layout, 8192, true);
         try {
             manager.initialize();
-            assertTrue(Files.exists(target));
-            assertTrue(Files.size(target) == 0);
-            assertTrue(Files.exists(rolled));
-            assertTrue(Files.size(rolled) == size);
+            String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());
+            assertTrue(target.toString() + ", files = " + files, Files.exists(target));
+            assertEquals(target.toString(), 0, Files.size(target));
+            assertTrue(rolled.toString() + ", files = " + files, Files.exists(rolled));
+            assertEquals(rolled.toString(), size, Files.size(rolled));
         } finally {
             manager.release();
         }
