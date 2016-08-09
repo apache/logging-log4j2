@@ -34,7 +34,7 @@ public final class AppendersPlugin {
     }
 
     /**
-     * Create a Map of the Appenders.
+     * Creates a Map of the Appenders.
      * @param appenders An array of Appenders.
      * @return The Appender Map.
      */
