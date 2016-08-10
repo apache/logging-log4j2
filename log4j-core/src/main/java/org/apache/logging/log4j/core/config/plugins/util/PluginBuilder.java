@@ -147,7 +147,7 @@ public class PluginBuilder implements Builder<Object> {
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PluginBuilderFactory.class) &&
                 Modifier.isStatic(method.getModifiers()) &&
-                TypeUtil.isAssignable(Builder.class, method.getGenericReturnType())) {
+                TypeUtil.isAssignable(Builder.class, method.getReturnType())) {
                 ReflectionUtil.makeAccessible(method);
                 return (Builder<?>) method.invoke(null);
             }
