@@ -75,6 +75,12 @@
       <action issue="LOG4J2-1505" dev="ggregory" type="add" due-to="Gary Gregory">
         Create a Builder for FileAppender.
       </action>
+      <action issue="LOG4J2-1507" dev="ggregory" type="add" due-to="Gary Gregory">
+        Allow Builders to be completely generic.
+      </action>
+      <action issue="LOG4J2-1508" dev="ggregory" type="add" due-to="Gary Gregory">
+        Allow a Builder to sublcass another Builder.
+      </action>
       <action issue="LOG4J2-1458" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Jackson from 2.7.5 to 2.8.0.
       </action>

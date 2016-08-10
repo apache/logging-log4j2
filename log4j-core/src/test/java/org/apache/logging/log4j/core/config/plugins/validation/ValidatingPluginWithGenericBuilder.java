@@ -63,7 +63,7 @@ public class ValidatingPluginWithGenericBuilder {
         }
 
         @SuppressWarnings("unchecked")
-        private B asBuilder() {
+        public B asBuilder() {
             return (B) this;
         }
 
