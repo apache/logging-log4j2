@@ -180,7 +180,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private static final int DEFAULT_WINDOW_SIZE = 7;
 
     /**
-     * Create the DefaultRolloverStrategy.
+     * Creates the DefaultRolloverStrategy.
      *
      * @param max The maximum number of files to keep.
      * @param min The minimum number of files to keep.
@@ -307,7 +307,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     }
 
     /**
-     * Purge and rename old log files in preparation for rollover. The oldest file will have the smallest index, the
+     * Purges and renames old log files in preparation for rollover. The oldest file will have the smallest index, the
      * newest the highest.
      *
      * @param lowIndex low index
@@ -414,7 +414,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     }
 
     /**
-     * Purge and rename old log files in preparation for rollover. The newest file will have the smallest index, the
+     * Purges and renames old log files in preparation for rollover. The newest file will have the smallest index, the
      * oldest will have the highest.
      *
      * @param lowIndex low index
@@ -509,7 +509,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     }
 
     /**
-     * Perform the rollover.
+     * Performs the rollover.
      *
      * @param manager The RollingFileManager name for current active log file.
      * @return A RolloverDescription.
