@@ -27,9 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
@@ -42,8 +40,12 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     /**
      * Builds FileAppender instances.
+     * 
+     * @param <B>
+     *            This builder class
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<FileAppender> {
+    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<FileAppender> {
 
         @PluginBuilderAttribute
         @Required
@@ -56,26 +58,10 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         private boolean locking;
 
         @PluginBuilderAttribute
-        @Required
-        private String name;
-
-        @PluginBuilderAttribute
-        private boolean immediateFlush = true;
-
-        @PluginBuilderAttribute
-        private boolean ignoreExceptions = true;
-
-        @PluginBuilderAttribute
         private boolean bufferedIo = true;
 
         @PluginBuilderAttribute
         private int bufferSize = DEFAULT_BUFFER_SIZE;
-
-        @PluginElement("Layout")
-        private Layout<? extends Serializable> layout;
-
-        @PluginElement("Filter")
-        private Filter filter;
 
         @PluginBuilderAttribute
         private boolean advertise;
@@ -98,18 +84,16 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             if (!bufferedIo && bufferSize > 0) {
                 LOGGER.warn("The bufferSize is set to {} but bufferedIo is not true: {}", bufferSize, bufferedIo);
             }
-            if (layout == null) {
-                layout = PatternLayout.createDefaultLayout();
-            }
+            Layout<? extends Serializable> layout = getOrCreateLayout();
 
             final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, lazyCreate,
-                    advertiseUri, layout, bufferSize, immediateFlush);
+                    advertiseUri, layout, bufferSize, isImmediateFlush());
             if (manager == null) {
                 return null;
             }
 
-            return new FileAppender(name, layout, filter, manager, fileName, ignoreExceptions,
-                    !bufferedIo || immediateFlush, advertise ? config.getAdvertiser() : null);
+            return new FileAppender(getName(), layout, getFilter(), manager, fileName, isIgnoreExceptions(),
+                    !bufferedIo || isImmediateFlush(), advertise ? config.getAdvertiser() : null);
         }
 
         public String getAdvertiseUri() {
@@ -128,18 +112,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return fileName;
         }
 
-        public Filter getFilter() {
-            return filter;
-        }
-
-        public Layout<? extends Serializable> getLayout() {
-            return layout;
-        }
-
-        public String getName() {
-            return name;
-        }
-
         public boolean isAdvertise() {
             return advertise;
         }
@@ -152,14 +124,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return bufferedIo;
         }
 
-        public boolean isIgnoreExceptions() {
-            return ignoreExceptions;
-        }
-
-        public boolean isImmediateFlush() {
-            return immediateFlush;
-        }
-
         public boolean isLazyCreate() {
             return lazyCreate;
         }
@@ -168,75 +132,51 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return locking;
         }
 
-        public Builder withAdvertise(final boolean advertise) {
+        public B withAdvertise(final boolean advertise) {
             this.advertise = advertise;
-            return this;
+            return asBuilder();
         }
 
-        public Builder withAdvertiseUri(final String advertiseUri) {
+        public B withAdvertiseUri(final String advertiseUri) {
             this.advertiseUri = advertiseUri;
-            return this;
+            return asBuilder();
         }
 
-        public Builder withAppend(final boolean append) {
+        public B withAppend(final boolean append) {
             this.append = append;
-            return this;
+            return asBuilder();
         }
 
-        public Builder withBufferedIo(final boolean bufferedIo) {
+        public B withBufferedIo(final boolean bufferedIo) {
             this.bufferedIo = bufferedIo;
-            return this;
+            return asBuilder();
         }
 
-        public Builder withBufferSize(final int bufferSize) {
+        public B withBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
-            return this;
+            return asBuilder();
         }
 
-        public Builder withConfig(final Configuration config) {
+        public B withConfig(final Configuration config) {
             this.config = config;
-            return this;
+            return asBuilder();
         }
 
-        public Builder withFileName(final String fileName) {
+        public B withFileName(final String fileName) {
             this.fileName = fileName;
-            return this;
+            return asBuilder();
         }
 
-        public Builder withFilter(final Filter filter) {
-            this.filter = filter;
-            return this;
-        }
-
-        public Builder withIgnoreExceptions(final boolean ignoreExceptions) {
-            this.ignoreExceptions = ignoreExceptions;
-            return this;
-        }
-
-        public Builder withImmediateFlush(final boolean immediateFlush) {
-            this.immediateFlush = immediateFlush;
-            return this;
-        }
-
-        public Builder withLayout(final Layout<? extends Serializable> layout) {
-            this.layout = layout;
-            return this;
-        }
-
-        public Builder withLazyCreate(final boolean lazyCreate) {
+        public B withLazyCreate(final boolean lazyCreate) {
             this.lazyCreate = lazyCreate;
-            return this;
+            return asBuilder();
         }
 
-        public Builder withLocking(final boolean locking) {
+        public B withLocking(final boolean locking) {
             this.locking = locking;
-            return this;
+            return asBuilder();
         }
 
-        public Builder withName(final String name) {
-            this.name = name;
-            return this;
-        }
     }
     
     private static final int DEFAULT_BUFFER_SIZE = 8192;
@@ -298,8 +238,8 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
     }
     
     @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
     
     private final String fileName;
