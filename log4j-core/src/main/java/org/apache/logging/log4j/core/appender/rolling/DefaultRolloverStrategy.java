@@ -169,7 +169,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         File target(final String fileName) {
             return new File(fileName);
         }
-    };
+    }
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
