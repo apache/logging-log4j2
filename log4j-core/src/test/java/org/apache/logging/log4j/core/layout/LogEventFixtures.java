@@ -81,7 +81,7 @@ class LogEventFixtures {
     }
 
     static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource, 
-            final boolean includeContext) {
+            final boolean includeContext, final boolean includeStacktrace) {
         assertEquals(expected.getClass(), actual.getClass());
         assertEquals(includeContext ? expected.getContextMap() : Collections.EMPTY_MAP, actual.getContextMap());
         assertEquals(expected.getContextStack(), actual.getContextStack());
@@ -95,7 +95,9 @@ class LogEventFixtures {
         assertEquals(expected.getThreadName(), actual.getThreadName());
         assertNotNull("original should have an exception", expected.getThrown());
         assertNull("exception should not be serialized", actual.getThrown());
-        assertEquals(expected.getThrownProxy(), actual.getThrownProxy());
+        if (includeStacktrace) { // TODO should compare the rest of the ThrowableProxy
+            assertEquals(expected.getThrownProxy(), actual.getThrownProxy());
+        }
         assertEquals(expected.isEndOfBatch(), actual.isEndOfBatch());
         assertEquals(expected.isIncludeLocation(), actual.isIncludeLocation());
 

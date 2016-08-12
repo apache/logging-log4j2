@@ -810,8 +810,9 @@ public final class JsonLayout extends AbstractJacksonLayout {
     protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean encodeThreadContextAsList,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
-            final String footerPattern, final Charset charset) {
-        super(config, new JacksonFactory.JSON(encodeThreadContextAsList).newWriter(locationInfo, properties, compact),
+            final String footerPattern, final Charset charset, final boolean includeStacktrace) {
+        super(config, new JacksonFactory.JSON(encodeThreadContextAsList, includeStacktrace).newWriter(
+                    locationInfo, properties, compact),
                 charset, compact, complete, eventEol,
                 PatternLayout.createSerializer(config, null, headerPattern, DEFAULT_HEADER, null, false, false),
                 PatternLayout.createSerializer(config, null, footerPattern, DEFAULT_FOOTER, null, false, false));
@@ -897,6 +898,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
      *            The header pattern, defaults to {@code "]"} if null.
      * @param charset
      *            The character set to use, if {@code null}, uses "UTF-8".
+     * @param includeStacktrace
+     *            If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
      * @return A JSON Layout.
      */
     @PluginFactory
@@ -911,12 +914,13 @@ public final class JsonLayout extends AbstractJacksonLayout {
             @PluginAttribute(value = "eventEol", defaultBoolean = false) final boolean eventEol,
             @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
             @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset
+            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
+            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace
             // @formatter:on
     ) {
         final boolean encodeThreadContextAsList = properties && propertiesAsList;
         return new JsonLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
-                headerPattern, footerPattern, charset);
+                headerPattern, footerPattern, charset, includeStacktrace);
     }
 
     /**
@@ -926,7 +930,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      */
     public static JsonLayout createDefaultLayout() {
         return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, false,
-                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8);
+                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, true);
     }
 
     @Override

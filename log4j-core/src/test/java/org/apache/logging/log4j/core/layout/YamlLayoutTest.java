@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -103,19 +104,24 @@ public class YamlLayoutTest {
         assertTrue(str, str.contains(name + propSep));
     }
 
+    private void checkPropertyNameAbsent(final String name, final boolean compact, final String str, final boolean isValue) {
+        final String propSep = this.toPropertySeparator(compact, isValue);
+        assertFalse(str, str.contains(name + propSep));
+    }
+
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol,
-            final boolean includeContext, final boolean contextMapAslist) throws Exception {
+            final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace) throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = YamlLayout.createLayout(null, includeSource, includeContext, null, null,
-                StandardCharsets.UTF_8);
+                StandardCharsets.UTF_8, includeStacktrace);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         // Just check for \n since \r might or might not be there.
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist).readValue(str, Log4jLogEvent.class);
-        LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext);
+        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace).readValue(str, Log4jLogEvent.class);
+        LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext, includeStacktrace);
         if (includeContext) {
             this.checkMapEntry("MDC.A", "A_Value", compact, str);
             this.checkMapEntry("MDC.B", "B_Value", compact, str);
@@ -133,25 +139,33 @@ public class YamlLayoutTest {
         this.checkPropertyName("message", compact, str, true);
         this.checkPropertyName("thrown", compact, str, false);
         this.checkPropertyName("cause", compact, str, false);
-        this.checkPropertyName("class", compact, str, true);
-        this.checkPropertyName("method", compact, str, true);
-        this.checkPropertyName("file", compact, str, true);
-        this.checkPropertyName("line", compact, str, true);
-        this.checkPropertyName("exact", compact, str, true);
-        this.checkPropertyName("location", compact, str, true);
-        this.checkPropertyName("version", compact, str, true);
         this.checkPropertyName("commonElementCount", compact, str, true);
         this.checkPropertyName("localizedMessage", compact, str, true);
-        this.checkPropertyName("extendedStackTrace", compact, str, false);
+        if (includeStacktrace) {
+            this.checkPropertyName("extendedStackTrace", compact, str, false);
+            this.checkPropertyName("class", compact, str, true);
+            this.checkPropertyName("method", compact, str, true);
+            this.checkPropertyName("file", compact, str, true);
+            this.checkPropertyName("line", compact, str, true);
+            this.checkPropertyName("exact", compact, str, true);
+            this.checkPropertyName("location", compact, str, true);
+            this.checkPropertyName("version", compact, str, true);
+        } else {
+            this.checkPropertyNameAbsent("extendedStackTrace", compact, str, false);
+        }
         this.checkPropertyName("suppressed", compact, str, false);
         this.checkPropertyName("loggerFqcn", compact, str, true);
         this.checkPropertyName("endOfBatch", compact, str, true);
         if (includeContext) {
             this.checkPropertyName("contextMap", compact, str, false);
+        } else {
+            this.checkPropertyNameAbsent("contextMap", compact, str, false);
         }
         this.checkPropertyName("contextStack", compact, str, false);
         if (includeSource) {
             this.checkPropertyName("source", compact, str, false);
+        } else {
+            this.checkPropertyNameAbsent("source", compact, str, false);
         }
         // check some attrs
         this.checkProperty("loggerFqcn", "f.q.c.n", compact, str, true);
@@ -178,7 +192,7 @@ public class YamlLayoutTest {
         }
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, null, null, null);
+        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, null, null, null, true);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -214,7 +228,7 @@ public class YamlLayoutTest {
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
         // Use [[ and ]] to test header and footer (instead of [ and ])
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, "[[", "]]", null);
+        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, "[[", "]]", null, true);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -253,7 +267,7 @@ public class YamlLayoutTest {
     @Test
     public void testLayoutLoggerName() throws Exception {
         final AbstractJacksonLayout layout = YamlLayout.createLayout(null, false, false, null, null,
-                StandardCharsets.UTF_8);
+                StandardCharsets.UTF_8, true);
         final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //
@@ -263,19 +277,24 @@ public class YamlLayoutTest {
                 .setTimeMillis(1).build();
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("loggerName: \"a.B\""));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper(false).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jYamlObjectMapper(false, true).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
     }
 
     @Test
     public void testLocationOffCompactOffMdcOff() throws Exception {
-        this.testAllFeatures(false, false, false, false, false);
+        this.testAllFeatures(false, false, false, false, false, true);
     }
 
     @Test
     public void testLocationOnCompactOffEventEolOffMdcOn() throws Exception {
-        this.testAllFeatures(true, false, false, true, false);
+        this.testAllFeatures(true, false, false, true, false, true);
+    }
+
+    @Test
+    public void testExcludeStacktrace() throws Exception {
+        this.testAllFeatures(false, false, false, false, false, false);
     }
 
     private String toPropertySeparator(final boolean compact, final boolean value) {

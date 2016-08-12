@@ -386,6 +386,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
                 is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
+            </tr>
             <caption align="top">JSON Layout Parameters</caption>
           </table>
         </subsection>
@@ -1971,6 +1976,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
                 is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
+            </tr>
             <caption align="top">XML Layout Parameters</caption>
           </table>
         </subsection>
@@ -2139,6 +2149,11 @@ source:
               <p>Generating <a href="#LocationInformation">location information</a>
                 is an expensive operation and may impact performance. Use with caution.</p>
               </td>
+            </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
             <caption align="top">YAML Layout Parameters</caption>
           </table>
