@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.FileAppender.Builder;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -87,7 +88,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
-     * @deprecated Use {@link #createAppender(Layout, Filter, Target, String, boolean, boolean, boolean)}.
+     * @deprecated Use {@link #newBuilder()}.
      */
     @Deprecated
     public static ConsoleAppender createAppender(Layout<? extends Serializable> layout,
@@ -122,17 +123,18 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
+     * @deprecated Use {@link #newBuilder()}.
      */
-    @PluginFactory
+    @Deprecated
     public static ConsoleAppender createAppender(
             // @formatter:off
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute(value = "target") Target target,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "follow", defaultBoolean = false) final boolean follow,
-            @PluginAttribute(value = "direct", defaultBoolean = false) final boolean direct,
-            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions) {
+            Layout<? extends Serializable> layout,
+            final Filter filter,
+            Target target,
+            final String name,
+            final boolean follow,
+            final boolean direct,
+            final boolean ignoreExceptions) {
             // @formatter:on
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
@@ -156,72 +158,40 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     /**
      * Builds ConsoleAppender instances.
+     * @param <B> This builder class
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ConsoleAppender> {
-
-        @PluginElement("Layout")
-        @Required
-        private Layout<? extends Serializable> layout = PatternLayout.createDefaultLayout();
-
-        @PluginElement("Filter")
-        private Filter filter;
+    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<ConsoleAppender> {
 
         @PluginBuilderAttribute
         @Required
         private Target target = DEFAULT_TARGET;
 
         @PluginBuilderAttribute
-        @Required
-        private String name;
+        private boolean follow;
 
         @PluginBuilderAttribute
-        private boolean follow = false;
+        private boolean direct;
 
-        @PluginBuilderAttribute
-        private boolean direct = false;
-
-        @PluginBuilderAttribute
-        private boolean ignoreExceptions = true;
-
-        public Builder setLayout(final Layout<? extends Serializable> aLayout) {
-            this.layout = aLayout;
-            return this;
-        }
-
-        public Builder setFilter(final Filter aFilter) {
-            this.filter = aFilter;
-            return this;
-        }
-
-        public Builder setTarget(final Target aTarget) {
+        public B setTarget(final Target aTarget) {
             this.target = aTarget;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setName(final String aName) {
-            this.name = aName;
-            return this;
-        }
-
-        public Builder setFollow(final boolean shouldFollow) {
+        public B setFollow(final boolean shouldFollow) {
             this.follow = shouldFollow;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setDirect(final boolean shouldDirect) {
+        public B setDirect(final boolean shouldDirect) {
             this.direct = shouldDirect;
-            return this;
-        }
-
-        public Builder setIgnoreExceptions(final boolean shouldIgnoreExceptions) {
-            this.ignoreExceptions = shouldIgnoreExceptions;
-            return this;
+            return asBuilder();
         }
 
         @Override
@@ -229,7 +199,9 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             if (follow && direct) {
                 throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender");
             }
-            return new ConsoleAppender(name, layout, filter, getManager(target, follow, direct, layout), ignoreExceptions, target);
+            Layout<? extends Serializable> layout = getOrCreateLayout();
+            return new ConsoleAppender(getName(), layout, getFilter(), getManager(target, follow, direct, layout),
+                    isIgnoreExceptions(), target);
         }
     }
 

@@ -31,7 +31,7 @@ public final class Constants {
             "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet"));
 
     /**
-     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behavior.
+     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
      * <p>
      * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
      * "log4j2.enable.threadlocals" to "false".

@@ -56,6 +56,7 @@ public class RollingAppenderCronTest {
 
     @Test
     public void testAppender() throws Exception {
+        // TODO Is there a better way to test than putting the thread to sleep all over the place?
         final Logger logger = loggerContextRule.getLogger();
         File file = new File(FILE);
         assertTrue("Log file does not exist", file.exists());
@@ -73,7 +74,7 @@ public class RollingAppenderCronTest {
                 succeeded = true;
                 break;
             }
-            logger.debug("Adding additional event " + i);
+            logger.debug("Sleeping #" + i);
             Thread.sleep(100); // Allow time for rollover to complete
         }
         if (!succeeded) {

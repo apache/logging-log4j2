@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
@@ -37,6 +38,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
+        // Can't use new ctor because it throws an exception
         this(os, streamName, layout, writeHeader, ByteBuffer.wrap(new byte[Constants.ENCODER_BYTE_BUFFER_SIZE]));
     }
 
@@ -48,7 +50,9 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param writeHeader
      * @param byteBuffer
      * @since 2.6
+     * @deprecated
      */
+    @Deprecated
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader, final ByteBuffer byteBuffer) {
         super(streamName);
@@ -58,13 +62,37 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
             final byte[] header = layout.getHeader();
             if (header != null) {
                 try {
-                    this.os.write(header, 0, header.length);
+                    getOutputStream().write(header, 0, header.length);
                 } catch (final IOException e) {
                     logError("Unable to write header", e);
                 }
             }
         }
         this.byteBuffer = Objects.requireNonNull(byteBuffer, "byteBuffer");
+    }
+
+    /**
+     * @param byteBuffer
+     * @throws IOException 
+     * @since 2.7
+     */
+    protected OutputStreamManager(final String streamName, final boolean lazyCreate, final Layout<? extends Serializable> layout,
+            final boolean writeHeader, final ByteBuffer byteBuffer)
+            throws IOException {
+        super(streamName);
+        this.layout = layout;
+        this.byteBuffer = Objects.requireNonNull(byteBuffer, "byteBuffer");
+        this.os = lazyCreate ? null : createOutputStream();
+        if (writeHeader && layout != null) {
+            final byte[] header = layout.getHeader();
+            if (header != null) {
+                try {
+                    getOutputStream().write(header, 0, header.length);
+                } catch (final IOException e) {
+                    logError("Unable to write header for " + streamName, e);
+                }
+            }
+        }
     }
 
     /**
@@ -81,6 +109,11 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         return AbstractManager.getManager(name, factory, data);
     }
 
+    @SuppressWarnings("unused")
+    protected OutputStream createOutputStream() throws IOException {
+        throw new IllegalStateException(getClass().getCanonicalName() + " must implement createOutputStream()");
+    }
+    
     /**
      * Indicate whether the footer should be skipped or not.
      * @param skipFooter true if the footer should be skipped.
@@ -119,7 +152,10 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         return getCount() > 0;
     }
 
-    protected OutputStream getOutputStream() {
+    protected OutputStream getOutputStream() throws IOException {
+        if (os == null) {
+            os = createOutputStream();
+        }
         return os;
     }
 
@@ -208,10 +244,9 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      */
     protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
         try {
-            os.write(bytes, offset, length);
+            getOutputStream().write(bytes, offset, length);
         } catch (final IOException ex) {
-            final String msg = "Error writing to stream " + getName();
-            throw new AppenderLoggingException(msg, ex);
+            throw new AppenderLoggingException("Error writing to stream " + getName(), ex);
         }
     }
 
@@ -220,11 +255,13 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @since 2.6
      */
     protected synchronized void flushDestination() {
-        try {
-            os.flush();
-        } catch (final IOException ex) {
-            final String msg = "Error flushing stream " + getName();
-            throw new AppenderLoggingException(msg, ex);
+        final OutputStream stream = os; // access volatile field only once per method
+        if (stream != null) {
+            try {
+                stream.flush();
+            } catch (final IOException ex) {
+                throw new AppenderLoggingException("Error flushing stream " + getName(), ex);
+            }
         }
     }
 
@@ -255,7 +292,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     protected synchronized void close() {
         flush();
         final OutputStream stream = os; // access volatile field only once per method
-        if (stream == System.out || stream == System.err) {
+        if (stream == null || stream == System.out || stream == System.err) {
             return;
         }
         try {

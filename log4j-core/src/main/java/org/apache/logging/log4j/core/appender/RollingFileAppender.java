@@ -76,7 +76,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     }
 
     /**
-     * Write the log entry rolling over the file when required.
+     * Writes the log entry rolling over the file when required.
 
      * @param event The LogEvent.
      */
@@ -112,7 +112,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     }
 
     /**
-     * Create a RollingFileAppender.
+     * Creates a RollingFileAppender.
      * @param fileName The name of the file that is actively written to. (required).
      * @param filePattern The pattern of the file name to use on rollover. (required).
      * @param append If true, events are appended to the file. If false, the file
@@ -132,23 +132,25 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
      * @param config The Configuration.
      * @return A RollingFileAppender.
      */
-    @PluginFactory
+    @Deprecated
     public static RollingFileAppender createAppender(
-            @PluginAttribute("fileName") final String fileName,
-            @PluginAttribute("filePattern") final String filePattern,
-            @PluginAttribute("append") final String append,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("bufferedIO") final String bufferedIO,
-            @PluginAttribute("bufferSize") final String bufferSizeStr,
-            @PluginAttribute("immediateFlush") final String immediateFlush,
-            @PluginElement("Policy") final TriggeringPolicy policy,
-            @PluginElement("Strategy") RolloverStrategy strategy,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("ignoreExceptions") final String ignore,
-            @PluginAttribute("advertise") final String advertise,
-            @PluginAttribute("advertiseURI") final String advertiseURI,
-            @PluginConfiguration final Configuration config) {
+            // @formatter:off
+            final String fileName,
+            final String filePattern,
+            final String append,
+            final String name,
+            final String bufferedIO,
+            final String bufferSizeStr,
+            final String immediateFlush,
+            final TriggeringPolicy policy,
+            RolloverStrategy strategy,
+            Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String ignore,
+            final String advertise,
+            final String advertiseURI,
+            final Configuration config) {
+            // @formatter:on
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
@@ -198,5 +200,90 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
         return new RollingFileAppender(name, layout, filter, manager, fileName, filePattern,
                 ignoreExceptions, isFlush, isAdvertise ? config.getAdvertiser() : null);
+    }
+
+    /**
+     * Creates a RollingFileAppender.
+     * @param fileName The name of the file that is actively written to. (required).
+     * @param filePattern The pattern of the file name to use on rollover. (required).
+     * @param append If true, events are appended to the file. If false, the file
+     * is overwritten when opened. Defaults to "true"
+     * @param name The name of the Appender (required).
+     * @param bufferedIo When true, I/O will be buffered. Defaults to "true".
+     * @param bufferSize buffer size for buffered IO (default is 8192).
+     * @param immediateFlush When true, events are immediately flushed. Defaults to "true".
+     * @param policy The triggering policy. (required).
+     * @param strategy The rollover strategy. Defaults to DefaultRolloverStrategy.
+     * @param layout The layout to use (defaults to the default PatternLayout).
+     * @param filter The Filter or null.
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
+     * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
+     * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
+     * @param config The Configuration.
+     * @return A RollingFileAppender.
+     * @since 2.7
+     */
+    @PluginFactory
+    public static RollingFileAppender createAppender(
+            // @formatter:off
+            @PluginAttribute("fileName") final String fileName,
+            @PluginAttribute("filePattern") final String filePattern,
+            @PluginAttribute(value = "append", defaultBoolean = true) final boolean append,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute(value = "bufferedIO", defaultBoolean = true) final boolean bufferedIo,
+            @PluginAttribute(value = "bufferSize", defaultInt = DEFAULT_BUFFER_SIZE) final int bufferSize,
+            @PluginAttribute(value = "immediateFlush" , defaultBoolean = true) final boolean immediateFlush,
+            @PluginElement("Policy") final TriggeringPolicy policy,
+            @PluginElement("Strategy") RolloverStrategy strategy,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filter") final Filter filter,
+            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions,
+            @PluginAttribute("advertise") final boolean advertise,
+            @PluginAttribute("advertiseURI") final String advertiseURI,
+            @PluginConfiguration final Configuration config) {
+            // @formatter:on
+        if (!bufferedIo && bufferSize > 0) {
+            LOGGER.warn("The bufferSize is set to {} but bufferedIO is not true: {}", bufferSize, bufferedIo);
+        }
+        if (name == null) {
+            LOGGER.error("No name provided for FileAppender");
+            return null;
+        }
+
+        if (fileName == null) {
+            LOGGER.error("No filename was provided for FileAppender with name "  + name);
+            return null;
+        }
+
+        if (filePattern == null) {
+            LOGGER.error("No filename pattern provided for FileAppender with name "  + name);
+            return null;
+        }
+
+        if (policy == null) {
+            LOGGER.error("A TriggeringPolicy must be provided");
+            return null;
+        }
+
+        if (strategy == null) {
+            strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
+                    String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, config);
+        }
+
+        if (layout == null) {
+            layout = PatternLayout.createDefaultLayout();
+        }
+
+        final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, append,
+            bufferedIo, policy, strategy, advertiseURI, layout, bufferSize, immediateFlush);
+        if (manager == null) {
+            return null;
+        }
+
+        manager.initialize();
+
+        return new RollingFileAppender(name, layout, filter, manager, fileName, filePattern,
+                ignoreExceptions, immediateFlush, advertise ? config.getAdvertiser() : null);
     }
 }

@@ -23,6 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +149,7 @@ public class PluginBuilder implements Builder<Object> {
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PluginBuilderFactory.class) &&
                 Modifier.isStatic(method.getModifiers()) &&
-                TypeUtil.isAssignable(Builder.class, method.getGenericReturnType())) {
+                TypeUtil.isAssignable(Builder.class, method.getReturnType())) {
                 ReflectionUtil.makeAccessible(method);
                 return (Builder<?>) method.invoke(null);
             }
@@ -156,8 +158,8 @@ public class PluginBuilder implements Builder<Object> {
     }
 
     private void injectFields(final Builder<?> builder) throws IllegalAccessException {
-        final Field[] fields = builder.getClass().getDeclaredFields();
-        AccessibleObject.setAccessible(fields, true);
+        final List<Field> fields = TypeUtil.getAllDeclaredFields(builder.getClass());
+        AccessibleObject.setAccessible(fields.toArray(new Field[] {}), true);
         final StringBuilder log = new StringBuilder();
         boolean invalid = false;
         for (final Field field : fields) {

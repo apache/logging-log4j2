@@ -27,12 +27,12 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name = "Validator", category = "Test")
-public class ValidatingPlugin {
+@Plugin(name = "ValidatingPluginWithTypedBuilder", category = "Test")
+public class ValidatingPluginWithTypedBuilder {
 
     private final String name;
 
-    public ValidatingPlugin(final String name) {
+    public ValidatingPluginWithTypedBuilder(final String name) {
         this.name = Objects.requireNonNull(name, "name");
     }
 
@@ -41,30 +41,30 @@ public class ValidatingPlugin {
     }
 
     @PluginFactory
-    public static ValidatingPlugin newValidatingPlugin(
+    public static ValidatingPluginWithTypedBuilder newValidatingPlugin(
         @Required(message = "The name given by the factory is null") final String name) {
-        return new ValidatingPlugin(name);
+        return new ValidatingPluginWithTypedBuilder(name);
     }
 
     @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    public static Builder<Integer> newBuilder() {
+        return new Builder<>();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ValidatingPlugin> {
+    public static class Builder<T> implements org.apache.logging.log4j.core.util.Builder<ValidatingPluginWithTypedBuilder> {
 
         @PluginBuilderAttribute
         @Required(message = "The name given by the builder is null")
         private String name;
 
-        public Builder withName(final String name) {
+        public Builder<T> withName(final String name) {
             this.name = name;
             return this;
         }
 
         @Override
-        public ValidatingPlugin build() {
-            return new ValidatingPlugin(name);
+        public ValidatingPluginWithTypedBuilder build() {
+            return new ValidatingPluginWithTypedBuilder(name);
         }
     }
 }

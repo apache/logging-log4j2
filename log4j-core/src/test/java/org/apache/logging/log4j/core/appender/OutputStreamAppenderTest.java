@@ -92,9 +92,17 @@ public class OutputStreamAppenderTest {
     public void testUpdatePatternWithFileAppender() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
-        final Layout<?> layout = PatternLayout.createDefaultLayout();
-        final Appender appender = FileAppender.createAppender("target/" + getClass().getName() + ".log", "false",
-                "false", "File", "true", "false", "false", "4000", layout, null, "false", null, config);
+        // @formatter:off
+        final Appender appender = FileAppender.newBuilder()
+            .withFileName("target/" + getClass().getName() + ".log")
+            .withAppend(false)
+            .withName("File")
+            .withIgnoreExceptions(false)
+            .withBufferedIo(false)
+            .withBufferSize(4000)
+            .withConfig(config)
+            .build();
+        // @formatter:on
         appender.start();
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);

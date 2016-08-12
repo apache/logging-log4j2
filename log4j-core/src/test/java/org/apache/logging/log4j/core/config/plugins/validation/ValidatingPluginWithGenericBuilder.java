@@ -27,12 +27,12 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name = "Validator", category = "Test")
-public class ValidatingPlugin {
+@Plugin(name = "ValidatingPluginWithGenericBuilder", category = "Test")
+public class ValidatingPluginWithGenericBuilder {
 
     private final String name;
 
-    public ValidatingPlugin(final String name) {
+    public ValidatingPluginWithGenericBuilder(final String name) {
         this.name = Objects.requireNonNull(name, "name");
     }
 
@@ -41,30 +41,35 @@ public class ValidatingPlugin {
     }
 
     @PluginFactory
-    public static ValidatingPlugin newValidatingPlugin(
+    public static ValidatingPluginWithGenericBuilder newValidatingPlugin(
         @Required(message = "The name given by the factory is null") final String name) {
-        return new ValidatingPlugin(name);
+        return new ValidatingPluginWithGenericBuilder(name);
     }
 
     @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ValidatingPlugin> {
+    public static class Builder<B extends Builder<B>> implements org.apache.logging.log4j.core.util.Builder<ValidatingPluginWithGenericBuilder> {
 
         @PluginBuilderAttribute
         @Required(message = "The name given by the builder is null")
         private String name;
 
-        public Builder withName(final String name) {
+        public B withName(final String name) {
             this.name = name;
-            return this;
+            return asBuilder();
+        }
+
+        @SuppressWarnings("unchecked")
+        public B asBuilder() {
+            return (B) this;
         }
 
         @Override
-        public ValidatingPlugin build() {
-            return new ValidatingPlugin(name);
+        public ValidatingPluginWithGenericBuilder build() {
+            return new ValidatingPluginWithGenericBuilder(name);
         }
     }
 }

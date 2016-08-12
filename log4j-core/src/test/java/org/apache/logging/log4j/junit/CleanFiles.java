@@ -19,8 +19,7 @@ package org.apache.logging.log4j.junit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-
-import org.junit.Assert;
+import java.nio.file.Path;
 
 /**
  * A JUnit test rule to automatically delete files after a test is run.
@@ -28,40 +27,29 @@ import org.junit.Assert;
 public class CleanFiles extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;
 
-    public CleanFiles(final boolean before, final boolean after, final File... files) {
-        super(before, after, files);
+    public CleanFiles(final boolean before, final boolean after, final int maxTries, final File... files) {
+        super(before, after, maxTries, files);
     }
 
-    public CleanFiles(final boolean before, final boolean after, final String... fileNames) {
-        super(before, after, fileNames);
+    public CleanFiles(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
+        super(before, after, maxTries, fileNames);
     }
 
     public CleanFiles(final File... files) {
-        super(true, true, files);
+        super(true, true, MAX_TRIES, files);
+    }
+
+    public CleanFiles(final Path... paths) {
+        super(true, true, MAX_TRIES, paths);
     }
 
     public CleanFiles(final String... fileNames) {
-        super(true, true, fileNames);
+        super(true, true, MAX_TRIES, fileNames);
     }
 
     @Override
-    protected void clean() {
-        for (final File file : getFiles()) {
-            for (int i = 0; i < MAX_TRIES; i++) {
-                try {
-                    if (Files.deleteIfExists(file.toPath())) {
-                        // Break from MAX_TRIES and move on to the next file.
-                        break;
-                    }
-                } catch (final IOException e) {
-                    Assert.fail(file + ": " + e.toString());
-                }
-                try {
-                    Thread.sleep(200);
-                } catch (final InterruptedException ignored) {
-                }
-            }
-        }
+    protected boolean clean(Path path, int tryIndex) throws IOException {
+        return Files.deleteIfExists(path);
     }
 
 }

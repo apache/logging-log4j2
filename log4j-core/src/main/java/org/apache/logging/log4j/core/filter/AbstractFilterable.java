@@ -21,12 +21,39 @@ import java.util.Iterator;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 
 /**
  * Enhances a Class by allowing it to contain Filters.
  */
 public abstract class AbstractFilterable extends AbstractLifeCycle implements Filterable {
 
+    /**
+     * Subclasses can extend this abstract Builder. 
+     * 
+     * @param <B> This builder class.
+     */
+    public abstract static class Builder<B extends Builder<B>> {
+
+        @PluginElement("Filter")
+        private Filter filter;
+
+        public Filter getFilter() {
+            return filter;
+        }
+
+        @SuppressWarnings("unchecked")
+        public B asBuilder() {
+            return (B) this;
+        }
+
+        public B withFilter(Filter filter) {
+            this.filter = filter;
+            return asBuilder();
+        }
+
+    }
+    
     /**
      * May be null.
      */

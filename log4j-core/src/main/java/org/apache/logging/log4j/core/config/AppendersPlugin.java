@@ -34,7 +34,7 @@ public final class AppendersPlugin {
     }
 
     /**
-     * Create a Map of the Appenders.
+     * Creates a Map of the Appenders.
      * @param appenders An array of Appenders.
      * @return The Appender Map.
      */
@@ -42,7 +42,7 @@ public final class AppendersPlugin {
     public static ConcurrentMap<String, Appender> createAppenders(
                 @PluginElement("Appenders") final Appender[] appenders) {
 
-        final ConcurrentMap<String, Appender> map =  new ConcurrentHashMap<>();
+        final ConcurrentMap<String, Appender> map =  new ConcurrentHashMap<>(appenders.length);
 
         for (final Appender appender : appenders) {
             map.put(appender.getName(), appender);

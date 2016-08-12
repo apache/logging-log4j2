@@ -408,13 +408,13 @@ public final class PatternLayout extends AbstractStringLayout {
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
 
         @PluginElement("PatternSelector")
-        private PatternSelector patternSelector = null;
+        private PatternSelector patternSelector;
 
         @PluginConfiguration
-        private Configuration configuration = null;
+        private Configuration configuration;
 
         @PluginElement("Replace")
-        private RegexReplacement regexReplacement = null;
+        private RegexReplacement regexReplacement;
 
         // LOG4J2-783 use platform default by default
         @PluginBuilderAttribute
@@ -424,13 +424,13 @@ public final class PatternLayout extends AbstractStringLayout {
         private boolean alwaysWriteExceptions = true;
 
         @PluginBuilderAttribute
-        private boolean noConsoleNoAnsi = false;
+        private boolean noConsoleNoAnsi;
 
         @PluginBuilderAttribute
-        private String header = null;
+        private String header;
 
         @PluginBuilderAttribute
-        private String footer = null;
+        private String footer;
 
         private Builder() {
         }
