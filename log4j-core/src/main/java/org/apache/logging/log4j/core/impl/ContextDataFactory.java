@@ -27,6 +27,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * </p>
  *
  * @see ArrayContextData
+ * @see OpenHashMapContextData
  * @since 2.7
  */
 public class ContextDataFactory {
