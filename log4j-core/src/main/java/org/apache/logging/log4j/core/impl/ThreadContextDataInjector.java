@@ -63,11 +63,9 @@ public class ThreadContextDataInjector implements ContextDataInjector {
         }
     }
 
-    private void copyThreadContextMap(final ThreadContextMap contextMap,
-            final MutableContextData contextData) {
-
-        if (contextMap instanceof ContextData && contextData instanceof ArrayContextData) {
-            ((ArrayContextData) contextData).putAll((ContextData) contextMap);
+    private void copyThreadContextMap(final ThreadContextMap contextMap, final MutableContextData contextData) {
+        if (contextMap instanceof ContextData) {
+            contextData.putAll((ContextData) contextMap);
         } else {
             if (contextMap != null) {
                 copyThreadContextMap(contextMap.getImmutableMapOrNull(), contextData);
