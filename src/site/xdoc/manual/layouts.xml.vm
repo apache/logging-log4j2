@@ -230,7 +230,9 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>includeStacktrace</td>
               <td>boolean</td>
-              <td>Whether to include full stacktrace of logged Throwables (optional, default to true)</td>
+              <td>Whether to include full stacktrace of logged Throwables (optional, default to true).
+                  If set to false, only the class name and message of the #javadoc('java/lang', 'Throwable')
+                  will be included.</td>
             </tr>
             <caption align="top">GELF Layout Parameters</caption>
           </table>
