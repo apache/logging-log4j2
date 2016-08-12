@@ -24,7 +24,8 @@ import javax.persistence.Converter;
 import javax.persistence.PersistenceException;
 
 import org.apache.logging.log4j.core.ContextData;
-import org.apache.logging.log4j.core.impl.ArrayContextData;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.MutableContextData;
 import org.apache.logging.log4j.core.util.BiConsumer;
 import org.apache.logging.log4j.util.Strings;
 
@@ -73,7 +74,7 @@ public class ContextDataJsonAttributeConverter implements AttributeConverter<Con
             return null;
         }
         try {
-            final ArrayContextData result = new ArrayContextData();
+            final MutableContextData result = ContextDataFactory.getContextData();
             final ObjectNode root = (ObjectNode) OBJECT_MAPPER.readTree(s);
             final Iterator<Map.Entry<String, JsonNode>> entries = root.fields();
             while (entries.hasNext()) {

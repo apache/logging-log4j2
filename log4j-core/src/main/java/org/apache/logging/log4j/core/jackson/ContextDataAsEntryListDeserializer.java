@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.impl.ArrayContextData;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.MutableContextData;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -48,7 +48,7 @@ public class ContextDataAsEntryListDeserializer extends StdDeserializer<MutableC
         final List<MapEntry> list = jp.readValueAs(new TypeReference<List<MapEntry>>() {
             // empty
         });
-        final MutableContextData contextData = new ArrayContextData(list.size());
+        final MutableContextData contextData = new ContextDataFactory().getContextData();
         for (final MapEntry mapEntry : list) {
             contextData.putValue(mapEntry.getKey(), mapEntry.getValue());
         }

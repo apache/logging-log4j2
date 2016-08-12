@@ -20,7 +20,7 @@ package org.apache.logging.log4j.core.jackson;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.impl.ArrayContextData;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.MutableContextData;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -51,7 +51,7 @@ public class ContextDataDeserializer extends StdDeserializer<MutableContextData>
 //        if (tok != JsonToken.START_OBJECT) {
 //            throw new IOException("Expected data to start with an Object");
 //        }
-        final MutableContextData contextData = new ArrayContextData();
+        final MutableContextData contextData = ContextDataFactory.getContextData();
         // Iterate over object fields:
         while (jp.nextToken() != JsonToken.END_OBJECT) {
             String fieldName = jp.getCurrentName();
