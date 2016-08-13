@@ -122,6 +122,10 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
             }
             case "org.apache.log4j.TTCCLayout": {
                 // TODO We do not have a %d for the time since the start of the app?
+
+                // TODO We miss the NDC here, and the Log4j 2's PatternLayout's %NDC is not compatible with Log4j 1's
+                //      Log4j 1: "foo bar baz"
+                //      Log4j 2: "[foo, bar, baz]"
                 appenderBuilder.add(newPatternLayout(builder, "%relative [%threadName] %level %logger - %m%n"));
                 break;
             }
