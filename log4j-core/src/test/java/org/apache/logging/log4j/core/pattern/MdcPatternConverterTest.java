@@ -22,6 +22,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -31,13 +33,16 @@ import static org.junit.Assert.*;
  */
 public class MdcPatternConverterTest {
 
-    @Test
-    public void testConverter() {
-
-        final Message msg = new SimpleMessage("Hello");
+    @Before
+    public void setup() {
         ThreadContext.put("subject", "I");
         ThreadContext.put("verb", "love");
         ThreadContext.put("object", "Log4j");
+    }
+
+    @Test
+    public void testConverter() {
+        final Message msg = new SimpleMessage("Hello");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -53,12 +58,8 @@ public class MdcPatternConverterTest {
 
     @Test
     public void testConverterWithKey() {
-
         final Message msg = new SimpleMessage("Hello");
         final String [] options = new String[] {"object"};
-        ThreadContext.put("subject", "I");
-        ThreadContext.put("verb", "love");
-        ThreadContext.put("object", "Log4j");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -74,12 +75,8 @@ public class MdcPatternConverterTest {
 
     @Test
     public void testConverterWithKeys() {
-
         final Message msg = new SimpleMessage("Hello");
         final String [] options = new String[] {"object, subject"};
-        ThreadContext.put("subject", "I");
-        ThreadContext.put("verb", "love");
-        ThreadContext.put("object", "Log4j");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -91,6 +88,11 @@ public class MdcPatternConverterTest {
         final String str = sb.toString();
         final String expected = "{object=Log4j, subject=I}";
         assertEquals(expected, str);
+    }
+
+    @After
+    public void tearDown() {
+        ThreadContext.clearStack();
     }
 }
 
