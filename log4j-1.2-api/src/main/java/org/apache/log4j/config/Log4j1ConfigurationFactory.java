@@ -53,10 +53,11 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <li>Follow</li>
  * <li>Target</li>
  * <li>layout = org.apache.log4j.PatternLayout</li>
+ * <li>layout = org.apache.log4j.EnhancedPatternLayout (partial?)</li>
  * <li>layout = org.apache.log4j.SimpleLayout</li>
  * <li>layout = org.apache.log4j.TTCCLayout (partial)</li>
- * <li>layout = org.apache.log4j.HtmlLayout (partial)</li>
- * <li>layout = org.apache.log4j.XmlLayout (partial)</li>
+ * <li>layout = org.apache.log4j.HTMLLayout (partial)</li>
+ * <li>layout = org.apache.log4j.xml.XMLLayout (partial)</li>
  * <li>layout.ConversionPattern</li>
  * </ul>
  * </ul>
@@ -133,7 +134,7 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 appenderBuilder.add(builder.newLayout("HtmlLayout"));
                 break;
             }
-            case "org.apache.log4j.XMLLayout": {
+            case "org.apache.log4j.xml.XMLLayout": {
                 appenderBuilder.add(builder.newLayout("XmlLayout"));
                 break;
             }
