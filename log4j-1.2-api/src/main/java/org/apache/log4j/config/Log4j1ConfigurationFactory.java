@@ -55,7 +55,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <li>layout = org.apache.log4j.PatternLayout</li>
  * <li>layout = org.apache.log4j.EnhancedPatternLayout (partial?)</li>
  * <li>layout = org.apache.log4j.SimpleLayout</li>
- * <li>layout = org.apache.log4j.TTCCLayout (partial)</li>
+ * <li>layout = org.apache.log4j.TTCCLayout</li>
  * <li>layout = org.apache.log4j.HTMLLayout (partial)</li>
  * <li>layout = org.apache.log4j.xml.XMLLayout (partial)</li>
  * <li>layout.ConversionPattern</li>
@@ -110,6 +110,11 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
             final String cpValue = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
             switch (layoutValue) {
             case "org.apache.log4j.PatternLayout": {
+                // TODO We do not have a %d for the time since the start of the app?
+
+                // TODO Log4j 2's PatternLayout's %NDC is not compatible with Log4j 1's
+                //      Log4j 1: "foo bar baz"
+                //      Log4j 2: "[foo, bar, baz]"
                 appenderBuilder.add(newPatternLayout(builder, cpValue));
                 break;
             }
@@ -122,12 +127,7 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 break;
             }
             case "org.apache.log4j.TTCCLayout": {
-                // TODO We do not have a %d for the time since the start of the app?
-
-                // TODO We miss the NDC here, and the Log4j 2's PatternLayout's %NDC is not compatible with Log4j 1's
-                //      Log4j 1: "foo bar baz"
-                //      Log4j 2: "[foo, bar, baz]"
-                appenderBuilder.add(newPatternLayout(builder, "%relative [%threadName] %level %logger - %m%n"));
+                appenderBuilder.add(builder.newLayout("TTCCLayout"));
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {

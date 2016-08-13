@@ -18,6 +18,7 @@ package org.apache.log4j.config;
 
 import java.net.URL;
 
+import org.apache.log4j.layout.TTCCLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -76,8 +77,8 @@ public class Log4j1ConfigurationFactoryTest {
 
     @Test
     public void testConsoleTtccLayout() throws Exception {
-        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-TTCCLayout.properties");
-        Assert.assertEquals("%relative [%threadName] %level %logger - %m%n", layout.getConversionPattern());
+        final Layout<?> layout = testConsole("config-1.2/log4j-console-TTCCLayout.properties");
+        Assert.assertTrue(layout instanceof TTCCLayout);
     }
 
     @Test
