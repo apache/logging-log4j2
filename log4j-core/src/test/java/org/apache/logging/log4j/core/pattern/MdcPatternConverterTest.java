@@ -92,7 +92,7 @@ public class MdcPatternConverterTest {
 
     @After
     public void tearDown() {
-        ThreadContext.clearStack();
+        ThreadContext.clearMap();
     }
 }
 
