@@ -52,11 +52,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <ul>
  * <li>Follow</li>
  * <li>Target</li>
- * <li>layout = org.apache.log4j.PatternLayout</li>
+ * <li>layout = org.apache.log4j.PatternLayout (partial)</li>
+ * <li>layout = org.apache.log4j.EnhancedPatternLayout (partial)</li>
  * <li>layout = org.apache.log4j.SimpleLayout</li>
- * <li>layout = org.apache.log4j.TTCCLayout (partial)</li>
- * <li>layout = org.apache.log4j.HtmlLayout (partial)</li>
- * <li>layout = org.apache.log4j.XmlLayout (partial)</li>
+ * <li>layout = org.apache.log4j.TTCCLayout</li>
+ * <li>layout = org.apache.log4j.HTMLLayout</li>
+ * <li>layout = org.apache.log4j.xml.XMLLayout</li>
  * <li>layout.ConversionPattern</li>
  * </ul>
  * </ul>
@@ -109,10 +110,24 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
             final String cpValue = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
             switch (layoutValue) {
             case "org.apache.log4j.PatternLayout": {
+                // TODO Log4j 2's PatternLayout's %x (NDC) is not compatible with Log4j 1's %x
+                //      Log4j 1: "foo bar baz"
+                //      Log4j 2: "[foo, bar, baz]"
+                // TODO Log4j 2's PatternLayout's %X (MDC) is not compatible with Log4j 1's %X
+                //      Log4j 1: "{{foo,bar},{hoo,boo}}"
+                //      Log4j 2: "{foo=bar,hoo=boo}"
                 appenderBuilder.add(newPatternLayout(builder, cpValue));
                 break;
             }
             case "org.apache.log4j.EnhancedPatternLayout": {
+                // TODO missing %ndc as alias for %NDC
+                // TODO missing %properties as alias for %MDC
+                // TODO Log4j 2's PatternLayout's %x (NDC) is not compatible with Log4j 1's %x
+                //      Log4j 1: "foo bar baz"
+                //      Log4j 2: "[foo, bar, baz]"
+                // TODO Log4j 2's PatternLayout's %X (MDC) is not compatible with Log4j 1's %X
+                //      Log4j 1: "{{foo,bar},{hoo,boo}}"
+                //      Log4j 2: "{foo=bar,hoo=boo}"
                 appenderBuilder.add(newPatternLayout(builder, cpValue));
                 break;
             }
@@ -121,20 +136,19 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 break;
             }
             case "org.apache.log4j.TTCCLayout": {
-                // TODO We do not have a %d for the time since the start of the app?
-                appenderBuilder.add(newPatternLayout(builder, "%relative [%threadName] %level %logger - %m%n"));
+                appenderBuilder.add(builder.newLayout("TTCCLayout"));
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {
                 appenderBuilder.add(builder.newLayout("HtmlLayout"));
                 break;
             }
-            case "org.apache.log4j.XMLLayout": {
-                appenderBuilder.add(builder.newLayout("XmlLayout"));
+            case "org.apache.log4j.xml.XMLLayout": {
+                appenderBuilder.add(builder.newLayout("Log4j1XmlLayout"));
                 break;
             }
             default:
-                reportWarning("Unsupported value for console appender layout: " + layoutValue);
+                reportWarning("Unsupported layout: " + layoutValue);
             }
         }
     }

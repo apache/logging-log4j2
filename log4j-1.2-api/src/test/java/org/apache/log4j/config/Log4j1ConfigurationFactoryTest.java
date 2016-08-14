@@ -16,8 +16,8 @@
  */
 package org.apache.log4j.config;
 
-import java.net.URL;
-
+import org.apache.log4j.layout.Log4j1XmlLayout;
+import org.apache.log4j.layout.TTCCLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -26,9 +26,10 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.layout.XmlLayout;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.net.URL;
 
 public class Log4j1ConfigurationFactoryTest {
 
@@ -76,13 +77,13 @@ public class Log4j1ConfigurationFactoryTest {
 
     @Test
     public void testConsoleTtccLayout() throws Exception {
-        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-TTCCLayout.properties");
-        Assert.assertEquals("%relative [%threadName] %level %logger - %m%n", layout.getConversionPattern());
+        final Layout<?> layout = testConsole("config-1.2/log4j-console-TTCCLayout.properties");
+        Assert.assertTrue(layout instanceof TTCCLayout);
     }
 
     @Test
     public void testConsoleXmlLayout() throws Exception {
         final Layout<?> layout = testConsole("config-1.2/log4j-console-XmlLayout.properties");
-        Assert.assertTrue(layout instanceof XmlLayout);
+        Assert.assertTrue(layout instanceof Log4j1XmlLayout);
     }
 }
