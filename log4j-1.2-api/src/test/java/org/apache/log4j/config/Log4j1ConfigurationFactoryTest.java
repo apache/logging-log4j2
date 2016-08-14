@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.layout.XmlLayout;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class Log4j1ConfigurationFactoryTest {
@@ -81,7 +82,7 @@ public class Log4j1ConfigurationFactoryTest {
         Assert.assertTrue(layout instanceof TTCCLayout);
     }
 
-    @Test
+    @Ignore("XmlLayout not supported")
     public void testConsoleXmlLayout() throws Exception {
         final Layout<?> layout = testConsole("config-1.2/log4j-console-XmlLayout.properties");
         Assert.assertTrue(layout instanceof XmlLayout);

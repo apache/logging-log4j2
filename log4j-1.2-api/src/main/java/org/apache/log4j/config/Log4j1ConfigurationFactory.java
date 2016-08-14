@@ -57,7 +57,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <li>layout = org.apache.log4j.SimpleLayout (complete)</li>
  * <li>layout = org.apache.log4j.TTCCLayout (complete)</li>
  * <li>layout = org.apache.log4j.HTMLLayout (partial)</li>
- * <li>layout = org.apache.log4j.xml.XMLLayout (partial)</li>
  * <li>layout.ConversionPattern</li>
  * </ul>
  * </ul>
@@ -144,11 +143,12 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 break;
             }
             case "org.apache.log4j.xml.XMLLayout": {
-                appenderBuilder.add(builder.newLayout("XmlLayout")); // TODO check if compatible
+                // We cannot use the XmlLayout in Log4j 2 since it has a significantly different format
+                reportWarning("Log4j 1 XMLLayout is not supported");
                 break;
             }
             default:
-                reportWarning("Unsupported value for console appender layout: " + layoutValue);
+                reportWarning("Unsupported layout: " + layoutValue);
             }
         }
     }
