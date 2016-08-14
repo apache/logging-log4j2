@@ -54,9 +54,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <li>Target</li>
  * <li>layout = org.apache.log4j.PatternLayout (partial)</li>
  * <li>layout = org.apache.log4j.EnhancedPatternLayout (partial)</li>
- * <li>layout = org.apache.log4j.SimpleLayout (complete)</li>
- * <li>layout = org.apache.log4j.TTCCLayout (complete)</li>
- * <li>layout = org.apache.log4j.HTMLLayout (partial)</li>
+ * <li>layout = org.apache.log4j.SimpleLayout</li>
+ * <li>layout = org.apache.log4j.TTCCLayout</li>
+ * <li>layout = org.apache.log4j.HTMLLayout</li>
  * <li>layout.ConversionPattern</li>
  * </ul>
  * </ul>
@@ -139,7 +139,7 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {
-                appenderBuilder.add(builder.newLayout("HtmlLayout")); // TODO check if compatible
+                appenderBuilder.add(builder.newLayout("HtmlLayout"));
                 break;
             }
             case "org.apache.log4j.xml.XMLLayout": {
