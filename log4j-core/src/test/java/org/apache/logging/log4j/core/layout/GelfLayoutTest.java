@@ -112,8 +112,6 @@ public class GelfLayoutTest {
         final Exception exception = new RuntimeException("some error");
         root.error(LINE3, exception);
 
-        ThreadContext.clearMap();
-
         formattedAppender.stop();
 
         final List<LogEvent> events = eventAppender.getEvents();
