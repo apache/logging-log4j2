@@ -109,8 +109,6 @@ public class SyslogLayoutTest {
         msg.put("Amount", "200.00");
         root.info(MarkerManager.getMarker("EVENT"), msg);
 
-        ThreadContext.clearMap();
-
         appender.stop();
 
         final List<String> list = appender.getMessages();
