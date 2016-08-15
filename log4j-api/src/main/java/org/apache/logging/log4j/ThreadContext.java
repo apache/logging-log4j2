@@ -269,6 +269,19 @@ public final class ThreadContext {
     }
 
     /**
+     * Puts all given context map entries into the current thread's
+     * context map.
+     *
+     * <p>If the current thread does not have a context map it is
+     * created as a side effect.</p>
+     * @param m The map.
+     * @since 2.7
+     */
+    public static void putAll(final Map<String, String> m) {
+        contextMap.putAll(m);
+    }
+
+    /**
      * Gets the context value identified by the <code>key</code> parameter.
      *
      * <p>

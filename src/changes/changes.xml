@@ -84,6 +84,9 @@
       <action issue="LOG4J2-1516" dev="ggregory" type="add" due-to="Gary Gregory">
         Add ThreadContextMap.putAll(Map&lt;String, String&gt;).
       </action>
+      <action issue="LOG4J2-1519" dev="ggregory" type="add" due-to="Gary Gregory">
+        Add ThreadContext.putAll(Map&lt;String, String&gt;).
+      </action>
       <action issue="LOG4J2-1458" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Jackson from 2.7.5 to 2.8.0.
       </action>
