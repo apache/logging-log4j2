@@ -16,11 +16,15 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.
@@ -66,6 +70,24 @@ public class DefaultThreadContextMapTest {
         assertFalse(map.isEmpty());
         assertTrue(map.containsKey("key"));
         assertEquals("value", map.get("key"));
+    }
+
+    @Test
+    public void testPutAll() {
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        assertTrue(map.isEmpty());
+        assertFalse(map.containsKey("key"));
+        final int mapSize = 10;
+        final Map<String, String> newMap = new HashMap<>(mapSize);
+        for (int i = 1; i <= mapSize; i++) {
+            newMap.put("key" + i, "value" + i);
+        }
+        map.putAll(newMap);
+        assertFalse(map.isEmpty());
+        for (int i = 1; i <= mapSize; i++) {
+            assertTrue(map.containsKey("key" + i));
+            assertEquals("value" + i, map.get("key" + i));
+        }
     }
 
     /**
