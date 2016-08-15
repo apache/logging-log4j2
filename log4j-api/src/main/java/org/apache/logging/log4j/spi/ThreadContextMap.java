@@ -75,6 +75,17 @@ public interface ThreadContextMap {
     void put(final String key, final String value);
 
     /**
+     * Puts all given context map entries into the current thread's
+     * context map.
+     *
+     * <p>If the current thread does not have a context map it is
+     * created as a side effect.</p>
+     * @param m The map.
+     * @since 2.7
+     */
+    public void putAll(final Map<String, String> m);
+
+    /**
      * Removes the the context identified by the <code>key</code>
      * parameter.
      * @param key The key to remove.
