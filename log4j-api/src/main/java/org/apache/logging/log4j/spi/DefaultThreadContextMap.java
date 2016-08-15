@@ -29,6 +29,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * should be much better than if the Map was copied for each event.
  */
 public class DefaultThreadContextMap implements ThreadContextMap {
+    
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.
