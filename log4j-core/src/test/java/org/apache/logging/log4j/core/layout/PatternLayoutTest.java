@@ -31,10 +31,12 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -70,10 +72,8 @@ public class PatternLayoutTest {
 
     Logger root = ctx.getRootLogger();
 
-    @After
-    public void after() {
-        ThreadContext.clearMap();
-    }
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
 
     private static class Destination implements ByteBufferDestination {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[2048]);
