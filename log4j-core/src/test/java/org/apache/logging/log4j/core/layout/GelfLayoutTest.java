@@ -41,9 +41,10 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.junit.Assert.assertEquals;
 
 public class GelfLayoutTest {
+    
     static ConfigurationFactory configFactory = new BasicConfigurationFactory();
+    
     private static final String HOSTNAME = "TheHost";
-
     private static final String KEY1 = "Key1";
     private static final String KEY2 = "Key2";
     private static final String LINE1 = "empty mdc";
