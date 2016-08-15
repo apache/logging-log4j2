@@ -43,17 +43,22 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.message.Message;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class NoSqlDatabaseManagerTest {
     private NoSqlConnection<Map<String, Object>, DefaultNoSqlObject> connection;
     private NoSqlProvider<NoSqlConnection<Map<String, Object>, DefaultNoSqlObject>> provider;
+
+    @Rule
+    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule(); 
 
     @Before
     @SuppressWarnings("unchecked")
