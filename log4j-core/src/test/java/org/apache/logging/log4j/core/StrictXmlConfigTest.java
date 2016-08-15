@@ -115,7 +115,6 @@ public class StrictXmlConfigTest {
 
     @Test
     public void mdc() {
-
         ThreadContext.put("TestYear", "2010");
         logger.debug("Debug message");
         ThreadContext.clearMap();
