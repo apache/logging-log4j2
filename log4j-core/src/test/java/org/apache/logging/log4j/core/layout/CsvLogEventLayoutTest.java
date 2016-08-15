@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
