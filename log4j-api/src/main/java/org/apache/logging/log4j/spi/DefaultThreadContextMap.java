@@ -69,7 +69,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
             return;
         }
         Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<String, String>() : new HashMap<>(map);
+        map = map == null ? new HashMap<String, String>(1) : new HashMap<>(map);
         map.put(key, value);
         localMap.set(Collections.unmodifiableMap(map));
     }
