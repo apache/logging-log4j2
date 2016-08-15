@@ -16,32 +16,32 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.Arrays;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ContextStackJsonAttributeConverterTest {
     private ContextStackJsonAttributeConverter converter;
+
+    @Rule
+    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule(); 
 
     @Before
     public void setUp() {
         this.converter = new ContextStackJsonAttributeConverter();
     }
 
-    @After
-    public void tearDown() {
-
-    }
-
     @Test
     public void testConvert01() {
-        ThreadContext.clearStack();
         final ThreadContext.ContextStack stack = new MutableThreadContextStack(
                 Arrays.asList("value1", "another2"));
 
@@ -59,7 +59,6 @@ public class ContextStackJsonAttributeConverterTest {
 
     @Test
     public void testConvert02() {
-        ThreadContext.clearStack();
         final ThreadContext.ContextStack stack = new MutableThreadContextStack(
                 Arrays.asList("key1", "value2", "my3"));
 
