@@ -24,10 +24,12 @@ import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.test.appender.EncodingListAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -57,15 +59,16 @@ public class GelfLayoutTest {
     private static final String VALUE1 = "Value1";
     private static final String VALUE2 = "Value2";
 
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(configFactory);
-        ThreadContext.clearAll();
     }
 
     @BeforeClass
     public static void setupClass() {
-        ThreadContext.clearAll();
         ConfigurationFactory.setConfigurationFactory(configFactory);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
