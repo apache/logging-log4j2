@@ -30,6 +30,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.ObjectArrayMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
@@ -61,13 +62,11 @@ public class CsvParameterLayoutTest {
     @Rule
     public final LoggerContextRule init;
 
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+
     public CsvParameterLayoutTest(final LoggerContextRule contextRule) {
         this.init = contextRule;
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        ThreadContext.clearAll();
     }
 
     @Test
