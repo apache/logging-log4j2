@@ -89,7 +89,7 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
 
     private void buildConsoleAppender(final Properties properties, final String name,
             final ConfigurationBuilder<BuiltConfiguration> builder) {
-        final AppenderComponentBuilder appenderBuilder = builder.newAppender(name, "CONSOLE");
+        final AppenderComponentBuilder appenderBuilder = builder.newAppender(name, "Console");
         buildConsoleAppenderTarget(properties, name, builder, appenderBuilder);
         buildAppenderLayout(properties, name, builder, appenderBuilder);
         buildConsoleAppenderFollow(properties, name, builder, appenderBuilder);
