@@ -22,6 +22,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Builder;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
  * Interface for building logging configurations.
  * @param <T> The Configuration type created by this builder.
@@ -405,4 +408,18 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return The constructed Configuration.
      */
     T build(boolean initialize);
+
+    /**
+     * Write an XML configuration file from this builder.
+     *
+     * @param output  OutputStream to write to, will not be closed
+     */
+    void writeXmlConfigurationFile(OutputStream output) throws IOException;
+
+    /**
+     * Write an XML configuration from this builder.
+     *
+     * @return  XML configuration
+     */
+    String writeXmlConfiguration();
 }
