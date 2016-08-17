@@ -54,6 +54,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private static final String STATUS_KEY = "status";
     private static final String SHUTDOWN_HOOK = "shutdownHook";
     private static final String VERBOSE = "verbose";
+    private static final String DEST = "dest";
     private static final String PACKAGES = "packages";
     private static final String CONFIG_NAME = "name";
     private static final String MONITOR_INTERVAL = "monitorInterval";
@@ -88,6 +89,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             .setStatusLevel(Level.toLevel(rootProperties.getProperty(STATUS_KEY), Level.ERROR))
             .setShutdownHook(rootProperties.getProperty(SHUTDOWN_HOOK))
             .setVerbosity(rootProperties.getProperty(VERBOSE))
+            .setDestination(rootProperties.getProperty(DEST))
             .setPackages(rootProperties.getProperty(PACKAGES))
             .setConfigurationName(rootProperties.getProperty(CONFIG_NAME))
             .setMonitorInterval(rootProperties.getProperty(MONITOR_INTERVAL, "0"))

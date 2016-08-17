@@ -56,6 +56,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private int monitorInterval = 0;
     private Level level = null;
     private String verbosity = null;
+    private String destination = null;
     private String packages = null;
     private String shutdownFlag = null;
     private String advertiser = null;
@@ -163,6 +164,9 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             }
             if (verbosity != null) {
                 configuration.getStatusConfiguration().withVerbosity(verbosity);
+            }
+            if (destination != null) {
+                configuration.getStatusConfiguration().withDestination(destination);
             }
             if (packages != null) {
                 configuration.setPluginPackages(packages);
@@ -386,6 +390,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> setVerbosity(final String verbosity) {
         this.verbosity = verbosity;
+        return this;
+    }
+
+    @Override
+    public ConfigurationBuilder<T> setDestination(String destination) {
+        this.destination = destination;
         return this;
     }
 
