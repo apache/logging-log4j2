@@ -60,8 +60,9 @@ public class Log4j1ConfigurationFactoryTest {
 
     @Test
     public void testConsoleHtmlLayout() throws Exception {
-        final Layout<?> layout = testConsole("config-1.2/log4j-console-HtmlLayout.properties");
-        assertTrue(layout instanceof HtmlLayout);
+        final HtmlLayout layout = (HtmlLayout)testConsole("config-1.2/log4j-console-HtmlLayout.properties");
+        assertEquals("Headline", layout.getTitle());
+        assertTrue(layout.isLocationInfo());
     }
 
     @Test

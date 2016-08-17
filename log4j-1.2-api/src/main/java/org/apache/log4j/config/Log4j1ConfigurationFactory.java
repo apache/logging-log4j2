@@ -148,10 +148,16 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {
-                appenderBuilder.add(builder.newLayout("HtmlLayout"));
+                LayoutComponentBuilder htmlLayout = builder.newLayout("HtmlLayout");
+                htmlLayout.addAttribute("title",
+                        getLog4jAppenderValue(properties, name, "layout.Title", "Log4J Log Messages"));
+                htmlLayout.addAttribute("locationInfo",
+                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.LocationInfo", "false")));
+                appenderBuilder.add(htmlLayout);
                 break;
             }
             case "org.apache.log4j.xml.XMLLayout": {
+                // TODO support properties
                 appenderBuilder.add(builder.newLayout("Log4j1XmlLayout"));
                 break;
             }
