@@ -107,19 +107,20 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
             final ConfigurationBuilder<BuiltConfiguration> builder, final AppenderComponentBuilder appenderBuilder) {
         final String layoutValue = getLog4jAppenderValue(properties, name, "layout", null);
         if (layoutValue != null) {
-            final String cpValue = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
             switch (layoutValue) {
             case "org.apache.log4j.PatternLayout": {
+                final String pattern = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
                 // TODO Log4j 2's PatternLayout's %x (NDC) is not compatible with Log4j 1's %x
                 //      Log4j 1: "foo bar baz"
                 //      Log4j 2: "[foo, bar, baz]"
                 // TODO Log4j 2's PatternLayout's %X (MDC) is not compatible with Log4j 1's %X
                 //      Log4j 1: "{{foo,bar},{hoo,boo}}"
                 //      Log4j 2: "{foo=bar,hoo=boo}"
-                appenderBuilder.add(newPatternLayout(builder, cpValue));
+                appenderBuilder.add(newPatternLayout(builder, pattern));
                 break;
             }
             case "org.apache.log4j.EnhancedPatternLayout": {
+                final String pattern = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
                 // TODO missing %ndc as alias for %NDC
                 // TODO missing %properties as alias for %MDC
                 // TODO Log4j 2's PatternLayout's %x (NDC) is not compatible with Log4j 1's %x
@@ -128,7 +129,7 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 // TODO Log4j 2's PatternLayout's %X (MDC) is not compatible with Log4j 1's %X
                 //      Log4j 1: "{{foo,bar},{hoo,boo}}"
                 //      Log4j 2: "{foo=bar,hoo=boo}"
-                appenderBuilder.add(newPatternLayout(builder, cpValue));
+                appenderBuilder.add(newPatternLayout(builder, pattern));
                 break;
             }
             case "org.apache.log4j.SimpleLayout": {
@@ -136,7 +137,14 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 break;
             }
             case "org.apache.log4j.TTCCLayout": {
-                appenderBuilder.add(builder.newLayout("TTCCLayout"));
+                final LayoutComponentBuilder ttccLayout = builder.newLayout("TTCCLayout");
+                ttccLayout.addAttribute("threadPrinting",
+                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ThreadPrinting", "true")));
+                ttccLayout.addAttribute("categoryPrefixing",
+                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.CategoryPrefixing", "true")));
+                ttccLayout.addAttribute("contextPrinting",
+                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ContextPrinting", "true")));
+                appenderBuilder.add(ttccLayout);
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {

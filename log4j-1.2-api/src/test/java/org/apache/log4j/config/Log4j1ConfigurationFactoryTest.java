@@ -26,64 +26,67 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.net.URL;
+
+import static org.junit.Assert.*;
 
 public class Log4j1ConfigurationFactoryTest {
 
     private Layout<?> testConsole(final String configResource) throws Exception {
         final URL configLocation = ClassLoader.getSystemResource(configResource);
-        Assert.assertNotNull(configLocation);
+        assertNotNull(configLocation);
         final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration("test",
                 configLocation.toURI());
-        Assert.assertNotNull(configuration);
+        assertNotNull(configuration);
         final ConsoleAppender appender = configuration.getAppender("Console");
-        Assert.assertNotNull(appender);
+        assertNotNull(appender);
         // Can't set ImmediateFlush for a Console Appender in Log4j 2 like you can in 1.2
-        Assert.assertTrue(appender.getImmediateFlush());
-        Assert.assertEquals(Target.SYSTEM_ERR, appender.getTarget());
+        assertTrue(appender.getImmediateFlush());
+        assertEquals(Target.SYSTEM_ERR, appender.getTarget());
         //
         final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
-        Assert.assertNotNull(loggerConfig);
-        Assert.assertEquals(Level.DEBUG, loggerConfig.getLevel());
+        assertNotNull(loggerConfig);
+        assertEquals(Level.DEBUG, loggerConfig.getLevel());
         return appender.getLayout();
     }
 
     @Test
     public void testConsoleEnhancedPatternLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-EnhancedPatternLayout.properties");
-        Assert.assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
+        assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
     }
 
     @Test
     public void testConsoleHtmlLayout() throws Exception {
         final Layout<?> layout = testConsole("config-1.2/log4j-console-HtmlLayout.properties");
-        Assert.assertTrue(layout instanceof HtmlLayout);
+        assertTrue(layout instanceof HtmlLayout);
     }
 
     @Test
     public void testConsolePatternLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-PatternLayout.properties");
-        Assert.assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
+        assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
     }
 
     @Test
     public void testConsoleSimpleLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-SimpleLayout.properties");
-        Assert.assertEquals("%level - %m%n", layout.getConversionPattern());
+        assertEquals("%level - %m%n", layout.getConversionPattern());
     }
 
     @Test
     public void testConsoleTtccLayout() throws Exception {
-        final Layout<?> layout = testConsole("config-1.2/log4j-console-TTCCLayout.properties");
-        Assert.assertTrue(layout instanceof TTCCLayout);
+        final TTCCLayout layout = (TTCCLayout)testConsole("config-1.2/log4j-console-TTCCLayout.properties");
+        assertTrue(layout.isThreadPrinting());
+        assertFalse(layout.isCategoryPrefixing());
+        assertTrue(layout.isContextPrinting());
     }
 
     @Test
     public void testConsoleXmlLayout() throws Exception {
         final Layout<?> layout = testConsole("config-1.2/log4j-console-XmlLayout.properties");
-        Assert.assertTrue(layout instanceof Log4j1XmlLayout);
+        assertTrue(layout instanceof Log4j1XmlLayout);
     }
 }

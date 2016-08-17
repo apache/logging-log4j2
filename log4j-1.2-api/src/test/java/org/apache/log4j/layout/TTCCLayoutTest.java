@@ -51,7 +51,7 @@ public class TTCCLayoutTest {
     }
 
     private void test(ThreadContext.ContextStack contextStack, String stackOutput) {
-        TTCCLayout layout = TTCCLayout.createLayout();
+        TTCCLayout layout = TTCCLayout.createLayout(true, true, true);
 
         Log4jLogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName("a.B")

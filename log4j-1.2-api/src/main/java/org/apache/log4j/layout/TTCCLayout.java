@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
@@ -38,15 +39,40 @@ import java.util.List;
 @Plugin(name = "TTCCLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class TTCCLayout extends AbstractStringLayout {
 
+    private final boolean threadPrinting;
+    private final boolean categoryPrefixing;
+    private final boolean contextPrinting;
+
     final long startTime = System.currentTimeMillis();
 
     @PluginFactory
-    public static TTCCLayout createLayout() {
-        return new TTCCLayout();
+    public static TTCCLayout createLayout(
+            // @formatter:off
+            @PluginAttribute(value = "threadPrinting", defaultBoolean = true) final boolean threadPrinting,
+            @PluginAttribute(value = "categoryPrefixing", defaultBoolean = true) final boolean categoryPrefixing,
+            @PluginAttribute(value = "contextPrinting", defaultBoolean = true) final boolean contextPrinting
+            // @formatter:on
+    ) {
+        return new TTCCLayout(threadPrinting, categoryPrefixing, contextPrinting);
     }
 
-    private TTCCLayout() {
+    private TTCCLayout(boolean threadPrinting, boolean categoryPrefixing, boolean contextPrinting) {
         super(StandardCharsets.UTF_8);
+        this.threadPrinting = threadPrinting;
+        this.categoryPrefixing = categoryPrefixing;
+        this.contextPrinting = contextPrinting;
+    }
+
+    public boolean isThreadPrinting() {
+        return threadPrinting;
+    }
+
+    public boolean isCategoryPrefixing() {
+        return categoryPrefixing;
+    }
+
+    public boolean isContextPrinting() {
+        return contextPrinting;
     }
 
     @Override
@@ -67,21 +93,27 @@ public final class TTCCLayout extends AbstractStringLayout {
         buf.append(event.getTimeMillis() - startTime);
         buf.append(' ');
 
-        buf.append('[');
-        buf.append(event.getThreadName());
-        buf.append("] ");
+        if (threadPrinting) {
+            buf.append('[');
+            buf.append(event.getThreadName());
+            buf.append("] ");
+        }
 
         buf.append(event.getLevel().toString());
         buf.append(' ');
 
-        buf.append(event.getLoggerName());
-        buf.append(' ');
+        if (categoryPrefixing) {
+            buf.append(event.getLoggerName());
+            buf.append(' ');
+        }
 
-        List<String> ndc = event.getContextStack().asList();
-        if (!ndc.isEmpty()) {
-            for (String ndcElement : ndc) {
-                buf.append(ndcElement);
-                buf.append(' ');
+        if(this.contextPrinting) {
+            List<String> ndc = event.getContextStack().asList();
+            if (!ndc.isEmpty()) {
+                for (String ndcElement : ndc) {
+                    buf.append(ndcElement);
+                    buf.append(' ');
+                }
             }
         }
 
