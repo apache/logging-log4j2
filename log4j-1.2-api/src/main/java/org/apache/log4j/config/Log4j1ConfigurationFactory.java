@@ -48,7 +48,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <li>log4j.logger</li>
  * <li>log4j.appender</li>
  * <li>org.apache.log4j.ConsoleAppender</li>
- * <li>org.apache.log4j.PatternLayout</li>
  * <ul>
  * <li>Follow</li>
  * <li>Target</li>
