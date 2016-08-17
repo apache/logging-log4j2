@@ -121,13 +121,12 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
             case "org.apache.log4j.EnhancedPatternLayout": {
                 final String pattern = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
                 // TODO missing %ndc as alias for %NDC
-                // TODO missing %properties as alias for %MDC
                 // TODO Log4j 2's PatternLayout's %x (NDC) is not compatible with Log4j 1's %x
                 //      Log4j 1: "foo bar baz"
                 //      Log4j 2: "[foo, bar, baz]"
-                // TODO Log4j 2's PatternLayout's %X (MDC) is not compatible with Log4j 1's %X
-                //      Log4j 1: "{{foo,bar},{hoo,boo}}"
-                //      Log4j 2: "{foo=bar,hoo=boo}"
+                // Log4j 2's PatternLayout's %X (MDC) is not compatible with Log4j 1's %X
+                //   Log4j 1: "{{foo,bar}{hoo,boo}}"
+                //   Log4j 2: "{foo=bar,hoo=boo}"
                 appenderBuilder.add(newPatternLayout(builder, pattern));
                 break;
             }
