@@ -87,7 +87,8 @@ public class Log4j1ConfigurationFactoryTest {
 
     @Test
     public void testConsoleXmlLayout() throws Exception {
-        final Layout<?> layout = testConsole("config-1.2/log4j-console-XmlLayout.properties");
-        assertTrue(layout instanceof Log4j1XmlLayout);
+        final Log4j1XmlLayout layout = (Log4j1XmlLayout)testConsole("config-1.2/log4j-console-XmlLayout.properties");
+        assertTrue(layout.isLocationInfo());
+        assertFalse(layout.isProperties());
     }
 }

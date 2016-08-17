@@ -21,13 +21,16 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Transform;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Port of XMLLayout in Log4j 1.x. Provided for compatibility with existing Log4j 1 configurations.
@@ -37,13 +40,31 @@ import java.util.List;
 @Plugin(name = "Log4j1XmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class Log4j1XmlLayout extends AbstractStringLayout {
 
+    private final boolean locationInfo;
+    private final boolean properties;
+
     @PluginFactory
-    public static Log4j1XmlLayout createLayout() {
-        return new Log4j1XmlLayout();
+    public static Log4j1XmlLayout createLayout(
+            // @formatter:off
+            @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
+            @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties
+            // @formatter:on
+    ) {
+        return new Log4j1XmlLayout(locationInfo, properties);
     }
 
-    private Log4j1XmlLayout() {
+    private Log4j1XmlLayout(boolean locationInfo, boolean properties) {
         super(StandardCharsets.UTF_8);
+        this.locationInfo = locationInfo;
+        this.properties = properties;
+    }
+
+    public boolean isLocationInfo() {
+        return locationInfo;
+    }
+
+    public boolean isProperties() {
+        return properties;
     }
 
     @Override
@@ -96,6 +117,42 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
                 buf.append("\r\n");
             }
             buf.append("]]></log4j:throwable>\r\n");
+        }
+
+        if (locationInfo) {
+            StackTraceElement source = event.getSource();
+            if (source != null) {
+                buf.append("<log4j:locationInfo class=\"");
+                buf.append(Transform.escapeHtmlTags(source.getClassName()));
+                buf.append("\" method=\"");
+                buf.append(Transform.escapeHtmlTags(source.getMethodName()));
+                buf.append("\" file=\"");
+                buf.append(Transform.escapeHtmlTags(source.getFileName()));
+                buf.append("\" line=\"");
+                buf.append(source.getLineNumber());
+                buf.append("\"/>\r\n");
+            }
+        }
+
+        if (properties) {
+            Map<String, String> contextMap = event.getContextMap();
+            if (!contextMap.isEmpty()) {
+                buf.append("<log4j:properties>\r\n");
+                Object[] keys = contextMap.keySet().toArray();
+                Arrays.sort(keys);
+                for (Object key1 : keys) {
+                    String key = key1.toString();
+                    String val = contextMap.get(key);
+                    if (val != null) {
+                        buf.append("<log4j:data name=\"");
+                        buf.append(Transform.escapeHtmlTags(key));
+                        buf.append("\" value=\"");
+                        buf.append(Transform.escapeHtmlTags(val));
+                        buf.append("\"/>\r\n");
+                    }
+                }
+                buf.append("</log4j:properties>\r\n");
+            }
         }
 
         buf.append("</log4j:event>\r\n\r\n");

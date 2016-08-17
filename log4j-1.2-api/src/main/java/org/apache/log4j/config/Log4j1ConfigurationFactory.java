@@ -157,8 +157,12 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 break;
             }
             case "org.apache.log4j.xml.XMLLayout": {
-                // TODO support properties
-                appenderBuilder.add(builder.newLayout("Log4j1XmlLayout"));
+                LayoutComponentBuilder xmlLayout = builder.newLayout("Log4j1XmlLayout");
+                xmlLayout.addAttribute("locationInfo",
+                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.LocationInfo", "false")));
+                xmlLayout.addAttribute("properties",
+                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.Properties", "false")));
+                appenderBuilder.add(xmlLayout);
                 break;
             }
             default:
