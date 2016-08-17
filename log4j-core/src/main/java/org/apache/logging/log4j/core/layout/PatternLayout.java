@@ -84,7 +84,7 @@ public final class PatternLayout extends AbstractStringLayout {
     private final Serializer eventSerializer;
 
     /**
-     * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
+     * Constructs a PatternLayout using the supplied conversion pattern.
      *
      * @param config The Configuration.
      * @param replace The regular expression to match.
