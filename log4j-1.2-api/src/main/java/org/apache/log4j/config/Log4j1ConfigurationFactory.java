@@ -51,13 +51,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <ul>
  * <li>Follow</li>
  * <li>Target</li>
- * <li>layout = org.apache.log4j.PatternLayout (partial)</li>
- * <li>layout = org.apache.log4j.EnhancedPatternLayout (partial)</li>
- * <li>layout = org.apache.log4j.SimpleLayout</li>
- * <li>layout = org.apache.log4j.TTCCLayout</li>
- * <li>layout = org.apache.log4j.HTMLLayout</li>
- * <li>layout = org.apache.log4j.xml.XMLLayout</li>
- * <li>layout.ConversionPattern</li>
+ * <li>layout</li>
  * </ul>
  * </ul>
  */
@@ -107,26 +101,20 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
         final String layoutValue = getLog4jAppenderValue(properties, name, "layout", null);
         if (layoutValue != null) {
             switch (layoutValue) {
-            case "org.apache.log4j.PatternLayout": {
-                final String pattern = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
-                // TODO Log4j 2's PatternLayout's %x (NDC) is not compatible with Log4j 1's %x
-                //      Log4j 1: "foo bar baz"
-                //      Log4j 2: "[foo, bar, baz]"
-                // TODO Log4j 2's PatternLayout's %X (MDC) is not compatible with Log4j 1's %X
-                //      Log4j 1: "{{foo,bar},{hoo,boo}}"
-                //      Log4j 2: "{foo=bar,hoo=boo}"
-                appenderBuilder.add(newPatternLayout(builder, pattern));
-                break;
-            }
+            case "org.apache.log4j.PatternLayout":
             case "org.apache.log4j.EnhancedPatternLayout": {
                 final String pattern = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
-                // TODO missing %ndc as alias for %NDC
-                // TODO Log4j 2's PatternLayout's %x (NDC) is not compatible with Log4j 1's %x
-                //      Log4j 1: "foo bar baz"
-                //      Log4j 2: "[foo, bar, baz]"
-                // Log4j 2's PatternLayout's %X (MDC) is not compatible with Log4j 1's %X
+
+                // Log4j 2's %x (NDC) is not compatible with Log4j 1's %x
+                //   Log4j 1: "foo bar baz"
+                //   Log4j 2: "[foo, bar, baz]"
+                // Use %ndc to get the Log4j 1 format
+
+                // Log4j 2's %X (MDC) is not compatible with Log4j 1's %X
                 //   Log4j 1: "{{foo,bar}{hoo,boo}}"
                 //   Log4j 2: "{foo=bar,hoo=boo}"
+                // Use %properties to get the Log4j 1 format
+
                 appenderBuilder.add(newPatternLayout(builder, pattern));
                 break;
             }
