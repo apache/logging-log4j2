@@ -107,7 +107,7 @@ public final class TTCCLayout extends AbstractStringLayout {
             buf.append(' ');
         }
 
-        if(this.contextPrinting) {
+        if (this.contextPrinting) {
             List<String> ndc = event.getContextStack().asList();
             if (!ndc.isEmpty()) {
                 for (String ndcElement : ndc) {
