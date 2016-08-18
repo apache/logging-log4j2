@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -239,9 +240,13 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
         }
         final String[] rootLoggerParts = rootLoggerValue.split("\\s*,\\s*");
         final Level rootLoggerLevel = rootLoggerParts.length > 0 ? Level.valueOf(rootLoggerParts[0]) : Level.ERROR;
-        builder.add(builder.newRootLogger(rootLoggerLevel));
         final String[] sortedAppenderNames = Arrays.copyOfRange(rootLoggerParts, 1, rootLoggerParts.length);
         Arrays.sort(sortedAppenderNames);
+        RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
+        for (String appender : sortedAppenderNames) {
+            loggerBuilder.add(builder.newAppenderRef(appender));
+        }
+        builder.add(loggerBuilder);
         return sortedAppenderNames;
     }
 
