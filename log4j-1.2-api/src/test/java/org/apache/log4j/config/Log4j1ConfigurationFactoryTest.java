@@ -16,8 +16,9 @@
  */
 package org.apache.log4j.config;
 
+import java.net.URL;
+
 import org.apache.log4j.layout.Log4j1XmlLayout;
-import org.apache.log4j.layout.TTCCLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -27,8 +28,6 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Test;
-
-import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -60,7 +59,7 @@ public class Log4j1ConfigurationFactoryTest {
 
     @Test
     public void testConsoleHtmlLayout() throws Exception {
-        final HtmlLayout layout = (HtmlLayout)testConsole("config-1.2/log4j-console-HtmlLayout.properties");
+        final HtmlLayout layout = (HtmlLayout) testConsole("config-1.2/log4j-console-HtmlLayout.properties");
         assertEquals("Headline", layout.getTitle());
         assertTrue(layout.isLocationInfo());
     }
@@ -79,15 +78,13 @@ public class Log4j1ConfigurationFactoryTest {
 
     @Test
     public void testConsoleTtccLayout() throws Exception {
-        final TTCCLayout layout = (TTCCLayout)testConsole("config-1.2/log4j-console-TTCCLayout.properties");
-        assertTrue(layout.isThreadPrinting());
-        assertFalse(layout.isCategoryPrefixing());
-        assertTrue(layout.isContextPrinting());
+        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-TTCCLayout.properties");
+        assertEquals("%r [%t] %p %notEmpty{%ndc }- %m%n", layout.getConversionPattern());
     }
 
     @Test
     public void testConsoleXmlLayout() throws Exception {
-        final Log4j1XmlLayout layout = (Log4j1XmlLayout)testConsole("config-1.2/log4j-console-XmlLayout.properties");
+        final Log4j1XmlLayout layout = (Log4j1XmlLayout) testConsole("config-1.2/log4j-console-XmlLayout.properties");
         assertTrue(layout.isLocationInfo());
         assertFalse(layout.isProperties());
     }

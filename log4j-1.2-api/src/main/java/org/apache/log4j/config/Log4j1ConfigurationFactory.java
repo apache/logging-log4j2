@@ -124,14 +124,19 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 break;
             }
             case "org.apache.log4j.TTCCLayout": {
-                final LayoutComponentBuilder ttccLayout = builder.newLayout("TTCCLayout");
-                ttccLayout.addAttribute("threadPrinting",
-                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ThreadPrinting", "true")));
-                ttccLayout.addAttribute("categoryPrefixing",
-                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.CategoryPrefixing", "true")));
-                ttccLayout.addAttribute("contextPrinting",
-                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ContextPrinting", "true")));
-                appenderBuilder.add(ttccLayout);
+                String pattern = "%r ";
+                if (Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ThreadPrinting", "true"))) {
+                    pattern += "[%t] ";
+                }
+                pattern += "%p ";
+                if (Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.CategoryPrefixing", "true"))) {
+                    pattern += "%c ";
+                }
+                if (Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ContextPrinting", "true"))) {
+                    pattern += "%notEmpty{%ndc }";
+                }
+                pattern += "- %m%n";
+                appenderBuilder.add(newPatternLayout(builder, pattern));
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {
