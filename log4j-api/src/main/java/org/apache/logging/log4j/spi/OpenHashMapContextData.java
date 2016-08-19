@@ -140,7 +140,8 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
      * @param map
      *            a {@link Map} to be copied into the new hash map.
      */
-    public OpenHashMapContextData(final Map<? extends K, ? extends V> map) {
+    // TODO public OpenHashMapContextData(final Map<? extends K, ? extends V> map) {
+    public OpenHashMapContextData(final Map<String, String> map) {
         this(map, DEFAULT_LOAD_FACTOR);
     }
     /**
@@ -151,7 +152,8 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
      * @param f
      *            the load factor.
      */
-    public OpenHashMapContextData(final Map<? extends K, ? extends V> map, final float f) {
+    // TODO public OpenHashMapContextData(final Map<? extends K, ? extends V> map, final float f) {
+    public OpenHashMapContextData(final Map<String, String> map, final float f) {
         this(map.size(), f);
         putAll(map);
     }
@@ -218,20 +220,6 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
                 1 << 30, Math.max(2, HashCommon.nextPowerOfTwo((int) Math.ceil(capacity / loadFactor))));
         if (needed > arraySize) {
             rehash(needed);
-        }
-    }
-
-    /** {@inheritDoc} */
-    public void putAll(Map<? extends K, ? extends V> map) {
-        if (loadFactor <= .5) {
-            // The resulting map will be sized for m.size() elements
-            ensureCapacity(map.size());
-        } else {
-            // The resulting map will be tentatively sized for size() +  m.size() elements
-            tryCapacity(size() + map.size());
-        }
-        for (Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
-            putObjectValue(entry.getKey(), entry.getValue());
         }
     }
 
@@ -468,6 +456,21 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
             initFrom0((OpenHashMapContextData) source);
         } else if (source != null) {
             source.forEach(PUT_ALL, this);
+        }
+    }
+
+    /** {@inheritDoc} */
+    //TODO public void putAll(Map<? extends K, ? extends V> map) {
+    public void putAll(Map<String, String> map) {
+        if (loadFactor <= .5) {
+            // The resulting map will be sized for m.size() elements
+            ensureCapacity(map.size());
+        } else {
+            // The resulting map will be tentatively sized for size() +  m.size() elements
+            tryCapacity(size() + map.size());
+        }
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            putValue(entry.getKey(), entry.getValue());
         }
     }
 
