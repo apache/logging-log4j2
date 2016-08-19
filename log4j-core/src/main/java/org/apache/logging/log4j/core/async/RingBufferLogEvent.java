@@ -210,6 +210,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     @Override
     public String getFormattedMessage() {
+        if (this.messageText == null) {
+            return getMessage().getFormattedMessage();
+        }
         return messageText.toString();
     }
 
