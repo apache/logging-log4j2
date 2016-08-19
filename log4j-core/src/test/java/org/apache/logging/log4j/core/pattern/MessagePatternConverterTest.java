@@ -58,7 +58,6 @@ public class MessagePatternConverterTest {
         sb = new StringBuilder();
         converter.format(event, sb);
         assertEquals("Incorrect length: " + sb, 4, sb.length());
-
     }
 
     @Test
