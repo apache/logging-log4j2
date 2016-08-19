@@ -22,31 +22,35 @@ import java.util.Map;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * Garbage-free ThreadContextMap implementation backed by {@code SortedArrayContextData}.
+ * ThreadContextMap implementation backed by {@code MutableContextData}.
+ * A new ThreadContext Map is created each time it is updated and the Map stored is always
+ * immutable. This means the Map can be passed to other threads without concern that it will be updated. Since it is
+ * expected that the Map will be passed to many more log events than the number of keys it contains the performance
+ * should be much better than if the Map was copied for each event.
  */
-public class SortedArrayThreadContext implements ThreadContextMap {
+public abstract class AbstractCopyOnWriteMutableThreadContext implements ThreadContextMap {
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.
      */
     public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
-    private final ThreadLocal<ArrayContextData> localMap;
+    private final ThreadLocal<MutableContextData> localMap;
 
-    public SortedArrayThreadContext() {
+    public AbstractCopyOnWriteMutableThreadContext() {
         this.localMap = createThreadLocalMap();
     }
 
     // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
     // (This method is package protected for JUnit tests.)
-    static ThreadLocal<ArrayContextData> createThreadLocalMap() {
+    private ThreadLocal<MutableContextData> createThreadLocalMap() {
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
         final boolean inheritable = managerProps.getBooleanProperty(INHERITABLE_MAP);
         if (inheritable) {
-            return new InheritableThreadLocal<ArrayContextData>() {
+            return new InheritableThreadLocal<MutableContextData>() {
                 @Override
-                protected ArrayContextData childValue(final ArrayContextData parentValue) {
-                    return parentValue != null ? new ArrayContextData(parentValue) : null;
+                protected MutableContextData childValue(final MutableContextData parentValue) {
+                    return parentValue != null ? createMutableContextData(parentValue) : null;
                 }
             };
         }
@@ -54,31 +58,44 @@ public class SortedArrayThreadContext implements ThreadContextMap {
         return new ThreadLocal<>();
     }
 
-    private ArrayContextData getThreadLocalMap() {
-        ArrayContextData map = localMap.get();
-        if (map == null) {
-            map = new ArrayContextData();
-            localMap.set(map);
-        }
-        return map;
-    }
+    protected abstract MutableContextData createMutableContextData();
+
+    protected abstract MutableContextData createMutableContextData(final MutableContextData original);
 
     @Override
     public void put(final String key, final String value) {
-        getThreadLocalMap().put(key, value);
+        MutableContextData map = localMap.get();
+        map = map == null ? createMutableContextData() : createMutableContextData(map);
+        map.putValue(key, value);
+        localMap.set(map);
+    }
+
+    @Override
+    public void putAll(final Map<String, String> values) {
+        if (values == null || values.isEmpty()) {
+            return;
+        }
+        MutableContextData map = localMap.get();
+        map = map == null ? createMutableContextData() : createMutableContextData(map);
+        for (final Map.Entry<String, String> entry : values.entrySet()) {
+            map.putValue(entry.getKey(), entry.getValue());
+        }
+        localMap.set(map);
     }
 
     @Override
     public String get(final String key) {
-        final ArrayContextData map = localMap.get();
-        return map == null ? null : map.get(key);
+        final MutableContextData map = localMap.get();
+        return map == null ? null : (String) map.getValue(key);
     }
 
     @Override
     public void remove(final String key) {
-        final ArrayContextData map = localMap.get();
+        final MutableContextData map = localMap.get();
         if (map != null) {
-            map.remove(key);
+            final MutableContextData copy = createMutableContextData(map);
+            copy.remove(key);
+            localMap.set(copy);
         }
     }
 
@@ -89,13 +106,13 @@ public class SortedArrayThreadContext implements ThreadContextMap {
 
     @Override
     public boolean containsKey(final String key) {
-        final ArrayContextData map = localMap.get();
+        final MutableContextData map = localMap.get();
         return map != null && map.containsKey(key);
     }
 
     @Override
     public Map<String, String> getCopy() {
-        final ArrayContextData map = localMap.get();
+        final MutableContextData map = localMap.get();
         return map == null ? Collections.<String, String>emptyMap() : map.asMap();
     }
 
@@ -105,19 +122,19 @@ public class SortedArrayThreadContext implements ThreadContextMap {
 
     @Override
     public Map<String, String> getImmutableMapOrNull() {
-        final ArrayContextData map = localMap.get();
+        final MutableContextData map = localMap.get();
         return map == null ? null : Collections.unmodifiableMap(map.asMap());
     }
 
     @Override
     public boolean isEmpty() {
-        final ArrayContextData map = localMap.get();
+        final MutableContextData map = localMap.get();
         return map == null || map.size() == 0;
     }
 
     @Override
     public String toString() {
-        final ArrayContextData map = localMap.get();
+        final MutableContextData map = localMap.get();
         return map == null ? "{}" : map.toString();
     }
 
@@ -125,7 +142,7 @@ public class SortedArrayThreadContext implements ThreadContextMap {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        final ArrayContextData map = this.localMap.get();
+        final MutableContextData map = this.localMap.get();
         result = prime * result + ((map == null) ? 0 : map.hashCode());
         return result;
     }
