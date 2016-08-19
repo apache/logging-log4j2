@@ -3,7 +3,7 @@ package org.apache.logging.log4j.core.layout;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Assert;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -13,14 +13,15 @@ import org.junit.Test;
  */
 public class PatternLayoutLookupDateTest {
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
+    @Rule
+    public final LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
 
     @Test
     public void testDateLookupInMessage() {
         context.getLogger(PatternLayoutLookupDateTest.class.getName()).info("${date:now:buhu}");
         final ListAppender listAppender = context.getListAppender("List");
-        Assert.assertNotEquals("${date:now:buhu}", listAppender.getMessages().get(0));
+        final String string = listAppender.getMessages().get(0);
+        Assert.assertFalse(string, string.contains("${date:now:buhu}"));
     }
 
 }
