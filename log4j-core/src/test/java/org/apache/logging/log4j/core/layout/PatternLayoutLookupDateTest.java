@@ -18,10 +18,11 @@ public class PatternLayoutLookupDateTest {
 
     @Test
     public void testDateLookupInMessage() {
-        context.getLogger(PatternLayoutLookupDateTest.class.getName()).info("${date:YYYY-MM-dd}");
+        final String template = "${date:YYYY-MM-dd}";
+        context.getLogger(PatternLayoutLookupDateTest.class.getName()).info(template);
         final ListAppender listAppender = context.getListAppender("List");
         final String string = listAppender.getMessages().get(0);
-        Assert.assertFalse(string, string.contains("${date:YYYY-MM-dd}"));
+        Assert.assertFalse(string, string.contains(template));
     }
 
 }
