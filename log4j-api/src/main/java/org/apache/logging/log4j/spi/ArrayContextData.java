@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.spi;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -24,11 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.ContextData;
-import org.apache.logging.log4j.core.util.BiConsumer;
-import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.core.util.TriConsumer;
-import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Array-based implementation of the {@code ContextData} interface. Keys are held in a sorted array.
@@ -50,7 +47,6 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
  *     <li>Compact representation.</li>
  * </ul>
  *
- * @see ThreadContextDataInjector
  * @since 2.7
  */
 public class ArrayContextData implements MutableContextData, ThreadContextMap {
@@ -98,14 +94,14 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
         if (initialCapacity < 1) {
             throw new IllegalArgumentException("Initial capacity must be at least one but was " + initialCapacity);
         }
-        threshold = Integers.ceilingNextPowerOfTwo(initialCapacity);
+        threshold = ceilingNextPowerOfTwo(initialCapacity);
     }
 
     public ArrayContextData(final ContextData other) {
         if (other instanceof ArrayContextData) {
             initFrom0((ArrayContextData) other);
         } else if (other != null) {
-            resize(Integers.ceilingNextPowerOfTwo(other.size()));
+            resize(ceilingNextPowerOfTwo(other.size()));
             other.forEach(PUT_ALL, this);
         }
     }
@@ -380,7 +376,7 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
 
         // Write out number of buckets
         if (keys == EMPTY) {
-            s.writeInt(Integers.ceilingNextPowerOfTwo(threshold));
+            s.writeInt(ceilingNextPowerOfTwo(threshold));
         } else {
             s.writeInt(keys.length);
         }
@@ -395,6 +391,20 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
                 s.writeObject(values[i]);
             }
         }
+    }
+
+
+    /**
+     * Calculate the next power of 2, greater than or equal to x.
+     * <p>
+     * From Hacker's Delight, Chapter 3, Harry S. Warren Jr.
+     *
+     * @param x Value to round up
+     * @return The next power of 2 from x inclusive
+     */
+    private static int ceilingNextPowerOfTwo(final int x) {
+        final int BITS_PER_INT = 32;
+        return 1 << (BITS_PER_INT - Integer.numberOfLeadingZeros(x - 1));
     }
 
     /**

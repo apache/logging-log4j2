@@ -23,10 +23,10 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import javax.persistence.PersistenceException;
 
-import org.apache.logging.log4j.core.ContextData;
+import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.MutableContextData;
-import org.apache.logging.log4j.core.util.BiConsumer;
+import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.Strings;
 
 import com.fasterxml.jackson.databind.JsonNode;

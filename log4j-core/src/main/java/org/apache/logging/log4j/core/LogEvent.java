@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.spi.ContextData;
 
 /**
  * Provides contextual information about a logged message. A LogEvent must be {@link java.io.Serializable} so that it

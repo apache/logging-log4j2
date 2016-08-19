@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.impl;
 import java.util.List;
 
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.spi.MutableContextData;
 
 /**
  * Responsible for initializing the ContextData of LogEvents. Context data is data that is set by the application to be
@@ -32,6 +34,7 @@ import org.apache.logging.log4j.core.config.Property;
  * any arbitrary context.
  * </p>
  *
+ * @see ContextData
  * @see ContextDataInjectorFactory
  * @see org.apache.logging.log4j.core.ContextData
  * @see org.apache.logging.log4j.ThreadContext

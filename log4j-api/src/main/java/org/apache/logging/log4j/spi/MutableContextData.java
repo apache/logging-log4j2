@@ -14,11 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.core.ContextData;
-import org.apache.logging.log4j.core.util.BiConsumer;
-import org.apache.logging.log4j.core.util.TriConsumer;
+import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Exposes methods to add and remove key-value pairs to and from {@code ContextData}.

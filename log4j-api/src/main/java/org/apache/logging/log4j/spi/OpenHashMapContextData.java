@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.spi;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,11 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.ContextData;
-import org.apache.logging.log4j.core.util.BiConsumer;
-import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.core.util.TriConsumer;
-import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Open hash map-based implementation of the {@code ContextData} interface.
@@ -58,7 +55,6 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
  *     the full thread context data can be transferred with two array copies and five field updates.</li>
  * </ul>
  *
- * @see ThreadContextDataInjector
  * @since 2.7
  */
 public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadContextMap {
@@ -219,7 +215,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
 
     private void tryCapacity(final long capacity) {
         final int needed = (int) Math.min(
-                1 << 30, Math.max(2, Integers.ceilingNextPowerOfTwo((int) Math.ceil(capacity / loadFactor))));
+                1 << 30, Math.max(2, HashCommon.nextPowerOfTwo((int) Math.ceil(capacity / loadFactor))));
         if (needed > arraySize) {
             rehash(needed);
         }

@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.ContextData;
+import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**
  * {@code ThreadContextDataInjector} contains a number of strategies for copying key-value pairs from the various

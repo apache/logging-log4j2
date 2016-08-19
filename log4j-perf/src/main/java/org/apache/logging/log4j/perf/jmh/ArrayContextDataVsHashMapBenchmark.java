@@ -22,10 +22,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.core.impl.ArrayContextData;
-import org.apache.logging.log4j.core.impl.OpenHashMapContextData;
-import org.apache.logging.log4j.core.util.BiConsumer;
-import org.apache.logging.log4j.core.util.TriConsumer;
+import org.apache.logging.log4j.spi.ArrayContextData;
+import org.apache.logging.log4j.spi.OpenHashMapContextData;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;

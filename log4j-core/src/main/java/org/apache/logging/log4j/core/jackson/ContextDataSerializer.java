@@ -19,8 +19,8 @@ package org.apache.logging.log4j.core.jackson;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.ContextData;
-import org.apache.logging.log4j.core.util.TriConsumer;
+import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.util.TriConsumer;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;

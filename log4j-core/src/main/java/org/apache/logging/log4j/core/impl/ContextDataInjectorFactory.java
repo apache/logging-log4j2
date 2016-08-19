@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * {@code ThreadContextDataInjector}.
  *
  * @see ContextDataInjector
+ * @see ContextData
  * @see ThreadContextDataInjector
  * @see org.apache.logging.log4j.core.ContextData
  * @see LogEvent#getContextData()

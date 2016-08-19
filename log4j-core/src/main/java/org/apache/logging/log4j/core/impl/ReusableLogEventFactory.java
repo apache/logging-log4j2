@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.spi.MutableContextData;
 
 /**
  * Garbage-free LogEventFactory that reuses a single mutable log event.

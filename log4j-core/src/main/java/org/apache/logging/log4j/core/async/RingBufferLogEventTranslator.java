@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.impl.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.impl.MutableContextData;
+import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.message.Message;
 
 import com.lmax.disruptor.EventTranslator;

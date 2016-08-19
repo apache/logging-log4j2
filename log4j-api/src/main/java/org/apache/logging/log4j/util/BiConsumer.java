@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.util;
 
 /**
  * An operation that accepts two input arguments and returns no result.

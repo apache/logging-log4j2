@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import org.apache.logging.log4j.core.impl.ArrayContextData;
-import org.apache.logging.log4j.core.impl.MutableContextData;
+import org.apache.logging.log4j.spi.ArrayContextData;
+import org.apache.logging.log4j.spi.MutableContextData;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -14,13 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.spi;
 
 import java.io.Serializable;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.util.BiConsumer;
-import org.apache.logging.log4j.core.util.TriConsumer;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * A read-only collection of context data. Context data items are String keys and values of arbitrary type that are
@@ -31,15 +31,11 @@ import org.apache.logging.log4j.core.util.TriConsumer;
  * </p>
  *
  * @see org.apache.logging.log4j.spi.ThreadContextMap
- * @see org.apache.logging.log4j.core.config.Property
- * @see org.apache.logging.log4j.core.impl.ContextDataInjector
- * @see org.apache.logging.log4j.core.impl.ContextDataInjectorFactory
  * @since 2.7
  */
 public interface ContextData extends Serializable {
     /**
-     * Returns a map view of this context data.
-     * Called to implement {@link LogEvent#getContextMap()}.
+     * Returns a {@code Map<String, String>} view of this context data.
      *
      * @return a map view of this context data
      */
