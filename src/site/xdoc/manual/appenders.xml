@@ -384,6 +384,12 @@
                 of "%m%n" will be used.</td>
             </tr>
             <tr>
+              <td>lazyCreate</td>
+              <td>boolean</td>
+              <td>The appender creates the file on-demand. The appender only creates the file when a log event 
+                passes all filters and is routed to this appender.</td>
+            </tr>
+            <tr>
               <td>locking</td>
               <td>boolean</td>
               <td>When set to true, I/O operations will occur only while the file lock is held allowing FileAppenders

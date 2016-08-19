@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -123,14 +124,19 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 break;
             }
             case "org.apache.log4j.TTCCLayout": {
-                final LayoutComponentBuilder ttccLayout = builder.newLayout("TTCCLayout");
-                ttccLayout.addAttribute("threadPrinting",
-                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ThreadPrinting", "true")));
-                ttccLayout.addAttribute("categoryPrefixing",
-                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.CategoryPrefixing", "true")));
-                ttccLayout.addAttribute("contextPrinting",
-                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ContextPrinting", "true")));
-                appenderBuilder.add(ttccLayout);
+                String pattern = "%r ";
+                if (Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ThreadPrinting", "true"))) {
+                    pattern += "[%t] ";
+                }
+                pattern += "%p ";
+                if (Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.CategoryPrefixing", "true"))) {
+                    pattern += "%c ";
+                }
+                if (Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ContextPrinting", "true"))) {
+                    pattern += "%notEmpty{%ndc }";
+                }
+                pattern += "- %m%n";
+                appenderBuilder.add(newPatternLayout(builder, pattern));
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {
@@ -239,9 +245,13 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
         }
         final String[] rootLoggerParts = rootLoggerValue.split("\\s*,\\s*");
         final Level rootLoggerLevel = rootLoggerParts.length > 0 ? Level.valueOf(rootLoggerParts[0]) : Level.ERROR;
-        builder.add(builder.newRootLogger(rootLoggerLevel));
         final String[] sortedAppenderNames = Arrays.copyOfRange(rootLoggerParts, 1, rootLoggerParts.length);
         Arrays.sort(sortedAppenderNames);
+        RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
+        for (String appender : sortedAppenderNames) {
+            loggerBuilder.add(builder.newAppenderRef(appender));
+        }
+        builder.add(loggerBuilder);
         return sortedAppenderNames;
     }
 

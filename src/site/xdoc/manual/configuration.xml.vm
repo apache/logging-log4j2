@@ -1943,7 +1943,8 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td><a name="log4j2.messageFactory" />log4j2.messageFactory</td>
-    <td>org.apache.logging.log4j.message. ParameterizedMessageFactory</td>
+    <td>org.apache.logging.log4j.message. ParameterizedMessageFactory or
+      org.apache.logging.log4j.message. ReusableMessageFactory in garbage-free mode</td>
     <td>Default message factory used by Loggers if no factory was specified.</td>
   </tr>
   <tr>
