@@ -19,7 +19,8 @@ package org.apache.logging.log4j;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Before;
+import org.apache.logging.log4j.junit.ThreadContextRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -31,11 +32,9 @@ public class CloseableThreadContextTest {
 
     private final String key = "key";
     private final String value = "value";
-
-    @Before
-    public void setUp() throws Exception {
-        ThreadContext.clearAll();
-    }
+    
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
 
     @Test
     public void shouldAddAnEntryToTheMap() throws Exception {

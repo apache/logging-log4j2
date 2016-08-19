@@ -324,7 +324,6 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     /**
      * Set the Advertiser Plugin name.
      * @param advertiser The Advertiser Plugin name.
-     * @param includeLocation If true include location information.
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setAdvertiser(String advertiser);
@@ -379,6 +378,17 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setVerbosity(String verbosity);
+
+    /**
+     * Specifies the destination for StatusLogger events. This can be {@code out} (default) for using
+     * {@link System#out standard out}, {@code err} for using {@link System#err standard error}, or a file URI to
+     * which log events will be written. If the provided URI is invalid, then the default destination of standard
+     * out will be used.
+     *
+     * @param destination where status log messages should be output.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setDestination(String destination);
 
     /**
      * Add the properties for the root node.

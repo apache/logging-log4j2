@@ -32,9 +32,11 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.junit.ThreadContextMapRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -42,6 +44,9 @@ import org.junit.Test;
  */
 public class DynamicThresholdFilterTest {
 
+    @Rule
+    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule(); 
+    
     @After
     public void cleanup() {
         final LoggerContext ctx = LoggerContext.getContext(false);
@@ -69,7 +74,6 @@ public class DynamicThresholdFilterTest {
         assertSame(Filter.Result.DENY, filter.filter(event));
         event = Log4jLogEvent.newBuilder().setLevel(Level.ERROR).setMessage(new SimpleMessage("Test")).build();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
-        ThreadContext.clearMap();
     }
 
     @Test
