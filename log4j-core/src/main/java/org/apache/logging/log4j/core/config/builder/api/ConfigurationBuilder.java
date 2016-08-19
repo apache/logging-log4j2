@@ -410,16 +410,16 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     T build(boolean initialize);
 
     /**
-     * Write an XML configuration file from this builder.
+     * Constructs an XML configuration from this builder.
      *
      * @param output  OutputStream to write to, will not be closed
      */
-    void writeXmlConfigurationFile(OutputStream output) throws IOException;
+    void writeXmlConfiguration(OutputStream output) throws IOException;
 
     /**
-     * Write an XML configuration from this builder.
+     * Constructs an XML configuration from this builder.
      *
      * @return  XML configuration
      */
-    String writeXmlConfiguration();
+    String toXmlConfiguration();
 }

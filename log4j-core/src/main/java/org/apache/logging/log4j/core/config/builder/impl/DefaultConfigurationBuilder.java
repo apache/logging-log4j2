@@ -196,7 +196,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public void writeXmlConfigurationFile(final OutputStream output) throws IOException {
+    public void writeXmlConfiguration(final OutputStream output) throws IOException {
         try {
             XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(output);
             writeConfigurationXml(xmlWriter);
@@ -211,7 +211,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public String writeXmlConfiguration() {
+    public String toXmlConfiguration() {
         StringWriter sw = new StringWriter();
         try {
             XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
