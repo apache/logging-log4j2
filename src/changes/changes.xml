@@ -105,6 +105,9 @@
       <action issue="LOG4J2-1496" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Kafka client from 0.9.1.0 to 0.10.0.0.
       </action>
+      <action issue="LOG4J2-1533" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update Kafka client from 0.10.0.0 to 0.10.0.1.
+      </action>
       <action issue="LOG4J2-1487" dev="ggregory" type="update" due-to="Gary Gregory">
         Update JMS test from ActiveMQ 5.13.3 to 5.13.4.
       </action>
