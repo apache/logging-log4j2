@@ -23,8 +23,14 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Garbage-free ThreadContextMap implementation backed by {@code MutableContextData}.
+ * <p>
+ * This implementation does <em>not</em> make a copy of its contents on every operation, so this data structure cannot
+ * be passed to log events. It is advisable to provide a fast way to copy data from this data structure into log
+ * events.
+ * </p>
+ * @since 2.7
  */
-public abstract class AbstractGarbageFreeMutableThreadContext implements ThreadContextMap {
+public abstract class AbstractGarbageFreeMutableThreadContext implements ThreadContextMap, ThreadContextMap2 {
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.

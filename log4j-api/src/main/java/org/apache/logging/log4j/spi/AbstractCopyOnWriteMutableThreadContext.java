@@ -27,8 +27,10 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * immutable. This means the Map can be passed to other threads without concern that it will be updated. Since it is
  * expected that the Map will be passed to many more log events than the number of keys it contains the performance
  * should be much better than if the Map was copied for each event.
+ *
+ * @since 2.7
  */
-public abstract class AbstractCopyOnWriteMutableThreadContext implements ThreadContextMap {
+public abstract class AbstractCopyOnWriteMutableThreadContext implements ThreadContextMap, ThreadContextMap2 {
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.
