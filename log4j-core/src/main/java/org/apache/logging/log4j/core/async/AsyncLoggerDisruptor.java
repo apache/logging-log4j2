@@ -81,7 +81,7 @@ class AsyncLoggerDisruptor {
         LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
-        executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]"));
+        executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]-"));
         backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
         asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
