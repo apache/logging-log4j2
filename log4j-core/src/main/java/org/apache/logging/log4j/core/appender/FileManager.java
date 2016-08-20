@@ -40,11 +40,14 @@ public class FileManager extends OutputStreamManager {
     private static final FileManagerFactory FACTORY = new FileManagerFactory();
 
     private final boolean isAppend;
-    private final boolean isLazyCreate;
+    private final boolean createOnDemand;
     private final boolean isLocking;
     private final String advertiseURI;
     private final int bufferSize;
 
+    /**
+     * @deprecated
+     */
     @Deprecated
     protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
@@ -53,7 +56,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * @deprecated 
+     * @deprecated
      * @since 2.6 
      */
     @Deprecated
@@ -62,7 +65,7 @@ public class FileManager extends OutputStreamManager {
             final ByteBuffer buffer) {
         super(os, fileName, layout, writeHeader, buffer);
         this.isAppend = append;
-        this.isLazyCreate = false;
+        this.createOnDemand = false;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
         this.bufferSize = buffer.capacity();
@@ -72,12 +75,12 @@ public class FileManager extends OutputStreamManager {
      * @throws IOException 
      * @since 2.7 
      */
-    protected FileManager(final String fileName, final boolean append, final boolean locking, final boolean lazyCreate,
+    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking, final boolean createOnDemand,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader,
             final ByteBuffer buffer) throws IOException {
-        super(fileName, lazyCreate, layout, writeHeader, buffer);
+        super(os, fileName, createOnDemand, layout, writeHeader, buffer);
         this.isAppend = append;
-        this.isLazyCreate = lazyCreate;
+        this.createOnDemand = createOnDemand;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
         this.bufferSize = buffer.capacity();
@@ -89,7 +92,7 @@ public class FileManager extends OutputStreamManager {
      * @param append true if the file should be appended to, false if it should be overwritten.
      * @param locking true if the file should be locked while writing, false otherwise.
      * @param bufferedIo true if the contents should be buffered as they are written.
-     * @param lazyCreate true if you want to lazy-create the file (a.k.a. on-demand.)
+     * @param createOnDemand true if you want to lazy-create the file (a.k.a. on-demand.)
      * @param advertiseUri the URI to use when advertising the file
      * @param layout The layout
      * @param bufferSize buffer size for buffered IO
@@ -97,14 +100,14 @@ public class FileManager extends OutputStreamManager {
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
-            final boolean bufferedIo, final boolean lazyCreate, final String advertiseUri,
+            final boolean bufferedIo, final boolean createOnDemand, final String advertiseUri,
             final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush) {
 
         if (locking && bufferedIo) {
             locking = false;
         }
         return (FileManager) getManager(fileName,
-                new FactoryData(append, locking, bufferedIo, bufferSize, immediateFlush, lazyCreate, advertiseUri, layout),
+                new FactoryData(append, locking, bufferedIo, bufferSize, immediateFlush, createOnDemand, advertiseUri, layout),
                 FACTORY);
     }
 
@@ -159,8 +162,8 @@ public class FileManager extends OutputStreamManager {
      * Returns the lazy-create.
      * @return true if the file will be lazy-created.
      */
-    public boolean isLazyCreate() {
-        return isLazyCreate;
+    public boolean isCreateOnDemand() {
+        return createOnDemand;
     }
 
     /**
@@ -201,7 +204,7 @@ public class FileManager extends OutputStreamManager {
         private final boolean bufferedIO;
         private final int bufferSize;
         private final boolean immediateFlush;
-        private final boolean lazyCreate;
+        private final boolean createOnDemand;
         private final String advertiseURI;
         private final Layout<? extends Serializable> layout;
 
@@ -212,19 +215,19 @@ public class FileManager extends OutputStreamManager {
          * @param bufferedIO Buffering flag.
          * @param bufferSize Buffer size.
          * @param immediateFlush flush on every write or not
-         * @param lazyCreate if you want to lazy-create the file (a.k.a. on-demand.)
+         * @param createOnDemand if you want to lazy-create the file (a.k.a. on-demand.)
          * @param advertiseURI the URI to use when advertising the file
          * @param layout The layout
          */
         public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO, final int bufferSize,
-                final boolean immediateFlush, final boolean lazyCreate, final String advertiseURI,
+                final boolean immediateFlush, final boolean createOnDemand, final String advertiseURI,
                 final Layout<? extends Serializable> layout) {
             this.append = append;
             this.locking = locking;
             this.bufferedIO = bufferedIO;
             this.bufferSize = bufferSize;
             this.immediateFlush = immediateFlush;
-            this.lazyCreate = lazyCreate;
+            this.createOnDemand = createOnDemand;
             this.advertiseURI = advertiseURI;
             this.layout = layout;
         }
@@ -253,7 +256,8 @@ public class FileManager extends OutputStreamManager {
             try {
                 final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
-                return new FileManager(name, data.append, data.locking, data.lazyCreate, data.advertiseURI, data.layout,
+                final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
+                return new FileManager(name, fos, data.append, data.locking, data.createOnDemand, data.advertiseURI, data.layout,
                         writeHeader, buffer);
             } catch (final IOException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);

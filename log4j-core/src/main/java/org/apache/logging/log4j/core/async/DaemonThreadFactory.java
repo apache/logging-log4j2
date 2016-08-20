@@ -33,14 +33,12 @@ public class DaemonThreadFactory implements ThreadFactory {
     public DaemonThreadFactory(final String threadNamePrefix) {
         this.threadNamePrefix = threadNamePrefix;
         final SecurityManager securityManager = System.getSecurityManager();
-        group = (securityManager != null) ? securityManager.getThreadGroup()
-                : Thread.currentThread().getThreadGroup();
+        group = securityManager != null ? securityManager.getThreadGroup() : Thread.currentThread().getThreadGroup();
     }
 
     @Override
     public Thread newThread(final Runnable runnable) {
-        final Thread thread = new Log4jThread(group, runnable, threadNamePrefix
-                + THREAD_NUMBER.getAndIncrement(), 0);
+        final Thread thread = new Log4jThread(group, runnable, threadNamePrefix + THREAD_NUMBER.getAndIncrement(), 0);
         if (!thread.isDaemon()) {
             thread.setDaemon(true);
         }
