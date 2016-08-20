@@ -45,6 +45,9 @@ public class FileManager extends OutputStreamManager {
     private final String advertiseURI;
     private final int bufferSize;
 
+    /**
+     * @deprecated
+     */
     @Deprecated
     protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
@@ -53,7 +56,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * @deprecated 
+     * @deprecated
      * @since 2.6 
      */
     @Deprecated
@@ -72,10 +75,10 @@ public class FileManager extends OutputStreamManager {
      * @throws IOException 
      * @since 2.7 
      */
-    protected FileManager(final String fileName, final boolean append, final boolean locking, final boolean lazyCreate,
+    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking, final boolean lazyCreate,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader,
             final ByteBuffer buffer) throws IOException {
-        super(fileName, lazyCreate, layout, writeHeader, buffer);
+        super(os, fileName, lazyCreate, layout, writeHeader, buffer);
         this.isAppend = append;
         this.isLazyCreate = lazyCreate;
         this.isLocking = locking;
@@ -253,7 +256,8 @@ public class FileManager extends OutputStreamManager {
             try {
                 final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
-                return new FileManager(name, data.append, data.locking, data.lazyCreate, data.advertiseURI, data.layout,
+                final FileOutputStream fos = data.lazyCreate ? null : new FileOutputStream(file, data.append);
+                return new FileManager(name, fos, data.append, data.locking, data.lazyCreate, data.advertiseURI, data.layout,
                         writeHeader, buffer);
             } catch (final IOException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);

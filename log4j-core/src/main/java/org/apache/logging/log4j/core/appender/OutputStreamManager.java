@@ -43,12 +43,6 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     }
 
     /**
-     *
-     * @param os
-     * @param streamName
-     * @param layout
-     * @param writeHeader
-     * @param byteBuffer
      * @since 2.6
      * @deprecated
      */
@@ -72,17 +66,21 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     }
 
     /**
-     * @param byteBuffer
      * @throws IOException 
      * @since 2.7
      */
-    protected OutputStreamManager(final String streamName, final boolean lazyCreate, final Layout<? extends Serializable> layout,
-            final boolean writeHeader, final ByteBuffer byteBuffer)
+    protected OutputStreamManager(OutputStream os, final String streamName, final boolean lazyCreate,
+            final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer byteBuffer)
             throws IOException {
         super(streamName);
+        if (lazyCreate && os != null) {
+            LOGGER.error(
+                    "Invalid OutputStreamManager configuration for '{}': You cannot both set the OutputStream and request on-demand.",
+                    streamName);
+        }
         this.layout = layout;
         this.byteBuffer = Objects.requireNonNull(byteBuffer, "byteBuffer");
-        this.os = lazyCreate ? null : createOutputStream();
+        this.os = os;
         if (writeHeader && layout != null) {
             final byte[] header = layout.getHeader();
             if (header != null) {
