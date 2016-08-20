@@ -90,8 +90,8 @@
       <action issue="LOG4J2-1508" dev="ggregory" type="add" due-to="Gary Gregory">
         Allow a Builder to subclass another Builder.
       </action>
-      <action issue="LOG4J2-1516" dev="ggregory" type="add" due-to="Gary Gregory">
-        Add ThreadContextMap.putAll(Map&lt;String, String&gt;).
+      <action issue="LOG4J2-1516" dev="rpopma" type="add" due-to="Gary Gregory">
+        Add ThreadContextMap2 interface supporting method putAll(Map&lt;String, String&gt;).
       </action>
       <action issue="LOG4J2-1519" dev="ggregory" type="add" due-to="Gary Gregory">
         Add ThreadContext.putAll(Map&lt;String, String&gt;).
