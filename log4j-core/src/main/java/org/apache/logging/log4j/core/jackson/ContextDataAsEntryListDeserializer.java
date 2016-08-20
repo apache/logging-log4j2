@@ -48,7 +48,7 @@ public class ContextDataAsEntryListDeserializer extends StdDeserializer<MutableC
         final List<MapEntry> list = jp.readValueAs(new TypeReference<List<MapEntry>>() {
             // empty
         });
-        final MutableContextData contextData = new ContextDataFactory().getContextData();
+        final MutableContextData contextData = new ContextDataFactory().createContextData();
         for (final MapEntry mapEntry : list) {
             contextData.putValue(mapEntry.getKey(), mapEntry.getValue());
         }

@@ -38,7 +38,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
     private static final Clock CLOCK = ClockFactory.getClock();
 
     private static ThreadLocal<MutableLogEvent> mutableLogEventThreadLocal = new ThreadLocal<>();
-    private final ContextDataInjector injector = ContextDataInjectorFactory.getInjector();
+    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
 
     /**
      * Creates a log event.

@@ -183,7 +183,7 @@ public class Log4jLogEvent implements LogEvent {
         @SuppressWarnings("unchecked")
         @Deprecated
         public Builder setContextMap(final Map<String, String> contextMap) {
-            contextData = ContextDataFactory.getContextData(); // replace with new instance
+            contextData = ContextDataFactory.createContextData(); // replace with new instance
             if (contextMap != null) {
                 for (Map.Entry<String, String> entry : contextMap.entrySet()) {
                     contextData.putValue(entry.getKey(), entry.getValue());
@@ -401,7 +401,7 @@ public class Log4jLogEvent implements LogEvent {
         this.message = message;
         this.thrown = thrown;
         this.thrownProxy = thrownProxy;
-        this.contextData = contextData == null ? ContextDataFactory.getContextData() : contextData;
+        this.contextData = contextData == null ? ContextDataFactory.createContextData() : contextData;
         this.contextStack = contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
         this.timeMillis = message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()
@@ -417,7 +417,7 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     private static MutableContextData createContextData(final Map<String, String> contextMap) {
-        final MutableContextData result = ContextDataFactory.getContextData();
+        final MutableContextData result = ContextDataFactory.createContextData();
         if (contextMap != null) {
             for (Map.Entry<String, String> entry : contextMap.entrySet()) {
                 result.putValue(entry.getKey(), entry.getValue());
@@ -427,8 +427,8 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     private static MutableContextData createContextData(final List<Property> properties) {
-        final MutableContextData result = ContextDataFactory.getContextData();
-        final ContextDataInjector injector = ContextDataInjectorFactory.getInjector();
+        final MutableContextData result = ContextDataFactory.createContextData();
+        final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
         injector.injectContextData(properties, result);
         return result;
     }

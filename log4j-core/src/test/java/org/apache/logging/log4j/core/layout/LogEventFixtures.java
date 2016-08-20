@@ -84,7 +84,7 @@ class LogEventFixtures {
     static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
             final boolean includeContext) {
         assertEquals(expected.getClass(), actual.getClass());
-        assertEquals(includeContext ? expected.getContextData() : ContextDataFactory.getContextData(), actual.getContextData());
+        assertEquals(includeContext ? expected.getContextData() : ContextDataFactory.createContextData(), actual.getContextData());
         assertEquals(includeContext ? expected.getContextMap() : Collections.EMPTY_MAP, actual.getContextMap());
         assertEquals(expected.getContextStack(), actual.getContextStack());
         assertEquals(expected.getLevel(), actual.getLevel());

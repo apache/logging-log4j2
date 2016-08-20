@@ -35,7 +35,7 @@ import com.lmax.disruptor.EventTranslator;
 public class RingBufferLogEventTranslator implements
         EventTranslator<RingBufferLogEvent> {
 
-    private final ContextDataInjector injector = ContextDataInjectorFactory.getInjector();
+    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
     private AsyncLogger asyncLogger;
     private String loggerName;
     protected Marker marker;

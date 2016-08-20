@@ -41,7 +41,7 @@ public class ContextDataInjectorFactory {
      *
      * @return a ContextDataInjector that populates the {@code ContextData} of all {@code LogEvent} objects
      */
-    public static ContextDataInjector getInjector() {
+    public static ContextDataInjector createInjector() {
         final String className = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextDataInjector");
         if (className == null) {
             return new ThreadContextDataInjector();

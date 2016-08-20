@@ -74,7 +74,7 @@ public class ContextDataJsonAttributeConverter implements AttributeConverter<Con
             return null;
         }
         try {
-            final MutableContextData result = ContextDataFactory.getContextData();
+            final MutableContextData result = ContextDataFactory.createContextData();
             final ObjectNode root = (ObjectNode) OBJECT_MAPPER.readTree(s);
             final Iterator<Map.Entry<String, JsonNode>> entries = root.fields();
             while (entries.hasNext()) {

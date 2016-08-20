@@ -82,7 +82,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private Object[] parameters;
     private transient Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private final MutableContextData contextData = ContextDataFactory.getContextData();
+    private final MutableContextData contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String fqcn;
     private StackTraceElement location;

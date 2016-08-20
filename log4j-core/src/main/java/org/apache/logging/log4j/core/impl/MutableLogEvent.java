@@ -55,7 +55,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private Object[] parameters;
     private Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private MutableContextData contextData = ContextDataFactory.getContextData();
+    private MutableContextData contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String loggerFqcn;
     private StackTraceElement source;

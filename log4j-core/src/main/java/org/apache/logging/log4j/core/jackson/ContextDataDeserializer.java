@@ -51,7 +51,7 @@ public class ContextDataDeserializer extends StdDeserializer<MutableContextData>
 //        if (tok != JsonToken.START_OBJECT) {
 //            throw new IOException("Expected data to start with an Object");
 //        }
-        final MutableContextData contextData = ContextDataFactory.getContextData();
+        final MutableContextData contextData = ContextDataFactory.createContextData();
         // Iterate over object fields:
         while (jp.nextToken() != JsonToken.END_OBJECT) {
             String fieldName = jp.getCurrentName();

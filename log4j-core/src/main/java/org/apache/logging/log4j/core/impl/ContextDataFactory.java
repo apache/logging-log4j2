@@ -33,7 +33,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public class ContextDataFactory {
 
     @SuppressWarnings("unchecked")
-    public static MutableContextData getContextData() {
+    public static MutableContextData createContextData() {
         final String CLASS = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData",
                 ArrayContextData.class.getName());
         try {
