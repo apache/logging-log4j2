@@ -36,7 +36,6 @@ import org.apache.logging.log4j.spi.MutableContextData;
  *
  * @see ContextData
  * @see ContextDataInjectorFactory
- * @see org.apache.logging.log4j.core.ContextData
  * @see org.apache.logging.log4j.ThreadContext
  * @see ThreadContextDataInjector
  * @since 2.7

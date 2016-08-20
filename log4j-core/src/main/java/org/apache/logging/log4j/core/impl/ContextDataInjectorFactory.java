@@ -34,7 +34,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * @see ContextDataInjector
  * @see ContextData
  * @see ThreadContextDataInjector
- * @see org.apache.logging.log4j.core.ContextData
  * @see LogEvent#getContextData()
  * @since 2.7
  */
