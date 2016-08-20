@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
@@ -65,11 +66,30 @@ public class RollingFileManager extends FileManager {
                 writeHeader, ByteBuffer.wrap(new byte[Constants.ENCODER_BYTE_BUFFER_SIZE]));
     }
 
+    @Deprecated
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
             final boolean append, final long size, final long time, final TriggeringPolicy triggeringPolicy,
             final RolloverStrategy rolloverStrategy, final String advertiseURI,
             final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
         super(fileName, os, append, false, advertiseURI, layout, writeHeader, buffer);
+        this.size = size;
+        this.initialTime = time;
+        this.triggeringPolicy = triggeringPolicy;
+        this.rolloverStrategy = rolloverStrategy;
+        this.patternProcessor = new PatternProcessor(pattern);
+        this.patternProcessor.setPrevFileTime(time);
+    }
+
+    /**
+     * @throws IOException 
+     * @since 2.7
+     */
+    protected RollingFileManager(final String fileName, final String pattern, final OutputStream os, final boolean append,
+            final boolean lazyCreate, final long size, final long time, final TriggeringPolicy triggeringPolicy,
+            final RolloverStrategy rolloverStrategy, final String advertiseURI,
+            final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer)
+            throws IOException {
+        super(fileName, os, append, false, lazyCreate, advertiseURI, layout, writeHeader, buffer);
         this.size = size;
         this.initialTime = time;
         this.triggeringPolicy = triggeringPolicy;
@@ -93,15 +113,17 @@ public class RollingFileManager extends FileManager {
      * @param advertiseURI the URI to use when advertising the file
      * @param layout The Layout.
      * @param bufferSize buffer size to use if bufferedIO is true
+     * @param immediateFlush flush on every write or not
+     * @param lazyCreate true if you want to lazy-create the file (a.k.a. on-demand.)
      * @return A RollingFileManager.
      */
     public static RollingFileManager getFileManager(final String fileName, final String pattern, final boolean append,
             final boolean bufferedIO, final TriggeringPolicy policy, final RolloverStrategy strategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
-            final boolean immediateFlush) {
+            final boolean immediateFlush, final boolean lazyCreate) {
 
         return (RollingFileManager) getManager(fileName, new FactoryData(pattern, append,
-            bufferedIO, policy, strategy, advertiseURI, layout, bufferSize, immediateFlush), factory);
+            bufferedIO, policy, strategy, advertiseURI, layout, bufferSize, immediateFlush, lazyCreate), factory);
     }
 
     // override to make visible for unit tests
@@ -325,6 +347,7 @@ public class RollingFileManager extends FileManager {
         private final boolean bufferedIO;
         private final int bufferSize;
         private final boolean immediateFlush;
+        private final boolean lazyCreate;
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
         private final String advertiseURI;
@@ -339,10 +362,12 @@ public class RollingFileManager extends FileManager {
          * @param layout The Layout.
          * @param bufferSize the buffer size
          * @param immediateFlush flush on every write or not
+         * @param lazyCreate true if you want to lazy-create the file (a.k.a. on-demand.)
          */
         public FactoryData(final String pattern, final boolean append, final boolean bufferedIO,
                 final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-                final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush) {
+                final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush, 
+                final boolean lazyCreate) {
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;
@@ -352,6 +377,7 @@ public class RollingFileManager extends FileManager {
             this.advertiseURI = advertiseURI;
             this.layout = layout;
             this.immediateFlush = immediateFlush;
+            this.lazyCreate = lazyCreate;
         }
 
         public TriggeringPolicy getTriggeringPolicy()
@@ -418,24 +444,24 @@ public class RollingFileManager extends FileManager {
             // LOG4J2-1140: check writeHeader before creating the file
             final boolean writeHeader = !data.append || !file.exists();
             try {
-                file.createNewFile();
+                final boolean created = data.lazyCreate ? false : file.createNewFile();
+                LOGGER.trace("New file '{}' created = {}", name, created);
             } catch (final IOException ioe) {
                 LOGGER.error("Unable to create file " + name, ioe);
                 return null;
             }
             final long size = data.append ? file.length() : 0;
 
-            OutputStream os;
             try {
-                os = new FileOutputStream(name, data.append);
                 final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
-
-                final long time = file.lastModified(); // LOG4J2-531 create file first so time has valid value
-                return new RollingFileManager(name, data.pattern, os, data.append, size, time, data.policy,
-                    data.strategy, data.advertiseURI, data.layout, writeHeader, buffer);
-            } catch (final FileNotFoundException ex) {
-                LOGGER.error("FileManager (" + name + ") " + ex, ex);
+                final OutputStream os = data.lazyCreate ? null : new FileOutputStream(name, data.append);
+                final long time = data.lazyCreate? System.currentTimeMillis() : file.lastModified(); // LOG4J2-531 create file first so time has valid value
+                
+                return new RollingFileManager(name, data.pattern, os, data.append, data.lazyCreate, size, time, data.policy,
+                        data.strategy, data.advertiseURI, data.layout, writeHeader, buffer);
+            } catch (final IOException ex) {
+                LOGGER.error("RollingFileManager (" + name + ") " + ex, ex);
             }
             return null;
         }
