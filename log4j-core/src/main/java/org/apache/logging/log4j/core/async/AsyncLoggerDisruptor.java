@@ -22,6 +22,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.ExceptionHandler;
@@ -81,7 +82,7 @@ class AsyncLoggerDisruptor {
         LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
-        executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]-"));
+        executor = Executors.newSingleThreadExecutor(Log4jThreadFactory.createDaemonThreadFactory("AsyncLogger[" + contextName + "]"));
         backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
         asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
