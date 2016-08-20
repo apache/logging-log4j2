@@ -23,17 +23,30 @@ import org.apache.logging.log4j.core.config.Property;
 /**
  * Responsible for initializing the ContextData of LogEvents. Context data is data that is set by the application to be
  * included in all subsequent log events.
+ * <p>
+ * The source of the context data is implementation-specific. The default source for context data is the ThreadContext.
+ * </p><p>
+ * In some asynchronous models, work may be delegated to several threads, while conceptually this work shares the same
+ * context. In such models, storing context data in {@code ThreadLocal} variables is not convenient or desirable.
+ * By specifying a custom {@code ContextDataInjectorFactory}, users can initialize log events with context data from
+ * any arbitrary context.
+ * </p>
  *
+ * @see ContextDataInjectorFactory
  * @see org.apache.logging.log4j.core.ContextData
  * @see org.apache.logging.log4j.ThreadContext
+ * @see ThreadContextDataInjector
  * @since 2.7
  */
 public interface ContextDataInjector {
     /**
-     * Updates the specified ContextData with context key-value pairs.
+     * Returns a {@code MutableContextData} object initialized with the specified properties and the appropriate
+     * context data. The returned value may be the specified parameter or a different object.
      *
-     * @param properties Properties from the configuration to be added to the ContextData
-     * @param contextData the ContextData to initialize
+     * @param properties Properties from the log4j configuration to be added to the resulting ContextData
+     * @param reusable a {@code MutableContextData} instance that may be reused to avoid creating temporary objects
+     * @return a {@code MutableContextData} instance initialized with the specified properties and the appropriate
+     *          context data. The returned value may be the specified parameter or a different object.
      */
-    void injectContextData(final List<Property> properties, final MutableContextData contextData);
+    MutableContextData injectContextData(final List<Property> properties, final MutableContextData reusable);
 }

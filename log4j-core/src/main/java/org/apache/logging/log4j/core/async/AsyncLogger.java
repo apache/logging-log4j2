@@ -27,6 +27,8 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
+import org.apache.logging.log4j.core.impl.ContextDataInjector;
+import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MutableContextData;
 import org.apache.logging.log4j.core.util.Clock;
@@ -68,6 +70,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final Clock CLOCK = ClockFactory.getClock(); // not reconfigurable
+    private static final ContextDataInjector CONTEXT_DATA_INJECTOR = ContextDataInjectorFactory.createInjector();
 
     private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
 
@@ -269,6 +272,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         final Thread currentThread = Thread.currentThread();
         final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
         event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown,
+                // config properties are taken care of in the EventHandler thread
+                // in the AsyncLogger#actualAsyncLog method
+                CONTEXT_DATA_INJECTOR.injectContextData(null, (MutableContextData) event.getContextData()),
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
                 CLOCK.currentTimeMillis(), nanoClock.nanoTime());
     }

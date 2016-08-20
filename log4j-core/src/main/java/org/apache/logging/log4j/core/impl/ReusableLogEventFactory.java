@@ -74,7 +74,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.setLevel(level == null ? Level.OFF : level);
         result.setMessage(message);
         result.setThrown(t);
-        injector.injectContextData(properties, (MutableContextData) result.getContextData());
+        result.setContextData(injector.injectContextData(properties, (MutableContextData) result.getContextData()));
         result.setContextStack(ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack());// mutable copy
         result.setTimeMillis(message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()

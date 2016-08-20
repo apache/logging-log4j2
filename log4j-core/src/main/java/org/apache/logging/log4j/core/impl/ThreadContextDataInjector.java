@@ -22,13 +22,13 @@ import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**
- * {@code ThreadContextDataInjector} copies key-value pairs from the {@code ThreadContext} map and from the
- * configuration {@code Properties} into the {@code LogEvent}s' {@code ContextData}.
+ * {@code ThreadContextDataInjector} contains a number of strategies for copying key-value pairs from the various
+ * {@code ThreadContext} map implementations into a {@code MutableContextData}. In the case of duplicate keys,
+ * thread context values overwrite configuration {@code Property} values.
  * <p>
- * This is the default {@code ContextDataInjector} returned by the {@link ContextDataInjectorFactory}.
+ * These are the default {@code ContextDataInjector} objects returned by the {@link ContextDataInjectorFactory}.
  * </p>
  *
  * @see org.apache.logging.log4j.ThreadContext
@@ -38,37 +38,127 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
  * @see ContextDataInjectorFactory
  * @since 2.7
  */
-public class ThreadContextDataInjector implements ContextDataInjector {
-    @Override
-    public void injectContextData(final List<Property> properties, final MutableContextData contextData) {
-        copyProperties(properties, contextData);
-        //copyThreadContextMap(ThreadContext.getThreadContextMap(), contextData); //TODO LOG4J2-1349
-        copyThreadContextMap(ThreadContext.getImmutableContext(), contextData);
+public class ThreadContextDataInjector  {
+
+    /**
+     * Default {@code ContextDataInjector} for the legacy {@code Map<String, String>}-based ThreadContext (which is
+     * also the ThreadContext implementation used for web applications).
+     * <p>
+     * This injector always puts key-value pairs into the specified reusable MutableContextData.
+     */
+    public static class ForDefaultThreadContextMap implements ContextDataInjector {
+        /**
+         * Puts key-value pairs from both the specified list of properties as well as the thread context into the
+         * specified reusable MutableContextData.
+         *
+         * @param props list of configuration properties, may be {@code null}
+         * @param reusable a {@code MutableContextData} instance that may be reused to avoid creating temporary objects
+         * @return a {@code MutableContextData} combining configuration properties with thread context data
+         */
+        @Override
+        public MutableContextData injectContextData(final List<Property> props, final MutableContextData reusable) {
+            // implementation note:
+            // The DefaultThreadContextMap stores context data in a Map<String, String>, not in a ContextData object.
+            // Therefore we can populate the specified reusable MutableContextData, but
+            // we need to copy the ThreadContext key-value pairs one by one.
+            copyProperties(props, reusable);
+            copyThreadContextMap(ThreadContext.getImmutableContext(), reusable);
+            return reusable;
+        }
+
+        /**
+         * Copies key-value pairs from the specified map into the specified {@code MutableContextData}.
+         *
+         * @param map map with key-value pairs, may be {@code null}
+         * @param result the {@code MutableContextData} object to add the key-values to. Must be non-{@code null}.
+         */
+        private static void copyThreadContextMap(final Map<String, String> map, final MutableContextData result) {
+            if (map != null) {
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    result.putValue(entry.getKey(), entry.getValue());
+                }
+            }
+        }
     }
 
-    private void copyProperties(final List<Property> properties, final MutableContextData contextData) {
+    /**
+     * The {@code ContextDataInjector} used when the ThreadContextMap implementation is a garbage-free
+     * MutableContextData-based data structure.
+     * <p>
+     * This injector always puts key-value pairs into the specified reusable MutableContextData.
+     */
+    public static class ForGarbageFreeMutableThreadContextMap implements ContextDataInjector {
+        /**
+         * Puts key-value pairs from both the specified list of properties as well as the thread context into the
+         * specified reusable MutableContextData.
+         *
+         * @param props list of configuration properties, may be {@code null}
+         * @param reusable a {@code MutableContextData} instance that may be reused to avoid creating temporary objects
+         * @return a {@code MutableContextData} combining configuration properties with thread context data
+         */
+        @Override
+        public MutableContextData injectContextData(final List<Property> props, final MutableContextData reusable) {
+            // When the ThreadContext is garbage-free, we must copy its key-value pairs into the specified reusable
+            // MutableContextData. We cannot return the ThreadContext's internal data structure because it will be
+            // modified.
+            copyProperties(props, reusable);
+
+            // TODO LOG4J2-1349
+//            final MutableContextData immutableCopy = ((AbstractGarbageFreeMutableThreadContext)
+//                    ThreadContext.getThreadContextMap()).getContextData();
+//            reusable.putAll(immutableCopy);
+            return reusable;
+        }
+    }
+
+    /**
+     * The {@code ContextDataInjector} used when the ThreadContextMap implementation is a copy-on-write
+     * MutableContextData-based data structure.
+     * <p>
+     * If there are no configuration properties, this injector will return the thread context's internal data
+     * structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
+     * specified reusable MutableContextData.
+     */
+    public static class ForCopyOnWriteMutableThreadContextMap implements ContextDataInjector {
+        /**
+         * If there are no configuration properties, this injector will return the thread context's internal data
+         * structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
+         * specified reusable MutableContextData.
+         *
+         * @param props list of configuration properties, may be {@code null}
+         * @param reusable a {@code MutableContextData} instance that may be reused to avoid creating temporary objects
+         * @return a {@code MutableContextData} combining configuration properties with thread context data
+         */
+        @Override
+        public MutableContextData injectContextData(final List<Property> props, final MutableContextData reusable) {
+            // TODO LOG4J2-1349
+
+//            // If there are no configuration properties we want to just return the ThreadContext's MutableContextData:
+//            // it is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
+//            final MutableContextData immutableCopy = ((AbstractCopyOnWriteMutableThreadContext)
+//                    ThreadContext.getThreadContextMap()).getContextData();
+//            if (props == null || props.isEmpty()) {
+//                return immutableCopy;
+//            }
+//            // However, if the list of Properties is non-empty we need to combine the properties and the ThreadContext
+//            // data. In that case we will copy the key-value pairs into the specified reusable MutableContextData.
+//            copyProperties(props, reusable);
+//            reusable.putAll(immutableCopy);
+            return reusable;
+        }
+    }
+
+    /**
+     * Copies key-value pairs from the specified property list into the specified {@code MutableContextData}.
+     *
+     * @param properties list of configuration properties, may be {@code null}
+     * @param result the {@code MutableContextData} object to add the key-values to. Must be non-{@code null}.
+     */
+    public static void copyProperties(final List<Property> properties, final MutableContextData result) {
         if (properties != null) {
             for (int i = 0; i < properties.size(); i++) {
                 final Property prop = properties.get(i);
-                contextData.putValue(prop.getName(), prop.getValue());
-            }
-        }
-    }
-
-    private void copyThreadContextMap(final Map<String, String> map, final MutableContextData contextData) {
-        if (map != null) {
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                contextData.putValue(entry.getKey(), entry.getValue());
-            }
-        }
-    }
-
-    private void copyThreadContextMap(final ThreadContextMap contextMap, final MutableContextData contextData) {
-        if (contextMap instanceof ContextData) {
-            contextData.putAll((ContextData) contextMap);
-        } else {
-            if (contextMap != null) {
-                copyThreadContextMap(contextMap.getImmutableMapOrNull(), contextData);
+                result.putValue(prop.getName(), prop.getValue());
             }
         }
     }

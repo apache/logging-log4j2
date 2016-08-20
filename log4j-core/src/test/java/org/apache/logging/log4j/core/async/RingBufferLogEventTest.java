@@ -57,7 +57,7 @@ public class RingBufferLogEventTest {
         final StackTraceElement location = null;
         final long currentTimeMillis = 0;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (MutableContextData) evt.getContextData(),
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
         assertEquals(Level.OFF, evt.getLevel());
     }
@@ -76,7 +76,7 @@ public class RingBufferLogEventTest {
         final StackTraceElement location = null;
         final long currentTimeMillis = 0;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (MutableContextData) evt.getContextData(),
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
         assertNotNull(evt.getMessage());
     }
@@ -95,7 +95,7 @@ public class RingBufferLogEventTest {
         final StackTraceElement location = null;
         final long currentTimeMillis = 123;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (MutableContextData) evt.getContextData(),
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
         assertEquals(123, evt.getTimeMillis());
     }
@@ -114,7 +114,7 @@ public class RingBufferLogEventTest {
         final StackTraceElement location = null;
         final long currentTimeMillis = 12345;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (MutableContextData) evt.getContextData(),
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
         ((MutableContextData) evt.getContextData()).putValue("key", "value");
 
@@ -152,7 +152,7 @@ public class RingBufferLogEventTest {
         final StackTraceElement location = null;
         final long currentTimeMillis = 12345;
         final long nanoTime = 1;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t,
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (MutableContextData) evt.getContextData(),
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
         ((MutableContextData) evt.getContextData()).putValue("key", "value");
 

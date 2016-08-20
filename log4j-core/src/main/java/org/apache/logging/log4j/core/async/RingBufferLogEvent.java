@@ -82,7 +82,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private Object[] parameters;
     private transient Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private final MutableContextData contextData = ContextDataFactory.createContextData();
+    private MutableContextData contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String fqcn;
     private StackTraceElement location;
@@ -92,8 +92,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
             final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-            final ContextStack aContextStack, final long threadId, final String threadName, final int threadPriority,
-            final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
+            final MutableContextData mutableContextData, final ContextStack aContextStack, final long threadId,
+            final String threadName, final int threadPriority, final StackTraceElement aLocation,
+            final long aCurrentTimeMillis, final long aNanoTime) {
         this.threadPriority = threadPriority;
         this.threadId = threadId;
         this.currentTimeMillis = aCurrentTimeMillis;
@@ -107,8 +108,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.location = aLocation;
+        this.contextData = mutableContextData;
         this.contextStack = aContextStack;
-        // contextData is never replaced, only its contents are modified
         this.asyncLogger = anAsyncLogger;
     }
 

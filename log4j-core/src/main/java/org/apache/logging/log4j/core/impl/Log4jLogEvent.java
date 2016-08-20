@@ -51,6 +51,8 @@ public class Log4jLogEvent implements LogEvent {
     private static final long serialVersionUID = -8393305700508709443L;
     private static final Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
+    private static final ContextDataInjector CONTEXT_DATA_INJECTOR = ContextDataInjectorFactory.createInjector();
+
     private final String loggerFqcn;
     private final Marker marker;
     private final Level level;
@@ -427,10 +429,8 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     private static MutableContextData createContextData(final List<Property> properties) {
-        final MutableContextData result = ContextDataFactory.createContextData();
-        final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
-        injector.injectContextData(properties, result);
-        return result;
+        final MutableContextData reusable = ContextDataFactory.createContextData();
+        return CONTEXT_DATA_INJECTOR.injectContextData(properties, reusable);
     }
 
     /**
