@@ -20,13 +20,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap2;
 import org.slf4j.MDC;
 
 /**
  * Bind the ThreadContextMap to the SLF4J MDC.
  */
-public class MDCContextMap implements ThreadContextMap {
-	
+public class MDCContextMap implements ThreadContextMap, ThreadContextMap2 {
+
     @Override
     public void put(final String key, final String value) {
         MDC.put(key, value);
@@ -35,7 +36,7 @@ public class MDCContextMap implements ThreadContextMap {
     @Override
     public void putAll(final Map<String, String> m) {
     	for (Entry<String, String> entry : m.entrySet()) {
-            MDC.put(entry.getKey(), entry.getValue());			
+            MDC.put(entry.getKey(), entry.getValue());
 		}
     }
 
