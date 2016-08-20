@@ -69,11 +69,11 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @throws IOException 
      * @since 2.7
      */
-    protected OutputStreamManager(OutputStream os, final String streamName, final boolean lazyCreate,
+    protected OutputStreamManager(OutputStream os, final String streamName, final boolean createOnDemand,
             final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer byteBuffer)
             throws IOException {
         super(streamName);
-        if (lazyCreate && os != null) {
+        if (createOnDemand && os != null) {
             LOGGER.error(
                     "Invalid OutputStreamManager configuration for '{}': You cannot both set the OutputStream and request on-demand.",
                     streamName);

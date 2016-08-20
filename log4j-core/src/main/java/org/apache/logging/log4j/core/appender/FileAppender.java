@@ -70,7 +70,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         private String advertiseUri;
 
         @PluginBuilderAttribute
-        private boolean lazyCreate;
+        private boolean createOnDemand;
 
         @PluginConfiguration
         private Configuration config;
@@ -86,7 +86,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             }
             Layout<? extends Serializable> layout = getOrCreateLayout();
 
-            final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, lazyCreate,
+            final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
                     advertiseUri, layout, bufferSize, isImmediateFlush());
             if (manager == null) {
                 return null;
@@ -124,8 +124,8 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return bufferedIo;
         }
 
-        public boolean isLazyCreate() {
-            return lazyCreate;
+        public boolean isCreateOnDemand() {
+            return createOnDemand;
         }
 
         public boolean isLocking() {
@@ -167,8 +167,8 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return asBuilder();
         }
 
-        public B withLazyCreate(final boolean lazyCreate) {
-            this.lazyCreate = lazyCreate;
+        public B withCreateOnDemand(final boolean createOnDemand) {
+            this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 

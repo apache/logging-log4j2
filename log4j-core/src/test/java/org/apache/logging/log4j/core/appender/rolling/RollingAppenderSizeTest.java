@@ -66,34 +66,34 @@ public class RollingAppenderSizeTest {
 
     private Logger logger;
 
-    private final boolean lazyCreate;
+    private final boolean createOnDemand;
 
-    @Parameterized.Parameters(name = "{0} \u2192 {1} (lazyCreate = {2})")
+    @Parameterized.Parameters(name = "{0} \u2192 {1} (createOnDemand = {2})")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { //
                 // @formatter:off
-               {"log4j-rolling-gz-lazy.xml", ".gz", true}, //
-               {"log4j-rolling-gz.xml", ".gz", false}, //
-               {"log4j-rolling-zip-lazy.xml", ".zip", true}, //
-               {"log4j-rolling-zip.xml", ".zip", false}, //
+               {"log4j-rolling-gz-lazy.xml", ".gz", true},
+               {"log4j-rolling-gz.xml", ".gz", false},
+               {"log4j-rolling-zip-lazy.xml", ".zip", true},
+               {"log4j-rolling-zip.xml", ".zip", false},
                 // Apache Commons Compress
-               {"log4j-rolling-bzip2-lazy.xml", ".bz2", true}, //
-               {"log4j-rolling-bzip2.xml", ".bz2", false}, //
-               {"log4j-rolling-deflate-lazy.xml", ".deflate", true}, //
-               {"log4j-rolling-deflate.xml", ".deflate", false}, //
-               {"log4j-rolling-pack200-lazy.xml", ".pack200", true}, //
-               {"log4j-rolling-pack200.xml", ".pack200", false}, //
-               {"log4j-rolling-xz-lazy.xml", ".xz", true}, //
-               {"log4j-rolling-xz.xml", ".xz", false}, //
+               {"log4j-rolling-bzip2-lazy.xml", ".bz2", true},
+               {"log4j-rolling-bzip2.xml", ".bz2", false},
+               {"log4j-rolling-deflate-lazy.xml", ".deflate", true},
+               {"log4j-rolling-deflate.xml", ".deflate", false},
+               {"log4j-rolling-pack200-lazy.xml", ".pack200", true},
+               {"log4j-rolling-pack200.xml", ".pack200", false},
+               {"log4j-rolling-xz-lazy.xml", ".xz", true},
+               {"log4j-rolling-xz.xml", ".xz", false},
                 });
                 // @formatter:on
     }
 
     private LoggerContextRule loggerContextRule;
 
-    public RollingAppenderSizeTest(final String configFile, final String fileExtension, final boolean lazyCreate) {
+    public RollingAppenderSizeTest(final String configFile, final String fileExtension, final boolean createOnDemand) {
         this.fileExtension = fileExtension;
-        this.lazyCreate = lazyCreate;
+        this.createOnDemand = createOnDemand;
         this.loggerContextRule = new LoggerContextRule(configFile);
         this.chain = loggerContextRule.withCleanFoldersRule(DIR);
     }
@@ -104,18 +104,18 @@ public class RollingAppenderSizeTest {
     }
 
     @Test
-    public void testIsLazyCreate() {
+    public void testIsCreateOnDemand() {
         final RollingFileAppender rfAppender = loggerContextRule.getRequiredAppender("RollingFile",
                 RollingFileAppender.class);
         final RollingFileManager manager = rfAppender.getManager();
         Assert.assertNotNull(manager);
-        Assert.assertEquals(lazyCreate, manager.isLazyCreate());
+        Assert.assertEquals(createOnDemand, manager.isCreateOnDemand());
     }
 
     @Test
     public void testAppender() throws Exception {
         final Path path = Paths.get(DIR, "rollingtest.log");
-        if (Files.exists(path) && lazyCreate) {
+        if (Files.exists(path) && createOnDemand) {
             Assert.fail(String.format("Unexpected file: %s (%s bytes)", path, Files.getAttribute(path, "size")));
         }
         for (int i = 0; i < 100; ++i) {

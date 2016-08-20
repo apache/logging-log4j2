@@ -91,7 +91,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         private String advertiseUri;
 
         @PluginBuilderAttribute
-        private boolean lazyCreate;
+        private boolean createOnDemand;
 
         @PluginConfiguration
         private Configuration config;
@@ -136,7 +136,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
             final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, append,
                     bufferedIo, policy, strategy, advertiseUri, getLayout(), bufferSize, isImmediateFlush(),
-                    lazyCreate);
+                    createOnDemand);
             if (manager == null) {
                 return null;
             }
@@ -175,8 +175,8 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return bufferedIo;
         }
 
-        public boolean isLazyCreate() {
-            return lazyCreate;
+        public boolean isCreateOnDemand() {
+            return createOnDemand;
         }
 
         public boolean isLocking() {
@@ -218,8 +218,8 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return asBuilder();
         }
 
-        public B withLazyCreate(final boolean lazyCreate) {
-            this.lazyCreate = lazyCreate;
+        public B withCreateOnDemand(final boolean createOnDemand) {
+            this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 
@@ -379,7 +379,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
                 .withIgnoreExceptions(Booleans.parseBoolean(ignore, true))
                 .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
                 .withLayout(layout)
-                .withLazyCreate(false)
+                .withCreateOnDemand(false)
                 .withLocking(false)
                 .withName(name)
                 .withPolicy(policy)
