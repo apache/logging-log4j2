@@ -38,8 +38,7 @@ public class DaemonThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(final Runnable runnable) {
-        final Thread thread = new Log4jThread(group, runnable, threadNamePrefix
-                + THREAD_NUMBER.getAndIncrement(), 0);
+        final Thread thread = new Log4jThread(group, runnable, threadNamePrefix + THREAD_NUMBER.getAndIncrement(), 0);
         if (!thread.isDaemon()) {
             thread.setDaemon(true);
         }
