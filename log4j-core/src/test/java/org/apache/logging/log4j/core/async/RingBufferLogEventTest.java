@@ -170,4 +170,14 @@ public class RingBufferLogEventTest {
         assertEquals(evt.getSource(), actual.getSource());
         assertEquals(evt.getThrownProxy(), actual.getThrownProxy());
     }
+
+    @Test
+    public void testMessageTextNeverThrowsNpe() {
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        try {
+            evt.getFormattedMessage();
+        } catch (NullPointerException e) {
+            fail("the messageText field was not set");
+        }
+    }
 }
