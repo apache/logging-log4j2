@@ -31,6 +31,17 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * @since 2.7
  */
 public abstract class AbstractGarbageFreeMutableThreadContext implements ThreadContextMap, ThreadContextMap2 {
+
+    /**
+     * The default initial capacity.
+     */
+    protected static final int DEFAULT_INITIAL_CAPACITY = 16;
+
+    /**
+     * System property name that can be used to control the data structure's initial capacity.
+     */
+    protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
+
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.
@@ -62,7 +73,7 @@ public abstract class AbstractGarbageFreeMutableThreadContext implements ThreadC
 
     protected abstract MutableContextData createMutableContextData();
 
-    protected abstract MutableContextData createMutableContextData(final MutableContextData original);
+    protected abstract MutableContextData createMutableContextData(final ContextData original);
 
     private MutableContextData getThreadLocalMap() {
         MutableContextData map = localMap.get();
