@@ -140,8 +140,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
      * @param map
      *            a {@link Map} to be copied into the new hash map.
      */
-    // TODO public OpenHashMapContextData(final Map<? extends K, ? extends V> map) {
-    public OpenHashMapContextData(final Map<String, String> map) {
+    public OpenHashMapContextData(final Map<? extends K, ? extends V> map) {
         this(map, DEFAULT_LOAD_FACTOR);
     }
     /**
@@ -152,8 +151,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
      * @param f
      *            the load factor.
      */
-    // TODO public OpenHashMapContextData(final Map<? extends K, ? extends V> map, final float f) {
-    public OpenHashMapContextData(final Map<String, String> map, final float f) {
+    public OpenHashMapContextData(final Map<? extends K, ? extends V> map, final float f) {
         this(map.size(), f);
         putAll(map);
     }
@@ -460,8 +458,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     }
 
     /** {@inheritDoc} */
-    //TODO public void putAll(Map<? extends K, ? extends V> map) {
-    public void putAll(Map<String, String> map) {
+    public void putAll(Map<? extends K, ? extends V> map) {
         if (loadFactor <= .5) {
             // The resulting map will be sized for m.size() elements
             ensureCapacity(map.size());
@@ -469,8 +466,8 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
             // The resulting map will be tentatively sized for size() +  m.size() elements
             tryCapacity(size() + map.size());
         }
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            putValue(entry.getKey(), entry.getValue());
+        for (Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
+            putObjectValue(entry.getKey(), entry.getValue());
         }
     }
 
