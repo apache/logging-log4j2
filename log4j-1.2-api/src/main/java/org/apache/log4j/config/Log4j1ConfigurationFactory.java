@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Experimental ConfigurationFactory for Log4j 1.2 properties configuration files.
@@ -40,8 +41,8 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
     @Override
     public Configuration getConfiguration(final ConfigurationSource source) {
         final ConfigurationBuilder<BuiltConfiguration> builder;
-        try {
-            builder = new Log4j1ConfigurationParser().buildConfigurationBuilder(source.getInputStream());
+        try (final InputStream configStream = source.getInputStream()) {
+            builder = new Log4j1ConfigurationParser().buildConfigurationBuilder(configStream);
         } catch (IOException e) {
             throw new ConfigurationException("Unable to load " + source.toString(), e);
         }
