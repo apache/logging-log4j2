@@ -42,9 +42,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public PropertiesConfiguration getConfiguration(final ConfigurationSource source) {
-        final InputStream configStream = source.getInputStream();
         final Properties properties = new Properties();
-        try {
+        try (final InputStream configStream = source.getInputStream()) {
             properties.load(configStream);
         } catch (final IOException ioe) {
             throw new ConfigurationException("Unable to load " + source.toString(), ioe);
