@@ -265,7 +265,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
 
         writeXmlSection(xmlWriter, lookupSection("Appenders"));
-        writeXmlSection(xmlWriter, lookupSection("Loggers"));        // TODO includeLocation on loggers
+        writeXmlSection(xmlWriter, lookupSection("Loggers"));
 
         xmlWriter.writeEndElement(); // "Configuration"
         xmlWriter.writeCharacters(System.lineSeparator());

@@ -42,10 +42,9 @@ public class ConfigurationBuilderTest {
         appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
                 Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
         builder.add(appenderBuilder);
-        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true).
                     add(builder.newAppenderRef("Stdout")).
-                    addAttribute("additivity", false).
-                    addAttribute("includeLocation", true));
+                    addAttribute("additivity", false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
         builder.addProperty("MyKey", "MyValue");
         builder.add(builder.newCustomLevel("Panic", 17));
