@@ -20,8 +20,6 @@ package org.apache.logging.log4j.core.util;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.logging.log4j.util.Strings;
-
 /**
  * Creates {@link Log4jThreads}.
  * 
