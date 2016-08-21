@@ -129,7 +129,7 @@ public abstract class AbstractCopyOnWriteMutableThreadContext implements ThreadC
         return map == null ? Collections.<String, String>emptyMap() : map.asMap();
     }
 
-    public ContextData getContextData() {
+    public MutableContextData getContextData() {
         return localMap.get();
     }
 

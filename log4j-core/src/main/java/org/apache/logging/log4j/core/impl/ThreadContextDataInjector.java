@@ -20,10 +20,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.spi.AbstractCopyOnWriteMutableThreadContext;
+import org.apache.logging.log4j.spi.AbstractGarbageFreeMutableThreadContext;
+import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
-import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**
  * {@code ThreadContextDataInjector} contains a number of strategies for copying key-value pairs from the various
@@ -105,10 +107,9 @@ public class ThreadContextDataInjector  {
             // modified.
             copyProperties(props, reusable);
 
-            // TODO LOG4J2-1349
-//            final MutableContextData immutableCopy = ((AbstractGarbageFreeMutableThreadContext)
-//                    ThreadContext.getThreadContextMap()).getContextData();
-//            reusable.putAll(immutableCopy);
+            final ContextData immutableCopy = ((AbstractGarbageFreeMutableThreadContext)
+                    ThreadContextAccess.getThreadContextMap()).getContextData();
+            reusable.putAll(immutableCopy);
             return reusable;
         }
     }
@@ -133,19 +134,17 @@ public class ThreadContextDataInjector  {
          */
         @Override
         public MutableContextData injectContextData(final List<Property> props, final MutableContextData reusable) {
-            // TODO LOG4J2-1349
-
-//            // If there are no configuration properties we want to just return the ThreadContext's MutableContextData:
-//            // it is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
-//            final MutableContextData immutableCopy = ((AbstractCopyOnWriteMutableThreadContext)
-//                    ThreadContext.getThreadContextMap()).getContextData();
-//            if (props == null || props.isEmpty()) {
-//                return immutableCopy;
-//            }
-//            // However, if the list of Properties is non-empty we need to combine the properties and the ThreadContext
-//            // data. In that case we will copy the key-value pairs into the specified reusable MutableContextData.
-//            copyProperties(props, reusable);
-//            reusable.putAll(immutableCopy);
+            // If there are no configuration properties we want to just return the ThreadContext's MutableContextData:
+            // it is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
+            final MutableContextData immutableCopy = ((AbstractCopyOnWriteMutableThreadContext)
+                    ThreadContextAccess.getThreadContextMap()).getContextData();
+            if (props == null || props.isEmpty()) {
+                return immutableCopy;
+            }
+            // However, if the list of Properties is non-empty we need to combine the properties and the ThreadContext
+            // data. In that case we will copy the key-value pairs into the specified reusable MutableContextData.
+            copyProperties(props, reusable);
+            reusable.putAll(immutableCopy);
             return reusable;
         }
     }

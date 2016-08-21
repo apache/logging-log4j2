@@ -17,7 +17,10 @@
 package org.apache.logging.log4j.core.impl;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.spi.AbstractCopyOnWriteMutableThreadContext;
+import org.apache.logging.log4j.spi.AbstractGarbageFreeMutableThreadContext;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -69,13 +72,13 @@ public class ContextDataInjectorFactory {
     }
 
     private static ContextDataInjector createDefaultInjector() {
-//        final ThreadContextMap threadContextMap = null; // ThreadContext.getThreadContextMap(); TODO LOG4J2-1349
-//        if (threadContextMap instanceof AbstractCopyOnWriteMutableThreadContext) {
-//            return new ThreadContextDataInjector.ForCopyOnWriteMutableThreadContextMap();
-//        }
-//        if (threadContextMap instanceof AbstractGarbageFreeMutableThreadContext) {
-//            return new ThreadContextDataInjector.ForGarbageFreeMutableThreadContextMap();
-//        }
+        final ThreadContextMap threadContextMap = ThreadContextAccess.getThreadContextMap();
+        if (threadContextMap instanceof AbstractCopyOnWriteMutableThreadContext) {
+            return new ThreadContextDataInjector.ForCopyOnWriteMutableThreadContextMap();
+        }
+        if (threadContextMap instanceof AbstractGarbageFreeMutableThreadContext) {
+            return new ThreadContextDataInjector.ForGarbageFreeMutableThreadContextMap();
+        }
         return new ThreadContextDataInjector.ForDefaultThreadContextMap();
     }
 }
