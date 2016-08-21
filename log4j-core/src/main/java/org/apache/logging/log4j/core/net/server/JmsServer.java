@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -106,7 +107,6 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
         jmsManager.release();
     }
 
-    @Override
     public boolean isStarted() {
         return state.get() == State.STARTED;
     }
