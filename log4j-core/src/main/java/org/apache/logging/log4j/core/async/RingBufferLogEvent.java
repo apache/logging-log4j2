@@ -210,7 +210,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     @Override
     public String getFormattedMessage() {
-        return messageText.toString();
+        return messageText != null // LOG4J2-1527: may be null in web apps
+                ? messageText.toString() // note: please keep below "redundant" braces for readability
+                : (message == null ? null : message.getFormattedMessage());
     }
 
     /**

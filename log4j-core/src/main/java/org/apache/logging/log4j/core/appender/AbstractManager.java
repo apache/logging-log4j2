@@ -87,6 +87,7 @@ public abstract class AbstractManager {
     }
 
     public void updateData(final Object data) {
+        // This default implementation does nothing.
     }
 
     /**
@@ -108,6 +109,7 @@ public abstract class AbstractManager {
      * lock is held.
      */
     protected void releaseSub() {
+        // This default implementation does nothing.
     }
 
     protected int getCount() {

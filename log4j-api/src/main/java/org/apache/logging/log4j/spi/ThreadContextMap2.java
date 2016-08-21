@@ -16,11 +16,25 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.ThreadContext;
+import java.util.Map;
 
 /**
- * Service provider interface to implement custom NDC behavior for {@link ThreadContext}.
+ * Extension service provider interface to implement additional custom MDC behavior for
+ * {@link org.apache.logging.log4j.ThreadContext}.
+ *
+ * @see ThreadContextMap
+ * @since 2.7
  */
-public interface ThreadContextStack extends ThreadContext.ContextStack {
-    // empty
+public interface ThreadContextMap2 {
+
+    /**
+     * Puts all given context map entries into the current thread's
+     * context map.
+     *
+     * <p>If the current thread does not have a context map it is
+     * created as a side effect.</p>
+     * @param map The map.
+     * @since 2.7
+     */
+    void putAll(final Map<String, String> map);
 }

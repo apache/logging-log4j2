@@ -121,11 +121,11 @@ public class RingBufferLogEventTest {
         final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
-        
+
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(evt);
-        
+
         final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         final RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
         assertEquals(loggerName, other.getLoggerName());
@@ -141,7 +141,7 @@ public class RingBufferLogEventTest {
         assertEquals(location, other.getSource());
         assertEquals(currentTimeMillis, other.getTimeMillis());
     }
-    
+
     @Test
     public void testCreateMementoReturnsCopy() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
@@ -160,7 +160,7 @@ public class RingBufferLogEventTest {
         final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
-        
+
         final LogEvent actual = evt.createMemento();
         assertEquals(evt.getLoggerName(), actual.getLoggerName());
         assertEquals(evt.getMarker(), actual.getMarker());
@@ -174,5 +174,15 @@ public class RingBufferLogEventTest {
         assertEquals(evt.getTimeMillis(), actual.getTimeMillis());
         assertEquals(evt.getSource(), actual.getSource());
         assertEquals(evt.getThrownProxy(), actual.getThrownProxy());
+    }
+
+    @Test
+    public void testMessageTextNeverThrowsNpe() {
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        try {
+            evt.getFormattedMessage();
+        } catch (NullPointerException e) {
+            fail("the messageText field was not set");
+        }
     }
 }

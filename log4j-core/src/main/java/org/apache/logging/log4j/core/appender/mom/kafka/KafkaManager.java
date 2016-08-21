@@ -64,8 +64,7 @@ public class KafkaManager extends AbstractManager {
                 public void run() {
                     producer.close();
                 }
-            });
-            closeThread.setName("KafkaManager-CloseThread");
+            }, "KafkaManager-CloseThread");
             closeThread.setDaemon(true); // avoid blocking JVM shutdown
             closeThread.start();
             try {
