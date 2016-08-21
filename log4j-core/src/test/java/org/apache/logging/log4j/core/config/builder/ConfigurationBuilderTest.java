@@ -62,7 +62,7 @@ public class ConfigurationBuilderTest {
             "\t\t<ScriptFile path=\"target/test-classes/scripts/filter.groovy\" name=\"target/test-classes/scripts/filter.groovy\" isWatched=\"true\"/>" + System.lineSeparator() +
             "\t</Scripts>" + System.lineSeparator() +
             "\t<CustomLevels>" + System.lineSeparator() +
-            "\t\t<CustomLevel intLevel=\"17\" name=\"Panic\"/>" + System.lineSeparator() +
+            "\t\t<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + System.lineSeparator() +
             "\t</CustomLevels>" + System.lineSeparator() +
             "\t<ThresholdFilter onMatch=\"ACCEPT\" level=\"DEBUG\" onMisMatch=\"NEUTRAL\"/>" + System.lineSeparator() +
             "\t<Appenders>" + System.lineSeparator() +

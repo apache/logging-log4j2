@@ -257,7 +257,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
         writeXmlSection(xmlWriter, properties);
         writeXmlSection(xmlWriter, scripts);
-        writeXmlSection(xmlWriter, customLevels);   // TODO customLevel level vs intLevel
+        writeXmlSection(xmlWriter, customLevels);
         if (filters.getComponents().size() == 1) {
             writeXmlComponent(xmlWriter, filters.getComponents().get(0), 1);
         } else if (filters.getComponents().size() > 1) {

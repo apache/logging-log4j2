@@ -253,7 +253,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
         writeXmlSection(xmlWriter, lookupSection("Properties"));
         writeXmlSection(xmlWriter, lookupSection("Scripts"));
-        writeXmlSection(xmlWriter, lookupSection("CustomLevels"));   // TODO customLevel level vs intLevel
+        writeXmlSection(xmlWriter, lookupSection("CustomLevels"));
         Node filters = lookupSection("Filters");
         if (filters != null) {
             writeXmlSection(xmlWriter, filters);
