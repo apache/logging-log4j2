@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -236,7 +237,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         */
         if (!getPluginPackages().isEmpty()) {
-            xmlWriter.writeAttribute("packages", getPluginPackages().toString()); // TODO comma-separated string
+            xmlWriter.writeAttribute("packages", Strings.join(getPluginPackages(), ','));
         }
         if (!isShutdownHookEnabled()) {
             xmlWriter.writeAttribute("shutdownHook", "disable");
