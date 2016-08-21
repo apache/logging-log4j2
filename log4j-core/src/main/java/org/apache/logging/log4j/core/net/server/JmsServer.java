@@ -100,7 +100,8 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
     public void stop() {
         try {
             messageConsumer.close();
-        } catch (final JMSException ignored) {
+        } catch (final JMSException e) {
+            LOGGER.debug("Exception closing {}", messageConsumer, e);
         }
         jmsManager.release();
     }
