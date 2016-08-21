@@ -2131,6 +2131,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>When bufferedIO is true, this is the buffer size, the default is 8192 bytes.</td>
             </tr>
             <tr>
+              <td>createOnDemand</td>
+              <td>boolean</td>
+              <td>The appender creates the file on-demand. The appender only creates the file when a log event 
+                passes all filters and is routed to this appender.</td>
+            </tr>
+            <tr>
               <td>filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
