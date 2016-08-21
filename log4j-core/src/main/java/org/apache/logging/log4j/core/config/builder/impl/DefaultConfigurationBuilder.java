@@ -262,6 +262,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         }
 
         xmlWriter.writeEndElement(); // "Configuration"
+        xmlWriter.writeCharacters(System.lineSeparator());
 
         xmlWriter.writeEndDocument();
     }
