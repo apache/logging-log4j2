@@ -255,11 +255,16 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
         xmlWriter.writeCharacters(System.lineSeparator());
 
-        for (Component component : root.getComponents()) {
-            if (!component.getAttributes().isEmpty() || !component.getComponents().isEmpty() || component.getValue() != null) {
-                writeXmlComponent(xmlWriter, component, 1);
-            }
+        writeXmlSection(xmlWriter, properties);
+        writeXmlSection(xmlWriter, scripts);
+        writeXmlSection(xmlWriter, customLevels);   // TODO customLevel level vs intLevel
+        if (filters.getComponents().size() == 1) {
+            writeXmlComponent(xmlWriter, filters.getComponents().get(0), 1);
+        } else if (filters.getComponents().size() > 1) {
+            writeXmlSection(xmlWriter, filters);
         }
+        writeXmlSection(xmlWriter, appenders);
+        writeXmlSection(xmlWriter, loggers);
 
         xmlWriter.writeEndElement(); // "Configuration"
         xmlWriter.writeCharacters(System.lineSeparator());
@@ -267,19 +272,29 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         xmlWriter.writeEndDocument();
     }
 
+    private void writeXmlSection(XMLStreamWriter xmlWriter, Component component) throws XMLStreamException {
+        if (!component.getAttributes().isEmpty() || !component.getComponents().isEmpty() || component.getValue() != null) {
+            writeXmlComponent(xmlWriter, component, 1);
+        }
+    }
+
     private void writeXmlComponent(XMLStreamWriter xmlWriter, Component component, int nesting) throws XMLStreamException {
         if (!component.getComponents().isEmpty() || component.getValue() != null) {
             writeXmlIndent(xmlWriter, nesting);
             xmlWriter.writeStartElement(component.getPluginType());
             writeXmlAttributes(xmlWriter, component);
-            xmlWriter.writeCharacters(System.lineSeparator());
+            if (!component.getComponents().isEmpty()) {
+                xmlWriter.writeCharacters(System.lineSeparator());
+            }
             for (Component subComponent : component.getComponents()) {
                 writeXmlComponent(xmlWriter, subComponent, nesting + 1);
             }
             if (component.getValue() != null) {
                 xmlWriter.writeCharacters(component.getValue());
             }
-            writeXmlIndent(xmlWriter, nesting);
+            if (!component.getComponents().isEmpty()) {
+                writeXmlIndent(xmlWriter, nesting);
+            }
             xmlWriter.writeEndElement();
         } else {
             writeXmlIndent(xmlWriter, nesting);

@@ -16,24 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -64,6 +46,29 @@ import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
@@ -179,6 +184,154 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     public Node getRootNode() {
         return rootNode;
+    }
+
+    private static final List<String> SECTION_NAMES =
+            Arrays.asList("Properties", "Scripts", "CustomLevels", "Filters", "Appenders", "Loggers");
+
+    public void writeXmlConfiguration(final OutputStream output) throws IOException {
+        try {
+            XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(output);
+            writeXmlConfiguration(xmlWriter);
+            xmlWriter.close();
+        } catch (XMLStreamException e) {
+            if (e.getNestedException() instanceof IOException) {
+                throw (IOException)e.getNestedException();
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public String toXmlConfiguration() {
+        StringWriter sw = new StringWriter();
+        try {
+            XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
+            writeXmlConfiguration(xmlWriter);
+            xmlWriter.close();
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        }
+        return sw.toString();
+    }
+
+    private void writeXmlConfiguration(XMLStreamWriter xmlWriter) throws XMLStreamException {
+        xmlWriter.writeStartDocument();
+        xmlWriter.writeCharacters(System.lineSeparator());
+
+        xmlWriter.writeStartElement("Configuration");
+
+        if (name != null) {
+            xmlWriter.writeAttribute("name", getName());
+        }
+        /* TODO status logger config
+        if (level != null) {
+            xmlWriter.writeAttribute("status", level.name());
+        }
+        if (verbosity != null) {
+            xmlWriter.writeAttribute("verbose", verbosity);
+        }
+        if (destination != null) {
+            xmlWriter.writeAttribute("dest", destination);
+        }
+        */
+        if (!getPluginPackages().isEmpty()) {
+            xmlWriter.writeAttribute("packages", getPluginPackages().toString()); // TODO comma-separated string
+        }
+        if (!isShutdownHookEnabled()) {
+            xmlWriter.writeAttribute("shutdownHook", "disable");
+        }
+        if (advertiserNode != null) {
+            xmlWriter.writeAttribute("advertiser", advertiserNode.getName());
+        }
+        if (getWatchManager().getIntervalSeconds() > 0) {
+            xmlWriter.writeAttribute("monitorInterval", String.valueOf(getWatchManager().getIntervalSeconds()));
+        }
+
+        xmlWriter.writeCharacters(System.lineSeparator());
+
+        writeXmlSection(xmlWriter, lookupSection("Properties"));
+        writeXmlSection(xmlWriter, lookupSection("Scripts"));
+        writeXmlSection(xmlWriter, lookupSection("CustomLevels"));   // TODO customLevel level vs intLevel
+        Node filters = lookupSection("Filters");
+        if (filters != null) {
+            writeXmlSection(xmlWriter, filters);
+        } else {
+            Node filter = lookupFilter();
+            if (filter != null) {
+                writeXmlNode(xmlWriter, filter, 1);
+            }
+        }
+
+        writeXmlSection(xmlWriter, lookupSection("Appenders"));
+        writeXmlSection(xmlWriter, lookupSection("Loggers"));
+
+        xmlWriter.writeEndElement(); // "Configuration"
+        xmlWriter.writeCharacters(System.lineSeparator());
+
+        xmlWriter.writeEndDocument();
+    }
+
+    private Node lookupSection(String name) {
+        for (final Node child : rootNode.getChildren()) {
+            if (child.getName().equalsIgnoreCase(name)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    private Node lookupFilter() {
+        for (final Node child : rootNode.getChildren()) {
+            if (!SECTION_NAMES.contains(child.getName())) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    private void writeXmlSection(XMLStreamWriter xmlWriter, Node node) throws XMLStreamException {
+        if (node != null && (!node.getAttributes().isEmpty() || !node.getChildren().isEmpty() || node.getValue() != null)) {
+            writeXmlNode(xmlWriter, node, 1);
+        }
+    }
+
+    private void writeXmlNode(XMLStreamWriter xmlWriter, Node node, int nesting) throws XMLStreamException {
+        if (!node.getChildren().isEmpty() || node.getValue() != null) {
+            writeXmlIndent(xmlWriter, nesting);
+            xmlWriter.writeStartElement(node.getName());
+            writeXmlAttributes(xmlWriter, node);
+            if (!node.getChildren().isEmpty()) {
+                xmlWriter.writeCharacters(System.lineSeparator());
+            }
+            for (Node childNode : node.getChildren()) {
+                writeXmlNode(xmlWriter, childNode, nesting + 1);
+            }
+            if (node.getValue() != null) {
+                xmlWriter.writeCharacters(node.getValue());
+            }
+            if (!node.getChildren().isEmpty()) {
+                writeXmlIndent(xmlWriter, nesting);
+            }
+            xmlWriter.writeEndElement();
+        } else {
+            writeXmlIndent(xmlWriter, nesting);
+            xmlWriter.writeEmptyElement(node.getName());
+            writeXmlAttributes(xmlWriter, node);
+        }
+        xmlWriter.writeCharacters(System.lineSeparator());
+    }
+
+    private void writeXmlIndent(XMLStreamWriter xmlWriter, int nesting) throws XMLStreamException {
+        for (int i = 0; i < nesting; i++) {
+            xmlWriter.writeCharacters("\t");
+        }
+    }
+
+    private void writeXmlAttributes(XMLStreamWriter xmlWriter, Node node) throws XMLStreamException {
+        for (Map.Entry<String, String> attribute : node.getAttributes().entrySet()) {
+            xmlWriter.writeAttribute(attribute.getKey(), attribute.getValue());
+        }
     }
 
     @Override
