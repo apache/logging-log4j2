@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config.builder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
@@ -51,7 +50,7 @@ public class ConfigurationBuilderTest {
         builder.setPackages("foo,bar");
     }
 
-    private final static String expectedXml1 =
+    private final static String expectedXml =
             "<?xml version='1.0' encoding='UTF-8'?>" + System.lineSeparator() +
             "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\">" + System.lineSeparator() +
             "\t<Properties>" + System.lineSeparator() +
@@ -85,45 +84,7 @@ public class ConfigurationBuilderTest {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
-        assertEquals(expectedXml1, xmlConfiguration);
+        assertEquals(expectedXml, xmlConfiguration);
     }
 
-    private final static String expectedXml2 =
-            "<?xml version='1.0' encoding='UTF-8'?>" + System.lineSeparator() +
-            "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\">" + System.lineSeparator() +
-            "\t<Properties>" + System.lineSeparator() +
-            "\t\t<Property name=\"MyKey\">MyValue</Property>" + System.lineSeparator() +
-            "\t</Properties>" + System.lineSeparator() +
-            "\t<Scripts>" + System.lineSeparator() +
-            "\t\t<ScriptFile name=\"target/test-classes/scripts/filter.groovy\" path=\"target/test-classes/scripts/filter.groovy\" isWatched=\"true\"/>" + System.lineSeparator() +
-            "\t</Scripts>" + System.lineSeparator() +
-            "\t<CustomLevels>" + System.lineSeparator() +
-            "\t\t<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + System.lineSeparator() +
-            "\t</CustomLevels>" + System.lineSeparator() +
-            "\t<ThresholdFilter onMatch=\"ACCEPT\" level=\"DEBUG\" onMisMatch=\"NEUTRAL\"/>" + System.lineSeparator() +
-            "\t<Appenders>" + System.lineSeparator() +
-            "\t\t<CONSOLE name=\"Stdout\" target=\"SYSTEM_OUT\">" + System.lineSeparator() +
-            "\t\t\t<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + System.lineSeparator() +
-            "\t\t\t<MarkerFilter onMatch=\"DENY\" onMisMatch=\"NEUTRAL\" marker=\"FLOW\"/>" + System.lineSeparator() +
-            "\t\t</CONSOLE>" + System.lineSeparator() +
-            "\t</Appenders>" + System.lineSeparator() +
-            "\t<Loggers>" + System.lineSeparator() +
-            "\t\t<Logger name=\"org.apache.logging.log4j\" additivity=\"false\" level=\"DEBUG\" includeLocation=\"true\">" + System.lineSeparator() +
-            "\t\t\t<AppenderRef ref=\"Stdout\"/>" + System.lineSeparator() +
-            "\t\t</Logger>" + System.lineSeparator() +
-            "\t\t<Root level=\"ERROR\">" + System.lineSeparator() +
-            "\t\t\t<AppenderRef ref=\"Stdout\"/>" + System.lineSeparator() +
-            "\t\t</Root>" + System.lineSeparator() +
-            "\t</Loggers>" + System.lineSeparator() +
-            "</Configuration>" + System.lineSeparator();
-
-    @Test
-    public void testXmlConstructingWithAbstractConfiguration() throws Exception {
-        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        addTestFixtures("config name", builder);
-        AbstractConfiguration configuration = builder.build(false);
-        configuration.setup();
-        final String xmlConfiguration = configuration.toXmlConfiguration();
-        assertEquals(expectedXml2, xmlConfiguration);
-    }
 }
