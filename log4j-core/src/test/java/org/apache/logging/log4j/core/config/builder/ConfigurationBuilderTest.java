@@ -29,7 +29,7 @@ public class ConfigurationBuilderTest {
 
     private final static String expectedXml1 =
             "<?xml version='1.0' encoding='UTF-8'?>" + System.lineSeparator() +
-            "<Configuration name=\"config name\" status=\"ERROR\">" + System.lineSeparator() +
+            "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\">" + System.lineSeparator() +
             "\t<Properties>" + System.lineSeparator() +
             "\t\t<Property name=\"MyKey\">MyValue</Property>" + System.lineSeparator() +
             "\t</Properties>" + System.lineSeparator() +
@@ -62,13 +62,14 @@ public class ConfigurationBuilderTest {
         CustomConfigurationFactory.addTestFixtures("config name", builder);
         builder.addProperty("MyKey", "MyValue");
         builder.add(builder.newCustomLevel("Panic", 17));
+        builder.setPackages("foo,bar");
         final String xmlConfiguration = builder.toXmlConfiguration();
         assertEquals(expectedXml1, xmlConfiguration);
     }
 
     private final static String expectedXml2 =
             "<?xml version='1.0' encoding='UTF-8'?>" + System.lineSeparator() +
-            "<Configuration name=\"config name\" status=\"ERROR\">" + System.lineSeparator() +
+            "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\">" + System.lineSeparator() +
             "\t<Properties>" + System.lineSeparator() +
             "\t\t<Property name=\"MyKey\">MyValue</Property>" + System.lineSeparator() +
             "\t</Properties>" + System.lineSeparator() +
@@ -101,6 +102,7 @@ public class ConfigurationBuilderTest {
         CustomConfigurationFactory.addTestFixtures("config name", builder);
         builder.addProperty("MyKey", "MyValue");
         builder.add(builder.newCustomLevel("Panic", 17));
+        builder.setPackages("foo,bar");
         AbstractConfiguration configuration = builder.build(false);
         configuration.setup();
         final String xmlConfiguration = configuration.toXmlConfiguration();
