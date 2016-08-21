@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +33,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.CustomLevelConfig;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
@@ -81,6 +83,12 @@ public class ConfigurationAssemblerTest {
         final Filter filter = config.getFilter();
         assertNotNull("No Filter", filter);
         assertTrue("Not a Threshold Filter", filter instanceof ThresholdFilter);
+        final List<CustomLevelConfig> customLevels = config.getCustomLevels();
+        assertNotNull("No CustomLevels", filter);
+        assertEquals(1, customLevels.size());
+        CustomLevelConfig customLevel = customLevels.get(0);
+        assertEquals("Panic", customLevel.getLevelName());
+        assertEquals(17, customLevel.getIntLevel());
         final Logger logger = LogManager.getLogger(getClass());
         logger.info("Welcome to Log4j!");
     }

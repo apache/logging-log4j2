@@ -52,6 +52,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
                 add(builder.newAppenderRef("Stdout")).
                 addAttribute("additivity", false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+        builder.add(builder.newCustomLevel("Panic", 17));
         return builder.build();
     }
 

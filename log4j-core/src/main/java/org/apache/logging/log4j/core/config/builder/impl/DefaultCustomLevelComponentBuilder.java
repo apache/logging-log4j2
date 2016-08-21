@@ -28,6 +28,6 @@ class DefaultCustomLevelComponentBuilder extends DefaultComponentAndConfiguratio
     public DefaultCustomLevelComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
             final String name, final int level) {
         super(builder, name, "CustomLevel");
-        addAttribute("level", Integer.toString(level));
+        addAttribute("intLevel", level);
     }
 }
