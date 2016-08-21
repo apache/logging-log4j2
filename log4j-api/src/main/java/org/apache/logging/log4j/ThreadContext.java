@@ -356,6 +356,18 @@ public final class ThreadContext {
     }
 
     /**
+     * Returns the internal data structure used to store thread context key-value pairs.
+     * <p><em>
+     * This data structure is not intended to be used directly by applications. This method is package protected for
+     * internal log4j2 usage.
+     * </em></p>
+     * @return the internal data structure used to store thread context key-value pairs
+     */
+    static ThreadContextMap getThreadContextMap() {
+        return contextMap;
+    }
+
+    /**
      * Returns true if the Map is empty.
      *
      * @return true if the Map is empty, false otherwise.
