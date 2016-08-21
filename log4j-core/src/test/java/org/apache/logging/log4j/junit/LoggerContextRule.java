@@ -45,9 +45,7 @@ public class LoggerContextRule implements TestRule {
     private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
     private final String configLocation;
     private LoggerContext context;
-
     private Class<? extends ContextSelector> contextSelectorClass;
-
     private String testClassName;
 
     /**

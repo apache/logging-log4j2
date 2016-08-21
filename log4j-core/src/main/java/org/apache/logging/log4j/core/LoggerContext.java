@@ -259,6 +259,7 @@ public class LoggerContext extends AbstractLifeCycle
                     this.shutdownCallback = ((ShutdownCallbackRegistry) factory).addShutdownCallback(new Runnable() {
                         @Override
                         public void run() {
+                            @SuppressWarnings("resource")
                             final LoggerContext context = LoggerContext.this;
                             LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping LoggerContext[name={}, {}]",
                                     context.getName(), context);

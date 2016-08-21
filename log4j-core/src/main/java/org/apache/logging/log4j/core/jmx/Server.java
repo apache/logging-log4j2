@@ -36,11 +36,11 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
-import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -59,7 +59,7 @@ public final class Server {
     public static final String DOMAIN = "org.apache.logging.log4j2";
     private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
     private static final String PROPERTY_ASYNC_NOTIF = "log4j2.jmx.notify.async";
-    private static final String THREAD_NAME_PREFIX = "log4j2.jmx.notif-";
+    private static final String THREAD_NAME_PREFIX = "log4j2.jmx.notif";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     static final Executor executor = isJmxDisabled() ? null : createExecutor();
 
@@ -76,7 +76,8 @@ public final class Server {
     private static ExecutorService createExecutor() {
         final boolean defaultAsync = !Constants.IS_WEB_APP;
         final boolean async = PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_ASYNC_NOTIF, defaultAsync);
-        return async ? Executors.newFixedThreadPool(1, new DaemonThreadFactory(THREAD_NAME_PREFIX)) : null;
+        return async ? Executors.newFixedThreadPool(1, Log4jThreadFactory.createDaemonThreadFactory(THREAD_NAME_PREFIX))
+                : null;
     }
 
     /**

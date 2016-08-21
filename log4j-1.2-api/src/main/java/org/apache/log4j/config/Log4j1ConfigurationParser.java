@@ -1,0 +1,301 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+package org.apache.log4j.config;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.status.StatusLogger;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+/**
+ * Experimental parser for Log4j 1.2 properties configuration files.
+ * <p>
+ * Currently supports:
+ * </p>
+ * <ul>
+ * <li>log4j.debug</li>
+ * <li>log4j.rootLogger</li>
+ * <li>log4j.logger</li>
+ * <li>log4j.appender</li>
+ * <li>org.apache.log4j.ConsoleAppender</li>
+ * <ul>
+ * <li>Follow</li>
+ * <li>Target</li>
+ * <li>layout</li>
+ * </ul>
+ * </ul>
+ */
+public class Log4j1ConfigurationParser {
+
+    /**
+     * Parse a Log4j 1.2 properties configuration file into a ConfigurationBuilder.
+     *
+     * @param input  InputStream to read from, will not be closed.
+     * @return  the populated ConfigurationBuilder
+     * @throws IOException  if unable to read the input
+     */
+    public ConfigurationBuilder<BuiltConfiguration> buildConfigurationBuilder(InputStream input) throws IOException {
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        builder.setConfigurationName("Log4j1");
+        final Properties properties = new Properties();
+        properties.load(input);
+        final String rootCategoryValue = getRootCategoryValue(properties);
+        final String rootLoggerValue = getRootLoggerValue(properties);
+        if (rootCategoryValue == null && rootLoggerValue == null) {
+            // This is not a Log4j 1 properties configuration file.
+            return null;
+        }
+        // DEBUG
+        final String debugValue = getLog4jValue(properties, "debug");
+        if (Boolean.valueOf(debugValue)) {
+            builder.setStatusLevel(Level.DEBUG);
+        }
+        // Root
+        final String[] sortedAppenderNamesC = buildRootLogger(builder, getRootCategoryValue(properties));
+        final String[] sortedAppenderNamesL = buildRootLogger(builder, getRootLoggerValue(properties));
+        final String[] sortedAppenderNames = sortedAppenderNamesL.length > 0 ? sortedAppenderNamesL
+                : sortedAppenderNamesC;
+        // Appenders
+        final Map<String, String> classNameToProperty = buildClassToPropertyPrefixMap(properties, sortedAppenderNames);
+        for (final Map.Entry<String, String> entry : classNameToProperty.entrySet()) {
+            final String appenderName = entry.getKey();
+            switch (entry.getValue()) {
+            case "org.apache.log4j.ConsoleAppender":
+                buildConsoleAppender(properties, appenderName, builder);
+                break;
+            default:
+                reportWarning("Ignoring appender " + appenderName
+                        + "; consider porting your configuration file to the current Log4j format.");
+            }
+        }
+        // Loggers
+        buildLoggers(properties, "log4j.category.", builder);
+        buildLoggers(properties, "log4j.logger.", builder);
+        return builder;
+    }
+
+    private Map<String, String> buildClassToPropertyPrefixMap(final Properties properties,
+                                                              final String[] sortedAppenderNames) {
+        final String prefix = "log4j.appender.";
+        final int preLength = prefix.length();
+        final Map<String, String> map = new HashMap<>(sortedAppenderNames.length);
+        for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
+            final Object keyObj = entry.getKey();
+            if (keyObj != null) {
+                final String key = keyObj.toString();
+                if (key.startsWith(prefix)) {
+                    if (key.indexOf('.', preLength) < 0) {
+                        final String name = key.substring(preLength);
+                        if (Arrays.binarySearch(sortedAppenderNames, name) >= 0) {
+                            final Object value = entry.getValue();
+                            if (value != null) {
+                                map.put(name, value.toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private void buildConsoleAppender(final Properties properties, final String name,
+            final ConfigurationBuilder<BuiltConfiguration> builder) {
+        final AppenderComponentBuilder appenderBuilder = builder.newAppender(name, "Console");
+        buildConsoleAppenderTarget(properties, name, builder, appenderBuilder);
+        buildAppenderLayout(properties, name, builder, appenderBuilder);
+        buildConsoleAppenderFollow(properties, name, builder, appenderBuilder);
+        builder.add(appenderBuilder);
+    }
+
+    private void buildAppenderLayout(final Properties properties, final String name,
+            final ConfigurationBuilder<BuiltConfiguration> builder, final AppenderComponentBuilder appenderBuilder) {
+        final String layoutValue = getLog4jAppenderValue(properties, name, "layout", null);
+        if (layoutValue != null) {
+            switch (layoutValue) {
+            case "org.apache.log4j.PatternLayout":
+            case "org.apache.log4j.EnhancedPatternLayout": {
+                final String pattern = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null)
+
+                    // Log4j 2's %x (NDC) is not compatible with Log4j 1's %x
+                    //   Log4j 1: "foo bar baz"
+                    //   Log4j 2: "[foo, bar, baz]"
+                    // Use %ndc to get the Log4j 1 format
+                    .replace("%x", "%ndc")
+
+                    // Log4j 2's %X (MDC) is not compatible with Log4j 1's %X
+                    //   Log4j 1: "{{foo,bar}{hoo,boo}}"
+                    //   Log4j 2: "{foo=bar,hoo=boo}"
+                    // Use %properties to get the Log4j 1 format
+                    .replace("%X", "%properties");
+
+                appenderBuilder.add(newPatternLayout(builder, pattern));
+                break;
+            }
+            case "org.apache.log4j.SimpleLayout": {
+                appenderBuilder.add(newPatternLayout(builder, "%level - %m%n"));
+                break;
+            }
+            case "org.apache.log4j.TTCCLayout": {
+                String pattern = "%r ";
+                if (Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ThreadPrinting", "true"))) {
+                    pattern += "[%t] ";
+                }
+                pattern += "%p ";
+                if (Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.CategoryPrefixing", "true"))) {
+                    pattern += "%c ";
+                }
+                if (Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.ContextPrinting", "true"))) {
+                    pattern += "%notEmpty{%ndc }";
+                }
+                pattern += "- %m%n";
+                appenderBuilder.add(newPatternLayout(builder, pattern));
+                break;
+            }
+            case "org.apache.log4j.HTMLLayout": {
+                LayoutComponentBuilder htmlLayout = builder.newLayout("HtmlLayout");
+                htmlLayout.addAttribute("title",
+                        getLog4jAppenderValue(properties, name, "layout.Title", "Log4J Log Messages"));
+                htmlLayout.addAttribute("locationInfo",
+                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.LocationInfo", "false")));
+                appenderBuilder.add(htmlLayout);
+                break;
+            }
+            case "org.apache.log4j.xml.XMLLayout": {
+                LayoutComponentBuilder xmlLayout = builder.newLayout("Log4j1XmlLayout");
+                xmlLayout.addAttribute("locationInfo",
+                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.LocationInfo", "false")));
+                xmlLayout.addAttribute("properties",
+                        Boolean.parseBoolean(getLog4jAppenderValue(properties, name, "layout.Properties", "false")));
+                appenderBuilder.add(xmlLayout);
+                break;
+            }
+            default:
+                reportWarning("Unsupported layout: " + layoutValue);
+            }
+        }
+    }
+
+    private LayoutComponentBuilder newPatternLayout(final ConfigurationBuilder<BuiltConfiguration> builder,
+            final String pattern) {
+        final LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout");
+        if (pattern != null) {
+            layoutBuilder.addAttribute("pattern", pattern);
+        }
+        return layoutBuilder;
+    }
+
+    private void buildConsoleAppenderTarget(final Properties properties, final String name,
+            final ConfigurationBuilder<BuiltConfiguration> builder, final AppenderComponentBuilder appenderBuilder) {
+        final String value = getLog4jAppenderValue(properties, name, "Target", "System.out");
+        if (value != null) {
+            final ConsoleAppender.Target target;
+            switch (value) {
+            case "System.out":
+                target = ConsoleAppender.Target.SYSTEM_OUT;
+                break;
+            case "System.err":
+                target = ConsoleAppender.Target.SYSTEM_ERR;
+                break;
+            default:
+                reportWarning("Unknow value for console Target: " + value);
+                target = null;
+            }
+            if (target != null) {
+                appenderBuilder.addAttribute("target", target);
+            }
+        }
+    }
+
+    private void buildConsoleAppenderFollow(final Properties properties, final String name,
+            final ConfigurationBuilder<BuiltConfiguration> builder, final AppenderComponentBuilder appenderBuilder) {
+        final String value = getLog4jAppenderValue(properties, name, "Follow", "false");
+        if (value != null) {
+            appenderBuilder.addAttribute("follow", Boolean.valueOf(value).booleanValue());
+        }
+    }
+
+    private String[] buildRootLogger(final ConfigurationBuilder<BuiltConfiguration> builder,
+            final String rootLoggerValue) {
+        if (rootLoggerValue == null) {
+            return new String[0];
+        }
+        final String[] rootLoggerParts = rootLoggerValue.split("\\s*,\\s*");
+        final Level rootLoggerLevel = rootLoggerParts.length > 0 ? Level.valueOf(rootLoggerParts[0]) : Level.ERROR;
+        final String[] sortedAppenderNames = Arrays.copyOfRange(rootLoggerParts, 1, rootLoggerParts.length);
+        Arrays.sort(sortedAppenderNames);
+        RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
+        for (String appender : sortedAppenderNames) {
+            loggerBuilder.add(builder.newAppenderRef(appender));
+        }
+        builder.add(loggerBuilder);
+        return sortedAppenderNames;
+    }
+
+    private void buildLoggers(final Properties properties, final String prefix,
+            final ConfigurationBuilder<BuiltConfiguration> builder) {
+        final int preLength = prefix.length();
+        for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
+            final Object keyObj = entry.getKey();
+            if (keyObj != null) {
+                final String key = keyObj.toString();
+                if (key.startsWith(prefix)) {
+                    final String name = key.substring(preLength);
+                    final Object value = entry.getValue();
+                    if (value != null) {
+                        builder.add(builder.newLogger(name, Level.valueOf(value.toString())));
+                    }
+                }
+            }
+        }
+
+    }
+
+    private String getLog4jAppenderValue(final Properties properties, final String appenderName,
+            final String attributeName, final String defaultValue) {
+        return properties.getProperty("log4j.appender." + appenderName + "." + attributeName, defaultValue);
+    }
+
+    private String getLog4jValue(final Properties properties, final String key) {
+        return properties.getProperty("log4j." + key);
+    }
+
+    private String getRootCategoryValue(final Properties properties) {
+        return getLog4jValue(properties, "rootCategory");
+    }
+
+    private String getRootLoggerValue(final Properties properties) {
+        return getLog4jValue(properties, "rootLogger");
+    }
+
+    private void reportWarning(final String msg) {
+        StatusLogger.getLogger().warn("Log4j 1 configuration parser: " + msg);
+    }
+
+}

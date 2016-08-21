@@ -215,7 +215,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger", false);
+        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger");
     }
 
     @Override
@@ -225,7 +225,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final String level) {
-        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger", false);
+        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
     }
 
     @Override
@@ -235,7 +235,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot", false);
+        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot");
     }
 
     @Override
@@ -245,7 +245,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot", false);
+        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot");
     }
 
     @Override
@@ -295,7 +295,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newLogger(final String name, final Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString(), true);
+        return new DefaultLoggerComponentBuilder(this, name, level.toString());
     }
 
     @Override
@@ -305,7 +305,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newLogger(final String name, final String level) {
-        return new DefaultLoggerComponentBuilder(this, name, level, true);
+        return new DefaultLoggerComponentBuilder(this, name, level);
     }
 
     @Override
@@ -315,7 +315,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newRootLogger(final Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString(), true);
+        return new DefaultRootLoggerComponentBuilder(this, level.toString());
     }
 
     @Override
@@ -325,7 +325,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newRootLogger(final String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level, true);
+        return new DefaultRootLoggerComponentBuilder(this, level);
     }
 
     @Override
