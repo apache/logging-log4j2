@@ -104,17 +104,19 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
             switch (layoutValue) {
             case "org.apache.log4j.PatternLayout":
             case "org.apache.log4j.EnhancedPatternLayout": {
-                final String pattern = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
+                final String pattern = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null)
 
-                // Log4j 2's %x (NDC) is not compatible with Log4j 1's %x
-                //   Log4j 1: "foo bar baz"
-                //   Log4j 2: "[foo, bar, baz]"
-                // Use %ndc to get the Log4j 1 format
+                    // Log4j 2's %x (NDC) is not compatible with Log4j 1's %x
+                    //   Log4j 1: "foo bar baz"
+                    //   Log4j 2: "[foo, bar, baz]"
+                    // Use %ndc to get the Log4j 1 format
+                    .replace("%x", "%ndc")
 
-                // Log4j 2's %X (MDC) is not compatible with Log4j 1's %X
-                //   Log4j 1: "{{foo,bar}{hoo,boo}}"
-                //   Log4j 2: "{foo=bar,hoo=boo}"
-                // Use %properties to get the Log4j 1 format
+                    // Log4j 2's %X (MDC) is not compatible with Log4j 1's %X
+                    //   Log4j 1: "{{foo,bar}{hoo,boo}}"
+                    //   Log4j 2: "{foo=bar,hoo=boo}"
+                    // Use %properties to get the Log4j 1 format
+                    .replace("%X", "%properties");
 
                 appenderBuilder.add(newPatternLayout(builder, pattern));
                 break;
