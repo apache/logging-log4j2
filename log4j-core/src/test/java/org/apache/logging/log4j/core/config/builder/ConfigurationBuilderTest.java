@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
@@ -26,6 +29,28 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class ConfigurationBuilderTest {
+
+    private void addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
+        builder.setConfigurationName(name);
+        builder.setStatusLevel(Level.ERROR);
+        builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy").addIsWatched(true));
+        builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
+                .addAttribute("level", Level.DEBUG));
+        final AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+        appenderBuilder.add(builder.newLayout("PatternLayout").
+                addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+        appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
+                Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
+        builder.add(appenderBuilder);
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
+                    add(builder.newAppenderRef("Stdout")).
+                    addAttribute("additivity", false).
+                    addAttribute("includeLocation", true));
+        builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+        builder.addProperty("MyKey", "MyValue");
+        builder.add(builder.newCustomLevel("Panic", 17));
+        builder.setPackages("foo,bar");
+    }
 
     private final static String expectedXml1 =
             "<?xml version='1.0' encoding='UTF-8'?>" + System.lineSeparator() +
@@ -50,7 +75,7 @@ public class ConfigurationBuilderTest {
             "\t\t<Logger additivity=\"false\" level=\"DEBUG\" includeLocation=\"true\" name=\"org.apache.logging.log4j\">" + System.lineSeparator() +
             "\t\t\t<AppenderRef ref=\"Stdout\"/>" + System.lineSeparator() +
             "\t\t</Logger>" + System.lineSeparator() +
-            "\t\t<Root level=\"ERROR\" includeLocation=\"true\">" + System.lineSeparator() +
+            "\t\t<Root level=\"ERROR\">" + System.lineSeparator() +
             "\t\t\t<AppenderRef ref=\"Stdout\"/>" + System.lineSeparator() +
             "\t\t</Root>" + System.lineSeparator() +
             "\t</Loggers>" + System.lineSeparator() +
@@ -59,10 +84,7 @@ public class ConfigurationBuilderTest {
     @Test
     public void testXmlConstructing() throws Exception {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        CustomConfigurationFactory.addTestFixtures("config name", builder);
-        builder.addProperty("MyKey", "MyValue");
-        builder.add(builder.newCustomLevel("Panic", 17));
-        builder.setPackages("foo,bar");
+        addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
         assertEquals(expectedXml1, xmlConfiguration);
     }
@@ -90,7 +112,7 @@ public class ConfigurationBuilderTest {
             "\t\t<Logger name=\"org.apache.logging.log4j\" additivity=\"false\" level=\"DEBUG\" includeLocation=\"true\">" + System.lineSeparator() +
             "\t\t\t<AppenderRef ref=\"Stdout\"/>" + System.lineSeparator() +
             "\t\t</Logger>" + System.lineSeparator() +
-            "\t\t<Root level=\"ERROR\" includeLocation=\"true\">" + System.lineSeparator() +
+            "\t\t<Root level=\"ERROR\">" + System.lineSeparator() +
             "\t\t\t<AppenderRef ref=\"Stdout\"/>" + System.lineSeparator() +
             "\t\t</Root>" + System.lineSeparator() +
             "\t</Loggers>" + System.lineSeparator() +
@@ -99,10 +121,7 @@ public class ConfigurationBuilderTest {
     @Test
     public void testXmlConstructingWithAbstractConfiguration() throws Exception {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        CustomConfigurationFactory.addTestFixtures("config name", builder);
-        builder.addProperty("MyKey", "MyValue");
-        builder.add(builder.newCustomLevel("Panic", 17));
-        builder.setPackages("foo,bar");
+        addTestFixtures("config name", builder);
         AbstractConfiguration configuration = builder.build(false);
         configuration.setup();
         final String xmlConfiguration = configuration.toXmlConfiguration();

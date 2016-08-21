@@ -264,7 +264,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             writeXmlSection(xmlWriter, filters);
         }
         writeXmlSection(xmlWriter, appenders);
-        writeXmlSection(xmlWriter, loggers);
+        writeXmlSection(xmlWriter, loggers);        // TODO includeLocation on loggers
 
         xmlWriter.writeEndElement(); // "Configuration"
         xmlWriter.writeCharacters(System.lineSeparator());
