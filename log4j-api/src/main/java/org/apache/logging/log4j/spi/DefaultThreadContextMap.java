@@ -39,6 +39,10 @@ public class DefaultThreadContextMap implements ThreadContextMap, ThreadContextM
     private final boolean useMap;
     private final ThreadLocal<Map<String, String>> localMap;
 
+    public DefaultThreadContextMap() {
+        this(true);
+    }
+
     public DefaultThreadContextMap(final boolean useMap) {
         this.useMap = useMap;
         this.localMap = createThreadLocalMap(useMap);
