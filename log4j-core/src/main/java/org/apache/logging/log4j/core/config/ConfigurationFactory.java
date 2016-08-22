@@ -74,13 +74,14 @@ import org.apache.logging.log4j.util.Strings;
  * last if no configuration has been returned.
  */
 public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
+    
     /**
-     * Allow the ConfigurationFactory class to be specified as a system property.
+     * Allows the ConfigurationFactory class to be specified as a system property.
      */
     public static final String CONFIGURATION_FACTORY_PROPERTY = "log4j.configurationFactory";
 
     /**
-     * Allow the location of the configuration file to be specified as a system property.
+     * Allows the location of the configuration file to be specified as a system property.
      */
     public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
 
@@ -93,7 +94,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     public static final String CATEGORY = "ConfigurationFactory";
 
     /**
-     * Allow subclasses access to the status logger without creating another instance.
+     * Allows subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -187,7 +188,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Set the configuration factory. This method is not intended for general use and may not be thread safe.
+     * Sets the configuration factory. This method is not intended for general use and may not be thread safe.
      * @param factory the ConfigurationFactory.
      */
     public static void setConfigurationFactory(final ConfigurationFactory factory) {
@@ -195,7 +196,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Reset the ConfigurationFactory to the default. This method is not intended for general use and may
+     * Resets the ConfigurationFactory to the default. This method is not intended for general use and may
      * not be thread safe.
      */
     public static void resetConfigurationFactory() {
@@ -203,7 +204,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Remove the ConfigurationFactory. This method is not intended for general use and may not be thread safe.
+     * Removes the ConfigurationFactory. This method is not intended for general use and may not be thread safe.
      * @param factory The factory to remove.
      */
     public static void removeConfigurationFactory(final ConfigurationFactory factory) {
@@ -270,7 +271,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Load the configuration from a URI.
+     * Loads the configuration from a URI.
      * @param configLocation A URI representing the location of the configuration.
      * @return The ConfigurationSource for the configuration.
      */
@@ -318,7 +319,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Load the configuration from the location represented by the String.
+     * Loads the configuration from the location represented by the String.
      * @param config The configuration location.
      * @param loader The default ClassLoader to use.
      * @return The InputSource to use to read the configuration.
@@ -343,7 +344,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Retrieve the configuration via the ClassLoader.
+     * Retrieves the configuration via the ClassLoader.
      * @param resource The resource to load.
      * @param loader The default ClassLoader to use.
      * @return The ConfigurationSource for the configuration.
