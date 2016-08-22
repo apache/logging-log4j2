@@ -381,6 +381,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     private static class Factory extends ConfigurationFactory {
 
+        private static final String ALL_TYPES = "*";
+
         /**
          * Default Factory Constructor.
          * @param name The configuration name.
@@ -414,7 +416,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*")) {
+                            if (type.equals(ALL_TYPES)) {
                                 final Configuration config = factory.getConfiguration(name, configLocation);
                                 if (config != null) {
                                     return config;
@@ -430,7 +432,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*") || configLocationStr.endsWith(type)) {
+                            if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
                                 final Configuration config = factory.getConfiguration(name, configLocation);
                                 if (config != null) {
                                     return config;
@@ -475,7 +477,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*") || configLocationStr.endsWith(type)) {
+                            if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
                                 final Configuration config = factory.getConfiguration(source);
                                 if (config != null) {
                                     return config;
@@ -500,7 +502,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 }
 
                 for (final String suffix : types) {
-                    if (suffix.equals("*")) {
+                    if (suffix.equals(ALL_TYPES)) {
                         continue;
                     }
                     configName = named ? prefix + name + suffix : prefix + suffix;
@@ -527,7 +529,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*") || config != null && config.endsWith(type)) {
+                            if (type.equals(ALL_TYPES) || config != null && config.endsWith(type)) {
                                 final Configuration c = factory.getConfiguration(source);
                                 if (c != null) {
                                     LOGGER.debug("Loaded configuration from {}", source);
