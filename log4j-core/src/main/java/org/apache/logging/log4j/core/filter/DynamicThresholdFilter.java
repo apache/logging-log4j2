@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -31,6 +31,10 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.ContextDataInjector;
+import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.impl.MutableContextData;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
@@ -65,7 +69,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     }
     private Level defaultThreshold = Level.ERROR;
     private final String key;
-
+    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
     private Map<String, Level> levelMap = new HashMap<>();
 
     private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
@@ -113,8 +117,8 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return true;
     }
 
-    private Result filter(final Level level, final Map<String, String> contextMap) {
-        final String value = contextMap.get(key);
+    private Result filter(final Level level, final ContextData contextMap) {
+        final String value = contextMap.getValue(key);
         if (value != null) {
             Level ctxLevel = levelMap.get(value);
             if (ctxLevel == null) {
@@ -128,25 +132,34 @@ public final class DynamicThresholdFilter extends AbstractFilter {
 
     @Override
     public Result filter(final LogEvent event) {
-        return filter(event.getLevel(), event.getContextMap());
+        return filter(event.getLevel(), event.getContextData());
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
                          final Throwable t) {
-        return filter(level, ThreadContext.getContext());
+        return filter(level, currentContextData());
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
                          final Throwable t) {
-        return filter(level, ThreadContext.getContext());
+        return filter(level, currentContextData());
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
                          final Object... params) {
-        return filter(level, ThreadContext.getContext());
+        return filter(level, currentContextData());
+    }
+
+    private ContextData currentContextData() {
+        return injector.injectContextData(null, reusableInstance());
+    }
+
+    private MutableContextData reusableInstance() {
+        // TODO if (Constants.ENABLE_THREADLOCALS) return thread-local instance
+        return ContextDataFactory.createContextData(); // creates temporary object
     }
 
     public String getKey() {
