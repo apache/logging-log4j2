@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -39,7 +40,9 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
 /**
- * Compare against a log level that is associated with an MDC value.
+ * Compare against a log level that is associated with a context value. By default the context is the
+ * {@link ThreadContext}, but users may {@linkplain ContextDataInjectorFactory configure} a custom
+ * {@link ContextDataInjector} which obtains context data from some other source.
  */
 @Plugin(name = "DynamicThresholdFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class DynamicThresholdFilter extends AbstractFilter {
