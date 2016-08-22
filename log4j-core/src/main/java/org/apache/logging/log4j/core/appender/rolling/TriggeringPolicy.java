@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.LogEvent;
 public interface TriggeringPolicy {
 
     /**
-     * Initialize the Policy.
+     * Initializes the Policy.
      * @param manager The RollingFileManager.
      */
 
