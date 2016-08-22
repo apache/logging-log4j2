@@ -25,7 +25,7 @@ import java.util.Map;
  * @see ThreadContextMap
  * @since 2.7
  */
-public interface ThreadContextMap2 {
+public interface ThreadContextMap2 extends ThreadContextMap {
 
     /**
      * Puts all given context map entries into the current thread's

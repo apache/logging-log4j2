@@ -26,7 +26,7 @@ import org.slf4j.MDC;
 /**
  * Bind the ThreadContextMap to the SLF4J MDC.
  */
-public class MDCContextMap implements ThreadContextMap, ThreadContextMap2 {
+public class MDCContextMap implements ThreadContextMap2 {
 
     @Override
     public void put(final String key, final String value) {
