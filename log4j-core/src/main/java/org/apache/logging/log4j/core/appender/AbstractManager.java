@@ -23,6 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -114,6 +115,11 @@ public abstract class AbstractManager {
 
     protected int getCount() {
         return count;
+    }
+
+    public LoggerContext getLoggerContext() {
+        // TODO Can and should a manager tracks it's logger context?
+        return LoggerContext.getContext(false);
     }
 
     /**

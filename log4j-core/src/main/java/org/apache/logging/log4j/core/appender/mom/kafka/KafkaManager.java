@@ -26,7 +26,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.util.Log4jThread;
 
 public class KafkaManager extends AbstractManager {
 
@@ -38,7 +37,7 @@ public class KafkaManager extends AbstractManager {
     static KafkaProducerFactory producerFactory = new DefaultKafkaProducerFactory();
 
     private final Properties config = new Properties();
-    private Producer<byte[], byte[]> producer = null;
+    private Producer<byte[], byte[]> producer;
     private final int timeoutMillis;
 
     private final String topic;
@@ -59,17 +58,17 @@ public class KafkaManager extends AbstractManager {
     public void releaseSub() {
         if (producer != null) {
             // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
-            final Thread closeThread = new Log4jThread(new Runnable() {
+            final Runnable task = new Runnable() {
                 @Override
                 public void run() {
-                    producer.close();
+                    if (producer != null) {
+                        producer.close();
+                    }
                 }
-            }, "KafkaManager-CloseThread");
-            closeThread.setDaemon(true); // avoid blocking JVM shutdown
-            closeThread.start();
+            };
             try {
-                closeThread.join(timeoutMillis);
-            } catch (final InterruptedException ignore) {
+                getLoggerContext().submitDaemon(task).get(timeoutMillis, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 // ignore
             }
         }

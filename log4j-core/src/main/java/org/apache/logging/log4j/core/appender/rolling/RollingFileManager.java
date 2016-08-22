@@ -17,24 +17,23 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
  * The Rolling File Manager.
@@ -236,7 +235,7 @@ public class RollingFileManager extends FileManager {
         }
 
         boolean success = false;
-        Thread thread = null;
+        Future<?> future = null;
 
         try {
             final RolloverDescription descriptor = strategy.rollover(this);
@@ -254,14 +253,13 @@ public class RollingFileManager extends FileManager {
 
                 if (success && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
-                    thread = new Log4jThread(new AsyncAction(descriptor.getAsynchronous(), this));
-                    thread.start();
+                    future = LoggerContext.getContext(false).submit(new AsyncAction(descriptor.getAsynchronous(), this));
                 }
                 return true;
             }
             return false;
         } finally {
-            if (thread == null || !thread.isAlive()) {
+            if (future == null || future.isDone() || future.isCancelled()) {
                 semaphore.release();
             }
         }

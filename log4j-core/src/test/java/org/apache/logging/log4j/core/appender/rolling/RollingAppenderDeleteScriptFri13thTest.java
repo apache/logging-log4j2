@@ -36,7 +36,7 @@ public class RollingAppenderDeleteScriptFri13thTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-script-fri13th.xml";
     private static final String DIR = "target/rolling-with-delete-script-fri13th/test";
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);

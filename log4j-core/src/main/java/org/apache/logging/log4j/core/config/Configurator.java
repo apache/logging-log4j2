@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -328,13 +329,44 @@ public final class Configurator {
     }
 
     /**
-     * Shuts down the given logging context.
-     * @param ctx the logging context to shut down, may be null.
+     * Shuts down the given logger context. This request does not wait for Log4j tasks to complete.
+     * <p>
+     * Log4j starts threads to perform certain actions like file rollovers; calling this method will not wait until the
+     * rollover thread is done. When this method returns, these tasks' status are undefined, the tasks may be done or
+     * not.
+     * </p>
+     * 
+     * @param ctx
+     *            the logger context to shut down, may be null.
      */
     public static void shutdown(final LoggerContext ctx) {
         if (ctx != null) {
             ctx.stop();
         }
+    }
+
+    /**
+     * Blocks until all Log4j tasks have completed execution after a shutdown request, or the timeout occurs, or the
+     * current thread is interrupted, whichever happens first.
+     * <p>
+     * Log4j can start threads to perform certain actions like file rollovers, calling this method with a timeout will
+     * block until the rollover thread is done.
+     * </p>
+     * 
+     * @param ctx
+     *            the logger context to shut down, may be null.
+     * @param timeout
+     *            the maximum time to wait
+     * @param timeUnit
+     *            the time unit of the timeout argument
+     * @return {@code true} if the logger context terminated and {@code false} if the timeout elapsed before
+     *         termination.
+     */
+    public static boolean shutdown(final LoggerContext ctx, final long timeout, final TimeUnit timeUnit) {
+        if (ctx != null) {
+            return ctx.stop(timeout, timeUnit);
+        }
+        return true;
     }
 
     private Configurator() {
