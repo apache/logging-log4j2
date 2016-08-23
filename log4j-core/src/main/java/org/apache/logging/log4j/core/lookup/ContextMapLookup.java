@@ -17,13 +17,13 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.impl.MutableContextData;
+import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.spi.MutableContextData;
 
 /**
  * Looks up keys from the context. By default this is the {@link ThreadContext}, but users may
