@@ -653,12 +653,13 @@
 </Configuration>]]></pre>
         </subsection>
         <a name="ThreadContextMapFilter"/>
-        <subsection name="ThreadContextMapFilter">
+        <subsection name="ThreadContextMapFilter (or ContextMapFilter)">
           <p>
-            The ThreadContextMapFilter allows filtering against data elements that are in the ThreadContext Map.
+            The ThreadContextMapFilter or ContextMapFilter allows filtering against data elements that are in the
+            current context. By default this is the ThreadContext Map.
           </p>
           <table>
-            <caption align="top">ThreadContext Map Filter Parameters</caption>
+            <caption align="top">Context Map Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -690,14 +691,14 @@
             </tr>
           </table>
           <p>
-            A configuration containing the ThreadContextMapFilter might look like:
+            A configuration containing the ContextMapFilter might look like:
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+  <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="User1" value="DEBUG"/>
     <KeyValuePair key="User2" value="WARN"/>
-  </ThreadContextMapFilter>
+  </ContextMapFilter>
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -715,7 +716,7 @@
   </Loggers>
 </Configuration>]]></pre>
           <p>
-            The ThreadContextMapFilter can also be applied to a logger for filtering:
+            The ContextMapFilter can also be applied to a logger for filtering:
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -732,10 +733,10 @@
   <Loggers>
     <Root level="error">
       <AppenderRef ref="RollingFile"/>
-      <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+      <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
         <KeyValuePair key="foo" value="bar"/>
         <KeyValuePair key="User2" value="WARN"/>
-      </ThreadContextMapFilter>
+      </ContextMapFilter>
     </Root>
   </Loggers>
 </Configuration>
