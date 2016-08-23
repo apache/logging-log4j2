@@ -132,7 +132,7 @@ public final class Server {
     public static void reregisterMBeansAfterReconfigure() {
         // avoid creating Platform MBean Server if JMX disabled
         if (isJmxDisabled()) {
-            LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
+            LOGGER.debug("JMX disabled for Log4j2. Not registering MBeans.");
             return;
         }
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -141,7 +141,7 @@ public final class Server {
 
     public static void reregisterMBeansAfterReconfigure(final MBeanServer mbs) {
         if (isJmxDisabled()) {
-            LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
+            LOGGER.debug("JMX disabled for Log4j2. Not registering MBeans.");
             return;
         }
 
@@ -194,7 +194,7 @@ public final class Server {
      */
     public static void unregisterMBeans() {
         if (isJmxDisabled()) {
-            LOGGER.debug("JMX disabled for log4j2. Not unregistering MBeans.");
+            LOGGER.debug("JMX disabled for Log4j2. Not unregistering MBeans.");
             return;
         }
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
