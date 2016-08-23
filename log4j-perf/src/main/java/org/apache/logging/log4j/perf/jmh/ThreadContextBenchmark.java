@@ -88,8 +88,8 @@ public class ThreadContextBenchmark {
         IMPLEMENTATIONS.put(NO_GC_ARRAY_MAP, GarbageFreeSortedArrayThreadContextMap.class);
     }
 
-    //@Param({ "Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})
-    @Param({ "Default", }) // for legecyInject benchmarks
+    @Param({ "Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})
+    //@Param({ "Default", }) // for legecyInject benchmarks
     public String threadContextMapAlias;
 
     @Param({"5", "50", "500"})
@@ -151,6 +151,11 @@ public class ThreadContextBenchmark {
         for (int i = 0; i < count; i++) {
             ThreadContext.put(keys[i], values[i]);
         }
+    }
+
+    @Benchmark
+    public Object get() {
+        return ThreadContext.get(keys[count - 1]);
     }
 
     @Benchmark
