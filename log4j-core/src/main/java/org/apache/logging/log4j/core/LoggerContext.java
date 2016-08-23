@@ -485,7 +485,11 @@ public class LoggerContext extends AbstractLifeCycle
      * @return The previous Configuration.
      */
     private Configuration setConfiguration(final Configuration config) {
-        Objects.requireNonNull(config, "No Configuration was provided");
+        if (config == null) {
+            LOGGER.error("No configuration found for context '%s'.", contextName);
+            // No change, return the current configuration.
+            return this.configuration;
+        }
         configLock.lock();
         try {
             final Configuration prev = this.configuration;
@@ -569,14 +573,18 @@ public class LoggerContext extends AbstractLifeCycle
         LOGGER.debug("Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
                 contextName, configURI, this, cl);
         final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(contextName, configURI, cl);
-        setConfiguration(instance);
-        /*
-         * instance.start(); Configuration old = setConfiguration(instance); updateLoggers(); if (old != null) {
-         * old.stop(); }
-         */
-        final String location = configuration == null ? "?" : String.valueOf(configuration.getConfigurationSource());
-        LOGGER.debug("Reconfiguration complete for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
-                contextName, location, this, cl);
+        if (instance == null) {
+            LOGGER.error("Reconfiguration failed: No configuration found for '%s' at '%s' in '%s'", contextName, configURI, cl);
+        } else {
+            setConfiguration(instance);
+            /*
+             * instance.start(); Configuration old = setConfiguration(instance); updateLoggers(); if (old != null) {
+             * old.stop(); }
+             */
+            final String location = configuration == null ? "?" : String.valueOf(configuration.getConfigurationSource());
+            LOGGER.debug("Reconfiguration complete for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
+                    contextName, location, this, cl);
+        }
     }
 
     /**
