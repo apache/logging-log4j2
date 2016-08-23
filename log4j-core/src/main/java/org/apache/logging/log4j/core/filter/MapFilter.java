@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -76,6 +77,22 @@ public class MapFilter extends AbstractFilter {
         boolean match = false;
         for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
             final String toMatch = data.get(entry.getKey());
+            if (toMatch != null) {
+                match = entry.getValue().contains(toMatch);
+            } else {
+                match = false;
+            }
+            if ((!isAnd && match) || (isAnd && !match)) {
+                break;
+            }
+        }
+        return match;
+    }
+
+    protected boolean filter(final ContextData data) {
+        boolean match = false;
+        for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
+            final String toMatch = data.getValue(entry.getKey());
             if (toMatch != null) {
                 match = entry.getValue().contains(toMatch);
             } else {
