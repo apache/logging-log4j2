@@ -21,10 +21,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import org.apache.logging.log4j.core.util.TriConsumer;
 
 /**
  * Able to handle the contents of the LogEvent's MDC and either
@@ -68,24 +65,24 @@ public final class Log4j1MdcPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final Map<String, String> contextMap = event.getContextMap();
         if (key == null) {
             // if there is no additional options, we output every single Key/Value pair for the MDC
             toAppendTo.append('{');
-            if (contextMap != null && !contextMap.isEmpty()) {
-                final Set<String> eventKeys = new TreeSet<>(contextMap.keySet());
-                for (final String eventKey : eventKeys) {
-                    toAppendTo.append('{').append(eventKey).append(',').append(contextMap.get(eventKey)).append('}');
-
-                }
-            }
+            event.getContextData().forEach(APPEND_EACH, toAppendTo);
             toAppendTo.append('}');
         } else {
             // otherwise they just want a single key output
-            final Object val = contextMap.get(key);
+            final Object val = event.getContextData().getValue(key);
             if (val != null) {
                 toAppendTo.append(val);
             }
         }
     }
+
+    private static TriConsumer<String, Object, StringBuilder> APPEND_EACH = new TriConsumer<String, Object, StringBuilder>() {
+        @Override
+        public void accept(final String key, final Object value, final StringBuilder toAppendTo) {
+            toAppendTo.append('{').append(key).append(',').append(value).append('}');
+        }
+    };
 }
