@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.util.Objects;
-
 /**
  * Utility class providing common validation logic.
  */
