@@ -166,12 +166,12 @@ public class ThreadContextBenchmark {
     }
 
     @Benchmark
-    Map<String, String> legacyInjectWithoutProperties() {
+    public Map<String, String> legacyInjectWithoutProperties() {
         return createMap(null);
     }
 
     @Benchmark
-    Map<String, String> legacyInjectWithProperties() {
+    public Map<String, String> legacyInjectWithProperties() {
         return createMap(propertyList);
     }
 
