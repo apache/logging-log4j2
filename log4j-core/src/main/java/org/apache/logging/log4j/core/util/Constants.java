@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
