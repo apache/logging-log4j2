@@ -157,7 +157,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return asBuilder();
         }
 
-        public B withConfig(final Configuration config) {
+        public B withConfiguration(final Configuration config) {
             this.config = config;
             return asBuilder();
         }
@@ -225,7 +225,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             .withAppend(Booleans.parseBoolean(append, true))
             .withBufferedIo(Booleans.parseBoolean(bufferedIo, true))
             .withBufferSize(Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE))
-            .withConfig(config)
+            .withConfiguration(config)
             .withFileName(fileName)
             .withFilter(filter)
             .withIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
