@@ -145,7 +145,6 @@ public class ThreadContextBenchmark {
         ThreadContextBenchmarkAccess.init();
     }
 
-    @Benchmark
     public void clearAndPut() {
         ThreadContext.clearMap();
         for (int i = 0; i < count; i++) {
@@ -156,6 +155,11 @@ public class ThreadContextBenchmark {
     @Benchmark
     public Object get() {
         return ThreadContext.get(keys[count - 1]);
+    }
+
+    @Benchmark
+    public void put() {
+        ThreadContext.put("someKey", "someValue");
     }
 
     @Benchmark
