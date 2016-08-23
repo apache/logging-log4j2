@@ -411,12 +411,12 @@ public class LoggerConfig extends AbstractFilterable {
      * @deprecated Use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
      */
     @Deprecated
-    public static LoggerConfig createLogger(@PluginAttribute("additivity") final String additivity,
-            @PluginAttribute("level") final Level level, @PluginAttribute("name") final String loggerName,
-            @PluginAttribute("includeLocation") final String includeLocation,
-            @PluginElement("AppenderRef") final AppenderRef[] refs,
-            @PluginElement("Properties") final Property[] properties, @PluginConfiguration final Configuration config,
-            @PluginElement("Filter") final Filter filter) {
+    public static LoggerConfig createLogger(final String additivity,
+            final Level level, @PluginAttribute("name") final String loggerName,
+            final String includeLocation,
+            final AppenderRef[] refs,
+            final Property[] properties, @PluginConfiguration final Configuration config,
+            final Filter filter) {
         if (loggerName == null) {
             LOGGER.error("Loggers cannot be configured without a name");
             return null;
