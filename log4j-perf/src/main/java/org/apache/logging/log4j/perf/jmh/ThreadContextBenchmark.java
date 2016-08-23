@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,8 @@ public class ThreadContextBenchmark {
         IMPLEMENTATIONS.put(NO_GC_ARRAY_MAP, GarbageFreeSortedArrayThreadContextMap.class);
     }
 
-    @Param({ "Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})
+    //@Param({ "Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})
+    @Param({ "Default", }) // for legecyInject benchmarks
     public String threadContextMapAlias;
 
     @Param({"5", "50", "500"})
@@ -161,5 +163,31 @@ public class ThreadContextBenchmark {
     public MutableContextData injectWithProperties() {
         reusableContextData.clear();
         return injector.injectContextData(propertyList, reusableContextData);
+    }
+
+    @Benchmark
+    Map<String, String> legacyInjectWithoutProperties() {
+        return createMap(null);
+    }
+
+    @Benchmark
+    Map<String, String> legacyInjectWithProperties() {
+        return createMap(propertyList);
+    }
+
+    // from Log4jLogEvent::createMap
+    static Map<String, String> createMap(final List<Property> properties) {
+        final Map<String, String> contextMap = ThreadContext.getImmutableContext();
+        if (properties == null || properties.isEmpty()) {
+            return contextMap; // may be ThreadContext.EMPTY_MAP but not null
+        }
+        final Map<String, String> map = new HashMap<>(contextMap);
+
+        for (final Property prop : properties) {
+            if (!map.containsKey(prop.getName())) {
+                map.put(prop.getName(), prop.getValue());
+            }
+        }
+        return Collections.unmodifiableMap(map);
     }
 }
