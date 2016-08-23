@@ -433,7 +433,7 @@ public class LoggerConfig extends AbstractFilterable {
     /**
      * Factory method to create a LoggerConfig.
      *
-     * @param additivity True if additive, false otherwise.
+     * @param additivity true if additive, false otherwise.
      * @param level The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
      * @param includeLocation whether location should be passed downstream
