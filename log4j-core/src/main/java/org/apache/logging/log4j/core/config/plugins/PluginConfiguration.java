@@ -33,4 +33,5 @@ import org.apache.logging.log4j.core.config.plugins.visitors.PluginConfiguration
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @PluginVisitorStrategy(PluginConfigurationVisitor.class)
 public @interface PluginConfiguration {
+    // empty
 }

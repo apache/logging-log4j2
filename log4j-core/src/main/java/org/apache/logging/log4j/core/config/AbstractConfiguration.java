@@ -378,6 +378,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     public void setup() {
+        // default does nothing, subclasses do work.
     }
 
     protected Level getDefaultStatus() {

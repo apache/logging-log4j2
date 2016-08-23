@@ -50,7 +50,6 @@ public class ScriptManager implements FileWatcher, Serializable {
     private final ConcurrentMap<String, ScriptRunner> scripts = new ConcurrentHashMap<>();
     private final String languages;
     private final WatchManager watchManager;
-    private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
 
     public ScriptManager(final WatchManager watchManager) {
         this.watchManager = watchManager;
