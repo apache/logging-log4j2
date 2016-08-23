@@ -205,68 +205,35 @@ public class ArrayContextDataVsHashMapBenchmark {
     }
 
     @Benchmark
-    public int getValueArrayContextData() {
-        String[] theKeys = keys;
-        int c = count;
-        int result = 0;
-        for (int i = 0; i < c; i++) {
-            Object val = populatedContextData.getValue(theKeys[i]);
-            result += val.hashCode();// + theKeys[i].hashCode();
-        }
-        return result;
+    public Object getValueArrayContextData() {
+        return populatedContextData.getValue(keys[count - 1]);
     }
 
     @Benchmark
-    public int getValueHashContextData() {
-        String[] theKeys = keys;
-        int c = count;
-        int result = 0;
-        for (int i = 0; i < c; i++) {
-            Object val = populatedHashContextData.getValue(theKeys[i]);
-            result += val.hashCode();// + theKeys[i].hashCode();
-        }
-        return result;
+    public Object getValueHashContextData() {
+        return populatedHashContextData.getValue(keys[count - 1]);
     }
 
     @Benchmark
-    public int getValueMap() {
-        String[] theKeys = keys;
-        int c = count;
-        int result = 0;
-        for (int i = 0; i < c; i++) {
-            Object val = populatedMap.get(theKeys[i]);
-            result += val.hashCode();// + theKeys[i].hashCode();
-        }
-        return result;
+    public Object getValueMap() {
+        return populatedMap.get(keys[count - 1]);
     }
 
     @Benchmark
     public int putArrayContextData() {
-        String[] theKeys = keys;
-        int c = count;
-        for (int i = 0; i < c; i++) {
-            contextData.putValue(theKeys[i], value);
-        }
-        return contextData.size();
+        populatedContextData.put("someKey", "someValue");
+        return populatedContextData.size();
     }
 
     @Benchmark
     public int putHashContextData() {
-        String[] theKeys = keys;
-        int c = count;
-        for (int i = 0; i < c; i++) {
-            hashContextData.putValue(theKeys[i], value);
-        }
+        hashContextData.put("someKey", "someValue");
         return hashContextData.size();
     }
 
     @Benchmark
     public int putMap() {
-        String[] theKeys = keys;
-        int c = count;
-        for (int i = 0; i < c; i++) {
-            map.put(theKeys[i], value);
-        }
+        map.put("someKey", "someValue");
         return map.size();
     }
 }
