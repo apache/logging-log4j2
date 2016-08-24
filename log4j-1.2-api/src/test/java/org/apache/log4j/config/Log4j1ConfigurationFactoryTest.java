@@ -36,8 +36,8 @@ public class Log4j1ConfigurationFactoryTest {
     private Layout<?> testConsole(final String configResource) throws Exception {
         final URL configLocation = ClassLoader.getSystemResource(configResource);
         assertNotNull(configLocation);
-        final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration("test",
-                configLocation.toURI());
+        final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null,
+                "test", configLocation.toURI());
         assertNotNull(configuration);
         final ConsoleAppender appender = configuration.getAppender("Console");
         assertNotNull(appender);

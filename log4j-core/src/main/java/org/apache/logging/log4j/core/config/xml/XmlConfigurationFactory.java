@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -40,8 +41,8 @@ public class XmlConfigurationFactory extends ConfigurationFactory {
      * @return The Configuration.
      */
     @Override
-    public Configuration getConfiguration(final ConfigurationSource source) {
-        return new XmlConfiguration(source);
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return new XmlConfiguration(loggerContext, source);
     }
 
     /**
