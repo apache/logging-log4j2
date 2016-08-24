@@ -187,14 +187,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     @Override
-	public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
-	    // lazily instantiate only when requested by AsyncLoggers:
-	    // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
-	    if (asyncLoggerConfigDisruptor == null) {
-	        asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor();
-	    }
-		return asyncLoggerConfigDisruptor;
-	}
+    public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
+        // lazily instantiate only when requested by AsyncLoggers:
+        // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
+        if (asyncLoggerConfigDisruptor == null) {
+            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor();
+        }
+        return asyncLoggerConfigDisruptor;
+    }
 
     /**
      * Initialize the configuration.
@@ -241,7 +241,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
-        	asyncLoggerConfigDisruptor.start();
+            asyncLoggerConfigDisruptor.start();
         }
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggerConfigs.values()) {
@@ -264,13 +264,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         for (final LoggerConfig logger : loggerConfigs.values()) {
             if (logger instanceof AsyncLoggerConfig) {
-            	return true;
+                return true;
             }
         }
-		return false;
-	}
+        return false;
+    }
 
-	/**
+    /**
      * Tear down the configuration.
      */
     @Override
