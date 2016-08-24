@@ -16,37 +16,30 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="RollingCronTest" monitorInterval="1">
+<Configuration status="ERROR" name="RollingCronTestOnceADay">
   <Properties>
-    <Property name="filename">target/rolling-cron/rollingtest.log</Property>
+    <Property name="filename">target/rolling-cron-once-a-day/rollingtest.log</Property>
   </Properties>
-  <Filters>
-    <ThresholdFilter level="debug"/>
-  </Filters>
 
   <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%p %C{1.} [%t] %m%n"/>
     </Console>
-    <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling-cron/test1-%d{MM-dd-yy-HH-mm-ss}.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <CronTriggeringPolicy schedule="* * * ? * *"/>
+    <RollingFile name="RollingFile"
+    	 fileName="${filename}"
+    	 filePattern="target/rolling-cron-once-a-day/rollingtest-%d{yyyyMMdd}_%d{HHmmss}-%i.log.gz"
+    	 immediateFlush="true">
+      <PatternLayout pattern="%d %p %C{1.} [%t] %m%n" />
+      <CronTriggeringPolicy schedule="@CRON_EXPR@"/>
     </RollingFile>
-    <List name="List">
-      <Filters>
-        <ThresholdFilter level="error"/>
-      </Filters>
-    </List>
   </Appenders>
 
   <Loggers>
-    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
+    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="DEBUG" additivity="false">
       <AppenderRef ref="RollingFile"/>
     </Logger>
 
-    <Root level="error">
+    <Root level="ERROR">
       <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
