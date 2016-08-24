@@ -208,7 +208,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return asBuilder();
         }
 
-        public B withConfig(final Configuration config) {
+        public B withConfiguration(final Configuration config) {
             this.config = config;
             return asBuilder();
         }
@@ -372,7 +372,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
                 .withAppend(Booleans.parseBoolean(append, true))
                 .withBufferedIo(Booleans.parseBoolean(bufferedIO, true))
                 .withBufferSize(bufferSize)
-                .withConfig(config)
+                .withConfiguration(config)
                 .withFileName(fileName)
                 .withFilePattern(filePattern)
                 .withFilter(filter)
