@@ -24,6 +24,24 @@
   </properties>
   <body>
     <release version="2.7" date="2016-MM-DD" description="GA Release 2.7">
+      <action issue="LOG4J2-1506" dev="ggregory" type="fix" due-to="Johannes Schleger">
+        Unregister JMX ignores log4j2.disable.jmx property.
+      </action>
+      <action issue="LOG4J2-1490" dev="ggregory" type="fix" due-to="Krzysztof Taborski, Gary Gregory">
+        Log4j2 is creating empty log files.
+      </action>
+      <action issue="LOG4J2-1320" dev="ggregory" type="fix" due-to="Paresh Varke, Pierrick Hymbert">
+        Custom plugins are not loaded, URL protocol vfs is not supported.
+      </action>
+      <action issue="LOG4J2-1541" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Fix file handle resource leak in XmlConfiguration.XmlConfiguration(ConfigurationSource).
+      </action>
+      <action issue="LOG4J2-1538" dev="ggregory" type="fix" due-to="Igor Karpov">
+        Dynamic removal of filter may cause NPE.
+      </action>
+      <action issue="LOG4J2-1532" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Attributes are not merged properly in composite configurations.
+      </action>
       <action issue="LOG4J2-1529" dev="mattsicker" type="fix" due-to="Sridevi Narra">
         Attributes are not merged properly in composite configurations.
       </action>
@@ -122,6 +140,18 @@
       </action>
       <action issue="LOG4J2-1487" dev="ggregory" type="update" due-to="Gary Gregory">
         Update JMS test from ActiveMQ 5.13.3 to 5.13.4.
+      </action>
+      <action issue="LOG4J2-1543" dev="ggregory" type="update" due-to="Gary Gregory">
+        Remove deprecated Core API org.apache.logging.log4j.core.util.Constants.UTF_8.
+      </action>
+      <action issue="LOG4J2-1544" dev="ggregory" type="update" due-to="Gary Gregory">
+        Remove deprecated Core API org.apache.logging.log4j.core.util.Assert.requireNonNull(T, String).
+      </action>
+      <action issue="LOG4J2-1545" dev="ggregory" type="update" due-to="Gary Gregory">
+        Remove deprecated Web API org.apache.logging.log4j.web.WebLookup.getServletContext().
+      </action>
+      <action issue="LOG4J2-1546" dev="ggregory" type="update" due-to="Gary Gregory">
+        Remove deprecated Core API org.apache.logging.log4j.core.config.LoggerConfig.createLogger(String, Level, String, String , AppenderRef[] refs, Property[], Configuration config, Filter).
       </action>
     </release>
     <release version="2.6.2" date="2016-07-05" description="GA Release 2.6.2">

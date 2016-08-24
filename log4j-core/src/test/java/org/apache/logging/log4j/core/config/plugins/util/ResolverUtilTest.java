@@ -105,10 +105,30 @@ public class ResolverUtilTest {
 
     @Ignore
     @Test
+    public void testExtractPathFromVfsUrl() throws Exception {
+        // need to install URLStreamHandlerFactory to prevent "unknown protocol" MalformedURLException
+        final URL url = new URL(
+                "vfs:/C:/jboss/jboss-eap-6.4/standalone/deployments/com.xxx.yyy.application-ear.ear/lib/com.xxx.yyy.logging.jar/com/xxx/yyy/logging/config/");
+        final String expected = "/jboss/jboss-eap-6.4/standalone/deployments/com.xxx.yyy.application-ear.ear/lib/com.xxx.yyy.logging.jar/com/xxx/yyy/logging/config/";
+        assertEquals(expected, new ResolverUtil().extractPath(url));
+    }
+
+    @Ignore
+    @Test
     public void testExtractPathFromVfszipUrlWithPlusCharacters()
             throws Exception {
         // need to install URLStreamHandlerFactory to prevent "unknown protocol" MalformedURLException
         final URL url = new URL("vfszip:/path+with+plus/file+name+with+plus.xml");
+        final String expected = "/path+with+plus/file+name+with+plus.xml";
+        assertEquals(expected, new ResolverUtil().extractPath(url));
+    }
+
+    @Ignore
+    @Test
+    public void testExtractPathFromVfsUrlWithPlusCharacters()
+            throws Exception {
+        // need to install URLStreamHandlerFactory to prevent "unknown protocol" MalformedURLException
+        final URL url = new URL("vfs:/path+with+plus/file+name+with+plus.xml");
         final String expected = "/path+with+plus/file+name+with+plus.xml";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
