@@ -33,7 +33,7 @@
       <action issue="LOG4J2-1490" dev="ggregory" type="fix" due-to="Krzysztof Taborski, Gary Gregory">
         Log4j2 is creating empty log files.
       </action>
-      <action issue="LOG4J2-1320" dev="ggregory" type="fix" due-to="Paresh Varke, Pierrick Hymbert">
+      <action issue="LOG4J2-1320" dev="ggregory" type="fix" due-to="Paresh Varke, Pierrick Hymbert, Gary Gregory">
         Custom plugins are not loaded, URL protocol vfs is not supported.
       </action>
       <action issue="LOG4J2-1541" dev="ggregory" type="fix" due-to="Gary Gregory">
