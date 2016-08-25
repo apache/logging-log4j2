@@ -17,14 +17,9 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import static org.junit.Assert.assertEquals;
 import static org.apache.logging.log4j.core.config.plugins.util.ResolverUtilTest.compileAndCreateClassLoader;
 import static org.apache.logging.log4j.core.config.plugins.util.ResolverUtilTest.compileJarAndCreateClassLoader;
-
-import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -38,12 +33,22 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
+import org.apache.logging.log4j.junit.URLStreamHandlerFactoryRule;
+import org.junit.AfterClass;
+import org.junit.Rule;
+import org.junit.Test;
+
 /**
  * Tests the ResolverUtil class for custom protocol like bundleresource, vfs, vfszip.
  */
 public class ResolverUtilCustomProtocolTest {
 
+    @Rule
+    public URLStreamHandlerFactoryRule rule = new URLStreamHandlerFactoryRule(new NoopURLStreamHandlerFactory());
+
     static class NoopURLStreamHandlerFactory implements URLStreamHandlerFactory {
+        
         @Override
         public URLStreamHandler createURLStreamHandler(String protocol) {
             return new URLStreamHandler() {
@@ -105,30 +110,6 @@ public class ResolverUtilCustomProtocolTest {
         protected Enumeration<URL> findResources(String name) throws IOException {
             return Collections.enumeration(Arrays.asList(findResource(name)));
         }
-    }
-
-    @BeforeClass
-    public static void defineURLHandler() {
-        URL.setURLStreamHandlerFactory(new NoopURLStreamHandlerFactory());
-    }
-
-    @AfterClass
-    public static void removeURLHandler() throws Exception {
-        // Simulate this - Not the best way, but no other choice welcome ?
-        // URL.setURLStreamHandlerFactory(null);
-        Field handlersFields = URL.class.getDeclaredField("handlers");
-        if (!handlersFields.isAccessible()) {
-            handlersFields.setAccessible(true);
-        }
-        Field factoryFields = URL.class.getDeclaredField("factory");
-        if (!factoryFields.isAccessible()) {
-            factoryFields.setAccessible(true);
-        }
-
-        @SuppressWarnings("unchecked")
-        Hashtable<String, URLStreamHandler> handlers = (Hashtable<String, URLStreamHandler>) handlersFields.get(null);
-        handlers.clear();
-        factoryFields.set(null, null);
     }
 
     @Test
