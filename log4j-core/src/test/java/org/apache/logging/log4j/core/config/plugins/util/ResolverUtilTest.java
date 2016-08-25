@@ -20,12 +20,23 @@ package org.apache.logging.log4j.core.config.plugins.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.junit.Ignore;
+import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
 import org.junit.Test;
 
 /**
@@ -93,64 +104,6 @@ public class ResolverUtilTest {
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
 
-    @Ignore
-    @Test
-    public void testExtractPathFromVfszipUrl() throws Exception {
-        // need to install URLStreamHandlerFactory to prevent "unknown protocol" MalformedURLException
-        final URL url = new URL(
-                "vfszip:/home2/jboss-5.0.1.CR2/jboss-as/server/ais/ais-deploy/myear.ear/mywar.war/WEB-INF/some.xsd");
-        final String expected = "/home2/jboss-5.0.1.CR2/jboss-as/server/ais/ais-deploy/myear.ear/mywar.war/WEB-INF/some.xsd";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Ignore
-    @Test
-    public void testExtractPathFromVfsUrl() throws Exception {
-        // need to install URLStreamHandlerFactory to prevent "unknown protocol" MalformedURLException
-        final URL url = new URL(
-                "vfs:/C:/jboss/jboss-eap-6.4/standalone/deployments/com.xxx.yyy.application-ear.ear/lib/com.xxx.yyy.logging.jar/com/xxx/yyy/logging/config/");
-        final String expected = "/jboss/jboss-eap-6.4/standalone/deployments/com.xxx.yyy.application-ear.ear/lib/com.xxx.yyy.logging.jar/com/xxx/yyy/logging/config/";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Ignore
-    @Test
-    public void testExtractPathFromVfszipUrlWithPlusCharacters()
-            throws Exception {
-        // need to install URLStreamHandlerFactory to prevent "unknown protocol" MalformedURLException
-        final URL url = new URL("vfszip:/path+with+plus/file+name+with+plus.xml");
-        final String expected = "/path+with+plus/file+name+with+plus.xml";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Ignore
-    @Test
-    public void testExtractPathFromVfsUrlWithPlusCharacters()
-            throws Exception {
-        // need to install URLStreamHandlerFactory to prevent "unknown protocol" MalformedURLException
-        final URL url = new URL("vfs:/path+with+plus/file+name+with+plus.xml");
-        final String expected = "/path+with+plus/file+name+with+plus.xml";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Ignore
-    @Test
-    public void testExtractPathFromResourceBundleUrl() throws Exception {
-        // need to install URLStreamHandlerFactory to prevent "unknown protocol" MalformedURLException
-        final URL url = new URL("resourcebundle:/some/path/some/file.properties");
-        final String expected = "/some/path/some/file.properties";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Ignore
-    @Test
-    public void testExtractPathFromResourceBundleUrlWithPlusCharacters() throws Exception {
-        // need to install URLStreamHandlerFactory to prevent "unknown protocol" MalformedURLException
-        final URL url = new URL("resourcebundle:/some+path/some+file.properties");
-        final String expected = "/some+path/some+file.properties";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
     @Test
     public void testExtractPathFromHttpUrl() throws Exception {
         final URL url = new URL("http://java.sun.com/index.html#chapter1");
@@ -184,6 +137,79 @@ public class ResolverUtilTest {
         final URL url = new URL("ftp://user001:secretpassword@private.ftp-servers.example.com/my+directory/my+file.txt");
         final String expected = "/my directory/my file.txt";
         assertEquals(expected, new ResolverUtil().extractPath(url));
+    }
+
+    @Test
+    public void testFindInPackageFromDirectoryPath() throws Exception {
+      ClassLoader cl = compileAndCreateClassLoader("1");
+
+      ResolverUtil resolverUtil = new ResolverUtil();
+      resolverUtil.setClassLoader(cl);
+      resolverUtil.findInPackage(new PluginTest(), "customplugin1");
+      assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
+      assertEquals("Unexpected class resolved",
+            cl.loadClass("customplugin1.FixedString1Layout"),
+            resolverUtil.getClasses().iterator().next());
+    }
+
+    @Test
+    public void testFindInPackageFromJarPath() throws Exception {
+      ClassLoader cl = compileJarAndCreateClassLoader("2");
+
+      ResolverUtil resolverUtil = new ResolverUtil();
+      resolverUtil.setClassLoader(cl);
+      resolverUtil.findInPackage(new PluginTest(), "customplugin2");
+      assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
+      assertEquals("Unexpected class resolved",
+            cl.loadClass("customplugin2.FixedString2Layout"),
+            resolverUtil.getClasses().iterator().next());
+    }
+
+    static URLClassLoader compileJarAndCreateClassLoader(String suffix) throws IOException, Exception {
+        File workDir = compile(suffix);
+        File jarFile = new File(workDir, "customplugin" + suffix + ".jar");
+        URI jarURL = jarFile.toURI();
+        createJar(jarURL, workDir, new File(workDir,
+              "customplugin" + suffix + "/FixedString" + suffix + "Layout.class"));
+        return URLClassLoader.newInstance(new URL[] {jarURL.toURL()});
+    }
+
+    static URLClassLoader compileAndCreateClassLoader(String suffix) throws IOException {
+        final File workDir = compile(suffix);
+        return URLClassLoader.newInstance(new URL[] {workDir.toURI().toURL()});
+    }
+
+    static File compile(String suffix) throws IOException {
+        final File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
+        final File workDir = new File("target/resolverutil" + suffix);
+        final File javaFile = new File(workDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.java");
+        final File parent = javaFile.getParentFile();
+        if (!parent.exists()) {
+          assertTrue("Create customplugin" + suffix + " folder KO", javaFile.getParentFile().mkdirs());
+        }
+  
+        String content = new String(Files.readAllBytes(orig.toPath()))
+          .replaceAll("FixedString", "FixedString" + suffix)
+          .replaceAll("customplugin", "customplugin" + suffix);
+        Files.write(javaFile.toPath(), content.getBytes());
+  
+        PluginManagerPackagesTest.compile(javaFile);
+        return workDir;
+    }
+
+    static void createJar(URI jarURL, File workDir, File f) throws Exception {
+        Map<String, String> env = new HashMap<>(); 
+        env.put("create", "true");
+        URI uri = URI.create("jar:file://" + jarURL.getPath());
+        try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {   
+            Path path = zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
+            if (path.getParent() != null) {
+                Files.createDirectories(path.getParent());
+            }
+            Files.copy(f.toPath(),
+                   path, 
+                   StandardCopyOption.REPLACE_EXISTING ); 
+        } 
     }
 
 }
