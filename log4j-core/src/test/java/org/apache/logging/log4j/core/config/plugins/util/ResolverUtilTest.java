@@ -182,18 +182,18 @@ public class ResolverUtilTest {
     static File compile(String suffix) throws IOException {
         final File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
         final File workDir = new File("target/resolverutil" + suffix);
-        final File javaFile = new File(workDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.java");
-        final File parent = javaFile.getParentFile();
+        final File f = new File(workDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.java");
+        final File parent = f.getParentFile();
         if (!parent.exists()) {
-          assertTrue("Create customplugin" + suffix + " folder KO", javaFile.getParentFile().mkdirs());
+          assertTrue("Create customplugin" + suffix + " folder KO", f.getParentFile().mkdirs());
         }
   
         String content = new String(Files.readAllBytes(orig.toPath()))
           .replaceAll("FixedString", "FixedString" + suffix)
           .replaceAll("customplugin", "customplugin" + suffix);
-        Files.write(javaFile.toPath(), content.getBytes());
+        Files.write(f.toPath(), content.getBytes());
   
-        PluginManagerPackagesTest.compile(javaFile);
+        PluginManagerPackagesTest.compile(f);
         return workDir;
     }
 
