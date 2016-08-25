@@ -85,7 +85,7 @@ public class PluginManagerPackagesTest {
         assertEquals("abc123XYZ", messages.get(0));
     }
 
-    private void compile(final File f) throws IOException {
+    static void compile(final File f) throws IOException {
         // set up compiler
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
