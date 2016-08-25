@@ -200,7 +200,7 @@ public class ResolverUtilTest {
     static void createJar(URI jarURI, File workDir, File f) throws Exception {
         Map<String, String> env = new HashMap<>(); 
         env.put("create", "true");
-        URI uri = URI.create("jar:file://" + jarURI.getPath());
+        URI uri = URI.create("jar:file://" + jarURI.getRawPath());
         try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {   
             Path path = zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
             if (path.getParent() != null) {

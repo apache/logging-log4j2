@@ -131,7 +131,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     protected AbstractConfiguration(LoggerContext loggerContext, final ConfigurationSource configurationSource) {
         this.loggerContext = new WeakReference<>(loggerContext);
-        //this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
+        // The loggerContext is null for the NullConfiguration class.
+        // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager(Node.CATEGORY);
