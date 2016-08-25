@@ -168,10 +168,10 @@ public class ResolverUtilTest {
     static URLClassLoader compileJarAndCreateClassLoader(String suffix) throws IOException, Exception {
         File workDir = compile(suffix);
         File jarFile = new File(workDir, "customplugin" + suffix + ".jar");
-        URI jarURL = jarFile.toURI();
-        createJar(jarURL, workDir, new File(workDir,
+        URI jarURI = jarFile.toURI();
+        createJar(jarURI, workDir, new File(workDir,
               "customplugin" + suffix + "/FixedString" + suffix + "Layout.class"));
-        return URLClassLoader.newInstance(new URL[] {jarURL.toURL()});
+        return URLClassLoader.newInstance(new URL[] {jarURI.toURL()});
     }
 
     static URLClassLoader compileAndCreateClassLoader(String suffix) throws IOException {
@@ -197,10 +197,10 @@ public class ResolverUtilTest {
         return workDir;
     }
 
-    static void createJar(URI jarURL, File workDir, File f) throws Exception {
+    static void createJar(URI jarURI, File workDir, File f) throws Exception {
         Map<String, String> env = new HashMap<>(); 
         env.put("create", "true");
-        URI uri = URI.create("jar:file://" + jarURL.getPath());
+        URI uri = URI.create("jar:file://" + jarURI.getPath());
         try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {   
             Path path = zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
             if (path.getParent() != null) {
