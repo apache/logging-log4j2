@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config.builder.api;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Builder;
@@ -391,6 +392,12 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> setDestination(String destination);
 
     /**
+     * Sets the logger context.
+     * @param loggerContext the logger context.
+     */
+    void setLoggerContext(LoggerContext loggerContext);
+
+    /**
      * Add the properties for the root node.
      * @param key The property key.
      * @param value The property value.
@@ -405,4 +412,5 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return The constructed Configuration.
      */
     T build(boolean initialize);
+
 }

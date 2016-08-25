@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
+import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
@@ -36,14 +37,28 @@ public class Log4j1ConfigurationFactoryTest {
     private Layout<?> testConsole(final String configResource) throws Exception {
         final URL configLocation = ClassLoader.getSystemResource(configResource);
         assertNotNull(configLocation);
-        final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration("test",
-                configLocation.toURI());
+        final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null,
+                "test", configLocation.toURI());
         assertNotNull(configuration);
         final ConsoleAppender appender = configuration.getAppender("Console");
         assertNotNull(appender);
-        // Can't set ImmediateFlush for a Console Appender in Log4j 2 like you can in 1.2
-        assertTrue(appender.getImmediateFlush());
         assertEquals(Target.SYSTEM_ERR, appender.getTarget());
+        //
+        final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
+        assertNotNull(loggerConfig);
+        assertEquals(Level.DEBUG, loggerConfig.getLevel());
+        return appender.getLayout();
+    }
+
+    private Layout<?> testFile(final String configResource) throws Exception {
+        final URL configLocation = ClassLoader.getSystemResource(configResource);
+        assertNotNull(configLocation);
+        final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null,
+        		"test", configLocation.toURI());
+        assertNotNull(configuration);
+        final FileAppender appender = configuration.getAppender("File");
+        assertNotNull(appender);
+        assertEquals("target/mylog.txt", appender.getFileName());
         //
         final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
         assertNotNull(loggerConfig);
@@ -87,5 +102,11 @@ public class Log4j1ConfigurationFactoryTest {
         final Log4j1XmlLayout layout = (Log4j1XmlLayout) testConsole("config-1.2/log4j-console-XmlLayout.properties");
         assertTrue(layout.isLocationInfo());
         assertFalse(layout.isProperties());
+    }
+
+    @Test
+    public void testFileSimpleLayout() throws Exception {
+        final PatternLayout layout = (PatternLayout) testFile("config-1.2/log4j-file-SimpleLayout.properties");
+        assertEquals("%level - %m%n", layout.getConversionPattern());
     }
 }

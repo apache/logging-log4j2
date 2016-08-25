@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
@@ -53,8 +54,8 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component scriptsComponent;
     private String contentType = "text";
 
-    public BuiltConfiguration(final ConfigurationSource source, final Component rootComponent) {
-        super(source);
+    public BuiltConfiguration(LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
+        super(loggerContext, source);
         statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -53,15 +54,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component scripts;
     private final Class<T> clazz;
     private ConfigurationSource source;
-    private int monitorInterval = 0;
-    private Level level = null;
-    private String verbosity = null;
-    private String destination = null;
-    private String packages = null;
-    private String shutdownFlag = null;
-    private String advertiser = null;
-
-    private String name = null;
+    private int monitorInterval;
+    private Level level;
+    private String verbosity;
+    private String destination;
+    private String packages;
+    private String shutdownFlag;
+    private String advertiser;
+    private LoggerContext loggerContext;
+    private String name;
 
     @SuppressWarnings("unchecked")
     public DefaultConfigurationBuilder() {
@@ -152,8 +153,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
             }
-            final Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
-            configuration = constructor.newInstance(source, root);
+            final Constructor<T> constructor = clazz.getConstructor(LoggerContext.class, ConfigurationSource.class, Component.class);
+            configuration = constructor.newInstance(loggerContext, source, root);
             configuration.setMonitorInterval(monitorInterval);
             configuration.getRootNode().getAttributes().putAll(root.getAttributes());
             if (name != null) {
@@ -400,8 +401,14 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
+    public void setLoggerContext(LoggerContext loggerContext) {
+        this.loggerContext = loggerContext;
+    }
+
+    @Override
     public ConfigurationBuilder<T> addRootProperty(final String key, final String value) {
         root.getAttributes().put(key, value);
         return this;
     }
+
 }

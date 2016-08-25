@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config.yaml;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.json.JsonConfiguration;
@@ -28,8 +29,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class YamlConfiguration extends JsonConfiguration {
 
-    public YamlConfiguration(final ConfigurationSource configSource) {
-        super(configSource);
+    public YamlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
+        super(loggerContext, configSource);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class YamlConfiguration extends JsonConfiguration {
             if (source == null) {
                 return null;
             }
-            return new YamlConfiguration(source);
+            return new YamlConfiguration(getLoggerContext(), source);
         } catch (final IOException ex) {
             LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);
         }

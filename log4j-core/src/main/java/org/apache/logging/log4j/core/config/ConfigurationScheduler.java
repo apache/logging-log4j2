@@ -182,7 +182,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             } catch(final Throwable ex) {
                 LOGGER.error("Error running command", ex);
             } finally {
-                Date fireDate = cronExpression.getNextInvalidTimeAfter(new Date());
+                Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
                 final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
                 scheduledFuture.reset(future, fireDate);
             }
