@@ -19,6 +19,7 @@ package org.apache.log4j.config;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
@@ -126,6 +127,9 @@ public class Log4j1ConfigurationParser {
         case "org.apache.log4j.ConsoleAppender":
             buildConsoleAppender(appenderName);
             break;
+        case "org.apache.log4j.FileAppender":
+            buildFileAppender(appenderName);
+            break;
         default:
             reportWarning("Unknown appender class: " + appenderClass + "; ignoring appender: " + appenderName);
         }
@@ -151,16 +155,46 @@ public class Log4j1ConfigurationParser {
                 appenderBuilder.addAttribute("target", target);
             }
         }
-        buildAppenderAttribute(appenderName, appenderBuilder, "Follow", "false", "follow");
+        buildAttribute(appenderName, appenderBuilder, "Follow", "follow");
+        if ("false".equalsIgnoreCase(getLog4jAppenderValue(appenderName, "ImmediateFlush"))) {
+            reportWarning("ImmediateFlush=false is not supported on Console appender");
+        }
         buildAppenderLayout(appenderName, appenderBuilder);
         builder.add(appenderBuilder);
     }
 
-    private void buildAppenderAttribute(String appenderName, AppenderComponentBuilder appenderBuilder,
-                                        String sourceAttributeName, String defaultValue, String targetAttributeName) {
-        final String attributeValue = getLog4jAppenderValue(appenderName, sourceAttributeName, defaultValue);
+    private void buildFileAppender(final String appenderName) {
+        final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, "File");
+        buildMandatoryAttribute(appenderName, appenderBuilder, "File", "fileName");
+        buildAttribute(appenderName, appenderBuilder, "Append", "append");
+        buildAttribute(appenderName, appenderBuilder, "BufferedIO", "bufferedIo");
+        buildAttribute(appenderName, appenderBuilder, "BufferSize", "bufferSize");
+        buildAttribute(appenderName, appenderBuilder, "ImmediateFlush", "immediateFlush");
+        buildAppenderLayout(appenderName, appenderBuilder);
+        builder.add(appenderBuilder);
+    }
+
+    private void buildAttribute(String componentName, ComponentBuilder componentBuilder,
+                                String sourceAttributeName, String targetAttributeName) {
+        final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
         if (attributeValue != null) {
-            appenderBuilder.addAttribute(targetAttributeName, attributeValue);
+            componentBuilder.addAttribute(targetAttributeName, attributeValue);
+        }
+    }
+
+    private void buildAttributeWithDefault(String componentName, ComponentBuilder componentBuilder,
+                                           String sourceAttributeName, String targetAttributeName, String defaultValue) {
+        final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName, defaultValue);
+        componentBuilder.addAttribute(targetAttributeName, attributeValue);
+    }
+
+    private void buildMandatoryAttribute(String componentName, ComponentBuilder componentBuilder,
+                                         String sourceAttributeName, String targetAttributeName) {
+        final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
+        if (attributeValue != null) {
+            componentBuilder.addAttribute(targetAttributeName, attributeValue);
+        } else {
+            reportWarning("Missing " + sourceAttributeName + " for " + componentName);
         }
     }
 
@@ -271,6 +305,10 @@ public class Log4j1ConfigurationParser {
             }
         }
 
+    }
+
+    private String getLog4jAppenderValue(final String appenderName, final String attributeName) {
+        return properties.getProperty("log4j.appender." + appenderName + "." + attributeName);
     }
 
     private String getLog4jAppenderValue(final String appenderName, final String attributeName,
