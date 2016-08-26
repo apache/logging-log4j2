@@ -153,6 +153,9 @@
       <action issue="LOG4J2-1487" dev="ggregory" type="update" due-to="Gary Gregory">
         Update JMS test from ActiveMQ 5.13.3 to 5.13.4.
       </action>
+      <action issue="LOG4J2-1551" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update JMS test from ActiveMQ 5.13.4 to 5.14.0.
+      </action>
       <action issue="LOG4J2-1543" dev="ggregory" type="update" due-to="Gary Gregory">
         Remove deprecated Core API org.apache.logging.log4j.core.util.Constants.UTF_8.
       </action>
