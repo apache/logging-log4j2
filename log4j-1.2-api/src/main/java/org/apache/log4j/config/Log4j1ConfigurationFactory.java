@@ -40,7 +40,7 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
     private static final String[] SUFFIXES = {".properties"};
 
     @Override
-    public Configuration getConfiguration(LoggerContext loggerContext, final ConfigurationSource source) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         final ConfigurationBuilder<BuiltConfiguration> builder;
         try (final InputStream configStream = source.getInputStream()) {
             builder = new Log4j1ConfigurationParser().buildConfigurationBuilder(configStream);

@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 public class BasicConfigurationFactory extends ConfigurationFactory {
 
     @Override
-    public Configuration getConfiguration(LoggerContext loggerContext, final String name, final URI configLocation) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
         return new BasicConfiguration();
     }
 
@@ -41,7 +41,7 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(LoggerContext loggerContext, final ConfigurationSource source) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         return null;
     }
 

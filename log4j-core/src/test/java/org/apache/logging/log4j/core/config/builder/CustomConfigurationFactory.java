@@ -58,12 +58,12 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(LoggerContext loggerContext, final ConfigurationSource source) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         return getConfiguration(null, source.toString(), null);
     }
 
     @Override
-    public Configuration getConfiguration(LoggerContext loggerContext, final String name, final URI configLocation) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
         final ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
         return addTestFixtures(name, builder);
     }

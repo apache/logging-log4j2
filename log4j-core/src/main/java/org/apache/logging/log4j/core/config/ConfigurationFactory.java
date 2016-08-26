@@ -225,7 +225,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return true;
     }
 
-    public abstract Configuration getConfiguration(LoggerContext loggerContext, ConfigurationSource source);
+    public abstract Configuration getConfiguration(final LoggerContext loggerContext, ConfigurationSource source);
 
     /**
      * Returns the Configuration.
