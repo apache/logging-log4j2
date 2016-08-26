@@ -37,6 +37,7 @@ public class XmlConfigurationFactory extends ConfigurationFactory {
 
     /**
      * Returns the Configuration.
+     * @param loggerContext The logger context.
      * @param source The InputSource.
      * @return The Configuration.
      */
