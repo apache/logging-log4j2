@@ -128,12 +128,12 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(ConfigurationSource source) {
-        return getConfiguration(source.toString(), null);
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return getConfiguration(loggerContext, source.toString(), null);
     }
 
     @Override
-    public Configuration getConfiguration(final String name, final URI configLocation) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
         ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
         return createConfiguration(name, builder);
     }
@@ -143,6 +143,10 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
         return new String[] {"*"};
     }
 }]]></pre>
+            <p>
+              As of version 2.7, the <code>ConfigurationFactory.getConfiguration()</code> methods take an 
+              additional <code>LoggerContext</code> parameter.
+            </p>
           </subsection>
         <a name="Configurator"/>
           <subsection name="Reconfigure Log4j Using ConfigurationBuilder with the Configurator">
