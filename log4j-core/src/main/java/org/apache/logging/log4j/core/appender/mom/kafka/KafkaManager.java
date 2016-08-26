@@ -24,6 +24,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
 
@@ -42,8 +43,8 @@ public class KafkaManager extends AbstractManager {
 
     private final String topic;
 
-    public KafkaManager(final String name, final String topic, final Property[] properties) {
-        super(null, name);
+    public KafkaManager(LoggerContext loggerContext, final String name, final String topic, final Property[] properties) {
+        super(loggerContext, name);
         this.topic = topic;
         config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
