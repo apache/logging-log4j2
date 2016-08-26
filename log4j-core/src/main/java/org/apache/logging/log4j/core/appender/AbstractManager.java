@@ -23,6 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -48,8 +49,11 @@ public abstract class AbstractManager {
     protected int count;
 
     private final String name;
+    
+    private final LoggerContext loggerContext;
 
-    protected AbstractManager(final String name) {
+    protected AbstractManager(final LoggerContext loggerContext, final String name) {
+        this.loggerContext = loggerContext;
         this.name = name;
         LOGGER.debug("Starting {} {}", this.getClass().getSimpleName(), name);
     }
@@ -114,6 +118,17 @@ public abstract class AbstractManager {
 
     protected int getCount() {
         return count;
+    }
+
+    /**
+     * Gets the logger context used to create this instance or null. The logger context is usually set when an appender
+     * creates a manager and that appender is given a Configuration. Not all appenders are given a Configuration by
+     * their factory method or builder.
+     * 
+     * @return the logger context used to create this instance or null.
+     */
+    public LoggerContext getLoggerContext() {
+        return loggerContext;
     }
 
     /**

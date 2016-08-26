@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Constants;
 
 
@@ -72,13 +74,12 @@ public class FileManager extends OutputStreamManager {
     }
 
     /** 
-     * @throws IOException 
      * @since 2.7 
      */
-    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking, final boolean createOnDemand,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader,
-            final ByteBuffer buffer) throws IOException {
-        super(os, fileName, createOnDemand, layout, writeHeader, buffer);
+    protected FileManager(LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
+            final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
+            final boolean writeHeader, final ByteBuffer buffer) {
+        super(loggerContext, os, fileName, createOnDemand, layout, writeHeader, buffer);
         this.isAppend = append;
         this.createOnDemand = createOnDemand;
         this.isLocking = locking;
@@ -97,18 +98,19 @@ public class FileManager extends OutputStreamManager {
      * @param layout The layout
      * @param bufferSize buffer size for buffered IO
      * @param immediateFlush true if the contents should be flushed on every write, false otherwise.
+     * @param configuration The configuration.
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
             final boolean bufferedIo, final boolean createOnDemand, final String advertiseUri,
-            final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush) {
+            final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush,
+            Configuration configuration) {
 
         if (locking && bufferedIo) {
             locking = false;
         }
-        return (FileManager) getManager(fileName,
-                new FactoryData(append, locking, bufferedIo, bufferSize, immediateFlush, createOnDemand, advertiseUri, layout),
-                FACTORY);
+        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
+                immediateFlush, createOnDemand, advertiseUri, layout, configuration), FACTORY);
     }
 
     @Override
@@ -198,7 +200,7 @@ public class FileManager extends OutputStreamManager {
     /**
      * Factory Data.
      */
-    private static class FactoryData {
+    private static class FactoryData extends ConfigurationFactoryData {
         private final boolean append;
         private final boolean locking;
         private final boolean bufferedIO;
@@ -218,10 +220,12 @@ public class FileManager extends OutputStreamManager {
          * @param createOnDemand if you want to lazy-create the file (a.k.a. on-demand.)
          * @param advertiseURI the URI to use when advertising the file
          * @param layout The layout
+         * @param configuration the configuration
          */
         public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO, final int bufferSize,
                 final boolean immediateFlush, final boolean createOnDemand, final String advertiseURI,
-                final Layout<? extends Serializable> layout) {
+                final Layout<? extends Serializable> layout, Configuration configuration) {
+            super(configuration);
             this.append = append;
             this.locking = locking;
             this.bufferedIO = bufferedIO;
@@ -257,8 +261,8 @@ public class FileManager extends OutputStreamManager {
                 final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
                 final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
-                return new FileManager(name, fos, data.append, data.locking, data.createOnDemand, data.advertiseURI, data.layout,
-                        writeHeader, buffer);
+                return new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
+                        data.createOnDemand, data.advertiseURI, data.layout, writeHeader, buffer);
             } catch (final IOException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);
             }

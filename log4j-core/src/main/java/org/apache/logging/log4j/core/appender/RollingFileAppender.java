@@ -94,7 +94,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         private boolean createOnDemand;
 
         @PluginConfiguration
-        private Configuration config;
+        private Configuration configuration;
 
         @Override
         public RollingFileAppender build() {
@@ -126,17 +126,17 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
             if (strategy == null) {
                 strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
-                        String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, config);
+                        String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, configuration);
             }
 
             if (strategy == null) {
                 strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
-                        String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, config);
+                        String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, configuration);
             }
 
             final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, append,
                     bufferedIo, policy, strategy, advertiseUri, getLayout(), bufferSize, isImmediateFlush(),
-                    createOnDemand);
+                    createOnDemand, configuration);
             if (manager == null) {
                 return null;
             }
@@ -144,7 +144,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             manager.initialize();
 
             return new RollingFileAppender(getName(), getLayout(), getFilter(), manager, fileName, filePattern,
-                    isIgnoreExceptions(), isImmediateFlush(), advertise ? config.getAdvertiser() : null);
+                    isIgnoreExceptions(), isImmediateFlush(), advertise ? configuration.getAdvertiser() : null);
         }
 
         public String getAdvertiseUri() {
@@ -155,8 +155,8 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return bufferSize;
         }
 
-        public Configuration getConfig() {
-            return config;
+        public Configuration getConfiguration() {
+            return configuration;
         }
 
         public String getFileName() {
@@ -209,7 +209,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         }
 
         public B withConfiguration(final Configuration config) {
-            this.config = config;
+            this.configuration = config;
             return asBuilder();
         }
 

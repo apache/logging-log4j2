@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Constants;
 
@@ -49,7 +50,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     @Deprecated
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader, final ByteBuffer byteBuffer) {
-        super(streamName);
+        super(null, streamName);
         this.os = os;
         this.layout = layout;
         if (writeHeader && layout != null) {
@@ -66,13 +67,12 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     }
 
     /**
-     * @throws IOException 
      * @since 2.7
      */
-    protected OutputStreamManager(OutputStream os, final String streamName, final boolean createOnDemand,
-            final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer byteBuffer)
-            throws IOException {
-        super(streamName);
+    protected OutputStreamManager(final LoggerContext loggerContext, OutputStream os, final String streamName,
+            final boolean createOnDemand, final Layout<? extends Serializable> layout, final boolean writeHeader,
+            final ByteBuffer byteBuffer) {
+        super(loggerContext, streamName);
         if (createOnDemand && os != null) {
             LOGGER.error(
                     "Invalid OutputStreamManager configuration for '{}': You cannot both set the OutputStream and request on-demand.",
