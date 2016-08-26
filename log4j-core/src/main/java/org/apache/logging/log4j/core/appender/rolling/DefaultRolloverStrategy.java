@@ -310,8 +310,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * Purges and renames old log files in preparation for rollover. The oldest file will have the smallest index, the
      * newest the highest.
      *
-     * @param lowIndex low index
-     * @param highIndex high index. Log file associated with high index will be deleted if needed.
+     * @param lowIndex low index. Log file associated with low index will be deleted if needed.
+     * @param highIndex high index. 
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
