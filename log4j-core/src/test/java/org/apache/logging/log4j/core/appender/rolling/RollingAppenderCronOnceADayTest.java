@@ -46,6 +46,7 @@ import org.junit.rules.RuleChain;
  */
 public class RollingAppenderCronOnceADayTest {
 
+    private static final int CRON_DELAY = 10;
     private static final String UTF_8 = "UTF-8";
     private static final String CONFIG = "log4j-rolling-cron-once-a-day.xml";
     private static final String CONFIG_TARGET = "log4j-rolling-cron-once-a-day-target.xml";
@@ -62,7 +63,7 @@ public class RollingAppenderCronOnceADayTest {
       final Path src = FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG);
       String content = new String(Files.readAllBytes(src), UTF_8);
       Calendar cal = Calendar.getInstance();
-      cal.add(Calendar.SECOND, 45);
+      cal.add(Calendar.SECOND, CRON_DELAY);
       remainingTime = cal.getTimeInMillis() - System.currentTimeMillis();
       cronExpression =  String.format("%d %d %d * * ?",
           cal.get(Calendar.SECOND),
@@ -104,11 +105,7 @@ public class RollingAppenderCronOnceADayTest {
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
 
-        for (int i = 1; i < 20; i++) {
-          logger.debug("Adding again event {}", i);
-        }
-        Thread.sleep(1000);
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i < 5; i++) {
           logger.debug("Adding some more event {}", i);
           Thread.sleep(1000);
         }
