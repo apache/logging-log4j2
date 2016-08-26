@@ -43,12 +43,12 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
      * @return The Configuration.
      */
     @Override
-    public Configuration getConfiguration(LoggerContext loggerContext, final ConfigurationSource source) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         return new CustomConfiguration(loggerContext, source);
     }
 
     @Override
-    public Configuration getConfiguration(LoggerContext loggerContext, final String name, final URI configLocation) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
         return new CustomConfiguration(loggerContext);
     }
 

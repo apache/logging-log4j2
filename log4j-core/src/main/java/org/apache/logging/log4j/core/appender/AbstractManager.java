@@ -49,8 +49,11 @@ public abstract class AbstractManager {
     protected int count;
 
     private final String name;
+    
+    private final LoggerContext loggerContext;
 
-    protected AbstractManager(final String name) {
+    protected AbstractManager(final LoggerContext loggerContext, final String name) {
+        this.loggerContext = loggerContext;
         this.name = name;
         LOGGER.debug("Starting {} {}", this.getClass().getSimpleName(), name);
     }
@@ -117,9 +120,15 @@ public abstract class AbstractManager {
         return count;
     }
 
+    /**
+     * Gets the logger context used to create this instance or null. The logger context is usually set when an appender
+     * creates a manager and that appender is given a Configuration. Not all appenders are given a Configuration by
+     * their factory method or builder.
+     * 
+     * @return the logger context used to create this instance or null.
+     */
     public LoggerContext getLoggerContext() {
-        // TODO Can and should a manager tracks it's logger context?
-        return LoggerContext.getContext(false);
+        return loggerContext;
     }
 
     /**

@@ -225,7 +225,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return true;
     }
 
-    public abstract Configuration getConfiguration(LoggerContext loggerContext, ConfigurationSource source);
+    public abstract Configuration getConfiguration(final LoggerContext loggerContext, ConfigurationSource source);
 
     /**
      * Returns the Configuration.
@@ -249,7 +249,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     /**
      * Returns the Configuration obtained using a given ClassLoader.
-     * @param loggerContext TODO
+     * @param loggerContext The logger context
      * @param name The configuration name.
      * @param configLocation A URI representing the location of the configuration.
      * @param loader The default ClassLoader to use. If this is {@code null}, then the
