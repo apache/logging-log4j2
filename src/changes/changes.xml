@@ -93,6 +93,9 @@
       <action issue="LOG4J2-1313" dev="rpopma" type="fix" due-to="Philipp Knobel">
         Properties declared in configuration can now have their value either in the element body or in an attribute named "value".
       </action>
+      <action issue="LOG4J2-1539" dev="ggregory" type="add" due-to="Gary Gregory">
+        Add Core API Configurator.shutdown(LoggerContext, long, TimeUnit).
+      </action>
       <action issue="LOG4J2-1501" dev="ggregory" type="add" due-to="Gary Gregory">
         FileAppender should be able to create files on-demand.
       </action>
