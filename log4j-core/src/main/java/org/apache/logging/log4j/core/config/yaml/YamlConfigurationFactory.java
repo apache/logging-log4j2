@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.yaml;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -58,11 +59,11 @@ public class YamlConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(final ConfigurationSource source) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         if (!isActive) {
             return null;
         }
-        return new YamlConfiguration(source);
+        return new YamlConfiguration(loggerContext, source);
     }
 
     @Override

@@ -29,6 +29,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEventListener;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
@@ -57,7 +58,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
         }
 
         @Override
-        public Configuration getConfiguration(final String name, final URI configLocation) {
+        public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
             if (Strings.isNotEmpty(path)) {
                 File file = null;
                 ConfigurationSource source = null;
@@ -81,14 +82,14 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
                 try {
                     if (source != null) {
-                        return new XmlConfiguration(source);
+                        return new XmlConfiguration(loggerContext, source);
                     }
                 } catch (final Exception ex) {
                     // Ignore this error.
                 }
                 System.err.println("Unable to process configuration at " + path + ", using default.");
             }
-            return super.getConfiguration(name, configLocation);
+            return super.getConfiguration(loggerContext, name, configLocation);
         }
     }
 

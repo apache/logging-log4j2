@@ -44,7 +44,7 @@ public class RollingAppenderDeleteMaxDepthTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-maxdepth.xml";
     private static final String DIR = "target/rolling-with-delete-depth/test";
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);

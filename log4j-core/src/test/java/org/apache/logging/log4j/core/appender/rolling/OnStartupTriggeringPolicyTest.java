@@ -78,7 +78,7 @@ public class OnStartupTriggeringPolicyTest {
                 configuration);
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
         final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
-                policy, strategy, null, layout, 8192, true, false);
+                policy, strategy, null, layout, 8192, true, false, configuration);
         try {
             manager.initialize();
             String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());

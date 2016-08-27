@@ -35,6 +35,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -75,8 +76,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     private boolean strict;
     private String schemaResource;
 
-    public XmlConfiguration(final ConfigurationSource configSource) {
-        super(configSource);
+    public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
+        super(loggerContext, configSource);
         final File configFile = configSource.getFile();
         byte[] buffer = null;
 
@@ -255,7 +256,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             if (source == null) {
                 return null;
             }
-            final XmlConfiguration config = new XmlConfiguration(source);
+            final XmlConfiguration config = new XmlConfiguration(getLoggerContext(), source);
             return config.rootElement == null ? null : config;
         } catch (final IOException ex) {
             LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);

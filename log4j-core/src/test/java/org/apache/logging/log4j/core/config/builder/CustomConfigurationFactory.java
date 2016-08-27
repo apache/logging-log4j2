@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -25,8 +28,6 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-
-import java.net.URI;
 
 /**
  * Normally this would be a plugin. However, we don't want it used for everything so it will be defined
@@ -57,12 +58,12 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(final ConfigurationSource source) {
-        return getConfiguration(source.toString(), null);
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return getConfiguration(loggerContext, source.toString(), null);
     }
 
     @Override
-    public Configuration getConfiguration(final String name, final URI configLocation) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
         final ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
         return addTestFixtures(name, builder);
     }
