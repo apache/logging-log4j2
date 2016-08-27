@@ -35,13 +35,13 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
 /**
- * Compare against a log level that is associated with an MDC value.
+ * Compares against a log level that is associated with an MDC value.
  */
 @Plugin(name = "DynamicThresholdFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class DynamicThresholdFilter extends AbstractFilter {
 
     /**
-     * Create the DynamicThresholdFilter.
+     * Creates a DynamicThresholdFilter.
      * @param key The name of the key to compare.
      * @param pairs An array of value and Level pairs.
      * @param defaultThreshold The default Level.
