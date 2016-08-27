@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.async.DaemonThreadFactory;
-import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.util.CronExpression;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *
@@ -39,16 +39,16 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
 
     private int scheduledItems = 0;
 
-
     @Override
     public void start() {
         super.start();
         if (scheduledItems > 0) {
-            LOGGER.debug("Starting {} Log4j2Scheduled threads", scheduledItems);
+            LOGGER.debug("Starting {} Log4j2 Scheduled threads", scheduledItems);
             if (scheduledItems > 5) {
                 scheduledItems = 5;
             }
-            executorService = new ScheduledThreadPoolExecutor(scheduledItems, new DaemonThreadFactory("Log4j2Scheduled-"));
+            executorService = new ScheduledThreadPoolExecutor(scheduledItems,
+                    Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
         } else {
             LOGGER.debug("No scheduled items");
         }
@@ -57,7 +57,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     @Override
     public void stop() {
         if (executorService != null) {
-            LOGGER.debug("Stopping Log4j2Scheduled threads.");
+            LOGGER.debug("Stopping Log4j2 Scheduled threads.");
             executorService.shutdown();
         }
         super.stop();
@@ -85,6 +85,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
 
     /**
      * Creates and executes a ScheduledFuture that becomes enabled after the given delay.
+     * @param <V> The result type returned by this Future
      * @param callable the function to execute.
      * @param delay the time from now to delay execution.
      * @param unit the time unit of the delay parameter.
@@ -181,7 +182,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             } catch(final Throwable ex) {
                 LOGGER.error("Error running command", ex);
             } finally {
-                Date fireDate = cronExpression.getNextInvalidTimeAfter(new Date());
+                Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
                 final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
                 scheduledFuture.reset(future, fireDate);
             }

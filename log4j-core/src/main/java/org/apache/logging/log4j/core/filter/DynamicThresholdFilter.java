@@ -35,13 +35,13 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
 /**
- * Compare against a log level that is associated with an MDC value.
+ * Compares against a log level that is associated with an MDC value.
  */
 @Plugin(name = "DynamicThresholdFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class DynamicThresholdFilter extends AbstractFilter {
 
     /**
-     * Create the DynamicThresholdFilter.
+     * Creates a DynamicThresholdFilter.
      * @param key The name of the key to compare.
      * @param pairs An array of value and Level pairs.
      * @param defaultThreshold The default Level.
@@ -63,9 +63,9 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         final Level level = defaultThreshold == null ? Level.ERROR : defaultThreshold;
         return new DynamicThresholdFilter(key, map, level, onMatch, onMismatch);
     }
+    
     private Level defaultThreshold = Level.ERROR;
     private final String key;
-
     private Map<String, Level> levelMap = new HashMap<>();
 
     private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
@@ -149,6 +149,85 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return filter(level, ThreadContext.getContext());
     }
 
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return filter(level, ThreadContext.getContext());
+
+    }
+    
     public String getKey() {
         return this.key;
     }

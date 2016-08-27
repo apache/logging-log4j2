@@ -32,9 +32,11 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.junit.ThreadContextMapRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -42,6 +44,9 @@ import org.junit.Test;
  */
 public class DynamicThresholdFilterTest {
 
+    @Rule
+    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule(); 
+    
     @After
     public void cleanup() {
         final LoggerContext ctx = LoggerContext.getContext(false);
@@ -72,6 +77,22 @@ public class DynamicThresholdFilterTest {
         ThreadContext.clearMap();
     }
 
+    @Test
+    public void testFilterWorksWhenParamsArePassedAsArguments() {
+        ThreadContext.put("userid", "testuser");
+        ThreadContext.put("organization", "apache");
+        final KeyValuePair[] pairs = new KeyValuePair[] {
+                new KeyValuePair("testuser", "DEBUG"),
+                new KeyValuePair("JohnDoe", "warn") };
+        final DynamicThresholdFilter filter = DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR, Filter.Result.ACCEPT, Filter.Result.NEUTRAL);
+        filter.start();
+        assertTrue(filter.isStarted());
+        Object [] replacements = {"one", "two", "three"};
+        assertSame(Filter.Result.ACCEPT, filter.filter(null, Level.DEBUG, null, "some test message", replacements)); 
+        assertSame(Filter.Result.ACCEPT, filter.filter(null, Level.DEBUG, null, "some test message", "one", "two", "three")); 
+        ThreadContext.clearMap();
+    }
+    
     @Test
     public void testConfig() {
         try (final LoggerContext ctx = Configurator.initialize("Test1",

@@ -16,18 +16,22 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class NdcPatternConverterTest {
+
+    @Rule
+    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule(); 
 
     @Test
     public void testEmpty() {
@@ -69,9 +73,5 @@ public class NdcPatternConverterTest {
         assertEquals(expected, str);
     }
 
-    @After
-    public void tearDown() {
-        ThreadContext.clearStack();
-    }
 }
 

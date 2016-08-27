@@ -57,7 +57,7 @@ public class RollingAppenderOnStartupTest {
     public LoggerContextRule loggerContextRule;
 
     public RollingAppenderOnStartupTest(final String configFile) {
-        this.loggerContextRule = new LoggerContextRule(configFile);
+        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(configFile);
     }
 
     @Before

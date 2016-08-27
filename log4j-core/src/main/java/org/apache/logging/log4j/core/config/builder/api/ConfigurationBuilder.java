@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config.builder.api;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Builder;
@@ -324,7 +325,6 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     /**
      * Set the Advertiser Plugin name.
      * @param advertiser The Advertiser Plugin name.
-     * @param includeLocation If true include location information.
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setAdvertiser(String advertiser);
@@ -381,6 +381,23 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> setVerbosity(String verbosity);
 
     /**
+     * Specifies the destination for StatusLogger events. This can be {@code out} (default) for using
+     * {@link System#out standard out}, {@code err} for using {@link System#err standard error}, or a file URI to
+     * which log events will be written. If the provided URI is invalid, then the default destination of standard
+     * out will be used.
+     *
+     * @param destination where status log messages should be output.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setDestination(String destination);
+
+    /**
+     * Sets the logger context.
+     * @param loggerContext the logger context.
+     */
+    void setLoggerContext(LoggerContext loggerContext);
+
+    /**
      * Add the properties for the root node.
      * @param key The property key.
      * @param value The property value.
@@ -395,4 +412,5 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return The constructed Configuration.
      */
     T build(boolean initialize);
+
 }

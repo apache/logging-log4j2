@@ -1018,9 +1018,9 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternMessage"/>
-                <b>m</b>{ansi}<br />
-                <b>msg</b>{ansi}<br />
-                <b>message</b>{ansi}
+                <b>m</b>{nolookups}{ansi}<br />
+                <b>msg</b>{nolookups}{ansi}<br />
+                <b>message</b>{nolookups}{ansi}
               </td>
               <td>
                 <p>
@@ -1054,6 +1054,12 @@ WARN  [main]: Message 2</pre>
                   The call site can look like this:
                 </p>
                 <pre class="prettyprint linenums">logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());</pre>
+                <p>
+                  Use <code>{nolookups}</code> to log messages like <code>"${esc.d}{date:YYYY-MM-dd}"</code> 
+                  without using any lookups. Normally calling <code>logger.info("Try ${esc.d}{date:YYYY-MM-dd}")</code> 
+                  would replace the date template <code>${esc.d}{date:YYYY-MM-dd}</code> with an actual date.
+                  Using <code>nolookups</code> disables this feature and logs the message string untouched.
+                </p>
               </td>
             </tr>
             <tr>

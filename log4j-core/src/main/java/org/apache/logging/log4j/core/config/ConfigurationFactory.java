@@ -35,6 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
@@ -74,13 +75,19 @@ import org.apache.logging.log4j.util.Strings;
  * last if no configuration has been returned.
  */
 public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
+    
+    public ConfigurationFactory() {
+        super();
+        // TEMP For breakpoints
+    }
+
     /**
-     * Allow the ConfigurationFactory class to be specified as a system property.
+     * Allows the ConfigurationFactory class to be specified as a system property.
      */
     public static final String CONFIGURATION_FACTORY_PROPERTY = "log4j.configurationFactory";
 
     /**
-     * Allow the location of the configuration file to be specified as a system property.
+     * Allows the location of the configuration file to be specified as a system property.
      */
     public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
 
@@ -93,7 +100,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     public static final String CATEGORY = "ConfigurationFactory";
 
     /**
-     * Allow subclasses access to the status logger without creating another instance.
+     * Allows subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -187,7 +194,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Set the configuration factory. This method is not intended for general use and may not be thread safe.
+     * Sets the configuration factory. This method is not intended for general use and may not be thread safe.
      * @param factory the ConfigurationFactory.
      */
     public static void setConfigurationFactory(final ConfigurationFactory factory) {
@@ -195,7 +202,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Reset the ConfigurationFactory to the default. This method is not intended for general use and may
+     * Resets the ConfigurationFactory to the default. This method is not intended for general use and may
      * not be thread safe.
      */
     public static void resetConfigurationFactory() {
@@ -203,7 +210,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Remove the ConfigurationFactory. This method is not intended for general use and may not be thread safe.
+     * Removes the ConfigurationFactory. This method is not intended for general use and may not be thread safe.
      * @param factory The factory to remove.
      */
     public static void removeConfigurationFactory(final ConfigurationFactory factory) {
@@ -218,22 +225,23 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return true;
     }
 
-    public abstract Configuration getConfiguration(ConfigurationSource source);
+    public abstract Configuration getConfiguration(final LoggerContext loggerContext, ConfigurationSource source);
 
     /**
      * Returns the Configuration.
+     * @param loggerContext The logger context
      * @param name The configuration name.
      * @param configLocation The configuration location.
      * @return The Configuration.
      */
-    public Configuration getConfiguration(final String name, final URI configLocation) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
         if (!isActive()) {
             return null;
         }
         if (configLocation != null) {
             final ConfigurationSource source = getInputFromUri(configLocation);
             if (source != null) {
-                return getConfiguration(source);
+                return getConfiguration(loggerContext, source);
             }
         }
         return null;
@@ -241,36 +249,36 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     /**
      * Returns the Configuration obtained using a given ClassLoader.
-     *
+     * @param loggerContext The logger context
      * @param name The configuration name.
      * @param configLocation A URI representing the location of the configuration.
      * @param loader The default ClassLoader to use. If this is {@code null}, then the
      *               {@linkplain LoaderUtil#getThreadContextClassLoader() default ClassLoader} will be used.
+     *
      * @return The Configuration.
-     * @since 2.1
      */
-    public Configuration getConfiguration(final String name, final URI configLocation, final ClassLoader loader) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation, final ClassLoader loader) {
         if (!isActive()) {
             return null;
         }
         if (loader == null) {
-            return getConfiguration(name, configLocation);
+            return getConfiguration(loggerContext, name, configLocation);
         }
         if (isClassLoaderUri(configLocation)) {
             final String path = extractClassLoaderUriPath(configLocation);
             final ConfigurationSource source = getInputFromResource(path, loader);
             if (source != null) {
-                final Configuration configuration = getConfiguration(source);
+                final Configuration configuration = getConfiguration(loggerContext, source);
                 if (configuration != null) {
                     return configuration;
                 }
             }
         }
-        return getConfiguration(name, configLocation);
+        return getConfiguration(loggerContext, name, configLocation);
     }
 
     /**
-     * Load the configuration from a URI.
+     * Loads the configuration from a URI.
      * @param configLocation A URI representing the location of the configuration.
      * @return The ConfigurationSource for the configuration.
      */
@@ -318,7 +326,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Load the configuration from the location represented by the String.
+     * Loads the configuration from the location represented by the String.
      * @param config The configuration location.
      * @param loader The default ClassLoader to use.
      * @return The InputSource to use to read the configuration.
@@ -343,7 +351,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Retrieve the configuration via the ClassLoader.
+     * Retrieves the configuration via the ClassLoader.
      * @param resource The resource to load.
      * @param loader The default ClassLoader to use.
      * @return The ConfigurationSource for the configuration.
@@ -380,6 +388,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     private static class Factory extends ConfigurationFactory {
 
+        private static final String ALL_TYPES = "*";
+
         /**
          * Default Factory Constructor.
          * @param name The configuration name.
@@ -387,7 +397,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
          * @return The Configuration.
          */
         @Override
-        public Configuration getConfiguration(final String name, final URI configLocation) {
+        public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
 
             if (configLocation == null) {
                 final String configLocationStr = this.substitutor.replace(PropertiesUtil.getProperties()
@@ -397,7 +407,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     if (sources.length > 1) {
                         final List<AbstractConfiguration> configs = new ArrayList<>();
                         for (final String sourceLocation : sources) {
-                            final Configuration config = getConfiguration(sourceLocation.trim());
+                            final Configuration config = getConfiguration(loggerContext, sourceLocation.trim());
                             if (config != null && config instanceof AbstractConfiguration) {
                                 configs.add((AbstractConfiguration) config);
                             } else {
@@ -407,14 +417,14 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                         }
                         return new CompositeConfiguration(configs);
                     }
-                    return getConfiguration(configLocationStr);
+                    return getConfiguration(loggerContext, configLocationStr);
                 }
                 for (final ConfigurationFactory factory : getFactories()) {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*")) {
-                                final Configuration config = factory.getConfiguration(name, configLocation);
+                            if (type.equals(ALL_TYPES)) {
+                                final Configuration config = factory.getConfiguration(loggerContext, name, configLocation);
                                 if (config != null) {
                                     return config;
                                 }
@@ -429,8 +439,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*") || configLocationStr.endsWith(type)) {
-                                final Configuration config = factory.getConfiguration(name, configLocation);
+                            if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
+                                final Configuration config = factory.getConfiguration(loggerContext, name, configLocation);
                                 if (config != null) {
                                     return config;
                                 }
@@ -440,13 +450,13 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 }
             }
 
-            Configuration config = getConfiguration(true, name);
+            Configuration config = getConfiguration(loggerContext, true, name);
             if (config == null) {
-                config = getConfiguration(true, null);
+                config = getConfiguration(loggerContext, true, null);
                 if (config == null) {
-                    config = getConfiguration(false, name);
+                    config = getConfiguration(loggerContext, false, name);
                     if (config == null) {
-                        config = getConfiguration(false, null);
+                        config = getConfiguration(loggerContext, false, null);
                     }
                 }
             }
@@ -457,7 +467,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             return new DefaultConfiguration();
         }
 
-        private Configuration getConfiguration(final String configLocationStr) {
+        private Configuration getConfiguration(final LoggerContext loggerContext, final String configLocationStr) {
             ConfigurationSource source = null;
             try {
                 source = getInputFromUri(NetUtils.toURI(configLocationStr));
@@ -474,8 +484,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*") || configLocationStr.endsWith(type)) {
-                                final Configuration config = factory.getConfiguration(source);
+                            if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
+                                final Configuration config = factory.getConfiguration(loggerContext, source);
                                 if (config != null) {
                                     return config;
                                 }
@@ -487,7 +497,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             return null;
         }
 
-        private Configuration getConfiguration(final boolean isTest, final String name) {
+        private Configuration getConfiguration(final LoggerContext loggerContext, final boolean isTest, final String name) {
             final boolean named = Strings.isNotEmpty(name);
             final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
             for (final ConfigurationFactory factory : getFactories()) {
@@ -499,14 +509,14 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 }
 
                 for (final String suffix : types) {
-                    if (suffix.equals("*")) {
+                    if (suffix.equals(ALL_TYPES)) {
                         continue;
                     }
                     configName = named ? prefix + name + suffix : prefix + suffix;
 
                     final ConfigurationSource source = getInputFromResource(configName, loader);
                     if (source != null) {
-                        return factory.getConfiguration(source);
+                        return factory.getConfiguration(loggerContext, source);
                     }
                 }
             }
@@ -519,15 +529,15 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         }
 
         @Override
-        public Configuration getConfiguration(final ConfigurationSource source) {
+        public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
             if (source != null) {
                 final String config = source.getLocation();
                 for (final ConfigurationFactory factory : getFactories()) {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*") || config != null && config.endsWith(type)) {
-                                final Configuration c = factory.getConfiguration(source);
+                            if (type.equals(ALL_TYPES) || config != null && config.endsWith(type)) {
+                                final Configuration c = factory.getConfiguration(loggerContext, source);
                                 if (c != null) {
                                     LOGGER.debug("Loaded configuration from {}", source);
                                     return c;

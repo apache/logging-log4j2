@@ -77,7 +77,7 @@ public class SmtpManager extends AbstractManager {
 
     protected SmtpManager(final String name, final Session session, final MimeMessage message,
                           final FactoryData data) {
-        super(name);
+        super(null, name);
         this.session = session;
         this.message = message;
         this.data = data;

@@ -27,7 +27,7 @@ import java.util.Map;
  * try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key1, value1).put(key2, value2)) {
  *     callSomeMethodThatLogsALot();
  *
- * // key1 and key2 are automatically removed from the ThreadContext map when done
+ * // Entries for key1 and key2 are automatically removed from the ThreadContext map when done.
  * }
  * </pre>
  *

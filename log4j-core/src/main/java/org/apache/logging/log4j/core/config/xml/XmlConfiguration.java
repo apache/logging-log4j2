@@ -35,6 +35,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -75,8 +76,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     private boolean strict;
     private String schemaResource;
 
-    public XmlConfiguration(final ConfigurationSource configSource) {
-        super(configSource);
+    public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
+        super(loggerContext, configSource);
         final File configFile = configSource.getFile();
         byte[] buffer = null;
 
@@ -147,31 +148,29 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             LOGGER.error("Error parsing " + configSource.getLocation(), e);
         }
         if (strict && schemaResource != null && buffer != null) {
-            InputStream is = null;
-            try {
-                is = Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader());
-            } catch (final Exception ex) {
-                LOGGER.error("Unable to access schema {}", this.schemaResource, ex);
-            }
-            if (is != null) {
-                final Source src = new StreamSource(is, LOG4J_XSD);
-                final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                Schema schema = null;
-                try {
-                    schema = factory.newSchema(src);
-                } catch (final SAXException ex) {
-                    LOGGER.error("Error parsing Log4j schema", ex);
-                }
-                if (schema != null) {
-                    final Validator validator = schema.newValidator();
+            try (InputStream is = Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader())) {
+                if (is != null) {
+                    final Source src = new StreamSource(is, LOG4J_XSD);
+                    final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                    Schema schema = null;
                     try {
-                        validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
-                    } catch (final IOException ioe) {
-                        LOGGER.error("Error reading configuration for validation", ioe);
+                        schema = factory.newSchema(src);
                     } catch (final SAXException ex) {
-                        LOGGER.error("Error validating configuration", ex);
+                        LOGGER.error("Error parsing Log4j schema", ex);
+                    }
+                    if (schema != null) {
+                        final Validator validator = schema.newValidator();
+                        try {
+                            validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
+                        } catch (final IOException ioe) {
+                            LOGGER.error("Error reading configuration for validation", ioe);
+                        } catch (final SAXException ex) {
+                            LOGGER.error("Error validating configuration", ex);
+                        }
                     }
                 }
+            } catch (final Exception ex) {
+                LOGGER.error("Unable to access schema {}", this.schemaResource, ex);
             }
         }
 
@@ -257,7 +256,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             if (source == null) {
                 return null;
             }
-            final XmlConfiguration config = new XmlConfiguration(source);
+            final XmlConfiguration config = new XmlConfiguration(getLoggerContext(), source);
             return config.rootElement == null ? null : config;
         } catch (final IOException ex) {
             LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);

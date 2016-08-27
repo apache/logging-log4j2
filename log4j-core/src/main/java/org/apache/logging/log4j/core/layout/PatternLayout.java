@@ -64,9 +64,9 @@ public final class PatternLayout extends AbstractStringLayout {
     public static final String DEFAULT_CONVERSION_PATTERN = "%m%n";
 
     /**
-     * A conversion pattern equivalent to the TTCCCLayout. Current value is <b>%r [%t] %p %c %x - %m%n</b>.
+     * A conversion pattern equivalent to the TTCCLayout. Current value is <b>%r [%t] %p %c %notEmpty{%x }- %m%n</b>.
      */
-    public static final String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %x - %m%n";
+    public static final String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %notEmpty{%x }- %m%n";
 
     /**
      * A simple pattern. Current value is <b>%d [%t] %p %c - %m%n</b>.
@@ -84,7 +84,7 @@ public final class PatternLayout extends AbstractStringLayout {
     private final Serializer eventSerializer;
 
     /**
-     * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
+     * Constructs a PatternLayout using the supplied conversion pattern.
      *
      * @param config The Configuration.
      * @param replace The regular expression to match.

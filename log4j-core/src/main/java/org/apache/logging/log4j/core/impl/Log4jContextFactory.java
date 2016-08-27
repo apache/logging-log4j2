@@ -173,7 +173,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (source != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
+                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, source);
                 LOGGER.debug("Starting LoggerContext[name={}] from configuration {}", ctx.getName(), source);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -234,7 +234,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
+                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, name, configLocation);
                 LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(), configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -261,7 +261,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 final List<AbstractConfiguration> configurations = new ArrayList<>(configLocations.size());
                 for (final URI configLocation : configLocations) {
                     final Configuration currentReadConfiguration = ConfigurationFactory.getInstance()
-                            .getConfiguration(name, configLocation);
+                            .getConfiguration(ctx, name, configLocation);
                     if (currentReadConfiguration instanceof AbstractConfiguration) {
                         configurations.add((AbstractConfiguration) currentReadConfiguration);
                     } else {

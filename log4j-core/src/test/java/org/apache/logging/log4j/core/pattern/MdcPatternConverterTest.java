@@ -16,22 +16,27 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.junit.ThreadContextMapRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
  */
 public class MdcPatternConverterTest {
+
+    @Rule
+    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule(); 
 
     @Before
     public void setup() {
@@ -90,9 +95,5 @@ public class MdcPatternConverterTest {
         assertEquals(expected, str);
     }
 
-    @After
-    public void tearDown() {
-        ThreadContext.clearMap();
-    }
 }
 

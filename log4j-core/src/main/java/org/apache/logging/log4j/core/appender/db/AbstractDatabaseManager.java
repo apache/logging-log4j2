@@ -41,7 +41,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param bufferSize The size of the log event buffer.
      */
     protected AbstractDatabaseManager(final String name, final int bufferSize) {
-        super(name);
+        super(null, name);
         this.bufferSize = bufferSize;
         this.buffer = new ArrayList<>(bufferSize + 1);
     }
