@@ -30,7 +30,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  *
  * @since 2.7
  */
-public abstract class AbstractCopyOnWriteMutableThreadContext implements ThreadContextMap, ThreadContextMap2 {
+public abstract class AbstractCopyOnWriteMutableThreadContext implements ThreadContextMap, ThreadContextMap2,
+        CopyOnWrite, MutableContextDataSupplier {
 
     /**
      * The default initial capacity.
@@ -129,7 +130,11 @@ public abstract class AbstractCopyOnWriteMutableThreadContext implements ThreadC
         return map == null ? Collections.<String, String>emptyMap() : map.asMap();
     }
 
-    public MutableContextData getContextData() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MutableContextData getMutableContextData() {
         return localMap.get();
     }
 
