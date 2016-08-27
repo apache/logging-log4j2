@@ -41,13 +41,14 @@
                 </p>
 
                 <h4>Example</h4>
-                <pre class="prettyprint linenums">import org.apache.logging.log4j.scala.Logging
+                <pre class="prettyprint linenums">
+import org.apache.logging.log4j.scala.Logging
 
-                    class MyClass extends BaseClass with Logging {
-                      def doStuff(): Unit = {
-                        logger.info("Doing stuff")
-                      }
-                    }
+class MyClass extends BaseClass with Logging {
+  def doStuff(): Unit = {
+    logger.info("Doing stuff")
+  }
+}
                 </pre>
                 <p>
                     The output from the call to logger.info() will vary significantly depending on the configuration
@@ -64,7 +65,7 @@
                     to achieve this:
                 </p>
                 <pre class="prettyprint">
-                    logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBirthday}")
+logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBirthday}")
                 </pre>
                 <p>
                     Since the Scala Logger is implemented with macros, the String construction and method invocations
