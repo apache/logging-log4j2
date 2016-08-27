@@ -93,7 +93,7 @@ public class TestConfigurator {
     }
 
     @Test
-    public void testFromFile() throws Exception {
+    public void testInitialize_Name_PathName() throws Exception {
         ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
@@ -109,7 +109,23 @@ public class TestConfigurator {
     }
 
     @Test
-    public void testFromStream() throws Exception {
+    public void testInitialize_Name_ClassLoader_URI() throws Exception {
+        ctx = Configurator.initialize("Test1", null, new File("target/test-classes/log4j2-config.xml").toURI());
+        LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        final Map<String, Appender> map = config.getAppenders();
+        assertNotNull("Appenders map should not be null.", map);
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
+        Configurator.shutdown(ctx);
+        config = ctx.getConfiguration();
+        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+    }
+
+    @Test
+    public void testInitialize_InputStream_File() throws Exception {
         final File file = new File("target/test-classes/log4j2-config.xml");
         final InputStream is = new FileInputStream(file);
         final ConfigurationSource source = new ConfigurationSource(is, file);
@@ -128,7 +144,7 @@ public class TestConfigurator {
     }
 
     @Test
-    public void testFromStreamNoId() throws Exception {
+    public void testInitialize_NullClassLoader_ConfigurationSourceWithInputStream_NoId() throws Exception {
         final InputStream is = new FileInputStream("target/test-classes/log4j2-config.xml");
         final ConfigurationSource source =
             new ConfigurationSource(is);
@@ -147,7 +163,7 @@ public class TestConfigurator {
     }
 
     @Test
-    public void testFromClassPath() throws Exception {
+    public void testInitialize_Name_LocationName() throws Exception {
         ctx = Configurator.initialize("Test1", "log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();

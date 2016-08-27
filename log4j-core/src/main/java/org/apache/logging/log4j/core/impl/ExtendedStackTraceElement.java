@@ -18,6 +18,9 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
+import org.apache.logging.log4j.core.pattern.TextRenderer;
+
 /**
  * Wraps and extends the concept of the JRE's final class {@link StackTraceElement} by adding more location information.
  * <p>
@@ -37,7 +40,8 @@ public final class ExtendedStackTraceElement implements Serializable {
 
     private final StackTraceElement stackTraceElement;
 
-    public ExtendedStackTraceElement(final StackTraceElement stackTraceElement, final ExtendedClassInfo extraClassInfo) {
+    public ExtendedStackTraceElement(final StackTraceElement stackTraceElement,
+            final ExtendedClassInfo extraClassInfo) {
         this.stackTraceElement = stackTraceElement;
         this.extraClassInfo = extraClassInfo;
     }
@@ -47,8 +51,8 @@ public final class ExtendedStackTraceElement implements Serializable {
      */
     public ExtendedStackTraceElement(final String declaringClass, final String methodName, final String fileName,
             final int lineNumber, final boolean exact, final String location, final String version) {
-        this(new StackTraceElement(declaringClass, methodName, fileName, lineNumber), new ExtendedClassInfo(exact,
-                location, version));
+        this(new StackTraceElement(declaringClass, methodName, fileName, lineNumber),
+                new ExtendedClassInfo(exact, location, version));
     }
 
     @Override
@@ -129,12 +133,42 @@ public final class ExtendedStackTraceElement implements Serializable {
         return this.stackTraceElement.isNativeMethod();
     }
 
+    void renderOn(StringBuilder output, TextRenderer textRenderer) {
+        render(this.stackTraceElement, output, textRenderer);
+        textRenderer.render(" ", output, "Text");
+        this.extraClassInfo.renderOn(output, textRenderer);
+    }
+
+    private void render(StackTraceElement stElement, StringBuilder output, TextRenderer textRenderer) {
+        final String fileName = stElement.getFileName();
+        final int lineNumber = stElement.getLineNumber();
+        textRenderer.render(getClassName(), output, "StackTraceElement.ClassName");
+        textRenderer.render(".", output, "StackTraceElement.ClassMethodSeparator");
+        textRenderer.render(stElement.getMethodName(), output, "StackTraceElement.MethodName");
+        if (stElement.isNativeMethod()) {
+            textRenderer.render("(Native Method)", output, "StackTraceElement.NativeMethod");
+        } else if (fileName != null && lineNumber >= 0) {
+            textRenderer.render("(", output, "StackTraceElement.Container");
+            textRenderer.render(fileName, output, "StackTraceElement.FileName");
+            textRenderer.render(":", output, "StackTraceElement.ContainerSeparator");
+            textRenderer.render(Integer.toString(lineNumber), output, "StackTraceElement.LineNumber");
+            textRenderer.render(")", output, "StackTraceElement.Container");
+        } else if (fileName != null) {
+            textRenderer.render("(", output, "StackTraceElement.Container");
+            textRenderer.render(fileName, output, "StackTraceElement.FileName");
+            textRenderer.render(")", output, "StackTraceElement.Container");
+        } else {
+            textRenderer.render("(", output, "StackTraceElement.Container");
+            textRenderer.render("Unknown Source", output, "StackTraceElement.UnknownSource");
+            textRenderer.render(")", output, "StackTraceElement.Container");
+        }
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.stackTraceElement);
-        sb.append(" ");
-        sb.append(this.extraClassInfo);
+        renderOn(sb, PlainTextRenderer.getInstance());
         return sb.toString();
     }
+
 }

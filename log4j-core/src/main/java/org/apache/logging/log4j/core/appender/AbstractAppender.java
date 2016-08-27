@@ -23,7 +23,11 @@ import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Integers;
 
 /**
@@ -32,6 +36,60 @@ import org.apache.logging.log4j.core.util.Integers;
  */
 public abstract class AbstractAppender extends AbstractFilterable implements Appender {
 
+    /**
+     * Subclasses can extend this abstract Builder. 
+     * 
+     * @param <B> This builder class.
+     */
+    public abstract static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B> {
+
+        @PluginBuilderAttribute
+        private boolean ignoreExceptions = true;
+        
+        @PluginElement("Layout")
+        @Required
+        private Layout<? extends Serializable> layout;
+
+        @PluginBuilderAttribute
+        @Required
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isIgnoreExceptions() {
+            return ignoreExceptions;
+        }
+
+        public Layout<? extends Serializable> getLayout() {
+            return layout;
+        }
+
+        public B withName(String name) {
+            this.name = name;
+            return asBuilder();
+        }
+
+        public B withIgnoreExceptions(boolean ignoreExceptions) {
+            this.ignoreExceptions = ignoreExceptions;
+            return asBuilder();
+        }
+
+        public B withLayout(Layout<? extends Serializable> layout) {
+            this.layout = layout;
+            return asBuilder();
+        }
+
+        public Layout<? extends Serializable> getOrCreateLayout() {
+            if (layout == null) {
+                return PatternLayout.createDefaultLayout();
+            }
+            return layout;
+        }
+        
+    }
+    
     private final String name;
     private final boolean ignoreExceptions;
     private final Layout<? extends Serializable> layout;

@@ -46,7 +46,7 @@ public class WriterManager extends AbstractManager {
 
     public WriterManager(final Writer writer, final String streamName, final StringLayout layout,
             final boolean writeHeader) {
-        super(streamName);
+        super(null, streamName);
         this.writer = writer;
         this.layout = layout;
         if (writeHeader && layout != null) {

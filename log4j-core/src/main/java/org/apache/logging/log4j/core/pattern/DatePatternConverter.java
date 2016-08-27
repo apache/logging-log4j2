@@ -224,7 +224,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             LOGGER.warn("Could not instantiate FastDateFormat with pattern " + pattern, e);
 
             // default to the DEFAULT format
-            return createFixedFormatter(FixedDateFormat.create(FixedFormat.DEFAULT));
+            return createFixedFormatter(FixedDateFormat.create(FixedFormat.DEFAULT, tz));
         }
     }
 

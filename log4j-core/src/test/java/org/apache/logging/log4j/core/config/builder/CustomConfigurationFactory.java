@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -25,8 +28,6 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-
-import java.net.URI;
 
 /**
  * Normally this would be a plugin. However, we don't want it used for everything so it will be defined
@@ -48,20 +49,21 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
         appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
                 Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
         builder.add(appenderBuilder);
-        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
-                add(builder.newAppenderRef("Stdout")).
-                addAttribute("additivity", false));
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true).
+                    add(builder.newAppenderRef("Stdout")).
+                    addAttribute("additivity", false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+        builder.add(builder.newCustomLevel("Panic", 17));
         return builder.build();
     }
 
     @Override
-    public Configuration getConfiguration(final ConfigurationSource source) {
-        return getConfiguration(source.toString(), null);
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return getConfiguration(loggerContext, source.toString(), null);
     }
 
     @Override
-    public Configuration getConfiguration(final String name, final URI configLocation) {
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
         final ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
         return addTestFixtures(name, builder);
     }

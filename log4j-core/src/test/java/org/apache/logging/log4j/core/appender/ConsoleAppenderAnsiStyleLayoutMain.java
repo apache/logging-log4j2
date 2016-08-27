@@ -36,7 +36,7 @@ import org.junit.Test;
  * </pre>
  * or:
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
  * </pre>
  * 
  */
@@ -58,9 +58,8 @@ public class ConsoleAppenderAnsiStyleLayoutMain {
         // System.out.println(System.getProperty("java.class.path"));
         final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml"
                 : args[0];
-        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
-        final Logger logger = LogManager.getLogger(ConsoleAppenderAnsiStyleLayoutMain.class);
-        try {
+        try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config)) {
+            final Logger logger = LogManager.getLogger(ConsoleAppenderAnsiStyleLayoutMain.class);
             logger.fatal("Fatal message.");
             logger.error("Error message.");
             logger.warn("Warning message.");
@@ -68,8 +67,6 @@ public class ConsoleAppenderAnsiStyleLayoutMain {
             logger.debug("Debug message.");
             logger.trace("Trace message.");
             logger.error("Error message.", new IOException("test"));
-        } finally {
-            Configurator.shutdown(ctx);
         }
     }
 

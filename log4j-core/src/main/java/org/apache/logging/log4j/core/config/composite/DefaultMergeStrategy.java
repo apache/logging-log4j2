@@ -155,6 +155,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
                             final Node targetNode = getLoggerNode(targetChildNode, node.getAttributes().get(NAME));
                             final Node loggerNode = new Node(targetChildNode, node.getName(), node.getType());
                             if (targetNode != null) {
+                                targetNode.getAttributes().putAll(node.getAttributes());
                                 for (final Node sourceLoggerChild : node.getChildren()) {
                                     if (isFilterNode(sourceLoggerChild)) {
                                         boolean foundFilter = false;
@@ -260,10 +261,12 @@ public class DefaultMergeStrategy implements MergeStrategy {
     }
 
     private boolean isSameName(final Node node1, final Node node2) {
-        return node1.getAttributes().get(NAME).toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
+        final String value = node1.getAttributes().get(NAME);
+        return value != null && value.toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
     }
 
     private boolean isSameReference(final Node node1, final Node node2) {
-        return node1.getAttributes().get(REF).toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
+        final String value = node1.getAttributes().get(REF);
+        return value != null && value.toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
     }
 }

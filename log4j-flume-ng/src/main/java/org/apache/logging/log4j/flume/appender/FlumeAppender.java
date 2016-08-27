@@ -163,6 +163,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     @PluginFactory
     public static FlumeAppender createAppender(@PluginElement("Agents") Agent[] agents,
                                                @PluginElement("Properties") final Property[] properties,
+                                               @PluginAttribute("hosts") final String hosts,
                                                @PluginAttribute("embedded") final String embedded,
                                                @PluginAttribute("type") final String type,
                                                @PluginAttribute("dataDir") final String dataDir,
@@ -188,7 +189,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                                                @PluginElement("Filter") final Filter filter) {
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
-            (agents == null || agents.length == 0) && properties != null && properties.length > 0;
+            (agents == null || agents.length == 0 || hosts == null || hosts.isEmpty()) && properties != null && properties.length > 0;
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean compress = Booleans.parseBoolean(compressBody, true);
         ManagerType managerType;
@@ -242,27 +243,15 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                 manager = FlumeEmbeddedManager.getManager(name, agents, properties, batchCount, dataDir);
                 break;
             case AVRO:
-                if (agents == null || agents.length == 0) {
-                    LOGGER.debug("No agents provided, using defaults");
-                    agents = new Agent[] {Agent.createAgent(null, null)};
-                }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
+                manager = FlumeAvroManager.getManager(name, getAgents(agents, hosts), batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
                 break;
             case PERSISTENT:
-                if (agents == null || agents.length == 0) {
-                    LOGGER.debug("No agents provided, using defaults");
-                    agents = new Agent[] {Agent.createAgent(null, null)};
-                }
-                manager = FlumePersistentManager.getManager(name, agents, properties, batchCount, retries,
+                manager = FlumePersistentManager.getManager(name, getAgents(agents, hosts), properties, batchCount, retries,
                     connectTimeoutMillis, reqTimeoutMillis, delayMillis, lockTimeoutRetryCount, dataDir);
                 break;
             default:
                 LOGGER.debug("No manager type specified. Defaulting to AVRO");
-                if (agents == null || agents.length == 0) {
-                    LOGGER.debug("No agents provided, using defaults");
-                    agents = new Agent[] {Agent.createAgent(null, null)};
-                }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
+                manager = FlumeAvroManager.getManager(name, getAgents(agents, hosts), batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
         }
 
         if (manager == null) {
@@ -271,5 +260,25 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
         return new FlumeAppender(name, filter, layout,  ignoreExceptions, includes,
             excludes, required, mdcPrefix, eventPrefix, compress, factory, manager);
+    }
+
+    private static Agent[] getAgents(Agent[] agents, final String hosts) {
+        if (agents == null || agents.length == 0) {
+            if (hosts != null && !hosts.isEmpty()) {
+                LOGGER.debug("Parsing agents from hosts parameter");
+                String[] hostports = hosts.split(",");
+                agents = new Agent[hostports.length];
+                for(int i = 0; i < hostports.length; ++i) {
+                    String[] h = hostports[i].split(":");
+                    agents[i] = Agent.createAgent(h[0], h.length > 1 ? h[1] : null);
+                }
+            } else {
+                LOGGER.debug("No agents provided, using defaults");
+                agents = new Agent[] {Agent.createAgent(null, null)};
+            }
+        }
+
+        LOGGER.debug("Using agents {}", agents);
+        return agents;
     }
 }

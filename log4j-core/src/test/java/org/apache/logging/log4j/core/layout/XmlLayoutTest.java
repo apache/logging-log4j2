@@ -32,12 +32,14 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -53,15 +55,16 @@ public class XmlLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
     private static final String markerTag = "<Marker name=\"EVENT\"/>";
 
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
-        ThreadContext.clearAll();
     }
 
     @BeforeClass
     public static void setupClass() {
-        ThreadContext.clearAll();
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
@@ -107,6 +110,10 @@ public class XmlLayoutTest {
         Assert.assertTrue(str, endPos >= 0);
     }
 
+    private void checkElementNameAbsent(final String name, final boolean compact, final String str) {
+        Assert.assertFalse(str.contains("<" + name));
+    }
+
     /**
      * @param includeSource TODO
      * @param compact
@@ -115,17 +122,17 @@ public class XmlLayoutTest {
      * @throws JsonParseException
      * @throws JsonMappingException
      */
-    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext) throws IOException,
+    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext, final boolean includeStacktrace) throws IOException,
             JsonParseException, JsonMappingException {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final XmlLayout layout = XmlLayout.createLayout(includeSource, includeContext, false, compact, StandardCharsets.UTF_8);
+        final XmlLayout layout = XmlLayout.createLayout(includeSource, includeContext, false, compact, StandardCharsets.UTF_8, includeStacktrace);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         assertEquals(str, !compact, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("Source"));
         assertEquals(str, includeContext, str.contains("ContextMap"));
         final Log4jLogEvent actual = new Log4jXmlObjectMapper().readValue(str, Log4jLogEvent.class);
-        LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext);
+        LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext, includeStacktrace);
         if (includeContext) {
             this.checkElement("MDC.A", "A_Value", compact, str);
             this.checkElement("MDC.B", "B_Value", compact, str);
@@ -138,10 +145,12 @@ public class XmlLayoutTest {
         assertTrue(str, str.contains("loggerName=\"a.B\""));
         // make sure short names are used
         assertTrue(str, str.contains("<Event "));
-        assertTrue(str, str.contains("class="));
-        assertTrue(str, str.contains("method="));
-        assertTrue(str, str.contains("file="));
-        assertTrue(str, str.contains("line="));
+        if (includeStacktrace) {
+            assertTrue(str, str.contains("class="));
+            assertTrue(str, str.contains("method="));
+            assertTrue(str, str.contains("file="));
+            assertTrue(str, str.contains("line="));
+        }
         //
         // make sure the names we want are used
         this.checkAttributeName("timeMillis", compact, str);
@@ -153,27 +162,35 @@ public class XmlLayoutTest {
         this.checkElementName("Parents", compact, str, false, true);
         this.checkElementName("Message", compact, str, false, true);
         this.checkElementName("Thrown", compact, str, true, true);
-        this.checkElementName("Cause", compact, str, true, true);
-        this.checkAttributeName("class", compact, str);
-        this.checkAttributeName("method", compact, str);
-        this.checkAttributeName("file", compact, str);
-        this.checkAttributeName("line", compact, str);
-        this.checkAttributeName("exact", compact, str);
-        this.checkAttributeName("location", compact, str);
-        this.checkAttributeName("version", compact, str);
+        this.checkElementName("Cause", compact, str, true, includeStacktrace);
         this.checkAttributeName("commonElementCount", compact, str);
         this.checkAttributeName("message", compact, str);
         this.checkAttributeName("localizedMessage", compact, str);
-        this.checkElementName("ExtendedStackTrace", compact, str, false, true);
+        if (includeStacktrace) {
+            this.checkElementName("ExtendedStackTrace", compact, str, false, true);
+            this.checkAttributeName("class", compact, str);
+            this.checkAttributeName("method", compact, str);
+            this.checkAttributeName("file", compact, str);
+            this.checkAttributeName("line", compact, str);
+            this.checkAttributeName("exact", compact, str);
+            this.checkAttributeName("location", compact, str);
+            this.checkAttributeName("version", compact, str);
+        } else {
+            this.checkElementNameAbsent("ExtendedStackTrace", compact, str);
+        }
         this.checkElementName("Suppressed", compact, str, false, true);
         this.checkAttributeName("loggerFqcn", compact, str);
         this.checkAttributeName("endOfBatch", compact, str);
         if (includeContext) {
             this.checkElementName("ContextMap", compact, str, false, true);
+        } else {
+            this.checkElementNameAbsent("ContextMap", compact, str);
         }
         this.checkElementName("ContextStack", compact, str, false, true);
         if (includeSource) {
             this.checkElementName("Source", compact, str, true, false);
+        } else {
+            this.checkElementNameAbsent("Source", compact, str);
         }
         // check some attrs
         this.checkAttribute("loggerFqcn", "f.q.c.n", compact, str);
@@ -202,7 +219,7 @@ public class XmlLayoutTest {
             this.rootLogger.removeAppender(appender);
         }
         // set up appender
-        final XmlLayout layout = XmlLayout.createLayout(true, true, true, false, null);
+        final XmlLayout layout = XmlLayout.createLayout(true, true, true, false, null, true);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -251,7 +268,7 @@ public class XmlLayoutTest {
 
     @Test
     public void testLayoutLoggerName() {
-        final XmlLayout layout = XmlLayout.createLayout(false, true, true, false, null);
+        final XmlLayout layout = XmlLayout.createLayout(false, true, true, false, null, true);
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //
@@ -265,11 +282,16 @@ public class XmlLayoutTest {
 
     @Test
     public void testLocationOffCompactOffMdcOff() throws Exception {
-        this.testAllFeatures(false, false, false);
+        this.testAllFeatures(false, false, false, true);
     }
 
     @Test
     public void testLocationOnCompactOnMdcOn() throws Exception {
-        this.testAllFeatures(true, true, true);
+        this.testAllFeatures(true, true, true, true);
+    }
+
+    @Test
+    public void testExcludeStacktrace() throws Exception {
+        this.testAllFeatures(false, false, false, false);
     }
 }

@@ -21,8 +21,8 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
 /**
- * Tests {@link org.apache.logging.log4j.core.lookup.MainMapLookup#MAIN_SINGLETON} from the command line, not a real JUnit
- * test.
+ * Tests {@link org.apache.logging.log4j.core.lookup.MainMapLookup#MAIN_SINGLETON} from the command line, not a real
+ * JUnit test.
  * 
  * From an IDE or CLI: --file foo.txt
  * 
@@ -32,12 +32,9 @@ public class MainInputArgumentsLookupTest {
 
     public static void main(final String[] args) {
         MainMapLookup.setMainArguments(args);
-        final LoggerContext ctx = Configurator.initialize(MainInputArgumentsLookupTest.class.getName(),
-                "target/test-classes/log4j-lookup-main.xml");
-        try {
+        try (final LoggerContext ctx = Configurator.initialize(MainInputArgumentsLookupTest.class.getName(),
+                "target/test-classes/log4j-lookup-main.xml")) {
             LogManager.getLogger().error("this is an error message");
-        } finally {
-            Configurator.shutdown(ctx);
         }
     }
 

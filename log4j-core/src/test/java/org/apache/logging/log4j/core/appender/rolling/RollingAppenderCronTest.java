@@ -47,15 +47,19 @@ public class RollingAppenderCronTest {
 
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
+    private static final String FILE = "target/rolling-cron/rollingtest.log";
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
+        // TODO Is there a better way to test than putting the thread to sleep all over the place?
         final Logger logger = loggerContextRule.getLogger();
+        File file = new File(FILE);
+        assertTrue("Log file does not exist", file.exists());
         logger.debug("This is test message number 1");
         Thread.sleep(2500);
         final File dir = new File(DIR);
@@ -70,10 +74,14 @@ public class RollingAppenderCronTest {
                 succeeded = true;
                 break;
             }
-            logger.debug("Adding additional event " + i);
+            logger.debug("Sleeping #" + i);
             Thread.sleep(100); // Allow time for rollover to complete
         }
         if (!succeeded) {
+            final File[] files = dir.listFiles();
+            for (File dirFile : files) {
+                logger.error("Found file: " + dirFile.getPath());
+            }
             fail("No compressed files found");
         }
         final Path src = FileSystems.getDefault().getPath("target/test-classes/log4j-rolling-cron2.xml");

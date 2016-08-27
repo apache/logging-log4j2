@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,19 +42,12 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PluginManagerPackagesTest {
     private static Configuration config;
     private static ListAppender listAppender;
     private static LoggerContext ctx;
-
-    @BeforeClass
-    public static void setupClass() {
-    }
 
     @AfterClass
     public static void cleanupClass() {
@@ -89,7 +85,7 @@ public class PluginManagerPackagesTest {
         assertEquals("abc123XYZ", messages.get(0));
     }
 
-    private void compile(final File f) throws IOException {
+    static void compile(final File f) throws IOException {
         // set up compiler
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();

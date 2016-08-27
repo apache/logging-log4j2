@@ -230,7 +230,9 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>includeStacktrace</td>
               <td>boolean</td>
-              <td>Whether to include full stacktrace of logged Throwables (optional, default to true)</td>
+              <td>Whether to include full stacktrace of logged Throwables (optional, default to true).
+                  If set to false, only the class name and message of the #javadoc('java/lang', 'Throwable')
+                  will be included.</td>
             </tr>
             <caption align="top">GELF Layout Parameters</caption>
           </table>
@@ -383,6 +385,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <p>Generating <a href="#LocationInformation">location information</a>
                 is an expensive operation and may impact performance. Use with caution.</p>
               </td>
+            </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
             <caption align="top">JSON Layout Parameters</caption>
           </table>
@@ -1011,11 +1018,48 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternMessage"/>
-                <b>m</b><br />
-                <b>msg</b><br />
-                <b>message</b>
+                <b>m</b>{nolookups}{ansi}<br />
+                <b>msg</b>{nolookups}{ansi}<br />
+                <b>message</b>{nolookups}{ansi}
               </td>
-              <td>Outputs the application supplied message associated with the logging event.
+              <td>
+                <p>
+                  Outputs the application supplied message associated with the logging event.
+                </p>
+                <!-- Copied and tweaked from Javadoc for org.apache.logging.log4j.core.pattern.JAnsiMessageRenderer -->
+                <p>
+                  Add <code>{ansi}</code> to render messages with ANSI escape codes (requires JAnsi.)
+                </p>
+                <p>
+                  The default syntax for embedded ANSI codes is:
+                </p>
+                <pre class="prettyprint linenums">&#64;|<em>code</em>(,<em>code</em>)* <em>text</em>|@</pre>
+                <p>
+                  For example, to render the message <code>"Hello"</code> in green, use:
+                </p>
+                <pre class="prettyprint linenums">&#64;|green Hello|@</pre>
+                <p>
+                  To render the message <code>"Hello"</code> in bold and red, use:
+                </p>
+                <pre class="prettyprint linenums">&#64;|bold,red Warning!|@</pre>
+                <p>
+                  You can also define custom style names in the configuration with the syntax:
+                </p>
+                <pre class="prettyprint linenums">%message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n</pre>
+                <p>
+                  For example:
+                </p>
+                <pre class="prettyprint linenums">%message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n</pre>
+                <p>
+                  The call site can look like this:
+                </p>
+                <pre class="prettyprint linenums">logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());</pre>
+                <p>
+                  Use <code>{nolookups}</code> to log messages like <code>"${esc.d}{date:YYYY-MM-dd}"</code> 
+                  without using any lookups. Normally calling <code>logger.info("Try ${esc.d}{date:YYYY-MM-dd}")</code> 
+                  would replace the date template <code>${esc.d}{date:YYYY-MM-dd}</code> with an actual date.
+                  Using <code>nolookups</code> disables this feature and logs the message string untouched.
+                </p>
               </td>
             </tr>
             <tr>
@@ -1404,9 +1448,16 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternExtendedException"/>
-                <b>xEx</b>{"none"|"short"|"full"|depth],[filters(packages)}<br />
-                <b>xException</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
-                <b>xThrowable</b>["none"|"short"|"full"|depth],[filters(packages)}
+                <b>xEx</b>|<b>xException</b>|<b>xThrowable</b><br/>
+                &nbsp;&nbsp;{<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;["none"|"short"|"full"|depth]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;[,filters(package,package,...)]<br/>
+                &nbsp;&nbsp;}<br/>
+                &nbsp;&nbsp;{ansi(<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;...)<br/>
+                &nbsp;&nbsp;}<br/>
               </td>
               <td>
                 <p>The same as the %throwable conversion word but also includes class packaging information.
@@ -1420,9 +1471,48 @@ WARN  [main]: Message 2</pre>
                   <b>%xEx{short}</b>
                   which will only output the first line of the Throwable or <b>%xEx{n}</b> where
                   the first n lines of the stacktrace will be printed. The conversion word can also be
-                  followed by "filters(packages)" where packages is a list of package names that should
-                  be suppressed from stack traces. Specifying <b>%xEx{none}</b>
+                  followed by "filters(packages)" where packages is a comma-sepaarted list of package names that 
+                  should be suppressed from stack traces. Specifying <b>%xEx{none}</b>
                   or <b>%xEx{0}</b> will suppress printing of the exception.
+                </p>
+                <p>
+                 The <code>ansi</code> option renders stack traces with ANSI escapes code using the JAnsi library.
+                 Use <code>{ansi}</code> to use the default color mapping. You can specify your own mappings with
+                 <code>key=value</code> pairs. The keys are:
+                </p>
+                  <ul>
+                    <li>Prefix</li>
+                    <li>Name</li>
+                    <li>NameMessageSeparator</li>
+                    <li>Message</li>
+                    <li>At</li>
+                    <li>CauseLabel</li>
+                    <li>Text</li>
+                    <li>More</li>
+                    <li>Suppressed</li>
+                    <li>StackTraceElement.ClassName</li>
+                    <li>StackTraceElement.ClassMethodSeparator</li>
+                    <li>StackTraceElement.MethodName</li>
+                    <li>StackTraceElement.NativeMethod</li>
+                    <li>StackTraceElement.FileName</li>
+                    <li>StackTraceElement.LineNumber</li>
+                    <li>StackTraceElement.Container</li>
+                    <li>StackTraceElement.ContainerSeparator</li>
+                    <li>StackTraceElement.UnknownSource</li>
+                    <li>ExtraClassInfo.Inexact</li>
+                    <li>ExtraClassInfo.Container</li>
+                    <li>ExtraClassInfo.ContainerSeparator</li>
+                    <li>ExtraClassInfo.Location</li>
+                    <li>ExtraClassInfo.Version</li>                   
+                  </ul> 
+                <p>
+                  The values are names from JAnsi's 
+                  <a href="https://fusesource.github.io/jansi/documentation/api/org/fusesource/jansi/AnsiRenderer.Code.html">Code</a>
+                  class like <code>blue</code>, <code>bg_red</code>, and so on (Log4j ignores case.)                  
+                </p>
+                <p>
+                  The special key <code>StyleMapName</code> can be set to one of the following prefedined maps: 
+                  <code>Spock</code>, <code>Kirk</code>.
                 </p>
               </td>
             </tr>
@@ -1892,6 +1982,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
                 is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
+            </tr>
             <caption align="top">XML Layout Parameters</caption>
           </table>
         </subsection>
@@ -2060,6 +2155,11 @@ source:
               <p>Generating <a href="#LocationInformation">location information</a>
                 is an expensive operation and may impact performance. Use with caution.</p>
               </td>
+            </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
             <caption align="top">YAML Layout Parameters</caption>
           </table>

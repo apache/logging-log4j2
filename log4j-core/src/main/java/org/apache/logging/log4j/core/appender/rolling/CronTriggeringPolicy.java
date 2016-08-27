@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.CronScheduledFuture;
 import org.apache.logging.log4j.core.config.Scheduled;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -27,9 +32,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.text.ParseException;
-import java.util.Date;
-
 /**
  * Rolls a file over based on a cron schedule.
  */
@@ -37,14 +39,17 @@ import java.util.Date;
 @Scheduled
 public final class CronTriggeringPolicy implements TriggeringPolicy {
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String defaultSchedule = "0 0 0 * * ?";
     private RollingFileManager manager;
     private final CronExpression cronExpression;
     private final Configuration configuration;
     private final boolean checkOnStartup;
+    private volatile Date nextRollDate;
+    private CronScheduledFuture future;
 
-    private CronTriggeringPolicy(final CronExpression schedule, final boolean checkOnStartup, final Configuration configuration) {
+    private CronTriggeringPolicy(final CronExpression schedule, final boolean checkOnStartup,
+            final Configuration configuration) {
         this.cronExpression = schedule;
         this.configuration = configuration;
         this.checkOnStartup = checkOnStartup;
@@ -57,13 +62,14 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
     @Override
     public void initialize(final RollingFileManager aManager) {
         this.manager = aManager;
+        final Date nextDate = new Date(this.manager.getFileTime());
+        nextRollDate = cronExpression.getNextValidTimeAfter(nextDate);
         if (checkOnStartup) {
-            final Date nextDate = cronExpression.getNextValidTimeAfter(new Date(this.manager.getFileTime()));
-            if (nextDate.getTime() < System.currentTimeMillis()) {
-                manager.rollover();
+            if (nextRollDate.getTime() < System.currentTimeMillis()) {
+                rollover();
             }
         }
-        configuration.getScheduler().scheduleWithCron(cronExpression, new CronTrigger());
+        future = configuration.getScheduler().scheduleWithCron(cronExpression, new CronTrigger());
     }
 
     /**
@@ -116,6 +122,16 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
         }
     }
 
+    private void rollover() {
+        manager.getPatternProcessor().setPrevFileTime(nextRollDate.getTime());
+        manager.rollover();
+        final Date fireDate = future.getFireTime();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fireDate);
+        cal.add(Calendar.SECOND, -1);
+        nextRollDate = cal.getTime();
+    }
+
     @Override
     public String toString() {
         return "CronTriggeringPolicy(schedule=" + cronExpression.getCronExpression() + ")";
@@ -125,8 +141,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
 
         @Override
         public void run() {
-            manager.rollover();
+            rollover();
         }
     }
-
 }

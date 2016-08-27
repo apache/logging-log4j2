@@ -197,6 +197,8 @@
         <item name="ContextSelector" href="/manual/extending.html#ContextSelector"/>
         <item name="ConfigurationFactory" href="/manual/extending.html#ConfigurationFactory"/>
         <item name="LoggerConfig" href="/manual/extending.html#LoggerConfig"/>
+        <item name="LogEventFactory" href="/manual/extending.html#LogEventFactory"/>
+        <item name="MessageFactory" href="/manual/extending.html#MessageFactory"/>
         <item name="Lookups" href="/manual/extending.html#Lookups"/>
         <item name="Filters" href="/manual/extending.html#Filters"/>
         <item name="Appenders" href="/manual/extending.html#Appenders"/>
@@ -234,6 +236,11 @@
         <item name="Code Generation Tool" href="/manual/customloglevels.html#CodeGen"/>
       </item>
 
+    </menu>
+
+    <menu name="Legacy" inherit="top" img="icon-tags">
+      <item name="Log4j 1.2" href="http://logging.apache.org/log4j/1.2/"/>
+      <item name="Log4j 2.3" href="http://logging.apache.org/log4j/log4j-2.3/"/>
     </menu>
 
     <menu name="Components" inherit="top" img="icon-cog">

@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.util.Objects;
-
 /**
  * Utility class providing common validation logic.
  */
@@ -30,41 +28,5 @@ public final class Assert {
             throw new IllegalArgumentException("Value should be at least " + minValue + " but was " + value);
         }
         return value;
-    }
-
-    /**
-     * Throws a {@code NullPointerException} if the specified parameter is
-     * {@code null}, otherwise returns the specified parameter.
-     * <p>
-     * On Java 7, just use {@code Objects.requireNonNull(T, String)}
-     * </p>
-     * <p>
-     * Usage:
-     * </p>
-     * <pre>
-     * // earlier you would write this:
-     * public SomeConstructor(Object param) {
-     *     if (param == null) {
-     *         throw new NullPointerException(&quot;param&quot;);
-     *     }
-     *     this.field = param;
-     * }
-     *
-     * // now you can do the same in one line:
-     * public SomeConstructor(Object param) {
-     *     this.field = Assert.requireNonNull(&quot;param&quot;);
-     * }
-     * </pre>
-     *
-     * @param <T> the type of the parameter to check and return
-     * @param object the parameter to check
-     * @param message message to populate the NPE with if necessary
-     * @return the specified parameter
-     * @throws NullPointerException if {@code object} is {@code null}
-     * @deprecated Will be removed in 2.5.
-     */
-    @Deprecated
-    public static <T> T requireNonNull(final T object, final String message) {
-        return Objects.requireNonNull(object, message);
     }
 }

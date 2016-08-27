@@ -62,7 +62,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
      * @param configurations The List of Configurations to merge.
      */
     public CompositeConfiguration(final List<? extends AbstractConfiguration> configurations) {
-        super(ConfigurationSource.NULL_SOURCE);
+        super(configurations.get(0).getLoggerContext(), ConfigurationSource.NULL_SOURCE);
         rootNode = configurations.get(0).getRootNode();
         this.configurations = configurations;
         final String mergeStrategyClassName = PropertiesUtil.getProperties().getStringProperty(MERGE_STRATEGY_PROPERTY,
@@ -152,7 +152,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             if (sourceURI != null) {
                 LOGGER.warn("Unable to determine URI for configuration {}, changes to it will be ignored",
                         config.getName());
-                currentConfig = factory.getConfiguration(config.getName(), sourceURI);
+                currentConfig = factory.getConfiguration(getLoggerContext(), config.getName(), sourceURI);
                 if (currentConfig == null) {
                     LOGGER.warn("Unable to reload configuration {}, changes to it will be ignored", config.getName());
                     currentConfig = config;

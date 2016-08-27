@@ -30,14 +30,6 @@ public class WebLookup extends AbstractLookup {
     private static final String ATTR_PREFIX = "attr.";
     private static final String INIT_PARAM_PREFIX = "initParam.";
 
-    /**
-     * @deprecated Use {@link WebLoggerContextUtils#getServletContext()}.
-     */
-    @Deprecated
-    protected ServletContext getServletContext() {
-        return WebLoggerContextUtils.getServletContext();
-    }
-
     @Override
     public String lookup(final LogEvent event, final String key) {
         final ServletContext ctx = WebLoggerContextUtils.getServletContext();

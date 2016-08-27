@@ -110,6 +110,20 @@ public final class HtmlLayout extends AbstractStringLayout {
         this.headerSize = headerSize;
     }
 
+    /**
+     * For testing purposes.
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * For testing purposes.
+     */
+    public boolean isLocationInfo() {
+        return locationInfo;
+    }
+
     private String addCharsetToContentType(final String contentType) {
         if (contentType == null) {
             return DEFAULT_CONTENT_TYPE + "; charset=" + getCharset();

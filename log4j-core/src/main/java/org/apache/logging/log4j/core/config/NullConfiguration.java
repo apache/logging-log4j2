@@ -29,7 +29,7 @@ public class NullConfiguration extends AbstractConfiguration {
     public static final String NULL_NAME = "Null";
 
     public NullConfiguration() {
-        super(ConfigurationSource.NULL_SOURCE);
+        super(null, ConfigurationSource.NULL_SOURCE);
 
         setName(NULL_NAME);
         final LoggerConfig root = getRootLogger();

@@ -1,21 +1,25 @@
 
-              Apache Log4j 2.6.1 RELEASE NOTES
+              Apache Log4j 2.6.2 RELEASE NOTES
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.6.1 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.6.2 release!
 
-Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
-Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
-many other modern features such as support for Markers, property substitution using Lookups, multiple patterns on
-a PatternLayout and asynchronous Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
+Apache Log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade
+to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
+many other modern features such as support for Markers, lambda expressions for lazy logging,
+property substitution using Lookups, multiple patterns on a PatternLayout and asynchronous
+Loggers. Another notable Log4j 2 feature is the ability to be "garbage-free" (avoid allocating
+temporary objects) while logging. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This is the eleventh GA release. It is primarily a bugfix release. More details on the fixes are itemized below.
+This is the twelfth GA release. It is primarily a bugfix release. More details on the
+fixes are itemized below.
 
-Note that subsequent to the 2.6 release a minor source incompatibility was found due to the addition of new methods to
-the Logger interface. If you have code that does:
+Note that subsequent to the 2.6 release a minor source incompatibility was found due to the
+addition of new methods to the Logger interface. If you have code that does:
 
 logger.error(null, “This is the log message”, throwable);
 
-or similar with any log level you will get a compiler error saying the reference is ambiguous.  To correct this either do:
+or similar with any log level you will get a compiler error saying the reference is ambiguous.
+To correct this either do:
 
 logger.error(“This is the log message”, throwable);
 
@@ -23,35 +27,41 @@ or
 
 logger.error((Marker) null, “This is the log message”, throwable);
 
-Log4j 2.6 maintains binary compatibility with previous releases.
+Log4j 2.6.2 maintains binary compatibility with previous releases.
 
-GA Release 2.6.1
+GA Release 2.6.2
 
 Changes in this version include:
 
 New features:
-o LOG4J2-1411:  Add documentation about plugin builders compared to factories. 
+o LOG4J2-1395:  Add "direct" option to ConsoleAppender for increased performance. 
+o LOG4J2-1437:  (GC) ObjectMessage and ReusableObjectMessage now avoid calling toString() on auto-boxed primitive parameters. 
+o LOG4J2-1415:  (GC) ParameterFormatter now avoids calling toString() on auto-boxed primitive message parameters. 
+o LOG4J2-1412:  Unbox utility's ringbuffer of StringBuilders is now configurable. 
 
 Fixed Bugs:
-o LOG4J2-1405:  OnStartupTriggeringPolicy was forcing a rollover of empty files at startup and would append a
-        second footer that was added by the prior shutdown. 
-o LOG4J2-1406:  Fixed bug in ReusableParameterizedMessage where Throwable was never updated so first error was logged over
-        and over again and subsequent errors were not logged. Thanks to Trask Stalnaker. 
-o LOG4J2-1409:  Fixed ArrayIndexOutOfBoundsException that may occur in ReusableParameterizedMessage. Thanks to Shahan. 
-o LOG4J2-997:  Add filter and remove filter were not working properly in AbstractFilterable. Thanks to Maytee Chinavanichkit. 
-o LOG4J2-1032:  Change RenameAction to use java.nio to better report rename failures. 
-o LOG4J2-1407:  Misleading WARN log events from Log4j about message factories and unexpected formatting. Thanks to Gary Gregory. 
-o LOG4J2-1408:  The module log4j-liquibase is missing from BOM POM. Thanks to Gary Gregory. 
-o LOG4J2-1180:  Logger cache does not account for message factory. Thanks to Gary Gregory. 
-o LOG4J2-1402:  Fix regression in properties configuration to support arbitrary component ids. 
+o LOG4J2-904:  If copy and delete fails in rename action then resort to truncating the source file after copying it. Thanks to Bernhard Mähr. 
+o LOG4J2-1250:  CronTriggeringPolicy was not properly setting the prevFileTime value for the PatternProcessor so
+        file dates and times on rolled files were incorrect. 
+o LOG4J2-1452:  Fixed issue where reusable messages broke flow tracing logic. Thanks to Mikael Ståldal. 
+o LOG4J2-1440:  Fix bug in OnStartupTriggeringPolicy that allowed it to roll over on every reconfiguration. Added
+        minSize attribute. 
+o LOG4J2-1414:  Fixed minor issues with the 2.6.1 web site. Thanks to Ralph Goers. 
+o LOG4J2-1434:  Ensure that the thread-local StringBuilders used by Layouts to format log events to text will not
+        retain excessive memory after a large message was logged. Thanks to Luke Butters. 
+o LOG4J2-1418:  Provide MessageFactory2 to custom Logger implementations. 
+o LOG4J2-1420:  RollingRandomAccessFileManager was not properly rolling over on startup and was getting a NullPointerException. 
+o LOG4J2-1417:  Fixed issue where Unbox utility ignored the value Constants.ENABLE_THREADLOCALS and always stored non-JDK classes in ThreadLocals. 
+o LOG4J2-1422:  Fixed issue where AsyncAppenderQueueFullPolicyTest sometimes hangs. 
+o LOG4J2-1445:  OnStartupTriggeringPolicyTest fails on Windows saying the file is used by another process. Thanks to Ludovic HOCHET. 
 
 Changes:
-o LOG4J2-1385:  (GC) CSV layouts should not create a new CSVPrinter for each log event. Requires Apache Commons CSV 1.4. 
-o LOG4J2-1398:  Update liquibase-core from 3.4.2 to 3.5.1. 
-o LOG4J2-1399:  Update Apache Commons CSV from 1.3 to 1.4. 
+o LOG4J2-1432:  Update Jackson from 2.7.4 to 2.7.5. 
+o LOG4J2-1433:  Update Jansi from 1.11 to 1.13. 
+o LOG4J2-1444:  Update Apache Commons Compress from 1.11 to 1.12. 
 
 
-Apache Log4j 2.6.1 requires a minimum of Java 7 to build and run. Log4j 2.3 was the last release that
+Apache Log4j 2.6.2 requires a minimum of Java 7 to build and run. Log4j 2.3 was the last release that
 supported Java 6.
 
 Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the

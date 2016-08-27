@@ -24,52 +24,30 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import org.junit.Assert;
-
 /**
  * A JUnit test rule to automatically delete folders recursively before (optional) and after (optional) a test is run.
  */
 public class CleanFolders extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;
 
-    public CleanFolders(final boolean before, final boolean after, final File... files) {
-        super(before, after, files);
+    public CleanFolders(final boolean before, final boolean after, final int maxTries, final File... files) {
+        super(before, after, maxTries, files);
     }
 
-    public CleanFolders(final boolean before, final boolean after, final String... fileNames) {
-        super(before, after, fileNames);
+    public CleanFolders(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
+        super(before, after, maxTries, fileNames);
     }
 
     public CleanFolders(final File... folders) {
-        super(true, true, folders);
+        super(true, true, MAX_TRIES, folders);
+    }
+
+    public CleanFolders(final Path... paths) {
+        super(true, true, MAX_TRIES, paths);
     }
 
     public CleanFolders(final String... folderNames) {
-        super(true, true, folderNames);
-    }
-
-    @Override
-    protected void clean() {
-        IOException lastEx = null;
-        Path lastPath = null;
-        for (final File folder : getFiles()) {
-            final Path path = folder.toPath();
-            for (int i = 0; i < MAX_TRIES; i++) {
-                try {
-                    cleanFolder(path);
-                    // break from MAX_TRIES and goes to the next folder
-                    break;
-                } catch (final IOException e) {
-                    // We will try again.
-                    lastEx = e;
-                    lastPath = path;
-                }
-            }
-        }
-        if (lastEx != null) {
-            lastEx.printStackTrace();
-            Assert.fail(lastPath + ": " + lastEx);
-        }
+        super(true, true, MAX_TRIES, folderNames);
     }
 
     private void cleanFolder(final Path folder) throws IOException {
@@ -90,4 +68,9 @@ public class CleanFolders extends AbstractExternalFileCleaner {
         }
     }
 
+    @Override
+    protected boolean clean(Path path, int tryIndex) throws IOException {
+        cleanFolder(path);
+        return true;
+    }
 }

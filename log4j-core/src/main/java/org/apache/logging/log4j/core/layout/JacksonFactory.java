@@ -43,9 +43,11 @@ abstract class JacksonFactory {
     static class JSON extends JacksonFactory {
 
         private final boolean encodeThreadContextAsList;
+        private final boolean includeStacktrace;
 
-        public JSON(final boolean encodeThreadContextAsList) {
+        public JSON(final boolean encodeThreadContextAsList, final boolean includeStacktrace) {
             this.encodeThreadContextAsList = encodeThreadContextAsList;
+            this.includeStacktrace = includeStacktrace;
         }
 
         @Override
@@ -70,7 +72,7 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jJsonObjectMapper(encodeThreadContextAsList);
+            return new Log4jJsonObjectMapper(encodeThreadContextAsList, includeStacktrace);
         }
 
         @Override
@@ -82,6 +84,12 @@ abstract class JacksonFactory {
     static class XML extends JacksonFactory {
 
         static final int DEFAULT_INDENT = 1;
+
+        private final boolean includeStacktrace;
+
+        public XML(final boolean includeStacktrace) {
+            this.includeStacktrace = includeStacktrace;
+        }
 
         @Override
         protected String getPropertNameForContextMap() {
@@ -106,7 +114,7 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jXmlObjectMapper();
+            return new Log4jXmlObjectMapper(includeStacktrace);
         }
 
         @Override
@@ -116,6 +124,12 @@ abstract class JacksonFactory {
     }
 
     static class YAML extends JacksonFactory {
+
+        private final boolean includeStacktrace;
+
+        public YAML(final boolean includeStacktrace) {
+            this.includeStacktrace = includeStacktrace;
+        }
 
         @Override
         protected String getPropertNameForContextMap() {
@@ -139,7 +153,7 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jYamlObjectMapper(false);
+            return new Log4jYamlObjectMapper(false, includeStacktrace);
         }
 
         @Override

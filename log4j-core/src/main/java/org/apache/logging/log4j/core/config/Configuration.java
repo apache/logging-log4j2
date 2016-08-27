@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -188,4 +189,11 @@ public interface Configuration extends Filterable {
      * @param nanoClock the new nano clock for this configuration. Must be non-null.
      */
     void setNanoClock(NanoClock nanoClock);
+
+    /**
+     * Gets the logger context.
+     * 
+     * @return the logger context.
+     */
+    LoggerContext getLoggerContext();
 }

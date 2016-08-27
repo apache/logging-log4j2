@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -36,9 +39,27 @@ import java.util.Objects;
  * @since 2.1
  */
 public final class TypeUtil {
+    
     private TypeUtil() {
     }
 
+    /**
+     * Gets all declared fields for the given class (including superclasses).
+     * 
+     * @param cls the class to examine
+     * @return all declared fields for the given class (including superclasses).
+     * @see Class#getDeclaredFields()
+     */
+    public static List<Field> getAllDeclaredFields(Class<?> cls) {
+        final List<Field> fields = new ArrayList<>();
+        while (cls != null) {
+            for (Field field : cls.getDeclaredFields()) {
+                fields.add(field);
+            }
+            cls = cls.getSuperclass();
+        }
+        return fields;
+    }
     /**
      * Indicates if two {@link Type}s are assignment compatible.
      *

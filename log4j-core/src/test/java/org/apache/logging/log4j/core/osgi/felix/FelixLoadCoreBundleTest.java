@@ -28,6 +28,10 @@ import org.junit.Ignore;
  * <p>
  * For example, on Windows: "mvn clean package -DskipTests & mvn test"
  * </p>
+ * <p>
+ * To only test this class: {@code mvn -pl log4j-core -DskipTests clean package & mvn -pl log4j-core 
+ * -Dtest=FelixLoadCoreBundleTest test}
+ * </p>
  */
 @Ignore
 public class FelixLoadCoreBundleTest extends AbstractFelixLoadBundleTest {

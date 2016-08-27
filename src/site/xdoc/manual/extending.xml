@@ -93,7 +93,7 @@
           <subsection name="ConfigurationFactory">
             <p>
               Modifying the way in which logging can be configured is usually one of the areas with the most
-              interest. The primary method for doing that is by implementing or extending a 
+              interest. The primary method for doing that is by implementing or extending a
               <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationFactory.html">ConfigurationFactory</a>.
               Log4j provides two ways of adding new ConfigurationFactories. The first is by defining the system
               property named "log4j.configurationFactory" to the name of the class that should be searched first
@@ -123,12 +123,14 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
     public static final String[] SUFFIXES = new String[] {".xml", "*"};
 
     /**
-     * Return the Configuration.
+     * Returns the Configuration.
+     * @param loggerContext The logger context.
      * @param source The InputSource.
      * @return The Configuration.
      */
-    public Configuration getConfiguration(InputSource source) {
-        return new XMLConfiguration(source, configFile);
+    @Override
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return new XmlConfiguration(loggerContext, source);
     }
 
     /**
@@ -170,7 +172,19 @@ public static class RootLogger extends LoggerConfig {
             <p>A LogEventFactory is used to generate LogEvents. Applications may replace the standard LogEventFactory
               by setting the value of the system property Log4jLogEventFactory to the name of the custom
               LogEventFactory class. </p>
+            <p>Note: When log4j is configured to have <a href="async.html#AllAsync">all loggers asynchronous</a>,
+              log events are pre-allocated in a ring buffer and the LogEventFactory is not used.</p>
           </subsection>
+        <subsection name="MessageFactory">
+          <p>A MessageFactory is used to generate Message objects. Applications may replace the standard
+            ParameterizedMessageFactory (or ReusableMessageFactory in garbage-free mode)
+            by setting the value of the system property log4j2.messageFactory to the name of the custom
+            MessageFactory class. </p>
+          <p>Flow messages for the <tt>Logger.entry()</tt> and <tt>Logger.exit()</tt> methods have a separate FlowMessageFactory.
+            Applications may replace the DefaultFlowMessageFactory by setting the value of the system property
+            log4j2.flowMessageFactory to the name of the custom FlowMessageFactory class.
+          </p>
+        </subsection>
           <subsection name="Lookups">
             <p>
               Lookups are the means in which parameter substitution is performed. During Configuration initialization

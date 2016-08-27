@@ -20,7 +20,7 @@
   <parent>
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
-    <version>2.6.2-SNAPSHOT</version>
+    <version>2.6.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -83,6 +83,7 @@
         <configuration>
           <instructions>
             <!-- we compile against 3.0, but require 2.5 minimum -->
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
             <Import-Package>javax.servlet;version="[2.5,4)",*</Import-Package>
             <Export-Package>org.apache.logging.log4j.web</Export-Package>
           </instructions>

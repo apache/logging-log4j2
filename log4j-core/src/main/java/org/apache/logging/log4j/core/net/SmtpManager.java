@@ -77,7 +77,7 @@ public class SmtpManager extends AbstractManager {
 
     protected SmtpManager(final String name, final Session session, final MimeMessage message,
                           final FactoryData data) {
-        super(name);
+        super(null, name);
         this.session = session;
         this.message = message;
         this.data = data;
@@ -171,7 +171,7 @@ public class SmtpManager extends AbstractManager {
 
             sendMultipartMessage(message, mp);
         } catch (final MessagingException | IOException | RuntimeException e) {
-            logError("caught exception while sending e-mail notification.", e);
+            logError("Caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }
     }

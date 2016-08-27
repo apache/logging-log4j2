@@ -51,6 +51,7 @@ public final class FileSize {
      * abbreviations KB, MB, and GB are also accepted. Matching is case insensitive.
      *
      * @param string The string to convert
+     * @param defaultValue The default value if a problem is detected parsing.
      * @return The Bytes value for the string
      */
     public static long parse(final String string, final long defaultValue) {

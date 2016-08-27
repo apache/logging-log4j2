@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -54,12 +55,14 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private static final String STATUS_KEY = "status";
     private static final String SHUTDOWN_HOOK = "shutdownHook";
     private static final String VERBOSE = "verbose";
+    private static final String DEST = "dest";
     private static final String PACKAGES = "packages";
     private static final String CONFIG_NAME = "name";
     private static final String MONITOR_INTERVAL = "monitorInterval";
     private static final String CONFIG_TYPE = "type";
 
     private final ConfigurationBuilder<PropertiesConfiguration> builder;
+    private LoggerContext loggerContext;
     private Properties rootProperties;
 
     public PropertiesConfigurationBuilder() {
@@ -78,7 +81,6 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
 
     @Override
     public PropertiesConfiguration build() {
-        final Map<String, String> rootProps = new HashMap<>();
         for (final String key : rootProperties.stringPropertyNames()) {
             if (!key.contains(".")) {
                 builder.addRootProperty(key, rootProperties.getProperty(key));
@@ -88,6 +90,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             .setStatusLevel(Level.toLevel(rootProperties.getProperty(STATUS_KEY), Level.ERROR))
             .setShutdownHook(rootProperties.getProperty(SHUTDOWN_HOOK))
             .setVerbosity(rootProperties.getProperty(VERBOSE))
+            .setDestination(rootProperties.getProperty(DEST))
             .setPackages(rootProperties.getProperty(PACKAGES))
             .setConfigurationName(rootProperties.getProperty(CONFIG_NAME))
             .setMonitorInterval(rootProperties.getProperty(MONITOR_INTERVAL, "0"))
@@ -177,7 +180,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (props.size() > 0) {
             builder.add(createRootLogger(props));
         }
-
+        
+        builder.setLoggerContext(loggerContext);
+        
         return builder.build(false);
     }
 
@@ -363,5 +368,14 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             loggerBuilder.add(createAppenderRef(entry.getKey().trim(), entry.getValue()));
         }
         return loggerBuilder;
+    }
+
+    public PropertiesConfigurationBuilder setLoggerContext(LoggerContext loggerContext) {
+        this.loggerContext = loggerContext;
+        return this;
+    }
+
+    public LoggerContext getLoggerContext() {
+        return loggerContext;
     }
 }

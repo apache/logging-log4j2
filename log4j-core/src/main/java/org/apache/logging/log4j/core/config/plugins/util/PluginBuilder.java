@@ -147,7 +147,7 @@ public class PluginBuilder implements Builder<Object> {
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PluginBuilderFactory.class) &&
                 Modifier.isStatic(method.getModifiers()) &&
-                TypeUtil.isAssignable(Builder.class, method.getGenericReturnType())) {
+                TypeUtil.isAssignable(Builder.class, method.getReturnType())) {
                 ReflectionUtil.makeAccessible(method);
                 return (Builder<?>) method.invoke(null);
             }
@@ -156,8 +156,8 @@ public class PluginBuilder implements Builder<Object> {
     }
 
     private void injectFields(final Builder<?> builder) throws IllegalAccessException {
-        final Field[] fields = builder.getClass().getDeclaredFields();
-        AccessibleObject.setAccessible(fields, true);
+        final List<Field> fields = TypeUtil.getAllDeclaredFields(builder.getClass());
+        AccessibleObject.setAccessible(fields.toArray(new Field[] {}), true);
         final StringBuilder log = new StringBuilder();
         boolean invalid = false;
         for (final Field field : fields) {

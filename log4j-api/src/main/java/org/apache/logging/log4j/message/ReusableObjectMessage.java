@@ -82,6 +82,16 @@ public class ReusableObjectMessage implements ReusableMessage {
     }
 
     /**
+     * Returns the object parameter.
+     *
+     * @return The object.
+     * @since 2.7
+     */
+    public Object getParameter() {
+        return obj;
+    }
+
+    /**
      * Returns the object as if it were a parameter.
      *
      * @return The object.

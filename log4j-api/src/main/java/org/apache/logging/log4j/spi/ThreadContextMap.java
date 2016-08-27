@@ -22,8 +22,48 @@ import java.util.Map;
  * Service provider interface to implement custom MDC behavior for {@link org.apache.logging.log4j.ThreadContext}.
  */
 public interface ThreadContextMap {
+
     /**
-     * Put a context value (the <code>o</code> parameter) as identified
+     * Clears the context.
+     */
+    void clear();
+
+    /**
+     * Determines if the key is in the context.
+     * @param key The key to locate.
+     * @return True if the key is in the context, false otherwise.
+     */
+    boolean containsKey(final String key);
+
+    /**
+     * Gets the context identified by the <code>key</code> parameter.
+     *
+     * <p>This method has no side effects.</p>
+     * @param key The key to locate.
+     * @return The value associated with the key or null.
+     */
+    String get(final String key);
+
+    /**
+     * Gets a non-{@code null} mutable copy of current thread's context Map.
+     * @return a mutable copy of the context.
+     */
+    Map<String, String> getCopy();
+
+    /**
+     * Returns an immutable view on the context Map or {@code null} if the context map is empty.
+     * @return an immutable context Map or {@code null}.
+     */
+    Map<String, String> getImmutableMapOrNull();
+
+    /**
+     * Returns true if the Map is empty.
+     * @return true if the Map is empty, false otherwise.
+     */
+    boolean isEmpty();
+
+    /**
+     * Puts a context value (the <code>o</code> parameter) as identified
      * with the <code>key</code> parameter into the current thread's
      * context map.
      *
@@ -35,48 +75,9 @@ public interface ThreadContextMap {
     void put(final String key, final String value);
 
     /**
-     * Get the context identified by the <code>key</code> parameter.
-     *
-     * <p>This method has no side effects.</p>
-     * @param key The key to locate.
-     * @return The value associated with the key or null.
-     */
-    String get(final String key);
-
-    /**
-     * Remove the the context identified by the <code>key</code>
+     * Removes the the context identified by the <code>key</code>
      * parameter.
      * @param key The key to remove.
      */
     void remove(final String key);
-
-    /**
-     * Clear the context.
-     */
-    void clear();
-
-    /**
-     * Determine if the key is in the context.
-     * @param key The key to locate.
-     * @return True if the key is in the context, false otherwise.
-     */
-    boolean containsKey(final String key);
-
-    /**
-     * Get a non-{@code null} mutable copy of current thread's context Map.
-     * @return a mutable copy of the context.
-     */
-    Map<String, String> getCopy();
-
-    /**
-     * Return an immutable view on the context Map or {@code null} if the context map is empty.
-     * @return an immutable context Map or {@code null}.
-     */
-    Map<String, String> getImmutableMapOrNull();
-
-    /**
-     * Returns true if the Map is empty.
-     * @return true if the Map is empty, false otherwise.
-     */
-    boolean isEmpty();
 }

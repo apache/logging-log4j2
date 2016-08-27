@@ -24,16 +24,17 @@ import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -44,15 +45,16 @@ import org.junit.Test;
 public class CsvLogEventLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
-        ThreadContext.clearAll();
     }
 
     @BeforeClass
     public static void setupClass() {
-        ThreadContext.clearAll();
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();

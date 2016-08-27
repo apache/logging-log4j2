@@ -34,14 +34,14 @@ public class Log4jYamlObjectMapper extends YAMLMapper {
      * Create a new instance using the {@link Log4jYamlModule}.
      */
     public Log4jYamlObjectMapper() {
-        this(false);
+        this(false, true);
     }
 
     /**
      * Create a new instance using the {@link Log4jYamlModule}.
      */
-    public Log4jYamlObjectMapper(final boolean encodeThreadContextAsList) {
-        this.registerModule(new Log4jYamlModule(encodeThreadContextAsList));
+    public Log4jYamlObjectMapper(final boolean encodeThreadContextAsList, final boolean includeStacktrace) {
+        this.registerModule(new Log4jYamlModule(encodeThreadContextAsList, includeStacktrace));
         this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 
