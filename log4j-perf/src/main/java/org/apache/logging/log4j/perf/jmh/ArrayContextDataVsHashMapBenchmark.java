@@ -23,7 +23,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.spi.ArrayContextData;
-import org.apache.logging.log4j.spi.OpenHashMapContextData;
+import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.openjdk.jmh.annotations.Benchmark;
