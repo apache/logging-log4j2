@@ -63,9 +63,9 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         final Level level = defaultThreshold == null ? Level.ERROR : defaultThreshold;
         return new DynamicThresholdFilter(key, map, level, onMatch, onMismatch);
     }
+    
     private Level defaultThreshold = Level.ERROR;
     private final String key;
-
     private Map<String, Level> levelMap = new HashMap<>();
 
     private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
