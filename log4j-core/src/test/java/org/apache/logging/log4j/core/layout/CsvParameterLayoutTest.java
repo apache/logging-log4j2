@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -49,19 +50,15 @@ import org.junit.runners.Parameterized;
 public class CsvParameterLayoutTest {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[][]{
-                        { new LoggerContextRule("csvParamsSync.xml"), },
-                        { new LoggerContextRule("csvParamsMixedAsync.xml"), },
-                }
-        );
+        return Arrays.asList(new Object[][] { { new LoggerContextRule("csvParamsSync.xml"), },
+                { new LoggerContextRule("csvParamsMixedAsync.xml"), }, });
     }
 
     @Rule
     public final LoggerContextRule init;
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     public CsvParameterLayoutTest(final LoggerContextRule contextRule) {
         this.init = contextRule;
@@ -86,11 +83,9 @@ public class CsvParameterLayoutTest {
         assertEquals("text/csv; charset=UTF-8", layout.getContentType());
     }
 
-    static void testLayoutNormalApi(final Logger root, final AbstractCsvLayout layout, final boolean messageApi) throws Exception {
-        final Map<String, Appender> appenders = root.getAppenders();
-        for (final Appender appender : appenders.values()) {
-            root.removeAppender(appender);
-        }
+    static void testLayoutNormalApi(final Logger root, final AbstractCsvLayout layout, final boolean messageApi)
+            throws Exception {
+        removeAppenders(root);
         // set up appender
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
@@ -107,10 +102,12 @@ public class CsvParameterLayoutTest {
         } else {
             logDebugNormalApi(root);
         }
-
-        // wait until background thread finished processing
-        appender.countDownLatch.await(10, TimeUnit.SECONDS);
-        assertEquals("Background thread did not finish processing: msg count", 4, appender.getMessages().size());
+        final int msgCount = 4;
+        if (appender.getMessages().size() < msgCount) {
+            // wait until background thread finished processing
+            appender.countDownLatch.await(10, TimeUnit.SECONDS);
+        }
+        assertEquals("Background thread did not finish processing: msg count", msgCount, appender.getMessages().size());
 
         // don't stop appender until background thread is done
         appender.stop();
@@ -121,6 +118,13 @@ public class CsvParameterLayoutTest {
         Assert.assertEquals("2" + d + "3", list.get(1));
         Assert.assertEquals("5" + d + "6", list.get(2));
         Assert.assertEquals("7" + d + "8" + d + "9" + d + "10", list.get(3));
+    }
+
+    private static void removeAppenders(final Logger root) {
+        final Map<String, Appender> appenders = root.getAppenders();
+        for (final Appender appender : appenders.values()) {
+            root.removeAppender(appender);
+        }
     }
 
     private static void logDebugNormalApi(final Logger root) {
@@ -154,4 +158,27 @@ public class CsvParameterLayoutTest {
         final Logger root = this.init.getRootLogger();
         testLayoutNormalApi(root, CsvParameterLayout.createLayout(CSVFormat.TDF), true);
     }
+
+    @Test
+    public void testLogJsonArgument() throws InterruptedException {
+        ListAppender appender = (ListAppender) init.getAppender("List");
+        appender.countDownLatch = new CountDownLatch(4);
+        appender.clear();
+        Logger logger = (Logger) LogManager.getRootLogger();
+        final String json = "{\"id\":10,\"name\":\"Alice\"}";
+        logger.error("log:{}", json);
+        // wait until background thread finished processing
+        final int msgCount = 1;
+        if (appender.getMessages().size() < msgCount) {
+            appender.countDownLatch.await(5, TimeUnit.SECONDS);
+        }
+        assertEquals("Background thread did not finish processing: msg count", msgCount, appender.getMessages().size());
+
+        // don't stop appender until background thread is done
+        appender.stop();
+        final List<String> list = appender.getMessages();
+        final String eventStr = list.get(0).toString();
+        Assert.assertTrue(eventStr, eventStr.contains(json));
+    }
+
 }
