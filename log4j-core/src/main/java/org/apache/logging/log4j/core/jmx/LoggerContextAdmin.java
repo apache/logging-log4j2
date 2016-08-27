@@ -132,7 +132,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
             LOGGER.debug("Opening config URL {}", configURL);
             configSource = new ConfigurationSource(configURL.openStream(), configURL);
         }
-        final Configuration config = ConfigurationFactory.getInstance().getConfiguration(configSource);
+        final Configuration config = ConfigurationFactory.getInstance().getConfiguration(loggerContext, configSource);
         loggerContext.start(config);
         LOGGER.debug("Completed remote request to reconfigure.");
     }
@@ -197,7 +197,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
         try {
             final InputStream in = new ByteArrayInputStream(configText.getBytes(charsetName));
             final ConfigurationSource source = new ConfigurationSource(in);
-            final Configuration updated = ConfigurationFactory.getInstance().getConfiguration(source);
+            final Configuration updated = ConfigurationFactory.getInstance().getConfiguration(loggerContext, source);
             loggerContext.start(updated);
             LOGGER.debug("Completed remote request to reconfigure from config text.");
         } catch (final Exception ex) {

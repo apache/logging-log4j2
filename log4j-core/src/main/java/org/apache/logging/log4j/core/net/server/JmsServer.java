@@ -107,6 +107,13 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
         jmsManager.release();
     }
 
+    @Override
+    public boolean stop(long timeout, TimeUnit timeUnit) {
+        stop();
+        return true;
+    }
+
+    @Override
     public boolean isStarted() {
         return state.get() == State.STARTED;
     }

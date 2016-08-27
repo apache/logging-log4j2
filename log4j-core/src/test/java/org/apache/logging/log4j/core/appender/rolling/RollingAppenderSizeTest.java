@@ -94,7 +94,7 @@ public class RollingAppenderSizeTest {
     public RollingAppenderSizeTest(final String configFile, final String fileExtension, final boolean createOnDemand) {
         this.fileExtension = fileExtension;
         this.createOnDemand = createOnDemand;
-        this.loggerContextRule = new LoggerContextRule(configFile);
+        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(configFile);
         this.chain = loggerContextRule.withCleanFoldersRule(DIR);
     }
 

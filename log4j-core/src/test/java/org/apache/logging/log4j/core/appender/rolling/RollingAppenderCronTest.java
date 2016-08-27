@@ -49,7 +49,7 @@ public class RollingAppenderCronTest {
     private static final String DIR = "target/rolling-cron";
     private static final String FILE = "target/rolling-cron/rollingtest.log";
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);

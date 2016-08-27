@@ -123,12 +123,14 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
     public static final String[] SUFFIXES = new String[] {".xml", "*"};
 
     /**
-     * Return the Configuration.
+     * Returns the Configuration.
+     * @param loggerContext The logger context.
      * @param source The InputSource.
      * @return The Configuration.
      */
-    public Configuration getConfiguration(InputSource source) {
-        return new XMLConfiguration(source, configFile);
+    @Override
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return new XmlConfiguration(loggerContext, source);
     }
 
     /**

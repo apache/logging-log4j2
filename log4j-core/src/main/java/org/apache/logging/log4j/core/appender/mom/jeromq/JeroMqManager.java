@@ -69,7 +69,7 @@ public class JeroMqManager extends AbstractManager {
     private final ZMQ.Socket publisher;
 
     private JeroMqManager(final String name, final JeroMqConfiguration config) {
-        super(name);
+        super(null, name);
         publisher = CONTEXT.socket(ZMQ.PUB);
         publisher.setAffinity(config.affinity);
         publisher.setBacklog(config.backlog);

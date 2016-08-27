@@ -199,9 +199,14 @@ public class ResolverUtil {
                         close(stream, newURL);
                     }
                 } else if (VFS.equals(url.getProtocol())) {
-                    final String path = urlPath.substring(1, urlPath.length() - packageName.length() - 2);
-                    final File file = new File(path);
-                    loadImplementationsInJar(test, packageName, file);
+                    final String containerPath = urlPath.substring(1,
+                                                  urlPath.length() - packageName.length() - 2);
+                    final File containerFile = new File(containerPath);
+                    if (containerFile.isDirectory()) {
+                        loadImplementationsInDirectory(test, packageName, new File(containerFile, packageName));
+                    } else {
+                        loadImplementationsInJar(test, packageName, containerFile);
+                    }
                 } else if (BUNDLE_RESOURCE.equals(url.getProtocol())) {
                     loadImplementationsInBundle(test, packageName);
                 } else {
