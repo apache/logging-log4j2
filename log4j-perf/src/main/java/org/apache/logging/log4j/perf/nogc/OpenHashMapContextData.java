@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.perf.nogc;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
 
