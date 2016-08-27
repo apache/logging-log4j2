@@ -14,8 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.perf.nogc;
 
+import org.apache.logging.log4j.spi.AbstractCopyOnWriteMutableThreadContext;
+import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
