@@ -22,10 +22,9 @@ import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.spi.AbstractCopyOnWriteMutableThreadContext;
-import org.apache.logging.log4j.spi.AbstractGarbageFreeMutableThreadContext;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.spi.MutableContextDataSupplier;
 
 /**
  * {@code ThreadContextDataInjector} contains a number of strategies for copying key-value pairs from the various
@@ -107,8 +106,8 @@ public class ThreadContextDataInjector  {
             // modified.
             copyProperties(props, reusable);
 
-            final ContextData immutableCopy = ((AbstractGarbageFreeMutableThreadContext)
-                    ThreadContextAccess.getThreadContextMap()).getContextData();
+            final ContextData immutableCopy = ((MutableContextDataSupplier) ThreadContextAccess.getThreadContextMap())
+                    .getMutableContextData();
             reusable.putAll(immutableCopy);
             return reusable;
         }
@@ -136,8 +135,8 @@ public class ThreadContextDataInjector  {
         public MutableContextData injectContextData(final List<Property> props, final MutableContextData reusable) {
             // If there are no configuration properties we want to just return the ThreadContext's MutableContextData:
             // it is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
-            final MutableContextData immutableCopy = ((AbstractCopyOnWriteMutableThreadContext)
-                    ThreadContextAccess.getThreadContextMap()).getContextData();
+            final MutableContextData immutableCopy =
+                    ((MutableContextDataSupplier) ThreadContextAccess.getThreadContextMap()).getMutableContextData();
             if (props == null || props.isEmpty()) {
                 return immutableCopy;
             }
