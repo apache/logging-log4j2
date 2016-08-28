@@ -65,7 +65,7 @@ public class JsonCompleteFileAppenderTest {
         final String logMsg = "Message flushed with immediate flush=true";
         logger.info(logMsg);
         logger.error(logMsg, new IllegalArgumentException("badarg"));
-        this.loggerContextRule.getContext().stop(); // stops async thread
+        this.loggerContextRule.getLoggerContext().stop(); // stops async thread
         String line1;
         String line2;
         String line3;

@@ -69,7 +69,7 @@ public class LoggerUpdateTest {
 
     @Test
     public void testUpdateLoggersPropertyListeners() throws Exception {
-        final LoggerContext ctx = context.getContext();
+        final LoggerContext ctx = context.getLoggerContext();
         ctx.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {

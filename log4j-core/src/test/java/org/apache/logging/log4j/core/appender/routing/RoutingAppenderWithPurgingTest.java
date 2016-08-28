@@ -71,7 +71,7 @@ public class RoutingAppenderWithPurgingTest {
     @After
     public void tearDown() throws Exception {
         this.app.clear();
-        this.loggerContextRule.getContext().stop();
+        this.loggerContextRule.getLoggerContext().stop();
     }
 
     @Test(timeout = 5000)

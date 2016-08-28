@@ -47,7 +47,7 @@ public class ShutdownCallbackRegistryTest {
 
     @Test
     public void testShutdownCallbackRegistry() throws Exception {
-        final LoggerContext context = ctx.getContext();
+        final LoggerContext context = ctx.getLoggerContext();
         assertTrue("LoggerContext should be started", context.isStarted());
         assertThat(Registry.CALLBACKS, hasSize(1));
         Registry.shutdown();
