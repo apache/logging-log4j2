@@ -61,7 +61,6 @@ public class NoSqlDatabaseManagerTest {
     public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule(); 
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() {
         this.provider = createStrictMock(NoSqlProvider.class);
         this.connection = createStrictMock(NoSqlConnection.class);
