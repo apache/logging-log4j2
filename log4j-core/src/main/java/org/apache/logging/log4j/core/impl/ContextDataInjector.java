@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import java.util.List;
 
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.config.Property;
 
 /**
@@ -47,6 +48,10 @@ public interface ContextDataInjector {
     /**
      * Returns a {@code MutableContextData} object initialized with the specified properties and the appropriate
      * context data. The returned value may be the specified parameter or a different object.
+     * <p>
+     * Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
+     * underlying context data will not be reflected in the returned object.
+     * </p>
      *
      * @param properties Properties from the log4j configuration to be added to the resulting ContextData. May be
      *          {@code null} or empty
@@ -55,4 +60,15 @@ public interface ContextDataInjector {
      *          context data. The returned value may be the specified parameter or a different object.
      */
     MutableContextData injectContextData(final List<Property> properties, final MutableContextData reusable);
+
+    /**
+     * Returns a {@code ContextData} object reflecting the current state of the context.
+     * <p>
+     * Thread-safety note: The returned object can only be safely used <em>in the current thread</em>. Changes in the
+     * underlying context may or may not be reflected in the returned object, depending on the context data source and
+     * the implementation of this method. It is not safe to pass the returned object to another thread.
+     * </p>
+     * @return a {@code ContextData} object reflecting the current state of the context
+     */
+    ContextData rawContextData();
 }
