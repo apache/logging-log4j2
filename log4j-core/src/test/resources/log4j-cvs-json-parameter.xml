@@ -14,7 +14,6 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
 -->
 <Configuration status="warn" name="CsvJsonParameterLayoutFileAppenderTest">
   <Appenders>
@@ -25,7 +24,6 @@
   </Appenders>
 
   <Loggers>
-
     <Root level="error">
       <AppenderRef ref="File"/>
     </Root>
