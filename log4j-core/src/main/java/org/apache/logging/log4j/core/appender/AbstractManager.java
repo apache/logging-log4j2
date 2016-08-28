@@ -30,7 +30,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Abstract base class used to register managers.
  */
-public abstract class AbstractManager {
+public abstract class AbstractManager implements AutoCloseable {
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -61,6 +61,7 @@ public abstract class AbstractManager {
     /**
      * Called to signify that this Manager is no longer required by an Appender.
      */
+    @Override
     public void close() {
         LOCK.lock();
         try {
