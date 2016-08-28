@@ -78,7 +78,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createJsonLayout() {
-        return JsonLayout.createLayout(null, true, true, false, false, false, false, null, null, null);
+        return JsonLayout.createLayout(null, true, true, false, false, false, false, null, null, null, true);
     }
 
     protected abstract Layout<? extends Serializable> createLayout();
@@ -88,7 +88,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createXmlLayout() {
-        return XmlLayout.createLayout(true, true, false, false, null);
+        return XmlLayout.createLayout(true, true, false, false, null, true);
     }
 
     @After
