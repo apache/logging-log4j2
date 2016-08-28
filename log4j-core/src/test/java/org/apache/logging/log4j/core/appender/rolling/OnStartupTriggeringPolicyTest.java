@@ -87,7 +87,7 @@ public class OnStartupTriggeringPolicyTest {
             assertTrue("Missing: " + rolled.toString() + ", files on disk = " + files, Files.exists(rolled));
             assertEquals(rolled.toString(), size, Files.size(rolled));
         } finally {
-            manager.release();
+            manager.close();
         }
     }
 

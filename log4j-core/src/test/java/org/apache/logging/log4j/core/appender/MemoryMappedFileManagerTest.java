@@ -54,7 +54,7 @@ public class MemoryMappedFileManagerTest {
             manager.write(msg, 0, msg.length, false);
         }
 
-        manager.release();
+        manager.close();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
@@ -87,7 +87,7 @@ public class MemoryMappedFileManagerTest {
                 isAppend, isForce, MemoryMappedFileManager.DEFAULT_REGION_LENGTH, null, null);
 
         manager.write(new byte[initialLength], 0, initialLength);
-        manager.release();
+        manager.close();
         final int expected = initialLength * 2;
         assertEquals("appended, not overwritten", expected, file.length());
     }

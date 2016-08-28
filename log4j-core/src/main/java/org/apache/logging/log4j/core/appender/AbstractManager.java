@@ -59,6 +59,24 @@ public abstract class AbstractManager {
     }
 
     /**
+     * Called to signify that this Manager is no longer required by an Appender.
+     */
+    public void close() {
+        LOCK.lock();
+        try {
+            --count;
+            if (count <= 0) {
+                MAP.remove(name);
+                LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
+                releaseSub();
+            }
+        } finally {
+            LOCK.unlock();
+        }
+    }
+
+
+    /**
      * Retrieves a Manager if it has been previously created or creates a new Manager.
      * @param name The name of the Manager to retrieve.
      * @param factory The Factory to use to create the Manager.
@@ -133,19 +151,11 @@ public abstract class AbstractManager {
 
     /**
      * Called to signify that this Manager is no longer required by an Appender.
+     * @deprecated Use {@link #close()}.
      */
+    @Deprecated
     public void release() {
-        LOCK.lock();
-        try {
-            --count;
-            if (count <= 0) {
-                MAP.remove(name);
-                LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
-                releaseSub();
-            }
-        } finally {
-            LOCK.unlock();
-        }
+        close();
     }
 
     /**

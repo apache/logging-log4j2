@@ -117,6 +117,6 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
     @Override
     public void stop() {
         super.stop();
-        manager.release();
+        manager.close();
     }
 }

@@ -136,8 +136,8 @@ public class JdbcAppenderBenchmark {
     public void tearDown() throws SQLException {
         final LoggerContext context = LoggerContext.getContext(false);
         try {
-            ((JdbcAppender) context.getConfiguration().getAppender("H2Appender")).getManager().release();
-            ((JdbcAppender) context.getConfiguration().getAppender("HSQLDBAppender")).getManager().release();
+            ((JdbcAppender) context.getConfiguration().getAppender("H2Appender")).getManager().close();
+            ((JdbcAppender) context.getConfiguration().getAppender("HSQLDBAppender")).getManager().close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             // context.reconfigure();

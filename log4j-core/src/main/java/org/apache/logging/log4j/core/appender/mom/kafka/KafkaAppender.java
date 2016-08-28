@@ -102,7 +102,7 @@ public final class KafkaAppender extends AbstractAppender {
     @Override
     public void stop() {
         super.stop();
-        manager.release();
+        manager.close();
     }
 
     @Override

@@ -90,7 +90,7 @@ public class NoSqlDatabaseManagerTest {
             manager.commitAndClose();
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }
@@ -120,7 +120,7 @@ public class NoSqlDatabaseManagerTest {
             verify(event);
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }
@@ -158,7 +158,7 @@ public class NoSqlDatabaseManagerTest {
             }
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }
@@ -247,7 +247,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection, event, message);
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }
@@ -384,7 +384,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection, event, message);
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }
@@ -583,7 +583,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection, event, message);
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }

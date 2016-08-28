@@ -58,7 +58,7 @@ public class JndiLookup extends AbstractLookup {
             LOGGER.warn(LOOKUP, "Error looking up JNDI resource [{}].", jndiName, e);
             return null;
         } finally {
-            jndiManager.release();
+            jndiManager.close();
         }
     }
 
