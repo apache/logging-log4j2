@@ -242,7 +242,7 @@ public class RollingFileManager extends FileManager {
             final RolloverDescription descriptor = strategy.rollover(this);
             if (descriptor != null) {
                 writeFooter();
-                close();
+                closeOutputStream();
                 if (descriptor.getSynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing synchronous {}", descriptor.getSynchronous());
                     try {

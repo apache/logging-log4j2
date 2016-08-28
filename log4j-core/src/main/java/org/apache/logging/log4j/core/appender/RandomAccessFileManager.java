@@ -98,7 +98,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
     }
 
     @Override
-    public synchronized void close() {
+    public synchronized void closeOutputStream() {
         flush();
         try {
             randomAccessFile.close();

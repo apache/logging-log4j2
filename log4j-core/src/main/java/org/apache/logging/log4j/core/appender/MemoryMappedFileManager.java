@@ -156,7 +156,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    public synchronized void close() {
+    public synchronized void closeOutputStream() {
         final long position = mappedBuffer.position();
         final long length = mappingOffset + position;
         try {

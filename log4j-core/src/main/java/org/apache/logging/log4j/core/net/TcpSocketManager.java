@@ -147,8 +147,8 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     @Override
-    protected synchronized void close() {
-        super.close();
+    protected synchronized void closeOutputStream() {
+        super.closeOutputStream();
         if (connector != null) {
             connector.shutdown();
             connector.interrupt();
