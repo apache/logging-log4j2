@@ -34,10 +34,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.impl.MutableContextData;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
@@ -119,12 +117,7 @@ public class ThreadContextMapFilter extends MapFilter {
     }
 
     private ContextData currentContextData() {
-        return injector.injectContextData(null, reusableInstance());
-    }
-
-    private MutableContextData reusableInstance() {
-        // TODO if (Constants.ENABLE_THREADLOCALS) return thread-local instance
-        return ContextDataFactory.createContextData(); // creates temporary object
+        return injector.rawContextData();
     }
 
     @Override

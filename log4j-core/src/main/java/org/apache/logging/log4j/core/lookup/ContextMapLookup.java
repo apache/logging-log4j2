@@ -20,10 +20,8 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.impl.MutableContextData;
 
 /**
  * Looks up keys from the context. By default this is the {@link ThreadContext}, but users may
@@ -46,12 +44,7 @@ public class ContextMapLookup implements StrLookup {
     }
 
     private ContextData currentContextData() {
-        return injector.injectContextData(null, reusableInstance());
-    }
-
-    private MutableContextData reusableInstance() {
-        // TODO if (Constants.ENABLE_THREADLOCALS) return thread-local instance
-        return ContextDataFactory.createContextData(); // creates temporary object
+        return injector.rawContextData();
     }
 
     /**
