@@ -63,7 +63,7 @@ public class CsvJsonParameterLayoutFileAppenderTest {
                 count0s++;
             }
         }
-        Assert.assertEquals("File contains at least one 0x00 byte at indices " + sb, 0, count0s);
+        Assert.assertEquals("File contains " + count0s + " 0x00 byte at indices " + sb, 0, count0s);
         final List<String> readLines = Files.readLines(file, Charset.defaultCharset());
         final String actual = readLines.get(0);
         Assert.assertTrue(actual, actual.contains(json));
