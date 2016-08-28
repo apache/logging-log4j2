@@ -31,7 +31,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -158,12 +157,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     }
 
     private ContextData currentContextData() {
-        return injector.injectContextData(null, reusableInstance());
-    }
-
-    private MutableContextData reusableInstance() {
-        // TODO if (Constants.ENABLE_THREADLOCALS) return thread-local instance
-        return ContextDataFactory.createContextData(); // creates temporary object
+        return injector.rawContextData();
     }
 
     @Override

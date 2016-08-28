@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import java.util.List;
 
+import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
@@ -30,8 +31,13 @@ import org.apache.logging.log4j.spi.MutableContextData;
  * </p><p>
  * In some asynchronous models, work may be delegated to several threads, while conceptually this work shares the same
  * context. In such models, storing context data in {@code ThreadLocal} variables is not convenient or desirable.
- * By specifying a custom {@code ContextDataInjectorFactory}, users can initialize log events with context data from
- * any arbitrary context.
+ * Users can configure the {@code ContextDataInjectorFactory} to provide custom {@code ContextDataInjector} objects,
+ * in order to initialize log events with context data from any arbitrary context.
+ * </p><p>
+ * When providing a custom {@code ContextDataInjector}, be aware that the {@code ContextDataFactory} may be invoked
+ * multiple times by the various components in Log4j that need access to context data.
+ * This includes the object(s) that populate log events, but also various lookups and filters that look at
+ * context data to determine whether an event should be logged.
  * </p>
  *
  * @see ContextData
@@ -44,11 +50,27 @@ public interface ContextDataInjector {
     /**
      * Returns a {@code MutableContextData} object initialized with the specified properties and the appropriate
      * context data. The returned value may be the specified parameter or a different object.
+     * <p>
+     * Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
+     * underlying context data will not be reflected in the returned object.
+     * </p>
      *
-     * @param properties Properties from the log4j configuration to be added to the resulting ContextData
+     * @param properties Properties from the log4j configuration to be added to the resulting ContextData. May be
+     *          {@code null} or empty
      * @param reusable a {@code MutableContextData} instance that may be reused to avoid creating temporary objects
      * @return a {@code MutableContextData} instance initialized with the specified properties and the appropriate
      *          context data. The returned value may be the specified parameter or a different object.
      */
     MutableContextData injectContextData(final List<Property> properties, final MutableContextData reusable);
+
+    /**
+     * Returns a {@code ContextData} object reflecting the current state of the context.
+     * <p>
+     * Thread-safety note: The returned object can only be safely used <em>in the current thread</em>. Changes in the
+     * underlying context may or may not be reflected in the returned object, depending on the context data source and
+     * the implementation of this method. It is not safe to pass the returned object to another thread.
+     * </p>
+     * @return a {@code ContextData} object reflecting the current state of the context
+     */
+    ContextData rawContextData();
 }

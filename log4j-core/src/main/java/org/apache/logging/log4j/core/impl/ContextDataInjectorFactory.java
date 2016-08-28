@@ -50,6 +50,12 @@ public class ContextDataInjectorFactory {
      * <p>
      * Users may use this system property to specify the fully qualified class name of a class that implements the
      * {@code ContextDataInjector} interface.
+     * </p><p>
+     * When providing a custom {@code ContextDataInjector}, be aware that this method may be invoked multiple times by
+     * the various components in Log4j that need access to context data.
+     * This includes the object(s) that populate log events, but also various lookups and filters that look at
+     * context data to determine whether an event should be logged.
+     * </p>
      *
      * @return a ContextDataInjector that populates the {@code ContextData} of all {@code LogEvent} objects
      */

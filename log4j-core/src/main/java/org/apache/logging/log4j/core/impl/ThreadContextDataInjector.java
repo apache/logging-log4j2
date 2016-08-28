@@ -69,6 +69,14 @@ public class ThreadContextDataInjector  {
             return reusable;
         }
 
+        @Override
+        public ContextData rawContextData() {
+            // TODO LOG4J2-1349: DefaultThreadContextMap itself implements the ContextData interface
+            final MutableContextData result = ContextDataFactory.createContextData();
+            copyThreadContextMap(ThreadContext.getImmutableContext(), result);
+            return result;
+        }
+
         /**
          * Copies key-value pairs from the specified map into the specified {@code MutableContextData}.
          *
@@ -111,6 +119,13 @@ public class ThreadContextDataInjector  {
             reusable.putAll(immutableCopy);
             return reusable;
         }
+
+        @Override
+        public ContextData rawContextData() {
+            // TODO LOG4J2-1349
+            //return ((AbstractGarbageFreeMutableThreadContext) ThreadContext.getThreadContextMap()).getContextData();
+            return null;
+        }
     }
 
     /**
@@ -145,6 +160,13 @@ public class ThreadContextDataInjector  {
             copyProperties(props, reusable);
             reusable.putAll(immutableCopy);
             return reusable;
+        }
+
+        @Override
+        public ContextData rawContextData() {
+            // TODO LOG4J2-1349
+            //return ((AbstractCopyOnWriteMutableThreadContext) ThreadContext.getThreadContextMap()).getContextData();
+            return null;
         }
     }
 

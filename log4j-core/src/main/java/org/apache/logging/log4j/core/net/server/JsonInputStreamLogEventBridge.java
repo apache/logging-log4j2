@@ -40,7 +40,7 @@ public class JsonInputStreamLogEventBridge extends InputStreamLogEventBridge {
     }
 
     public JsonInputStreamLogEventBridge(final int bufferSize, final Charset charset) {
-        super(new Log4jJsonObjectMapper(THREAD_CONTEXT_MAP_AS_LIST), bufferSize, charset,
+        super(new Log4jJsonObjectMapper(THREAD_CONTEXT_MAP_AS_LIST, true), bufferSize, charset,
                 String.valueOf(EVENT_END_MARKER));
     }
 
