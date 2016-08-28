@@ -16,12 +16,12 @@
  */
 package org.apache.log4j.pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
+import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
 
@@ -58,6 +58,6 @@ public final class Log4j1NdcPatternConverter extends LogEventPatternConverter {
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         List<String> ndc = event.getContextStack().asList();
-        toAppendTo.append(StringUtils.join(ndc, ' '));
+        toAppendTo.append(Strings.join(ndc, ' '));
     }
 }
