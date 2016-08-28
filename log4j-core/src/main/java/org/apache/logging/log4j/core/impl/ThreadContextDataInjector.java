@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.spi.MutableContextDataSupplier;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**
  * {@code ThreadContextDataInjector} contains a number of strategies for copying key-value pairs from the various
@@ -71,7 +72,10 @@ public class ThreadContextDataInjector  {
 
         @Override
         public ContextData rawContextData() {
-            // TODO LOG4J2-1349: DefaultThreadContextMap itself implements the ContextData interface
+            final ThreadContextMap map = ThreadContextAccess.getThreadContextMap();
+            if (map instanceof ContextData) {
+                return (ContextData) map;
+            }
             final MutableContextData result = ContextDataFactory.createContextData();
             copyThreadContextMap(ThreadContext.getImmutableContext(), result);
             return result;
@@ -122,9 +126,7 @@ public class ThreadContextDataInjector  {
 
         @Override
         public ContextData rawContextData() {
-            // TODO LOG4J2-1349
-            //return ((AbstractGarbageFreeMutableThreadContext) ThreadContext.getThreadContextMap()).getContextData();
-            return null;
+            return ((MutableContextDataSupplier) ThreadContextAccess.getThreadContextMap()).getMutableContextData();
         }
     }
 
@@ -164,9 +166,7 @@ public class ThreadContextDataInjector  {
 
         @Override
         public ContextData rawContextData() {
-            // TODO LOG4J2-1349
-            //return ((AbstractCopyOnWriteMutableThreadContext) ThreadContext.getThreadContextMap()).getContextData();
-            return null;
+            return ((MutableContextDataSupplier) ThreadContextAccess.getThreadContextMap()).getMutableContextData();
         }
     }
 
