@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -61,15 +62,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component scripts;
     private final Class<T> clazz;
     private ConfigurationSource source;
-    private int monitorInterval = 0;
-    private Level level = null;
-    private String verbosity = null;
-    private String destination = null;
-    private String packages = null;
-    private String shutdownFlag = null;
-    private String advertiser = null;
-
-    private String name = null;
+    private int monitorInterval;
+    private Level level;
+    private String verbosity;
+    private String destination;
+    private String packages;
+    private String shutdownFlag;
+    private String advertiser;
+    private LoggerContext loggerContext;
+    private String name;
 
     @SuppressWarnings("unchecked")
     public DefaultConfigurationBuilder() {
@@ -160,8 +161,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
             }
-            final Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
-            configuration = constructor.newInstance(source, root);
+            final Constructor<T> constructor = clazz.getConstructor(LoggerContext.class, ConfigurationSource.class, Component.class);
+            configuration = constructor.newInstance(loggerContext, source, root);
             configuration.setMonitorInterval(monitorInterval);
             configuration.getRootNode().getAttributes().putAll(root.getAttributes());
             if (name != null) {
@@ -328,7 +329,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger", false);
+        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger");
     }
 
     @Override
@@ -338,7 +339,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final String level) {
-        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger", false);
+        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
     }
 
     @Override
@@ -348,7 +349,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot", false);
+        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot");
     }
 
     @Override
@@ -358,7 +359,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot", false);
+        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot");
     }
 
     @Override
@@ -408,7 +409,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newLogger(final String name, final Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString(), true);
+        return new DefaultLoggerComponentBuilder(this, name, level.toString());
     }
 
     @Override
@@ -418,7 +419,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newLogger(final String name, final String level) {
-        return new DefaultLoggerComponentBuilder(this, name, level, true);
+        return new DefaultLoggerComponentBuilder(this, name, level);
     }
 
     @Override
@@ -428,7 +429,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newRootLogger(final Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString(), true);
+        return new DefaultRootLoggerComponentBuilder(this, level.toString());
     }
 
     @Override
@@ -438,7 +439,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newRootLogger(final String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level, true);
+        return new DefaultRootLoggerComponentBuilder(this, level);
     }
 
     @Override
@@ -513,8 +514,14 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
+    public void setLoggerContext(LoggerContext loggerContext) {
+        this.loggerContext = loggerContext;
+    }
+
+    @Override
     public ConfigurationBuilder<T> addRootProperty(final String key, final String value) {
         root.getAttributes().put(key, value);
         return this;
     }
+
 }

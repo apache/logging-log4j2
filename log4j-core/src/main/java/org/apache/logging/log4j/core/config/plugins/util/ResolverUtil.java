@@ -84,6 +84,8 @@ public class ResolverUtil {
 
     private static final String VFSZIP = "vfszip";
 
+    private static final String VFS = "vfs";
+
     private static final String BUNDLE_RESOURCE = "bundleresource";
 
     /** The set of matches being accumulated. */
@@ -196,6 +198,15 @@ public class ResolverUtil {
                     } finally {
                         close(stream, newURL);
                     }
+                } else if (VFS.equals(url.getProtocol())) {
+                    final String containerPath = urlPath.substring(1,
+                                                  urlPath.length() - packageName.length() - 2);
+                    final File containerFile = new File(containerPath);
+                    if (containerFile.isDirectory()) {
+                        loadImplementationsInDirectory(test, packageName, new File(containerFile, packageName));
+                    } else {
+                        loadImplementationsInJar(test, packageName, containerFile);
+                    }
                 } else if (BUNDLE_RESOURCE.equals(url.getProtocol())) {
                     loadImplementationsInBundle(test, packageName);
                 } else {
@@ -232,7 +243,7 @@ public class ResolverUtil {
         // LOG4J2-445
         // Finally, decide whether to URL-decode the file name or not...
         final String protocol = url.getProtocol();
-        final List<String> neverDecode = Arrays.asList(VFSZIP, BUNDLE_RESOURCE);
+        final List<String> neverDecode = Arrays.asList(VFS, VFSZIP, BUNDLE_RESOURCE);
         if (neverDecode.contains(protocol)) {
             return urlPath;
         }

@@ -31,6 +31,7 @@ import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap2;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -149,7 +150,7 @@ public final class ThreadContext {
 
     /**
      * An empty iterator. Since Java 1.7 added the Collections.emptyIterator() method, we have to make do.
-     * 
+     *
      * @param <E> the type of the empty iterator
      */
     private static class EmptyIterator<E> implements Iterator<E> {
@@ -260,7 +261,7 @@ public final class ThreadContext {
      * <p>
      * If the current thread does not have a context map it is created as a side effect.
      * </p>
-     * 
+     *
      * @param key The key name.
      * @param value The key value.
      */
@@ -278,7 +279,13 @@ public final class ThreadContext {
      * @since 2.7
      */
     public static void putAll(final Map<String, String> m) {
-        contextMap.putAll(m);
+        if (contextMap instanceof ThreadContextMap2) {
+            ((ThreadContextMap2) contextMap).putAll(m);
+        } else {
+            for (final Map.Entry<String, String> entry: m.entrySet()) {
+                contextMap.put(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     /**
@@ -287,7 +294,7 @@ public final class ThreadContext {
      * <p>
      * This method has no side effects.
      * </p>
-     * 
+     *
      * @param key The key to locate.
      * @return The value associated with the key or null.
      */
@@ -297,7 +304,7 @@ public final class ThreadContext {
 
     /**
      * Removes the context value identified by the <code>key</code> parameter.
-     * 
+     *
      * @param key The key to remove.
      */
     public static void remove(final String key) {
@@ -321,7 +328,7 @@ public final class ThreadContext {
 
     /**
      * Determines if the key is in the context.
-     * 
+     *
      * @param key The key to locate.
      * @return True if the key is in the context, false otherwise.
      */
@@ -331,7 +338,7 @@ public final class ThreadContext {
 
     /**
      * Returns a mutable copy of current thread's context Map.
-     * 
+     *
      * @return a mutable copy of the context.
      */
     public static Map<String, String> getContext() {
@@ -340,7 +347,7 @@ public final class ThreadContext {
 
     /**
      * Returns an immutable view of the current thread's context Map.
-     * 
+     *
      * @return An immutable view of the ThreadContext Map.
      */
     public static Map<String, String> getImmutableContext() {
@@ -350,7 +357,7 @@ public final class ThreadContext {
 
     /**
      * Returns true if the Map is empty.
-     * 
+     *
      * @return true if the Map is empty, false otherwise.
      */
     public static boolean isEmpty() {
@@ -366,7 +373,7 @@ public final class ThreadContext {
 
     /**
      * Returns a copy of this thread's stack.
-     * 
+     *
      * @return A copy of this thread's stack.
      */
     public static ContextStack cloneStack() {
@@ -375,7 +382,7 @@ public final class ThreadContext {
 
     /**
      * Gets an immutable copy of this current thread's context stack.
-     * 
+     *
      * @return an immutable copy of the ThreadContext stack.
      */
     public static ContextStack getImmutableStack() {
@@ -385,7 +392,7 @@ public final class ThreadContext {
 
     /**
      * Sets this thread's stack.
-     * 
+     *
      * @param stack The stack to use.
      */
     public static void setStack(final Collection<String> stack) {
@@ -398,7 +405,7 @@ public final class ThreadContext {
 
     /**
      * Gets the current nesting depth of this thread's stack.
-     * 
+     *
      * @return the number of items in the stack.
      *
      * @see #trim
@@ -498,13 +505,13 @@ public final class ThreadContext {
      * <p>
      * For example, the combination
      * </p>
-     * 
+     *
      * <pre>
      * void foo() {
      *     final int depth = ThreadContext.getDepth();
-     * 
+     *
      *     // ... complex sequence of calls
-     * 
+     *
      *     ThreadContext.trim(depth);
      * }
      * </pre>
@@ -527,7 +534,7 @@ public final class ThreadContext {
 
         /**
          * Returns the element at the top of the stack.
-         * 
+         *
          * @return The element at the top of the stack.
          * @throws java.util.NoSuchElementException if the stack is empty.
          */
@@ -535,42 +542,42 @@ public final class ThreadContext {
 
         /**
          * Returns the element at the top of the stack without removing it or null if the stack is empty.
-         * 
+         *
          * @return the element at the top of the stack or null if the stack is empty.
          */
         String peek();
 
         /**
          * Pushes an element onto the stack.
-         * 
+         *
          * @param message The element to add.
          */
         void push(String message);
 
         /**
          * Returns the number of elements in the stack.
-         * 
+         *
          * @return the number of elements in the stack.
          */
         int getDepth();
 
         /**
          * Returns all the elements in the stack in a List.
-         * 
+         *
          * @return all the elements in the stack in a List.
          */
         List<String> asList();
 
         /**
          * Trims elements from the end of the stack.
-         * 
+         *
          * @param depth The maximum number of items in the stack to keep.
          */
         void trim(int depth);
 
         /**
          * Returns a copy of the ContextStack.
-         * 
+         *
          * @return a copy of the ContextStack.
          */
         ContextStack copy();
@@ -578,7 +585,7 @@ public final class ThreadContext {
         /**
          * Returns a ContextStack with the same contents as this ContextStack or {@code null}. Attempts to modify the
          * returned stack may or may not throw an exception, but will not affect the contents of this ContextStack.
-         * 
+         *
          * @return a ContextStack with the same contents as this ContextStack or {@code null}.
          */
         ContextStack getImmutableStackOrNull();

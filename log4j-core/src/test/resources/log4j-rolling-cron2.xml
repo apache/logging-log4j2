@@ -44,7 +44,7 @@
   <Loggers>
     <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
       <AppenderRef ref="RollingFile"/>
-    </Logger>>
+    </Logger>
 
     <Root level="error">
       <AppenderRef ref="STDOUT"/>

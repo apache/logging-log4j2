@@ -179,7 +179,6 @@ public class PluginRegistry {
                 final String className = entry.getClassName();
                 try {
                     final Class<?> clazz = loader.loadClass(className);
-                    @SuppressWarnings({"unchecked","rawtypes"})
                     final PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
                     types.add(type);
                     ++pluginCount;

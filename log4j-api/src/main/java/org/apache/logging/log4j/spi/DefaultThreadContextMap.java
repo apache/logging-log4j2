@@ -28,8 +28,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * expected that the Map will be passed to many more log events than the number of keys it contains the performance
  * should be much better than if the Map was copied for each event.
  */
-public class DefaultThreadContextMap implements ThreadContextMap {
-    
+public class DefaultThreadContextMap implements ThreadContextMap2 {
+
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.
@@ -86,7 +86,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         }
         localMap.set(Collections.unmodifiableMap(map));
     }
-    
+
     @Override
     public String get(final String key) {
         final Map<String, String> map = localMap.get();

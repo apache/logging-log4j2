@@ -39,7 +39,7 @@ public class JndiManager extends AbstractManager {
     private final Context context;
 
     private JndiManager(final String name, final Context context) {
-        super(name);
+        super(null, name);
         this.context = context;
     }
 

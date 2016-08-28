@@ -205,7 +205,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         }
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
-                fileName, filePattern, isAppend, isFlush, bufferSize, policy, strategy, advertiseURI, layout);
+                fileName, filePattern, isAppend, isFlush, bufferSize, policy, strategy, advertiseURI, layout, config);
         if (manager == null) {
             return null;
         }

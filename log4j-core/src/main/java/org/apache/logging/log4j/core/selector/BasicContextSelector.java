@@ -53,6 +53,7 @@ public class BasicContextSelector implements ContextSelector {
 
     @Override
     public void removeContext(final LoggerContext context) {
+        // does not remove anything
     }
 
     @Override

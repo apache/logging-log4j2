@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.util.Strings;
 
@@ -124,7 +125,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             lockTimeoutRetryCount);
         this.worker.start();
         this.secretKey = secretKey;
-        this.threadPool = Executors.newCachedThreadPool(new DaemonThreadFactory());
+        this.threadPool = Executors.newCachedThreadPool(Log4jThreadFactory.createDaemonThreadFactory("Flume"));
         this.lockTimeoutRetryCount = lockTimeoutRetryCount;
     }
 
@@ -821,33 +822,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
             }
         }
 
-    }
-
-    /**
-     * Factory that creates Daemon threads that can be properly shut down.
-     */
-    private static class DaemonThreadFactory implements ThreadFactory {
-        private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
-        private final ThreadGroup group;
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private final String namePrefix;
-
-        public DaemonThreadFactory() {
-            final SecurityManager securityManager = System.getSecurityManager();
-            group = securityManager != null ? securityManager.getThreadGroup() :
-                Thread.currentThread().getThreadGroup();
-            namePrefix = "DaemonPool-" + POOL_NUMBER.getAndIncrement() + "-thread-";
-        }
-
-        @Override
-        public Thread newThread(final Runnable r) {
-            final Thread thread = new Log4jThread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-            thread.setDaemon(true);
-            if (thread.getPriority() != Thread.NORM_PRIORITY) {
-                thread.setPriority(Thread.NORM_PRIORITY);
-            }
-            return thread;
-        }
     }
 
     /**

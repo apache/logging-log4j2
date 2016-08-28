@@ -164,7 +164,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             layout = PatternLayout.createDefaultLayout();
         }
         final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-                fileName, isAppend, isFlush, bufferSize, advertiseURI, layout
+                fileName, isAppend, isFlush, bufferSize, advertiseURI, layout, null
         );
         if (manager == null) {
             return null;

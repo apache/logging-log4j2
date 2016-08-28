@@ -221,7 +221,7 @@
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <osgi.api.version>4.3.1</osgi.api.version>
-    <activemq.version>5.13.4</activemq.version>
+    <activemq.version>5.14.0</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
   </properties>
@@ -369,6 +369,16 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-web</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api-scala_2.10</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api-scala_2.11</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -1219,6 +1229,8 @@
     <module>log4j-iostreams</module>
     <module>log4j-jul</module>
     <module>log4j-liquibase</module>
+    <module>log4j-api-scala_2.10</module>
+    <module>log4j-api-scala_2.11</module>
   </modules>
   <profiles>
     <profile>

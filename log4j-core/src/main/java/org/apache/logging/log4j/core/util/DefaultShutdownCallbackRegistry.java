@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Logger;
@@ -161,6 +162,12 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
                 state.set(State.STOPPED);
             }
         }
+    }
+
+    @Override
+    public boolean stop(long timeout, TimeUnit timeUnit) {
+        stop();
+        return true;
     }
 
     private void removeShutdownHook() {

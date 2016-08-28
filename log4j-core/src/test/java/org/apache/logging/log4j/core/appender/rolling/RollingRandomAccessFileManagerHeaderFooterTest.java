@@ -39,10 +39,11 @@ import org.junit.rules.RuleChain;
  */
 public class RollingRandomAccessFileManagerHeaderFooterTest {
 
+    private static final String CONFIG = "RollingRandomAccessFileAppenderHeaderFooterTest.xml";
     private static final String DIR = "target/RollingRandomAccessFileAppenderHeaderFooterTest/";
     private static final String LOGFILE = "target/RollingRandomAccessFileAppenderHeaderFooterTest.log";
 
-    public LoggerContextRule loggerContextRule = new LoggerContextRule("RollingRandomAccessFileAppenderHeaderFooterTest.xml");
+    public LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
