@@ -77,17 +77,14 @@ public class OnStartupTriggeringPolicyTest {
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
                 configuration);
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
-        final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
-                policy, strategy, null, layout, 8192, true, false, configuration);
-        try {
+        try (final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
+                policy, strategy, null, layout, 8192, true, false, configuration)) {
             manager.initialize();
             String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());
             assertTrue(target.toString() + ", files = " + files, Files.exists(target));
             assertEquals(target.toString(), 0, Files.size(target));
             assertTrue("Missing: " + rolled.toString() + ", files on disk = " + files, Files.exists(rolled));
             assertEquals(rolled.toString(), size, Files.size(rolled));
-        } finally {
-            manager.close();
         }
     }
 
