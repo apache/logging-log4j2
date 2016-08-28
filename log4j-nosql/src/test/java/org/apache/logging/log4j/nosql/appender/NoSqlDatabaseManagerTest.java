@@ -73,29 +73,23 @@ public class NoSqlDatabaseManagerTest {
     }
 
     @Test
-    public void testConnection() {
-        replay(this.provider, this.connection);
+	public void testConnection() {
+		replay(this.provider, this.connection);
 
-        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
+		try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
+				this.provider)) {
 
-        assertNotNull("The manager should not be null.", manager);
+			assertNotNull("The manager should not be null.", manager);
 
-        try {
-            verify(this.provider, this.connection);
-            reset(this.provider, this.connection);
-            expect(this.provider.getConnection()).andReturn(this.connection);
-            replay(this.provider, this.connection);
+			verify(this.provider, this.connection);
+			reset(this.provider, this.connection);
+			expect(this.provider.getConnection()).andReturn(this.connection);
+			replay(this.provider, this.connection);
 
-            manager.connectAndStart();
-            manager.commitAndClose();
-        } finally {
-            try {
-                manager.close();
-            } catch (final Throwable ignore) {
-                /* */
-            }
-        }
-    }
+			manager.connectAndStart();
+			manager.commitAndClose();
+		}
+	}
 
     @Test
     public void testWriteInternalNotConnected01() {
