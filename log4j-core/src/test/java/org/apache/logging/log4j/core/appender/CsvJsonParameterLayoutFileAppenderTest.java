@@ -68,13 +68,13 @@ public class CsvJsonParameterLayoutFileAppenderTest {
 
     @Test
     public void testNoNulCharactersABC() throws IOException {
-        testNoNulCharacters("ABC");;
+        testNoNulCharacters("ABC");
     }
 
     @Test
     @Ignore("https://issues.apache.org/jira/browse/LOG4J2-1502")
     public void testNoNulCharactersJson() throws IOException {
-        testNoNulCharacters("{\"id\":10,\"name\":\"Alice\"}");;
+        testNoNulCharacters("{\"id\":10,\"name\":\"Alice\"}");
     }
 
     @Test
