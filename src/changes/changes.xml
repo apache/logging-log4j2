@@ -100,7 +100,7 @@
         org.apache.logging.log4j.core.appender.routing.IdlePurgePolicy not working correctly.
       </action>
       <action issue="LOG4J2-1502" dev="ggregory" type="fix" due-to="Sumit Singhal">
-        CsvParameterLayout is inserting NUL character if data starts with {, (, [ or "
+        CsvParameterLayout and CsvLogEventLayout insert NUL characters if data starts with {, (, [ or "
       </action>
       <action issue="LOG4J2-1181" dev="mikes" type="add">
         Scala API.
