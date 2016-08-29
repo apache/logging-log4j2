@@ -26,13 +26,15 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
 import com.google.common.io.Files;
 
+/**
+ * Tests https://issues.apache.org/jira/browse/LOG4J2-1502
+ */
 public class CsvJsonParameterLayoutFileAppenderTest {
 
     private static final String FILE_PATH = "target/CsvJsonParameterLayoutFileAppenderTest.log";
@@ -42,7 +44,7 @@ public class CsvJsonParameterLayoutFileAppenderTest {
     @Rule
     public RuleChain rule = loggerContextRule.withCleanFilesRule(FILE_PATH);
 
-    public void testNoNulCharacters(final String message) throws IOException {
+    public void testNoNulCharacters(final String message, final String expected) throws IOException {
         @SuppressWarnings("resource")
         final LoggerContext loggerContext = loggerContextRule.getLoggerContext();
         final Logger logger = loggerContext.getLogger("com.example");
@@ -63,24 +65,53 @@ public class CsvJsonParameterLayoutFileAppenderTest {
         Assert.assertEquals("File contains " + count0s + " 0x00 byte at indices " + sb, 0, count0s);
         final List<String> readLines = Files.readLines(file, Charset.defaultCharset());
         final String actual = readLines.get(0);
-        Assert.assertTrue(actual, actual.contains(message));
+        // Assert.assertTrue(actual, actual.contains(message));
+        Assert.assertEquals(actual, expected, actual);
         Assert.assertEquals(1, readLines.size());
     }
 
     @Test
-    public void testNoNulCharactersABC() throws IOException {
-        testNoNulCharacters("ABC");
+    public void testNoNulCharactersDoubleQuote() throws IOException {
+        // TODO This does not seem right but there is no NULs. Check Apache Commons CSV.
+        testNoNulCharacters("\"", "\"\"\"\"");
     }
 
     @Test
-    @Ignore("https://issues.apache.org/jira/browse/LOG4J2-1502")
     public void testNoNulCharactersJson() throws IOException {
-        testNoNulCharacters("{\"id\":10,\"name\":\"Alice\"}");
+        testNoNulCharacters("{\"id\":10,\"name\":\"Alice\"}", "\"{\"\"id\"\":10,\"\"name\"\":\"\"Alice\"\"}\"");
     }
 
     @Test
-    @Ignore("https://issues.apache.org/jira/browse/LOG4J2-1502")
+    public void testNoNulCharactersOneChar() throws IOException {
+        testNoNulCharacters("A", "A");
+    }
+
+    @Test
+    public void testNoNulCharactersOpenCurly() throws IOException {
+        // TODO Why is the char quoted? Check Apache Commons CSV.
+        testNoNulCharacters("{", "\"{\"");
+    }
+
+    @Test
+    public void testNoNulCharactersOpenParen() throws IOException {
+        // TODO Why is the char quoted? Check Apache Commons CSV.
+        testNoNulCharacters("(", "\"(\"");
+    }
+
+    @Test
+    public void testNoNulCharactersOpenSquare() throws IOException {
+        // TODO Why is the char quoted? Check Apache Commons CSV.
+        testNoNulCharacters("[", "\"[\"");
+    }
+
+    @Test
+    public void testNoNulCharactersThreeChars() throws IOException {
+        testNoNulCharacters("ABC", "ABC");
+    }
+
+    @Test
     public void testNoNulCharactersXml() throws IOException {
-        testNoNulCharacters("<test attr1='val1' attr2=\"value2\">X</test>");
+        testNoNulCharacters("<test attr1='val1' attr2=\"value2\">X</test>",
+                "\"<test attr1='val1' attr2=\"\"value2\"\">X</test>\"");
     }
 }
