@@ -42,14 +42,11 @@ public class CsvJsonParameterLayoutFileAppenderTest {
     @Rule
     public RuleChain rule = loggerContextRule.withCleanFilesRule(FILE_PATH);
 
-    @Test
-    @Ignore("https://issues.apache.org/jira/browse/LOG4J2-1502")
-    public void testNoNulCharacters() throws IOException {
+    public void testNoNulCharacters(final String message) throws IOException {
         @SuppressWarnings("resource")
         final LoggerContext loggerContext = loggerContextRule.getLoggerContext();
         final Logger logger = loggerContext.getLogger("com.example");
-        final String json = "{\"id\":10,\"name\":\"Alice\"}";
-        logger.error("log:", json);
+        logger.error("log:", message);
         loggerContext.stop();
         final File file = new File(FILE_PATH);
         final byte[] contents = Files.toByteArray(file);
@@ -66,6 +63,23 @@ public class CsvJsonParameterLayoutFileAppenderTest {
         Assert.assertEquals("File contains " + count0s + " 0x00 byte at indices " + sb, 0, count0s);
         final List<String> readLines = Files.readLines(file, Charset.defaultCharset());
         final String actual = readLines.get(0);
-        Assert.assertTrue(actual, actual.contains(json));
+        Assert.assertTrue(actual, actual.contains(message));
+    }
+
+    @Test
+    public void testNoNulCharactersABC() throws IOException {
+        testNoNulCharacters("ABC");;
+    }
+
+    @Test
+    @Ignore("https://issues.apache.org/jira/browse/LOG4J2-1502")
+    public void testNoNulCharactersJson() throws IOException {
+        testNoNulCharacters("{\"id\":10,\"name\":\"Alice\"}");;
+    }
+
+    @Test
+    @Ignore("https://issues.apache.org/jira/browse/LOG4J2-1502")
+    public void testNoNulCharactersXml() throws IOException {
+        testNoNulCharacters("<test attr1='val1' attr2=\"value2\">X</test>");
     }
 }
