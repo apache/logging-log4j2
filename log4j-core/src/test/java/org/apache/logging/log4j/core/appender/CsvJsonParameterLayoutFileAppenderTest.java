@@ -64,6 +64,7 @@ public class CsvJsonParameterLayoutFileAppenderTest {
         final List<String> readLines = Files.readLines(file, Charset.defaultCharset());
         final String actual = readLines.get(0);
         Assert.assertTrue(actual, actual.contains(message));
+        Assert.assertEquals(1, readLines.size());
     }
 
     @Test
