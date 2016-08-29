@@ -78,7 +78,7 @@ public class RollingAppenderCronOnceADayTest {
     private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG_TARGET);
 
     @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(true, false, 1, DIR);
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
