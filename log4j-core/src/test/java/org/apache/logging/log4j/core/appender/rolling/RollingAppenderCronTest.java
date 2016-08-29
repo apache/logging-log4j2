@@ -94,7 +94,7 @@ public class RollingAppenderCronTest {
             logger.debug("Adding new event {}", i);
         }
         Thread.sleep(1000);
-        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getContext().getConfiguration().getAppender("RollingFile");
+        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
         assertNotNull("No triggering policy", policy);
         assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);
