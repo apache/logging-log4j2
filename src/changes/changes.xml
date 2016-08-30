@@ -27,12 +27,6 @@
       <action issue="LOG4J2-1528" dev="mikes" type="add">
         Create XML configuration file from ConfigurationBuilder.
       </action>
-      <action issue="LOG4J2-1181" dev="mikes" type="add">
-        Scala API.
-      </action>
-      <action issue="LOG4J2-1512" dev="mikes" type="add">
-        Options to exclude stack trace from JSON, XML and YAML layouts.
-      </action>
       <action issue="LOG4J2-1511" dev="ggregory" type="fix" due-to="Srikanth Surukuntu">
         DynamicThresholdFilter filters incorrectly when params are passed as individual arguments instead of varargs.
       </action>
@@ -104,6 +98,18 @@
       </action>
       <action issue="LOG4J2-1313" dev="rpopma" type="fix" due-to="Philipp Knobel">
         Properties declared in configuration can now have their value either in the element body or in an attribute named "value".
+      </action>
+      <action issue="LOG4J2-1235" dev="ggregory" type="fix" due-to="Niranjan Rao, Sascha Scholz, Aleksey Zvolinsky">
+        org.apache.logging.log4j.core.appender.routing.IdlePurgePolicy not working correctly.
+      </action>
+      <action issue="LOG4J2-1502" dev="ggregory" type="fix" due-to="Sumit Singhal">
+        CsvParameterLayout and CsvLogEventLayout insert NUL characters if data starts with {, (, [ or "
+      </action>
+      <action issue="LOG4J2-1181" dev="mikes" type="add">
+        Scala API.
+      </action>
+      <action issue="LOG4J2-1512" dev="mikes" type="add">
+        Options to exclude stack trace from JSON, XML and YAML layouts.
       </action>
       <action issue="LOG4J2-1539" dev="ggregory" type="add" due-to="Gary Gregory">
         Add Core API Configurator.shutdown(LoggerContext, long, TimeUnit).
