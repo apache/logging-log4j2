@@ -24,8 +24,9 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.Test;
+import org.xmlunit.matchers.CompareMatcher;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ConfigurationBuilderTest {
 
@@ -84,7 +85,7 @@ public class ConfigurationBuilderTest {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
-        assertEquals(expectedXml, xmlConfiguration);
+        assertThat(xmlConfiguration, CompareMatcher.isIdenticalTo(expectedXml));
     }
 
 }
