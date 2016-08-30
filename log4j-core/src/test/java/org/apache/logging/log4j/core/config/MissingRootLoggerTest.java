@@ -42,7 +42,7 @@ public class MissingRootLoggerTest {
 
     @Test
     public void testMissingRootLogger() throws Exception {
-        final LoggerContext ctx = context.getContext();
+        final LoggerContext ctx = context.getLoggerContext();
         final Logger logger = ctx.getLogger("sample.Logger1");
         assertTrue("Logger should have the INFO level enabled", logger.isInfoEnabled());
         assertFalse("Logger should have the DEBUG level disabled", logger.isDebugEnabled());

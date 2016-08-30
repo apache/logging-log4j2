@@ -16,8 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -38,6 +42,10 @@ import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
+
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 /**
  * @param <T> The BuiltConfiguration type.
@@ -186,6 +194,127 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             configuration.initialize();
         }
         return configuration;
+    }
+
+    @Override
+    public void writeXmlConfiguration(final OutputStream output) throws IOException {
+        try {
+            XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(output);
+            writeXmlConfiguration(xmlWriter);
+            xmlWriter.close();
+        } catch (XMLStreamException e) {
+            if (e.getNestedException() instanceof IOException) {
+                throw (IOException)e.getNestedException();
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    public String toXmlConfiguration() {
+        StringWriter sw = new StringWriter();
+        try {
+            XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
+            writeXmlConfiguration(xmlWriter);
+            xmlWriter.close();
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        }
+        return sw.toString();
+    }
+
+    private void writeXmlConfiguration(XMLStreamWriter xmlWriter) throws XMLStreamException {
+        xmlWriter.writeStartDocument();
+        xmlWriter.writeCharacters(System.lineSeparator());
+
+        xmlWriter.writeStartElement("Configuration");
+        if (name != null) {
+            xmlWriter.writeAttribute("name", name);
+        }
+        if (level != null) {
+            xmlWriter.writeAttribute("status", level.name());
+        }
+        if (verbosity != null) {
+            xmlWriter.writeAttribute("verbose", verbosity);
+        }
+        if (destination != null) {
+            xmlWriter.writeAttribute("dest", destination);
+        }
+        if (packages != null) {
+            xmlWriter.writeAttribute("packages", packages);
+        }
+        if (shutdownFlag != null) {
+            xmlWriter.writeAttribute("shutdownHook", shutdownFlag);
+        }
+        if (advertiser != null) {
+            xmlWriter.writeAttribute("advertiser", advertiser);
+        }
+        if (monitorInterval > 0) {
+            xmlWriter.writeAttribute("monitorInterval", String.valueOf(monitorInterval));
+        }
+
+        xmlWriter.writeCharacters(System.lineSeparator());
+
+        writeXmlSection(xmlWriter, properties);
+        writeXmlSection(xmlWriter, scripts);
+        writeXmlSection(xmlWriter, customLevels);
+        if (filters.getComponents().size() == 1) {
+            writeXmlComponent(xmlWriter, filters.getComponents().get(0), 1);
+        } else if (filters.getComponents().size() > 1) {
+            writeXmlSection(xmlWriter, filters);
+        }
+        writeXmlSection(xmlWriter, appenders);
+        writeXmlSection(xmlWriter, loggers);
+
+        xmlWriter.writeEndElement(); // "Configuration"
+        xmlWriter.writeCharacters(System.lineSeparator());
+
+        xmlWriter.writeEndDocument();
+    }
+
+    private void writeXmlSection(XMLStreamWriter xmlWriter, Component component) throws XMLStreamException {
+        if (!component.getAttributes().isEmpty() || !component.getComponents().isEmpty() || component.getValue() != null) {
+            writeXmlComponent(xmlWriter, component, 1);
+        }
+    }
+
+    private void writeXmlComponent(XMLStreamWriter xmlWriter, Component component, int nesting) throws XMLStreamException {
+        if (!component.getComponents().isEmpty() || component.getValue() != null) {
+            writeXmlIndent(xmlWriter, nesting);
+            xmlWriter.writeStartElement(component.getPluginType());
+            writeXmlAttributes(xmlWriter, component);
+            if (!component.getComponents().isEmpty()) {
+                xmlWriter.writeCharacters(System.lineSeparator());
+            }
+            for (Component subComponent : component.getComponents()) {
+                writeXmlComponent(xmlWriter, subComponent, nesting + 1);
+            }
+            if (component.getValue() != null) {
+                xmlWriter.writeCharacters(component.getValue());
+            }
+            if (!component.getComponents().isEmpty()) {
+                writeXmlIndent(xmlWriter, nesting);
+            }
+            xmlWriter.writeEndElement();
+        } else {
+            writeXmlIndent(xmlWriter, nesting);
+            xmlWriter.writeEmptyElement(component.getPluginType());
+            writeXmlAttributes(xmlWriter, component);
+        }
+        xmlWriter.writeCharacters(System.lineSeparator());
+    }
+
+    private void writeXmlIndent(XMLStreamWriter xmlWriter, int nesting) throws XMLStreamException {
+        for (int i = 0; i < nesting; i++) {
+            xmlWriter.writeCharacters("\t");
+        }
+    }
+
+    private void writeXmlAttributes(XMLStreamWriter xmlWriter, Component component) throws XMLStreamException {
+        for (Map.Entry<String, String> attribute : component.getAttributes().entrySet()) {
+            xmlWriter.writeAttribute(attribute.getKey(), attribute.getValue());
+        }
     }
 
     @Override

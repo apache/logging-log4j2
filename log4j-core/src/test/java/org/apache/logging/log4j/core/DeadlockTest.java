@@ -32,6 +32,6 @@ public class DeadlockTest {
 
     @Test
     public void deadlockOnReconfigure() {
-        context.getContext().reconfigure();
+        context.getLoggerContext().reconfigure();
     }
 }

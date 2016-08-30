@@ -16,7 +16,6 @@
  */
 package org.apache.log4j.layout;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
@@ -26,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Transform;
+import org.apache.logging.log4j.util.Strings;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -102,7 +102,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         List<String> ndc = event.getContextStack().asList();
         if (!ndc.isEmpty()) {
             buf.append("<log4j:NDC><![CDATA[");
-            Transform.appendEscapingCData(buf, StringUtils.join(ndc, ' '));
+            Transform.appendEscapingCData(buf, Strings.join(ndc, ' '));
             buf.append("]]></log4j:NDC>\r\n");
         }
 
