@@ -43,13 +43,15 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final long timeToLive;
+    private final long checkInterval;    
     private final ConcurrentMap<String, Long> appendersUsage = new ConcurrentHashMap<>();
     private RoutingAppender routingAppender;
     private final ConfigurationScheduler scheduler;
     private volatile ScheduledFuture<?> future = null;
 
-    public IdlePurgePolicy(final long timeToLive, final ConfigurationScheduler scheduler) {
+    public IdlePurgePolicy(final long timeToLive, final long checkInterval, final ConfigurationScheduler scheduler) {
         this.timeToLive = timeToLive;
+        this.checkInterval = checkInterval;
         this.scheduler = scheduler;
     }
 
@@ -61,7 +63,9 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     @Override
     public void stop() {
         super.stop();
-        future.cancel(true);
+        if (future != null) {
+            future.cancel(true);
+        }
     }
 
     /**
@@ -73,8 +77,9 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
         for (final Entry<String, Long> entry : appendersUsage.entrySet()) {
             if (entry.getValue() < createTime) {
                 LOGGER.debug("Removing appender " + entry.getKey());
-                appendersUsage.remove(entry.getKey());
-                routingAppender.deleteAppender(entry.getKey());
+                if (appendersUsage.remove(entry.getKey(), entry.getValue())) {
+                    routingAppender.deleteAppender(entry.getKey());
+                }
             }
         }
     }
@@ -100,33 +105,39 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     }
 
     private void scheduleNext() {
-        long createTime = Long.MAX_VALUE;
+        long updateTime = Long.MAX_VALUE;
         for (final Entry<String, Long> entry : appendersUsage.entrySet()) {
-            if (entry.getValue() < createTime) {
-                createTime = entry.getValue();
+            if (entry.getValue() < updateTime) {
+                updateTime = entry.getValue();
             }
         }
-        if (createTime < Long.MAX_VALUE) {
-            final long interval = timeToLive - (System.currentTimeMillis() - createTime);
+
+        if (updateTime < Long.MAX_VALUE) {
+            long interval = timeToLive - (System.currentTimeMillis() - updateTime);
             future = scheduler.schedule(this, interval, TimeUnit.MILLISECONDS);
+        } else {
+            // reset to initial state - in case of all appenders already purged
+            future = scheduler.schedule(this, checkInterval, TimeUnit.MILLISECONDS);
         }
     }
 
     /**
      * Create the PurgePolicy
      *
-     * @param timeToLive the number of increments of timeUnit before the Appender should be purged.
-     * @param timeUnit   the unit of time the timeToLive is expressed in.
+     * @param timeToLive    the number of increments of timeUnit before the Appender should be purged.
+     * @param checkInterval when all appenders purged, the number of increments of timeUnit to check if any appenders appeared  
+     * @param timeUnit      the unit of time the timeToLive and the checkInterval is expressed in.
      * @return The Routes container.
      */
     @PluginFactory
     public static PurgePolicy createPurgePolicy(
         @PluginAttribute("timeToLive") final String timeToLive,
+        @PluginAttribute("checkInterval") final String checkInterval,
         @PluginAttribute("timeUnit") final String timeUnit,
         @PluginConfiguration final Configuration configuration) {
 
         if (timeToLive == null) {
-            LOGGER.error("A timeToLive  value is required");
+            LOGGER.error("A timeToLive value is required");
             return null;
         }
         TimeUnit units;
@@ -136,15 +147,29 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
             try {
                 units = TimeUnit.valueOf(timeUnit.toUpperCase());
             } catch (final Exception ex) {
-                LOGGER.error("Invalid time unit {}", timeUnit);
+                LOGGER.error("Invalid timeUnit value {}. timeUnit set to MINUTES", timeUnit, ex);
                 units = TimeUnit.MINUTES;
             }
         }
 
-        final long ttl = units.toMillis(Long.parseLong(timeToLive));
+        long ttl = units.toMillis(Long.parseLong(timeToLive));
+        if (ttl < 0) {
+            LOGGER.error("timeToLive must be positive. timeToLive set to 0");
+            ttl = 0;
+        }
+        
+        long ci;
+        if (checkInterval == null) {
+            ci = ttl;
+        } else {
+            ci = units.toMillis(Long.parseLong(checkInterval));
+            if (ci < 0) {
+                LOGGER.error("checkInterval must be positive. checkInterval set equal to timeToLive = {}", ttl);
+                ci = ttl;
+            }
+        }
 
-
-        return new IdlePurgePolicy(ttl, configuration.getScheduler());
+        return new IdlePurgePolicy(ttl, ci, configuration.getScheduler());
     }
 
     @Override

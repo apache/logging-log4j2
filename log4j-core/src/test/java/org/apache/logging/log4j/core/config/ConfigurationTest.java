@@ -89,7 +89,7 @@ public class ConfigurationTest {
 
     @Before
     public void setUp() throws Exception {
-        this.ctx = this.init.getContext();
+        this.ctx = this.init.getLoggerContext();
     }
 
     @Test

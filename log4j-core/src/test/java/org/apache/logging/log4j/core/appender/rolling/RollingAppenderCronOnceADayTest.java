@@ -78,7 +78,7 @@ public class RollingAppenderCronOnceADayTest {
     private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG_TARGET);
 
     @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(true, false, 1, DIR);
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
@@ -88,7 +88,7 @@ public class RollingAppenderCronOnceADayTest {
         assertTrue("Log file does not exist", file.exists());
         logger.debug("This is test message number 1, waiting for rolling");
 
-        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getContext().getConfiguration().getAppender("RollingFile");
+        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
         assertNotNull("No triggering policy", policy);
         assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);

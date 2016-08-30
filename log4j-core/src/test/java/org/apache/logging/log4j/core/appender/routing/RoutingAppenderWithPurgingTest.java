@@ -71,7 +71,7 @@ public class RoutingAppenderWithPurgingTest {
     @After
     public void tearDown() throws Exception {
         this.app.clear();
-        this.loggerContextRule.getContext().stop();
+        this.loggerContextRule.getLoggerContext().stop();
     }
 
     @Test(timeout = 5000)
@@ -105,11 +105,22 @@ public class RoutingAppenderWithPurgingTest {
 
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
         assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
+
+        msg = new StructuredDataMessage("5", "This is a test 5", "Service");
+        EventLogger.logEvent(msg);
+
+        assertEquals("Incorrect number of appenders with manual purge.", 1, routingAppenderManual.getAppenders().size());
+
+        routingAppenderManual.deleteAppender("5");
+        routingAppenderManual.deleteAppender("5");
+
+        assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
     }
 
-    private void assertFileExistance(final String... files) {
-    	for (final String file : files) {
-			assertTrue("File should exist - " + file + " file ", new File(file).exists());
-		}
+
+    private void assertFileExistance(String... files) {
+        for (String file : files) {
+            assertTrue("File should exist - " + file + " file ", new File(file).exists());
+        }
     }
 }

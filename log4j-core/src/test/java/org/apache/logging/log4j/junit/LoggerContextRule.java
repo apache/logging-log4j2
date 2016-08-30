@@ -50,7 +50,7 @@ public class LoggerContextRule implements TestRule {
     private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
     private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
     private final String configLocation;
-    private LoggerContext context;
+    private LoggerContext loggerContext;
     private Class<? extends ContextSelector> contextSelectorClass;
     private String testClassName;
     private long shutdownTimeout;
@@ -107,16 +107,16 @@ public class LoggerContextRule implements TestRule {
                 // LogManager.setFactory(new Log4jContextFactory(LoaderUtil.newInstanceOf(contextSelectorClass)));
                 System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
                 System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
-                context = Configurator.initialize(description.getDisplayName(),
+                loggerContext = Configurator.initialize(description.getDisplayName(),
                         description.getTestClass().getClassLoader(), configLocation);
                 try {
                     base.evaluate();
                 } finally {
-                    if (!Configurator.shutdown(context, shutdownTimeout, shutdownTimeUnit)) {
+                    if (!Configurator.shutdown(loggerContext, shutdownTimeout, shutdownTimeUnit)) {
                         StatusLogger.getLogger().error("Logger context {} did not shutdown completely after {} {}.",
-                                context.getName(), shutdownTimeout, shutdownTimeUnit);
+                                loggerContext.getName(), shutdownTimeout, shutdownTimeUnit);
                     }
-                    context = null;
+                    loggerContext = null;
                     contextSelectorClass = null;
                     StatusLogger.getLogger().reset();
                     System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
@@ -160,7 +160,7 @@ public class LoggerContextRule implements TestRule {
      * @return this LoggerContext's Configuration.
      */
     public Configuration getConfiguration() {
-        return context.getConfiguration();
+        return loggerContext.getConfiguration();
     }
 
     /**
@@ -168,8 +168,8 @@ public class LoggerContextRule implements TestRule {
      *
      * @return the current LoggerContext.
      */
-    public LoggerContext getContext() {
-        return context;
+    public LoggerContext getLoggerContext() {
+        return loggerContext;
     }
 
     /**
@@ -195,7 +195,7 @@ public class LoggerContextRule implements TestRule {
      * @return the test class's named Logger.
      */
     public Logger getLogger() {
-        return context.getLogger(testClassName);
+        return loggerContext.getLogger(testClassName);
     }
 
     /**
@@ -206,7 +206,7 @@ public class LoggerContextRule implements TestRule {
      * @return the named Logger.
      */
     public Logger getLogger(final String name) {
-        return context.getLogger(name);
+        return loggerContext.getLogger(name);
     }
 
     /**
@@ -249,7 +249,7 @@ public class LoggerContextRule implements TestRule {
      * @return the root logger.
      */
     public Logger getRootLogger() {
-        return context.getRootLogger();
+        return loggerContext.getRootLogger();
     }
 
     @Override
