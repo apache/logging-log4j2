@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.impl;
 
 import java.util.List;
 
-import org.apache.logging.log4j.core.ContextData;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
