@@ -73,7 +73,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @param port The port number on the host.
      * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @param delay Reconnection interval.
-     * @param immediateFail 
+     * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param layout The Layout.
      */
     public TcpSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress inetAddress,
