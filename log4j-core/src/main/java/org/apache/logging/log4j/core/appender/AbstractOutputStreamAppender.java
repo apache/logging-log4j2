@@ -108,7 +108,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     @Override
     public void stop() {
         super.stop();
-        manager.release();
+        manager.close();
     }
 
     /**

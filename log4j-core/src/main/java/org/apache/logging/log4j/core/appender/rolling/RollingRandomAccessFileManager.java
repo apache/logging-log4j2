@@ -128,7 +128,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     }
 
     @Override
-    public synchronized void close() {
+    public synchronized void closeOutputStream() {
         flush();
         try {
             randomAccessFile.close();

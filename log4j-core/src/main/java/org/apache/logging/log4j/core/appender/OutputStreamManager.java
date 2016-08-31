@@ -126,7 +126,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     @Override
     public void releaseSub() {
         writeFooter();
-        close();
+        closeOutputStream();
     }
 
     /**
@@ -287,7 +287,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         flushDestination();
     }
 
-    protected synchronized void close() {
+    protected synchronized void closeOutputStream() {
         flush();
         final OutputStream stream = os; // access volatile field only once per method
         if (stream == null || stream == System.out || stream == System.err) {

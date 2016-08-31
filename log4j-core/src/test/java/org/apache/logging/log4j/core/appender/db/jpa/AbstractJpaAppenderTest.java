@@ -62,7 +62,7 @@ public abstract class AbstractJpaAppenderTest {
             final Appender appender = context.getConfiguration().getAppender("databaseAppender");
             assertNotNull("The appender should not be null.", appender);
             assertTrue("The appender should be a JpaAppender.", appender instanceof JpaAppender);
-            ((JpaAppender) appender).getManager().release();
+            ((JpaAppender) appender).getManager().close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             context.reconfigure();

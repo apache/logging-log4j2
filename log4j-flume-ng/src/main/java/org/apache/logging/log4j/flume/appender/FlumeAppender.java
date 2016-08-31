@@ -108,7 +108,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     @Override
     public void stop() {
         super.stop();
-        manager.release();
+        manager.close();
     }
 
     /**

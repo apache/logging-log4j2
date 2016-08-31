@@ -61,7 +61,7 @@ public class WriterManager extends AbstractManager {
         }
     }
 
-    protected synchronized void close() {
+    protected synchronized void closeWriter() {
         final Writer w = writer; // access volatile field only once per method
         try {
             w.close();
@@ -100,7 +100,7 @@ public class WriterManager extends AbstractManager {
     @Override
     public void releaseSub() {
         writeFooter();
-        close();
+        closeWriter();
     }
 
     protected void setWriter(final Writer writer) {

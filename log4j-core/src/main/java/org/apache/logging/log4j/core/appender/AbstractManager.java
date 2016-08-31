@@ -29,8 +29,14 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Abstract base class used to register managers.
+ * <p>
+ * This class implements {@link AutoCloseable} mostly to allow unit tests to be written safely and succinctly. While
+ * managers do need to allocate resources (usually on construction) and then free these resources, a manager is longer
+ * lived than other auto-closeable objects like streams. None the less, making a manager AutoCloseable forces readers to
+ * be aware of the the pattern: allocate resources on construction and call {@link #close()} at some point.
+ * </p>
  */
-public abstract class AbstractManager {
+public abstract class AbstractManager implements AutoCloseable {
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -57,6 +63,25 @@ public abstract class AbstractManager {
         this.name = name;
         LOGGER.debug("Starting {} {}", this.getClass().getSimpleName(), name);
     }
+
+    /**
+     * Called to signify that this Manager is no longer required by an Appender.
+     */
+    @Override
+    public void close() {
+        LOCK.lock();
+        try {
+            --count;
+            if (count <= 0) {
+                MAP.remove(name);
+                LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
+                releaseSub();
+            }
+        } finally {
+            LOCK.unlock();
+        }
+    }
+
 
     /**
      * Retrieves a Manager if it has been previously created or creates a new Manager.
@@ -133,19 +158,11 @@ public abstract class AbstractManager {
 
     /**
      * Called to signify that this Manager is no longer required by an Appender.
+     * @deprecated Use {@link #close()}.
      */
+    @Deprecated
     public void release() {
-        LOCK.lock();
-        try {
-            --count;
-            if (count <= 0) {
-                MAP.remove(name);
-                LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
-                releaseSub();
-            }
-        } finally {
-            LOCK.unlock();
-        }
+        close();
     }
 
     /**
