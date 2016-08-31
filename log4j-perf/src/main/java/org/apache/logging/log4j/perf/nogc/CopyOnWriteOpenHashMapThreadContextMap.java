@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
-import org.apache.logging.log4j.spi.AbstractCopyOnWriteMutableThreadContext;
+import org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  *
  * @since 2.7
  */
-public class CopyOnWriteOpenHashMapThreadContextMap extends AbstractCopyOnWriteMutableThreadContext {
+public class CopyOnWriteOpenHashMapThreadContextMap extends CopyOnWriteSortedArrayThreadContextMap {
     @Override
     protected MutableContextData createMutableContextData() {
         return new OpenHashMapContextData<>(PropertiesUtil.getProperties().getIntegerProperty(

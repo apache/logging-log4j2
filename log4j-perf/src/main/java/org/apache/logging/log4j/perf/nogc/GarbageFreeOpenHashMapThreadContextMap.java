@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
-import org.apache.logging.log4j.spi.AbstractGarbageFreeMutableThreadContext;
+import org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  *
  * @since 2.7
  */
-public class GarbageFreeOpenHashMapThreadContextMap extends AbstractGarbageFreeMutableThreadContext {
+public class GarbageFreeOpenHashMapThreadContextMap extends GarbageFreeSortedArrayThreadContextMap {
     @Override
     protected MutableContextData createMutableContextData() {
         return new OpenHashMapContextData<>(PropertiesUtil.getProperties().getIntegerProperty(
