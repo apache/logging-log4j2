@@ -21,3 +21,11 @@ Apache Log4j 2 is distributed under the [Apache License, version 2.0](http://www
 
 [How to download Log4j](http://logging.apache.org/log4j/2.x/download.html),
 and [how to use it from Maven, Ivy and Gradle](http://logging.apache.org/log4j/2.x/maven-artifacts.html).
+
+## Issue Tracking
+
+Issues, bugs, and feature requests should be submitted to the 
+[JIRA issue tracking system for this project](https://issues.apache.org/jira/browse/LOG4J2).
+
+Pull request on GitHub are welcome, but please open a ticket in the JIRA issue tracker first, and mention the 
+JIRA issue in the Pull Request.
