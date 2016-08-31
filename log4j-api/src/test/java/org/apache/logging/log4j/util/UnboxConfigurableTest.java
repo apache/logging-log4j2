@@ -48,6 +48,12 @@ public class UnboxConfigurableTest {
         modifierField.setInt(field, field.getModifiers() &~ Modifier.FINAL); // make non-final
 
         field.set(null, 32); // reset to default
+
+        final Field threadLocalField = Unbox.class.getDeclaredField("threadLocalState");
+        threadLocalField.setAccessible(true);
+        final ThreadLocal<?> threadLocal = (ThreadLocal<?>) threadLocalField.get(null);
+        threadLocal.remove();
+        threadLocalField.set(null, new ThreadLocal<>());
     }
 
     @Test
