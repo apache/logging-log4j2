@@ -259,10 +259,10 @@ public class FileManager extends OutputStreamManager {
             final boolean writeHeader = !data.append || !file.exists();
             try {
                 final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
-                final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
+                final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);
                 final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
                 return new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
-                        data.createOnDemand, data.advertiseURI, data.layout, writeHeader, buffer);
+                        data.createOnDemand, data.advertiseURI, data.layout, writeHeader, byteBuffer);
             } catch (final IOException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);
             }
