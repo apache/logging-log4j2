@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.spi;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -148,7 +149,7 @@ public class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap,
     @Override
     public Map<String, String> getCopy() {
         final MutableContextData map = localMap.get();
-        return map == null ? Collections.<String, String>emptyMap() : map.asMap();
+        return map == null ? new HashMap<String, String>() : map.asMap();
     }
 
     /**
