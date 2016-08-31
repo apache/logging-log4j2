@@ -139,7 +139,10 @@ public class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap,
 
     @Override
     public void clear() {
-        localMap.remove();
+        final MutableContextData map = localMap.get();
+        if (map != null) {
+            map.clear();
+        }
     }
 
     @Override
@@ -159,7 +162,12 @@ public class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap,
      */
     @Override
     public MutableContextData getMutableContextData() {
-        return localMap.get();
+        MutableContextData map = localMap.get();
+        if (map == null) {
+            map = createMutableContextData();
+            localMap.set(map);
+        }
+        return map;
     }
 
     @Override

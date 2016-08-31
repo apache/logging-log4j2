@@ -157,7 +157,8 @@ public class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap,
      */
     @Override
     public MutableContextData getMutableContextData() {
-        return localMap.get();
+        final MutableContextData map = localMap.get();
+        return map == null ? createMutableContextData() : map;
     }
 
     @Override
