@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -72,7 +73,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @param port The port number on the host.
      * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @param delay Reconnection interval.
-     * @param immediateFail
+     * @param immediateFail 
      * @param layout The Layout.
      */
     public TcpSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress inetAddress,
@@ -180,7 +181,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     /**
      * Handles reconnecting to a Thread.
      */
-    private class Reconnector extends Thread {
+    private class Reconnector extends Log4jThread {
 
         private final CountDownLatch latch = new CountDownLatch(1);
 

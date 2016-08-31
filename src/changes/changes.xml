@@ -156,6 +156,9 @@
       <action issue="LOG4J2-1540" dev="ggregory" type="add" due-to="Gary Gregory">
         The Core AbstractManager should track its LoggerContext.
       </action>
+      <action issue="LOG4J2-1556" dev="ggregory" type="update">
+        Custom Log4j threads should extend Log4jThread.
+      </action>
       <action issue="LOG4J2-1458" dev="ggregory" type="update">
         Update Jackson from 2.7.5 to 2.8.0.
       </action>
