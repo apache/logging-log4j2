@@ -125,7 +125,8 @@ public class SyslogAppender extends SocketAppender {
             @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginElement("LoggerFields") final LoggerFields[] loggerFields, @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
+            @PluginElement("LoggerFields") final LoggerFields[] loggerFields, 
+            @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
         // @formatter:on
 
         // TODO: add Protocol to TypeConverters
