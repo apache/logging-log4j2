@@ -53,12 +53,16 @@ public class GcFreeLoggingTestUtil {
 
         // initialize LoggerContext etc.
         // This is not steady-state logging and will allocate objects.
+
+        ThreadContext.put("aKey", "value1");
+        ThreadContext.put("key2", "value2");
+
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger(testClass.getName());
         logger.debug("debug not set");
         logger.fatal("This message is logged to the console");
         logger.error("Sample error message");
         logger.error("Test parameterized message {}", "param");
-        for (int i = 0; i < 128; i++) {
+        for (int i = 0; i < 256; i++) {
             logger.debug("ensure all ringbuffer slots have been used once"); // allocate MutableLogEvent.messageText
         }
 
@@ -128,7 +132,7 @@ public class GcFreeLoggingTestUtil {
         final String text = new String(Files.readAllBytes(tempFile.toPath()));
         final List<String> lines = Files.readAllLines(tempFile.toPath(), Charset.defaultCharset());
         final String className = cls.getSimpleName();
-        assertEquals(text, "FATAL o.a.l.l.c." + className + " [main]  This message is logged to the console",
+        assertEquals(text, "FATAL o.a.l.l.c." + className + " [main] value1 {aKey=value1, key2=value2} This message is logged to the console",
                 lines.get(0));
 
         final String LINESEP = System.getProperty("line.separator");

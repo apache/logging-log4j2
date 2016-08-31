@@ -2,7 +2,7 @@
 <Configuration status="OFF">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%p %c{1.} [%t] %X{aKey} %m%ex%n" />
+      <PatternLayout pattern="%p %c{1.} [%t] %X{aKey} %X %m%ex%n" />
     </Console>
     <File name="File" fileName="target/gcfreefile.log" bufferedIO="false">
       <PatternLayout>

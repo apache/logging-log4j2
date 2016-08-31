@@ -35,6 +35,8 @@ public class GcFreeAsynchronousLoggingTest {
      * This code runs in a separate process, instrumented with the Google Allocation Instrumenter.
      */
     public static void main(final String[] args) throws Exception {
+        System.setProperty("log4j2.garbagefree.threadContextMap", "true");
+        System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
         System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
         GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeAsynchronousLoggingTest.class);
     }
