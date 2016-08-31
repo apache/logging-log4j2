@@ -31,6 +31,7 @@ import org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap;
+import org.apache.logging.log4j.spi.NoOpThreadContextMap;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap2;
@@ -259,6 +260,9 @@ public final class ThreadContext {
     }
 
     private static ThreadContextMap createThreadContextMap(final boolean doUseMap) {
+        if (!doUseMap) {
+            return new NoOpThreadContextMap();
+        }
         if (Constants.ENABLE_THREADLOCALS) {
             if (PropertiesUtil.getProperties().getBooleanProperty(GC_FREE_THREAD_CONTEXT_KEY)) {
                 return new GarbageFreeSortedArrayThreadContextMap();
