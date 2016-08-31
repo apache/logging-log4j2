@@ -205,9 +205,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         } catch (XMLStreamException e) {
             if (e.getNestedException() instanceof IOException) {
                 throw (IOException)e.getNestedException();
-            } else {
-                throw new RuntimeException(e);
             }
+            throw new RuntimeException(e);
         }
     }
 
