@@ -27,13 +27,16 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
+import org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap2;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
 
@@ -190,6 +193,7 @@ public final class ThreadContext {
     private static final String DISABLE_STACK = "disableThreadContextStack";
     private static final String DISABLE_ALL = "disableThreadContext";
     private static final String THREAD_CONTEXT_KEY = "log4j2.threadContextMap";
+    private static final String GC_FREE_THREAD_CONTEXT_KEY = "log4j2.garbagefree.threadContextMap";
 
     private static boolean disableAll;
     private static boolean useMap;
@@ -243,15 +247,25 @@ public final class ThreadContext {
                         } catch (final Exception e) {
                             LOGGER.error("Unable to locate or load configured ThreadContextMap {}",
                                     provider.getThreadContextMap(), e);
-                            contextMap = new DefaultThreadContextMap(useMap);
+                            contextMap = createThreadContextMap(useMap);
                         }
                     }
                 }
             }
         }
         if (contextMap == null) {
-            contextMap = new DefaultThreadContextMap(useMap);
+            contextMap = createThreadContextMap(useMap);
         }
+    }
+
+    private static ThreadContextMap createThreadContextMap(final boolean doUseMap) {
+        if (Constants.ENABLE_THREADLOCALS) {
+            if (PropertiesUtil.getProperties().getBooleanProperty(GC_FREE_THREAD_CONTEXT_KEY)) {
+                return new GarbageFreeSortedArrayThreadContextMap();
+            }
+            return new CopyOnWriteSortedArrayThreadContextMap();
+        }
+        return new DefaultThreadContextMap(doUseMap);
     }
 
     /**
