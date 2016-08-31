@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @since 2.7
  */
-class NoOpThreadContextMap implements ThreadContextMap {
+public class NoOpThreadContextMap implements ThreadContextMap {
     @Override
     public void clear() {
     }
