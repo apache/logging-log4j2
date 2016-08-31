@@ -16,8 +16,16 @@
  */
 package org.apache.log4j.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
@@ -26,13 +34,6 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Experimental parser for Log4j 1.2 properties configuration files.
@@ -63,8 +64,9 @@ public class Log4j1ConfigurationParser {
      * Parse a Log4j 1.2 properties configuration file into a ConfigurationBuilder.
      *
      * @param input  InputStream to read from, will not be closed.
-     * @return  the populated ConfigurationBuilder
+     * @return  the populated ConfigurationBuilder, never {@literal null}
      * @throws IOException  if unable to read the input
+     * @throws ConfigurationException  if the input does not contain a valid configuration
      */
     public ConfigurationBuilder<BuiltConfiguration> buildConfigurationBuilder(final InputStream input) throws IOException {
         properties.load(input);
@@ -72,7 +74,7 @@ public class Log4j1ConfigurationParser {
         final String rootLoggerValue = getLog4jValue("rootLogger");
         if (rootCategoryValue == null && rootLoggerValue == null) {
             // This is not a Log4j 1 properties configuration file.
-            return null;
+            throw new ConfigurationException("Input does not contain a valid Log4j 1.x properties configuration");
         }
         builder.setConfigurationName("Log4j1");
         // DEBUG
