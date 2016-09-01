@@ -44,6 +44,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.Protocol;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -275,10 +276,10 @@ public class SocketAppenderTest {
                     final LogEvent event = (LogEvent) received;
                     list.add(event);
                 }
-            } catch (final Throwable ex) {
-                ex.printStackTrace();
+            } catch (final Throwable e) {
+                e.printStackTrace();
                 if (!shutdown) {
-                    throw new RuntimeException(ex);
+                    Throwables.rethrow(e);
                 }
             }
         }
@@ -311,9 +312,9 @@ public class SocketAppenderTest {
                 }
             } catch (final EOFException eof) {
                 // Socket is closed.
-            } catch (final Exception ex) {
+            } catch (final Exception e) {
                 if (!shutdown) {
-                    throw new RuntimeException(ex);
+                    Throwables.rethrow(e);
                 }
             }
         }

@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
+import org.apache.logging.log4j.core.util.Throwables;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -206,7 +207,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (e.getNestedException() instanceof IOException) {
                 throw (IOException)e.getNestedException();
             }
-            throw new RuntimeException(e);
+            Throwables.rethrow(e);
         }
     }
 
@@ -218,7 +219,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             writeXmlConfiguration(xmlWriter);
             xmlWriter.close();
         } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            Throwables.rethrow(e);
         }
         return sw.toString();
     }

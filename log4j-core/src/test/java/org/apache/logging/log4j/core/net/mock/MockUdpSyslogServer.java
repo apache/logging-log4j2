@@ -20,6 +20,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import org.apache.logging.log4j.core.util.Throwables;
+
 public class MockUdpSyslogServer extends MockSyslogServer {
     private final DatagramSocket socket;
     private boolean shutdown = false;
@@ -48,9 +50,9 @@ public class MockUdpSyslogServer extends MockSyslogServer {
                 final String str = new String(packet.getData(), 0, packet.getLength());
                 messageList.add(str);
             }
-        } catch (final Exception ex) {
+        } catch (final Exception e) {
             if (!shutdown) {
-                throw new RuntimeException(ex);
+                Throwables.rethrow(e);
             }
         }
     }
