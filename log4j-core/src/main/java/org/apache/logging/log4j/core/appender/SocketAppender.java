@@ -75,9 +75,6 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         private boolean immediateFail = true;
 
         @PluginBuilderAttribute
-        private boolean immediateFlush = true;
-
-        @PluginBuilderAttribute
         private int port;
 
         @PluginBuilderAttribute
@@ -94,6 +91,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         @SuppressWarnings("resource")
         @Override
         public SocketAppender build() {
+            boolean immediateFlush = isImmediateFlush();
             Layout<? extends Serializable> layout = getLayout();
             if (layout == null) {
                 layout = SerializedLayout.createLayout();
