@@ -102,6 +102,9 @@
       <action issue="LOG4J2-1502" dev="ggregory" type="fix" due-to="Sumit Singhal">
         CsvParameterLayout and CsvLogEventLayout insert NUL characters if data starts with {, (, [ or "
       </action>
+      <action issue="LOG4J2-1557" dev="ggregory" type="add">
+        Add a Builder for the SocketAppender (deprecates factory method).
+      </action>
       <action issue="LOG4J2-1553" dev="ggregory" type="add">
         AbstractManager should implement AutoCloseable.
       </action>

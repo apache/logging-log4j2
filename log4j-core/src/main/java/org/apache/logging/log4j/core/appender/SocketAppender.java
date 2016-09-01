@@ -26,7 +26,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -45,6 +46,155 @@ import org.apache.logging.log4j.core.util.Booleans;
  */
 @Plugin(name = "Socket", category = "Core", elementType = "appender", printObject = true)
 public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketManager> {
+
+    /**
+     * Subclasses can extend this abstract Builder.
+     * 
+     * Removed deprecated "delayMillis", use "reconnectionDelayMillis".
+     * Removed deprecated "reconnectionDelay", use "reconnectionDelayMillis".
+     * 
+     * @param <B>
+     *            This builder class.
+     */
+    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<SocketAppender> {
+
+        @PluginBuilderAttribute
+        private boolean advertise;
+
+        @PluginConfiguration
+        private Configuration configuration;
+
+        @PluginBuilderAttribute
+        private int connectTimeoutMillis;
+
+        @PluginBuilderAttribute
+        private String host;
+
+        @PluginBuilderAttribute
+        private boolean immediateFail = true;
+
+        @PluginBuilderAttribute
+        private boolean immediateFlush = true;
+
+        @PluginBuilderAttribute
+        private int port;
+
+        @PluginBuilderAttribute
+        private Protocol protocol = Protocol.TCP;
+
+        @PluginBuilderAttribute
+        @PluginAliases({ "reconnectDelay, delayMillis" })
+        private int reconnectDelayMillis;
+        
+        @PluginElement("SslConfiguration")
+        @PluginAliases({ "SslConfig" })
+        private SslConfiguration sslConfiguration;
+
+        @SuppressWarnings("resource")
+        @Override
+        public SocketAppender build() {
+            Layout<? extends Serializable> layout = getLayout();
+            if (layout == null) {
+                layout = SerializedLayout.createLayout();
+            }
+
+            final String name = getName();
+            if (name == null) {
+                SocketAppender.LOGGER.error("No name provided for SocketAppender");
+                return null;
+            }
+
+            final Protocol actualProtocol = protocol != null ? protocol : Protocol.TCP;
+            if (actualProtocol == Protocol.UDP) {
+                immediateFlush = true;
+            }
+
+            final AbstractSocketManager manager = SocketAppender.createSocketManager(name, actualProtocol, host, port,
+                    connectTimeoutMillis, sslConfiguration, reconnectDelayMillis, immediateFail, layout);
+
+            return new SocketAppender(name, layout, getFilter(), manager, isIgnoreExceptions(), immediateFlush,
+                    advertise ? configuration.getAdvertiser() : null);
+        }
+
+        public boolean getAdvertise() {
+            return advertise;
+        }
+
+        public int getConnectTimeoutMillis() {
+            return connectTimeoutMillis;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public Protocol getProtocol() {
+            return protocol;
+        }
+
+        public SslConfiguration getSslConfiguration() {
+            return sslConfiguration;
+        }
+
+        public boolean getImmediateFail() {
+            return immediateFail;
+        }
+
+        public B withAdvertise(final boolean advertise) {
+            this.advertise = advertise;
+            return asBuilder();
+        }
+
+        public B withConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return asBuilder();
+        }
+
+        public B withConnectTimeoutMillis(final int connectTimeoutMillis) {
+            this.connectTimeoutMillis = connectTimeoutMillis;
+            return asBuilder();
+        }
+
+        public B withHost(final String host) {
+            this.host = host;
+            return asBuilder();
+        }
+
+        public B withImmediateFail(final boolean immediateFail) {
+            this.immediateFail = immediateFail;
+            return asBuilder();
+        }
+
+        public B withPort(final int port) {
+            this.port = port;
+            return asBuilder();
+        }
+
+        public B withProtocol(final Protocol protocol) {
+            this.protocol = protocol;
+            return asBuilder();
+        }
+
+        public B withReconnectDelayMillis(final int reconnectDelayMillis) {
+            this.reconnectDelayMillis = reconnectDelayMillis;
+            return asBuilder();
+        }
+
+        public B withSslConfiguration(final SslConfiguration sslConfiguration) {
+            this.sslConfiguration = sslConfiguration;
+            return asBuilder();
+        }
+}
+    
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
 
     private final Object advertisement;
     private final Advertiser advertiser;
@@ -103,51 +253,71 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *            The Filter or null.
      * @param advertise
      *            "true" if the appender configuration should be advertised, "false" otherwise.
-     * @param config
+     * @param configuration
      *            The Configuration
      * @return A SocketAppender.
+     * @deprecated Deprecated in 2.7; use {@link #newBuilder()}
      */
+    @Deprecated
     @PluginFactory
     public static SocketAppender createAppender(
             // @formatter:off
-            @PluginAttribute("host") final String host,
-            @PluginAttribute(value = "port", defaultInt = 0) final int port,
-            @PluginAttribute("protocol") final Protocol protocol,
-            @PluginElement("SSL") final SslConfiguration sslConfig,
-            @PluginAttribute(value = "connectTimeoutMillis", defaultInt = 0) final int connectTimeoutMillis,
-            @PluginAliases("reconnectionDelay") // deprecated
-            @PluginAttribute(value = "reconnectionDelayMillis", defaultInt = 0) final int reconnectDelayMillis,
-            @PluginAttribute(value = "immediateFail", defaultBoolean = true) final boolean immediateFail,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "immediateFlush", defaultBoolean = true) boolean immediateFlush,
-            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise,
-            @PluginConfiguration final Configuration config) {
+            final String host,
+            final int port,
+            final Protocol protocol,
+            final SslConfiguration sslConfig,
+            final int connectTimeoutMillis,
+            final int reconnectDelayMillis,
+            final boolean immediateFail,
+            final String name,
+            boolean immediateFlush,
+            final boolean ignoreExceptions,
+            Layout<? extends Serializable> layout,
+            final Filter filter,
+            final boolean advertise,
+            final Configuration configuration) {
             // @formatter:on
 
-        if (layout == null) {
-            layout = SerializedLayout.createLayout();
+        if (true) {
+        // @formatter:off
+        return newBuilder()
+            .withAdvertise(advertise)
+            .withConfiguration(configuration)
+            .withConnectTimeoutMillis(connectTimeoutMillis)
+            .withFilter(filter)
+            .withHost(host)
+            .withIgnoreExceptions(ignoreExceptions)
+            .withImmediateFail(immediateFail)
+            .withLayout(layout)
+            .withName(name)
+            .withPort(port)
+            .withProtocol(protocol)
+            .withReconnectDelayMillis(reconnectDelayMillis)
+            .withSslConfiguration(sslConfig)
+            .build();
+        // @formatter:on
+        } else {
+            if (layout == null) {
+                layout = SerializedLayout.createLayout();
+            }
+
+            if (name == null) {
+                LOGGER.error("No name provided for SocketAppender");
+                return null;
+            }
+
+            final Protocol actualProtocol = protocol != null ? protocol : Protocol.TCP;
+            if (actualProtocol == Protocol.UDP) {
+                immediateFlush = true;
+            }
+
+            final AbstractSocketManager manager = createSocketManager(name, actualProtocol, host, port,
+                    connectTimeoutMillis, sslConfig, reconnectDelayMillis, immediateFail, layout);
+
+            return new SocketAppender(name, layout, filter, manager, ignoreExceptions, immediateFlush,
+                    advertise ? configuration.getAdvertiser() : null);
         }
-
-        if (name == null) {
-            LOGGER.error("No name provided for SocketAppender");
-            return null;
-        }
-
-        final Protocol actualProtocol = protocol != null ? protocol : Protocol.TCP;
-        if (actualProtocol == Protocol.UDP) {
-            immediateFlush = true;
-        }
-
-        final AbstractSocketManager manager = createSocketManager(name, actualProtocol, host, port, connectTimeoutMillis,
-                sslConfig, reconnectDelayMillis, immediateFail, layout);
-
-        return new SocketAppender(name, layout, filter, manager, ignoreExceptions, immediateFlush,
-                advertise ? config.getAdvertiser() : null);
     }
-
     /**
      * Creates a socket appender.
      *
@@ -181,9 +351,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      * @param config
      *            The Configuration
      * @return A SocketAppender.
-     * @deprecated Deprecated in 2.5; use
-     *             {@link #createAppender(String, int, Protocol, SslConfiguration, int, int, boolean, String, boolean, boolean, Layout, Filter, boolean, Configuration)}
-     *             .
+     * @deprecated Deprecated in 2.5; use {@link #newBuilder()}
      */
     @Deprecated
     public static SocketAppender createAppender(

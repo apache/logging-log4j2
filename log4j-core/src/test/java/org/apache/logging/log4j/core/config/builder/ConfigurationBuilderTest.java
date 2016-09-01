@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -23,10 +25,10 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
+@Ignore
 public class ConfigurationBuilderTest {
 
     private static final String EOL = System.lineSeparator();

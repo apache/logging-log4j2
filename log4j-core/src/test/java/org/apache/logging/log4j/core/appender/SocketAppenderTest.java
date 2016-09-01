@@ -102,8 +102,15 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppender() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, Protocol.TCP, null, 0, -1,
-                false, "Test", true, true, null, null, false, null);
+        // @formatter:off
+        final SocketAppender appender = SocketAppender.newBuilder()
+                .withHost("localhost")
+                .withPort(PORT)
+                .withReconnectDelayMillis(-1)
+                .withName("test")
+                .withImmediateFail(false)
+                .build();
+        // @formatter:on
         appender.start();
 
         // set appender on root and set level to debug
@@ -141,9 +148,15 @@ public class SocketAppenderTest {
 
     @Test
     public void testDefaultProtocol() throws Exception {
-
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, (Protocol) null, null, 0, -1,
-                false, "Test", true, true, null, null, false, null);
+        // @formatter:off
+        final SocketAppender appender = SocketAppender.newBuilder()
+                .withHost("localhost")
+                .withPort(PORT)
+                .withReconnectDelayMillis(-1)
+                .withName("test")
+                .withImmediateFail(false)
+                .build();
+        // @formatter:on
         assertNotNull(appender);
     }
 
@@ -155,8 +168,16 @@ public class SocketAppenderTest {
             ex.printStackTrace();
         }
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, Protocol.UDP, null, 0, -1,
-                false, "Test", true, true, null, null, false, null);
+        // @formatter:off
+        final SocketAppender appender = SocketAppender.newBuilder()
+                .withProtocol(Protocol.UDP)
+                .withHost("localhost")
+                .withPort(PORT)
+                .withReconnectDelayMillis(-1)
+                .withName("test")
+                .withImmediateFail(false)
+                .build();
+        // @formatter:on
         appender.start();
 
         // set appender on root and set level to debug
@@ -173,8 +194,15 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppenderDeadlock() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, Protocol.TCP, null, 0,
-                100, false, "Test", true, true, null, null, false, null);
+        // @formatter:off
+        final SocketAppender appender = SocketAppender.newBuilder()
+                .withHost("localhost")
+                .withPort(DYN_PORT)
+                .withReconnectDelayMillis(100)
+                .withName("test")
+                .withImmediateFail(false)
+                .build();
+        // @formatter:on
         appender.start();
         // set appender on root and set level to debug
         root.addAppender(appender);
@@ -191,9 +219,16 @@ public class SocketAppenderTest {
 
     @Test
     public void testTcpAppenderNoWait() throws Exception {
-
-        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, Protocol.TCP, null, 0,
-                100, true, "Test", true, false, null, null, false, null);
+        // @formatter:off
+        final SocketAppender appender = SocketAppender.newBuilder()
+                .withHost("localhost")
+                .withPort(ERROR_PORT)
+                .withReconnectDelayMillis(100)
+                .withName("test")
+                .withImmediateFail(false)
+                .withIgnoreExceptions(false)
+                .build();
+        // @formatter:on
         appender.start();
         // set appender on root and set level to debug
         root.addAppender(appender);
@@ -206,6 +241,7 @@ public class SocketAppenderTest {
         } catch (final Exception ex) {
             // TODO: move exception to @Test(expect = Exception.class)
             // Failure is expected.
+            ex.printStackTrace();
         }
     }
 
