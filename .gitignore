@@ -7,3 +7,6 @@ target/
 .classpath
 .cache-main
 .cache-tests
+velocity.log
+felix-cache/
+bin/
