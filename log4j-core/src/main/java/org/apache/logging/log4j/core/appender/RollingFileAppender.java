@@ -30,14 +30,11 @@ import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
@@ -79,12 +76,6 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         private RolloverStrategy strategy;
 
         @PluginBuilderAttribute
-        private boolean bufferedIo = true;
-
-        @PluginBuilderAttribute
-        private int bufferSize = DEFAULT_BUFFER_SIZE;
-
-        @PluginBuilderAttribute
         private boolean advertise;
 
         @PluginBuilderAttribute
@@ -100,12 +91,14 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         public RollingFileAppender build() {
             // Even though some variables may be annotated with @Required, we must still perform validation here for
             // call sites that build builders programmatically.
+            final boolean isBufferedIo = isBufferedIo();
+            final int bufferSize = getBufferSize();
             if (getName() == null) {
                 LOGGER.error("RollingFileAppender '{}': No name provided.", getName());
                 return null;
             }
 
-            if (!bufferedIo && bufferSize > 0) {
+            if (!isBufferedIo && bufferSize > 0) {
                 LOGGER.warn("RollingFileAppender '{}': The bufferSize is set to {} but bufferedIO is not true", getName(), bufferSize);
             }
 
@@ -135,7 +128,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             }
 
             final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, append,
-                    bufferedIo, policy, strategy, advertiseUri, getLayout(), bufferSize, isImmediateFlush(),
+                    isBufferedIo, policy, strategy, advertiseUri, getLayout(), bufferSize, isImmediateFlush(),
                     createOnDemand, configuration);
             if (manager == null) {
                 return null;
@@ -149,10 +142,6 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
         public String getAdvertiseUri() {
             return advertiseUri;
-        }
-
-        public int getBufferSize() {
-            return bufferSize;
         }
 
         public Configuration getConfiguration() {
@@ -169,10 +158,6 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
         public boolean isAppend() {
             return append;
-        }
-
-        public boolean isBufferedIo() {
-            return bufferedIo;
         }
 
         public boolean isCreateOnDemand() {
@@ -195,16 +180,6 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
         public B withAppend(final boolean append) {
             this.append = append;
-            return asBuilder();
-        }
-
-        public B withBufferedIo(final boolean bufferedIo) {
-            this.bufferedIo = bufferedIo;
-            return asBuilder();
-        }
-
-        public B withBufferSize(final int bufferSize) {
-            this.bufferSize = bufferSize;
             return asBuilder();
         }
 

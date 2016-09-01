@@ -44,10 +44,12 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.Protocol;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -91,9 +93,9 @@ public class SocketAppenderTest {
     public void teardown() {
         final Map<String, Appender> map = root.getAppenders();
         for (final Map.Entry<String, Appender> entry : map.entrySet()) {
-            final Appender app = entry.getValue();
-            root.removeAppender(app);
-            app.stop();
+            final Appender appender = entry.getValue();
+            root.removeAppender(appender);
+            appender.stop();
         }
         tcpCount = 0;
         udpCount = 0;
@@ -101,7 +103,21 @@ public class SocketAppenderTest {
     }
 
     @Test
-    public void testTcpAppender() throws Exception {
+    public void testTcpAppenderDefaultBufferSize() throws Exception {
+        testTcpAppender(Constants.ENCODER_BYTE_BUFFER_SIZE);
+    }
+
+    @Test
+    public void testTcpAppenderSmallestBufferSize() throws Exception {
+        testTcpAppender(1);
+    }
+
+    @Test
+    public void testTcpAppenderLargeBufferSize() throws Exception {
+        testTcpAppender(Constants.ENCODER_BYTE_BUFFER_SIZE * 100);
+    }
+
+    private void testTcpAppender(final int bufferSize) throws Exception {
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
@@ -110,9 +126,11 @@ public class SocketAppenderTest {
                 .withReconnectDelayMillis(-1)
                 .withName("test")
                 .withImmediateFail(false)
+                .withBufferSize(bufferSize)
                 .build();
         // @formatter:on
         appender.start();
+        Assert.assertEquals(bufferSize, appender.getManager().getByteBuffer().capacity());
 
         // set appender on root and set level to debug
         root.addAppender(appender);
@@ -159,6 +177,7 @@ public class SocketAppenderTest {
                 .build();
         // @formatter:on
         assertNotNull(appender);
+        appender.stop();
     }
 
     @Test
@@ -242,7 +261,7 @@ public class SocketAppenderTest {
         } catch (final Exception ex) {
             // TODO: move exception to @Test(expect = Exception.class)
             // Failure is expected.
-            ex.printStackTrace();
+            // ex.printStackTrace();
         }
     }
 

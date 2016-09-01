@@ -39,16 +39,41 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     public abstract static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
     
         @PluginBuilderAttribute
+        private boolean bufferedIo = true;
+
+        @PluginBuilderAttribute
+        private int bufferSize = Constants.ENCODER_BYTE_BUFFER_SIZE;
+
+        @PluginBuilderAttribute
         private boolean immediateFlush;
+
+        public int getBufferSize() {
+            return bufferSize;
+        }
+
+        public boolean isBufferedIo() {
+            return bufferedIo;
+        }
 
         public boolean isImmediateFlush() {
             return immediateFlush;
         }
-
+        
         public B withImmediateFlush(boolean immediateFlush) {
             this.immediateFlush = immediateFlush;
             return asBuilder();
         }
+        
+        public B withBufferedIo(final boolean bufferedIo) {
+            this.bufferedIo = bufferedIo;
+            return asBuilder();
+        }
+
+        public B withBufferSize(final int bufferSize) {
+            this.bufferSize = bufferSize;
+            return asBuilder();
+        }
+
     }
     
     /**

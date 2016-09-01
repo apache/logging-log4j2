@@ -36,6 +36,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
@@ -89,7 +90,6 @@ public class SyslogAppender extends SocketAppender {
      * @param exceptionPattern The converter pattern to use for formatting exceptions.
      * @param loggerFields The logger fields
      * @param advertise Whether to advertise
-     * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @return A SyslogAppender.
      */
     @PluginFactory
@@ -143,7 +143,7 @@ public class SyslogAppender extends SocketAppender {
             return null;
         }
         final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, connectTimeoutMillis,
-                sslConfig, reconnectionDelayMillis, immediateFail, layout);
+                sslConfig, reconnectionDelayMillis, immediateFail, layout, Constants.ENCODER_BYTE_BUFFER_SIZE);
 
         return new SyslogAppender(name, layout, filter, ignoreExceptions, immediateFlush, manager,
                 advertise ? config.getAdvertiser() : null);
