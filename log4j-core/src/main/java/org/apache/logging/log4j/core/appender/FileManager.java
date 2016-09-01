@@ -203,7 +203,7 @@ public class FileManager extends OutputStreamManager {
     private static class FactoryData extends ConfigurationFactoryData {
         private final boolean append;
         private final boolean locking;
-        private final boolean bufferedIO;
+        private final boolean bufferedIo;
         private final int bufferSize;
         private final boolean immediateFlush;
         private final boolean createOnDemand;
@@ -214,7 +214,7 @@ public class FileManager extends OutputStreamManager {
          * Constructor.
          * @param append Append status.
          * @param locking Locking status.
-         * @param bufferedIO Buffering flag.
+         * @param bufferedIo Buffering flag.
          * @param bufferSize Buffer size.
          * @param immediateFlush flush on every write or not
          * @param createOnDemand if you want to lazy-create the file (a.k.a. on-demand.)
@@ -222,13 +222,13 @@ public class FileManager extends OutputStreamManager {
          * @param layout The layout
          * @param configuration the configuration
          */
-        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO, final int bufferSize,
+        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIo, final int bufferSize,
                 final boolean immediateFlush, final boolean createOnDemand, final String advertiseURI,
                 final Layout<? extends Serializable> layout, Configuration configuration) {
             super(configuration);
             this.append = append;
             this.locking = locking;
-            this.bufferedIO = bufferedIO;
+            this.bufferedIo = bufferedIo;
             this.bufferSize = bufferSize;
             this.immediateFlush = immediateFlush;
             this.createOnDemand = createOnDemand;
@@ -258,7 +258,7 @@ public class FileManager extends OutputStreamManager {
 
             final boolean writeHeader = !data.append || !file.exists();
             try {
-                final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
+                final int actualSize = data.bufferedIo ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);
                 final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
                 return new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
