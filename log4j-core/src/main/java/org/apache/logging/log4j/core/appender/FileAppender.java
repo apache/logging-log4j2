@@ -87,7 +87,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             Layout<? extends Serializable> layout = getOrCreateLayout();
 
             final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
-                    advertiseUri, layout, bufferSize, isImmediateFlush(), configuration);
+                    advertiseUri, layout, bufferSize, configuration);
             if (manager == null) {
                 return null;
             }

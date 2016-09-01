@@ -97,20 +97,18 @@ public class FileManager extends OutputStreamManager {
      * @param advertiseUri the URI to use when advertising the file
      * @param layout The layout
      * @param bufferSize buffer size for buffered IO
-     * @param immediateFlush true if the contents should be flushed on every write, false otherwise.
      * @param configuration The configuration.
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
             final boolean bufferedIo, final boolean createOnDemand, final String advertiseUri,
-            final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush,
-            Configuration configuration) {
+            final Layout<? extends Serializable> layout, final int bufferSize, Configuration configuration) {
 
         if (locking && bufferedIo) {
             locking = false;
         }
         return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
-                immediateFlush, createOnDemand, advertiseUri, layout, configuration), FACTORY);
+                createOnDemand, advertiseUri, layout, configuration), FACTORY);
     }
 
     @Override
@@ -205,7 +203,6 @@ public class FileManager extends OutputStreamManager {
         private final boolean locking;
         private final boolean bufferedIo;
         private final int bufferSize;
-        private final boolean immediateFlush;
         private final boolean createOnDemand;
         private final String advertiseURI;
         private final Layout<? extends Serializable> layout;
@@ -216,21 +213,19 @@ public class FileManager extends OutputStreamManager {
          * @param locking Locking status.
          * @param bufferedIo Buffering flag.
          * @param bufferSize Buffer size.
-         * @param immediateFlush flush on every write or not
          * @param createOnDemand if you want to lazy-create the file (a.k.a. on-demand.)
          * @param advertiseURI the URI to use when advertising the file
          * @param layout The layout
          * @param configuration the configuration
          */
         public FactoryData(final boolean append, final boolean locking, final boolean bufferedIo, final int bufferSize,
-                final boolean immediateFlush, final boolean createOnDemand, final String advertiseURI,
-                final Layout<? extends Serializable> layout, Configuration configuration) {
+                final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
+                Configuration configuration) {
             super(configuration);
             this.append = append;
             this.locking = locking;
             this.bufferedIo = bufferedIo;
             this.bufferSize = bufferSize;
-            this.immediateFlush = immediateFlush;
             this.createOnDemand = createOnDemand;
             this.advertiseURI = advertiseURI;
             this.layout = layout;
