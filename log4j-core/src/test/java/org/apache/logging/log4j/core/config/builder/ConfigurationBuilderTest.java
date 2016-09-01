@@ -25,10 +25,8 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class ConfigurationBuilderTest {
 
     private static final String EOL = System.lineSeparator();
