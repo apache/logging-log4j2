@@ -20,14 +20,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Tests {@link FileSize}.
  */
 public class FileSizeTest {
 
     private final static long EXPECTED = 10 * 1024;
+    
     @Test
     public void testFileSize() throws Exception {
-
         long value = FileSize.parse("10KB", 0);
         assertTrue("unexpected value " + value, value == EXPECTED);
         value = FileSize.parse("10 KB", 0);

@@ -63,7 +63,7 @@ public class JmsAppenderIT {
 
     @AfterClass
     public static void tearDownClass() {
-        jmsManager.release();
+        jmsManager.close();
     }
 
     @Before

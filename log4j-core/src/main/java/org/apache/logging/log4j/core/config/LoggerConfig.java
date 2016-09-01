@@ -399,41 +399,7 @@ public class LoggerConfig extends AbstractFilterable {
     /**
      * Factory method to create a LoggerConfig.
      *
-     * @param additivity True if additive, false otherwise.
-     * @param level The Level to be associated with the Logger.
-     * @param loggerName The name of the Logger.
-     * @param includeLocation whether location should be passed downstream
-     * @param refs An array of Appender names.
-     * @param properties Properties to pass to the Logger.
-     * @param config The Configuration.
-     * @param filter A Filter.
-     * @return A new LoggerConfig.
-     * @deprecated Use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
-     */
-    @Deprecated
-    public static LoggerConfig createLogger(@PluginAttribute("additivity") final String additivity,
-            @PluginAttribute("level") final Level level, @PluginAttribute("name") final String loggerName,
-            @PluginAttribute("includeLocation") final String includeLocation,
-            @PluginElement("AppenderRef") final AppenderRef[] refs,
-            @PluginElement("Properties") final Property[] properties, @PluginConfiguration final Configuration config,
-            @PluginElement("Filter") final Filter filter) {
-        if (loggerName == null) {
-            LOGGER.error("Loggers cannot be configured without a name");
-            return null;
-        }
-
-        final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
-        final boolean additive = Booleans.parseBoolean(additivity, true);
-
-        return new LoggerConfig(name, appenderRefs, filter, level, additive, properties, config,
-                includeLocation(includeLocation));
-    }
-
-    /**
-     * Factory method to create a LoggerConfig.
-     *
-     * @param additivity True if additive, false otherwise.
+     * @param additivity true if additive, false otherwise.
      * @param level The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
      * @param includeLocation whether location should be passed downstream

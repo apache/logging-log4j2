@@ -93,7 +93,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     public final void stop() {
         super.stop();
         if (this.getManager() != null) {
-            this.getManager().release();
+            this.getManager().close();
         }
     }
 
@@ -130,7 +130,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
                 manager.startup();
             }
             this.manager = manager;
-            old.release();
+            old.close();
         } finally {
             this.writeLock.unlock();
         }

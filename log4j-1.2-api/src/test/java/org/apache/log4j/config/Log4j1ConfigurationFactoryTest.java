@@ -18,71 +18,95 @@ package org.apache.log4j.config;
 
 import java.net.URL;
 
+import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
+import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.layout.XmlLayout;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class Log4j1ConfigurationFactoryTest {
 
     private Layout<?> testConsole(final String configResource) throws Exception {
         final URL configLocation = ClassLoader.getSystemResource(configResource);
-        Assert.assertNotNull(configLocation);
-        final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration("test",
-                configLocation.toURI());
-        Assert.assertNotNull(configuration);
+        assertNotNull(configLocation);
+        final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null,
+                "test", configLocation.toURI());
+        assertNotNull(configuration);
         final ConsoleAppender appender = configuration.getAppender("Console");
-        Assert.assertNotNull(appender);
-        // Can't set ImmediateFlush for a Console Appender in Log4j 2 like you can in 1.2
-        Assert.assertTrue(appender.getImmediateFlush());
-        Assert.assertEquals(Target.SYSTEM_ERR, appender.getTarget());
+        assertNotNull(appender);
+        assertEquals(Target.SYSTEM_ERR, appender.getTarget());
         //
         final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
-        Assert.assertNotNull(loggerConfig);
-        Assert.assertEquals(Level.DEBUG, loggerConfig.getLevel());
+        assertNotNull(loggerConfig);
+        assertEquals(Level.DEBUG, loggerConfig.getLevel());
+        return appender.getLayout();
+    }
+
+    private Layout<?> testFile(final String configResource) throws Exception {
+        final URL configLocation = ClassLoader.getSystemResource(configResource);
+        assertNotNull(configLocation);
+        final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null,
+        		"test", configLocation.toURI());
+        assertNotNull(configuration);
+        final FileAppender appender = configuration.getAppender("File");
+        assertNotNull(appender);
+        assertEquals("target/mylog.txt", appender.getFileName());
+        //
+        final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
+        assertNotNull(loggerConfig);
+        assertEquals(Level.DEBUG, loggerConfig.getLevel());
         return appender.getLayout();
     }
 
     @Test
     public void testConsoleEnhancedPatternLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-EnhancedPatternLayout.properties");
-        Assert.assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
+        assertEquals("%d{ISO8601} [%t][%c] %-5p %properties %ndc: %m%n", layout.getConversionPattern());
     }
 
     @Test
     public void testConsoleHtmlLayout() throws Exception {
-        final Layout<?> layout = testConsole("config-1.2/log4j-console-HtmlLayout.properties");
-        Assert.assertTrue(layout instanceof HtmlLayout);
+        final HtmlLayout layout = (HtmlLayout) testConsole("config-1.2/log4j-console-HtmlLayout.properties");
+        assertEquals("Headline", layout.getTitle());
+        assertTrue(layout.isLocationInfo());
     }
 
     @Test
     public void testConsolePatternLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-PatternLayout.properties");
-        Assert.assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
+        assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
     }
 
     @Test
     public void testConsoleSimpleLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-SimpleLayout.properties");
-        Assert.assertEquals("%level - %m%n", layout.getConversionPattern());
+        assertEquals("%level - %m%n", layout.getConversionPattern());
     }
 
     @Test
     public void testConsoleTtccLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-TTCCLayout.properties");
-        Assert.assertEquals("%relative [%threadName] %level %logger - %m%n", layout.getConversionPattern());
+        assertEquals("%r [%t] %p %notEmpty{%ndc }- %m%n", layout.getConversionPattern());
     }
 
     @Test
     public void testConsoleXmlLayout() throws Exception {
-        final Layout<?> layout = testConsole("config-1.2/log4j-console-XmlLayout.properties");
-        Assert.assertTrue(layout instanceof XmlLayout);
+        final Log4j1XmlLayout layout = (Log4j1XmlLayout) testConsole("config-1.2/log4j-console-XmlLayout.properties");
+        assertTrue(layout.isLocationInfo());
+        assertFalse(layout.isProperties());
+    }
+
+    @Test
+    public void testFileSimpleLayout() throws Exception {
+        final PatternLayout layout = (PatternLayout) testFile("config-1.2/log4j-file-SimpleLayout.properties");
+        assertEquals("%level - %m%n", layout.getConversionPattern());
     }
 }

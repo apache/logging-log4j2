@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -310,4 +309,9 @@ public final class Loader {
     public static boolean isClassAvailable(final String className) {
         return LoaderUtil.isClassAvailable(className);
     }
+
+    public static boolean isJansiAvailable() {
+        return isClassAvailable("org.fusesource.jansi.AnsiRenderer");
+    }
+
 }

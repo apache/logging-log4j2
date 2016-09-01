@@ -169,17 +169,17 @@
             Use the prefix <code>jvmrunargs</code> to access JVM arguments.
           </p>
           <p>
-            See the Javadocs for 
+            See the Javadocs for
             <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">
             java.lang.management.RuntimeMXBean.getInputArguments()
             </a>.
           </p>
-          <p><strong>Java's JMX module is not available on Android.</strong></p>
+          <p><strong>Java's JMX module is not available on Android or on Google App Engine.</strong></p>
         </subsection>
         <a name="Log4jConfigLookup"/>
         <subsection name="Log4j Configuration Location Lookup">
           <p>
-            Log4j configuration properties. The expressions 
+            Log4j configuration properties. The expressions
             <code>${log4j:configLocation}</code> and <code>${log4j:configParentLocation}</code>
             respectively provide the absolute path to the log4j configuration file
             and its parent folder.
@@ -284,7 +284,7 @@ public static void main(String args[]) {
     <Pattern>%d %m%n</Pattern>
   </PatternLayout>
 </File>]]></pre>
-        </subsection>  
+        </subsection>
         <a name="MapLookup"/>
         <subsection name="Map Lookup">
           <p>
@@ -363,7 +363,7 @@ Configuration:
     Root:
       level: trace
       AppenderRef:
-        - ref: ROUTING_APPENDER]]></pre>          
+        - ref: ROUTING_APPENDER]]></pre>
           <pre class="prettyprint linenums"><![CDATA[
 public static final Marker SQL = MarkerFactory.getMarker("SQL");
 public static final Marker PAYLOAD = MarkerFactory.getMarker("PAYLOAD");
@@ -380,11 +380,11 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
             <code>sql.log</code>, the log event with the <code>PAYLOAD</code> marker to <code>payload.log</code>, and so on.
           </p>
           <p>
-            You can use the notation <code>"${marker:name}"</code> and <code>"$${marker:name}"</code> to check for the 
-            existence of a marker where <code>name</code> is the marker name. If the marker exists, the expression returns 
-            the name, otherwise <code>null</code>. 
+            You can use the notation <code>"${marker:name}"</code> and <code>"$${marker:name}"</code> to check for the
+            existence of a marker where <code>name</code> is the marker name. If the marker exists, the expression returns
+            the name, otherwise <code>null</code>.
           </p>
-        </subsection>        
+        </subsection>
         <a name="StructuredDataLookup"/>
         <subsection name="Structured Data Lookup">
           <p>

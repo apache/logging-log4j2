@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.junit;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
@@ -41,14 +43,18 @@ import static org.junit.Assert.*;
  */
 public class LoggerContextRule implements TestRule {
 
+    public static LoggerContextRule createShutdownTimeoutLoggerContextRule(String config) {
+        return new LoggerContextRule(config, 10, TimeUnit.SECONDS);
+    }
+    
     private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
     private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
     private final String configLocation;
-    private LoggerContext context;
-
+    private LoggerContext loggerContext;
     private Class<? extends ContextSelector> contextSelectorClass;
-
     private String testClassName;
+    private long shutdownTimeout;
+    private TimeUnit shutdownTimeUnit;
 
     /**
      * Constructs a new LoggerContextRule for a given configuration file.
@@ -67,11 +73,21 @@ public class LoggerContextRule implements TestRule {
      *            path to configuration file
      * @param contextSelectorClass
      *            custom ContextSelector class to use instead of default
-     * @since 2.5
      */
     public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass) {
+        this(configLocation, contextSelectorClass, 0, null);
+    }
+
+    public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass,
+            final long shutdownTimeout, final TimeUnit shutdownTimeUnit) {
         this.configLocation = configLocation;
         this.contextSelectorClass = contextSelectorClass;
+        this.shutdownTimeout = shutdownTimeout;
+        this.shutdownTimeUnit = shutdownTimeUnit;
+    }
+
+    public LoggerContextRule(String config, int shutdownTimeout, TimeUnit shutdownTimeUnit) {
+        this(config, null, shutdownTimeout, shutdownTimeUnit);
     }
 
     @Override
@@ -87,15 +103,20 @@ public class LoggerContextRule implements TestRule {
                 if (contextSelectorClass != null) {
                     System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, contextSelectorClass.getName());
                 }
+                // TODO Consider instead of the above:
+                // LogManager.setFactory(new Log4jContextFactory(LoaderUtil.newInstanceOf(contextSelectorClass)));
                 System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
                 System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
-                context = Configurator.initialize(description.getDisplayName(),
+                loggerContext = Configurator.initialize(description.getDisplayName(),
                         description.getTestClass().getClassLoader(), configLocation);
                 try {
                     base.evaluate();
                 } finally {
-                    Configurator.shutdown(context);
-                    context = null;
+                    if (!Configurator.shutdown(loggerContext, shutdownTimeout, shutdownTimeUnit)) {
+                        StatusLogger.getLogger().error("Logger context {} did not shutdown completely after {} {}.",
+                                loggerContext.getName(), shutdownTimeout, shutdownTimeUnit);
+                    }
+                    loggerContext = null;
                     contextSelectorClass = null;
                     StatusLogger.getLogger().reset();
                     System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
@@ -139,7 +160,7 @@ public class LoggerContextRule implements TestRule {
      * @return this LoggerContext's Configuration.
      */
     public Configuration getConfiguration() {
-        return context.getConfiguration();
+        return loggerContext.getConfiguration();
     }
 
     /**
@@ -147,8 +168,8 @@ public class LoggerContextRule implements TestRule {
      *
      * @return the current LoggerContext.
      */
-    public LoggerContext getContext() {
-        return context;
+    public LoggerContext getLoggerContext() {
+        return loggerContext;
     }
 
     /**
@@ -174,7 +195,7 @@ public class LoggerContextRule implements TestRule {
      * @return the test class's named Logger.
      */
     public Logger getLogger() {
-        return context.getLogger(testClassName);
+        return loggerContext.getLogger(testClassName);
     }
 
     /**
@@ -185,7 +206,7 @@ public class LoggerContextRule implements TestRule {
      * @return the named Logger.
      */
     public Logger getLogger(final String name) {
-        return context.getLogger(name);
+        return loggerContext.getLogger(name);
     }
 
     /**
@@ -228,7 +249,7 @@ public class LoggerContextRule implements TestRule {
      * @return the root logger.
      */
     public Logger getRootLogger() {
-        return context.getRootLogger();
+        return loggerContext.getRootLogger();
     }
 
     @Override
@@ -246,8 +267,8 @@ public class LoggerContextRule implements TestRule {
         return RuleChain.outerRule(new CleanFiles(files)).around(this);
     }
 
-    public RuleChain withCleanFoldersRule(final boolean before, final boolean after, final String... folders) {
-        return RuleChain.outerRule(new CleanFolders(before, after, folders)).around(this);
+    public RuleChain withCleanFoldersRule(final boolean before, final boolean after, final int maxTries, final String... folders) {
+        return RuleChain.outerRule(new CleanFolders(before, after, maxTries, folders)).around(this);
     }
 
     public RuleChain withCleanFoldersRule(final String... folders) {

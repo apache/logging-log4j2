@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -100,9 +101,16 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
     public void stop() {
         try {
             messageConsumer.close();
-        } catch (final JMSException ignored) {
+        } catch (final JMSException e) {
+            LOGGER.debug("Exception closing {}", messageConsumer, e);
         }
-        jmsManager.release();
+        jmsManager.close();
+    }
+
+    @Override
+    public boolean stop(long timeout, TimeUnit timeUnit) {
+        stop();
+        return true;
     }
 
     @Override

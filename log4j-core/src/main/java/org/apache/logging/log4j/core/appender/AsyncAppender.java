@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
  * Appends to one or more Appenders asynchronously. You can configure an AsyncAppender with one or more Appenders and an
@@ -368,7 +369,7 @@ public final class AsyncAppender extends AbstractAppender {
     /**
      * Thread that calls the Appenders.
      */
-    private class AsyncThread extends Thread {
+    private class AsyncThread extends Log4jThread {
 
         private volatile boolean shutdown = false;
         private final List<AppenderControl> appenders;

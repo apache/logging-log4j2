@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.configuration;
 
+import java.net.URI;
+
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import java.net.URI;
 
 /**
  * Factory to construct a  CustomConfiguration.
@@ -41,13 +43,13 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
      * @return The Configuration.
      */
     @Override
-    public Configuration getConfiguration(final ConfigurationSource source) {
-        return new CustomConfiguration(source);
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return new CustomConfiguration(loggerContext, source);
     }
 
     @Override
-    public Configuration getConfiguration(final String name, final URI configLocation) {
-        return new CustomConfiguration();
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+        return new CustomConfiguration(loggerContext);
     }
 
     /**

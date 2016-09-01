@@ -38,13 +38,13 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
     protected static CSVFormat createFormat(final String format, final Character delimiter, final Character escape,
             final Character quote, final QuoteMode quoteMode, final String nullString, final String recordSeparator) {
         CSVFormat csvFormat = CSVFormat.valueOf(format);
-        if (delimiter != null) {
+        if (isNotNul(delimiter)) {
             csvFormat = csvFormat.withDelimiter(delimiter);
         }
-        if (escape != null) {
+        if (isNotNul(escape)) {
             csvFormat = csvFormat.withEscape(escape);
         }
-        if (quote != null) {
+        if (isNotNul(quote)) {
             csvFormat = csvFormat.withQuote(quote);
         }
         if (quoteMode != null) {
@@ -57,6 +57,10 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
             csvFormat = csvFormat.withRecordSeparator(recordSeparator);
         }
         return csvFormat;
+    }
+
+    private static boolean isNotNul(final Character character) {
+        return character != null && character.charValue() != 0;
     }
 
     private final CSVFormat format;

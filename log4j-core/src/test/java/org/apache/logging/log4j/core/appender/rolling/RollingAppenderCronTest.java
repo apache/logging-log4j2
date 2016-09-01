@@ -34,7 +34,6 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
@@ -49,15 +48,15 @@ public class RollingAppenderCronTest {
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
     private static final String FILE = "target/rolling-cron/rollingtest.log";
-    private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yy-HH-mm-ss");
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
+        // TODO Is there a better way to test than putting the thread to sleep all over the place?
         final Logger logger = loggerContextRule.getLogger();
         File file = new File(FILE);
         assertTrue("Log file does not exist", file.exists());
@@ -75,7 +74,7 @@ public class RollingAppenderCronTest {
                 succeeded = true;
                 break;
             }
-            logger.debug("Adding additional event " + i);
+            logger.debug("Sleeping #" + i);
             Thread.sleep(100); // Allow time for rollover to complete
         }
         if (!succeeded) {
@@ -95,7 +94,7 @@ public class RollingAppenderCronTest {
             logger.debug("Adding new event {}", i);
         }
         Thread.sleep(1000);
-        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getContext().getConfiguration().getAppender("RollingFile");
+        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
         assertNotNull("No triggering policy", policy);
         assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);

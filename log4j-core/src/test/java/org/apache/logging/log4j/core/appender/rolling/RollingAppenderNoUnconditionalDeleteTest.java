@@ -58,7 +58,7 @@ public class RollingAppenderNoUnconditionalDeleteTest {
 
     public RollingAppenderNoUnconditionalDeleteTest(final String configFile, final String dir) {
         this.directory = new File(dir);
-        this.loggerContextRule = new LoggerContextRule(configFile);
+        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(configFile);
         deleteDir();
         deleteDirParent();
     }

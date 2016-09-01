@@ -38,9 +38,11 @@ import org.junit.rules.RuleChain;
  */
 public class RollingAppenderTimeAndSizeTest {
 
+    private static final String CONFIG = "log4j-rolling3.xml";
+
     private static final String DIR = "target/rolling3/test";
 
-    public static LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-rolling3.xml");
+    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);

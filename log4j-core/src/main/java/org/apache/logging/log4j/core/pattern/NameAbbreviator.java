@@ -176,6 +176,7 @@ public abstract class NameAbbreviator {
          */
         private enum Strategy {
             DROP(0) {
+                @Override
                 void abbreviate(final int count, final String original, final StringBuilder destination) {
                     // If a path does not contain enough path elements to drop, none will be dropped.
                     int start = 0;
@@ -192,6 +193,7 @@ public abstract class NameAbbreviator {
                 }
             },
             RETAIN(1) {
+                @Override
                 void abbreviate(final int count, final String original, final StringBuilder destination) {
                     // We subtract 1 from 'len' when assigning to 'end' to avoid out of
                     // bounds exception in return r.substring(end+1, len). This can happen if

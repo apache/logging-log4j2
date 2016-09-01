@@ -108,6 +108,18 @@
         <artifactId>log4j-liquibase</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Scala 2.10 API -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api-scala_2.10</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Scala 2.11 API -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api-scala_2.11</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>

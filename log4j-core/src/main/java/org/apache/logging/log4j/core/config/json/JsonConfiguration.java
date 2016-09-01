@@ -26,9 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -42,6 +40,10 @@ import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Patterns;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Creates a Node hierarchy from a JSON file.
  */
@@ -51,8 +53,8 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
     private final List<Status> status = new ArrayList<>();
     private JsonNode root;
 
-    public JsonConfiguration(final ConfigurationSource configSource) {
-        super(configSource);
+    public JsonConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
+        super(loggerContext, configSource);
         final File configFile = configSource.getFile();
         byte[] buffer;
         try {
@@ -140,7 +142,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             if (source == null) {
                 return null;
             }
-            return new JsonConfiguration(source);
+            return new JsonConfiguration(getLoggerContext(), source);
         } catch (final IOException ex) {
             LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);
         }

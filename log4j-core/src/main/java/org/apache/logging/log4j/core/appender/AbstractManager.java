@@ -23,13 +23,20 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Abstract base class used to register managers.
+ * <p>
+ * This class implements {@link AutoCloseable} mostly to allow unit tests to be written safely and succinctly. While
+ * managers do need to allocate resources (usually on construction) and then free these resources, a manager is longer
+ * lived than other auto-closeable objects like streams. None the less, making a manager AutoCloseable forces readers to
+ * be aware of the the pattern: allocate resources on construction and call {@link #close()} at some point.
+ * </p>
  */
-public abstract class AbstractManager {
+public abstract class AbstractManager implements AutoCloseable {
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -48,11 +55,33 @@ public abstract class AbstractManager {
     protected int count;
 
     private final String name;
+    
+    private final LoggerContext loggerContext;
 
-    protected AbstractManager(final String name) {
+    protected AbstractManager(final LoggerContext loggerContext, final String name) {
+        this.loggerContext = loggerContext;
         this.name = name;
         LOGGER.debug("Starting {} {}", this.getClass().getSimpleName(), name);
     }
+
+    /**
+     * Called to signify that this Manager is no longer required by an Appender.
+     */
+    @Override
+    public void close() {
+        LOCK.lock();
+        try {
+            --count;
+            if (count <= 0) {
+                MAP.remove(name);
+                LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
+                releaseSub();
+            }
+        } finally {
+            LOCK.unlock();
+        }
+    }
+
 
     /**
      * Retrieves a Manager if it has been previously created or creates a new Manager.
@@ -87,6 +116,7 @@ public abstract class AbstractManager {
     }
 
     public void updateData(final Object data) {
+        // This default implementation does nothing.
     }
 
     /**
@@ -108,6 +138,7 @@ public abstract class AbstractManager {
      * lock is held.
      */
     protected void releaseSub() {
+        // This default implementation does nothing.
     }
 
     protected int getCount() {
@@ -115,20 +146,23 @@ public abstract class AbstractManager {
     }
 
     /**
-     * Called to signify that this Manager is no longer required by an Appender.
+     * Gets the logger context used to create this instance or null. The logger context is usually set when an appender
+     * creates a manager and that appender is given a Configuration. Not all appenders are given a Configuration by
+     * their factory method or builder.
+     * 
+     * @return the logger context used to create this instance or null.
      */
+    public LoggerContext getLoggerContext() {
+        return loggerContext;
+    }
+
+    /**
+     * Called to signify that this Manager is no longer required by an Appender.
+     * @deprecated Use {@link #close()}.
+     */
+    @Deprecated
     public void release() {
-        LOCK.lock();
-        try {
-            --count;
-            if (count <= 0) {
-                MAP.remove(name);
-                LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
-                releaseSub();
-            }
-        } finally {
-            LOCK.unlock();
-        }
+        close();
     }
 
     /**

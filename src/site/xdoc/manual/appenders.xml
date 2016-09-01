@@ -427,6 +427,12 @@
               <td>When bufferedIO is true, this is the buffer size, the default is 8192 bytes.</td>
             </tr>
             <tr>
+              <td>createOnDemand</td>
+              <td>boolean</td>
+              <td>The appender creates the file on-demand. The appender only creates the file when a log event 
+                passes all filters and is routed to this appender.</td>
+            </tr>
+            <tr>
               <td>filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
@@ -454,7 +460,8 @@
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+                of "%m%n" will be used.</td>
             </tr>
             <tr>
               <td>locking</td>
@@ -1334,7 +1341,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
         <a name="KafkaAppender"/>
         <subsection name="KafkaAppender">
-          <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.</p>
+          <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.</p> Each log event is sent as a Kafka record with no key.
           <table>
             <caption align="top">KafkaAppender Parameters</caption>
             <tr>
@@ -1379,8 +1386,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>properties</td>
               <td>Property[]</td>
               <td>
-                You can set any properties in <a href="http://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>.
+                You can set properties in <a href="http://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>.
                 You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others.
+                Do not set the <code>value.serializer</code> property.
               </td>
             </tr>
           </table>
@@ -1513,7 +1521,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
             <td>layout</td>
             <td>Layout</td>
-            <td>The Layout to use to format the LogEvent</td>
+            <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
           </tr>
           <tr>
             <td>name</td>
@@ -1922,7 +1931,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
 						<td>layout</td>
 						<td>Layout</td>
-						<td>The Layout to use to format the LogEvent</td>
+						<td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
 					</tr>
           <tr>
 						<td>name</td>
@@ -2195,6 +2205,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>When bufferedIO is true, this is the buffer size, the default is 8192 bytes.</td>
             </tr>
             <tr>
+              <td>createOnDemand</td>
+              <td>boolean</td>
+              <td>The appender creates the file on-demand. The appender only creates the file when a log event 
+                passes all filters and is routed to this appender.</td>
+            </tr>
+            <tr>
               <td>filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
@@ -2233,7 +2249,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+                of "%m%n" will be used.</td>
             </tr>
 
             <tr>
@@ -3119,7 +3136,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
 						<td>layout</td>
 						<td>Layout</td>
-						<td>The Layout to use to format the LogEvent</td>
+						<td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
 					</tr>
 
           <tr>
@@ -3416,7 +3434,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent. The default is SerializedLayout.</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied <a href="layouts.html#HTMLLayout">HTML layout</a> will be used.</td>
             </tr>
             <tr>
               <td>name</td>
@@ -3879,9 +3897,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>Layout</td>
               <td>layout</td>
-              <td>The Layout of the Appender. If you do not specify a layout, the appender uses the default
-              pattern appender returned by
-              <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html#createDefaultLayout()">PatternLayout.createDefaultLayout()</a>.</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+                of "%m%n" will be used.</td>
             </tr>
             <tr>
               <td>Filters</td>

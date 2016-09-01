@@ -41,7 +41,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param bufferSize The size of the log event buffer.
      */
     protected AbstractDatabaseManager(final String name, final int bufferSize) {
-        super(name);
+        super(null, name);
         this.bufferSize = bufferSize;
         this.buffer = new ArrayList<>(bufferSize + 1);
     }
@@ -64,7 +64,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
                 this.startupInternal();
                 this.running = true;
             } catch (final Exception e) {
-                logError("could not perform database startup operations", e);
+                logError("Could not perform database startup operations", e);
             }
         }
     }
@@ -78,7 +78,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     protected abstract void shutdownInternal() throws Exception;
 
     /**
-     * This method is called from the {@link #release()} method when the appender is stopped or the appender's manager
+     * This method is called from the {@link #close()} method when the appender is stopped or the appender's manager
      * is replaced. If it has not already been called, it calls {@link #shutdownInternal()} and catches any exceptions
      * it might throw.
      */
@@ -88,7 +88,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
             try {
                 this.shutdownInternal();
             } catch (final Exception e) {
-                logWarn("caught exception while performing database shutdown operations", e);
+                logWarn("Caught exception while performing database shutdown operations", e);
             } finally {
                 this.running = false;
             }

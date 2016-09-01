@@ -33,7 +33,7 @@ public class AbstractDatabaseAppenderTest {
         this.manager = createMockBuilder(LocalAbstractDatabaseManager.class)
                 .withConstructor(String.class, int.class)
                 .withArgs(name, 0)
-                .addMockedMethod("release")
+                .addMockedMethod("close")
                 .createStrictMock();
 
         this.appender = createMockBuilder(LocalAbstractDatabaseAppender.class)
@@ -79,7 +79,7 @@ public class AbstractDatabaseAppenderTest {
 
         verify(this.manager, this.appender);
         reset(this.manager, this.appender);
-        this.manager.release();
+        this.manager.close();
         expectLastCall();
         replay(this.manager, this.appender);
 
@@ -98,10 +98,10 @@ public class AbstractDatabaseAppenderTest {
 
         verify(this.manager, this.appender);
         reset(this.manager, this.appender);
-        this.manager.release();
+        this.manager.close();
         expectLastCall();
         final LocalAbstractDatabaseManager newManager = createMockBuilder(LocalAbstractDatabaseManager.class)
-                .withConstructor(String.class, int.class).withArgs("name", 0).addMockedMethod("release")
+                .withConstructor(String.class, int.class).withArgs("name", 0).addMockedMethod("close")
                 .createStrictMock();
         newManager.startupInternal();
         expectLastCall();
@@ -111,7 +111,7 @@ public class AbstractDatabaseAppenderTest {
 
         verify(this.manager, this.appender, newManager);
         reset(this.manager, this.appender, newManager);
-        newManager.release();
+        newManager.close();
         expectLastCall();
         replay(this.manager, this.appender, newManager);
 

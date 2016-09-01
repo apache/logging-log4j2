@@ -27,9 +27,11 @@ import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -43,9 +45,11 @@ public class HtmlLayoutTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+
     @BeforeClass
     public static void setupClass() {
-        ThreadContext.clearAll();
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
@@ -54,7 +58,6 @@ public class HtmlLayoutTest {
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
-        ThreadContext.clearAll();
     }
 
     private static final String body = "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";

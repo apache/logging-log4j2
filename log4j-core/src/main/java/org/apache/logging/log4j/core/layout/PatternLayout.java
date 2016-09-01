@@ -64,9 +64,9 @@ public final class PatternLayout extends AbstractStringLayout {
     public static final String DEFAULT_CONVERSION_PATTERN = "%m%n";
 
     /**
-     * A conversion pattern equivalent to the TTCCCLayout. Current value is <b>%r [%t] %p %c %x - %m%n</b>.
+     * A conversion pattern equivalent to the TTCCLayout. Current value is <b>%r [%t] %p %c %notEmpty{%x }- %m%n</b>.
      */
-    public static final String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %x - %m%n";
+    public static final String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %notEmpty{%x }- %m%n";
 
     /**
      * A simple pattern. Current value is <b>%d [%t] %p %c - %m%n</b>.
@@ -84,7 +84,7 @@ public final class PatternLayout extends AbstractStringLayout {
     private final Serializer eventSerializer;
 
     /**
-     * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
+     * Constructs a PatternLayout using the supplied conversion pattern.
      *
      * @param config The Configuration.
      * @param replace The regular expression to match.
@@ -408,13 +408,13 @@ public final class PatternLayout extends AbstractStringLayout {
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
 
         @PluginElement("PatternSelector")
-        private PatternSelector patternSelector = null;
+        private PatternSelector patternSelector;
 
         @PluginConfiguration
-        private Configuration configuration = null;
+        private Configuration configuration;
 
         @PluginElement("Replace")
-        private RegexReplacement regexReplacement = null;
+        private RegexReplacement regexReplacement;
 
         // LOG4J2-783 use platform default by default
         @PluginBuilderAttribute
@@ -424,13 +424,13 @@ public final class PatternLayout extends AbstractStringLayout {
         private boolean alwaysWriteExceptions = true;
 
         @PluginBuilderAttribute
-        private boolean noConsoleNoAnsi = false;
+        private boolean noConsoleNoAnsi;
 
         @PluginBuilderAttribute
-        private String header = null;
+        private String header;
 
         @PluginBuilderAttribute
-        private String footer = null;
+        private String footer;
 
         private Builder() {
         }

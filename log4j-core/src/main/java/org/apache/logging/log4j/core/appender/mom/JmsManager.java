@@ -52,7 +52,7 @@ public class JmsManager extends AbstractManager {
     private JmsManager(final String name, final JndiManager jndiManager, final String connectionFactoryName,
                        final String destinationName, final String username, final String password)
         throws NamingException, JMSException {
-        super(name);
+        super(null, name);
         this.jndiManager = jndiManager;
         final ConnectionFactory connectionFactory = this.jndiManager.lookup(connectionFactoryName);
         if (username != null && password != null) {
@@ -132,7 +132,7 @@ public class JmsManager extends AbstractManager {
             this.connection.close();
         } catch (final JMSException ignored) {
         }
-        this.jndiManager.release();
+        this.jndiManager.close();
     }
 
     private static class JmsConfiguration {

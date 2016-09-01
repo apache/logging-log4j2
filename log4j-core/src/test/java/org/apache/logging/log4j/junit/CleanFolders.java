@@ -23,10 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Assert;
 
 /**
  * A JUnit test rule to automatically delete folders recursively before (optional) and after (optional) a test is run.
@@ -34,55 +30,24 @@ import org.junit.Assert;
 public class CleanFolders extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;
 
-    public CleanFolders(final boolean before, final boolean after, final File... files) {
-        super(before, after, files);
+    public CleanFolders(final boolean before, final boolean after, final int maxTries, final File... files) {
+        super(before, after, maxTries, files);
     }
 
-    public CleanFolders(final boolean before, final boolean after, final String... fileNames) {
-        super(before, after, fileNames);
+    public CleanFolders(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
+        super(before, after, maxTries, fileNames);
     }
 
     public CleanFolders(final File... folders) {
-        super(true, true, folders);
+        super(true, true, MAX_TRIES, folders);
+    }
+
+    public CleanFolders(final Path... paths) {
+        super(true, true, MAX_TRIES, paths);
     }
 
     public CleanFolders(final String... folderNames) {
-        super(true, true, folderNames);
-    }
-
-    @Override
-    protected void clean() {
-        Map<Path, IOException> failures = new HashMap<>();
-
-        for (final File folder : getFiles()) {
-            final Path path = folder.toPath();
-            for (int i = 0; i < MAX_TRIES; i++) {
-                try {
-                    cleanFolder(path);
-                    if (failures.containsKey(path)) {
-                        failures.remove(path);
-                    }
-                    // break from MAX_TRIES and goes to the next folder
-                    break;
-                } catch (final IOException e) {
-                    // We will try again.
-                    failures.put(path, e);
-                }
-            }
-        }
-        if (failures.size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            boolean first = true;
-            for (Map.Entry<Path, IOException> failure : failures.entrySet()) {
-                failure.getValue().printStackTrace();
-                if (!first) {
-                    sb.append(", ");
-                }
-                sb.append(failure.getKey()).append(" failed with ").append(failure.getValue());
-                first = false;
-            }
-            Assert.fail(sb.toString());
-        }
+        super(true, true, MAX_TRIES, folderNames);
     }
 
     private void cleanFolder(final Path folder) throws IOException {
@@ -101,5 +66,11 @@ public class CleanFolders extends AbstractExternalFileCleaner {
                 }
             });
         }
+    }
+
+    @Override
+    protected boolean clean(Path path, int tryIndex) throws IOException {
+        cleanFolder(path);
+        return true;
     }
 }

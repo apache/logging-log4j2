@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config.builder.api;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class Component {
 
-    private final Map<String, String> attributes = new HashMap<>();
+    private final Map<String, String> attributes = new LinkedHashMap<>();
     private final List<Component> components = new ArrayList<>();
     private final String pluginType;
     private final String value;

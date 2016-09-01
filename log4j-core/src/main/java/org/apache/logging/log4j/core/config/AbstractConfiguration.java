@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,6 +40,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
@@ -122,11 +124,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final WatchManager watchManager = new WatchManager(configurationScheduler);
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
     private NanoClock nanoClock = new DummyNanoClock();
-
+    private WeakReference<LoggerContext> loggerContext;
+    
     /**
      * Constructor.
      */
-    protected AbstractConfiguration(final ConfigurationSource configurationSource) {
+    protected AbstractConfiguration(LoggerContext loggerContext, final ConfigurationSource configurationSource) {
+        this.loggerContext = new WeakReference<>(loggerContext);
+        // The loggerContext is null for the NullConfiguration class.
+        // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager(Node.CATEGORY);
@@ -182,14 +188,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     @Override
-	public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
-	    // lazily instantiate only when requested by AsyncLoggers:
-	    // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
-	    if (asyncLoggerConfigDisruptor == null) {
-	        asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor();
-	    }
-		return asyncLoggerConfigDisruptor;
-	}
+    public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
+        // lazily instantiate only when requested by AsyncLoggers:
+        // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
+        if (asyncLoggerConfigDisruptor == null) {
+            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor();
+        }
+        return asyncLoggerConfigDisruptor;
+    }
 
     /**
      * Initialize the configuration.
@@ -236,7 +242,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
-        	asyncLoggerConfigDisruptor.start();
+            asyncLoggerConfigDisruptor.start();
         }
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggerConfigs.values()) {
@@ -259,13 +265,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         for (final LoggerConfig logger : loggerConfigs.values()) {
             if (logger instanceof AsyncLoggerConfig) {
-            	return true;
+                return true;
             }
         }
-		return false;
-	}
+        return false;
+    }
 
-	/**
+    /**
      * Tear down the configuration.
      */
     @Override
@@ -378,6 +384,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     public void setup() {
+        // default does nothing, subclasses do work.
     }
 
     protected Level getDefaultStatus() {
@@ -786,6 +793,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return root;
     }
 
+    @Override
+    public LoggerContext getLoggerContext() {
+        return loggerContext.get();
+    }
+    
     /**
      * Returns the root Logger.
      *

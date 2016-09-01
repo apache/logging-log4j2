@@ -252,7 +252,7 @@ public class LoggerTest {
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
     }
 
-    private static void assertMessageFactoryInstanceOf(MessageFactory factory, final Class cls) {
+    private static void assertMessageFactoryInstanceOf(MessageFactory factory, final Class<?> cls) {
         if (factory instanceof MessageFactory2Adapter) {
             factory = ((MessageFactory2Adapter) factory).getOriginal();
         }

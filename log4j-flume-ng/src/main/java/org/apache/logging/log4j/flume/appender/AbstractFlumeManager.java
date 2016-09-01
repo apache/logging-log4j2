@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
 public abstract class AbstractFlumeManager extends AbstractManager {
 
     public AbstractFlumeManager(final String name) {
-        super(name);
+        super(null, name);
     }
 
     public abstract void send(Event event);

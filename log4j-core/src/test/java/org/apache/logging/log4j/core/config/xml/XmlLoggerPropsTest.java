@@ -66,14 +66,18 @@ public class XmlLoggerPropsTest {
                 containsString("phrasex=****"),
                 containsString("test=test"),
                 containsString("test2=test2default"),
-                containsString("test3=Unknown")
+                containsString("test3=Unknown"),
+                containsString("attribKey=attribValue"),
+                containsString("duplicateKey=nodeValue")
             ));
             assertThat(events.get(1), allOf(
                 containsString("user="),
                 containsString("phrasex=****"),
                 containsString("test=test"),
                 containsString("test2=test2default"),
-                containsString("test3=Unknown")
+                containsString("test3=Unknown"),
+                containsString("attribKey=attribValue"),
+                containsString("duplicateKey=nodeValue")
             ));
         } finally {
             System.clearProperty("test");

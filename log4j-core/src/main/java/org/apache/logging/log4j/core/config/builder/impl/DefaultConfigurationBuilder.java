@@ -16,11 +16,16 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -38,6 +43,10 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
 /**
  * @param <T> The BuiltConfiguration type.
  * @since 2.4
@@ -53,14 +62,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component scripts;
     private final Class<T> clazz;
     private ConfigurationSource source;
-    private int monitorInterval = 0;
-    private Level level = null;
-    private String verbosity = null;
-    private String packages = null;
-    private String shutdownFlag = null;
-    private String advertiser = null;
-
-    private String name = null;
+    private int monitorInterval;
+    private Level level;
+    private String verbosity;
+    private String destination;
+    private String packages;
+    private String shutdownFlag;
+    private String advertiser;
+    private LoggerContext loggerContext;
+    private String name;
 
     @SuppressWarnings("unchecked")
     public DefaultConfigurationBuilder() {
@@ -151,8 +161,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
             }
-            final Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
-            configuration = constructor.newInstance(source, root);
+            final Constructor<T> constructor = clazz.getConstructor(LoggerContext.class, ConfigurationSource.class, Component.class);
+            configuration = constructor.newInstance(loggerContext, source, root);
             configuration.setMonitorInterval(monitorInterval);
             configuration.getRootNode().getAttributes().putAll(root.getAttributes());
             if (name != null) {
@@ -163,6 +173,9 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             }
             if (verbosity != null) {
                 configuration.getStatusConfiguration().withVerbosity(verbosity);
+            }
+            if (destination != null) {
+                configuration.getStatusConfiguration().withDestination(destination);
             }
             if (packages != null) {
                 configuration.setPluginPackages(packages);
@@ -181,6 +194,126 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             configuration.initialize();
         }
         return configuration;
+    }
+
+    @Override
+    public void writeXmlConfiguration(final OutputStream output) throws IOException {
+        try {
+            XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(output);
+            writeXmlConfiguration(xmlWriter);
+            xmlWriter.close();
+        } catch (XMLStreamException e) {
+            if (e.getNestedException() instanceof IOException) {
+                throw (IOException)e.getNestedException();
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String toXmlConfiguration() {
+        StringWriter sw = new StringWriter();
+        try {
+            XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
+            writeXmlConfiguration(xmlWriter);
+            xmlWriter.close();
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        }
+        return sw.toString();
+    }
+
+    private void writeXmlConfiguration(XMLStreamWriter xmlWriter) throws XMLStreamException {
+        xmlWriter.writeStartDocument();
+        xmlWriter.writeCharacters(System.lineSeparator());
+
+        xmlWriter.writeStartElement("Configuration");
+        if (name != null) {
+            xmlWriter.writeAttribute("name", name);
+        }
+        if (level != null) {
+            xmlWriter.writeAttribute("status", level.name());
+        }
+        if (verbosity != null) {
+            xmlWriter.writeAttribute("verbose", verbosity);
+        }
+        if (destination != null) {
+            xmlWriter.writeAttribute("dest", destination);
+        }
+        if (packages != null) {
+            xmlWriter.writeAttribute("packages", packages);
+        }
+        if (shutdownFlag != null) {
+            xmlWriter.writeAttribute("shutdownHook", shutdownFlag);
+        }
+        if (advertiser != null) {
+            xmlWriter.writeAttribute("advertiser", advertiser);
+        }
+        if (monitorInterval > 0) {
+            xmlWriter.writeAttribute("monitorInterval", String.valueOf(monitorInterval));
+        }
+
+        xmlWriter.writeCharacters(System.lineSeparator());
+
+        writeXmlSection(xmlWriter, properties);
+        writeXmlSection(xmlWriter, scripts);
+        writeXmlSection(xmlWriter, customLevels);
+        if (filters.getComponents().size() == 1) {
+            writeXmlComponent(xmlWriter, filters.getComponents().get(0), 1);
+        } else if (filters.getComponents().size() > 1) {
+            writeXmlSection(xmlWriter, filters);
+        }
+        writeXmlSection(xmlWriter, appenders);
+        writeXmlSection(xmlWriter, loggers);
+
+        xmlWriter.writeEndElement(); // "Configuration"
+        xmlWriter.writeCharacters(System.lineSeparator());
+
+        xmlWriter.writeEndDocument();
+    }
+
+    private void writeXmlSection(XMLStreamWriter xmlWriter, Component component) throws XMLStreamException {
+        if (!component.getAttributes().isEmpty() || !component.getComponents().isEmpty() || component.getValue() != null) {
+            writeXmlComponent(xmlWriter, component, 1);
+        }
+    }
+
+    private void writeXmlComponent(XMLStreamWriter xmlWriter, Component component, int nesting) throws XMLStreamException {
+        if (!component.getComponents().isEmpty() || component.getValue() != null) {
+            writeXmlIndent(xmlWriter, nesting);
+            xmlWriter.writeStartElement(component.getPluginType());
+            writeXmlAttributes(xmlWriter, component);
+            if (!component.getComponents().isEmpty()) {
+                xmlWriter.writeCharacters(System.lineSeparator());
+            }
+            for (Component subComponent : component.getComponents()) {
+                writeXmlComponent(xmlWriter, subComponent, nesting + 1);
+            }
+            if (component.getValue() != null) {
+                xmlWriter.writeCharacters(component.getValue());
+            }
+            if (!component.getComponents().isEmpty()) {
+                writeXmlIndent(xmlWriter, nesting);
+            }
+            xmlWriter.writeEndElement();
+        } else {
+            writeXmlIndent(xmlWriter, nesting);
+            xmlWriter.writeEmptyElement(component.getPluginType());
+            writeXmlAttributes(xmlWriter, component);
+        }
+        xmlWriter.writeCharacters(System.lineSeparator());
+    }
+
+    private void writeXmlIndent(XMLStreamWriter xmlWriter, int nesting) throws XMLStreamException {
+        for (int i = 0; i < nesting; i++) {
+            xmlWriter.writeCharacters("\t");
+        }
+    }
+
+    private void writeXmlAttributes(XMLStreamWriter xmlWriter, Component component) throws XMLStreamException {
+        for (Map.Entry<String, String> attribute : component.getAttributes().entrySet()) {
+            xmlWriter.writeAttribute(attribute.getKey(), attribute.getValue());
+        }
     }
 
     @Override
@@ -211,7 +344,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger", false);
+        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger");
     }
 
     @Override
@@ -221,7 +354,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final String level) {
-        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger", false);
+        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
     }
 
     @Override
@@ -231,7 +364,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot", false);
+        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot");
     }
 
     @Override
@@ -241,7 +374,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot", false);
+        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot");
     }
 
     @Override
@@ -291,7 +424,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newLogger(final String name, final Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString(), true);
+        return new DefaultLoggerComponentBuilder(this, name, level.toString());
     }
 
     @Override
@@ -301,7 +434,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newLogger(final String name, final String level) {
-        return new DefaultLoggerComponentBuilder(this, name, level, true);
+        return new DefaultLoggerComponentBuilder(this, name, level);
     }
 
     @Override
@@ -311,7 +444,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newRootLogger(final Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString(), true);
+        return new DefaultRootLoggerComponentBuilder(this, level.toString());
     }
 
     @Override
@@ -321,7 +454,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public RootLoggerComponentBuilder newRootLogger(final String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level, true);
+        return new DefaultRootLoggerComponentBuilder(this, level);
     }
 
     @Override
@@ -390,8 +523,20 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
+    public ConfigurationBuilder<T> setDestination(String destination) {
+        this.destination = destination;
+        return this;
+    }
+
+    @Override
+    public void setLoggerContext(LoggerContext loggerContext) {
+        this.loggerContext = loggerContext;
+    }
+
+    @Override
     public ConfigurationBuilder<T> addRootProperty(final String key, final String value) {
         root.getAttributes().put(key, value);
         return this;
     }
+
 }

@@ -83,6 +83,7 @@
         <configuration>
           <instructions>
             <!-- we compile against 3.0, but require 2.5 minimum -->
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
             <Import-Package>javax.servlet;version="[2.5,4)",*</Import-Package>
             <Export-Package>org.apache.logging.log4j.web</Export-Package>
           </instructions>

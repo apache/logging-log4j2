@@ -47,7 +47,7 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-accum-count1.xml";
     private static final String DIR = "target/rolling-with-delete-accum-count1/test";
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);

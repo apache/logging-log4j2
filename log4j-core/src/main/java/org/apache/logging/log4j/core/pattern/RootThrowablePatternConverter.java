@@ -65,7 +65,7 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
                 super.format(event, toAppendTo);
                 return;
             }
-            final String trace = proxy.getCauseStackTraceAsString(options.getPackages());
+            final String trace = proxy.getCauseStackTraceAsString(options.getIgnorePackages());
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');

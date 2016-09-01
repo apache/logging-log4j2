@@ -146,7 +146,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             this.byteBuffer = mappedBuffer;
             mappingOffset = offset;
         } catch (final Exception ex) {
-            logError("unable to remap", ex);
+            logError("Unable to remap", ex);
         }
     }
 
@@ -156,13 +156,13 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    public synchronized void close() {
+    public synchronized void closeOutputStream() {
         final long position = mappedBuffer.position();
         final long length = mappingOffset + position;
         try {
             unsafeUnmap(mappedBuffer);
         } catch (final Exception ex) {
-            logError("unable to unmap MappedBuffer", ex);
+            logError("Unable to unmap MappedBuffer", ex);
         }
         try {
             LOGGER.debug("MMapAppender closing. Setting {} length to {} (offset {} + position {})", getFileName(),
@@ -170,7 +170,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             randomAccessFile.setLength(length);
             randomAccessFile.close();
         } catch (final IOException ex) {
-            logError("unable to close MemoryMappedFile", ex);
+            logError("Unable to close MemoryMappedFile", ex);
         }
     }
 

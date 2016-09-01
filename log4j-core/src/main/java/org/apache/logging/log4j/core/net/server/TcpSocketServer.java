@@ -45,7 +45,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
     /**
      * Thread that processes the events.
      */
-    private class SocketHandler extends Thread {
+    private class SocketHandler extends Log4jThread {
 
         private final T inputStream;
 

@@ -38,8 +38,7 @@ public class ConsoleAppenderAnsiStyleJira272Main {
     public static void main(final String[] args) {
         // System.out.println(System.getProperty("java.class.path"));
         final String config = args.length == 0 ? "target/test-classes/log4j2-272.xml" : args[0];
-        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
-        try {
+        try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config)) {
             LOG.fatal("Fatal message.");
             LOG.error("Error message.");
             LOG.warn("Warning message.");
@@ -54,8 +53,6 @@ public class ConsoleAppenderAnsiStyleJira272Main {
             }
             LOG.warn("this is ok \n And all \n this have only\t\tblack colour \n and here is colour again?");
             LOG.info("Information message.");
-        } finally {
-            Configurator.shutdown(ctx);
         }
     }
 

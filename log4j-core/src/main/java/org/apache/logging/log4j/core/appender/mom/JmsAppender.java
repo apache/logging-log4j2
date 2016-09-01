@@ -70,7 +70,7 @@ public class JmsAppender extends AbstractAppender {
 
     @Override
     public void stop() {
-        this.manager.release();
+        this.manager.close();
         super.stop();
     }
 
