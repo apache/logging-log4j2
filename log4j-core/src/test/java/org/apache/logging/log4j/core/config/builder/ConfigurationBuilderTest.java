@@ -29,7 +29,7 @@ import org.junit.Test;
 
 public class ConfigurationBuilderTest {
 
-    private static final String EOL = System.lineSeparator();
+    private static final String EOL = "\n"; // HACK! System.lineSeparator();
 
     private void addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
         builder.setConfigurationName(name);
