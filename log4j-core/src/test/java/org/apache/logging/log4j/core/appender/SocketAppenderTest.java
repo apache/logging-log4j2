@@ -118,7 +118,7 @@ public class SocketAppenderTest {
         testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
-    static void testTcpAppender(TcpSocketTestServer tcpTestServer, final Logger rootLogger, final int bufferSize)
+    static void testTcpAppender(TcpSocketTestServer tcpTestServer, final Logger logger, final int bufferSize)
             throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
@@ -134,19 +134,19 @@ public class SocketAppenderTest {
         Assert.assertEquals(bufferSize, appender.getManager().getByteBuffer().capacity());
 
         // set appender on root and set level to debug
-        rootLogger.addAppender(appender);
-        rootLogger.setAdditive(false);
-        rootLogger.setLevel(Level.DEBUG);
+        logger.addAppender(appender);
+        logger.setAdditive(false);
+        logger.setLevel(Level.DEBUG);
         final String tcKey = "UUID";
         final String expectedUuidStr = UUID.randomUUID().toString();
         ThreadContext.put(tcKey, expectedUuidStr);
         ThreadContext.push(expectedUuidStr);
         final String expectedExMsg = "This is a test";
         try {
-            rootLogger.debug("This is a test message");
+            logger.debug("This is a test message");
             final Throwable child = new LoggingException(expectedExMsg);
-            rootLogger.error("Throwing an exception", child);
-            rootLogger.debug("This is another test message");
+            logger.error("Throwing an exception", child);
+            logger.debug("This is another test message");
         } finally {
             ThreadContext.remove(tcKey);
             ThreadContext.pop();
@@ -170,8 +170,7 @@ public class SocketAppenderTest {
     public void testDefaultProtocol() throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withHost("localhost")
-                .withPort(PORT)
+                .withPort(tcpServer.getLocalPort())
                 .withReconnectDelayMillis(-1)
                 .withName("test")
                 .withImmediateFail(false)
@@ -192,8 +191,7 @@ public class SocketAppenderTest {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
                 .withProtocol(Protocol.UDP)
-                .withHost("localhost")
-                .withPort(PORT)
+                .withPort(tcpServer.getLocalPort())
                 .withReconnectDelayMillis(-1)
                 .withName("test")
                 .withImmediateFail(false)
