@@ -75,7 +75,7 @@ public class PatternLayoutTest {
     Logger root = ctx.getRootLogger();
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     private static class Destination implements ByteBufferDestination {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[2048]);
@@ -203,6 +203,11 @@ public class PatternLayoutTest {
     }
 
     @Test
+    public void testMdcPattern0() throws Exception {
+        testMdcPattern("%m : %X", "Hello : {key1=value1, key2=value2}", true);
+    }
+
+    @Test
     public void testMdcPattern1() throws Exception {
         testMdcPattern("%m : %X", "Hello : {}", false);
     }
@@ -241,7 +246,7 @@ public class PatternLayoutTest {
                 .setIncludeLocation(true)
                 .setMessage(new SimpleMessage("entry")).build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
-        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:243 entry ======%n");
+        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:248 entry ======%n");
         assertTrue("Unexpected result: " + result1, result1.endsWith(expectSuffix1));
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
