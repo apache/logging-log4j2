@@ -22,6 +22,9 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -43,10 +46,6 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.util.Throwables;
-
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 /**
  * @param <T> The BuiltConfiguration type.
@@ -226,7 +225,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     private void writeXmlConfiguration(XMLStreamWriter xmlWriter) throws XMLStreamException {
         xmlWriter.writeStartDocument();
-        xmlWriter.writeCharacters(System.lineSeparator());
+        xmlWriter.writeCharacters("\n");
 
         xmlWriter.writeStartElement("Configuration");
         if (name != null) {
@@ -254,7 +253,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             xmlWriter.writeAttribute("monitorInterval", String.valueOf(monitorInterval));
         }
 
-        xmlWriter.writeCharacters(System.lineSeparator());
+        xmlWriter.writeCharacters("\n");
 
         writeXmlSection(xmlWriter, properties);
         writeXmlSection(xmlWriter, scripts);
@@ -268,7 +267,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         writeXmlSection(xmlWriter, loggers);
 
         xmlWriter.writeEndElement(); // "Configuration"
-        xmlWriter.writeCharacters(System.lineSeparator());
+        xmlWriter.writeCharacters("\n");
 
         xmlWriter.writeEndDocument();
     }
@@ -285,7 +284,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             xmlWriter.writeStartElement(component.getPluginType());
             writeXmlAttributes(xmlWriter, component);
             if (!component.getComponents().isEmpty()) {
-                xmlWriter.writeCharacters(System.lineSeparator());
+                xmlWriter.writeCharacters("\n");
             }
             for (Component subComponent : component.getComponents()) {
                 writeXmlComponent(xmlWriter, subComponent, nesting + 1);
@@ -302,7 +301,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             xmlWriter.writeEmptyElement(component.getPluginType());
             writeXmlAttributes(xmlWriter, component);
         }
-        xmlWriter.writeCharacters(System.lineSeparator());
+        xmlWriter.writeCharacters("\n");
     }
 
     private void writeXmlIndent(XMLStreamWriter xmlWriter, int nesting) throws XMLStreamException {
