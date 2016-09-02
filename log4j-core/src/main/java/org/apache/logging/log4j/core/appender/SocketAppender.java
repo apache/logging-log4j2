@@ -70,7 +70,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         private int connectTimeoutMillis;
 
         @PluginBuilderAttribute
-        private String host;
+        private String host = "localhost";
 
         @PluginBuilderAttribute
         private boolean immediateFail = true;
