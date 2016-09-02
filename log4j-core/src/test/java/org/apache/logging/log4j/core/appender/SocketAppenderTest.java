@@ -63,38 +63,41 @@ public class SocketAppenderTest {
     private static final int DYN_PORT = AvailablePortFinder.getNextAvailable();
     private static final int ERROR_PORT = AvailablePortFinder.getNextAvailable();
 
-    static TCPSocketServer tcpServer;
-    static UDPSocketServer udpServer;
+    static TcpSocketTestServer tcpServer;
+    static UdpSocketTestServer udpServer;
 
     private LoggerContext context = LoggerContext.getContext();
-    private Logger root = context.getLogger(SocketAppenderTest.class.getName());
+    private Logger logger = context.getLogger(SocketAppenderTest.class.getName());
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        tcpServer = new TCPSocketServer(PORT);
+        tcpServer = new TcpSocketTestServer(PORT);
         tcpServer.start();
-        udpServer = new UDPSocketServer();
+        udpServer = new UdpSocketTestServer();
         udpServer.start();
         (LoggerContext.getContext()).reconfigure();
+        ThreadContext.clearAll();
     }
 
     @AfterClass
     public static void cleanupClass() {
         tcpServer.shutdown();
         udpServer.shutdown();
+        ThreadContext.clearAll();
     }
 
     @After
     public void teardown() {
+        ThreadContext.clearAll();
         removeAndStopAppenders();
         reset();
     }
 
     void removeAndStopAppenders() {
-        final Map<String, Appender> map = root.getAppenders();
+        final Map<String, Appender> map = logger.getAppenders();
         for (final Map.Entry<String, Appender> entry : map.entrySet()) {
             final Appender appender = entry.getValue();
-            root.removeAppender(appender);
+            logger.removeAppender(appender);
             appender.stop();
         }
     }
@@ -106,21 +109,21 @@ public class SocketAppenderTest {
 
     @Test
     public void testTcpAppender1() throws Exception {
-        testTcpAppender(root, Constants.ENCODER_BYTE_BUFFER_SIZE, tcpServer.getQueue());
+        testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
     @Test
     @Ignore("WIP Bug when this method runs after testTcpAppender1()")
     public void testTcpAppender2() throws Exception {
-        testTcpAppender(root, Constants.ENCODER_BYTE_BUFFER_SIZE, tcpServer.getQueue());
+        testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
-    static void testTcpAppender(final Logger rootLogger, final int bufferSize, final BlockingQueue<LogEvent> blockingQ)
+    static void testTcpAppender(TcpSocketTestServer tcpTestServer, final Logger rootLogger, final int bufferSize)
             throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
                 .withHost("localhost")
-                .withPort(PORT)
+                .withPort(tcpTestServer.getLocalPort())
                 .withReconnectDelayMillis(-1)
                 .withName("test")
                 .withImmediateFail(false)
@@ -149,15 +152,15 @@ public class SocketAppenderTest {
             ThreadContext.pop();
         }
         Thread.sleep(250);
-        LogEvent event = blockingQ.poll(3, TimeUnit.SECONDS);
+        LogEvent event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
-        assertTrue("Message not delivered via TCP", tcpServer.getCount() > 0);
+        assertTrue("Message not delivered via TCP", tcpTestServer.getCount() > 0);
         assertEquals(expectedUuidStr, event.getContextMap().get(tcKey));
-        event = blockingQ.poll(3, TimeUnit.SECONDS);
+        event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("Throwing an exception"));
-        assertTrue("Message not delivered via TCP", tcpServer.getCount() > 1);
+        assertTrue("Message not delivered via TCP", tcpTestServer.getCount() > 1);
         assertEquals(expectedUuidStr, event.getContextStack().pop());
         assertNotNull(event.getThrownProxy());
         assertEquals(expectedExMsg, event.getThrownProxy().getMessage());
@@ -199,10 +202,10 @@ public class SocketAppenderTest {
         appender.start();
 
         // set appender on root and set level to debug
-        root.addAppender(appender);
-        root.setAdditive(false);
-        root.setLevel(Level.DEBUG);
-        root.debug("This is a udp message");
+        logger.addAppender(appender);
+        logger.setAdditive(false);
+        logger.setLevel(Level.DEBUG);
+        logger.debug("This is a udp message");
         final LogEvent event = udpServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a udp message"));
@@ -223,15 +226,15 @@ public class SocketAppenderTest {
         // @formatter:on
         appender.start();
         // set appender on root and set level to debug
-        root.addAppender(appender);
-        root.setAdditive(false);
-        root.setLevel(Level.DEBUG);
+        logger.addAppender(appender);
+        logger.setAdditive(false);
+        logger.setLevel(Level.DEBUG);
 
-        final TCPSocketServer tcpSocketServer = new TCPSocketServer(DYN_PORT);
+        final TcpSocketTestServer tcpSocketServer = new TcpSocketTestServer(DYN_PORT);
         try {
             tcpSocketServer.start();
 
-            root.debug("This message is written because a deadlock never.");
+            logger.debug("This message is written because a deadlock never.");
 
             final LogEvent event = tcpSocketServer.getQueue().poll(3, TimeUnit.SECONDS);
             assertNotNull("No event retrieved", event);
@@ -254,12 +257,12 @@ public class SocketAppenderTest {
         // @formatter:on
         appender.start();
         // set appender on root and set level to debug
-        root.addAppender(appender);
-        root.setAdditive(false);
-        root.setLevel(Level.DEBUG);
+        logger.addAppender(appender);
+        logger.setAdditive(false);
+        logger.setLevel(Level.DEBUG);
 
         try {
-            root.debug("This message is written because a deadlock never.");
+            logger.debug("This message is written because a deadlock never.");
             fail("No Exception was thrown");
         } catch (final Exception ex) {
             // TODO: move exception to @Test(expect = Exception.class)
@@ -268,7 +271,8 @@ public class SocketAppenderTest {
         }
     }
 
-    public static class UDPSocketServer extends Thread {
+    public static class UdpSocketTestServer extends Thread {
+        
         private final DatagramSocket sock;
         private boolean shutdown = false;
         private Thread thread;
@@ -276,7 +280,7 @@ public class SocketAppenderTest {
         private volatile int count = 0;
         private final BlockingQueue<LogEvent> queue;
 
-        public UDPSocketServer() throws IOException {
+        public UdpSocketTestServer() throws IOException {
             this.sock = new DatagramSocket(PORT);
             this.queue = new ArrayBlockingQueue<>(10);
         }
@@ -323,18 +327,22 @@ public class SocketAppenderTest {
         }
     }
 
-    public static class TCPSocketServer extends Thread {
+    public static class TcpSocketTestServer extends Thread {
 
         private final ServerSocket sock;
         private volatile boolean shutdown = false;
         private volatile int count = 0;
         private final BlockingQueue<LogEvent> queue;
 
-        public TCPSocketServer(final int port) throws IOException {
+        public TcpSocketTestServer(final int port) throws IOException {
             this.sock = new ServerSocket(port);
             this.queue = new ArrayBlockingQueue<>(10);
         }
 
+        public int getLocalPort() {
+            return sock.getLocalPort();
+        }
+        
         public void reset() {
             queue.clear();
             count = 0;
