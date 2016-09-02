@@ -57,6 +57,13 @@ public class LoggerContextRule implements TestRule {
     private TimeUnit shutdownTimeUnit;
 
     /**
+     * Constructs a new LoggerContextRule without a configuration file.
+     */
+    public LoggerContextRule() {
+        this(null, null);
+    }
+
+    /**
      * Constructs a new LoggerContextRule for a given configuration file.
      *
      * @param configLocation
