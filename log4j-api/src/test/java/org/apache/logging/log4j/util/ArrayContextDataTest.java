@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.spi;/*
+package org.apache.logging.log4j.util;/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,9 +24,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.spi.ArrayContextData;
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

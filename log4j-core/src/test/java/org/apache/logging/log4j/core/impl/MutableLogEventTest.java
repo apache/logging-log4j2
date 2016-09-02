@@ -29,7 +29,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.ArrayContextData;
+import org.apache.logging.log4j.util.ArrayContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.Test;

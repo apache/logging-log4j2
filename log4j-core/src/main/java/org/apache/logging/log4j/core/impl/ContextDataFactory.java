@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.spi.ArrayContextData;
+import org.apache.logging.log4j.util.ArrayContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.util.PropertiesUtil;
 

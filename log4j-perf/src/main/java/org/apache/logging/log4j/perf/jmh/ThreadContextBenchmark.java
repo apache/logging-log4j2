@@ -30,7 +30,7 @@ import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.spi.ArrayContextData;
+import org.apache.logging.log4j.util.ArrayContextData;
 import org.apache.logging.log4j.perf.nogc.CopyOnWriteOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;

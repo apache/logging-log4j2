@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.ArrayContextData;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
