@@ -30,15 +30,13 @@ import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.util.ArrayContextData;
-import org.apache.logging.log4j.perf.nogc.CopyOnWriteOpenHashMapThreadContextMap;
-import org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.perf.nogc.GarbageFreeOpenHashMapThreadContextMap;
-import org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap;
-import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
+import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
+import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.ArrayContextData;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -83,9 +81,9 @@ public class ThreadContextBenchmark {
     static {
         IMPLEMENTATIONS.put(DEFAULT_CONTEXT_MAP, DefaultThreadContextMap.class);
         IMPLEMENTATIONS.put(COPY_OPENHASH_MAP, CopyOnWriteOpenHashMapThreadContextMap.class);
-        IMPLEMENTATIONS.put(COPY_ARRAY_MAP, CopyOnWriteSortedArrayThreadContextMap.class);
+        IMPLEMENTATIONS.put(COPY_ARRAY_MAP, CopyOnWriteOpenHashMapThreadContextMap.SUPER); //CopyOnWriteSortedArrayThreadContextMap.class);
         IMPLEMENTATIONS.put(NO_GC_OPENHASH_MAP, GarbageFreeOpenHashMapThreadContextMap.class);
-        IMPLEMENTATIONS.put(NO_GC_ARRAY_MAP, GarbageFreeSortedArrayThreadContextMap.class);
+        IMPLEMENTATIONS.put(NO_GC_ARRAY_MAP, GarbageFreeOpenHashMapThreadContextMap.SUPER); //GarbageFreeSortedArrayThreadContextMap.class);
     }
 
     @Param({ "Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})

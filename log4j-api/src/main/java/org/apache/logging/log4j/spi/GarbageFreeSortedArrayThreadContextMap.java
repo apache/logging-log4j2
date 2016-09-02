@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * </p>
  * @since 2.7
  */
-public class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap, ThreadContextMap2,
+class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap, ThreadContextMap2,
         MutableContextDataSupplier {
 
     /**

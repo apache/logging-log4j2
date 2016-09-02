@@ -14,24 +14,23 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.perf.nogc;
+package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap;
-import org.apache.logging.log4j.spi.ContextData;
-import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * {@code OpenHashMapContextData}-based implementation of the {@code ThreadContextMap} interface that attempts not to
- * create temporary objects. Adding and removing key-value pairs will not create temporary objects.
- * <p>
- * Since the underlying data structure is modified directly it is not suitable for passing by reference to other
- * threads. Instead, client code needs to copy the contents when interacting with another thread.
- * </p>
+ * {@code OpenHashMapContextData}-based implementation of the {@code ThreadContextMap} interface that creates a copy of
+ * the data structure on every modification. Any particular instance of the data structure is a snapshot of the
+ * ThreadContext at some point in time and can safely be passed off to other threads
  *
  * @since 2.7
  */
-public class GarbageFreeOpenHashMapThreadContextMap extends GarbageFreeSortedArrayThreadContextMap {
+public class CopyOnWriteOpenHashMapThreadContextMap extends CopyOnWriteSortedArrayThreadContextMap {
+
+    /** Constant used in benchmark code */
+    public static final Class<? extends ThreadContextMap> SUPER = CopyOnWriteSortedArrayThreadContextMap.class;
+
     @Override
     protected MutableContextData createMutableContextData() {
         return new OpenHashMapContextData<>(PropertiesUtil.getProperties().getIntegerProperty(

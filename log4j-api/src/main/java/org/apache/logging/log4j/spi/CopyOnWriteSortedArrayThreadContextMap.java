@@ -32,8 +32,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  *
  * @since 2.7
  */
-public class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, ThreadContextMap2,
-        CopyOnWrite, MutableContextDataSupplier {
+class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, ThreadContextMap2, CopyOnWrite,
+        MutableContextDataSupplier {
 
     /**
      * The default initial capacity.
