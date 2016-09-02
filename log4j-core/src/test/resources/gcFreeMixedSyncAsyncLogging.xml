@@ -47,7 +47,7 @@
   </Appenders>
   <Loggers>
     <AsyncLogger name="org.apache.logging.log4j.core.GcFreeMixedSyncAyncLoggingTest"
-        level="info" includeLocation="false">
+        level="trace" includeLocation="false">
       <appender-ref ref="Console" level="FATAL" />
       <appender-ref ref="File"/>
       <appender-ref ref="RandomAccessFile"/>
@@ -57,7 +57,7 @@
       <appender-ref ref="MemoryMappedFile"/>
       <appender-ref ref="RandomAccessFileGelf"/>
     </AsyncLogger>
-    <Root level="info" includeLocation="false">
+    <Root level="trace" includeLocation="false">
       <appender-ref ref="Console" level="FATAL" />
       <appender-ref ref="File"/>
       <appender-ref ref="RandomAccessFile"/>

@@ -47,7 +47,7 @@
     </RandomAccessFile>
   </Appenders>
   <Loggers>
-    <Root level="info" includeLocation="false">
+    <Root level="trace" includeLocation="false">
       <appender-ref ref="Console" level="FATAL" />
       <appender-ref ref="File"/>
       <appender-ref ref="RandomAccessFile"/>
