@@ -26,7 +26,6 @@ import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.spi.ArrayContextData;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
@@ -910,7 +909,9 @@ public class Log4jLogEvent implements LogEvent {
         }
 
         private static MutableContextData memento(final ContextData data) {
-            return new ArrayContextData(data); // TODO necessary to construct new instance?
+            MutableContextData result = ContextDataFactory.createContextData();
+            result.putAll(data);
+            return result;
         }
 
         /**
