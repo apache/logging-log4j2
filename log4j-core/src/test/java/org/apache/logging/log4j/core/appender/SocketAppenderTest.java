@@ -63,8 +63,8 @@ public class SocketAppenderTest {
     private static final int DYN_PORT = AvailablePortFinder.getNextAvailable();
     private static final int ERROR_PORT = AvailablePortFinder.getNextAvailable();
 
-    static TcpSocketTestServer tcpServer;
-    static UdpSocketTestServer udpServer;
+    private static TcpSocketTestServer tcpServer;
+    private static UdpSocketTestServer udpServer;
 
     private LoggerContext context = LoggerContext.getContext();
     private Logger logger = context.getLogger(SocketAppenderTest.class.getName());
