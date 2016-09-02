@@ -5,7 +5,7 @@ package org.apache.logging.log4j.util;
  *
  * @param <K> type of the first argument
  * @param <V> type of the second argument
- * @see org.apache.logging.log4j.core.ContextData
+ * @see org.apache.logging.log4j.spi.ContextData
  * @since 2.7
  */
 public interface BiConsumer<K, V> {
