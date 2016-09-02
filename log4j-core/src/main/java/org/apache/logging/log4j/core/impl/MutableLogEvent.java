@@ -89,11 +89,12 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         this.timeMillis = event.getTimeMillis();
         this.thrown = event.getThrown();
         this.thrownProxy = event.getThrownProxy();
-        if (event.getContextData() instanceof MutableContextData) {
-            this.contextData = (MutableContextData) event.getContextData();
-        } else {
-            this.contextData.putAll(event.getContextData());
-        }
+
+        // NOTE: this ringbuffer event SHOULD NOT keep a reference to the specified
+        // thread-local MutableLogEvent's context data, because then two threads would call
+        // ContextData.clear() on the same shared instance, resulting in data corruption.
+        this.contextData.putAll(event.getContextData());
+
         this.contextStack = event.getContextStack();
         this.source = event.isIncludeLocation() ? event.getSource() : null;
         this.threadId = event.getThreadId();
