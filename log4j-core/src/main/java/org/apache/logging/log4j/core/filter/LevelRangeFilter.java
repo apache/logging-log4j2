@@ -61,7 +61,7 @@ public final class LevelRangeFilter extends AbstractFilter {
             @PluginAttribute("onMismatch") final Result mismatch) {
             // @formatter:on
         final Level actualMinLevel = minLevel == null ? Level.ERROR : minLevel;
-        final Level actualMaxLevel = minLevel == null ? Level.ERROR : maxLevel;
+        final Level actualMaxLevel = maxLevel == null ? Level.ERROR : maxLevel;
         final Result onMatch = match == null ? Result.NEUTRAL : match;
         final Result onMismatch = mismatch == null ? Result.DENY : mismatch;
         return new LevelRangeFilter(actualMinLevel, actualMaxLevel, onMatch, onMismatch);
