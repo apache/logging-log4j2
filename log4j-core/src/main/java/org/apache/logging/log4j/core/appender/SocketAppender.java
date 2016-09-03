@@ -93,6 +93,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         @Override
         public SocketAppender build() {
             boolean immediateFlush = isImmediateFlush();
+            boolean bufferedIo = isBufferedIo();
             Layout<? extends Serializable> layout = getLayout();
             if (layout == null) {
                 layout = SerializedLayout.createLayout();
@@ -112,8 +113,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             final AbstractSocketManager manager = SocketAppender.createSocketManager(name, actualProtocol, host, port,
                     connectTimeoutMillis, sslConfiguration, reconnectDelayMillis, immediateFail, layout, getBufferSize());
 
-            return new SocketAppender(name, layout, getFilter(), manager, isIgnoreExceptions(), immediateFlush,
-                    advertise ? configuration.getAdvertiser() : null);
+            return new SocketAppender(name, layout, getFilter(), manager, isIgnoreExceptions(),
+                    !bufferedIo || immediateFlush, advertise ? configuration.getAdvertiser() : null);
         }
 
         public boolean getAdvertise() {

@@ -3491,6 +3491,17 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 to disk but could impact performance.</td>
             </tr>
             <tr>
+              <td>bufferedIO</td>
+              <td>boolean</td>
+              <td>When true - the default, events are written to a buffer and the data will be written to
+                the socket when the buffer is full or, if immediateFlush is set, when the record is written.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>When bufferedIO is true, this is the buffer size, the default is 8192 bytes.</td>
+            </tr>
+            <tr>
               <td>layout</td>
               <td>Layout</td>
               <td>The Layout to use to format the LogEvent. The default is SerializedLayout.</td>
