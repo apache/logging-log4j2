@@ -156,23 +156,19 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         }
 
         if (fileName == null) {
-            LOGGER.error("No filename provided for FileAppender with name "
-                    + name);
+            LOGGER.error("No filename provided for FileAppender with name " + name);
             return null;
         }
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-                fileName, isAppend, isFlush, bufferSize, advertiseURI, layout, null
-        );
+        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(fileName, isAppend, isFlush,
+                bufferSize, advertiseURI, layout, null);
         if (manager == null) {
             return null;
         }
 
-        return new RandomAccessFileAppender(
-                name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
-                isAdvertise ? config.getAdvertiser() : null
-        );
+        return new RandomAccessFileAppender(name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
+                isAdvertise ? config.getAdvertiser() : null);
     }
 }

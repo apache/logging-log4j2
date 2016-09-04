@@ -476,7 +476,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
     /**
      * Thread that sends data to Flume and pulls it from Berkeley DB.
      */
-    private static class WriterThread extends Thread  {
+    private static class WriterThread extends Log4jThread  {
         private volatile boolean shutdown = false;
         private final Database database;
         private final Environment environment;
@@ -490,6 +490,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         public WriterThread(final Database database, final Environment environment,
                             final FlumePersistentManager manager, final Gate gate, final int batchsize,
                             final SecretKey secretKey, final AtomicLong dbCount, final int lockTimeoutRetryCount) {
+            super("FlumePersistentManager-Writer");
             this.database = database;
             this.environment = environment;
             this.manager = manager;

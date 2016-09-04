@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.Test;
@@ -208,8 +209,8 @@ public class CompositeConfigurationTest {
             rule.apply(statement, Description
                     .createTestDescription(getClass(), Thread.currentThread().getStackTrace()[1].getMethodName()))
                     .evaluate();
-        } catch (final Throwable throwable) {
-            throw new RuntimeException(throwable);
+        } catch (final Throwable e) {
+            Throwables.rethrow(e);
         }
     }
 }

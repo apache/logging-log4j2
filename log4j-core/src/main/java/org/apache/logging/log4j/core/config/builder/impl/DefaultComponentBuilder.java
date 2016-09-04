@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config.builder.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +38,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
 
     private final CB builder;
     private final String type;
-    private final Map<String, String> attributes = new HashMap<>();
+    private final Map<String, String> attributes = new LinkedHashMap<>();
     private final List<Component> components = new ArrayList<>();
     private final String name;
     private final String value;

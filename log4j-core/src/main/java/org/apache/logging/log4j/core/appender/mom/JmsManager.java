@@ -132,7 +132,7 @@ public class JmsManager extends AbstractManager {
             this.connection.close();
         } catch (final JMSException ignored) {
         }
-        this.jndiManager.release();
+        this.jndiManager.close();
     }
 
     private static class JmsConfiguration {

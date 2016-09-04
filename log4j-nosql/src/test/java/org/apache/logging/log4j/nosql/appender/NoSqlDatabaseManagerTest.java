@@ -61,7 +61,6 @@ public class NoSqlDatabaseManagerTest {
     public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule(); 
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() {
         this.provider = createStrictMock(NoSqlProvider.class);
         this.connection = createStrictMock(NoSqlConnection.class);
@@ -73,59 +72,47 @@ public class NoSqlDatabaseManagerTest {
     }
 
     @Test
-    public void testConnection() {
-        replay(this.provider, this.connection);
+	public void testConnection() {
+		replay(this.provider, this.connection);
 
-        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
+		try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
+				this.provider)) {
 
-        assertNotNull("The manager should not be null.", manager);
+			assertNotNull("The manager should not be null.", manager);
 
-        try {
-            verify(this.provider, this.connection);
-            reset(this.provider, this.connection);
-            expect(this.provider.getConnection()).andReturn(this.connection);
-            replay(this.provider, this.connection);
+			verify(this.provider, this.connection);
+			reset(this.provider, this.connection);
+			expect(this.provider.getConnection()).andReturn(this.connection);
+			replay(this.provider, this.connection);
 
-            manager.connectAndStart();
-            manager.commitAndClose();
-        } finally {
-            try {
-                manager.release();
-            } catch (final Throwable ignore) {
-                /* */
-            }
-        }
-    }
+			manager.connectAndStart();
+			manager.commitAndClose();
+		}
+	}
 
     @Test
-    public void testWriteInternalNotConnected01() {
-        replay(this.provider, this.connection);
+	public void testWriteInternalNotConnected01() {
+		replay(this.provider, this.connection);
 
-        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
+		try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
+				this.provider)) {
 
-        try {
-            verify(this.provider, this.connection);
-            reset(this.provider, this.connection);
+			verify(this.provider, this.connection);
+			reset(this.provider, this.connection);
 
-            final LogEvent event = createStrictMock(LogEvent.class);
-            replay(this.provider, this.connection, event);
+			final LogEvent event = createStrictMock(LogEvent.class);
+			replay(this.provider, this.connection, event);
 
-            try {
-                manager.writeInternal(event);
-                fail("Expected AppenderLoggingException.");
-            } catch (final AppenderLoggingException ignore) {
-                /* */
-            }
+			try {
+				manager.writeInternal(event);
+				fail("Expected AppenderLoggingException.");
+			} catch (final AppenderLoggingException ignore) {
+				/* */
+			}
 
-            verify(event);
-        } finally {
-            try {
-                manager.release();
-            } catch (final Throwable ignore) {
-                /* */
-            }
-        }
-    }
+			verify(event);
+		}
+	}
 
     @Test
     public void testWriteInternalNotConnected02() {
@@ -158,7 +145,7 @@ public class NoSqlDatabaseManagerTest {
             }
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }
@@ -247,7 +234,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection, event, message);
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }
@@ -384,7 +371,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection, event, message);
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }
@@ -583,7 +570,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection, event, message);
         } finally {
             try {
-                manager.release();
+                manager.close();
             } catch (final Throwable ignore) {
                 /* */
             }

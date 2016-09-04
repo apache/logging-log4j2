@@ -47,7 +47,6 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
         } catch (IOException e) {
             throw new ConfigurationException("Unable to load " + source.toString(), e);
         }
-        if (builder == null) return null;
         return builder.build();
     }
 

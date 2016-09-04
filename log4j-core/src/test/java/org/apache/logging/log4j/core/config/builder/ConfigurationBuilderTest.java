@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -24,11 +26,10 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.Test;
-import org.xmlunit.matchers.CompareMatcher;
-
-import static org.junit.Assert.*;
 
 public class ConfigurationBuilderTest {
+
+    private static final String EOL = "\n"; // HACK! System.lineSeparator();
 
     private void addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
         builder.setConfigurationName(name);
@@ -52,40 +53,40 @@ public class ConfigurationBuilderTest {
     }
 
     private final static String expectedXml =
-            "<?xml version='1.0' encoding='UTF-8'?>" + System.lineSeparator() +
-            "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\">" + System.lineSeparator() +
-            "\t<Properties>" + System.lineSeparator() +
-            "\t\t<Property name=\"MyKey\">MyValue</Property>" + System.lineSeparator() +
-            "\t</Properties>" + System.lineSeparator() +
-            "\t<Scripts>" + System.lineSeparator() +
-            "\t\t<ScriptFile path=\"target/test-classes/scripts/filter.groovy\" name=\"target/test-classes/scripts/filter.groovy\" isWatched=\"true\"/>" + System.lineSeparator() +
-            "\t</Scripts>" + System.lineSeparator() +
-            "\t<CustomLevels>" + System.lineSeparator() +
-            "\t\t<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + System.lineSeparator() +
-            "\t</CustomLevels>" + System.lineSeparator() +
-            "\t<ThresholdFilter onMatch=\"ACCEPT\" level=\"DEBUG\" onMisMatch=\"NEUTRAL\"/>" + System.lineSeparator() +
-            "\t<Appenders>" + System.lineSeparator() +
-            "\t\t<CONSOLE name=\"Stdout\" target=\"SYSTEM_OUT\">" + System.lineSeparator() +
-            "\t\t\t<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + System.lineSeparator() +
-            "\t\t\t<MarkerFilter onMatch=\"DENY\" onMisMatch=\"NEUTRAL\" marker=\"FLOW\"/>" + System.lineSeparator() +
-            "\t\t</CONSOLE>" + System.lineSeparator() +
-            "\t</Appenders>" + System.lineSeparator() +
-            "\t<Loggers>" + System.lineSeparator() +
-            "\t\t<Logger additivity=\"false\" level=\"DEBUG\" includeLocation=\"true\" name=\"org.apache.logging.log4j\">" + System.lineSeparator() +
-            "\t\t\t<AppenderRef ref=\"Stdout\"/>" + System.lineSeparator() +
-            "\t\t</Logger>" + System.lineSeparator() +
-            "\t\t<Root level=\"ERROR\">" + System.lineSeparator() +
-            "\t\t\t<AppenderRef ref=\"Stdout\"/>" + System.lineSeparator() +
-            "\t\t</Root>" + System.lineSeparator() +
-            "\t</Loggers>" + System.lineSeparator() +
-            "</Configuration>" + System.lineSeparator();
+            "<?xml version='1.0' encoding='UTF-8'?>" + EOL +
+            "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\">" + EOL +
+            "\t<Properties>" + EOL +
+            "\t\t<Property name=\"MyKey\">MyValue</Property>" + EOL +
+            "\t</Properties>" + EOL +
+            "\t<Scripts>" + EOL +
+            "\t\t<ScriptFile name=\"target/test-classes/scripts/filter.groovy\" path=\"target/test-classes/scripts/filter.groovy\" isWatched=\"true\"/>" + EOL +
+            "\t</Scripts>" + EOL +
+            "\t<CustomLevels>" + EOL +
+            "\t\t<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + EOL +
+            "\t</CustomLevels>" + EOL +
+            "\t<ThresholdFilter onMatch=\"ACCEPT\" onMisMatch=\"NEUTRAL\" level=\"DEBUG\"/>" + EOL +
+            "\t<Appenders>" + EOL +
+            "\t\t<CONSOLE name=\"Stdout\" target=\"SYSTEM_OUT\">" + EOL +
+            "\t\t\t<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + EOL +
+            "\t\t\t<MarkerFilter onMatch=\"DENY\" onMisMatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL +
+            "\t\t</CONSOLE>" + EOL +
+            "\t</Appenders>" + EOL +
+            "\t<Loggers>" + EOL +
+            "\t\t<Logger name=\"org.apache.logging.log4j\" level=\"DEBUG\" includeLocation=\"true\" additivity=\"false\">" + EOL +
+            "\t\t\t<AppenderRef ref=\"Stdout\"/>" + EOL +
+            "\t\t</Logger>" + EOL +
+            "\t\t<Root level=\"ERROR\">" + EOL +
+            "\t\t\t<AppenderRef ref=\"Stdout\"/>" + EOL +
+            "\t\t</Root>" + EOL +
+            "\t</Loggers>" + EOL +
+            "</Configuration>" + EOL;
 
     @Test
     public void testXmlConstructing() throws Exception {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
-        assertThat(xmlConfiguration, CompareMatcher.isIdenticalTo(expectedXml));
+        assertEquals(expectedXml, xmlConfiguration);
     }
 
 }

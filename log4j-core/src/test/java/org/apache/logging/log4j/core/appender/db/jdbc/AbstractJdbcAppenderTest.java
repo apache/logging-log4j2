@@ -77,7 +77,7 @@ public abstract class AbstractJdbcAppenderTest {
             final Appender appender = context.getConfiguration().getAppender("databaseAppender");
             assertNotNull("The appender should not be null.", appender);
             assertTrue("The appender should be a JdbcAppender.", appender instanceof JdbcAppender);
-            ((JdbcAppender) appender).getManager().release();
+            ((JdbcAppender) appender).getManager().close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             context.reconfigure();

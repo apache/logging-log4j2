@@ -22,6 +22,9 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -42,10 +45,7 @@ import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
-
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import org.apache.logging.log4j.core.util.Throwables;
 
 /**
  * @param <T> The BuiltConfiguration type.
@@ -53,6 +53,9 @@ import javax.xml.stream.XMLStreamWriter;
  */
 public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
 
+    private static final String INDENT = "\t";
+    private static final String EOL = "\n";
+    
     private final Component root = new Component();
     private Component loggers;
     private Component appenders;
@@ -205,9 +208,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         } catch (XMLStreamException e) {
             if (e.getNestedException() instanceof IOException) {
                 throw (IOException)e.getNestedException();
-            } else {
-                throw new RuntimeException(e);
             }
+            Throwables.rethrow(e);
         }
     }
 
@@ -219,14 +221,14 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             writeXmlConfiguration(xmlWriter);
             xmlWriter.close();
         } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            Throwables.rethrow(e);
         }
         return sw.toString();
     }
 
     private void writeXmlConfiguration(XMLStreamWriter xmlWriter) throws XMLStreamException {
         xmlWriter.writeStartDocument();
-        xmlWriter.writeCharacters(System.lineSeparator());
+        xmlWriter.writeCharacters(EOL);
 
         xmlWriter.writeStartElement("Configuration");
         if (name != null) {
@@ -254,7 +256,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             xmlWriter.writeAttribute("monitorInterval", String.valueOf(monitorInterval));
         }
 
-        xmlWriter.writeCharacters(System.lineSeparator());
+        xmlWriter.writeCharacters(EOL);
 
         writeXmlSection(xmlWriter, properties);
         writeXmlSection(xmlWriter, scripts);
@@ -268,7 +270,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         writeXmlSection(xmlWriter, loggers);
 
         xmlWriter.writeEndElement(); // "Configuration"
-        xmlWriter.writeCharacters(System.lineSeparator());
+        xmlWriter.writeCharacters(EOL);
 
         xmlWriter.writeEndDocument();
     }
@@ -285,7 +287,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             xmlWriter.writeStartElement(component.getPluginType());
             writeXmlAttributes(xmlWriter, component);
             if (!component.getComponents().isEmpty()) {
-                xmlWriter.writeCharacters(System.lineSeparator());
+                xmlWriter.writeCharacters(EOL);
             }
             for (Component subComponent : component.getComponents()) {
                 writeXmlComponent(xmlWriter, subComponent, nesting + 1);
@@ -302,12 +304,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             xmlWriter.writeEmptyElement(component.getPluginType());
             writeXmlAttributes(xmlWriter, component);
         }
-        xmlWriter.writeCharacters(System.lineSeparator());
+        xmlWriter.writeCharacters(EOL);
     }
 
     private void writeXmlIndent(XMLStreamWriter xmlWriter, int nesting) throws XMLStreamException {
         for (int i = 0; i < nesting; i++) {
-            xmlWriter.writeCharacters("\t");
+            xmlWriter.writeCharacters(INDENT);
         }
     }
 

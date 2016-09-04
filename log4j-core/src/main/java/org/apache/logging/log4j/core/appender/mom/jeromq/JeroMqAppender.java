@@ -150,7 +150,7 @@ public final class JeroMqAppender extends AbstractAppender {
 
     @Override
     public void stop() {
-        manager.release();
+        manager.close();
         super.stop();
     }
 

@@ -58,12 +58,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         private boolean locking;
 
         @PluginBuilderAttribute
-        private boolean bufferedIo = true;
-
-        @PluginBuilderAttribute
-        private int bufferSize = DEFAULT_BUFFER_SIZE;
-
-        @PluginBuilderAttribute
         private boolean advertise;
 
         @PluginBuilderAttribute
@@ -77,17 +71,19 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
         @Override
         public FileAppender build() {
+            boolean bufferedIo = isBufferedIo();
+            final int bufferSize = getBufferSize();
             if (locking && bufferedIo) {
                 LOGGER.warn("Locking and buffering are mutually exclusive. No buffering will occur for {}", fileName);
                 bufferedIo = false;
             }
             if (!bufferedIo && bufferSize > 0) {
-                LOGGER.warn("The bufferSize is set to {} but bufferedIo is not true: {}", bufferSize, bufferedIo);
+                LOGGER.warn("The bufferSize is set to {} but bufferedIo is false: {}", bufferSize, bufferedIo);
             }
             Layout<? extends Serializable> layout = getOrCreateLayout();
 
             final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
-                    advertiseUri, layout, bufferSize, isImmediateFlush(), configuration);
+                    advertiseUri, layout, bufferSize, configuration);
             if (manager == null) {
                 return null;
             }
@@ -98,10 +94,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
         public String getAdvertiseUri() {
             return advertiseUri;
-        }
-
-        public int getBufferSize() {
-            return bufferSize;
         }
 
         public Configuration getConfiguration() {
@@ -118,10 +110,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
         public boolean isAppend() {
             return append;
-        }
-
-        public boolean isBufferedIo() {
-            return bufferedIo;
         }
 
         public boolean isCreateOnDemand() {
@@ -144,16 +132,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
         public B withAppend(final boolean append) {
             this.append = append;
-            return asBuilder();
-        }
-
-        public B withBufferedIo(final boolean bufferedIo) {
-            this.bufferedIo = bufferedIo;
-            return asBuilder();
-        }
-
-        public B withBufferSize(final int bufferSize) {
-            this.bufferSize = bufferSize;
             return asBuilder();
         }
 

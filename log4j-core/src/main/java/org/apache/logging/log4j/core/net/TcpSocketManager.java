@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -33,6 +32,8 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
+import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -52,7 +53,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     private final int reconnectionDelay;
 
-    private Reconnector connector;
+    private Reconnector reconnector;
 
     private Socket socket;
 
@@ -66,29 +67,28 @@ public class TcpSocketManager extends AbstractSocketManager {
      * The Constructor.
      * @param name The unique name of this connection.
      * @param os The OutputStream.
-     * @param sock The Socket.
+     * @param socket The Socket.
      * @param inetAddress The Internet address of the host.
      * @param host The name of the host.
      * @param port The port number on the host.
      * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @param delay Reconnection interval.
-     * @param immediateFail
+     * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param layout The Layout.
+     * @param bufferSize The buffer size.
      */
-    public TcpSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress inetAddress,
+    public TcpSocketManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress,
                             final String host, final int port, final int connectTimeoutMillis, final int delay,
-                            final boolean immediateFail, final Layout<? extends Serializable> layout) {
-        super(name, os, inetAddress, host, port, layout, true);
+                            final boolean immediateFail, final Layout<? extends Serializable> layout, int bufferSize) {
+        super(name, os, inetAddress, host, port, layout, true, bufferSize);
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.reconnectionDelay = delay;
-        this.socket = sock;
+        this.socket = socket;
         this.immediateFail = immediateFail;
         retry = delay > 0;
-        if (sock == null) {
-            connector = new Reconnector(this);
-            connector.setDaemon(true);
-            connector.setPriority(Thread.MIN_PRIORITY);
-            connector.start();
+        if (socket == null) {
+            reconnector = createReconnector();
+            reconnector.start();
         }
     }
 
@@ -97,29 +97,30 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @param host The host to connect to.
      * @param port The port on the host.
      * @param connectTimeoutMillis the connect timeout in milliseconds
-     * @param delayMillis The interval to pause between retries.
+     * @param reconnectDelayMillis The interval to pause between retries.
+     * @param bufferSize The buffer size.
      * @return A TcpSocketManager.
      */
     public static TcpSocketManager getSocketManager(final String host, int port, final int connectTimeoutMillis,
-            int delayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout) {
+            int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout, final int bufferSize) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
         if (port <= 0) {
             port = DEFAULT_PORT;
         }
-        if (delayMillis == 0) {
-            delayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
+        if (reconnectDelayMillis == 0) {
+            reconnectDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
         }
-        return (TcpSocketManager) getManager("TCP:" + host + ':' + port, new FactoryData(host, port,
-                connectTimeoutMillis, delayMillis, immediateFail, layout), FACTORY);
+        return (TcpSocketManager) getManager("TCP:" + host + ':' + port, new FactoryData(
+                host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize), FACTORY);
     }
 
     @Override
     protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush)  {
         if (socket == null) {
-            if (connector != null && !immediateFail) {
-                connector.latch();
+            if (reconnector != null && !immediateFail) {
+                reconnector.latch();
             }
             if (socket == null) {
                 final String msg = "Error writing to " + getName() + " socket not available";
@@ -134,11 +135,9 @@ public class TcpSocketManager extends AbstractSocketManager {
                     outputStream.flush();
                 }
             } catch (final IOException ex) {
-                if (retry && connector == null) {
-                    connector = new Reconnector(this);
-                    connector.setDaemon(true);
-                    connector.setPriority(Thread.MIN_PRIORITY);
-                    connector.start();
+                if (retry && reconnector == null) {
+                    reconnector = createReconnector();
+                    reconnector.start();
                 }
                 final String msg = "Error writing to " + getName();
                 throw new AppenderLoggingException(msg, ex);
@@ -147,12 +146,21 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     @Override
-    protected synchronized void close() {
-        super.close();
-        if (connector != null) {
-            connector.shutdown();
-            connector.interrupt();
-            connector = null;
+    protected synchronized void closeOutputStream() {
+        super.closeOutputStream();
+        if (reconnector != null) {
+            reconnector.shutdown();
+            reconnector.interrupt();
+            reconnector = null;
+        }
+        final Socket oldSocket = socket;
+        socket = null;
+        if (oldSocket != null) {
+            try {
+                oldSocket.close();
+            } catch (IOException e) {
+                LOGGER.error("Could not close socket {}", socket);
+            }
         }
     }
 
@@ -180,7 +188,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     /**
      * Handles reconnecting to a Thread.
      */
-    private class Reconnector extends Thread {
+    private class Reconnector extends Log4jThread {
 
         private final CountDownLatch latch = new CountDownLatch(1);
 
@@ -189,6 +197,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         private final Object owner;
 
         public Reconnector(final OutputStreamManager owner) {
+            super("TcpSocketManager-Reconnector");
             this.owner = owner;
         }
 
@@ -220,7 +229,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
                         setOutputStream(newOS);
                         socket = sock;
-                        connector = null;
+                        reconnector = null;
                         shutdown = true;
                     }
                     LOGGER.debug("Connection to " + host + ':' + port + " reestablished.");
@@ -235,6 +244,13 @@ public class TcpSocketManager extends AbstractSocketManager {
                 }
             }
         }
+    }
+
+    private Reconnector createReconnector() {
+        Reconnector recon = new Reconnector(this);
+        recon.setDaemon(true);
+        recon.setPriority(Thread.MIN_PRIORITY);
+        return recon;
     }
 
     protected Socket createSocket(final InetAddress host, final int port) throws IOException {
@@ -255,18 +271,20 @@ public class TcpSocketManager extends AbstractSocketManager {
         private final String host;
         private final int port;
         private final int connectTimeoutMillis;
-        private final int delayMillis;
+        private final int reconnectDelayMillis;
         private final boolean immediateFail;
         private final Layout<? extends Serializable> layout;
+        private final int bufferSize;
 
-        public FactoryData(final String host, final int port, final int connectTimeoutMillis, final int delayMillis,
-                           final boolean immediateFail, final Layout<? extends Serializable> layout) {
+        public FactoryData(final String host, final int port, final int connectTimeoutMillis, final int reconnectDelayMillis,
+                           final boolean immediateFail, final Layout<? extends Serializable> layout, final int bufferSize) {
             this.host = host;
             this.port = port;
             this.connectTimeoutMillis = connectTimeoutMillis;
-            this.delayMillis = delayMillis;
+            this.reconnectDelayMillis = reconnectDelayMillis;
             this.immediateFail = immediateFail;
             this.layout = layout;
+            this.bufferSize = bufferSize;
         }
     }
 
@@ -291,16 +309,16 @@ public class TcpSocketManager extends AbstractSocketManager {
                 socket.connect(new InetSocketAddress(data.host, data.port), data.connectTimeoutMillis);
                 os = socket.getOutputStream();
                 return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
-                        data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout);
+                        data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize);
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager (" + name + ") " + ex, ex);
-                os = new ByteArrayOutputStream();
+                os = NullOutputStream.NULL_OUTPUT_STREAM;
             }
-            if (data.delayMillis == 0) {
+            if (data.reconnectDelayMillis == 0) {
                 return null;
             }
             return new TcpSocketManager(name, os, null, inetAddress, data.host, data.port, data.connectTimeoutMillis,
-                    data.delayMillis, data.immediateFail, data.layout);
+                    data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize);
         }
     }
 

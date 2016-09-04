@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -311,9 +312,9 @@ public class FileAppenderTest {
 
             try {
                 writer(lock, logEventCount, thread.getName(), createOnDemand, true);
-            } catch (final Exception ex) {
-                exceptionRef[0] = ex;
-                throw new RuntimeException(ex);
+            } catch (final Exception e) {
+                exceptionRef[0] = e;
+                Throwables.rethrow(e);
             }
         }
     }
@@ -344,8 +345,8 @@ public class FileAppenderTest {
                 writer(lock, count, id, createOnDemand, true);
                 // thread.sleep(50);
 
-            } catch (final Exception ex) {
-                throw new RuntimeException(ex);
+            } catch (final Exception e) {
+                Throwables.rethrow(e);
             }
 
         }

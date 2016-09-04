@@ -78,7 +78,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     protected abstract void shutdownInternal() throws Exception;
 
     /**
-     * This method is called from the {@link #release()} method when the appender is stopped or the appender's manager
+     * This method is called from the {@link #close()} method when the appender is stopped or the appender's manager
      * is replaced. If it has not already been called, it calls {@link #shutdownInternal()} and catches any exceptions
      * it might throw.
      */
