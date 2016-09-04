@@ -25,19 +25,38 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
 
 /**
  *
  */
+@RunWith(Parameterized.class)
 public class AsyncAppenderTest {
-    private static final String CONFIG = "log4j-asynch.xml";
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
+    @Parameterized.Parameters
+    public static Object[] data() {
+        return new String[]{
+            // default async config uses array blocking queue
+            "log4j-asynch.xml",
+            // override default blocking queue implementations
+            "BlockingQueueFactory-ArrayBlockingQueue.xml",
+            "BlockingQueueFactory-DisruptorBlockingQueue.xml",
+            "BlockingQueueFactory-JCToolsBlockingQueue.xml",
+            "BlockingQueueFactory-LinkedTransferQueue.xml"
+        };
+    }
+
+    public AsyncAppenderTest(final String configFileName) {
+        context = new LoggerContextRule(configFileName);
+    }
+
+    @Rule
+    public LoggerContextRule context;
 
     private ListAppender listAppender;
 

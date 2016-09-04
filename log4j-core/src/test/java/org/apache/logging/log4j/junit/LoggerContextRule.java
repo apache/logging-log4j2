@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.junit;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
@@ -34,6 +32,8 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
+import static org.junit.Assert.*;
 
 /**
  * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file. If the system

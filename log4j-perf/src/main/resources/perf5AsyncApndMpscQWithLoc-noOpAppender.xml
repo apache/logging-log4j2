@@ -19,13 +19,13 @@
   <Appenders>
     <CountingNoOp name="NoOp">
     </CountingNoOp>
-    <Async name="Async"  blocking="true" bufferSize="262144">
+    <Async name="Async"  blocking="true" bufferSize="262144" includeLocation="true">
       <appender-ref ref="NoOp"/>
-      <ArrayBlockingQueue/>
+      <JCToolsBlockingQueue waitStrategy="SPIN"/>
     </Async>
   </Appenders>
   <Loggers>
-    <Root level="info" includeLocation="false">
+    <Root level="info">
       <appender-ref ref="Async"/>
     </Root>
   </Loggers>

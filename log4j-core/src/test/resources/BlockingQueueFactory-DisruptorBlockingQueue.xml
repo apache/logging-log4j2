@@ -16,16 +16,18 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="RoutingTest">
+<Configuration status="OFF" name="DisruptorBlockingQueueFactory">
 
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <Block name="Block">
-    </Block>
-    <Async name="Async" bufferSize="4" includeLocation="false" error-ref="STDOUT">
-      <AppenderRef ref="Block"/>
+    <List name="List">
+      <PatternLayout pattern="%C %M %m"/>
+    </List>
+    <Async name="Async" includeLocation="true" error-ref="STDOUT">
+      <AppenderRef ref="List"/>
+      <DisruptorBlockingQueue/>
     </Async>
   </Appenders>
 
