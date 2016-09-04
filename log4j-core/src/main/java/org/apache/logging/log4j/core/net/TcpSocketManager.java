@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.commons.io.output.NullOutputStream;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
@@ -308,7 +309,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                         data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize);
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager (" + name + ") " + ex, ex);
-                os = new ByteArrayOutputStream();
+                os = NullOutputStream.NULL_OUTPUT_STREAM;
             }
             if (data.reconnectDelayMillis == 0) {
                 return null;

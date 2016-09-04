@@ -36,6 +36,10 @@ public class NullOutputStream extends OutputStream {
      */
     public static final NullOutputStream NULL_OUTPUT_STREAM = new NullOutputStream();
 
+    private NullOutputStream() {
+        // do nothing
+    }
+    
     /**
      * Does nothing - output to <code>/dev/null</code>.
      * 
