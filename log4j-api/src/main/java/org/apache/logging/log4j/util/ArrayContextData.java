@@ -243,7 +243,7 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
         assertNotFrozen();
         assertNoConcurrentModification();
 
-        if (source instanceof ArrayContextData) {
+        if (source instanceof ArrayContextData && this.size == 0) {
             initFrom0((ArrayContextData) source);
         } else if (source != null) {
             if (source == this) {
