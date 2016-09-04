@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -178,6 +179,213 @@ public class ArrayContextDataTest {
         } catch (final UnsupportedOperationException ok) {
             //ok
         }
+    }
+
+    @Test
+    public void testPutAll_KeepsExistingValues() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.put("b", "bbb");
+        original.put("c", "ccc");
+        assertEquals("size", 3, original.size());
+
+        // add empty context data
+        original.putAll(new ArrayContextData());
+        assertEquals("size after put empty", 3, original.size());
+        assertEquals("aaa", original.get("a"));
+        assertEquals("bbb", original.get("b"));
+        assertEquals("ccc", original.get("c"));
+
+        final ArrayContextData other = new ArrayContextData();
+        other.put("1", "111");
+        other.put("2", "222");
+        other.put("3", "333");
+        original.putAll(other);
+
+        assertEquals("size after put other", 6, original.size());
+        assertEquals("aaa", original.get("a"));
+        assertEquals("bbb", original.get("b"));
+        assertEquals("ccc", original.get("c"));
+        assertEquals("111", original.get("1"));
+        assertEquals("222", original.get("2"));
+        assertEquals("333", original.get("3"));
+    }
+
+    @Test
+    public void testPutAllSelfDoesNotModify() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.put("b", "bbb");
+        original.put("c", "ccc");
+        assertEquals("size", 3, original.size());
+
+        // putAll with self
+        original.putAll(original);
+        assertEquals("size after put empty", 3, original.size());
+        assertEquals("aaa", original.get("a"));
+        assertEquals("bbb", original.get("b"));
+        assertEquals("ccc", original.get("c"));
+    }
+
+    @Test(expected = ConcurrentModificationException.class)
+    public void testConcurrentModificationBiConsumerPut() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.forEach(new BiConsumer<String, Object>() {
+            @Override
+            public void accept(final String s, final Object o) {
+                original.put("c", "other");
+            }
+        });
+    }
+
+    @Test(expected = ConcurrentModificationException.class)
+    public void testConcurrentModificationBiConsumerPutValue() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.forEach(new BiConsumer<String, Object>() {
+            @Override
+            public void accept(final String s, final Object o) {
+                original.putValue("c", "other");
+            }
+        });
+    }
+
+    @Test(expected = ConcurrentModificationException.class)
+    public void testConcurrentModificationBiConsumerRemove() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.forEach(new BiConsumer<String, Object>() {
+            @Override
+            public void accept(final String s, final Object o) {
+                original.remove("a");
+            }
+        });
+    }
+
+    @Test(expected = ConcurrentModificationException.class)
+    public void testConcurrentModificationBiConsumerClear() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.forEach(new BiConsumer<String, Object>() {
+            @Override
+            public void accept(final String s, final Object o) {
+                original.clear();
+            }
+        });
+    }
+
+    @Test(expected = ConcurrentModificationException.class)
+    public void testConcurrentModificationTriConsumerPut() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.forEach(new TriConsumer<String, Object, Object>() {
+            @Override
+            public void accept(final String s, final Object o, final Object o2) {
+                original.put("c", "other");
+            }
+        }, null);
+    }
+
+    @Test(expected = ConcurrentModificationException.class)
+    public void testConcurrentModificationTriConsumerPutValue() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.forEach(new TriConsumer<String, Object, Object>() {
+            @Override
+            public void accept(final String s, final Object o, final Object o2) {
+                original.putValue("c", "other");
+            }
+        }, null);
+    }
+
+    @Test(expected = ConcurrentModificationException.class)
+    public void testConcurrentModificationTriConsumerRemove() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.forEach(new TriConsumer<String, Object, Object>() {
+            @Override
+            public void accept(final String s, final Object o, final Object o2) {
+                original.remove("a");
+            }
+        }, null);
+    }
+
+    @Test(expected = ConcurrentModificationException.class)
+    public void testConcurrentModificationTriConsumerClear() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.forEach(new TriConsumer<String, Object, Object>() {
+            @Override
+            public void accept(final String s, final Object o, final Object o2) {
+                original.clear();
+            }
+        }, null);
+    }
+
+    @Test
+    public void testInitiallyNotFrozen() {
+        assertFalse(new ArrayContextData().isFrozen());
+    }
+
+    @Test
+    public void testIsFrozenAfterCallingFreeze() {
+        final ArrayContextData original = new ArrayContextData();
+        assertFalse("before freeze", original.isFrozen());
+        original.freeze();
+        assertTrue("after freeze", original.isFrozen());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testFreezeProhibitsPut() {
+        final ArrayContextData original = new ArrayContextData();
+        original.freeze();
+        original.put("a", "aaa");
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testFreezeProhibitsPutValue() {
+        final ArrayContextData original = new ArrayContextData();
+        original.freeze();
+        original.putValue("a", "aaa");
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testFreezeProhibitsRemove() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("b", "bbb");
+        original.freeze();
+        original.remove("b"); // existing key: modifies the collection
+    }
+
+    @Test
+    public void testFreezeAllowsRemoveOfNonExistingKey() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("b", "bbb");
+        original.freeze();
+        original.remove("a"); // no actual modification
+    }
+
+    @Test
+    public void testFreezeAllowsRemoveIfEmpty() {
+        final ArrayContextData original = new ArrayContextData();
+        original.freeze();
+        original.remove("a"); // no exception
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testFreezeProhibitsClear() {
+        final ArrayContextData original = new ArrayContextData();
+        original.put("a", "aaa");
+        original.freeze();
+        original.clear();
+    }
+
+    @Test
+    public void testFreezeAllowsClearIfEmpty() {
+        final ArrayContextData original = new ArrayContextData();
+        original.freeze();
+        original.clear();
     }
 
     @Test

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -70,6 +71,7 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
      * An empty array instance to share when the table is not inflated.
      */
     private static final String[] EMPTY = {};
+    private static final String FROZEN = "Frozen collection cannot be modified";
 
     private transient String[] keys = EMPTY;
     private transient Object[] values = EMPTY;
@@ -86,6 +88,8 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
     // If table == EMPTY_TABLE then this is the initial capacity at which the
     // table will be created when inflated.
     private int threshold;
+    private boolean immutable;
+    private transient boolean iterating;
 
     public ArrayContextData() {
         this(DEFAULT_INITIAL_CAPACITY);
@@ -107,8 +111,26 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
         }
     }
 
+    private void assertNotFrozen() {
+        if (immutable) {
+            throw new UnsupportedOperationException(FROZEN);
+        }
+    }
+
+    private void assertNoConcurrentModification() {
+        if (iterating) {
+            throw new ConcurrentModificationException();
+        }
+    }
+
     @Override
     public void clear() {
+        if (keys == EMPTY) {
+            return;
+        }
+        assertNotFrozen();
+        assertNoConcurrentModification();
+
         Arrays.fill(keys, 0, size, null);
         Arrays.fill(values, 0, size, null);
         size = 0;
@@ -127,6 +149,16 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
             result.put(getKeyAt(i), value == null ? null : String.valueOf(value));
         }
         return result;
+    }
+
+    @Override
+    public void freeze() {
+        immutable = true;
+    }
+
+    @Override
+    public boolean isFrozen() {
+        return immutable;
     }
 
     @Override
@@ -182,6 +214,9 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
 
     @Override
     public void putValue(final String key, final Object value) {
+        assertNotFrozen();
+        assertNoConcurrentModification();
+
         if (keys == EMPTY) {
             inflateTable(threshold);
         }
@@ -205,9 +240,15 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
 
     @Override
     public void putAll(final ContextData source) {
+        assertNotFrozen();
+        assertNoConcurrentModification();
+
         if (source instanceof ArrayContextData) {
             initFrom0((ArrayContextData) source);
         } else if (source != null) {
+            if (source == this) {
+                return; // this.putAll(this) does not modify this collection
+            }
             source.forEach(PUT_ALL, this);
         }
     }
@@ -261,8 +302,12 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
         if (keys == EMPTY) {
             return;
         }
+
         final int index = indexOfKey(key);
         if (index >= 0) {
+            assertNotFrozen();
+            assertNoConcurrentModification();
+
             System.arraycopy(keys, index + 1, keys, index, size - index);
             System.arraycopy(values, index + 1, values, index, size - index);
             size--;
@@ -292,16 +337,26 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
     @SuppressWarnings("unchecked")
     @Override
     public <V> void forEach(BiConsumer<String, ? super V> action) {
-        for (int i = 0; i < size; i++) {
-            action.accept(keys[i], (V) values[i]);
+        iterating = true;
+        try {
+            for (int i = 0; i < size; i++) {
+                action.accept(keys[i], (V) values[i]);
+            }
+        } finally {
+            iterating = false;
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <V, T> void forEach(TriConsumer<String, ? super V, T> action, T state) {
-        for (int i = 0; i < size; i++) {
-            action.accept(keys[i], (V) values[i], state);
+        iterating = true;
+        try {
+            for (int i = 0; i < size; i++) {
+                action.accept(keys[i], (V) values[i], state);
+            }
+        } finally {
+            iterating = false;
         }
     }
 
