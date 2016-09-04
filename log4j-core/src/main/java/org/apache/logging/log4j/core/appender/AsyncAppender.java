@@ -269,10 +269,10 @@ public final class AsyncAppender extends AbstractAppender {
         private final BlockingQueue<LogEvent> queue;
 
         public AsyncThread(final List<AppenderControl> appenders, final BlockingQueue<LogEvent> queue) {
+            super("AsyncAppender-" + THREAD_SEQUENCE.getAndIncrement());
             this.appenders = appenders;
             this.queue = queue;
             setDaemon(true);
-            setName("AsyncAppenderThread" + THREAD_SEQUENCE.getAndIncrement());
         }
 
         @Override
