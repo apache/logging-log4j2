@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
 
