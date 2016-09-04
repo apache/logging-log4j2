@@ -381,9 +381,15 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.message = null;
         this.thrown = null;
         this.thrownProxy = null;
-        this.contextData.clear();
         this.contextStack = null;
         this.location = null;
+        if (contextData != null) {
+            if (contextData.isFrozen()) { // came from CopyOnWrite thread context
+                contextData = null;
+            } else {
+                contextData.clear();
+            }
+        }
 
         trimMessageText();
 

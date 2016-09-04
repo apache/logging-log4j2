@@ -132,8 +132,13 @@ public class Log4jLogEvent implements LogEvent {
                 if (other.getContextData() instanceof MutableContextData) {
                     this.contextData = (MutableContextData) other.getContextData();
                 } else {
-                    this.contextData.clear();
+                    if (this.contextData.isFrozen()) {
+                        this.contextData = ContextDataFactory.createContextData();
+                    } else {
+                        this.contextData.clear();
+                    }
                     this.contextData.putAll(other.getContextData());
+
                 }
                 this.thrownProxy = other.getThrownProxy();
                 this.source = other.getSource();

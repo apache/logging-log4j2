@@ -120,7 +120,11 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         thrownProxy = null;
         source = null;
         if (contextData != null) {
-            contextData.clear();
+            if (contextData.isFrozen()) { // came from CopyOnWrite thread context
+                contextData = null;
+            } else {
+                contextData.clear();
+            }
         }
         contextStack = null;
 
