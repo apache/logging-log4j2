@@ -87,9 +87,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         this.immediateFail = immediateFail;
         retry = delay > 0;
         if (socket == null) {
-            reconnector = new Reconnector(this);
-            reconnector.setDaemon(true);
-            reconnector.setPriority(Thread.MIN_PRIORITY);
+            reconnector = createReconnector();
             reconnector.start();
         }
     }
@@ -138,9 +136,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 }
             } catch (final IOException ex) {
                 if (retry && reconnector == null) {
-                    reconnector = new Reconnector(this);
-                    reconnector.setDaemon(true);
-                    reconnector.setPriority(Thread.MIN_PRIORITY);
+                    reconnector = createReconnector();
                     reconnector.start();
                 }
                 final String msg = "Error writing to " + getName();
@@ -247,6 +243,13 @@ public class TcpSocketManager extends AbstractSocketManager {
                 }
             }
         }
+    }
+
+    private Reconnector createReconnector() {
+        Reconnector recon = new Reconnector(this);
+        recon.setDaemon(true);
+        recon.setPriority(Thread.MIN_PRIORITY);
+        return recon;
     }
 
     protected Socket createSocket(final InetAddress host, final int port) throws IOException {
