@@ -197,7 +197,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         private final Object owner;
 
         public Reconnector(final OutputStreamManager owner) {
-            super("TcpSocketReconnector");
+            super("TcpSocketManager-Reconnector");
             this.owner = owner;
         }
 
