@@ -65,4 +65,15 @@ public interface MutableContextData extends ContextData {
      *          {@link #forEach(TriConsumer, Object)}.
      */
     void remove(final String key);
+
+    /**
+     * Ensures that further changes to this object are ignored.
+     */
+    void freeze();
+
+    /**
+     * Returns {@code true} if this object has been {@linkplain #freeze() frozen}, {@code false} otherwise.
+     * @return  {@code true} if this object has been {@linkplain #freeze() frozen}, {@code false} otherwise
+     */
+    boolean isFrozen();
 }
