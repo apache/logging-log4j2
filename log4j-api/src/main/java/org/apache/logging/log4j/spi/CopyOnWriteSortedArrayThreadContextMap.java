@@ -104,6 +104,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
         MutableContextData map = localMap.get();
         map = map == null ? createMutableContextData() : createMutableContextData(map);
         map.putValue(key, value);
+        map.freeze();
         localMap.set(map);
     }
 
@@ -117,6 +118,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
         for (final Map.Entry<String, String> entry : values.entrySet()) {
             map.putValue(entry.getKey(), entry.getValue());
         }
+        map.freeze();
         localMap.set(map);
     }
 
@@ -132,6 +134,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
         if (map != null) {
             final MutableContextData copy = createMutableContextData(map);
             copy.remove(key);
+            copy.freeze();
             localMap.set(copy);
         }
     }
