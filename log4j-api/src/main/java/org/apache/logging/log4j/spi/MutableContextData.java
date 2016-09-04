@@ -32,6 +32,7 @@ public interface MutableContextData extends ContextData {
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
      *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
+     * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */
     void clear();
 
@@ -43,6 +44,7 @@ public interface MutableContextData extends ContextData {
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
      *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
+     * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */
     void putValue(final String key, final Object value);
 
@@ -52,6 +54,7 @@ public interface MutableContextData extends ContextData {
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
      *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
+     * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */
     void putAll(final ContextData source);
 
@@ -62,11 +65,13 @@ public interface MutableContextData extends ContextData {
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
      *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
+     * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */
     void remove(final String key);
 
     /**
-     * Ensures that further changes to this object are ignored.
+     * Makes this collection immutable. Attempts to modify the collection after the {@code freeze()} method was called
+     * will result in an {@code UnsupportedOperationException} being thrown.
      */
     void freeze();
 
