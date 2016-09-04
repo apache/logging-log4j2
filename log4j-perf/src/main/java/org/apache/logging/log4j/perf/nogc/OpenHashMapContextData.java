@@ -67,6 +67,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     /** The default load factor of a hash table. */
     public static final float DEFAULT_LOAD_FACTOR = .75f;
 
+    private static final String FROZEN = "Frozen collection cannot be modified";
     private static final long serialVersionUID = -1486744623338827187L;
 
     /** The array of keys. */
@@ -89,6 +90,8 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     protected final float loadFactor;
 
     private V defRetValue = null;
+    private boolean immutable;
+    private transient boolean iterating;
 
     /**
      * Creates a new hash map with initial expected
@@ -193,6 +196,18 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
         }
     };
 
+    private void assertNotFrozen() {
+        if (immutable) {
+            throw new UnsupportedOperationException(FROZEN);
+        }
+    }
+
+    private void assertNoConcurrentModification() {
+        if (iterating) {
+            throw new ConcurrentModificationException();
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private void initFrom0(final OpenHashMapContextData other) {
         // this.loadFactor = other.loadFactor; // final field
@@ -250,6 +265,9 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
         if (size == 0) {
             return;
         }
+        assertNotFrozen();
+        assertNoConcurrentModification();
+
         size = 0;
         containsNullKey = false;
         Arrays.fill(keys, (null));
@@ -323,20 +341,26 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
         final int startSize = size;
         final K myKeys[] = this.keys;
         int pos = arraySize;
-        if (containsNullKey) {
-            action.accept((String) myKeys[pos], (VAL) values[pos]);
-            if (size != startSize) {
-                throw new ConcurrentModificationException();
-            }
-        }
-        --pos;
-        for (; pos >= 0; pos--) {
-            if (myKeys[pos] != null) {
+
+        iterating = true;
+        try {
+            if (containsNullKey) {
                 action.accept((String) myKeys[pos], (VAL) values[pos]);
                 if (size != startSize) {
                     throw new ConcurrentModificationException();
                 }
             }
+            --pos;
+            for (; pos >= 0; pos--) {
+                if (myKeys[pos] != null) {
+                    action.accept((String) myKeys[pos], (VAL) values[pos]);
+                    if (size != startSize) {
+                        throw new ConcurrentModificationException();
+                    }
+                }
+            }
+        } finally {
+            iterating = false;
         }
     }
 
@@ -346,20 +370,26 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
         final int startSize = size;
         final K myKeys[] = this.keys;
         int pos = arraySize;
-        if (containsNullKey) {
-            action.accept((String) myKeys[pos], (VAL) values[pos], state);
-            if (size != startSize) {
-                throw new ConcurrentModificationException();
-            }
-        }
-        --pos;
-        for (; pos >= 0; pos--) {
-            if (myKeys[pos] != null) {
+
+        iterating = true;
+        try {
+            if (containsNullKey) {
                 action.accept((String) myKeys[pos], (VAL) values[pos], state);
                 if (size != startSize) {
                     throw new ConcurrentModificationException();
                 }
             }
+            --pos;
+            for (; pos >= 0; pos--) {
+                if (myKeys[pos] != null) {
+                    action.accept((String) myKeys[pos], (VAL) values[pos], state);
+                    if (size != startSize) {
+                        throw new ConcurrentModificationException();
+                    }
+                }
+            }
+        } finally {
+            iterating = false;
         }
     }
 
@@ -453,6 +483,9 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
 
     @Override
     public void putAll(final ContextData source) {
+        assertNotFrozen();
+        assertNoConcurrentModification();
+
         if (size() == 0 && source instanceof OpenHashMapContextData) {
             initFrom0((OpenHashMapContextData) source);
         } else if (source != null) {
@@ -475,6 +508,9 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     }
 
     private V putObjectValue(final K k, final V v) {
+        assertNotFrozen();
+        assertNoConcurrentModification();
+
         final int pos = insert(k, v);
         if (pos < 0) {
             return defRetValue;
@@ -495,8 +531,21 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
         removeObjectKey((Object) key);
     }
 
+    @Override
+    public void freeze() {
+        immutable = true;
+    }
+
+    @Override
+    public boolean isFrozen() {
+        return immutable;
+    }
+
     @SuppressWarnings("unchecked")
     private V removeObjectKey(final Object k) {
+        assertNotFrozen();
+        assertNoConcurrentModification();
+
         if (k == null) {
             if (containsNullKey) {
                 return removeNullEntry();
