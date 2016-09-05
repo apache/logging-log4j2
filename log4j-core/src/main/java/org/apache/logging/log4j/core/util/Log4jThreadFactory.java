@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Creates {@link Log4jThreads}.
+ * Creates {@link Log4jThread}s.
  * 
  * @since 2.7
  */
