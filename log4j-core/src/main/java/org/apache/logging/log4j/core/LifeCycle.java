@@ -68,7 +68,7 @@ public interface LifeCycle {
      * 
      * @param timeout the maximum time to wait
      * @param timeUnit the time unit of the timeout argument
-     * @return 
+     * @return true if the receiver was stopped cleanly and normally, false otherwise.
      */
     boolean stop(long timeout, TimeUnit timeUnit);
 
