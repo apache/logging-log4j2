@@ -23,11 +23,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *
@@ -35,7 +33,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class ConfigurationScheduler extends AbstractLifeCycle {
 
     private static final int MAX_SCHEDULED_ITEMS = 5;
-    private static final Logger LOGGER = StatusLogger.getLogger();
     private ScheduledExecutorService executorService;
 
     private int scheduledItems = 0;
