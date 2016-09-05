@@ -41,7 +41,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Scheduled
 public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, Runnable {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
     private final long timeToLive;
     private final long checkInterval;    
     private final ConcurrentMap<String, Long> appendersUsage = new ConcurrentHashMap<>();
