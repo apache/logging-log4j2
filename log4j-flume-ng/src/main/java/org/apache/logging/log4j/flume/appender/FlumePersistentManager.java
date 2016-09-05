@@ -44,6 +44,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
@@ -224,12 +225,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         } catch (final InterruptedException ie) {
             // Ignore the exception and shutdown.
         }
-        threadPool.shutdown();
-        try {
-            threadPool.awaitTermination(SHUTDOWN_WAIT_SECONDS, TimeUnit.SECONDS);
-        } catch (final InterruptedException e) {
-            logWarn("PersistentManager Thread pool failed to shut down", e);
-        }
+        ExecutorServices.shutdown(threadPool, SHUTDOWN_WAIT_SECONDS, TimeUnit.SECONDS, toString());
         try {
             worker.join();
         } catch (final InterruptedException ex) {
