@@ -358,7 +358,7 @@ public class LoggerContext extends AbstractLifeCycle
         pool.shutdown(); // Disable new tasks from being submitted
         if (timeout > 0 && timeUnit == null) {
             throw new IllegalArgumentException(
-                    String.format("Logger context '%s' can't shutdown %s when timeout = %,d and timeUnit = %s.",
+                    String.format("LoggerContext '%s' can't shutdown %s when timeout = %,d and timeUnit = %s.",
                             getName(), pool, timeout, timeUnit));
         }
         if (timeout > 0) {
