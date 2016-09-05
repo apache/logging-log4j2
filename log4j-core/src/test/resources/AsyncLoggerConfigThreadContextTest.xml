@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Properties>
+    <Property name="configProp">configValue</Property>
+  </Properties>
+  <Appenders>
+    <RandomAccessFile name="RandomAccessFile" fileName="target/AsyncLoggerTest.log"
+        immediateFlush="false" append="false">
+      <PatternLayout>
+        <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+    <RandomAccessFile name="SynchronousRandomAccessFile" fileName="target/SynchronousContextTest.log"
+	    		immediateFlush="true" append="false">
+      <PatternLayout>
+        <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+  </Appenders>
+
+  <Loggers>
+    <AsyncLogger name="com.foo" level="info" includeLocation="false" additivity="true">
+      <AppenderRef ref="RandomAccessFile"/>
+    </AsyncLogger>
+    <Root level="info" includeLocation="false">
+      <AppenderRef ref="SynchronousRandomAccessFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
