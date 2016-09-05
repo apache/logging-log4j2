@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
 package org.apache.logging.log4j.core.util;
 
 import java.util.concurrent.ExecutorService;
@@ -9,41 +25,44 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class ExecutorServices {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    
+
     /**
-     * Shuts down the given pool.
+     * Shuts down the given {@link ExecutorService} in an orderly fashion. Disables new tasks from submission and then
+     * waits for existing tasks to terminate. Eventually cancels running tasks if too much time elapses.
      * 
-     * @param pool
+     * @param executorService
      *            the pool to shutdown.
      * @param timeout
      *            the maximum time to wait
-     * @param source 
+     * @param source
      *            use this string in any log messages.
      * @param timeUnit
      *            the time unit of the timeout argument
-     * @return {@code true} if the given executor terminated and {@code false} if the timeout elapsed before termination.
+     * @return {@code true} if the given executor terminated and {@code false} if the timeout elapsed before
+     *         termination.
      */
-    public static boolean shutdown(ExecutorService pool, long timeout, TimeUnit timeUnit, String source) {
-        pool.shutdown(); // Disable new tasks from being submitted
+    public static boolean shutdown(ExecutorService executorService, long timeout, TimeUnit timeUnit, String source) {
+        executorService.shutdown(); // Disable new tasks from being submitted
         if (timeout > 0 && timeUnit == null) {
             throw new IllegalArgumentException(
-                    String.format("%s can't shutdown %s when timeout = %,d and timeUnit = %s.",
-                            source, pool, timeout, timeUnit));
+                    String.format("%s can't shutdown %s when timeout = %,d and timeUnit = %s.", source, executorService,
+                            timeout, timeUnit));
         }
         if (timeout > 0) {
             try {
                 // Wait a while for existing tasks to terminate
-                if (!pool.awaitTermination(timeout, timeUnit)) {
-                    pool.shutdownNow(); // Cancel currently executing tasks
+                if (!executorService.awaitTermination(timeout, timeUnit)) {
+                    executorService.shutdownNow(); // Cancel currently executing tasks
                     // Wait a while for tasks to respond to being cancelled
-                    if (!pool.awaitTermination(timeout, timeUnit)) {
-                        LOGGER.error("{} pool {} did not terminate after {} {}", source, pool, timeout, timeUnit);
+                    if (!executorService.awaitTermination(timeout, timeUnit)) {
+                        LOGGER.error("{} pool {} did not terminate after {} {}", source, executorService, timeout,
+                                timeUnit);
                     }
                     return false;
                 }
             } catch (InterruptedException ie) {
                 // (Re-)Cancel if current thread also interrupted
-                pool.shutdownNow();
+                executorService.shutdownNow();
                 // Preserve interrupt status
                 Thread.currentThread().interrupt();
             }
