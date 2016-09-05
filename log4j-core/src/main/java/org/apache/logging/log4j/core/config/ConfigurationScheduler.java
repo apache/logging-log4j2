@@ -45,9 +45,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         super.start();
         if (scheduledItems > 0) {
             LOGGER.debug("Starting {} Log4j2 Scheduled threads", scheduledItems);
-            if (scheduledItems > MAX_SCHEDULED_ITEMS) {
-                scheduledItems = MAX_SCHEDULED_ITEMS;
-            }
+            scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
             executorService = new ScheduledThreadPoolExecutor(scheduledItems,
                     Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
         } else {
