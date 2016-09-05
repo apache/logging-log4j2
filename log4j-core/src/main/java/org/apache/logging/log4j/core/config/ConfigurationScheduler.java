@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.util.Log4jThreadFactory;
  */
 public class ConfigurationScheduler extends AbstractLifeCycle {
 
+    private static final String SIMPLE_NAME = "Log4j2 " + ConfigurationScheduler.class.getSimpleName();
     private static final int MAX_SCHEDULED_ITEMS = 5;
     private ScheduledExecutorService executorService;
 
@@ -41,19 +42,19 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     public void start() {
         super.start();
         if (scheduledItems > 0) {
-            LOGGER.debug("Starting {} Log4j2 Scheduled threads", scheduledItems);
+            LOGGER.debug("{} starting {} threads", scheduledItems, SIMPLE_NAME);
             scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
             executorService = new ScheduledThreadPoolExecutor(scheduledItems,
                     Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
         } else {
-            LOGGER.debug("No scheduled items");
+            LOGGER.debug("{}: No scheduled items", SIMPLE_NAME);
         }
     }
 
     @Override
     public void stop() {
         if (executorService != null) {
-            LOGGER.debug("Shutting down Log4j2 ConfigurationScheduler threads {}", executorService);
+            LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, executorService);
             executorService.shutdown();
         }
         super.stop();
@@ -66,7 +67,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         if (!isStarted()) {
             ++scheduledItems;
         } else {
-            LOGGER.error("Attempted to increment scheduled items after start");
+            LOGGER.error("{} attempted to increment scheduled items after start", SIMPLE_NAME);
         }
     }
 
@@ -174,7 +175,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             try {
                 runnable.run();
             } catch(final Throwable ex) {
-                LOGGER.error("Error running command", ex);
+                LOGGER.error("{} caught error running command", SIMPLE_NAME, ex);
             } finally {
                 Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
                 final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
