@@ -53,7 +53,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     @Override
     public void stop() {
         if (executorService != null) {
-            LOGGER.debug("Stopping Log4j2 Scheduled threads.");
+            LOGGER.debug("Shutting down Log4j2 ConfigurationScheduler threads {}", executorService);
             executorService.shutdown();
         }
         super.stop();
