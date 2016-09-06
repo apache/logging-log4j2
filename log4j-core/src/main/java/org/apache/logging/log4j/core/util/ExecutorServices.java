@@ -45,7 +45,7 @@ public class ExecutorServices {
      *         termination.
      */
     public static boolean shutdown(ExecutorService executorService, long timeout, TimeUnit timeUnit, String source) {
-        if (executorService.isTerminated()) {
+        if (executorService == null || executorService.isTerminated()) {
             return true;
         }
         executorService.shutdown(); // Disable new tasks from being submitted
