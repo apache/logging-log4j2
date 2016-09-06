@@ -52,12 +52,14 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     }
 
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
         if (executorService != null) {
             LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, executorService);
             executorService.shutdown();
         }
-        super.stop();
+        setStopped();
+        return true;
     }
 
     /**

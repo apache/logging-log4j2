@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -95,8 +96,9 @@ public final class RoutingAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         final Map<String, Appender> map = config.getAppenders();
         for (final Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
             final String name = entry.getValue().getAppender().getName();
@@ -104,6 +106,8 @@ public final class RoutingAppender extends AbstractAppender {
                 entry.getValue().getAppender().stop();
             }
         }
+        setStopped();
+        return true;
     }
 
     @Override

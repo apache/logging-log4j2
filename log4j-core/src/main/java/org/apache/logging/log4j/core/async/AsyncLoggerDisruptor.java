@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -110,12 +112,14 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
      * Decreases the reference count. If the reference count reached zero, the Disruptor and its associated thread are
      * shut down and their references set to {@code null}.
      */
-    public synchronized void stop() {
+    @Override
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         final Disruptor<RingBufferLogEvent> temp = getDisruptor();
         if (temp == null) {
             LOGGER.trace("[{}] AsyncLoggerDisruptor: disruptor for this context already shut down.", contextName);
-            return; // disruptor was already shut down by another thread
+            return true; // disruptor was already shut down by another thread
         }
+        setStopping();
         LOGGER.debug("[{}] AsyncLoggerDisruptor: shutting down disruptor for this context.", contextName);
 
         // We must guarantee that publishing to the RingBuffer has stopped before we call disruptor.shutdown().
@@ -130,7 +134,12 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             } catch (final InterruptedException e) { // ignored
             }
         }
-        temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
+        try {
+            // busy-spins until all events currently in the disruptor have been processed
+            temp.shutdown(timeout, timeUnit);
+        } catch (TimeoutException e) {
+            temp.shutdown();
+        } 
 
         LOGGER.trace("[{}] AsyncLoggerDisruptor: shutting down disruptor executor.", contextName);
         executor.shutdown(); // finally, kill the processor thread
@@ -140,7 +149,8 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             LOGGER.trace("AsyncLoggerDisruptor: {} discarded {} events.", asyncQueueFullPolicy,
                     DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
-        super.stop();
+        setStopped();
+        return true;
     }
 
     /**

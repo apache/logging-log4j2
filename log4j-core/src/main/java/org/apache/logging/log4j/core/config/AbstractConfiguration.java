@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -275,8 +276,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Tear down the configuration.
      */
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.setStopping();
+        super.stop(timeout, timeUnit, false);
         LOGGER.trace("Stopping {}...", this);
 
         // Stop the components that are closest to the application first:
@@ -361,11 +363,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         configurationScheduler.stop();
 
-        super.stop();
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
         LOGGER.debug("Stopped {} OK", this);
+        return true;
     }
 
     private List<Appender> getAsyncAppenders(final Appender[] all) {

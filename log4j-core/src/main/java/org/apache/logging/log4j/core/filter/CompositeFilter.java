@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -132,12 +133,13 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     }
 
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.setStopping();
         for (final Filter filter : filters) {
             filter.stop();
         }
-        this.setStopped();
+        setStopped();
+        return true;
     }
 
     /**

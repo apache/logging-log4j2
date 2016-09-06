@@ -46,7 +46,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     private final ConcurrentMap<String, Long> appendersUsage = new ConcurrentHashMap<>();
     private RoutingAppender routingAppender;
     private final ConfigurationScheduler scheduler;
-    private volatile ScheduledFuture<?> future = null;
+    private volatile ScheduledFuture<?> future;
 
     public IdlePurgePolicy(final long timeToLive, final long checkInterval, final ConfigurationScheduler scheduler) {
         this.timeToLive = timeToLive;
@@ -60,11 +60,13 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
         if (future != null) {
             future.cancel(true);
         }
+        setStopped();
+        return true;
     }
 
     /**

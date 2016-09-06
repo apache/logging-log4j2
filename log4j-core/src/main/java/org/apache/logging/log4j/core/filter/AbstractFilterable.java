@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.filter;
 
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
@@ -144,12 +145,29 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * Cleanup the Filter.
      */
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.setStopping();
         if (filter != null) {
             filter.stop();
         }
         this.setStopped();
+        return true;
+    }
+
+    /**
+     * Cleanup the Filter.
+     */
+    protected boolean stop(final long timeout, final TimeUnit timeUnit, final boolean changeLifeCycleState) {
+        if (changeLifeCycleState) {
+            this.setStopping();
+        }
+        if (filter != null) {
+            filter.stop();
+        }
+        if (changeLifeCycleState) {
+            this.setStopped();
+        }
+        return true;
     }
 
     /**

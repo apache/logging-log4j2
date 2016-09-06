@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 @Plugin(name = "Hanging", category = "Core", elementType = "appender", printObject = true)
 public class HangingAppender extends AbstractAppender {
@@ -76,12 +77,15 @@ public class HangingAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         try {
             Thread.sleep(shutdownDelay);
         } catch (final InterruptedException ignore) {
             // ignore
         }
+        setStopped();
+        return true;
     }
 }

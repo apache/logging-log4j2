@@ -240,12 +240,14 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
      * Decreases the reference count. If the reference count reached zero, the Disruptor and its associated thread are
      * shut down and their references set to {@code null}.
      */
-    public synchronized void stop() {
+    @Override
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         final Disruptor<Log4jEventWrapper> temp = disruptor;
         if (temp == null) {
             LOGGER.trace("AsyncLoggerConfigDisruptor: disruptor for this configuration already shut down.");
-            return; // disruptor was already shut down by another thread
+            return true; // disruptor was already shut down by another thread
         }
+        setStopping();
         LOGGER.trace("AsyncLoggerConfigDisruptor: shutting down disruptor for this configuration.");
 
         // We must guarantee that publishing to the RingBuffer has stopped before we call disruptor.shutdown().
@@ -263,15 +265,16 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
 
         LOGGER.trace("AsyncLoggerConfigDisruptor: shutting down disruptor executor for this configuration.");
-        // finally, kill the processor thread // TODO time should be picked up when stop(long, TimeUnit) is implemented.
-        ExecutorServices.shutdown(executor, 10, TimeUnit.SECONDS, toString());
+        // finally, kill the processor thread
+        ExecutorServices.shutdown(executor, timeout, timeUnit, toString());
         executor = null; // release reference to allow GC
 
         if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {
             LOGGER.trace("AsyncLoggerConfigDisruptor: {} discarded {} events.", asyncQueueFullPolicy,
                     DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
-        super.stop();
+        setStopped();
+        return true;
     }
 
     /**

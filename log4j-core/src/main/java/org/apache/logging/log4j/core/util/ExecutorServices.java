@@ -29,19 +29,25 @@ public class ExecutorServices {
     /**
      * Shuts down the given {@link ExecutorService} in an orderly fashion. Disables new tasks from submission and then
      * waits for existing tasks to terminate. Eventually cancels running tasks if too much time elapses.
+     * <p>
+     * If the timeout is < 0, then a plain shutdown takes place.
+     * </p>
      * 
      * @param executorService
      *            the pool to shutdown.
      * @param timeout
      *            the maximum time to wait
-     * @param source
-     *            use this string in any log messages.
      * @param timeUnit
      *            the time unit of the timeout argument
+     * @param source
+     *            use this string in any log messages.
      * @return {@code true} if the given executor terminated and {@code false} if the timeout elapsed before
      *         termination.
      */
     public static boolean shutdown(ExecutorService executorService, long timeout, TimeUnit timeUnit, String source) {
+        if (executorService.isTerminated()) {
+            return true;
+        }
         executorService.shutdown(); // Disable new tasks from being submitted
         if (timeout > 0 && timeUnit == null) {
             throw new IllegalArgumentException(
@@ -66,6 +72,8 @@ public class ExecutorServices {
                 // Preserve interrupt status
                 Thread.currentThread().interrupt();
             }
+        } else {
+            executorService.shutdown();
         }
         return true;
     }

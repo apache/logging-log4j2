@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -100,9 +101,12 @@ public final class KafkaAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         manager.close();
+        setStopped();
+        return true;
     }
 
     @Override

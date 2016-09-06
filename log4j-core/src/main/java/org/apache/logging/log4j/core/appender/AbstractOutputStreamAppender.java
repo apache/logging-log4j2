@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -131,9 +132,21 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
         manager.close();
+        setStopped();
+        return true;
+    }
+
+    @Override
+    protected boolean stop(final long timeout, final TimeUnit timeUnit, final boolean changeLifeCycleState) {
+        super.stop(timeout, timeUnit, changeLifeCycleState);
+        manager.close();
+        if (changeLifeCycleState) {
+            setStopped();
+        }
+        return true;
     }
 
     /**

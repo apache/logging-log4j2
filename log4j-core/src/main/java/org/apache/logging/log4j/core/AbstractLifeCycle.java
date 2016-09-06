@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.status.StatusLogger;
@@ -120,7 +121,7 @@ public class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public void stop() {
-        this.state = LifeCycle.State.STOPPED;
+        stop(-1, TimeUnit.MILLISECONDS);
     }
 
     @Override

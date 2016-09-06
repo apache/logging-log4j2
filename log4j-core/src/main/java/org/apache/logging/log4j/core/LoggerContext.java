@@ -302,11 +302,6 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     @Override
-    public void stop() {
-        stop(0, null);
-    }
-
-    @Override
     public boolean stop(long timeout, TimeUnit timeUnit) {
         LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
         configLock.lock();
@@ -336,10 +331,10 @@ public class LoggerContext extends AbstractLifeCycle
             final String source = "LoggerContext \'" + getName() + "\'";
             shutdownEs = ExecutorServices.shutdown(executorService, timeout, timeUnit, source);
             // Do not wait for daemon threads
-            shutdownEsd = ExecutorServices.shutdown(executorServiceDeamons, 0, null, source);
-            this.setStopped();
+            shutdownEsd = ExecutorServices.shutdown(executorServiceDeamons, -1, null, source);
         } finally {
             configLock.unlock();
+            this.setStopped();
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}]...", getName(), this);
         return shutdownEs && shutdownEsd;

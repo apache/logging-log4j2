@@ -18,6 +18,8 @@
 package org.apache.logging.log4j.core.appender.mom;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
@@ -69,9 +71,12 @@ public class JmsAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         this.manager.close();
-        super.stop();
+        setStopped();
+        return true;
     }
 
     @PluginBuilderFactory

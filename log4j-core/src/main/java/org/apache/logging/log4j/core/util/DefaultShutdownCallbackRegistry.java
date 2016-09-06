@@ -150,11 +150,16 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
         Runtime.getRuntime().addShutdownHook(thread);
     }
 
+    @Override    
+    public void stop() {
+        stop(-1, TimeUnit.MILLISECONDS);
+    }
+
     /**
      * Cancels the shutdown thread only if this is started.
      */
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         if (state.compareAndSet(State.STARTED, State.STOPPING)) {
             try {
                 removeShutdownHook();
@@ -162,11 +167,6 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
                 state.set(State.STOPPED);
             }
         }
-    }
-
-    @Override
-    public boolean stop(long timeout, TimeUnit timeUnit) {
-        stop();
         return true;
     }
 

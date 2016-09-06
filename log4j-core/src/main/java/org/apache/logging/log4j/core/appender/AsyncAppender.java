@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TransferQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -122,8 +123,9 @@ public final class AsyncAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         LOGGER.trace("AsyncAppender stopping. Queue still has {} events.", queue.size());
         thread.shutdown();
         try {
@@ -137,6 +139,8 @@ public final class AsyncAppender extends AbstractAppender {
             LOGGER.trace("AsyncAppender: {} discarded {} events.", asyncQueueFullPolicy,
                 DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
+        setStopped();
+        return true;
     }
 
     /**

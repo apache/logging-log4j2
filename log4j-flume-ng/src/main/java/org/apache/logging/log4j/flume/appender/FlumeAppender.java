@@ -18,6 +18,7 @@ package org.apache.logging.log4j.flume.appender;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -106,9 +107,12 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         manager.close();
+        setStopped();
+        return true;
     }
 
     /**
