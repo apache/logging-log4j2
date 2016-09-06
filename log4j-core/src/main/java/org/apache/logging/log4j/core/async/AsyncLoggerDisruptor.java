@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 
 import com.lmax.disruptor.ExceptionHandler;
@@ -140,7 +141,8 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         } 
 
         LOGGER.trace("[{}] AsyncLoggerDisruptor: shutting down disruptor executor.", contextName);
-        executor.shutdown(); // finally, kill the processor thread
+        // finally, kill the processor thread
+        ExecutorServices.shutdown(executor, timeout, timeUnit, toString());
         executor = null;
 
         if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {

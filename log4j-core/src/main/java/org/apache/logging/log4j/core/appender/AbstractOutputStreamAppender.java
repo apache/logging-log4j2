@@ -133,10 +133,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
 
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
-        setStopping();
-        manager.close();
-        setStopped();
-        return true;
+        return stop(timeout, timeUnit, true);
     }
 
     @Override
