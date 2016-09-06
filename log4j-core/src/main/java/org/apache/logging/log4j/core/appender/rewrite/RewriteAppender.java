@@ -69,11 +69,6 @@ public final class RewriteAppender extends AbstractAppender {
         super.start();
     }
 
-    @Override
-    public void stop() {
-        super.stop();
-    }
-
     /**
      * Modifies the event and pass to the subordinate Appenders.
      * @param event The LogEvent.
