@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.async;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -262,7 +264,8 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
 
         LOGGER.trace("AsyncLoggerConfigDisruptor: shutting down disruptor executor for this configuration.");
-        executor.shutdown(); // finally, kill the processor thread
+        // finally, kill the processor thread // TODO time should be picked up when stop(long, TimeUnit) is implemented.
+        ExecutorServices.shutdown(executor, 10, TimeUnit.SECONDS, toString());
         executor = null; // release reference to allow GC
 
         if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {
