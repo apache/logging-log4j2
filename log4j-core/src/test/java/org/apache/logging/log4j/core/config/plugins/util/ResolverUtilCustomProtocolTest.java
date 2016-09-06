@@ -22,7 +22,6 @@ import static org.apache.logging.log4j.core.config.plugins.util.ResolverUtilTest
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
@@ -31,11 +30,8 @@ import java.net.URLStreamHandlerFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Hashtable;
-
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
 import org.apache.logging.log4j.junit.URLStreamHandlerFactoryRule;
-import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 

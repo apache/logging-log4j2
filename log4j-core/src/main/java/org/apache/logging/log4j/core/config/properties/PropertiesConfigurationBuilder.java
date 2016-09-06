@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.config.properties;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
