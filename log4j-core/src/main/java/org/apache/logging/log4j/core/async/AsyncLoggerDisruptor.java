@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
-import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
@@ -43,7 +42,6 @@ import com.lmax.disruptor.dsl.ProducerType;
 class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private volatile Disruptor<RingBufferLogEvent> disruptor;
     private ExecutorService executor;
