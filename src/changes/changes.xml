@@ -120,6 +120,12 @@
       <action issue="LOG4J2-1502" dev="ggregory" type="fix" due-to="Sumit Singhal">
         CsvParameterLayout and CsvLogEventLayout insert NUL characters if data starts with {, (, [ or "
       </action>
+      <action issue="LOG4J2-1430" dev="mattsicker" type="add" due-to="John Cairns">
+        Add optional support for Conversant DisruptorBlockingQueue in AsyncAppender.
+      </action>
+      <action issue="LOG4J2-1439" dev="mattsicker" type="add" due-to="Anthony Maire">
+        Add optional support for JCTools in AsyncAppender.
+      </action>
       <action issue="LOG4J2-1558" dev="ggregory" type="add">
         SocketAppender should support IO buffering.
       </action>
