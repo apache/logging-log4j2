@@ -206,6 +206,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
      *
      * @see #stop()
      */
+    @Override
     public synchronized void start() {
         if (disruptor != null) {
             LOGGER.trace("AsyncLoggerConfigDisruptor not starting new disruptor for this configuration, "
