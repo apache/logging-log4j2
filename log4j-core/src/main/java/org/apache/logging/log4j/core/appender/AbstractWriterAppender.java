@@ -119,7 +119,7 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
         super.stop(timeout, timeUnit, false);
-        manager.close();
+        manager.stop(timeout, timeUnit);
         setStopped();
         return true;
     }

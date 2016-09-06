@@ -28,7 +28,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class AbstractLifeCycle implements LifeCycle {
 
-    public static final int DEFAULT_STOP_TIMEOUT = -1;
+    public static final int DEFAULT_STOP_TIMEOUT = 0;
     public static final TimeUnit DEFAULT_STOP_TIMEUNIT = TimeUnit.MILLISECONDS;
 
     /**

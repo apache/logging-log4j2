@@ -18,11 +18,13 @@ package org.apache.logging.log4j.core.appender;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -69,19 +71,22 @@ public abstract class AbstractManager implements AutoCloseable {
      */
     @Override
     public void close() {
+        stop(AbstractLifeCycle.DEFAULT_STOP_TIMEOUT, AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
+    }
+
+    public void stop(final long timeout, final TimeUnit timeUnit) {
         LOCK.lock();
         try {
             --count;
             if (count <= 0) {
                 MAP.remove(name);
                 LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
-                releaseSub();
+                releaseSub(timeout, timeUnit);
             }
         } finally {
             LOCK.unlock();
         }
     }
-
 
     /**
      * Retrieves a Manager if it has been previously created or creates a new Manager.
@@ -136,8 +141,10 @@ public abstract class AbstractManager implements AutoCloseable {
     /**
      * May be overridden by Managers to perform processing while the Manager is being released and the
      * lock is held.
+     * @param timeout TODO
+     * @param timeUnit TODO
      */
-    protected void releaseSub() {
+    protected void releaseSub(long timeout, TimeUnit timeUnit) {
         // This default implementation does nothing.
     }
 

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.flume.appender;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.flume.Event;
 import org.apache.flume.EventDeliveryException;
@@ -119,7 +120,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     }
 
     @Override
-    protected void releaseSub() {
+    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
         agent.stop();
     }
 

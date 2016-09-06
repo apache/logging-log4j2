@@ -256,7 +256,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     }
 
     @Override
-    protected void releaseSub() {
+    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
         if (rpcClient != null) {
             try {
                 synchronized(this) {

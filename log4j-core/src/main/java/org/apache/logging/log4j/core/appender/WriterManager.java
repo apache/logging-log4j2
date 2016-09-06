@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.StringLayout;
 
@@ -98,7 +99,7 @@ public class WriterManager extends AbstractManager {
      * Default hook to write footer during close.
      */
     @Override
-    public void releaseSub() {
+    public void releaseSub(long timeout, TimeUnit timeUnit) {
         writeFooter();
         closeWriter();
     }

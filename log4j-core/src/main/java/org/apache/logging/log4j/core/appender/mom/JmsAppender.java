@@ -74,7 +74,7 @@ public class JmsAppender extends AbstractAppender {
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
         super.stop(timeout, timeUnit, false);
-        this.manager.close();
+        this.manager.stop(timeout, timeUnit);
         setStopped();
         return true;
     }

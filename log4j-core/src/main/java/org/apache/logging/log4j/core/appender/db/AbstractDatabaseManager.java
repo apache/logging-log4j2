@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.db;
 
 import java.io.Flushable;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
@@ -170,7 +171,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     }
 
     @Override
-    public final void releaseSub() {
+    public final void releaseSub(long timeout, TimeUnit timeUnit) {
         this.shutdown();
     }
 

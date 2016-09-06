@@ -146,12 +146,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      */
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
-        this.setStopping();
-        if (filter != null) {
-            filter.stop(timeout, timeUnit);
-        }
-        this.setStopped();
-        return true;
+        return stop(timeout, timeUnit, true);
     }
 
     /**
@@ -161,13 +156,14 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         if (changeLifeCycleState) {
             this.setStopping();
         }
+        boolean stopped = true;
         if (filter != null) {
-            filter.stop(timeout, timeUnit);
+            stopped = filter.stop(timeout, timeUnit);
         }
         if (changeLifeCycleState) {
             this.setStopped();
         }
-        return true;
+        return stopped;
     }
 
     /**

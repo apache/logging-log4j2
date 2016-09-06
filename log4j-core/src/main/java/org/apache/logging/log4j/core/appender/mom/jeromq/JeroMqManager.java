@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.mom.jeromq;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.AbstractManager;
@@ -104,7 +105,7 @@ public class JeroMqManager extends AbstractManager {
     }
 
     @Override
-    protected void releaseSub() {
+    protected void releaseSub(long timeout, TimeUnit timeUnit) {
         publisher.close();
     }
 

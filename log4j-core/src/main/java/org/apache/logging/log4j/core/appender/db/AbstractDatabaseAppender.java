@@ -95,7 +95,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         setStopping();
         super.stop(timeout, timeUnit, false);
         if (this.getManager() != null) {
-            this.getManager().close();
+            this.getManager().stop(timeout, timeUnit);
         }
         setStopped();
         return true;

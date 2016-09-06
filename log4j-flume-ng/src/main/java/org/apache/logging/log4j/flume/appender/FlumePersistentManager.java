@@ -76,9 +76,9 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
-    private static final int SHUTDOWN_WAIT_SECONDS = 60;
+    private static final long SHUTDOWN_WAIT_MILLIS = 60000;
 
-    private static final int LOCK_TIMEOUT_SLEEP_MILLIS = 500;
+    private static final long LOCK_TIMEOUT_SLEEP_MILLIS = 500;
 
     private static BDBManagerFactory factory = new BDBManagerFactory();
 
@@ -217,15 +217,17 @@ public class FlumePersistentManager extends FlumeAvroManager {
     }
 
     @Override
-    protected void releaseSub() {
+    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
         LOGGER.debug("Shutting down FlumePersistentManager");
         worker.shutdown();
-        try {
-            worker.join(TimeUnit.SECONDS.toMillis(SHUTDOWN_WAIT_SECONDS));
+        final long requestedTimeoutMillis = timeUnit.toMillis(timeout);
+        final long shutdownWaitMillis = requestedTimeoutMillis < 0 ? SHUTDOWN_WAIT_MILLIS : requestedTimeoutMillis;
+		try {
+            worker.join(shutdownWaitMillis);
         } catch (final InterruptedException ie) {
             // Ignore the exception and shutdown.
         }
-        ExecutorServices.shutdown(threadPool, SHUTDOWN_WAIT_SECONDS, TimeUnit.SECONDS, toString());
+        ExecutorServices.shutdown(threadPool, shutdownWaitMillis, TimeUnit.MILLISECONDS, toString());
         try {
             worker.join();
         } catch (final InterruptedException ex) {
@@ -243,7 +245,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         } catch (final Exception ex) {
             logWarn("Failed to close environment", ex);
         }
-        super.releaseSub();
+        super.releaseSub(timeout, timeUnit);
     }
 
     private void doSend(final SimpleEvent event) {
