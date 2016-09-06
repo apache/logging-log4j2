@@ -306,17 +306,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (!loggerConfigs.isEmpty()) {
             LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggerConfigs.size());
             for (final LoggerConfig logger : loggerConfigs.values()) {
-                logger.stop();
+                logger.stop(timeout, timeUnit);
             }
         }
         LOGGER.trace("{} stopping root LoggerConfig.", cls);
         if (!root.isStopped()) {
-            root.stop();
+            root.stop(timeout, timeUnit);
         }
 
         if (hasAsyncLoggers()) {
             LOGGER.trace("{} stopping AsyncLoggerConfigDisruptor.", cls);
-            asyncLoggerConfigDisruptor.stop();
+            asyncLoggerConfigDisruptor.stop(timeout, timeUnit);
         }
 
         // Stop the appenders in reverse order in case they still have activity.
@@ -326,7 +326,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
             LOGGER.trace("{} stopping {} AsyncAppenders.", cls, async.size());
             for (final Appender appender : async) {
-                appender.stop();
+                appender.stop(timeout, timeUnit);
             }
         }
 
@@ -340,7 +340,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i].isStarted()) { // then stop remaining Appenders
-                array[i].stop();
+                array[i].stop(timeout, timeUnit);
                 appenderCount++;
             }
         }

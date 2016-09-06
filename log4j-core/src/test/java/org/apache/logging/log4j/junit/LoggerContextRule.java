@@ -19,6 +19,7 @@ package org.apache.logging.log4j.junit;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -53,8 +54,8 @@ public class LoggerContextRule implements TestRule {
     private LoggerContext loggerContext;
     private Class<? extends ContextSelector> contextSelectorClass;
     private String testClassName;
-    private long shutdownTimeout;
-    private TimeUnit shutdownTimeUnit;
+    private final long shutdownTimeout;
+    private final TimeUnit shutdownTimeUnit;
 
     /**
      * Constructs a new LoggerContextRule without a configuration file.
@@ -82,7 +83,8 @@ public class LoggerContextRule implements TestRule {
      *            custom ContextSelector class to use instead of default
      */
     public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass) {
-        this(configLocation, contextSelectorClass, 0, null);
+        this(configLocation, contextSelectorClass, AbstractLifeCycle.DEFAULT_STOP_TIMEOUT,
+                AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
     }
 
     public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass,

@@ -136,7 +136,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.setStopping();
         for (final Filter filter : filters) {
-            filter.stop();
+            filter.stop(timeout, timeUnit);
         }
         setStopped();
         return true;

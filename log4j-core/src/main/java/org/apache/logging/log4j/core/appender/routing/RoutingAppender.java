@@ -103,7 +103,7 @@ public final class RoutingAppender extends AbstractAppender {
         for (final Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
             final String name = entry.getValue().getAppender().getName();
             if (!map.containsKey(name)) {
-                entry.getValue().getAppender().stop();
+                entry.getValue().getAppender().stop(timeout, timeUnit);
             }
         }
         setStopped();

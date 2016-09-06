@@ -30,6 +30,7 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
 import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LogEventListener;
@@ -99,7 +100,7 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
 
     @Override    
     public void stop() {
-        stop(-1, TimeUnit.MILLISECONDS);
+        stop(AbstractLifeCycle.DEFAULT_STOP_TIMEOUT, AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
     }
     
     @Override

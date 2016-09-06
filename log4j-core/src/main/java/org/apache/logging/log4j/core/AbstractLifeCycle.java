@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.status.StatusLogger;
@@ -28,6 +27,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 public class AbstractLifeCycle implements LifeCycle {
+
+    public static final int DEFAULT_STOP_TIMEOUT = -1;
+    public static final TimeUnit DEFAULT_STOP_TIMEUNIT = TimeUnit.MILLISECONDS;
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -121,7 +123,7 @@ public class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public void stop() {
-        stop(-1, TimeUnit.MILLISECONDS);
+        stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEUNIT);
     }
 
     @Override

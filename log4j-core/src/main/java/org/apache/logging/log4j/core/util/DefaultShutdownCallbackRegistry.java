@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -152,7 +153,7 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
 
     @Override    
     public void stop() {
-        stop(-1, TimeUnit.MILLISECONDS);
+        stop(AbstractLifeCycle.DEFAULT_STOP_TIMEOUT, AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
     }
 
     /**

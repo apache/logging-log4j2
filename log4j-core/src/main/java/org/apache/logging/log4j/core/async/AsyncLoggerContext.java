@@ -101,7 +101,8 @@ public class AsyncLoggerContext extends LoggerContext {
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        loggerDisruptor.stop(); // first stop Disruptor
+        // first stop Disruptor
+        loggerDisruptor.stop(timeout, timeUnit); 
         super.stop(timeout, timeUnit);
         return true;
     }

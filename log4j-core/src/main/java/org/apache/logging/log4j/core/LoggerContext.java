@@ -325,7 +325,7 @@ public class LoggerContext extends AbstractLifeCycle
             final Configuration prev = configuration;
             configuration = NULL_CONFIGURATION;
             updateLoggers();
-            prev.stop();
+            prev.stop(timeout, timeUnit);
             externalContext = null;
             LogManager.getFactory().removeContext(this);
             final String source = "LoggerContext \'" + getName() + "\'";

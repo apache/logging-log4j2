@@ -229,7 +229,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                 if (this.namedContextSelector != null) {
                     this.namedContextSelector.removeContext(this.name);
                 }
-                this.loggerContext.stop();
+                this.loggerContext.stop(timeout, timeUnit);
                 this.loggerContext.setExternalContext(null);
                 this.loggerContext = null;
             }
