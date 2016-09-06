@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 public class ConfigurationBuilderTest {
 
@@ -84,12 +85,11 @@ public class ConfigurationBuilderTest {
     // TODO make test run properly on Windows
     @Test
     public void testXmlConstructing() throws Exception {
-        if (System.lineSeparator().length() == 1) { // Only run test on platforms with single character line endings (such as Linux), not on Windows
-            final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-            addTestFixtures("config name", builder);
-            final String xmlConfiguration = builder.toXmlConfiguration();
-            assertEquals(expectedXml, xmlConfiguration);
-        }
+        assumeTrue(System.lineSeparator().length() == 1); // Only run test on platforms with single character line endings (such as Linux), not on Windows
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        addTestFixtures("config name", builder);
+        final String xmlConfiguration = builder.toXmlConfiguration();
+        assertEquals(expectedXml, xmlConfiguration);
     }
 
 }
