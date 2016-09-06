@@ -127,10 +127,12 @@ public class JmsManager extends AbstractManager {
         try {
             this.session.close();
         } catch (final JMSException ignored) {
+            // ignore
         }
         try {
             this.connection.close();
         } catch (final JMSException ignored) {
+            // ignore
         }
         this.jndiManager.close();
     }
