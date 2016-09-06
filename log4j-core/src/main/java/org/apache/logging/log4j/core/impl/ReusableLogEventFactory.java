@@ -73,7 +73,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.setMessage(message);
         result.setThrown(t);
         result.setContextMap(Log4jLogEvent.createMap(properties));
-        result.setContextStack(ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack());// mutable copy
+        result.setContextStack(ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack());// mutable copy
         result.setTimeMillis(message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()
                 : CLOCK.currentTimeMillis());
