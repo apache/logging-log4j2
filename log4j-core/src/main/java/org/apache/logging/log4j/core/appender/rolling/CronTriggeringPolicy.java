@@ -46,7 +46,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
     private final Configuration configuration;
     private final boolean checkOnStartup;
     private volatile Date nextRollDate;
-    private CronScheduledFuture future;
+    private CronScheduledFuture<?> future;
 
     private CronTriggeringPolicy(final CronExpression schedule, final boolean checkOnStartup,
             final Configuration configuration) {
