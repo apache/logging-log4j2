@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Collection of basic TypeConverter implementations. May be used to register additional TypeConverters or find
@@ -175,7 +176,7 @@ public final class TypeConverters {
     public static class ClassConverter implements TypeConverter<Class<?>> {
         @Override
         public Class<?> convert(final String s) throws ClassNotFoundException {
-            return Loader.loadClass(s);
+            return LoaderUtil.loadClass(s);
         }
     }
 

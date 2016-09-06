@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -238,7 +239,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         }
         try {
             // We type the parameter as a wildcard to avoid a hard reference to Jansi.
-            final Class<?> clazz = Loader.loadClass(JANSI_CLASS);
+            final Class<?> clazz = LoaderUtil.loadClass(JANSI_CLASS);
             final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
             return new CloseShieldOutputStream((OutputStream) constructor.newInstance(outputStream));
         } catch (final ClassNotFoundException cnfe) {

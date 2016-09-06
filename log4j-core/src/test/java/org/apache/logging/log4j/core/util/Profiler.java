@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -32,8 +33,8 @@ public final class Profiler {
 
     static {
         try {
-            controllerClazz = Loader.loadClass("com.yourkit.api.Controller");
-            profilingModes = Loader.loadClass("com.yourkit.api.ProfilingModes");
+            controllerClazz = LoaderUtil.loadClass("com.yourkit.api.Controller");
+            profilingModes = LoaderUtil.loadClass("com.yourkit.api.ProfilingModes");
             try {
                 profiler = controllerClazz.getConstructor().newInstance();
             } catch (final Exception e) {
