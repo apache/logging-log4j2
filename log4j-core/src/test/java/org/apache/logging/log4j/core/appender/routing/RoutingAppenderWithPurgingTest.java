@@ -52,7 +52,7 @@ public class RoutingAppenderWithPurgingTest {
     private RoutingAppender routingAppenderIdleWithHangingAppender;
     private RoutingAppender routingAppenderManual;
 
-    private LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFilesRule(IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3,

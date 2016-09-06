@@ -37,7 +37,7 @@ public class JsonRoutingAppender2Test {
     private static final String CONFIG = "log4j-routing2.json";
     private static final String LOG_FILENAME = "target/rolling1/rollingtest-Unknown.log";
 
-    private LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain rules = loggerContextRule.withCleanFilesRule(LOG_FILENAME);

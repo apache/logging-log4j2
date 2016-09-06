@@ -76,7 +76,7 @@ public class ResolverUtilCustomProtocolTest {
     }
 
     static class SingleURLClassLoader extends ClassLoader {
-        private URL url;
+        private final URL url;
 
         public SingleURLClassLoader(URL url) {
             this.url = url;

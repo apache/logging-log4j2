@@ -66,8 +66,8 @@ public class SocketAppenderTest {
     private static TcpSocketTestServer tcpServer;
     private static UdpSocketTestServer udpServer;
 
-    private LoggerContext context = LoggerContext.getContext();
-    private Logger logger = context.getLogger(SocketAppenderTest.class.getName());
+    private final LoggerContext context = LoggerContext.getContext();
+    private final Logger logger = context.getLogger(SocketAppenderTest.class.getName());
 
     @BeforeClass
     public static void setupClass() throws Exception {

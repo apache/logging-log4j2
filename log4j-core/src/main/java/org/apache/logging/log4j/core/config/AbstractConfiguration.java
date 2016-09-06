@@ -125,7 +125,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final WatchManager watchManager = new WatchManager(configurationScheduler);
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
     private NanoClock nanoClock = new DummyNanoClock();
-    private WeakReference<LoggerContext> loggerContext;
+    private final WeakReference<LoggerContext> loggerContext;
     
     /**
      * Constructor.
