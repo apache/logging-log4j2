@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -37,7 +38,7 @@ import com.lmax.disruptor.dsl.ProducerType;
  * life cycle of the context. The AsyncLoggerDisruptor of the context is shared by all AsyncLogger objects created by
  * that AsyncLoggerContext.
  */
-class AsyncLoggerDisruptor {
+class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
@@ -72,7 +73,7 @@ class AsyncLoggerDisruptor {
      *
      * @see #stop()
      */
-    synchronized void start() {
+    public synchronized void start() {
         if (disruptor != null) {
             LOGGER.trace(
                     "[{}] AsyncLoggerDisruptor not starting new disruptor for this context, using existing object.",
@@ -102,13 +103,14 @@ class AsyncLoggerDisruptor {
 
         LOGGER.trace("[{}] AsyncLoggers use a {} translator", contextName, useThreadLocalTranslator ? "threadlocal"
                 : "vararg");
+        super.start();
     }
 
     /**
      * Decreases the reference count. If the reference count reached zero, the Disruptor and its associated thread are
      * shut down and their references set to {@code null}.
      */
-    synchronized void stop() {
+    public synchronized void stop() {
         final Disruptor<RingBufferLogEvent> temp = getDisruptor();
         if (temp == null) {
             LOGGER.trace("[{}] AsyncLoggerDisruptor: disruptor for this context already shut down.", contextName);
@@ -138,6 +140,7 @@ class AsyncLoggerDisruptor {
             LOGGER.trace("AsyncLoggerDisruptor: {} discarded {} events.", asyncQueueFullPolicy,
                     DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
+        super.stop();
     }
 
     /**
