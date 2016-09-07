@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  *
  */
 @Plugin(name = "SizeBasedTriggeringPolicy", category = "Core", printObject = true)
-public class SizeBasedTriggeringPolicy extends AbstractLifeCycle implements TriggeringPolicy {
+public class SizeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
     /**
      * Rollover threshold size in bytes.
