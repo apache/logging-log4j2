@@ -74,6 +74,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
      *
      * @see #stop()
      */
+    @Override
     public synchronized void start() {
         if (disruptor != null) {
             LOGGER.trace(
