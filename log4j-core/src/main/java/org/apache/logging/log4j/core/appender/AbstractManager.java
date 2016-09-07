@@ -100,11 +100,11 @@ public abstract class AbstractManager implements AutoCloseable {
      * @param <T> The type of the Factory data.
      * @return A Manager with the specified name and type.
      */
+    @SuppressWarnings("resource")
     public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory,
                                                               final T data) {
         LOCK.lock();
         try {
-            @SuppressWarnings("unchecked")
             M manager = (M) MAP.get(name);
             if (manager == null) {
                 manager = factory.createManager(name, data);
