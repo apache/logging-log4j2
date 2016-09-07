@@ -90,7 +90,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
         this.flush();
         if (this.isRunning()) {
             try {
-                this.shutdownInternal();
+                closed &= this.shutdownInternal();
             } catch (final Exception e) {
                 logWarn("Caught exception while performing database shutdown operations", e);
                 closed = false;
