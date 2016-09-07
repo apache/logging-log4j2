@@ -47,7 +47,7 @@ public class TrustStoreConfigurationTest {
     @Test(expected = StoreConfigurationException.class)
     public void wrongPassword() throws StoreConfigurationException {
         final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, "wrongPassword!", null, null);
-        final KeyStore ks = ksc.getKeyStore();
+        ksc.getKeyStore();
         Assert.assertTrue(false);
     }
 }

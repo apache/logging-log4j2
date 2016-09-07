@@ -27,14 +27,14 @@ public class ResourceBundleLookupTest {
     @Test
     public void testLookup() {
         final StrLookup lookup = new ResourceBundleLookup();
-        final String value = lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle_en:KeyA");
+        lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle_en:KeyA");
         Assert.assertEquals("ValueA", lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyA"));
     }
 
     @Test
     public void testLookupWithLocale() {
         final StrLookup lookup = new ResourceBundleLookup();
-        final String value = lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyA");
+        lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyA");
         Assert.assertEquals("ValueA", lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyA"));
     }
 

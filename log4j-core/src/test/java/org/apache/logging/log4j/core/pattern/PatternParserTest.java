@@ -206,7 +206,7 @@ public class PatternParserTest {
         final List<PatternFormatter> formatters = parser.parse(nestedPatternHighlight);
         assertNotNull(formatters);
         final Throwable t = new Throwable();
-        final StackTraceElement[] stackTraceElement = t.getStackTrace();
+        t.getStackTrace();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
                 .setMarker(MarkerManager.getMarker("TEST")) //

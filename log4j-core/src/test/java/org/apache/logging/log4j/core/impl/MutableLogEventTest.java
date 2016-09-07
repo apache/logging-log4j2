@@ -216,7 +216,7 @@ public class MutableLogEventTest {
 
     @Test
     public void testJavaIoSerializableWithThrown() throws Exception {
-        final Error thrown = new InternalError("test error");
+        new InternalError("test error");
         final MutableLogEvent evt = new MutableLogEvent();
         evt.setContextMap(CONTEXTMAP);
         evt.setContextStack(STACK);

@@ -281,7 +281,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         formattedMessage = in.readUTF();
         key = in.readUTF();
         baseName = in.readUTF();
-        final int length = in.readInt();
+        in.readInt();
         stringArgs = (String[]) in.readObject();
         logger = StatusLogger.getLogger();
         resourceBundle = null;
