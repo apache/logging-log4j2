@@ -248,7 +248,7 @@ public class LoggerContextRule implements TestRule {
      */
     public <T extends Appender> T getRequiredAppender(final String name, final Class<T> cls) {
         final T appender = getAppender(name, cls);
-        assertNotNull("Appender named " + name + " was null.", appender);
+        assertNotNull("Appender named " + name + " was null in logger context " + loggerContext, appender);
         return appender;
     }
 
