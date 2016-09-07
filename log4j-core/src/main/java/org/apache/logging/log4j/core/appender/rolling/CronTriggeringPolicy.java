@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.util.CronExpression;
  */
 @Plugin(name = "CronTriggeringPolicy", category = "Core", printObject = true)
 @Scheduled
-public final class CronTriggeringPolicy extends AbstractLifeCycle implements TriggeringPolicy {
+public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private static final String defaultSchedule = "0 0 0 * * ?";
     private RollingFileManager manager;
