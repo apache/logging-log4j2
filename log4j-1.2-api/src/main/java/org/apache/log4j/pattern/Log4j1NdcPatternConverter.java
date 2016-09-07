@@ -57,7 +57,7 @@ public final class Log4j1NdcPatternConverter extends LogEventPatternConverter {
 
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        List<String> ndc = event.getContextStack().asList();
+        final List<String> ndc = event.getContextStack().asList();
         toAppendTo.append(Strings.join(ndc, ' '));
     }
 }

@@ -270,10 +270,10 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         if (agents == null || agents.length == 0) {
             if (hosts != null && !hosts.isEmpty()) {
                 LOGGER.debug("Parsing agents from hosts parameter");
-                String[] hostports = hosts.split(",");
+                final String[] hostports = hosts.split(",");
                 agents = new Agent[hostports.length];
                 for(int i = 0; i < hostports.length; ++i) {
-                    String[] h = hostports[i].split(":");
+                    final String[] h = hostports[i].split(":");
                     agents[i] = Agent.createAgent(h[0], h.length > 1 ? h[1] : null);
                 }
             } else {

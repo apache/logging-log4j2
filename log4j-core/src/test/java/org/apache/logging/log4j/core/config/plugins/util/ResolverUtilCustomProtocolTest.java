@@ -178,9 +178,9 @@ public class ResolverUtilCustomProtocolTest {
 
     @Test
     public void testFindInPackageFromVfsDirectoryURL() throws Exception {
-        ClassLoader cl = compileAndCreateClassLoader("3");
+        final ClassLoader cl = compileAndCreateClassLoader("3");
 
-        ResolverUtil resolverUtil = new ResolverUtil();
+        final ResolverUtil resolverUtil = new ResolverUtil();
         resolverUtil.setClassLoader(new SingleURLClassLoader(new URL("vfs:/target/resolverutil3/customplugin3/"), cl));
         resolverUtil.findInPackage(new PluginTest(), "customplugin3");
         assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
@@ -190,9 +190,9 @@ public class ResolverUtilCustomProtocolTest {
 
     @Test
     public void testFindInPackageFromVfsJarURL() throws Exception {
-        ClassLoader cl = compileJarAndCreateClassLoader("4");
+        final ClassLoader cl = compileJarAndCreateClassLoader("4");
 
-        ResolverUtil resolverUtil = new ResolverUtil();
+        final ResolverUtil resolverUtil = new ResolverUtil();
         resolverUtil.setClassLoader(
                 new SingleURLClassLoader(new URL("vfs:/target/resolverutil4/customplugin4.jar/customplugin4/"), cl));
         resolverUtil.findInPackage(new PluginTest(), "customplugin4");

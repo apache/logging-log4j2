@@ -158,7 +158,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         if (oldSocket != null) {
             try {
                 oldSocket.close();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("Could not close socket {}", socket);
             }
         }
@@ -247,7 +247,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     private Reconnector createReconnector() {
-        Reconnector recon = new Reconnector(this);
+        final Reconnector recon = new Reconnector(this);
         recon.setDaemon(true);
         recon.setPriority(Thread.MIN_PRIORITY);
         return recon;

@@ -83,7 +83,7 @@ public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
             int idleCounter = 0;
             final long timeoutNanos = System.nanoTime() + unit.toNanos(timeout);
             do {
-                E result = poll();
+                final E result = poll();
                 if (result != null) {
                     return result;
                 } else if (System.nanoTime() - timeoutNanos > 0) {

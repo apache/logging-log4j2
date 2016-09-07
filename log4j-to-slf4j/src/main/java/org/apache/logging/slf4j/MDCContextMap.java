@@ -34,7 +34,7 @@ public class MDCContextMap implements ThreadContextMap2 {
 
     @Override
     public void putAll(final Map<String, String> m) {
-    	for (Entry<String, String> entry : m.entrySet()) {
+    	for (final Entry<String, String> entry : m.entrySet()) {
             MDC.put(entry.getKey(), entry.getValue());
 		}
     }

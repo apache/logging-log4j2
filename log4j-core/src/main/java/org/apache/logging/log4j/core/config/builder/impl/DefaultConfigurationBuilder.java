@@ -202,10 +202,10 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public void writeXmlConfiguration(final OutputStream output) throws IOException {
         try {
-            XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(output);
+            final XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(output);
             writeXmlConfiguration(xmlWriter);
             xmlWriter.close();
-        } catch (XMLStreamException e) {
+        } catch (final XMLStreamException e) {
             if (e.getNestedException() instanceof IOException) {
                 throw (IOException)e.getNestedException();
             }
@@ -215,12 +215,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public String toXmlConfiguration() {
-        StringWriter sw = new StringWriter();
+        final StringWriter sw = new StringWriter();
         try {
-            XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
+            final XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
             writeXmlConfiguration(xmlWriter);
             xmlWriter.close();
-        } catch (XMLStreamException e) {
+        } catch (final XMLStreamException e) {
             Throwables.rethrow(e);
         }
         return sw.toString();
@@ -289,7 +289,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (!component.getComponents().isEmpty()) {
                 xmlWriter.writeCharacters(EOL);
             }
-            for (Component subComponent : component.getComponents()) {
+            for (final Component subComponent : component.getComponents()) {
                 writeXmlComponent(xmlWriter, subComponent, nesting + 1);
             }
             if (component.getValue() != null) {
@@ -314,7 +314,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     private void writeXmlAttributes(final XMLStreamWriter xmlWriter, final Component component) throws XMLStreamException {
-        for (Map.Entry<String, String> attribute : component.getAttributes().entrySet()) {
+        for (final Map.Entry<String, String> attribute : component.getAttributes().entrySet()) {
             xmlWriter.writeAttribute(attribute.getKey(), attribute.getValue());
         }
     }

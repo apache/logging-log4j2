@@ -136,7 +136,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         try {
             // busy-spins until all events currently in the disruptor have been processed
             temp.shutdown(timeout, timeUnit);
-        } catch (TimeoutException e) {
+        } catch (final TimeoutException e) {
             temp.shutdown();
         } 
 

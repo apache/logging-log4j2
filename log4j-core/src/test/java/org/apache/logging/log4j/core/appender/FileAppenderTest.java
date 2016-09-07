@@ -248,7 +248,7 @@ public class FileAppenderTest {
             appender.start();
             assertTrue("Appender did not start", appender.isStarted());
             final boolean exists = Files.exists(PATH);
-            String msg = String.format("concurrent = %s, createOnDemand = %s, file exists = %s", concurrent, createOnDemand,
+            final String msg = String.format("concurrent = %s, createOnDemand = %s, file exists = %s", concurrent, createOnDemand,
                     exists);
             // If concurrent the file might have been created (or not.)
             // Can't really test createOnDemand && concurrent.

@@ -71,7 +71,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
 
     private TextRenderer loadMessageRenderer(final String[] options) {
         if (options != null) {
-            for (String option : options) {
+            for (final String option : options) {
                 switch (option.toUpperCase(Locale.ROOT)) {
                 case "ANSI":
                     if (Loader.isJansiAvailable()) {
@@ -109,10 +109,10 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         final Message msg = event.getMessage();
         if (msg instanceof StringBuilderFormattable) {
 
-            boolean doRender = textRenderer != null;
-            StringBuilder workingBuilder = doRender ? new StringBuilder(80) : toAppendTo;
+            final boolean doRender = textRenderer != null;
+            final StringBuilder workingBuilder = doRender ? new StringBuilder(80) : toAppendTo;
 
-            StringBuilderFormattable stringBuilderFormattable = (StringBuilderFormattable) msg;
+            final StringBuilderFormattable stringBuilderFormattable = (StringBuilderFormattable) msg;
             final int offset = workingBuilder.length();
             stringBuilderFormattable.formatTo(workingBuilder);
 

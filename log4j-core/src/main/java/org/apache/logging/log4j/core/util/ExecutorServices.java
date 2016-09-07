@@ -66,7 +66,7 @@ public class ExecutorServices {
                     }
                     return false;
                 }
-            } catch (InterruptedException ie) {
+            } catch (final InterruptedException ie) {
                 // (Re-)Cancel if current thread also interrupted
                 executorService.shutdownNow();
                 // Preserve interrupt status

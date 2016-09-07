@@ -91,10 +91,10 @@ public class ConfigurationAssemblerTest {
         final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertNotNull(loggers);
         assertTrue("Incorrect number of LoggerConfigs: " + loggers.size(), loggers.size() == 2);
-        LoggerConfig rootLoggerConfig = loggers.get("");
+        final LoggerConfig rootLoggerConfig = loggers.get("");
         assertEquals(Level.ERROR, rootLoggerConfig.getLevel());
         assertFalse(rootLoggerConfig.isIncludeLocation());
-        LoggerConfig loggerConfig = loggers.get("org.apache.logging.log4j");
+        final LoggerConfig loggerConfig = loggers.get("org.apache.logging.log4j");
         assertEquals(Level.DEBUG, loggerConfig.getLevel());
         assertTrue(loggerConfig.isIncludeLocation());
         final Filter filter = config.getFilter();
@@ -103,7 +103,7 @@ public class ConfigurationAssemblerTest {
         final List<CustomLevelConfig> customLevels = config.getCustomLevels();
         assertNotNull("No CustomLevels", filter);
         assertEquals(1, customLevels.size());
-        CustomLevelConfig customLevel = customLevels.get(0);
+        final CustomLevelConfig customLevel = customLevels.get(0);
         assertEquals("Panic", customLevel.getLevelName());
         assertEquals(17, customLevel.getIntLevel());
         final Logger logger = LogManager.getLogger(getClass());

@@ -58,7 +58,7 @@ public class RollingAppenderCronTest {
     public void testAppender() throws Exception {
         // TODO Is there a better way to test than putting the thread to sleep all over the place?
         final Logger logger = loggerContextRule.getLogger();
-        File file = new File(FILE);
+        final File file = new File(FILE);
         assertTrue("Log file does not exist", file.exists());
         logger.debug("This is test message number 1");
         Thread.sleep(2500);
@@ -79,7 +79,7 @@ public class RollingAppenderCronTest {
         }
         if (!succeeded) {
             final File[] files = dir.listFiles();
-            for (File dirFile : files) {
+            for (final File dirFile : files) {
                 logger.error("Found file: " + dirFile.getPath());
             }
             fail("No compressed files found");

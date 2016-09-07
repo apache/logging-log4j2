@@ -101,7 +101,7 @@ public class ReusableLogEventFactoryTest {
     @Test
     public void testCreateEventInitFieldsProperly() throws Exception {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
-        LogEvent event = callCreateEvent(factory, "logger", Level.INFO, new SimpleMessage("xyz"), null);
+        final LogEvent event = callCreateEvent(factory, "logger", Level.INFO, new SimpleMessage("xyz"), null);
         assertNotNull(event.getContextMap());
         assertNotNull(event.getContextStack());
     }

@@ -115,7 +115,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing the next time the command will run.
      */
     public CronScheduledFuture<?> scheduleWithCron(final CronExpression cronExpression, final Runnable command) {
-        Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
+        final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
         final CronRunnable runnable = new CronRunnable(command, cronExpression);
         final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
         final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future, fireDate);
@@ -179,7 +179,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             } catch(final Throwable ex) {
                 LOGGER.error("{} caught error running command", SIMPLE_NAME, ex);
             } finally {
-                Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
+                final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
                 final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
                 scheduledFuture.reset(future, fireDate);
             }

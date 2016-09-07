@@ -123,7 +123,7 @@ public class RollingAppenderSizeTest {
         }
         try {
             Thread.sleep(100);
-        } catch (InterruptedException ie) {
+        } catch (final InterruptedException ie) {
             // Ignore the error.
         }
 

@@ -94,7 +94,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         @Override
         public SocketAppender build() {
             boolean immediateFlush = isImmediateFlush();
-            boolean bufferedIo = isBufferedIo();
+            final boolean bufferedIo = isBufferedIo();
             Layout<? extends Serializable> layout = getLayout();
             if (layout == null) {
                 layout = SerializedLayout.createLayout();

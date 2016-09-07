@@ -80,7 +80,7 @@ public class OnStartupTriggeringPolicyTest {
         try (final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
                 policy, strategy, null, layout, 8192, true, false, configuration)) {
             manager.initialize();
-            String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());
+            final String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());
             assertTrue(target.toString() + ", files = " + files, Files.exists(target));
             assertEquals(target.toString(), 0, Files.size(target));
             assertTrue("Missing: " + rolled.toString() + ", files on disk = " + files, Files.exists(rolled));

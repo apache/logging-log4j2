@@ -112,7 +112,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
         }
 
         if (updateTime < Long.MAX_VALUE) {
-            long interval = timeToLive - (System.currentTimeMillis() - updateTime);
+            final long interval = timeToLive - (System.currentTimeMillis() - updateTime);
             future = scheduler.schedule(this, interval, TimeUnit.MILLISECONDS);
         } else {
             // reset to initial state - in case of all appenders already purged

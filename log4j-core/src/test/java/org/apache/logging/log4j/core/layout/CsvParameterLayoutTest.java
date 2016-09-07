@@ -161,10 +161,10 @@ public class CsvParameterLayoutTest {
 
     @Test
     public void testLogJsonArgument() throws InterruptedException {
-        ListAppender appender = (ListAppender) init.getAppender("List");
+        final ListAppender appender = (ListAppender) init.getAppender("List");
         appender.countDownLatch = new CountDownLatch(4);
         appender.clear();
-        Logger logger = (Logger) LogManager.getRootLogger();
+        final Logger logger = (Logger) LogManager.getRootLogger();
         final String json = "{\"id\":10,\"name\":\"Alice\"}";
         logger.error("log:{}", json);
         // wait until background thread finished processing

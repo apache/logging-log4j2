@@ -91,7 +91,7 @@ public class Log4j1ConfigurationParser {
         final Map<String, String> classNameToProperty = buildClassToPropertyPrefixMap(sortedAppenderNames);
         for (final Map.Entry<String, String> entry : classNameToProperty.entrySet()) {
             final String appenderName = entry.getKey();
-            String appenderClass = entry.getValue();
+            final String appenderClass = entry.getValue();
             buildAppender(appenderName, appenderClass);
         }
         // Loggers
@@ -244,7 +244,7 @@ public class Log4j1ConfigurationParser {
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {
-                LayoutComponentBuilder htmlLayout = builder.newLayout("HtmlLayout");
+                final LayoutComponentBuilder htmlLayout = builder.newLayout("HtmlLayout");
                 htmlLayout.addAttribute("title",
                         getLog4jAppenderValue(name, "layout.Title", "Log4J Log Messages"));
                 htmlLayout.addAttribute("locationInfo",
@@ -253,7 +253,7 @@ public class Log4j1ConfigurationParser {
                 break;
             }
             case "org.apache.log4j.xml.XMLLayout": {
-                LayoutComponentBuilder xmlLayout = builder.newLayout("Log4j1XmlLayout");
+                final LayoutComponentBuilder xmlLayout = builder.newLayout("Log4j1XmlLayout");
                 xmlLayout.addAttribute("locationInfo",
                         Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", "false")));
                 xmlLayout.addAttribute("properties",
@@ -283,8 +283,8 @@ public class Log4j1ConfigurationParser {
         final Level rootLoggerLevel = rootLoggerParts.length > 0 ? Level.valueOf(rootLoggerParts[0]) : Level.ERROR;
         final String[] sortedAppenderNames = Arrays.copyOfRange(rootLoggerParts, 1, rootLoggerParts.length);
         Arrays.sort(sortedAppenderNames);
-        RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
-        for (String appender : sortedAppenderNames) {
+        final RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
+        for (final String appender : sortedAppenderNames) {
             loggerBuilder.add(builder.newAppenderRef(appender));
         }
         builder.add(loggerBuilder);

@@ -134,7 +134,7 @@ public final class CronTriggeringPolicy extends AbstractLifeCycle implements Tri
         manager.getPatternProcessor().setPrevFileTime(nextRollDate.getTime());
         manager.rollover();
         final Date fireDate = future.getFireTime();
-        Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance();
         cal.setTime(fireDate);
         cal.add(Calendar.SECOND, -1);
         nextRollDate = cal.getTime();

@@ -41,7 +41,7 @@ public abstract class AbstractRunQueue implements IPerfTestRunner {
                         if (Objects.equals(queue.take(), STOP)) {
                             break;
                         }
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         e.printStackTrace();
                         break;
                     }
@@ -67,7 +67,7 @@ public abstract class AbstractRunQueue implements IPerfTestRunner {
         stopped = true;
         try {
             queue.put(STOP);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -82,7 +82,7 @@ public abstract class AbstractRunQueue implements IPerfTestRunner {
             PrintingAsyncQueueFullPolicy.ringbufferFull.incrementAndGet();
             try {
                 queue.put(finalMessage);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 e.printStackTrace();
             }
         }

@@ -70,7 +70,7 @@ public class ConsoleAppenderJAnsiMessageMain {
             logger.info(ansi().fg(RED).a("Hello").fg(CYAN).a(" World").reset());
             // JAnsi format:
             // logger.info("@|red Hello|@ @|cyan World|@");
-            for (Entry<Object, Object> entry : System.getProperties().entrySet()) {
+            for (final Entry<Object, Object> entry : System.getProperties().entrySet()) {
                 logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());
             }
         }

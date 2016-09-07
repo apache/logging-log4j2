@@ -122,7 +122,7 @@ public class CompositeConfigurationTest {
                 try {
                     final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
                     Assert.assertNotNull(config);
-                } catch (NullPointerException e) {
+                } catch (final NullPointerException e) {
                     fail("Should not throw NullPointerException when there are different nodes.");
                 }
             }
@@ -141,7 +141,7 @@ public class CompositeConfigurationTest {
                 assertEquals("Expected Root logger log level to be WARN", Level.WARN, config.getRootLogger().getLevel());
 
                 //Test for cat2 level override
-                LoggerConfig cat2 = config.getLogger("cat2");
+                final LoggerConfig cat2 = config.getLogger("cat2");
                 assertEquals("Expected cat2 log level to be INFO", Level.INFO, cat2.getLevel());
 
                 //Test for cat2 additivity override
