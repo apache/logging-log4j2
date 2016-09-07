@@ -146,8 +146,8 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     @Override
-    protected synchronized void closeOutputStream() {
-        super.closeOutputStream();
+    protected synchronized boolean closeOutputStream() {
+        boolean closed = super.closeOutputStream();
         if (reconnector != null) {
             reconnector.shutdown();
             reconnector.interrupt();
@@ -160,8 +160,10 @@ public class TcpSocketManager extends AbstractSocketManager {
                 oldSocket.close();
             } catch (final IOException e) {
                 LOGGER.error("Could not close socket {}", socket);
+                return false;
             }
         }
+        return closed;
     }
 
     public int getConnectTimeoutMillis() {

@@ -294,17 +294,19 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         flushDestination();
     }
 
-    protected synchronized void closeOutputStream() {
+    protected synchronized boolean closeOutputStream() {
         flush();
         final OutputStream stream = os; // access volatile field only once per method
         if (stream == null || stream == System.out || stream == System.err) {
-            return;
+            return true;
         }
         try {
             stream.close();
         } catch (final IOException ex) {
             logError("Unable to close stream", ex);
+            return false;
         }
+        return true;
     }
 
     /**

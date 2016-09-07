@@ -156,7 +156,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    public synchronized void closeOutputStream() {
+    public synchronized boolean closeOutputStream() {
         final long position = mappedBuffer.position();
         final long length = mappingOffset + position;
         try {
@@ -169,8 +169,10 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                     length, mappingOffset, position);
             randomAccessFile.setLength(length);
             randomAccessFile.close();
+            return true;
         } catch (final IOException ex) {
             logError("Unable to close MemoryMappedFile", ex);
+            return false;
         }
     }
 
