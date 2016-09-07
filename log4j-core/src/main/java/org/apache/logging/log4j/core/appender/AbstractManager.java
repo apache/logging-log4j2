@@ -139,10 +139,10 @@ public abstract class AbstractManager implements AutoCloseable {
     }
 
     /**
-     * May be overridden by Managers to perform processing while the Manager is being released and the
-     * lock is held.
-     * @param timeout TODO
-     * @param timeUnit TODO
+     * May be overridden by managers to perform processing while the manager is being released and the
+     * lock is held. A timeout is passed for implementors to use as they see fit.
+     * @param timeout timeout
+     * @param timeUnit timeout time unit
      */
     protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
         // This default implementation does nothing.
