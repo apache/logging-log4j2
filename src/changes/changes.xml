@@ -123,6 +123,9 @@
       <action issue="LOG4J2-1502" dev="ggregory" type="fix" due-to="Sumit Singhal">
         CsvParameterLayout and CsvLogEventLayout insert NUL characters if data starts with {, (, [ or "
       </action>
+      <action issue="LOG4J2-1568" dev="mattsicker" type="add">
+        Add support for java.util.concurrent.LinkedTransferQueue to AsyncAppender.
+      </action>
       <action issue="LOG4J2-1430" dev="mattsicker" type="add" due-to="John Cairns">
         Add optional support for Conversant DisruptorBlockingQueue in AsyncAppender.
       </action>
