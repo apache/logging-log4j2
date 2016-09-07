@@ -106,6 +106,7 @@ public abstract class AbstractManager implements AutoCloseable {
                                                               final T data) {
         LOCK.lock();
         try {
+            @SuppressWarnings("unchecked")
             M manager = (M) MAP.get(name);
             if (manager == null) {
                 manager = factory.createManager(name, data);
