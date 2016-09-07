@@ -143,15 +143,15 @@ public final class CronTriggeringPolicy extends AbstractLifeCycle implements Tri
     @Override
     public boolean stop(long timeout, TimeUnit timeUnit) {
         setStopping();
+        boolean canceled = true;
         if (future != null) {
-            try {
-                future.get(timeout, timeUnit);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                future.cancel(true);
+            if (future.isCancelled() || future.isDone()) {
+                return true;
             }
+            canceled = future.cancel(true);
         }
         setStopped();
-        return true;
+        return canceled;
     }
 
     @Override
