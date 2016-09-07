@@ -37,21 +37,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Experimental parser for Log4j 1.2 properties configuration files.
- * <p>
- * Currently supports:
- * </p>
- * <ul>
- * <li>log4j.debug</li>
- * <li>log4j.rootLogger</li>
- * <li>log4j.logger</li>
- * <li>log4j.appender</li>
- * <li>org.apache.log4j.ConsoleAppender</li>
- * <ul>
- * <li>Follow</li>
- * <li>Target</li>
- * <li>layout</li>
- * </ul>
- * </ul>
  *
  * This class is not thread-safe.
  */
