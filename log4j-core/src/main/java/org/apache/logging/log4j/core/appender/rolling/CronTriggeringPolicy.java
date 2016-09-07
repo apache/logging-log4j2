@@ -19,8 +19,11 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.CronScheduledFuture;
@@ -30,16 +33,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Rolls a file over based on a cron schedule.
  */
 @Plugin(name = "CronTriggeringPolicy", category = "Core", printObject = true)
 @Scheduled
-public final class CronTriggeringPolicy implements TriggeringPolicy {
+public final class CronTriggeringPolicy extends AbstractLifeCycle implements TriggeringPolicy {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String defaultSchedule = "0 0 0 * * ?";
     private RollingFileManager manager;
     private final CronExpression cronExpression;
@@ -57,7 +58,9 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
 
     /**
      * Initializes the policy.
-     * @param aManager The RollingFileManager.
+     * 
+     * @param aManager
+     *            The RollingFileManager.
      */
     @Override
     public void initialize(final RollingFileManager aManager) {
@@ -74,7 +77,9 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
 
     /**
      * Determines whether a rollover should occur.
-     * @param event   A reference to the currently event.
+     * 
+     * @param event
+     *            A reference to the currently event.
      * @return true if a rollover should occur.
      */
     @Override
@@ -88,14 +93,17 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
 
     /**
      * Creates a ScheduledTriggeringPolicy.
-     * @param configuration the Configuration.
-     * @param evaluateOnStartup check if the file should be rolled over immediately.
-     * @param schedule the cron expression.
+     * 
+     * @param configuration
+     *            the Configuration.
+     * @param evaluateOnStartup
+     *            check if the file should be rolled over immediately.
+     * @param schedule
+     *            the cron expression.
      * @return a ScheduledTriggeringPolicy.
      */
     @PluginFactory
-    public static CronTriggeringPolicy createPolicy(
-            @PluginConfiguration final Configuration configuration,
+    public static CronTriggeringPolicy createPolicy(@PluginConfiguration final Configuration configuration,
             @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
             @PluginAttribute("schedule") final String schedule) {
         CronExpression cronExpression;
@@ -130,6 +138,20 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
         cal.setTime(fireDate);
         cal.add(Calendar.SECOND, -1);
         nextRollDate = cal.getTime();
+    }
+
+    @Override
+    public boolean stop(long timeout, TimeUnit timeUnit) {
+        setStopping();
+        if (future != null) {
+            try {
+                future.get(timeout, timeUnit);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                future.cancel(true);
+            }
+        }
+        setStopped();
+        return true;
     }
 
     @Override

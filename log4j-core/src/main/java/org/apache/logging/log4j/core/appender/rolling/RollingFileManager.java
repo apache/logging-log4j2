@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import org.apache.logging.log4j.core.Layout;
@@ -173,6 +174,12 @@ public class RollingFileManager extends FileManager {
         }
     }
 
+    @Override
+    public void releaseSub(long timeout, TimeUnit timeUnit) {
+        triggeringPolicy.stop(timeout, timeUnit);
+        super.releaseSub(timeout, timeUnit);
+    }
+    
     public synchronized void rollover() {
         if (rollover(rolloverStrategy)) {
             try {

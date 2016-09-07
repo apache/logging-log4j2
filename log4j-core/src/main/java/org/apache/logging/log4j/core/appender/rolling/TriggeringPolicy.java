@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 
 /**
@@ -23,7 +24,7 @@ import org.apache.logging.log4j.core.LogEvent;
  * occurs. Such conditions include time of day, file size, an
  * external event, the log request or a combination thereof.
  */
-public interface TriggeringPolicy {
+public interface TriggeringPolicy extends LifeCycle {
 
     /**
      * Initializes this triggering policy.

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -27,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * Triggering policy that wraps other policies.
  */
 @Plugin(name = "Policies", category = "Core", printObject = true)
-public final class CompositeTriggeringPolicy implements TriggeringPolicy {
+public final class CompositeTriggeringPolicy extends AbstractLifeCycle implements TriggeringPolicy {
 
     private final TriggeringPolicy[] triggeringPolicy;
 
