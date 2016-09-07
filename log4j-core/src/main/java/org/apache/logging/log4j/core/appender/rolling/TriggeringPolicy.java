@@ -38,7 +38,7 @@ public interface TriggeringPolicy extends LifeCycle {
      * true is returned, RolloverPolicy.rollover will be called but it
      * can determine that a rollover is not warranted.
      *
-     * @param logEvent   A reference to the currently event.
+     * @param logEvent   A reference to the current log event.
      * @return true if a rollover should occur.
      */
     boolean isTriggeringEvent(final LogEvent logEvent);
