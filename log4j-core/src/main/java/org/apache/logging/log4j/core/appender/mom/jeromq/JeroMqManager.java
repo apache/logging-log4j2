@@ -105,8 +105,9 @@ public class JeroMqManager extends AbstractManager {
     }
 
     @Override
-    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         publisher.close();
+        return true;
     }
 
     public static JeroMqManager getJeroMqManager(final String name, final long affinity, final long backlog,

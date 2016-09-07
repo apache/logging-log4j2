@@ -152,10 +152,10 @@ public final class JeroMqAppender extends AbstractAppender {
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        super.stop(timeout, timeUnit, false);
-        manager.stop(timeout, timeUnit);
+        boolean stopped = super.stop(timeout, timeUnit, false);
+        stopped &= manager.stop(timeout, timeUnit);
         setStopped();
-        return true;
+        return stopped;
     }
 
     // not public, handy for testing

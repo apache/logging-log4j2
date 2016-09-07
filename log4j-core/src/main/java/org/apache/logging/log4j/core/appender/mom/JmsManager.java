@@ -125,18 +125,21 @@ public class JmsManager extends AbstractManager {
     }
 
     @Override
-    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        boolean closed = true;
         try {
             this.session.close();
         } catch (final JMSException ignored) {
             // ignore
+            closed = false;
         }
         try {
             this.connection.close();
         } catch (final JMSException ignored) {
             // ignore
+            closed = false;
         }
-        this.jndiManager.stop(timeout, timeUnit);
+        return closed && this.jndiManager.stop(timeout, timeUnit);
     }
 
     private static class JmsConfiguration {

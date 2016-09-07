@@ -215,7 +215,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
     }
 
     @Override
-    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+    	boolean closed = true;
         LOGGER.debug("Shutting down FlumePersistentManager");
         worker.shutdown();
         final long requestedTimeoutMillis = timeUnit.toMillis(timeout);
@@ -236,14 +237,16 @@ public class FlumePersistentManager extends FlumeAvroManager {
             database.close();
         } catch (final Exception ex) {
             logWarn("Failed to close database", ex);
+            closed = false;
         }
         try {
             environment.cleanLog();
             environment.close();
         } catch (final Exception ex) {
             logWarn("Failed to close environment", ex);
+            closed = false;
         }
-        super.releaseSub(timeout, timeUnit);
+        return closed && super.releaseSub(timeout, timeUnit);
     }
 
     private void doSend(final SimpleEvent event) {

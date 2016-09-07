@@ -93,12 +93,12 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        super.stop(timeout, timeUnit, false);
+        boolean stopped = super.stop(timeout, timeUnit, false);
         if (this.getManager() != null) {
-            this.getManager().stop(timeout, timeUnit);
+            stopped &= this.getManager().stop(timeout, timeUnit);
         }
         setStopped();
-        return true;
+        return stopped;
     }
 
     @Override

@@ -258,12 +258,12 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        super.stop(timeout, timeUnit, false);
+        final boolean stopped = super.stop(timeout, timeUnit, false);
         if (advertiser != null) {
             advertiser.unadvertise(advertisement);
         }
         setStopped();
-        return true;
+        return stopped;
     }
 
     /**

@@ -112,8 +112,8 @@ public class JndiManager extends AbstractManager {
     }
 
     @Override
-    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
-        JndiCloser.closeSilently(this.context);
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        return JndiCloser.closeSilently(this.context);
     }
 
     /**

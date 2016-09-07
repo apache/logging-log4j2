@@ -105,13 +105,14 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
     
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        boolean stopped = true;
         try {
             messageConsumer.close();
         } catch (final JMSException e) {
             LOGGER.debug("Exception closing {}", messageConsumer, e);
+            stopped = false;
         }
-        jmsManager.stop(timeout, timeUnit);
-        return true;
+        return stopped && jmsManager.stop(timeout, timeUnit);
     }
 
     @Override

@@ -131,9 +131,9 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * Default hook to write footer during close.
      */
     @Override
-    public void releaseSub(final long timeout, final TimeUnit timeUnit) {
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         writeFooter();
-        closeOutputStream();
+        return closeOutputStream();
     }
 
     /**

@@ -120,8 +120,9 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     }
 
     @Override
-    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         agent.stop();
+        return true;
     }
 
     /**

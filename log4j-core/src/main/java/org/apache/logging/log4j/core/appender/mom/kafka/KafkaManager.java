@@ -56,10 +56,11 @@ public class KafkaManager extends AbstractManager {
     }
 
     @Override
-    public void releaseSub(final long timeout, final TimeUnit timeUnit) {
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
             producer.close(timeout, timeUnit);
         }
+        return true;
     }
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {

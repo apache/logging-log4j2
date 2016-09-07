@@ -50,7 +50,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void shutdownInternal() {
+    protected boolean shutdownInternal() {
         // NoSQL doesn't use transactions, so all we need to do here is simply close the client
         Closer.closeSilently(this.connection);
     }
@@ -157,7 +157,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void commitAndClose() {
+    protected boolean commitAndClose() {
         // all NoSQL drivers auto-commit (since NoSQL doesn't generally use the concept of transactions).
         // also, all our NoSQL drivers use internal connection pooling and provide clients, not connections.
         // thus, we should not be closing the client until shutdown as NoSQL is very different from SQL.

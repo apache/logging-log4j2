@@ -109,10 +109,10 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        super.stop(timeout, timeUnit, false);
-        manager.stop(timeout, timeUnit);
+        boolean stopped = super.stop(timeout, timeUnit, false);
+        stopped &= manager.stop(timeout, timeUnit);
         setStopped();
-        return true;
+        return stopped;
     }
 
     /**

@@ -256,7 +256,8 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     }
 
     @Override
-    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+    	boolean closed = true;
         if (rpcClient != null) {
             try {
                 synchronized(this) {
@@ -266,14 +267,17 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                         }
                     } catch (final Exception ex) {
                         LOGGER.error("Error sending final batch: {}", ex.getMessage());
+                        closed = false;
                     }
                 }
                 rpcClient.close();
             } catch (final Exception ex) {
                 LOGGER.error("Attempt to close RPC client failed", ex);
+                closed = false;
             }
         }
         rpcClient = null;
+        return closed;
     }
 
     /**

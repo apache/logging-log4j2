@@ -175,9 +175,9 @@ public class RollingFileManager extends FileManager {
     }
 
     @Override
-    public void releaseSub(final long timeout, final TimeUnit timeUnit) {
-        triggeringPolicy.stop(timeout, timeUnit);
-        super.releaseSub(timeout, timeUnit);
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        boolean stopped = triggeringPolicy.stop(timeout, timeUnit);
+        return stopped && super.releaseSub(timeout, timeUnit);
     }
     
     public synchronized void rollover() {

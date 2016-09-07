@@ -73,10 +73,10 @@ public class JmsAppender extends AbstractAppender {
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        super.stop(timeout, timeUnit, false);
-        this.manager.stop(timeout, timeUnit);
+        boolean stopped = super.stop(timeout, timeUnit, false);
+        stopped &= this.manager.stop(timeout, timeUnit);
         setStopped();
-        return true;
+        return stopped;
     }
 
     @PluginBuilderFactory

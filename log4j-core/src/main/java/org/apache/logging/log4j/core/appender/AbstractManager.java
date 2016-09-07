@@ -74,18 +74,21 @@ public abstract class AbstractManager implements AutoCloseable {
         stop(AbstractLifeCycle.DEFAULT_STOP_TIMEOUT, AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
     }
 
-    public void stop(final long timeout, final TimeUnit timeUnit) {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        boolean stopped = true;
         LOCK.lock();
         try {
             --count;
             if (count <= 0) {
                 MAP.remove(name);
                 LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
-                releaseSub(timeout, timeUnit);
+                stopped = releaseSub(timeout, timeUnit);
+                LOGGER.debug("Shut down {} {}, all resources released: {}", this.getClass().getSimpleName(), getName(), stopped);
             }
         } finally {
             LOCK.unlock();
         }
+        return stopped;
     }
 
     /**
@@ -143,9 +146,11 @@ public abstract class AbstractManager implements AutoCloseable {
      * lock is held. A timeout is passed for implementors to use as they see fit.
      * @param timeout timeout
      * @param timeUnit timeout time unit
+     * @return true if all resources were closed normally, false otherwise.
      */
-    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         // This default implementation does nothing.
+        return true;
     }
 
     protected int getCount() {
