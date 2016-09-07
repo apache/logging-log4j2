@@ -569,6 +569,8 @@ public class ThrowableProxy implements Serializable {
             return initializeClass(className);
         } catch (final NoClassDefFoundError ignored) {
             return initializeClass(className);
+        } catch (final SecurityException ignored) {
+            return null;
         }
         return clazz;
     }
@@ -579,6 +581,8 @@ public class ThrowableProxy implements Serializable {
         } catch (final ClassNotFoundException ignore) {
             return null;
         } catch (final NoClassDefFoundError ignore) {
+            return null;
+        } catch (final SecurityException ignore) {
             return null;
         }
     }
