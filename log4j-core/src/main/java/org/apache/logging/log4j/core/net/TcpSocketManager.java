@@ -79,7 +79,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      */
     public TcpSocketManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress,
                             final String host, final int port, final int connectTimeoutMillis, final int delay,
-                            final boolean immediateFail, final Layout<? extends Serializable> layout, int bufferSize) {
+                            final boolean immediateFail, final Layout<? extends Serializable> layout, final int bufferSize) {
         super(name, os, inetAddress, host, port, layout, true, bufferSize);
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.reconnectionDelay = delay;

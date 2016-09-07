@@ -118,7 +118,7 @@ public class RoutingAppenderWithPurgingTest {
     }
 
 
-    private void assertFileExistance(String... files) {
+    private void assertFileExistance(final String... files) {
         for (String file : files) {
             assertTrue("File should exist - " + file + " file ", new File(file).exists());
         }

@@ -84,7 +84,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
     static final Map<String, Code[]> DefaultMessageStyleMap;
     private static final Map<String, Map<String, Code[]>> PrefedinedStyleMaps;
 
-    private static void put(Map<String, Code[]> map, String name, Code... codes) {
+    private static void put(final Map<String, Code[]> map, final String name, final Code... codes) {
         map.put(name, codes);
     }
 
@@ -169,7 +169,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
     private final int endTokenLen;
     private final Map<String, Code[]> styleMap;
 
-    public JAnsiTextRenderer(final String[] formats, Map<String, Code[]> defaultStyleMap) {
+    public JAnsiTextRenderer(final String[] formats, final Map<String, Code[]> defaultStyleMap) {
         String tempBeginToken = AnsiRenderer.BEGIN_TOKEN;
         String tempEndToken = AnsiRenderer.END_TOKEN;
         Map<String, Code[]> map;

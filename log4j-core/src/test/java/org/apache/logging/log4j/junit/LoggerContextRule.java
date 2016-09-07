@@ -44,7 +44,7 @@ import static org.junit.Assert.*;
  */
 public class LoggerContextRule implements TestRule {
 
-    public static LoggerContextRule createShutdownTimeoutLoggerContextRule(String config) {
+    public static LoggerContextRule createShutdownTimeoutLoggerContextRule(final String config) {
         return new LoggerContextRule(config, 10, TimeUnit.SECONDS);
     }
     
@@ -95,7 +95,7 @@ public class LoggerContextRule implements TestRule {
         this.shutdownTimeUnit = shutdownTimeUnit;
     }
 
-    public LoggerContextRule(String config, int shutdownTimeout, TimeUnit shutdownTimeUnit) {
+    public LoggerContextRule(final String config, final int shutdownTimeout, final TimeUnit shutdownTimeUnit) {
         this(config, null, shutdownTimeout, shutdownTimeUnit);
     }
 

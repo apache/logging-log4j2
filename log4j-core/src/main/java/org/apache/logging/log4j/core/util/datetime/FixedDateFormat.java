@@ -177,7 +177,7 @@ public class FixedDateFormat {
          * @param tz the time zone to use
          * @return the {@code FastDateFormat} object for formatting the date part of the pattern or {@code null}
          */
-        public FastDateFormat getFastDateFormat(TimeZone tz) {
+        public FastDateFormat getFastDateFormat(final TimeZone tz) {
             return getDatePattern() == null ? null : FastDateFormat.getInstance(getDatePattern(), tz);
         }
     }

@@ -65,7 +65,7 @@ public class FileAppenderTest {
     private static final Path PATH = Paths.get(FILE_NAME);
     private static final int THREADS = 2;
 
-    public FileAppenderTest(boolean createOnDemand) {
+    public FileAppenderTest(final boolean createOnDemand) {
         super();
         this.createOnDemand = createOnDemand;
     }
@@ -176,7 +176,7 @@ public class FileAppenderTest {
         testMultipleLockingAppenderThreads(false, threadCount);
     }
 
-    private void testMultipleLockingAppenderThreads(final boolean lock, int threadCount)
+    private void testMultipleLockingAppenderThreads(final boolean lock, final int threadCount)
             throws InterruptedException, Exception {
         final ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
         final Exception[] exceptionRef = new Exception[1];
@@ -228,8 +228,8 @@ public class FileAppenderTest {
         verifyFile(logEventCount * processCount);
     }
 
-    private static void writer(final boolean locking, final int logEventCount, final String name, boolean createOnDemand,
-            boolean concurrent) throws Exception {
+    private static void writer(final boolean locking, final int logEventCount, final String name, final boolean createOnDemand,
+            final boolean concurrent) throws Exception {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()

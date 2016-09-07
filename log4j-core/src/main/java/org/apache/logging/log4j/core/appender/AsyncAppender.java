@@ -308,52 +308,52 @@ public final class AsyncAppender extends AbstractAppender {
         @PluginElement(BlockingQueueFactory.ELEMENT_TYPE)
         private BlockingQueueFactory<LogEvent> blockingQueueFactory = new ArrayBlockingQueueFactory<>();
 
-        public Builder setAppenderRefs(AppenderRef[] appenderRefs) {
+        public Builder setAppenderRefs(final AppenderRef[] appenderRefs) {
             this.appenderRefs = appenderRefs;
             return this;
         }
 
-        public Builder setErrorRef(String errorRef) {
+        public Builder setErrorRef(final String errorRef) {
             this.errorRef = errorRef;
             return this;
         }
 
-        public Builder setBlocking(boolean blocking) {
+        public Builder setBlocking(final boolean blocking) {
             this.blocking = blocking;
             return this;
         }
 
-        public Builder setShutdownTimeout(long shutdownTimeout) {
+        public Builder setShutdownTimeout(final long shutdownTimeout) {
             this.shutdownTimeout = shutdownTimeout;
             return this;
         }
 
-        public Builder setBufferSize(int bufferSize) {
+        public Builder setBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
             return this;
         }
 
-        public Builder setName(String name) {
+        public Builder setName(final String name) {
             this.name = name;
             return this;
         }
 
-        public Builder setIncludeLocation(boolean includeLocation) {
+        public Builder setIncludeLocation(final boolean includeLocation) {
             this.includeLocation = includeLocation;
             return this;
         }
 
-        public Builder setFilter(Filter filter) {
+        public Builder setFilter(final Filter filter) {
             this.filter = filter;
             return this;
         }
 
-        public Builder setConfiguration(Configuration configuration) {
+        public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        public Builder setIgnoreExceptions(boolean ignoreExceptions) {
+        public Builder setIgnoreExceptions(final boolean ignoreExceptions) {
             this.ignoreExceptions = ignoreExceptions;
             return this;
         }

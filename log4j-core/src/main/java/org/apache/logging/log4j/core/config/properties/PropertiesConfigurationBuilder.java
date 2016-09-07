@@ -369,7 +369,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         return loggerBuilder;
     }
 
-    public PropertiesConfigurationBuilder setLoggerContext(LoggerContext loggerContext) {
+    public PropertiesConfigurationBuilder setLoggerContext(final LoggerContext loggerContext) {
         this.loggerContext = loggerContext;
         return this;
     }

@@ -105,7 +105,7 @@ public class JeroMqManager extends AbstractManager {
     }
 
     @Override
-    protected void releaseSub(long timeout, TimeUnit timeUnit) {
+    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
         publisher.close();
     }
 

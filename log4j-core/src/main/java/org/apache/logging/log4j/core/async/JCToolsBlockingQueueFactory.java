@@ -57,7 +57,7 @@ public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
         public int drainTo(final Collection<? super E> c, final int maxElements) {
             return drain(new Consumer<E>() {
                 @Override
-                public void accept(E e) {
+                public void accept(final E e) {
                     c.add(e);
                 }
             }, maxElements);

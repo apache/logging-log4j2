@@ -53,7 +53,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         return new Log4j1XmlLayout(locationInfo, properties);
     }
 
-    private Log4j1XmlLayout(boolean locationInfo, boolean properties) {
+    private Log4j1XmlLayout(final boolean locationInfo, final boolean properties) {
         super(StandardCharsets.UTF_8);
         this.locationInfo = locationInfo;
         this.properties = properties;

@@ -43,7 +43,7 @@ public class KafkaManager extends AbstractManager {
 
     private final String topic;
 
-    public KafkaManager(LoggerContext loggerContext, final String name, final String topic, final Property[] properties) {
+    public KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final Property[] properties) {
         super(loggerContext, name);
         this.topic = topic;
         config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");

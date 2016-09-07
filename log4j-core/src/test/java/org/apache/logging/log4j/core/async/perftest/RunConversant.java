@@ -25,7 +25,7 @@ import com.conversantmedia.util.concurrent.SpinPolicy;
 public class RunConversant extends AbstractRunQueue {
 
     @Override
-    BlockingQueue<String> createQueue(int capacity) {
+    BlockingQueue<String> createQueue(final int capacity) {
         return DisruptorBlockingQueueFactory.<String>createFactory(SpinPolicy.SPINNING).create(capacity);
     }
 }

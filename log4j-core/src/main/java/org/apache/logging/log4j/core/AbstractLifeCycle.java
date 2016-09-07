@@ -127,7 +127,7 @@ public class AbstractLifeCycle implements LifeCycle {
     }
 
     @Override
-    public boolean stop(long timeout, TimeUnit timeUnit) {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.state = LifeCycle.State.STOPPED;
         return true;
     }

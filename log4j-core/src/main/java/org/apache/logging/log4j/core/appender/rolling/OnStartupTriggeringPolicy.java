@@ -36,7 +36,7 @@ public class OnStartupTriggeringPolicy extends AbstractLifeCycle implements Trig
 
     private final long minSize;
 
-    private OnStartupTriggeringPolicy(long minSize) {
+    private OnStartupTriggeringPolicy(final long minSize) {
         this.minSize = minSize;
     }
 

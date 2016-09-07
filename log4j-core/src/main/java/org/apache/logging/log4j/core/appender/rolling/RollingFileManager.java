@@ -85,7 +85,7 @@ public class RollingFileManager extends FileManager {
     /**
      * @since 2.7
      */
-    protected RollingFileManager(LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
+    protected RollingFileManager(final LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
             final boolean append, final boolean createOnDemand, final long size, final long time,
             final TriggeringPolicy triggeringPolicy, final RolloverStrategy rolloverStrategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
@@ -144,7 +144,7 @@ public class RollingFileManager extends FileManager {
         return renameEmptyFiles;
     }
 
-    public void setRenameEmptyFiles(boolean renameEmptyFiles) {
+    public void setRenameEmptyFiles(final boolean renameEmptyFiles) {
         this.renameEmptyFiles = renameEmptyFiles;
     }
 
@@ -175,7 +175,7 @@ public class RollingFileManager extends FileManager {
     }
 
     @Override
-    public void releaseSub(long timeout, TimeUnit timeUnit) {
+    public void releaseSub(final long timeout, final TimeUnit timeUnit) {
         triggeringPolicy.stop(timeout, timeUnit);
         super.releaseSub(timeout, timeUnit);
     }

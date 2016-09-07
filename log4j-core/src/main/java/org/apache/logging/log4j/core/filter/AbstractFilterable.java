@@ -48,7 +48,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             return (B) this;
         }
 
-        public B withFilter(Filter filter) {
+        public B withFilter(final Filter filter) {
             this.filter = filter;
             return asBuilder();
         }

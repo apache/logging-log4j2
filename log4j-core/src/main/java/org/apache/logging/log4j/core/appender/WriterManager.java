@@ -99,7 +99,7 @@ public class WriterManager extends AbstractManager {
      * Default hook to write footer during close.
      */
     @Override
-    public void releaseSub(long timeout, TimeUnit timeUnit) {
+    public void releaseSub(final long timeout, final TimeUnit timeUnit) {
         writeFooter();
         closeWriter();
     }

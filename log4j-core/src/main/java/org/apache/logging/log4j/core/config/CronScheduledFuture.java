@@ -85,7 +85,7 @@ public class CronScheduledFuture<V> implements ScheduledFuture<V> {
         private final ScheduledFuture<?> scheduledFuture;
         private final Date runDate;
 
-        FutureData(ScheduledFuture<?> future, Date runDate) {
+        FutureData(final ScheduledFuture<?> future, final Date runDate) {
             this.scheduledFuture = future;
             this.runDate = runDate;
         }

@@ -21,17 +21,17 @@ package org.apache.logging.log4j.core.pattern;
  */
 public final class HtmlTextRenderer implements TextRenderer {
 
-    public HtmlTextRenderer(String[] formats) {
+    public HtmlTextRenderer(final String[] formats) {
         // TODO Auto-generated constructor stub
     }
 
     @Override
-    public void render(String input, StringBuilder output, String styleName) {
+    public void render(final String input, final StringBuilder output, final String styleName) {
         // TODO Auto-generated method stub
     }
 
     @Override
-    public void render(StringBuilder input, StringBuilder output) {
+    public void render(final StringBuilder input, final StringBuilder output) {
         // TODO Auto-generated method stub
     }
 

@@ -82,7 +82,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(final String fileName,
             final String filePattern, final boolean isAppend, final boolean immediateFlush, final int bufferSize,
             final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-            final Layout<? extends Serializable> layout, Configuration configuration) {
+            final Layout<? extends Serializable> layout, final Configuration configuration) {
         return (RollingRandomAccessFileManager) getManager(fileName, new FactoryData(filePattern, isAppend,
                 immediateFlush, bufferSize, policy, strategy, advertiseURI, layout, configuration), FACTORY);
     }
@@ -231,7 +231,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
          */
         public FactoryData(final String pattern, final boolean append, final boolean immediateFlush,
                 final int bufferSize, final TriggeringPolicy policy, final RolloverStrategy strategy,
-                final String advertiseURI, final Layout<? extends Serializable> layout, Configuration configuration) {
+                final String advertiseURI, final Layout<? extends Serializable> layout, final Configuration configuration) {
             super(configuration);
             this.pattern = pattern;
             this.append = append;

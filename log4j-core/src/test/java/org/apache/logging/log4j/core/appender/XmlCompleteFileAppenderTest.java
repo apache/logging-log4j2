@@ -43,7 +43,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class XmlCompleteFileAppenderTest {
 
-    public XmlCompleteFileAppenderTest(Class<ContextSelector> contextSelector) {
+    public XmlCompleteFileAppenderTest(final Class<ContextSelector> contextSelector) {
         this.loggerContextRule = new LoggerContextRule("XmlCompleteFileAppenderTest.xml", contextSelector);
         this.cleanFiles = new CleanFiles(logFile);
         this.ruleChain = RuleChain.outerRule(cleanFiles).around(loggerContextRule);

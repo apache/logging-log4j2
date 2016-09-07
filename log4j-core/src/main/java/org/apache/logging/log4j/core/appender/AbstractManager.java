@@ -144,7 +144,7 @@ public abstract class AbstractManager implements AutoCloseable {
      * @param timeout TODO
      * @param timeUnit TODO
      */
-    protected void releaseSub(long timeout, TimeUnit timeUnit) {
+    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
         // This default implementation does nothing.
     }
 

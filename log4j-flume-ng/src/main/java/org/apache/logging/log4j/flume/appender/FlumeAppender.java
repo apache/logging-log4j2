@@ -165,7 +165,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * @return A Flume Avro Appender.
      */
     @PluginFactory
-    public static FlumeAppender createAppender(@PluginElement("Agents") Agent[] agents,
+    public static FlumeAppender createAppender(@PluginElement("Agents") final Agent[] agents,
                                                @PluginElement("Properties") final Property[] properties,
                                                @PluginAttribute("hosts") final String hosts,
                                                @PluginAttribute("embedded") final String embedded,

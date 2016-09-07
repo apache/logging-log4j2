@@ -153,7 +153,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         return executorService.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
-    public long nextFireInterval(Date fireDate) {
+    public long nextFireInterval(final Date fireDate) {
         return fireDate.getTime() - new Date().getTime();
     }
 

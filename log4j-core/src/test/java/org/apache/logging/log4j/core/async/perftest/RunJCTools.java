@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory.WaitStrat
 public class RunJCTools extends AbstractRunQueue {
 
     @Override
-    BlockingQueue<String> createQueue(int capacity) {
+    BlockingQueue<String> createQueue(final int capacity) {
         return JCToolsBlockingQueueFactory.<String>createFactory(WaitStrategy.SPIN).create(capacity);
     }
 

@@ -212,12 +212,12 @@ public class ThrowableProxy implements Serializable {
     }
 
     private void formatCause(final StringBuilder sb, final String prefix, final ThrowableProxy cause,
-            final List<String> ignorePackages, TextRenderer textRenderer) {
+            final List<String> ignorePackages, final TextRenderer textRenderer) {
         formatThrowableProxy(sb, prefix, CAUSED_BY_LABEL, cause, ignorePackages, textRenderer);
     }
 
 	private void formatThrowableProxy(final StringBuilder sb, final String prefix, final String causeLabel,
-			final ThrowableProxy throwableProxy, final List<String> ignorePackages, TextRenderer textRenderer) {
+			final ThrowableProxy throwableProxy, final List<String> ignorePackages, final TextRenderer textRenderer) {
 		if (throwableProxy == null) {
 			return;
 		}
@@ -231,7 +231,7 @@ public class ThrowableProxy implements Serializable {
 		this.formatCause(sb, prefix, throwableProxy.causeProxy, ignorePackages, textRenderer);
 	}
 
-	void renderOn(StringBuilder output, TextRenderer textRenderer) {
+	void renderOn(final StringBuilder output, final TextRenderer textRenderer) {
         final String msg = this.message;
         textRenderer.render(this.name, output, "Name");
         if (msg != null) {
@@ -241,7 +241,7 @@ public class ThrowableProxy implements Serializable {
     }
 
     private void formatSuppressed(final StringBuilder sb, final String prefix, final ThrowableProxy[] suppressedProxies,
-			final List<String> ignorePackages, TextRenderer textRenderer) {
+			final List<String> ignorePackages, final TextRenderer textRenderer) {
 		if (suppressedProxies == null) {
 			return;
 		}
@@ -252,7 +252,7 @@ public class ThrowableProxy implements Serializable {
 
 	private void formatElements(final StringBuilder sb, final String prefix, final int commonCount,
 			final StackTraceElement[] causedTrace, final ExtendedStackTraceElement[] extStackTrace,
-			final List<String> ignorePackages, TextRenderer textRenderer) {
+			final List<String> ignorePackages, final TextRenderer textRenderer) {
 		if (ignorePackages == null || ignorePackages.isEmpty()) {
 			for (final ExtendedStackTraceElement element : extStackTrace) {
 				this.formatEntry(element, sb, prefix, textRenderer);
@@ -283,7 +283,7 @@ public class ThrowableProxy implements Serializable {
 		}
 	}
 
-    private void appendSuppressedCount(final StringBuilder sb, final String prefix, final int count, TextRenderer textRenderer) {
+    private void appendSuppressedCount(final StringBuilder sb, final String prefix, final int count, final TextRenderer textRenderer) {
         textRenderer.render(prefix, sb, "Prefix");
         if (count == 1) {
             textRenderer.render("\t... ", sb, "Suppressed");
@@ -295,7 +295,7 @@ public class ThrowableProxy implements Serializable {
         textRenderer.render(EOL_STR, sb, "Text");
     }
 
-    private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb, final String prefix, TextRenderer textRenderer) {
+    private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb, final String prefix, final TextRenderer textRenderer) {
         textRenderer.render(prefix, sb, "Prefix");
         textRenderer.render("\tat ", sb, "At");
         extStackTraceElement.renderOn(sb, textRenderer);

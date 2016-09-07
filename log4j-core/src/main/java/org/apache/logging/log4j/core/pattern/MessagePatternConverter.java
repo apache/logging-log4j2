@@ -57,7 +57,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         this.textRenderer = loadMessageRenderer(noLookupsIdx >= 0 ? ArrayUtils.remove(options, noLookupsIdx) : options);
     }
 
-    private int loadNoLookups(String[] options) {
+    private int loadNoLookups(final String[] options) {
         if (options != null) {
             for (int i = 0; i < options.length; i++) {
                 final String option = options[i];
@@ -69,7 +69,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         return -1;
     }
 
-    private TextRenderer loadMessageRenderer(String[] options) {
+    private TextRenderer loadMessageRenderer(final String[] options) {
         if (options != null) {
             for (String option : options) {
                 switch (option.toUpperCase(Locale.ROOT)) {

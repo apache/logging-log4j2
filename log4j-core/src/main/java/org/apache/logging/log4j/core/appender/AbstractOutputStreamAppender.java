@@ -60,7 +60,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
             return immediateFlush;
         }
         
-        public B withImmediateFlush(boolean immediateFlush) {
+        public B withImmediateFlush(final boolean immediateFlush) {
             this.immediateFlush = immediateFlush;
             return asBuilder();
         }

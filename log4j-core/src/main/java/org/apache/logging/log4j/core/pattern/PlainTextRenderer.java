@@ -28,12 +28,12 @@ public final class PlainTextRenderer implements TextRenderer {
     }
 
     @Override
-    public void render(String input, StringBuilder output, String styleName) {
+    public void render(final String input, final StringBuilder output, final String styleName) {
         output.append(input);
     }
 
     @Override
-    public void render(StringBuilder input, StringBuilder output) {
+    public void render(final StringBuilder input, final StringBuilder output) {
         output.append(input);
     }
 

@@ -62,7 +62,7 @@ public class Log4j1MdcPatternConverterTest {
         test(contextMap, expected, new String[] {"key1"});
     }
 
-    private void test(Map<String, String> contextMap, String expected, String[] options) {
+    private void test(final Map<String, String> contextMap, final String expected, final String[] options) {
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName("MyLogger")
                 .setLevel(Level.DEBUG)

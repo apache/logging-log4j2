@@ -130,7 +130,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Constructor.
      */
-    protected AbstractConfiguration(LoggerContext loggerContext, final ConfigurationSource configurationSource) {
+    protected AbstractConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
         this.loggerContext = new WeakReference<>(loggerContext);
         // The loggerContext is null for the NullConfiguration class.
         // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));

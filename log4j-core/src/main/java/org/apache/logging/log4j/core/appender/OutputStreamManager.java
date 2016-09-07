@@ -76,7 +76,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     /**
      * @since 2.7
      */
-    protected OutputStreamManager(final LoggerContext loggerContext, OutputStream os, final String streamName,
+    protected OutputStreamManager(final LoggerContext loggerContext, final OutputStream os, final String streamName,
             final boolean createOnDemand, final Layout<? extends Serializable> layout, final boolean writeHeader,
             final ByteBuffer byteBuffer) {
         super(loggerContext, streamName);
@@ -131,7 +131,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * Default hook to write footer during close.
      */
     @Override
-    public void releaseSub(long timeout, TimeUnit timeUnit) {
+    public void releaseSub(final long timeout, final TimeUnit timeUnit) {
         writeFooter();
         closeOutputStream();
     }

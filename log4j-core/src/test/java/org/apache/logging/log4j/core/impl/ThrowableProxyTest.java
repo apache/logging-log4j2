@@ -137,12 +137,12 @@ public class ThrowableProxyTest {
 
             private final Permissions permissions;
 
-            public SimplePolicy(Permissions permissions) {
+            public SimplePolicy(final Permissions permissions) {
                 this.permissions = permissions;
             }
 
             @Override
-            public PermissionCollection getPermissions(CodeSource codesource) {
+            public PermissionCollection getPermissions(final CodeSource codesource) {
                 return permissions;
             }
 

@@ -29,7 +29,7 @@ public class ConfigurationFactoryData {
      */
     public final Configuration configuration;
 
-    public ConfigurationFactoryData(Configuration configuration) {
+    public ConfigurationFactoryData(final Configuration configuration) {
         super();
         this.configuration = configuration;
     }

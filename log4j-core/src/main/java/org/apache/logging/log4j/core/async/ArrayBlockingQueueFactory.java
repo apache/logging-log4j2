@@ -15,7 +15,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "ArrayBlockingQueue", category = Node.CATEGORY, elementType = BlockingQueueFactory.ELEMENT_TYPE)
 public class ArrayBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
     @Override
-    public BlockingQueue<E> create(int capacity) {
+    public BlockingQueue<E> create(final int capacity) {
         return new ArrayBlockingQueue<>(capacity);
     }
 

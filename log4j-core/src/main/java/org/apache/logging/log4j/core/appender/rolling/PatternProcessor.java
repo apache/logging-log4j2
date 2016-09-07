@@ -96,7 +96,7 @@ public class PatternProcessor {
         return prevFileTime;
     }
 
-    public void setPrevFileTime(long prevFileTime) {
+    public void setPrevFileTime(final long prevFileTime) {
         this.prevFileTime = prevFileTime;
     }
 

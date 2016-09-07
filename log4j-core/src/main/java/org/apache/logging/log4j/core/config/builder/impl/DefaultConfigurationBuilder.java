@@ -226,7 +226,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         return sw.toString();
     }
 
-    private void writeXmlConfiguration(XMLStreamWriter xmlWriter) throws XMLStreamException {
+    private void writeXmlConfiguration(final XMLStreamWriter xmlWriter) throws XMLStreamException {
         xmlWriter.writeStartDocument();
         xmlWriter.writeCharacters(EOL);
 
@@ -275,13 +275,13 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         xmlWriter.writeEndDocument();
     }
 
-    private void writeXmlSection(XMLStreamWriter xmlWriter, Component component) throws XMLStreamException {
+    private void writeXmlSection(final XMLStreamWriter xmlWriter, final Component component) throws XMLStreamException {
         if (!component.getAttributes().isEmpty() || !component.getComponents().isEmpty() || component.getValue() != null) {
             writeXmlComponent(xmlWriter, component, 1);
         }
     }
 
-    private void writeXmlComponent(XMLStreamWriter xmlWriter, Component component, int nesting) throws XMLStreamException {
+    private void writeXmlComponent(final XMLStreamWriter xmlWriter, final Component component, final int nesting) throws XMLStreamException {
         if (!component.getComponents().isEmpty() || component.getValue() != null) {
             writeXmlIndent(xmlWriter, nesting);
             xmlWriter.writeStartElement(component.getPluginType());
@@ -307,13 +307,13 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         xmlWriter.writeCharacters(EOL);
     }
 
-    private void writeXmlIndent(XMLStreamWriter xmlWriter, int nesting) throws XMLStreamException {
+    private void writeXmlIndent(final XMLStreamWriter xmlWriter, final int nesting) throws XMLStreamException {
         for (int i = 0; i < nesting; i++) {
             xmlWriter.writeCharacters(INDENT);
         }
     }
 
-    private void writeXmlAttributes(XMLStreamWriter xmlWriter, Component component) throws XMLStreamException {
+    private void writeXmlAttributes(final XMLStreamWriter xmlWriter, final Component component) throws XMLStreamException {
         for (Map.Entry<String, String> attribute : component.getAttributes().entrySet()) {
             xmlWriter.writeAttribute(attribute.getKey(), attribute.getValue());
         }
@@ -526,13 +526,13 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public ConfigurationBuilder<T> setDestination(String destination) {
+    public ConfigurationBuilder<T> setDestination(final String destination) {
         this.destination = destination;
         return this;
     }
 
     @Override
-    public void setLoggerContext(LoggerContext loggerContext) {
+    public void setLoggerContext(final LoggerContext loggerContext) {
         this.loggerContext = loggerContext;
     }
 

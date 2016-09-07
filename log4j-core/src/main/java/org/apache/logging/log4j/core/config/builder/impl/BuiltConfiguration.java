@@ -54,7 +54,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component scriptsComponent;
     private String contentType = "text";
 
-    public BuiltConfiguration(LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
+    public BuiltConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
         super(loggerContext, source);
         statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {

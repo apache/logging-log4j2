@@ -96,7 +96,7 @@ public final class ThrowableFormatOptions {
      *            The ANSI renderer
      */
     protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
-            TextRenderer textRenderer) {
+            final TextRenderer textRenderer) {
         this.lines = lines;
         this.separator = separator == null ? Constants.LINE_SEPARATOR : separator;
         this.ignorePackages = ignorePackages;

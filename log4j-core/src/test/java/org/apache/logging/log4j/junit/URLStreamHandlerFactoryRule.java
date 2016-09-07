@@ -40,7 +40,7 @@ public class URLStreamHandlerFactoryRule implements TestRule {
         this(null);
     }
 
-    public URLStreamHandlerFactoryRule(URLStreamHandlerFactory newURLStreamHandlerFactory) {
+    public URLStreamHandlerFactoryRule(final URLStreamHandlerFactory newURLStreamHandlerFactory) {
         this.newURLStreamHandlerFactory = newURLStreamHandlerFactory;
     }
 

@@ -95,7 +95,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
         private final Layout<? extends Serializable> layout;
         private final int bufferSize;
         
-        public FactoryData(final String host, final int port, final Layout<? extends Serializable> layout, int bufferSize) {
+        public FactoryData(final String host, final int port, final Layout<? extends Serializable> layout, final int bufferSize) {
             this.host = host;
             this.port = port;
             this.layout = layout;

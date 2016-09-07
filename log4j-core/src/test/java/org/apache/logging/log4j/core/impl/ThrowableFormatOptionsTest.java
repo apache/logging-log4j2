@@ -123,7 +123,7 @@ public final class ThrowableFormatOptionsTest {
         testFullAnsiEmptyConfig(tfo);
     }
 
-    private void testFullAnsiEmptyConfig(ThrowableFormatOptions tfo) {
+    private void testFullAnsiEmptyConfig(final ThrowableFormatOptions tfo) {
         TextRenderer textRenderer = tfo.getTextRenderer();
         Assert.assertNotNull(textRenderer);
         Assert.assertTrue(textRenderer instanceof JAnsiTextRenderer);

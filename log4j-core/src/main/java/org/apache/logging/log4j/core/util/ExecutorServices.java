@@ -44,7 +44,7 @@ public class ExecutorServices {
      * @return {@code true} if the given executor terminated and {@code false} if the timeout elapsed before
      *         termination.
      */
-    public static boolean shutdown(ExecutorService executorService, long timeout, TimeUnit timeUnit, String source) {
+    public static boolean shutdown(final ExecutorService executorService, final long timeout, final TimeUnit timeUnit, final String source) {
         if (executorService == null || executorService.isTerminated()) {
             return true;
         }

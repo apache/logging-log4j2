@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class Log4j2_1482_Slf4jTest extends Log4j2_1482_Test {
 
 	@Override
-	protected void log(int runNumber) {
+	protected void log(final int runNumber) {
 		if (runNumber == 2) {
 			// System.out.println("Set a breakpoint here.");
 		}

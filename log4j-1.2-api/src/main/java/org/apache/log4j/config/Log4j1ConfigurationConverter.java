@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
  */
 public final class Log4j1ConfigurationConverter {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         try (InputStream input = args.length > 0 ? new FileInputStream(args[0]) : System.in;
             OutputStream output = args.length > 1 ? new FileOutputStream(args[1]) : System.out) {
             ConfigurationBuilder<BuiltConfiguration> builder = new Log4j1ConfigurationParser().buildConfigurationBuilder(input);

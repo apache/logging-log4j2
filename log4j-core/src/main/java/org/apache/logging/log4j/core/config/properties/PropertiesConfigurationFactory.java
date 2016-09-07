@@ -42,7 +42,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public PropertiesConfiguration getConfiguration(LoggerContext loggerContext, final ConfigurationSource source) {
+    public PropertiesConfiguration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         final Properties properties = new Properties();
         try (final InputStream configStream = source.getInputStream()) {
             properties.load(configStream);

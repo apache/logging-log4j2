@@ -171,7 +171,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     }
 
     @Override
-    public final void releaseSub(long timeout, TimeUnit timeUnit) {
+    public final void releaseSub(final long timeout, final TimeUnit timeUnit) {
         this.shutdown();
     }
 

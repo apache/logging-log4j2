@@ -302,7 +302,7 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     @Override
-    public boolean stop(long timeout, TimeUnit timeUnit) {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
         configLock.lock();
         final boolean shutdownEs;
@@ -685,7 +685,7 @@ public class LoggerContext extends AbstractLifeCycle
      *         scheduled for execution
      * @throws NullPointerException if the task is null
      */
-    public Future<?> submit(Runnable task) {
+    public Future<?> submit(final Runnable task) {
         return executorService.submit(task);
     }
 
@@ -701,7 +701,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @throws NullPointerException
      *             if the task is null
      */
-    public Future<?> submitDaemon(Runnable task) {
+    public Future<?> submitDaemon(final Runnable task) {
         return executorServiceDeamons.submit(task);
     }
 

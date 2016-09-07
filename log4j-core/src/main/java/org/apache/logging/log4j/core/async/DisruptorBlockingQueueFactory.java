@@ -24,7 +24,7 @@ public class DisruptorBlockingQueueFactory<E> implements BlockingQueueFactory<E>
     }
 
     @Override
-    public BlockingQueue<E> create(int capacity) {
+    public BlockingQueue<E> create(final int capacity) {
         return new DisruptorBlockingQueue<>(capacity, spinPolicy);
     }
 

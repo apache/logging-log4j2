@@ -216,17 +216,17 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return strategy;
         }
 
-        public B withFilePattern(String filePattern) {
+        public B withFilePattern(final String filePattern) {
             this.filePattern = filePattern;
             return asBuilder();
         }
 
-        public B withPolicy(TriggeringPolicy policy) {
+        public B withPolicy(final TriggeringPolicy policy) {
             this.policy = policy;
             return asBuilder();
         }
 
-        public B withStrategy(RolloverStrategy strategy) {
+        public B withStrategy(final RolloverStrategy strategy) {
             this.strategy = strategy;
             return asBuilder();
         }
@@ -335,8 +335,8 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             final String bufferSizeStr,
             final String immediateFlush,
             final TriggeringPolicy policy,
-            RolloverStrategy strategy,
-            Layout<? extends Serializable> layout,
+            final RolloverStrategy strategy,
+            final Layout<? extends Serializable> layout,
             final Filter filter,
             final String ignore,
             final String advertise,

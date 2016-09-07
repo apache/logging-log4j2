@@ -41,7 +41,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class JsonCompleteFileAppenderTest {
 
-    public JsonCompleteFileAppenderTest(Class<ContextSelector> contextSelector) {
+    public JsonCompleteFileAppenderTest(final Class<ContextSelector> contextSelector) {
         this.loggerContextRule = new LoggerContextRule("JsonCompleteFileAppenderTest.xml", contextSelector);
         this.cleanFiles = new CleanFiles(logFile);
         this.ruleChain = RuleChain.outerRule(cleanFiles).around(loggerContextRule);

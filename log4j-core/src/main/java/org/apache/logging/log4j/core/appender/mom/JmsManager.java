@@ -125,7 +125,7 @@ public class JmsManager extends AbstractManager {
     }
 
     @Override
-    protected void releaseSub(long timeout, TimeUnit timeUnit) {
+    protected void releaseSub(final long timeout, final TimeUnit timeUnit) {
         try {
             this.session.close();
         } catch (final JMSException ignored) {

@@ -46,14 +46,14 @@ public class ResolverUtilCustomProtocolTest {
     static class NoopURLStreamHandlerFactory implements URLStreamHandlerFactory {
         
         @Override
-        public URLStreamHandler createURLStreamHandler(String protocol) {
+        public URLStreamHandler createURLStreamHandler(final String protocol) {
             return new URLStreamHandler() {
                 @Override
-                protected URLConnection openConnection(URL url) {
+                protected URLConnection openConnection(final URL url) {
                     return open(url, null);
                 }
 
-                private URLConnection open(URL url, Proxy proxy) {
+                private URLConnection open(final URL url, final Proxy proxy) {
                     return new URLConnection(url) {
                         @Override
                         public void connect() throws IOException {
@@ -63,7 +63,7 @@ public class ResolverUtilCustomProtocolTest {
                 }
 
                 @Override
-                protected URLConnection openConnection(URL url, Proxy proxy) {
+                protected URLConnection openConnection(final URL url, final Proxy proxy) {
                     return open(url, proxy);
                 }
 
@@ -78,32 +78,32 @@ public class ResolverUtilCustomProtocolTest {
     static class SingleURLClassLoader extends ClassLoader {
         private final URL url;
 
-        public SingleURLClassLoader(URL url) {
+        public SingleURLClassLoader(final URL url) {
             this.url = url;
         }
 
-        public SingleURLClassLoader(URL url, ClassLoader parent) {
+        public SingleURLClassLoader(final URL url, final ClassLoader parent) {
             super(parent);
             this.url = url;
         }
 
         @Override
-        protected URL findResource(String name) {
+        protected URL findResource(final String name) {
             return url;
         }
 
         @Override
-        public URL getResource(String name) {
+        public URL getResource(final String name) {
             return findResource(name);
         }
 
         @Override
-        public Enumeration<URL> getResources(String name) throws IOException {
+        public Enumeration<URL> getResources(final String name) throws IOException {
             return findResources(name);
         }
 
         @Override
-        protected Enumeration<URL> findResources(String name) throws IOException {
+        protected Enumeration<URL> findResources(final String name) throws IOException {
             return Collections.enumeration(Arrays.asList(findResource(name)));
         }
     }
