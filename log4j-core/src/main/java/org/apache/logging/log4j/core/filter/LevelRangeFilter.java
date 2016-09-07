@@ -33,8 +33,9 @@ import org.apache.logging.log4j.message.Message;
  * value . For example, if the filter is configured with Level ERROR and Level
  * INFO and the LogEvent contains Level WARN then the onMatch value will be
  * returned since WARN events are in between ERROR and INFO.
- *
+ * <p>
  * The default Levels are both ERROR.
+ * </p>
  */
 @Plugin(name = "LevelRangeFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class LevelRangeFilter extends AbstractFilter {
