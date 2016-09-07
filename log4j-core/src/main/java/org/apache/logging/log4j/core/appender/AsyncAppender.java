@@ -249,6 +249,7 @@ public final class AsyncAppender extends AbstractAppender {
      * @return The AsyncAppender.
      * @deprecated use {@link Builder} instead
      */
+    @Deprecated
     public static AsyncAppender createAppender(final AppenderRef[] appenderRefs, final String errorRef,
                                                final boolean blocking, final long shutdownTimeout, final int size,
                                                final String name, final boolean includeLocation, final Filter filter,
