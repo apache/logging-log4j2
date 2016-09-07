@@ -138,12 +138,12 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
 
     @Override
     protected boolean stop(final long timeout, final TimeUnit timeUnit, final boolean changeLifeCycleState) {
-        super.stop(timeout, timeUnit, changeLifeCycleState);
+        boolean stopped = super.stop(timeout, timeUnit, changeLifeCycleState);
         manager.stop(timeout, timeUnit);
         if (changeLifeCycleState) {
             setStopped();
         }
-        return true;
+        return stopped;
     }
 
     /**
