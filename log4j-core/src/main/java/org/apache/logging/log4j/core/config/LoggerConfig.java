@@ -412,11 +412,15 @@ public class LoggerConfig extends AbstractFilterable {
      */
     @Deprecated
     public static LoggerConfig createLogger(final String additivity,
-            final Level level, @PluginAttribute("name") final String loggerName,
+            // @formatter:off
+            final Level level, 
+            @PluginAttribute("name") final String loggerName,
             final String includeLocation,
             final AppenderRef[] refs,
-            final Property[] properties, @PluginConfiguration final Configuration config,
+            final Property[] properties, 
+            @PluginConfiguration final Configuration config,
             final Filter filter) {
+            // @formatter:on
         if (loggerName == null) {
             LOGGER.error("Loggers cannot be configured without a name");
             return null;
@@ -446,6 +450,7 @@ public class LoggerConfig extends AbstractFilterable {
      */
     @PluginFactory
     public static LoggerConfig createLogger(
+         // @formatter:off
         @PluginAttribute(value = "additivity", defaultBoolean = true) final boolean additivity,
         @PluginAttribute("level") final Level level,
         @Required(message = "Loggers cannot be configured without a name") @PluginAttribute("name") final String loggerName,
@@ -454,6 +459,7 @@ public class LoggerConfig extends AbstractFilterable {
         @PluginElement("Properties") final Property[] properties,
         @PluginConfiguration final Configuration config,
         @PluginElement("Filter") final Filter filter
+        // @formatter:on
     ) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
