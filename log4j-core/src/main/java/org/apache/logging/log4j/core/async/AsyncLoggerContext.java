@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -98,9 +99,12 @@ public class AsyncLoggerContext extends LoggerContext {
     }
 
     @Override
-    public void stop() {
-        loggerDisruptor.stop(); // first stop Disruptor
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        // first stop Disruptor
+        loggerDisruptor.stop(timeout, timeUnit); 
+        super.stop(timeout, timeUnit);
+        return true;
     }
 
     /**

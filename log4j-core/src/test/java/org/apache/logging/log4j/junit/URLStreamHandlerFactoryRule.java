@@ -40,19 +40,20 @@ public class URLStreamHandlerFactoryRule implements TestRule {
         this(null);
     }
 
-    public URLStreamHandlerFactoryRule(URLStreamHandlerFactory newURLStreamHandlerFactory) {
+    public URLStreamHandlerFactoryRule(final URLStreamHandlerFactory newURLStreamHandlerFactory) {
         this.newURLStreamHandlerFactory = newURLStreamHandlerFactory;
     }
 
     private final URLStreamHandlerFactory newURLStreamHandlerFactory;
 
     void clearURLHandlers() throws Exception {
-        Field handlersFields = URL.class.getDeclaredField("handlers");
+        final Field handlersFields = URL.class.getDeclaredField("handlers");
         if (handlersFields != null) {
             if (!handlersFields.isAccessible()) {
                 handlersFields.setAccessible(true);
             }
             @SuppressWarnings("unchecked")
+            final
             Hashtable<String, URLStreamHandler> handlers = (Hashtable<String, URLStreamHandler>) handlersFields
                     .get(null);
             if (handlers != null) {
@@ -69,7 +70,7 @@ public class URLStreamHandlerFactoryRule implements TestRule {
                 Field factoryField = null;
                 int matches = 0;
                 URLStreamHandlerFactory oldFactory = null;
-                for (Field field : URL.class.getDeclaredFields()) {
+                for (final Field field : URL.class.getDeclaredFields()) {
                     if (URLStreamHandlerFactory.class.equals(field.getType())) {
                         factoryField = field;
                         matches++;

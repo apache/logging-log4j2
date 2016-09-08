@@ -44,15 +44,15 @@ public abstract class Log4j2_1482_Test {
 
 	private static final int LOOP_COUNT = 10;
 
-	static void assertFileContents(int runNumber) throws IOException {
-		Path path = Paths.get(FOLDER + "/audit.tmp");
-		List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
+	static void assertFileContents(final int runNumber) throws IOException {
+		final Path path = Paths.get(FOLDER + "/audit.tmp");
+		final List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
 		int i = 1;
 		final int size = lines.size();
-		for (String string : lines) {
+		for (final String string : lines) {
 			if (string.startsWith(",,")) {
-				Path folder = Paths.get(FOLDER);
-				File[] files = folder.toFile().listFiles();
+				final Path folder = Paths.get(FOLDER);
+				final File[] files = folder.toFile().listFiles();
 				Arrays.sort(files);
 				System.out.println("Run " + runNumber + ": " + Arrays.toString(files));
 				Assert.fail(
@@ -66,7 +66,7 @@ public abstract class Log4j2_1482_Test {
 
 	protected abstract void log(int runNumber) ;
 
-	private void loopingRun(int loopCount) throws IOException {
+	private void loopingRun(final int loopCount) throws IOException {
 		for (int i = 1; i <= loopCount; i++) {
 			try (LoggerContext loggerContext = Configurator.initialize(getClass().getName(),
 					CONFIG_LOCATION)) {

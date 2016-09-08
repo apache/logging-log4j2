@@ -31,38 +31,38 @@ public class Log4j1MdcPatternConverterTest {
 
     @Test
     public void testConverter0() {
-        Map<String, String> contextMap = new HashMap<>(0);
-        String expected = "{}";
+        final Map<String, String> contextMap = new HashMap<>(0);
+        final String expected = "{}";
         test(contextMap, expected, null);
     }
 
     @Test
     public void testConverter1() {
-        Map<String, String> contextMap = new HashMap<>(1);
+        final Map<String, String> contextMap = new HashMap<>(1);
         contextMap.put("key1", "value1");
-        String expected = "{{key1,value1}}";
+        final String expected = "{{key1,value1}}";
         test(contextMap, expected, null);
     }
 
     @Test
     public void testConverter2() {
-        Map<String, String> contextMap = new HashMap<>(2);
+        final Map<String, String> contextMap = new HashMap<>(2);
         contextMap.put("key1", "value1");
         contextMap.put("key2", "value2");
-        String expected = "{{key1,value1}{key2,value2}}";
+        final String expected = "{{key1,value1}{key2,value2}}";
         test(contextMap, expected, null);
     }
 
     @Test
     public void testConverterWithKey() {
-        Map<String, String> contextMap = new HashMap<>(2);
+        final Map<String, String> contextMap = new HashMap<>(2);
         contextMap.put("key1", "value1");
         contextMap.put("key2", "value2");
-        String expected = "value1";
+        final String expected = "value1";
         test(contextMap, expected, new String[] {"key1"});
     }
 
-    private void test(Map<String, String> contextMap, String expected, String[] options) {
+    private void test(final Map<String, String> contextMap, final String expected, final String[] options) {
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName("MyLogger")
                 .setLevel(Level.DEBUG)

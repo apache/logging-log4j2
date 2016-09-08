@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.junit;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -35,6 +34,8 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import static org.junit.Assert.*;
+
 /**
  * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file. If the system
  * property {@code EBUG} is set (e.g., through the command line option {@code -DEBUG}), then the StatusLogger will be
@@ -43,7 +44,7 @@ import org.junit.runners.model.Statement;
  */
 public class LoggerContextRule implements TestRule {
 
-    public static LoggerContextRule createShutdownTimeoutLoggerContextRule(String config) {
+    public static LoggerContextRule createShutdownTimeoutLoggerContextRule(final String config) {
         return new LoggerContextRule(config, 10, TimeUnit.SECONDS);
     }
     
@@ -53,8 +54,8 @@ public class LoggerContextRule implements TestRule {
     private LoggerContext loggerContext;
     private Class<? extends ContextSelector> contextSelectorClass;
     private String testClassName;
-    private long shutdownTimeout;
-    private TimeUnit shutdownTimeUnit;
+    private final long shutdownTimeout;
+    private final TimeUnit shutdownTimeUnit;
 
     /**
      * Constructs a new LoggerContextRule without a configuration file.
@@ -82,7 +83,8 @@ public class LoggerContextRule implements TestRule {
      *            custom ContextSelector class to use instead of default
      */
     public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass) {
-        this(configLocation, contextSelectorClass, 0, null);
+        this(configLocation, contextSelectorClass, AbstractLifeCycle.DEFAULT_STOP_TIMEOUT,
+                AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
     }
 
     public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass,
@@ -93,7 +95,7 @@ public class LoggerContextRule implements TestRule {
         this.shutdownTimeUnit = shutdownTimeUnit;
     }
 
-    public LoggerContextRule(String config, int shutdownTimeout, TimeUnit shutdownTimeUnit) {
+    public LoggerContextRule(final String config, final int shutdownTimeout, final TimeUnit shutdownTimeUnit) {
         this(config, null, shutdownTimeout, shutdownTimeUnit);
     }
 
@@ -246,7 +248,7 @@ public class LoggerContextRule implements TestRule {
      */
     public <T extends Appender> T getRequiredAppender(final String name, final Class<T> cls) {
         final T appender = getAppender(name, cls);
-        assertNotNull("Appender named " + name + " was null.", appender);
+        assertNotNull("Appender named " + name + " was null in logger context " + loggerContext, appender);
         return appender;
     }
 

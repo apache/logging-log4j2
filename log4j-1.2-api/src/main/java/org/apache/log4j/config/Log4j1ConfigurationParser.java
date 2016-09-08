@@ -37,21 +37,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Experimental parser for Log4j 1.2 properties configuration files.
- * <p>
- * Currently supports:
- * </p>
- * <ul>
- * <li>log4j.debug</li>
- * <li>log4j.rootLogger</li>
- * <li>log4j.logger</li>
- * <li>log4j.appender</li>
- * <li>org.apache.log4j.ConsoleAppender</li>
- * <ul>
- * <li>Follow</li>
- * <li>Target</li>
- * <li>layout</li>
- * </ul>
- * </ul>
  *
  * This class is not thread-safe.
  */
@@ -91,7 +76,7 @@ public class Log4j1ConfigurationParser {
         final Map<String, String> classNameToProperty = buildClassToPropertyPrefixMap(sortedAppenderNames);
         for (final Map.Entry<String, String> entry : classNameToProperty.entrySet()) {
             final String appenderName = entry.getKey();
-            String appenderClass = entry.getValue();
+            final String appenderClass = entry.getValue();
             buildAppender(appenderName, appenderClass);
         }
         // Loggers
@@ -176,22 +161,22 @@ public class Log4j1ConfigurationParser {
         builder.add(appenderBuilder);
     }
 
-    private void buildAttribute(String componentName, ComponentBuilder componentBuilder,
-                                String sourceAttributeName, String targetAttributeName) {
+    private void buildAttribute(final String componentName, final ComponentBuilder componentBuilder,
+                                final String sourceAttributeName, final String targetAttributeName) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
         if (attributeValue != null) {
             componentBuilder.addAttribute(targetAttributeName, attributeValue);
         }
     }
 
-    private void buildAttributeWithDefault(String componentName, ComponentBuilder componentBuilder,
-                                           String sourceAttributeName, String targetAttributeName, String defaultValue) {
+    private void buildAttributeWithDefault(final String componentName, final ComponentBuilder componentBuilder,
+                                           final String sourceAttributeName, final String targetAttributeName, final String defaultValue) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName, defaultValue);
         componentBuilder.addAttribute(targetAttributeName, attributeValue);
     }
 
-    private void buildMandatoryAttribute(String componentName, ComponentBuilder componentBuilder,
-                                         String sourceAttributeName, String targetAttributeName) {
+    private void buildMandatoryAttribute(final String componentName, final ComponentBuilder componentBuilder,
+                                         final String sourceAttributeName, final String targetAttributeName) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
         if (attributeValue != null) {
             componentBuilder.addAttribute(targetAttributeName, attributeValue);
@@ -244,7 +229,7 @@ public class Log4j1ConfigurationParser {
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {
-                LayoutComponentBuilder htmlLayout = builder.newLayout("HtmlLayout");
+                final LayoutComponentBuilder htmlLayout = builder.newLayout("HtmlLayout");
                 htmlLayout.addAttribute("title",
                         getLog4jAppenderValue(name, "layout.Title", "Log4J Log Messages"));
                 htmlLayout.addAttribute("locationInfo",
@@ -253,7 +238,7 @@ public class Log4j1ConfigurationParser {
                 break;
             }
             case "org.apache.log4j.xml.XMLLayout": {
-                LayoutComponentBuilder xmlLayout = builder.newLayout("Log4j1XmlLayout");
+                final LayoutComponentBuilder xmlLayout = builder.newLayout("Log4j1XmlLayout");
                 xmlLayout.addAttribute("locationInfo",
                         Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", "false")));
                 xmlLayout.addAttribute("properties",
@@ -283,8 +268,8 @@ public class Log4j1ConfigurationParser {
         final Level rootLoggerLevel = rootLoggerParts.length > 0 ? Level.valueOf(rootLoggerParts[0]) : Level.ERROR;
         final String[] sortedAppenderNames = Arrays.copyOfRange(rootLoggerParts, 1, rootLoggerParts.length);
         Arrays.sort(sortedAppenderNames);
-        RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
-        for (String appender : sortedAppenderNames) {
+        final RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
+        for (final String appender : sortedAppenderNames) {
             loggerBuilder.add(builder.newAppenderRef(appender));
         }
         builder.add(loggerBuilder);

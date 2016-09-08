@@ -176,7 +176,7 @@ public class RingBufferLogEventTest {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
         try {
             evt.getFormattedMessage();
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             fail("the messageText field was not set");
         }
     }

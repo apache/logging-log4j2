@@ -92,7 +92,7 @@ public class AbstractDatabaseManagerTest {
         expectLastCall();
         replay(this.manager);
 
-        this.manager.releaseSub();
+        this.manager.releaseSub(-1, null);
         assertFalse("The manager should not be running anymore.", this.manager.isRunning());
     }
 

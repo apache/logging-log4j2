@@ -18,6 +18,8 @@
 package org.apache.logging.log4j.core.appender.mom;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -123,16 +125,21 @@ public class JmsManager extends AbstractManager {
     }
 
     @Override
-    protected void releaseSub() {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        boolean closed = true;
         try {
             this.session.close();
         } catch (final JMSException ignored) {
+            // ignore
+            closed = false;
         }
         try {
             this.connection.close();
         } catch (final JMSException ignored) {
+            // ignore
+            closed = false;
         }
-        this.jndiManager.close();
+        return closed && this.jndiManager.stop(timeout, timeUnit);
     }
 
     private static class JmsConfiguration {

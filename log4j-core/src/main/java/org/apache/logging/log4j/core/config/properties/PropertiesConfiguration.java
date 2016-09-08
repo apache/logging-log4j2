@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 public class PropertiesConfiguration extends BuiltConfiguration implements Reconfigurable {
 
     // ctor is called through reflection.
-    public PropertiesConfiguration(LoggerContext loggerContext, final ConfigurationSource source, final Component root) {
+    public PropertiesConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component root) {
         super(loggerContext, source, root);
     }
 

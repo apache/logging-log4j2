@@ -51,7 +51,7 @@ public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppen
         public String toString() {
             try {
                 return getOutputStream().toString();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new IllegalStateException(e);
             }
         }

@@ -156,6 +156,7 @@ public class ResponseTimeTest {
         final int COUNT = (1000 * 1000) / threadCount;
         runLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, loadMessagesPerSec, idleStrategy, serviceTmHistograms,
                 responseTmHistograms, threadCount);
+        logger.shutdown();
         final long end = System.currentTimeMillis();
 
         // ... and report the results

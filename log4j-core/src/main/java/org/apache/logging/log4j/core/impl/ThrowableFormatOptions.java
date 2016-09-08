@@ -96,7 +96,7 @@ public final class ThrowableFormatOptions {
      *            The ANSI renderer
      */
     protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
-            TextRenderer textRenderer) {
+            final TextRenderer textRenderer) {
         this.lines = lines;
         this.separator = separator == null ? Constants.LINE_SEPARATOR : separator;
         this.ignorePackages = ignorePackages;
@@ -277,7 +277,7 @@ public final class ThrowableFormatOptions {
                     lines = 2;
                 } else if (option.startsWith("ansi(") && option.endsWith(")") || option.equals("ansi")) {
                     if (Loader.isJansiAvailable()) {
-                        String styleMapStr = option.equals("ansi") ? Strings.EMPTY
+                        final String styleMapStr = option.equals("ansi") ? Strings.EMPTY
                                 : option.substring("ansi(".length(), option.length() - 1);
                         ansiRenderer = new JAnsiTextRenderer(new String[] { null, styleMapStr },
                                 JAnsiTextRenderer.DefaultExceptionStyleMap);

@@ -108,7 +108,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAnsi() {
-        ThrowableFormatOptions tfo = test(new String[] { "full", "ansi" },
+        final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi" },
                 Integer.MAX_VALUE, Constants.LINE_SEPARATOR, null);
         testFullAnsiEmptyConfig(tfo);
     }
@@ -118,17 +118,17 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAnsiEmptyConfig() {
-        ThrowableFormatOptions tfo = test(new String[] { "full", "ansi()" },
+        final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi()" },
                 Integer.MAX_VALUE, Constants.LINE_SEPARATOR, null);
         testFullAnsiEmptyConfig(tfo);
     }
 
-    private void testFullAnsiEmptyConfig(ThrowableFormatOptions tfo) {
-        TextRenderer textRenderer = tfo.getTextRenderer();
+    private void testFullAnsiEmptyConfig(final ThrowableFormatOptions tfo) {
+        final TextRenderer textRenderer = tfo.getTextRenderer();
         Assert.assertNotNull(textRenderer);
         Assert.assertTrue(textRenderer instanceof JAnsiTextRenderer);
-        JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
-        Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
+        final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
+        final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
         // We have defaults
         Assert.assertFalse(styleMap.isEmpty());
         Assert.assertNotNull(styleMap.get("Name"));
@@ -139,13 +139,13 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAnsiWithCustomStyle() {
-        ThrowableFormatOptions tfo = test(new String[] { "full", "ansi(Warning=red)" },
+        final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi(Warning=red)" },
                 Integer.MAX_VALUE, Constants.LINE_SEPARATOR, null);
-        TextRenderer textRenderer = tfo.getTextRenderer();
+        final TextRenderer textRenderer = tfo.getTextRenderer();
         Assert.assertNotNull(textRenderer);
         Assert.assertTrue(textRenderer instanceof JAnsiTextRenderer);
-        JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
-        Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
+        final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
+        final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
         Assert.assertArrayEquals(new Code[] { Code.RED }, styleMap.get("Warning"));
     }
 
@@ -154,13 +154,13 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAnsiWithCustomStyles() {
-        ThrowableFormatOptions tfo = test(new String[] { "full", "ansi(Warning=red Key=blue Value=cyan)" },
+        final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi(Warning=red Key=blue Value=cyan)" },
                 Integer.MAX_VALUE, Constants.LINE_SEPARATOR, null);
-        TextRenderer textRenderer = tfo.getTextRenderer();
+        final TextRenderer textRenderer = tfo.getTextRenderer();
         Assert.assertNotNull(textRenderer);
         Assert.assertTrue(textRenderer instanceof JAnsiTextRenderer);
-        JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
-        Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
+        final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
+        final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
         Assert.assertArrayEquals(new Code[] { Code.RED }, styleMap.get("Warning"));
         Assert.assertArrayEquals(new Code[] { Code.BLUE }, styleMap.get("Key"));
         Assert.assertArrayEquals(new Code[] { Code.CYAN }, styleMap.get("Value"));
@@ -171,14 +171,14 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAnsiWithCustomComplexStyles() {
-        ThrowableFormatOptions tfo = test(
+        final ThrowableFormatOptions tfo = test(
                 new String[] { "full", "ansi(Warning=red Key=blue,bg_red Value=cyan,bg_black,underline)" }, Integer.MAX_VALUE,
                 Constants.LINE_SEPARATOR, null);
-        TextRenderer textRenderer = tfo.getTextRenderer();
+        final TextRenderer textRenderer = tfo.getTextRenderer();
         Assert.assertNotNull(textRenderer);
         Assert.assertTrue(textRenderer instanceof JAnsiTextRenderer);
-        JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
-        Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
+        final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
+        final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
         Assert.assertArrayEquals(new Code[] { Code.RED }, styleMap.get("Warning"));
         Assert.assertArrayEquals(new Code[] { Code.BLUE, Code.BG_RED }, styleMap.get("Key"));
         Assert.assertArrayEquals(new Code[] { Code.CYAN, Code.BG_BLACK, Code.UNDERLINE }, styleMap.get("Value"));

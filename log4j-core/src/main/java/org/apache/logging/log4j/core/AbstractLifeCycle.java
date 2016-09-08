@@ -28,6 +28,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class AbstractLifeCycle implements LifeCycle {
 
+    public static final int DEFAULT_STOP_TIMEOUT = 0;
+    public static final TimeUnit DEFAULT_STOP_TIMEUNIT = TimeUnit.MILLISECONDS;
+
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
@@ -120,11 +123,11 @@ public class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public void stop() {
-        this.state = LifeCycle.State.STOPPED;
+        stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEUNIT);
     }
 
     @Override
-    public boolean stop(long timeout, TimeUnit timeUnit) {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.state = LifeCycle.State.STOPPED;
         return true;
     }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -144,8 +145,9 @@ public class ListAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         final Layout<? extends Serializable> layout = getLayout();
         if (layout != null) {
             final byte[] bytes = layout.getFooter();
@@ -153,6 +155,8 @@ public class ListAppender extends AbstractAppender {
                 write(bytes);
             }
         }
+        setStopped();
+        return true;
     }
 
     public synchronized ListAppender clear() {

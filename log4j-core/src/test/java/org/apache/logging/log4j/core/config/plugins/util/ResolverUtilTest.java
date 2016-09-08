@@ -141,9 +141,9 @@ public class ResolverUtilTest {
 
     @Test
     public void testFindInPackageFromDirectoryPath() throws Exception {
-      ClassLoader cl = compileAndCreateClassLoader("1");
+      final ClassLoader cl = compileAndCreateClassLoader("1");
 
-      ResolverUtil resolverUtil = new ResolverUtil();
+      final ResolverUtil resolverUtil = new ResolverUtil();
       resolverUtil.setClassLoader(cl);
       resolverUtil.findInPackage(new PluginTest(), "customplugin1");
       assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
@@ -154,9 +154,9 @@ public class ResolverUtilTest {
 
     @Test
     public void testFindInPackageFromJarPath() throws Exception {
-      ClassLoader cl = compileJarAndCreateClassLoader("2");
+      final ClassLoader cl = compileJarAndCreateClassLoader("2");
 
-      ResolverUtil resolverUtil = new ResolverUtil();
+      final ResolverUtil resolverUtil = new ResolverUtil();
       resolverUtil.setClassLoader(cl);
       resolverUtil.findInPackage(new PluginTest(), "customplugin2");
       assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
@@ -165,21 +165,21 @@ public class ResolverUtilTest {
             resolverUtil.getClasses().iterator().next());
     }
 
-    static URLClassLoader compileJarAndCreateClassLoader(String suffix) throws IOException, Exception {
-        File workDir = compile(suffix);
-        File jarFile = new File(workDir, "customplugin" + suffix + ".jar");
-        URI jarURI = jarFile.toURI();
+    static URLClassLoader compileJarAndCreateClassLoader(final String suffix) throws IOException, Exception {
+        final File workDir = compile(suffix);
+        final File jarFile = new File(workDir, "customplugin" + suffix + ".jar");
+        final URI jarURI = jarFile.toURI();
         createJar(jarURI, workDir, new File(workDir,
               "customplugin" + suffix + "/FixedString" + suffix + "Layout.class"));
         return URLClassLoader.newInstance(new URL[] {jarURI.toURL()});
     }
 
-    static URLClassLoader compileAndCreateClassLoader(String suffix) throws IOException {
+    static URLClassLoader compileAndCreateClassLoader(final String suffix) throws IOException {
         final File workDir = compile(suffix);
         return URLClassLoader.newInstance(new URL[] {workDir.toURI().toURL()});
     }
 
-    static File compile(String suffix) throws IOException {
+    static File compile(final String suffix) throws IOException {
         final File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
         final File workDir = new File("target/resolverutil" + suffix);
         final File f = new File(workDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.java");
@@ -188,7 +188,7 @@ public class ResolverUtilTest {
           assertTrue("Create customplugin" + suffix + " folder KO", f.getParentFile().mkdirs());
         }
   
-        String content = new String(Files.readAllBytes(orig.toPath()))
+        final String content = new String(Files.readAllBytes(orig.toPath()))
           .replaceAll("FixedString", "FixedString" + suffix)
           .replaceAll("customplugin", "customplugin" + suffix);
         Files.write(f.toPath(), content.getBytes());
@@ -197,12 +197,12 @@ public class ResolverUtilTest {
         return workDir;
     }
 
-    static void createJar(URI jarURI, File workDir, File f) throws Exception {
-        Map<String, String> env = new HashMap<>(); 
+    static void createJar(final URI jarURI, final File workDir, final File f) throws Exception {
+        final Map<String, String> env = new HashMap<>(); 
         env.put("create", "true");
-        URI uri = URI.create("jar:file://" + jarURI.getRawPath());
+        final URI uri = URI.create("jar:file://" + jarURI.getRawPath());
         try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {   
-            Path path = zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
+            final Path path = zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
             if (path.getParent() != null) {
                 Files.createDirectories(path.getParent());
             }

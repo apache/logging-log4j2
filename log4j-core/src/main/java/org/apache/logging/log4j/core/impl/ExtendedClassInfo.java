@@ -102,7 +102,7 @@ public final class ExtendedClassInfo implements Serializable {
         return result;
     }
 
-    public void renderOn(StringBuilder output, TextRenderer textRenderer) {
+    public void renderOn(final StringBuilder output, final TextRenderer textRenderer) {
         if (!this.exact) {
             textRenderer.render("~", output, "ExtraClassInfo.Inexact");
         }

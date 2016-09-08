@@ -56,10 +56,10 @@
             the application. The AsyncAppender should be configured after the appenders it references to allow it
             to shut down properly.</p>
           <p>
-            Note that AsyncAppender internally uses the built-in java.util.concurrent.ArrayBlockingQueue,
-            so it does not have any dependencies on external libraries. However, multi-threaded applications
-            should exercise care before using this appender:
-            the blocking queue is susceptible to lock contention and our
+            By default, AsyncAppender uses
+            <a class="javadoc" href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">java.util.concurrent.ArrayBlockingQueue</a>
+            which does not require any external libraries. Note that multi-threaded applications should exercise care
+            when using this appender as such: the blocking queue is susceptible to lock contention and our
             <a href="../performance.html#asyncLogging">tests showed</a>
             performance may become worse when more threads are logging concurrently.
             Consider using <a href="async.html">lock-free Async Loggers</a> for optimal performance.
@@ -92,7 +92,8 @@
             <tr>
               <td>bufferSize</td>
               <td>integer</td>
-              <td>Specifies the maximum number of events that can be queued. The default is 128.</td>
+              <td>Specifies the maximum number of events that can be queued. The default is 128. Note that when using a
+                disruptor-style <tt>BlockingQueue</tt>, this buffer size must be a power of 2.</td>
             </tr>
             <tr>
               <td>errorRef</td>
@@ -127,6 +128,12 @@
               not included by default when adding a log event to the queue.
               You can change this by setting includeLocation="true".</td>
             </tr>
+            <tr>
+              <td>BlockingQueueFactory</td>
+              <td>BlockingQueueFactory</td>
+              <td>This element overrides what type of <tt>BlockingQueue</tt> to use. See
+                <a href="#BlockingQueueFactory">below documentation</a> for more details.</td>
+            </tr>
           </table>
           <p>
             There are also a few system properties that can be used to maintain application throughput even when
@@ -157,6 +164,73 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+          <p>
+            <a name="BlockingQueueFactory"/>
+            Starting in Log4j 2.7, a custom implementation of <tt>BlockingQueue</tt> or <tt>TransferQueue</tt> can be
+            specified using a
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/async/BlockingQueueFactory.html">BlockingQueueFactory</a>
+            plugin. To override the default <tt>BlockingQueueFactory</tt>, specify the plugin inside an
+            <code><![CDATA[<Async/>]]></code> element like so:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<Configuration name="LinkedTransferQueueExample">
+  <Appenders>
+    <List name="List"/>
+    <Async name="Async" bufferSize="262144">
+      <AppenderRef ref="List"/>
+      <LinkedTransferQueue/>
+    </Async>
+  </Appenders>
+  <Loggers>
+    <Root>
+      <AppenderRef ref="Async"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+          <p>
+            Log4j ships with the following implementations:
+          </p>
+          <table>
+            <caption align="top">BlockingQueueFactory Implementations</caption>
+            <tr>
+              <th>Plugin Name</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>ArrayBlockingQueue</td>
+              <td>
+                This is the default implementation that uses
+                <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>DisruptorBlockingQueue</td>
+              <td>
+                This uses the <a href="https://github.com/conversant/disruptor">Conversant Disruptor</a> implementation
+                of <tt>BlockingQueue</tt>. This plugin takes a single optional attribute, <tt>spinPolicy</tt>, which
+                corresponds to
+                <!-- TODO: this needs performance charts and links added -->
+              </td>
+            </tr>
+            <tr>
+              <td>JCToolsBlockingQueue</td>
+              <td>
+                This uses <a href="https://jctools.github.io/JCTools/">JCTools</a>, specifically the
+                <abbr title="multiple producer single consumer">MPSC</abbr> bounded lock-free queue.
+                <!-- TODO: this need performance charts and links added -->
+              </td>
+            </tr>
+            <tr>
+              <td>LinkedTransferQueue</td>
+              <td>
+                This uses the new in Java 7 implementation
+                <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>.
+                Note that this queue does not use the <tt>bufferSize</tt> configuration attribute from AsyncAppender as
+                <tt>LinkedTransferQueue</tt> does not support a maximum capacity.
+                <!-- TODO: this needs performance charts and links added -->
+              </td>
+            </tr>
+          </table>
         </subsection>
         <a name="ConsoleAppender"/>
         <subsection name="ConsoleAppender">

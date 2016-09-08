@@ -49,6 +49,6 @@ public class KeyStoreConfigurationTest {
     @Test(expected = StoreConfigurationException.class)
     public void wrongPassword() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, "wrongPassword!", null, null);
-        final KeyStore ks = ksc.getKeyStore();
+        ksc.getKeyStore();
     }
 }

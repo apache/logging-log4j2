@@ -62,7 +62,7 @@ public class RollingAppenderCronOnceADayTest {
     public static void beforeClass() throws Exception {
       final Path src = FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG);
       String content = new String(Files.readAllBytes(src), UTF_8);
-      Calendar cal = Calendar.getInstance();
+      final Calendar cal = Calendar.getInstance();
       cal.add(Calendar.SECOND, CRON_DELAY);
       remainingTime = cal.getTimeInMillis() - System.currentTimeMillis();
       cronExpression =  String.format("%d %d %d * * ?",
@@ -84,7 +84,7 @@ public class RollingAppenderCronOnceADayTest {
     public void testAppender() throws Exception {
         // TODO Is there a better way to test than putting the thread to sleep all over the place?
         final Logger logger = loggerContextRule.getLogger();
-        File file = new File(FILE);
+        final File file = new File(FILE);
         assertTrue("Log file does not exist", file.exists());
         logger.debug("This is test message number 1, waiting for rolling");
 
@@ -112,7 +112,7 @@ public class RollingAppenderCronOnceADayTest {
         final Matcher<File> hasGzippedFile = hasName(that(endsWith(".gz")));
         int count = 0;
         final File[] files = dir.listFiles();
-        for (File generatedFile : files) {
+        for (final File generatedFile : files) {
           if (hasGzippedFile.matches(generatedFile)) {
               count++;
           }

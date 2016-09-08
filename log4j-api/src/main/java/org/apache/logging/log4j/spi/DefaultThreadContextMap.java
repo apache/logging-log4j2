@@ -87,7 +87,7 @@ public class DefaultThreadContextMap implements ThreadContextMap2, ContextData {
         }
         Map<String, String> map = localMap.get();
         map = map == null ? new HashMap<String, String>(m.size()) : new HashMap<>(map);
-        for (Map.Entry<String, String> e : m.entrySet()) {
+        for (final Map.Entry<String, String> e : m.entrySet()) {
             map.put(e.getKey(), e.getValue());
         }
         localMap.set(Collections.unmodifiableMap(map));

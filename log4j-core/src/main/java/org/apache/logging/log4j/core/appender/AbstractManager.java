@@ -18,11 +18,13 @@ package org.apache.logging.log4j.core.appender;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -69,19 +71,25 @@ public abstract class AbstractManager implements AutoCloseable {
      */
     @Override
     public void close() {
+        stop(AbstractLifeCycle.DEFAULT_STOP_TIMEOUT, AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
+    }
+
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        boolean stopped = true;
         LOCK.lock();
         try {
             --count;
             if (count <= 0) {
                 MAP.remove(name);
                 LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
-                releaseSub();
+                stopped = releaseSub(timeout, timeUnit);
+                LOGGER.debug("Shut down {} {}, all resources released: {}", this.getClass().getSimpleName(), getName(), stopped);
             }
         } finally {
             LOCK.unlock();
         }
+        return stopped;
     }
-
 
     /**
      * Retrieves a Manager if it has been previously created or creates a new Manager.
@@ -134,11 +142,15 @@ public abstract class AbstractManager implements AutoCloseable {
     }
 
     /**
-     * May be overridden by Managers to perform processing while the Manager is being released and the
-     * lock is held.
+     * May be overridden by managers to perform processing while the manager is being released and the
+     * lock is held. A timeout is passed for implementors to use as they see fit.
+     * @param timeout timeout
+     * @param timeUnit timeout time unit
+     * @return true if all resources were closed normally, false otherwise.
      */
-    protected void releaseSub() {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         // This default implementation does nothing.
+        return true;
     }
 
     protected int getCount() {
@@ -158,7 +170,7 @@ public abstract class AbstractManager implements AutoCloseable {
 
     /**
      * Called to signify that this Manager is no longer required by an Appender.
-     * @deprecated Use {@link #close()}.
+     * @deprecated In 2.7, use {@link #close()}.
      */
     @Deprecated
     public void release() {

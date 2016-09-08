@@ -66,8 +66,8 @@ public class SocketAppenderTest {
     private static TcpSocketTestServer tcpServer;
     private static UdpSocketTestServer udpServer;
 
-    private LoggerContext context = LoggerContext.getContext();
-    private Logger logger = context.getLogger(SocketAppenderTest.class.getName());
+    private final LoggerContext context = LoggerContext.getContext();
+    private final Logger logger = context.getLogger(SocketAppenderTest.class.getName());
 
     @BeforeClass
     public static void setupClass() throws Exception {
@@ -118,7 +118,7 @@ public class SocketAppenderTest {
         testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
-    static void testTcpAppender(TcpSocketTestServer tcpTestServer, final Logger logger, final int bufferSize)
+    static void testTcpAppender(final TcpSocketTestServer tcpTestServer, final Logger logger, final int bufferSize)
             throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()

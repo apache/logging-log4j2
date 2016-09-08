@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.test.appender;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
@@ -46,14 +48,17 @@ public class DeadlockAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         thread.start();
         try {
             thread.join();
         } catch (final Exception ex) {
             System.out.println("Thread interrupted");
         }
+        setStopped();
+        return true;
     }
 
     @Override

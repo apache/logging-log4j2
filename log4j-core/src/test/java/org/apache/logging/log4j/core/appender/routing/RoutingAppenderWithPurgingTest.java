@@ -52,7 +52,7 @@ public class RoutingAppenderWithPurgingTest {
     private RoutingAppender routingAppenderIdleWithHangingAppender;
     private RoutingAppender routingAppenderManual;
 
-    private LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFilesRule(IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3,
@@ -118,8 +118,8 @@ public class RoutingAppenderWithPurgingTest {
     }
 
 
-    private void assertFileExistance(String... files) {
-        for (String file : files) {
+    private void assertFileExistance(final String... files) {
+        for (final String file : files) {
             assertTrue("File should exist - " + file + " file ", new File(file).exists());
         }
     }

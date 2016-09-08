@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -75,7 +76,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     /**
      * @since 2.7
      */
-    protected OutputStreamManager(final LoggerContext loggerContext, OutputStream os, final String streamName,
+    protected OutputStreamManager(final LoggerContext loggerContext, final OutputStream os, final String streamName,
             final boolean createOnDemand, final Layout<? extends Serializable> layout, final boolean writeHeader,
             final ByteBuffer byteBuffer) {
         super(loggerContext, streamName);
@@ -130,9 +131,9 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * Default hook to write footer during close.
      */
     @Override
-    public void releaseSub() {
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         writeFooter();
-        closeOutputStream();
+        return closeOutputStream();
     }
 
     /**
@@ -293,17 +294,19 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         flushDestination();
     }
 
-    protected synchronized void closeOutputStream() {
+    protected synchronized boolean closeOutputStream() {
         flush();
         final OutputStream stream = os; // access volatile field only once per method
         if (stream == null || stream == System.out || stream == System.err) {
-            return;
+            return true;
         }
         try {
             stream.close();
         } catch (final IOException ex) {
             logError("Unable to close stream", ex);
+            return false;
         }
+        return true;
     }
 
     /**

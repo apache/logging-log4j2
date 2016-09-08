@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -93,7 +94,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         @Override
         public SocketAppender build() {
             boolean immediateFlush = isImmediateFlush();
-            boolean bufferedIo = isBufferedIo();
+            final boolean bufferedIo = isBufferedIo();
             Layout<? extends Serializable> layout = getLayout();
             if (layout == null) {
                 layout = SerializedLayout.createLayout();
@@ -216,11 +217,14 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         if (this.advertiser != null) {
             this.advertiser.unadvertise(this.advertisement);
         }
+        setStopped();
+        return true;
     }
 
     /**

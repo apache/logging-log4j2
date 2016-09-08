@@ -79,7 +79,7 @@ public class AbstractDatabaseAppenderTest {
 
         verify(this.manager, this.appender);
         reset(this.manager, this.appender);
-        this.manager.close();
+        this.manager.shutdownInternal();
         expectLastCall();
         replay(this.manager, this.appender);
 
@@ -111,7 +111,7 @@ public class AbstractDatabaseAppenderTest {
 
         verify(this.manager, this.appender, newManager);
         reset(this.manager, this.appender, newManager);
-        newManager.close();
+        newManager.shutdownInternal();
         expectLastCall();
         replay(this.manager, this.appender, newManager);
 

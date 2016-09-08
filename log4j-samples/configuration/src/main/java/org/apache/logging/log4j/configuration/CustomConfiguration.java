@@ -51,14 +51,14 @@ public class CustomConfiguration extends AbstractConfiguration {
      */
     public static final String DEFAULT_PATTERN = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
 
-    public CustomConfiguration(LoggerContext loggerContext) {
+    public CustomConfiguration(final LoggerContext loggerContext) {
         this(loggerContext, ConfigurationSource.NULL_SOURCE);
     }
 
     /**
      * Constructor to create the default configuration.
      */
-    public CustomConfiguration(LoggerContext loggerContext, final ConfigurationSource source) {
+    public CustomConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         super(loggerContext, source);
 
         setName(CONFIG_NAME);

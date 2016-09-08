@@ -60,7 +60,7 @@ public class SslSocketManager extends TcpSocketManager {
     public SslSocketManager(final String name, final OutputStream os, final Socket sock,
             final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
             final int connectTimeoutMillis, final int delay, final boolean immediateFail,
-            final Layout<? extends Serializable> layout, int bufferSize) {
+            final Layout<? extends Serializable> layout, final int bufferSize) {
         super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, delay, immediateFail, layout, bufferSize);
         this.sslConfig = sslConfig;
     }

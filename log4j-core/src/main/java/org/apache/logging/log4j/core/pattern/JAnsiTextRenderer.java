@@ -84,16 +84,16 @@ public final class JAnsiTextRenderer implements TextRenderer {
     static final Map<String, Code[]> DefaultMessageStyleMap;
     private static final Map<String, Map<String, Code[]>> PrefedinedStyleMaps;
 
-    private static void put(Map<String, Code[]> map, String name, Code... codes) {
+    private static void put(final Map<String, Code[]> map, final String name, final Code... codes) {
         map.put(name, codes);
     }
 
     static {
-        Map<String, Map<String, Code[]>> tempPreDefs = new HashMap<>();
+        final Map<String, Map<String, Code[]>> tempPreDefs = new HashMap<>();
         // Default style: Spock
         {
             // TODO Should the keys be in an enum?
-            Map<String, Code[]> map = new HashMap<>();
+            final Map<String, Code[]> map = new HashMap<>();
             put(map, "Prefix", WHITE);
             put(map, "Name", BG_RED, WHITE);
             put(map, "NameMessageSeparator", BG_RED, WHITE);
@@ -126,7 +126,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
         // Style: Kirk
         {
             // TODO Should the keys be in an enum?
-            Map<String, Code[]> map = new HashMap<>();
+            final Map<String, Code[]> map = new HashMap<>();
             put(map, "Prefix", WHITE);
             put(map, "Name", BG_RED, YELLOW, BOLD);
             put(map, "NameMessageSeparator", BG_RED, YELLOW);
@@ -156,7 +156,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
             tempPreDefs.put("Kirk", Collections.unmodifiableMap(map));
         }
         {
-            Map<String, Code[]> temp = new HashMap<>();
+            final Map<String, Code[]> temp = new HashMap<>();
             // TODO
             DefaultMessageStyleMap = Collections.unmodifiableMap(temp);
         }
@@ -169,7 +169,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
     private final int endTokenLen;
     private final Map<String, Code[]> styleMap;
 
-    public JAnsiTextRenderer(final String[] formats, Map<String, Code[]> defaultStyleMap) {
+    public JAnsiTextRenderer(final String[] formats, final Map<String, Code[]> defaultStyleMap) {
         String tempBeginToken = AnsiRenderer.BEGIN_TOKEN;
         String tempEndToken = AnsiRenderer.END_TOKEN;
         Map<String, Code[]> map;
@@ -202,7 +202,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
                             break;
                         case "StyleMapName":
                             final String predefinedMapName = codeNames[0];
-                            Map<String, Code[]> predefinedMap = PrefedinedStyleMaps.get(predefinedMapName);
+                            final Map<String, Code[]> predefinedMap = PrefedinedStyleMaps.get(predefinedMapName);
                             if (predefinedMap != null) {
                                 map.putAll(predefinedMap);
                             } else {

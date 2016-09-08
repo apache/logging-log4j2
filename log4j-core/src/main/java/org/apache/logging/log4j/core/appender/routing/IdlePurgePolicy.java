@@ -22,7 +22,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -32,7 +31,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Policy is purging appenders that were not in use specified time in minutes
@@ -41,13 +39,12 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Scheduled
 public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, Runnable {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
     private final long timeToLive;
     private final long checkInterval;    
     private final ConcurrentMap<String, Long> appendersUsage = new ConcurrentHashMap<>();
     private RoutingAppender routingAppender;
     private final ConfigurationScheduler scheduler;
-    private volatile ScheduledFuture<?> future = null;
+    private volatile ScheduledFuture<?> future;
 
     public IdlePurgePolicy(final long timeToLive, final long checkInterval, final ConfigurationScheduler scheduler) {
         this.timeToLive = timeToLive;
@@ -61,11 +58,13 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
         if (future != null) {
             future.cancel(true);
         }
+        setStopped();
+        return true;
     }
 
     /**
@@ -113,7 +112,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
         }
 
         if (updateTime < Long.MAX_VALUE) {
-            long interval = timeToLive - (System.currentTimeMillis() - updateTime);
+            final long interval = timeToLive - (System.currentTimeMillis() - updateTime);
             future = scheduler.schedule(this, interval, TimeUnit.MILLISECONDS);
         } else {
             // reset to initial state - in case of all appenders already purged

@@ -23,10 +23,10 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.nosql.appender.NoSqlProvider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
@@ -93,7 +93,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
         String description;
         if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {
             try {
-                final Class<?> factoryClass = Loader.loadClass(factoryClassName);
+                final Class<?> factoryClass = LoaderUtil.loadClass(factoryClassName);
                 final Method method = factoryClass.getMethod(factoryMethodName);
                 final Object object = method.invoke(null);
 

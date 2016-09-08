@@ -24,12 +24,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.selector.BasicContextSelector;
-import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
 import org.apache.logging.log4j.junit.CleanFiles;
@@ -47,7 +43,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class XmlCompleteFileAppenderTest {
 
-    public XmlCompleteFileAppenderTest(Class<ContextSelector> contextSelector) {
+    public XmlCompleteFileAppenderTest(final Class<ContextSelector> contextSelector) {
         this.loggerContextRule = new LoggerContextRule("XmlCompleteFileAppenderTest.xml", contextSelector);
         this.cleanFiles = new CleanFiles(logFile);
         this.ruleChain = RuleChain.outerRule(cleanFiles).around(loggerContextRule);

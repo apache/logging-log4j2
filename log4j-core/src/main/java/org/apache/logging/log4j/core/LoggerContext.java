@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
+import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
@@ -301,12 +302,7 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     @Override
-    public void stop() {
-        stop(0, null);
-    }
-
-    @Override
-    public boolean stop(long timeout, TimeUnit timeUnit) {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
         configLock.lock();
         final boolean shutdownEs;
@@ -329,57 +325,19 @@ public class LoggerContext extends AbstractLifeCycle
             final Configuration prev = configuration;
             configuration = NULL_CONFIGURATION;
             updateLoggers();
-            prev.stop();
+            prev.stop(timeout, timeUnit);
             externalContext = null;
             LogManager.getFactory().removeContext(this);
-            shutdownEs = shutdown(executorService, timeout, timeUnit);
+            final String source = "LoggerContext \'" + getName() + "\'";
+            shutdownEs = ExecutorServices.shutdown(executorService, timeout, timeUnit, source);
             // Do not wait for daemon threads
-            shutdownEsd = shutdown(executorServiceDeamons, 0, null);
-            this.setStopped();
+            shutdownEsd = ExecutorServices.shutdown(executorServiceDeamons, -1, timeUnit, source);
         } finally {
             configLock.unlock();
+            this.setStopped();
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}]...", getName(), this);
         return shutdownEs && shutdownEsd;
-    }
-
-    /**
-     * Shuts down the given pool.
-     * 
-     * @param pool
-     *            the pool to shutdown.
-     * @param timeout
-     *            the maximum time to wait
-     * @param unit
-     *            the time unit of the timeout argument
-     * @return {@code true} if the given executor terminated and {@code false} if the timeout elapsed before termination.
-     */
-    private boolean shutdown(ExecutorService pool, long timeout, TimeUnit timeUnit) {
-        pool.shutdown(); // Disable new tasks from being submitted
-        if (timeout > 0 && timeUnit == null) {
-            throw new IllegalArgumentException(
-                    String.format("Logger context '%s' can't shutdown %s when timeout = %,d and timeUnit = %s.",
-                            getName(), pool, timeout, timeUnit));
-        }
-        if (timeout > 0) {
-            try {
-                // Wait a while for existing tasks to terminate
-                if (!pool.awaitTermination(timeout, timeUnit)) {
-                    pool.shutdownNow(); // Cancel currently executing tasks
-                    // Wait a while for tasks to respond to being cancelled
-                    if (!pool.awaitTermination(timeout, timeUnit)) {
-                        LOGGER.error("LoggerContext '{}' pool {} did not terminate after {} {}", getName(), pool, timeout, timeUnit);
-                    }
-                    return false;
-                }
-            } catch (InterruptedException ie) {
-                // (Re-)Cancel if current thread also interrupted
-                pool.shutdownNow();
-                // Preserve interrupt status
-                Thread.currentThread().interrupt();
-            }
-        }
-        return true;
     }
 
     /**
@@ -727,7 +685,7 @@ public class LoggerContext extends AbstractLifeCycle
      *         scheduled for execution
      * @throws NullPointerException if the task is null
      */
-    public Future<?> submit(Runnable task) {
+    public Future<?> submit(final Runnable task) {
         return executorService.submit(task);
     }
 
@@ -743,7 +701,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @throws NullPointerException
      *             if the task is null
      */
-    public Future<?> submitDaemon(Runnable task) {
+    public Future<?> submitDaemon(final Runnable task) {
         return executorServiceDeamons.submit(task);
     }
 

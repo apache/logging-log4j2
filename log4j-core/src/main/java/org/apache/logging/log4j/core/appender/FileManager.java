@@ -76,7 +76,7 @@ public class FileManager extends OutputStreamManager {
     /** 
      * @since 2.7 
      */
-    protected FileManager(LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
+    protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
             final boolean writeHeader, final ByteBuffer buffer) {
         super(loggerContext, os, fileName, createOnDemand, layout, writeHeader, buffer);
@@ -102,7 +102,7 @@ public class FileManager extends OutputStreamManager {
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
             final boolean bufferedIo, final boolean createOnDemand, final String advertiseUri,
-            final Layout<? extends Serializable> layout, final int bufferSize, Configuration configuration) {
+            final Layout<? extends Serializable> layout, final int bufferSize, final Configuration configuration) {
 
         if (locking && bufferedIo) {
             locking = false;
@@ -220,7 +220,7 @@ public class FileManager extends OutputStreamManager {
          */
         public FactoryData(final boolean append, final boolean locking, final boolean bufferedIo, final int bufferSize,
                 final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
-                Configuration configuration) {
+                final Configuration configuration) {
             super(configuration);
             this.append = append;
             this.locking = locking;

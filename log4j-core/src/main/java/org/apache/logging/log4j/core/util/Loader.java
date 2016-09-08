@@ -215,19 +215,6 @@ public final class Loader {
     }
 
     /**
-     * Load a Class by name. Note that unlike {@link ClassLoader#loadClass(String) ClassLoader.loadClass}, this method
-     * will initialize the class as well if it hasn't been already. This is equivalent to the calling the
-     * {@link ClassLoader#loadClass(String, boolean) protected version} with the second parameter equal to {@code true}.
-     *
-     * @param className The class name.
-     * @return The Class.
-     * @throws ClassNotFoundException if the Class could not be found.
-     */
-    public static Class<?> loadClass(final String className) throws ClassNotFoundException {
-        return LoaderUtil.loadClass(className);
-    }
-
-    /**
      * Loads and initializes a named Class using a given ClassLoader.
      *
      * @param className The class name.
@@ -307,15 +294,7 @@ public final class Loader {
      * @return {@code true} if the class could be found or {@code false} otherwise.
      */
     public static boolean isClassAvailable(final String className) {
-        try {
-            final Class<?> clazz = loadClass(className);
-            return clazz != null;
-        } catch (final ClassNotFoundException e) {
-            return false;
-        } catch (final Throwable e) {
-            LOGGER.trace("Unknown error checking for existence of class [{}].", className, e);
-            return false;
-        }
+        return LoaderUtil.isClassAvailable(className);
     }
 
     public static boolean isJansiAvailable() {

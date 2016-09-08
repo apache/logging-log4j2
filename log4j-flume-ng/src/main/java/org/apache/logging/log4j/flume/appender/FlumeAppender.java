@@ -18,6 +18,7 @@ package org.apache.logging.log4j.flume.appender;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -106,9 +107,12 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     }
 
     @Override
-    public void stop() {
-        super.stop();
-        manager.close();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        boolean stopped = super.stop(timeout, timeUnit, false);
+        stopped &= manager.stop(timeout, timeUnit);
+        setStopped();
+        return stopped;
     }
 
     /**
@@ -161,7 +165,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * @return A Flume Avro Appender.
      */
     @PluginFactory
-    public static FlumeAppender createAppender(@PluginElement("Agents") Agent[] agents,
+    public static FlumeAppender createAppender(@PluginElement("Agents") final Agent[] agents,
                                                @PluginElement("Properties") final Property[] properties,
                                                @PluginAttribute("hosts") final String hosts,
                                                @PluginAttribute("embedded") final String embedded,
@@ -266,10 +270,10 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         if (agents == null || agents.length == 0) {
             if (hosts != null && !hosts.isEmpty()) {
                 LOGGER.debug("Parsing agents from hosts parameter");
-                String[] hostports = hosts.split(",");
+                final String[] hostports = hosts.split(",");
                 agents = new Agent[hostports.length];
                 for(int i = 0; i < hostports.length; ++i) {
-                    String[] h = hostports[i].split(":");
+                    final String[] h = hostports[i].split(":");
                     agents[i] = Agent.createAgent(h[0], h.length > 1 ? h[1] : null);
                 }
             } else {

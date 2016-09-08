@@ -41,7 +41,7 @@ public class RoutingDefaultAppenderTest {
 
     private ListAppender app;
 
-    private LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing3.xml");
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing3.xml");
 
     @Rule
     public RuleChain rules = loggerContextRule.withCleanFilesRule(LOG_FILE);

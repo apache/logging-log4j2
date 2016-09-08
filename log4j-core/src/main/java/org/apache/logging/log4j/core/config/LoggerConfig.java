@@ -44,8 +44,8 @@ import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -75,7 +75,7 @@ public class LoggerConfig extends AbstractFilterable {
         final String factory = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
         if (factory != null) {
             try {
-                final Class<?> clazz = Loader.loadClass(factory);
+                final Class<?> clazz = LoaderUtil.loadClass(factory);
                 if (clazz != null && LogEventFactory.class.isAssignableFrom(clazz)) {
                     LOG_EVENT_FACTORY = (LogEventFactory) clazz.newInstance();
                 }

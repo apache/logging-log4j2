@@ -53,7 +53,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         return new Log4j1XmlLayout(locationInfo, properties);
     }
 
-    private Log4j1XmlLayout(boolean locationInfo, boolean properties) {
+    private Log4j1XmlLayout(final boolean locationInfo, final boolean properties) {
         super(StandardCharsets.UTF_8);
         this.locationInfo = locationInfo;
         this.properties = properties;
@@ -99,7 +99,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         Transform.appendEscapingCData(buf, event.getMessage().getFormattedMessage());
         buf.append("]]></log4j:message>\r\n");
 
-        List<String> ndc = event.getContextStack().asList();
+        final List<String> ndc = event.getContextStack().asList();
         if (!ndc.isEmpty()) {
             buf.append("<log4j:NDC><![CDATA[");
             Transform.appendEscapingCData(buf, Strings.join(ndc, ' '));
@@ -107,12 +107,13 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         }
 
         @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+		final
         Throwable thrown = event.getThrown();
         if (thrown != null) {
             buf.append("<log4j:throwable><![CDATA[");
             buf.append(thrown.toString());
             buf.append("\r\n");
-            for (StackTraceElement element : thrown.getStackTrace()) {
+            for (final StackTraceElement element : thrown.getStackTrace()) {
                 Transform.appendEscapingCData(buf, "\tat " + element.toString());
                 buf.append("\r\n");
             }
@@ -120,7 +121,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         }
 
         if (locationInfo) {
-            StackTraceElement source = event.getSource();
+            final StackTraceElement source = event.getSource();
             if (source != null) {
                 buf.append("<log4j:locationInfo class=\"");
                 buf.append(Transform.escapeHtmlTags(source.getClassName()));
@@ -135,14 +136,14 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         }
 
         if (properties) {
-            Map<String, String> contextMap = event.getContextMap();
+            final Map<String, String> contextMap = event.getContextMap();
             if (!contextMap.isEmpty()) {
                 buf.append("<log4j:properties>\r\n");
-                Object[] keys = contextMap.keySet().toArray();
+                final Object[] keys = contextMap.keySet().toArray();
                 Arrays.sort(keys);
-                for (Object key1 : keys) {
-                    String key = key1.toString();
-                    String val = contextMap.get(key);
+                for (final Object key1 : keys) {
+                    final String key = key1.toString();
+                    final String val = contextMap.get(key);
                     if (val != null) {
                         buf.append("<log4j:data name=\"");
                         buf.append(Transform.escapeHtmlTags(key));

@@ -89,7 +89,7 @@ public class RollingAppenderSizeTest {
                 // @formatter:on
     }
 
-    private LoggerContextRule loggerContextRule;
+    private final LoggerContextRule loggerContextRule;
 
     public RollingAppenderSizeTest(final String configFile, final String fileExtension, final boolean createOnDemand) {
         this.fileExtension = fileExtension;
@@ -123,7 +123,7 @@ public class RollingAppenderSizeTest {
         }
         try {
             Thread.sleep(100);
-        } catch (InterruptedException ie) {
+        } catch (final InterruptedException ie) {
             // Ignore the error.
         }
 

@@ -133,13 +133,13 @@ public final class ExtendedStackTraceElement implements Serializable {
         return this.stackTraceElement.isNativeMethod();
     }
 
-    void renderOn(StringBuilder output, TextRenderer textRenderer) {
+    void renderOn(final StringBuilder output, final TextRenderer textRenderer) {
         render(this.stackTraceElement, output, textRenderer);
         textRenderer.render(" ", output, "Text");
         this.extraClassInfo.renderOn(output, textRenderer);
     }
 
-    private void render(StackTraceElement stElement, StringBuilder output, TextRenderer textRenderer) {
+    private void render(final StackTraceElement stElement, final StringBuilder output, final TextRenderer textRenderer) {
         final String fileName = stElement.getFileName();
         final int lineNumber = stElement.getLineNumber();
         textRenderer.render(getClassName(), output, "StackTraceElement.ClassName");

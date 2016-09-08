@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.test.appender;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -46,9 +48,12 @@ public class BlockingAppender extends AbstractAppender {
         }
     }
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         running = false;
-        super.stop();
+        setStopped();
+        return true;
     }
 
     @PluginFactory

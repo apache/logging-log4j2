@@ -29,9 +29,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.crypto.Cipher;
@@ -44,6 +42,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
@@ -75,9 +74,9 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
-    private static final int SHUTDOWN_WAIT_SECONDS = 60;
+    private static final long SHUTDOWN_WAIT_MILLIS = 60000;
 
-    private static final int LOCK_TIMEOUT_SLEEP_MILLIS = 500;
+    private static final long LOCK_TIMEOUT_SLEEP_MILLIS = 500;
 
     private static BDBManagerFactory factory = new BDBManagerFactory();
 
@@ -216,20 +215,18 @@ public class FlumePersistentManager extends FlumeAvroManager {
     }
 
     @Override
-    protected void releaseSub() {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+    	boolean closed = true;
         LOGGER.debug("Shutting down FlumePersistentManager");
         worker.shutdown();
-        try {
-            worker.join(TimeUnit.SECONDS.toMillis(SHUTDOWN_WAIT_SECONDS));
+        final long requestedTimeoutMillis = timeUnit.toMillis(timeout);
+        final long shutdownWaitMillis = requestedTimeoutMillis < 0 ? SHUTDOWN_WAIT_MILLIS : requestedTimeoutMillis;
+		try {
+            worker.join(shutdownWaitMillis);
         } catch (final InterruptedException ie) {
             // Ignore the exception and shutdown.
         }
-        threadPool.shutdown();
-        try {
-            threadPool.awaitTermination(SHUTDOWN_WAIT_SECONDS, TimeUnit.SECONDS);
-        } catch (final InterruptedException e) {
-            logWarn("PersistentManager Thread pool failed to shut down", e);
-        }
+        ExecutorServices.shutdown(threadPool, shutdownWaitMillis, TimeUnit.MILLISECONDS, toString());
         try {
             worker.join();
         } catch (final InterruptedException ex) {
@@ -240,14 +237,16 @@ public class FlumePersistentManager extends FlumeAvroManager {
             database.close();
         } catch (final Exception ex) {
             logWarn("Failed to close database", ex);
+            closed = false;
         }
         try {
             environment.cleanLog();
             environment.close();
         } catch (final Exception ex) {
             logWarn("Failed to close environment", ex);
+            closed = false;
         }
-        super.releaseSub();
+        return closed && super.releaseSub(timeout, timeUnit);
     }
 
     private void doSend(final SimpleEvent event) {

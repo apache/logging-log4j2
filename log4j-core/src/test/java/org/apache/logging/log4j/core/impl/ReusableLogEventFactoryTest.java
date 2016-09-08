@@ -98,4 +98,12 @@ public class ReusableLogEventFactoryTest {
         assertEquals("tid", t2.getId(), event2[0].getThreadId());
     }
 
+    @Test
+    public void testCreateEventInitFieldsProperly() throws Exception {
+        final ReusableLogEventFactory factory = new ReusableLogEventFactory();
+        final LogEvent event = callCreateEvent(factory, "logger", Level.INFO, new SimpleMessage("xyz"), null);
+        assertNotNull(event.getContextMap());
+        assertNotNull(event.getContextStack());
+    }
+
 }

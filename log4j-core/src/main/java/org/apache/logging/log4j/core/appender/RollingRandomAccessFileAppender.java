@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.core.Filter;
@@ -70,11 +71,14 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         if (advertiser != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
+        return true;
     }
 
     /**

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.core.Filter;
@@ -215,17 +216,17 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return strategy;
         }
 
-        public B withFilePattern(String filePattern) {
+        public B withFilePattern(final String filePattern) {
             this.filePattern = filePattern;
             return asBuilder();
         }
 
-        public B withPolicy(TriggeringPolicy policy) {
+        public B withPolicy(final TriggeringPolicy policy) {
             this.policy = policy;
             return asBuilder();
         }
 
-        public B withStrategy(RolloverStrategy strategy) {
+        public B withStrategy(final RolloverStrategy strategy) {
             this.strategy = strategy;
             return asBuilder();
         }
@@ -255,11 +256,14 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        final boolean stopped = super.stop(timeout, timeUnit, false);
         if (advertiser != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
+        return stopped;
     }
 
     /**
@@ -331,8 +335,8 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             final String bufferSizeStr,
             final String immediateFlush,
             final TriggeringPolicy policy,
-            RolloverStrategy strategy,
-            Layout<? extends Serializable> layout,
+            final RolloverStrategy strategy,
+            final Layout<? extends Serializable> layout,
             final Filter filter,
             final String ignore,
             final String advertise,

@@ -66,17 +66,17 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return layout;
         }
 
-        public B withName(String name) {
+        public B withName(final String name) {
             this.name = name;
             return asBuilder();
         }
 
-        public B withIgnoreExceptions(boolean ignoreExceptions) {
+        public B withIgnoreExceptions(final boolean ignoreExceptions) {
             this.ignoreExceptions = ignoreExceptions;
             return asBuilder();
         }
 
-        public B withLayout(Layout<? extends Serializable> layout) {
+        public B withLayout(final Layout<? extends Serializable> layout) {
             this.layout = layout;
             return asBuilder();
         }

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -211,12 +212,12 @@ public class ThrowableProxy implements Serializable {
     }
 
     private void formatCause(final StringBuilder sb, final String prefix, final ThrowableProxy cause,
-            final List<String> ignorePackages, TextRenderer textRenderer) {
+            final List<String> ignorePackages, final TextRenderer textRenderer) {
         formatThrowableProxy(sb, prefix, CAUSED_BY_LABEL, cause, ignorePackages, textRenderer);
     }
 
 	private void formatThrowableProxy(final StringBuilder sb, final String prefix, final String causeLabel,
-			final ThrowableProxy throwableProxy, final List<String> ignorePackages, TextRenderer textRenderer) {
+			final ThrowableProxy throwableProxy, final List<String> ignorePackages, final TextRenderer textRenderer) {
 		if (throwableProxy == null) {
 			return;
 		}
@@ -230,7 +231,7 @@ public class ThrowableProxy implements Serializable {
 		this.formatCause(sb, prefix, throwableProxy.causeProxy, ignorePackages, textRenderer);
 	}
 
-	void renderOn(StringBuilder output, TextRenderer textRenderer) {
+	void renderOn(final StringBuilder output, final TextRenderer textRenderer) {
         final String msg = this.message;
         textRenderer.render(this.name, output, "Name");
         if (msg != null) {
@@ -240,7 +241,7 @@ public class ThrowableProxy implements Serializable {
     }
 
     private void formatSuppressed(final StringBuilder sb, final String prefix, final ThrowableProxy[] suppressedProxies,
-			final List<String> ignorePackages, TextRenderer textRenderer) {
+			final List<String> ignorePackages, final TextRenderer textRenderer) {
 		if (suppressedProxies == null) {
 			return;
 		}
@@ -251,7 +252,7 @@ public class ThrowableProxy implements Serializable {
 
 	private void formatElements(final StringBuilder sb, final String prefix, final int commonCount,
 			final StackTraceElement[] causedTrace, final ExtendedStackTraceElement[] extStackTrace,
-			final List<String> ignorePackages, TextRenderer textRenderer) {
+			final List<String> ignorePackages, final TextRenderer textRenderer) {
 		if (ignorePackages == null || ignorePackages.isEmpty()) {
 			for (final ExtendedStackTraceElement element : extStackTrace) {
 				this.formatEntry(element, sb, prefix, textRenderer);
@@ -282,7 +283,7 @@ public class ThrowableProxy implements Serializable {
 		}
 	}
 
-    private void appendSuppressedCount(final StringBuilder sb, final String prefix, final int count, TextRenderer textRenderer) {
+    private void appendSuppressedCount(final StringBuilder sb, final String prefix, final int count, final TextRenderer textRenderer) {
         textRenderer.render(prefix, sb, "Prefix");
         if (count == 1) {
             textRenderer.render("\t... ", sb, "Suppressed");
@@ -294,7 +295,7 @@ public class ThrowableProxy implements Serializable {
         textRenderer.render(EOL_STR, sb, "Text");
     }
 
-    private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb, final String prefix, TextRenderer textRenderer) {
+    private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb, final String prefix, final TextRenderer textRenderer) {
         textRenderer.render(prefix, sb, "Prefix");
         textRenderer.render("\tat ", sb, "At");
         extStackTraceElement.renderOn(sb, textRenderer);
@@ -563,11 +564,11 @@ public class ThrowableProxy implements Serializable {
             }
         }
         try {
-            clazz = Loader.loadClass(className);
-        } catch (final ClassNotFoundException ignored) {
+            clazz = LoaderUtil.loadClass(className);
+        } catch (final ClassNotFoundException | NoClassDefFoundError e) {
             return initializeClass(className);
-        } catch (final NoClassDefFoundError ignored) {
-            return initializeClass(className);
+        } catch (final SecurityException e) {
+            return null;
         }
         return clazz;
     }
@@ -575,9 +576,7 @@ public class ThrowableProxy implements Serializable {
     private Class<?> initializeClass(final String className) {
         try {
             return Loader.initializeClass(className, this.getClass().getClassLoader());
-        } catch (final ClassNotFoundException ignore) {
-            return null;
-        } catch (final NoClassDefFoundError ignore) {
+        } catch (final ClassNotFoundException | NoClassDefFoundError | SecurityException e) {
             return null;
         }
     }

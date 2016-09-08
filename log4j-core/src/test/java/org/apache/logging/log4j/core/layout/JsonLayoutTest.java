@@ -87,7 +87,7 @@ public class JsonLayoutTest {
 
     private void checkMapEntry(final String key, final String value, final boolean compact, final String str,
             final boolean contextMapAslist) {
-        final String propSep = this.toPropertySeparator(compact);
+        this.toPropertySeparator(compact);
         if (contextMapAslist) {
             // {"key":"KEY", "value":"VALUE"}
             final String expected = String.format("{\"key\":\"%s\",\"value\":\"%s\"}", key, value);
@@ -123,8 +123,7 @@ public class JsonLayoutTest {
         final AbstractJacksonLayout layout = JsonLayout.createLayout(null, includeSource,
                 includeContext, contextMapAslist, false, compact, eventEol, null, null, StandardCharsets.UTF_8, includeStacktace);
         final String str = layout.toSerializable(expected);
-        // System.out.println(str);
-        final String propSep = this.toPropertySeparator(compact);
+        this.toPropertySeparator(compact);
         // Just check for \n since \r might or might not be there.
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("source"));

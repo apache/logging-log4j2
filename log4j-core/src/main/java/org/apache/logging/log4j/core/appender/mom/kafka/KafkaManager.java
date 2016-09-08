@@ -43,7 +43,7 @@ public class KafkaManager extends AbstractManager {
 
     private final String topic;
 
-    public KafkaManager(LoggerContext loggerContext, final String name, final String topic, final Property[] properties) {
+    public KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final Property[] properties) {
         super(loggerContext, name);
         this.topic = topic;
         config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
@@ -56,23 +56,11 @@ public class KafkaManager extends AbstractManager {
     }
 
     @Override
-    public void releaseSub() {
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
-            // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
-            final Runnable task = new Runnable() {
-                @Override
-                public void run() {
-                    if (producer != null) {
-                        producer.close();
-                    }
-                }
-            };
-            try {
-                getLoggerContext().submitDaemon(task).get(timeoutMillis, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                // ignore
-            }
+            producer.close(timeout, timeUnit);
         }
+        return true;
     }
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {

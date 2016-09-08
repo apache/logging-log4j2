@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import org.apache.logging.log4j.core.Layout;
@@ -84,7 +85,7 @@ public class RollingFileManager extends FileManager {
     /**
      * @since 2.7
      */
-    protected RollingFileManager(LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
+    protected RollingFileManager(final LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
             final boolean append, final boolean createOnDemand, final long size, final long time,
             final TriggeringPolicy triggeringPolicy, final RolloverStrategy rolloverStrategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
@@ -143,7 +144,7 @@ public class RollingFileManager extends FileManager {
         return renameEmptyFiles;
     }
 
-    public void setRenameEmptyFiles(boolean renameEmptyFiles) {
+    public void setRenameEmptyFiles(final boolean renameEmptyFiles) {
         this.renameEmptyFiles = renameEmptyFiles;
     }
 
@@ -173,6 +174,12 @@ public class RollingFileManager extends FileManager {
         }
     }
 
+    @Override
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        boolean stopped = triggeringPolicy.stop(timeout, timeUnit);
+        return stopped && super.releaseSub(timeout, timeUnit);
+    }
+    
     public synchronized void rollover() {
         if (rollover(rolloverStrategy)) {
             try {

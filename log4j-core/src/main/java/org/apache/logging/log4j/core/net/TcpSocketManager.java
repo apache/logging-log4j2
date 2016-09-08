@@ -79,7 +79,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      */
     public TcpSocketManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress,
                             final String host, final int port, final int connectTimeoutMillis, final int delay,
-                            final boolean immediateFail, final Layout<? extends Serializable> layout, int bufferSize) {
+                            final boolean immediateFail, final Layout<? extends Serializable> layout, final int bufferSize) {
         super(name, os, inetAddress, host, port, layout, true, bufferSize);
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.reconnectionDelay = delay;
@@ -146,8 +146,8 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     @Override
-    protected synchronized void closeOutputStream() {
-        super.closeOutputStream();
+    protected synchronized boolean closeOutputStream() {
+        boolean closed = super.closeOutputStream();
         if (reconnector != null) {
             reconnector.shutdown();
             reconnector.interrupt();
@@ -158,10 +158,12 @@ public class TcpSocketManager extends AbstractSocketManager {
         if (oldSocket != null) {
             try {
                 oldSocket.close();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("Could not close socket {}", socket);
+                return false;
             }
         }
+        return closed;
     }
 
     public int getConnectTimeoutMillis() {
@@ -247,7 +249,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     private Reconnector createReconnector() {
-        Reconnector recon = new Reconnector(this);
+        final Reconnector recon = new Reconnector(this);
         recon.setDaemon(true);
         recon.setPriority(Thread.MIN_PRIORITY);
         return recon;

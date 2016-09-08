@@ -26,10 +26,10 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.nosql.appender.NoSqlProvider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import com.mongodb.DB;
@@ -108,7 +108,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         String description;
         if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {
             try {
-                final Class<?> factoryClass = Loader.loadClass(factoryClassName);
+                final Class<?> factoryClass = LoaderUtil.loadClass(factoryClassName);
                 final Method method = factoryClass.getMethod(factoryMethodName);
                 final Object object = method.invoke(null);
 
@@ -206,7 +206,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         if (Strings.isNotEmpty(writeConcernConstant)) {
             if (Strings.isNotEmpty(writeConcernConstantClassName)) {
                 try {
-                    final Class<?> writeConcernConstantClass = Loader.loadClass(writeConcernConstantClassName);
+                    final Class<?> writeConcernConstantClass = LoaderUtil.loadClass(writeConcernConstantClassName);
                     final Field field = writeConcernConstantClass.getField(writeConcernConstant);
                     writeConcern = (WriteConcern) field.get(null);
                 } catch (final Exception e) {

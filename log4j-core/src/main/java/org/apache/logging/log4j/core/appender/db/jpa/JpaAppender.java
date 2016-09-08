@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Booleans;
-import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -85,7 +85,7 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
 
         try {
             final Class<? extends AbstractLogEventWrapperEntity> entityClass =
-                Loader.loadClass(entityClassName).asSubclass(AbstractLogEventWrapperEntity.class);
+                LoaderUtil.loadClass(entityClassName).asSubclass(AbstractLogEventWrapperEntity.class);
 
             try {
                 entityClass.getConstructor();

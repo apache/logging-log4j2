@@ -64,10 +64,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void shutdownInternal() {
+    protected boolean shutdownInternal() {
         if (this.connection != null || this.statement != null) {
-            this.commitAndClose();
+            return this.commitAndClose();
         }
+        return true;
     }
 
     @Override
@@ -130,7 +131,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void commitAndClose() {
+    protected boolean commitAndClose() {
+        boolean closed = true;
         try {
             if (this.connection != null && !this.connection.isClosed()) {
                 if (this.isBatchSupported) {
@@ -145,6 +147,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 Closer.close(this.statement);
             } catch (final Exception e) {
                 logWarn("Failed to close SQL statement logging event or flushing buffer", e);
+                closed = false;
             } finally {
                 this.statement = null;
             }
@@ -153,10 +156,12 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 Closer.close(this.connection);
             } catch (final Exception e) {
                 logWarn("Failed to close database connection logging event or flushing buffer", e);
+                closed = false;
             } finally {
                 this.connection = null;
             }
         }
+        return closed;
     }
 
     /**
