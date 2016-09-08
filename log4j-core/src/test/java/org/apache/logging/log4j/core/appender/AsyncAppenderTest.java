@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class AsyncAppenderTest {
 
-    private static final int TIMEOUT_MILLIS = 1000;
+    private static final int TIMEOUT_MILLIS = 2000;
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] data() {
