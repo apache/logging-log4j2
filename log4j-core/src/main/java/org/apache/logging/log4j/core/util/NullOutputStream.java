@@ -37,7 +37,7 @@ public class NullOutputStream extends OutputStream {
      * @deprecated Deprecated in 2.7: use {@link #getInstance()}.
      */
     @Deprecated
-    public static final NullOutputStream NULL_OUTPUT_STREAM = new NullOutputStream();
+    public static final NullOutputStream NULL_OUTPUT_STREAM = INSTANCE;
 
     public static NullOutputStream getInstance() {
         return INSTANCE;
