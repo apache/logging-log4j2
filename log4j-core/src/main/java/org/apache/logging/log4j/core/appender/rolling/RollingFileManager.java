@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
@@ -176,7 +177,10 @@ public class RollingFileManager extends FileManager {
 
     @Override
     public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
-        boolean stopped = triggeringPolicy.stop(timeout, timeUnit);
+        boolean stopped = true;
+        if (triggeringPolicy instanceof LifeCycle) {
+            stopped &= ((LifeCycle) triggeringPolicy).stop(timeout, timeUnit);
+        }
         return stopped && super.releaseSub(timeout, timeUnit);
     }
     
