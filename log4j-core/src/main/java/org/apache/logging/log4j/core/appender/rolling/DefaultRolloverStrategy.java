@@ -76,7 +76,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 @Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
-public class DefaultRolloverStrategy implements RolloverStrategy {
+public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
     /**
      * Enumerates over supported file extensions.
@@ -170,11 +170,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             return new File(fileName);
         }
     }
-
-    /**
-     * Allow subclasses access to the status logger without creating another instance.
-     */
-    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final int MIN_WINDOW_SIZE = 1;
     private static final int DEFAULT_WINDOW_SIZE = 7;
