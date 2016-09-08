@@ -231,9 +231,6 @@
       <action issue="LOG4J2-1545" dev="ggregory" type="update">
         Remove deprecated Web API org.apache.logging.log4j.web.WebLookup.getServletContext().
       </action>
-      <action issue="LOG4J2-1546" dev="ggregory" type="update">
-        Remove deprecated Core API org.apache.logging.log4j.core.config.LoggerConfig.createLogger(String, Level, String, String , AppenderRef[] refs, Property[], Configuration config, Filter).
-      </action>
     </release>
     <release version="2.6.2" date="2016-07-05" description="GA Release 2.6.2">
       <action issue="LOG4J2-904" dev="rgoers" type="fix" due-to="Bernhard Mähr">
