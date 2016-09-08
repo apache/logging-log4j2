@@ -59,12 +59,15 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
 
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        boolean stopped = true;
         setStopping();
         if (future != null) {
-            future.cancel(true);
+            // cancel, then check state
+            stopped &= future.cancel(true);
+            stopped &= future.isCancelled() || future.isDone();
         }
         setStopped();
-        return true;
+        return stopped;
     }
 
     /**
