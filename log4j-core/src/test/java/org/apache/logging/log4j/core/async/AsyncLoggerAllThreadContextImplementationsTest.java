@@ -164,7 +164,8 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
     }
 
     private void checkResult(final File file) throws IOException {
-        final String contextDesc = contextImpl + " " + contextImpl.implClassSimpleName();
+        final String contextDesc = contextImpl + " " + contextImpl.implClassSimpleName() + " "
+                + LogManager.getContext(false).getClass().getSimpleName();
         try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String expect = null;
             for (int i = 0; i < LINE_COUNT; i++) {
