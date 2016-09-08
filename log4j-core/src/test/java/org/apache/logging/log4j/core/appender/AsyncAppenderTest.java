@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class AsyncAppenderTest {
 
-    private static final int TIMEOUT_MILLIS = 2000;
+    private static final long TIMEOUT_MILLIS = 2000;
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] data() {
@@ -78,7 +78,7 @@ public class AsyncAppenderTest {
         final Logger logger = LogManager.getLogger(AsyncAppender.class);
         logger.error("This is a test");
         logger.warn("Hello world!");
-        final int timeoutMillis = TIMEOUT_MILLIS;
+        final long timeoutMillis = TIMEOUT_MILLIS;
         final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
         final List<String> list = listAppender.getMessages(timeoutMillis, timeUnit);
         assertNotNull("No events generated", list);
@@ -98,7 +98,7 @@ public class AsyncAppenderTest {
         final Exception parent = new IllegalStateException("Test");
         final Throwable child = new LoggingException("This is a test", parent);
         logger.error("This is a test", child);
-        final int timeoutMillis = TIMEOUT_MILLIS;
+        final long timeoutMillis = TIMEOUT_MILLIS;
         final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
         final List<String> list = listAppender.getMessages(timeoutMillis, timeUnit);
         assertNotNull("No events generated", list);
