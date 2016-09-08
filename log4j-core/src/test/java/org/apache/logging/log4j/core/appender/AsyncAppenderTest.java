@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class AsyncAppenderTest {
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}")
     public static Object[] data() {
         return new String[]{
             // default async config uses array blocking queue
