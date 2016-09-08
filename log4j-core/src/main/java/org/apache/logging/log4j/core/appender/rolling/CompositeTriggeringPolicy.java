@@ -79,10 +79,12 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
 
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
         boolean stopped = true;
         for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
             stopped &= triggeringPolicy.stop(timeout, timeUnit);
         }
+        setStopped();
         return stopped;
     }
     
