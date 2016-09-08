@@ -30,7 +30,6 @@ import java.util.Stack;
 
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
@@ -537,7 +536,7 @@ public class ThrowableProxy implements Serializable {
         Class<?> clazz;
         if (lastLoader != null) {
             try {
-                clazz = Loader.initializeClass(className, lastLoader);
+                clazz = lastLoader.loadClass(className);
                 if (clazz != null) {
                     return clazz;
                 }
@@ -548,16 +547,16 @@ public class ThrowableProxy implements Serializable {
         try {
             clazz = LoaderUtil.loadClass(className);
         } catch (final ClassNotFoundException | NoClassDefFoundError e) {
-            return initializeClass(className);
+            return loadClass(className);
         } catch (final SecurityException e) {
             return null;
         }
         return clazz;
     }
 
-    private Class<?> initializeClass(final String className) {
+    private Class<?> loadClass(final String className) {
         try {
-            return Loader.initializeClass(className, this.getClass().getClassLoader());
+            return this.getClass().getClassLoader().loadClass(className);
         } catch (final ClassNotFoundException | NoClassDefFoundError | SecurityException e) {
             return null;
         }
