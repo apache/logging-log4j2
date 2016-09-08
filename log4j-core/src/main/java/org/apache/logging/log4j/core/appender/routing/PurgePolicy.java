@@ -19,9 +19,7 @@ package org.apache.logging.log4j.core.appender.routing;
 import org.apache.logging.log4j.core.LogEvent;
 
 /**
- * 
  * Policy for purging routed appenders
- *
  */
 public interface PurgePolicy {
 
