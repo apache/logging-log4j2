@@ -38,6 +38,8 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class AsyncAppenderTest {
 
+    private static final int SLEEP_MILLIS = 100;
+
     @Parameterized.Parameters(name = "{0}")
     public static Object[] data() {
         return new String[]{
@@ -75,7 +77,7 @@ public class AsyncAppenderTest {
         final Logger logger = LogManager.getLogger(AsyncAppender.class);
         logger.error("This is a test");
         logger.warn("Hello world!");
-        Thread.sleep(100);
+        Thread.sleep(SLEEP_MILLIS);
         final List<String> list = listAppender.getMessages();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
@@ -93,7 +95,7 @@ public class AsyncAppenderTest {
         final Exception parent = new IllegalStateException("Test");
         final Throwable child = new LoggingException("This is a test", parent);
         logger.error("This is a test", child);
-        Thread.sleep(100);
+        Thread.sleep(SLEEP_MILLIS);
         final List<String> list = listAppender.getMessages();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
