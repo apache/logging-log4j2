@@ -80,7 +80,7 @@ public class AsyncAppenderTest {
         logger.warn("Hello world!");
         final long timeoutMillis = TIMEOUT_MILLIS;
         final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
-        final List<String> list = listAppender.getMessages(timeoutMillis, timeUnit);
+        final List<String> list = listAppender.getMessages(2, timeoutMillis, timeUnit);
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events after " + timeoutMillis + " " + timeUnit + ". Expected 2, got "
                 + list.size(), list.size() == 2);
@@ -100,7 +100,7 @@ public class AsyncAppenderTest {
         logger.error("This is a test", child);
         final long timeoutMillis = TIMEOUT_MILLIS;
         final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
-        final List<String> list = listAppender.getMessages(timeoutMillis, timeUnit);
+        final List<String> list = listAppender.getMessages(1, timeoutMillis, timeUnit);
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events after " + timeoutMillis + " " + timeUnit + ". Expected 1, got "
                 + list.size(), list.size() == 1);
