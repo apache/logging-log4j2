@@ -67,7 +67,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     /**
-     * Createsa CompositeTriggeringPolicy.
+     * Creates a CompositeTriggeringPolicy.
      * @param triggeringPolicy The triggering policies.
      * @return A CompositeTriggeringPolicy.
      */
