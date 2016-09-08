@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.LogEvent;
 public interface PurgePolicy {
 
 	/**
-	 * Activate purging appenders
+	 * Activates purging appenders
 	 */
 	void purge();
 	
@@ -36,7 +36,7 @@ public interface PurgePolicy {
 	void update(String key, LogEvent event);
 
 	/**
-	 * Initialize with routing appender
+	 * Initializes with routing appender
 	 * 
 	 * @param routingAppender
 	 */
