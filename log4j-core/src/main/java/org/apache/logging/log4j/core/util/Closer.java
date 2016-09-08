@@ -39,11 +39,13 @@ public final class Closer {
      *
      * @param closeable the resource to close, may be {@code null}
      */
-    public static void closeSilently(final Closeable closeable) {
+    public static boolean closeSilently(final Closeable closeable) {
         try {
             close(closeable);
+            return true;
         } catch (final Exception ignored) {
             // ignored
+            return false;
         }
     }
 
