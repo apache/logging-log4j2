@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -77,6 +77,15 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
         return new CompositeTriggeringPolicy(policies);
     }
 
+    @Override
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        boolean stopped = true;
+        for (final TriggeringPolicy policy : triggeringPolicy) {
+            stopped &= policy.stop(timeout, timeUnit);
+        }
+        return stopped;
+    }
+    
     @Override
     public String toString() {
         return "CompositeTriggeringPolicy(policies=" + Arrays.toString(triggeringPolicy) + ")";
