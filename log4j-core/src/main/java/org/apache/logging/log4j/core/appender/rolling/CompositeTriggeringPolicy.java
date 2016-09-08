@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * Triggering policy that wraps other policies.
+ * Triggering policy that wraps other triggering policies.
  */
 @Plugin(name = "Policies", category = "Core", printObject = true)
 public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
@@ -67,7 +67,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     /**
-     * Create a CompositeTriggeringPolicy.
+     * Createsa CompositeTriggeringPolicy.
      * @param triggeringPolicy The triggering policies.
      * @return A CompositeTriggeringPolicy.
      */
