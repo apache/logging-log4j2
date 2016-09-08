@@ -46,8 +46,8 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @Override
     public void initialize(final RollingFileManager manager) {
-        for (final TriggeringPolicy policy : triggeringPolicies) {
-            policy.initialize(manager);
+        for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
+            triggeringPolicy.initialize(manager);
         }
     }
 
@@ -58,8 +58,8 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @Override
     public boolean isTriggeringEvent(final LogEvent event) {
-        for (final TriggeringPolicy policy : triggeringPolicies) {
-            if (policy.isTriggeringEvent(event)) {
+        for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
+            if (triggeringPolicy.isTriggeringEvent(event)) {
                 return true;
             }
         }
@@ -68,20 +68,20 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
 
     /**
      * Create a CompositeTriggeringPolicy.
-     * @param policies The triggering policies.
+     * @param triggeringPolicy The triggering policies.
      * @return A CompositeTriggeringPolicy.
      */
     @PluginFactory
     public static CompositeTriggeringPolicy createPolicy(
-                                                @PluginElement("Policies") final TriggeringPolicy... policies) {
-        return new CompositeTriggeringPolicy(policies);
+                                                @PluginElement("Policies") final TriggeringPolicy... triggeringPolicy) {
+        return new CompositeTriggeringPolicy(triggeringPolicy);
     }
 
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         boolean stopped = true;
-        for (final TriggeringPolicy policy : triggeringPolicies) {
-            stopped &= policy.stop(timeout, timeUnit);
+        for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
+            stopped &= triggeringPolicy.stop(timeout, timeUnit);
         }
         return stopped;
     }
