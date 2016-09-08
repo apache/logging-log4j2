@@ -53,7 +53,7 @@ import org.apache.logging.log4j.core.util.Throwables;
  */
 public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
 
-    private static final String INDENT = "\t";
+    private static final String INDENT = "  ";
     private static final String EOL = System.lineSeparator();
     
     private final Component root = new Component();

@@ -30,7 +30,7 @@ import static org.junit.Assume.assumeTrue;
 
 public class ConfigurationBuilderTest {
 
-    private static final String INDENT = "\t";
+    private static final String INDENT = "  ";
     private static final String EOL = System.lineSeparator();
 
     private void addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
