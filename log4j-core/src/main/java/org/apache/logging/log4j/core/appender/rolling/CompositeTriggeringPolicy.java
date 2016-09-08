@@ -30,14 +30,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "Policies", category = "Core", printObject = true)
 public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
 
-    private final TriggeringPolicy[] triggeringPolicy;
+    private final TriggeringPolicy[] triggeringPolicies;
 
-    private CompositeTriggeringPolicy(final TriggeringPolicy... policies) {
-        this.triggeringPolicy = policies;
+    private CompositeTriggeringPolicy(final TriggeringPolicy... triggeringPolicies) {
+        this.triggeringPolicies = triggeringPolicies;
     }
 
     public TriggeringPolicy[] getTriggeringPolicies() {
-        return triggeringPolicy;
+        return triggeringPolicies;
     }
 
     /**
@@ -46,7 +46,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @Override
     public void initialize(final RollingFileManager manager) {
-        for (final TriggeringPolicy policy : triggeringPolicy) {
+        for (final TriggeringPolicy policy : triggeringPolicies) {
             policy.initialize(manager);
         }
     }
@@ -58,7 +58,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @Override
     public boolean isTriggeringEvent(final LogEvent event) {
-        for (final TriggeringPolicy policy : triggeringPolicy) {
+        for (final TriggeringPolicy policy : triggeringPolicies) {
             if (policy.isTriggeringEvent(event)) {
                 return true;
             }
@@ -80,7 +80,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         boolean stopped = true;
-        for (final TriggeringPolicy policy : triggeringPolicy) {
+        for (final TriggeringPolicy policy : triggeringPolicies) {
             stopped &= policy.stop(timeout, timeUnit);
         }
         return stopped;
@@ -88,7 +88,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
     
     @Override
     public String toString() {
-        return "CompositeTriggeringPolicy(policies=" + Arrays.toString(triggeringPolicy) + ")";
+        return "CompositeTriggeringPolicy(policies=" + Arrays.toString(triggeringPolicies) + ")";
     }
 
 }
