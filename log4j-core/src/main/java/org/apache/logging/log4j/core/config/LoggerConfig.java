@@ -408,7 +408,7 @@ public class LoggerConfig extends AbstractFilterable {
      * @param config The Configuration.
      * @param filter A Filter.
      * @return A new LoggerConfig.
-     * @deprecated Use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
+     * @deprecated Deprecated in 2.7; use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
      */
     @Deprecated
     public static LoggerConfig createLogger(final String additivity,
