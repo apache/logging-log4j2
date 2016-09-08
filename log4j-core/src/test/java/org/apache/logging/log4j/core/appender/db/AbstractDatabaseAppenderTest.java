@@ -80,7 +80,7 @@ public class AbstractDatabaseAppenderTest {
         verify(this.manager, this.appender);
         reset(this.manager, this.appender);
         this.manager.shutdownInternal();
-        expectLastCall();
+        expectLastCall().andReturn(Boolean.TRUE);
         replay(this.manager, this.appender);
 
         this.appender.stop();
@@ -112,7 +112,7 @@ public class AbstractDatabaseAppenderTest {
         verify(this.manager, this.appender, newManager);
         reset(this.manager, this.appender, newManager);
         newManager.shutdownInternal();
-        expectLastCall();
+        expectLastCall().andReturn(Boolean.TRUE);
         replay(this.manager, this.appender, newManager);
 
         this.appender.stop();
@@ -132,7 +132,7 @@ public class AbstractDatabaseAppenderTest {
         this.manager.writeInternal(same(event1));
         expectLastCall();
         this.manager.commitAndClose();
-        expectLastCall();
+        expectLastCall().andReturn(Boolean.TRUE);
         replay(this.manager, this.appender);
 
         this.appender.append(event1);
@@ -144,7 +144,7 @@ public class AbstractDatabaseAppenderTest {
         this.manager.writeInternal(same(event2));
         expectLastCall();
         this.manager.commitAndClose();
-        expectLastCall();
+        expectLastCall().andReturn(Boolean.TRUE);
         replay(this.manager, this.appender);
 
         this.appender.append(event2);

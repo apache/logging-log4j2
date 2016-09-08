@@ -30,6 +30,7 @@ import static org.junit.Assume.assumeTrue;
 
 public class ConfigurationBuilderTest {
 
+    private static final String INDENT = "  ";
     private static final String EOL = System.lineSeparator();
 
     private void addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
@@ -56,30 +57,30 @@ public class ConfigurationBuilderTest {
     private final static String expectedXml =
             "<?xml version='1.0' encoding='UTF-8'?>" + EOL +
             "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\">" + EOL +
-            "\t<Properties>" + EOL +
-            "\t\t<Property name=\"MyKey\">MyValue</Property>" + EOL +
-            "\t</Properties>" + EOL +
-            "\t<Scripts>" + EOL +
-            "\t\t<ScriptFile name=\"target/test-classes/scripts/filter.groovy\" path=\"target/test-classes/scripts/filter.groovy\" isWatched=\"true\"/>" + EOL +
-            "\t</Scripts>" + EOL +
-            "\t<CustomLevels>" + EOL +
-            "\t\t<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + EOL +
-            "\t</CustomLevels>" + EOL +
-            "\t<ThresholdFilter onMatch=\"ACCEPT\" onMisMatch=\"NEUTRAL\" level=\"DEBUG\"/>" + EOL +
-            "\t<Appenders>" + EOL +
-            "\t\t<CONSOLE name=\"Stdout\" target=\"SYSTEM_OUT\">" + EOL +
-            "\t\t\t<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + EOL +
-            "\t\t\t<MarkerFilter onMatch=\"DENY\" onMisMatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL +
-            "\t\t</CONSOLE>" + EOL +
-            "\t</Appenders>" + EOL +
-            "\t<Loggers>" + EOL +
-            "\t\t<Logger name=\"org.apache.logging.log4j\" level=\"DEBUG\" includeLocation=\"true\" additivity=\"false\">" + EOL +
-            "\t\t\t<AppenderRef ref=\"Stdout\"/>" + EOL +
-            "\t\t</Logger>" + EOL +
-            "\t\t<Root level=\"ERROR\">" + EOL +
-            "\t\t\t<AppenderRef ref=\"Stdout\"/>" + EOL +
-            "\t\t</Root>" + EOL +
-            "\t</Loggers>" + EOL +
+                INDENT + "<Properties>" + EOL +
+                INDENT + INDENT + "<Property name=\"MyKey\">MyValue</Property>" + EOL +
+                INDENT + "</Properties>" + EOL +
+                INDENT + "<Scripts>" + EOL +
+                INDENT + INDENT + "<ScriptFile name=\"target/test-classes/scripts/filter.groovy\" path=\"target/test-classes/scripts/filter.groovy\" isWatched=\"true\"/>" + EOL +
+                INDENT + "</Scripts>" + EOL +
+                INDENT + "<CustomLevels>" + EOL +
+                INDENT + INDENT + "<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + EOL +
+                INDENT + "</CustomLevels>" + EOL +
+                INDENT + "<ThresholdFilter onMatch=\"ACCEPT\" onMisMatch=\"NEUTRAL\" level=\"DEBUG\"/>" + EOL +
+                INDENT + "<Appenders>" + EOL +
+                INDENT + INDENT + "<CONSOLE name=\"Stdout\" target=\"SYSTEM_OUT\">" + EOL +
+                INDENT + INDENT + INDENT + "<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + EOL +
+                INDENT + INDENT + INDENT + "<MarkerFilter onMatch=\"DENY\" onMisMatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL +
+                INDENT + INDENT + "</CONSOLE>" + EOL +
+                INDENT + "</Appenders>" + EOL +
+                INDENT + "<Loggers>" + EOL +
+                INDENT + INDENT + "<Logger name=\"org.apache.logging.log4j\" level=\"DEBUG\" includeLocation=\"true\" additivity=\"false\">" + EOL +
+                INDENT + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL +
+                INDENT + INDENT + "</Logger>" + EOL +
+                INDENT + INDENT + "<Root level=\"ERROR\">" + EOL +
+                INDENT + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL +
+                INDENT + INDENT + "</Root>" + EOL +
+                INDENT + "</Loggers>" + EOL +
             "</Configuration>" + EOL;
 
     // TODO make test run properly on Windows

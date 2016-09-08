@@ -51,7 +51,7 @@ public class RollingRandomAccessFileManagerTest {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             final boolean append = false;
             final boolean flushNow = false;
             final long triggerSize = Long.MAX_VALUE;
@@ -80,7 +80,7 @@ public class RollingRandomAccessFileManagerTest {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             final boolean append = false;
             final boolean flushNow = false;
             final long triggerSize = 0;
@@ -106,7 +106,7 @@ public class RollingRandomAccessFileManagerTest {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             final boolean append = false;
             final boolean flushNow = false;
             final long triggerSize = 0;

@@ -201,6 +201,9 @@
       <action issue="LOG4J2-1494" dev="ggregory" type="update">
         Update Jackson from 2.8.0 to 2.8.1.
       </action>
+      <action issue="LOG4J2-1569" dev="ggregory" type="update">
+        Update Jackson from 2.8.1 to 2.8.2.
+      </action>
       <action issue="LOG4J2-1495" dev="ggregory" type="update">
         Update LMAX Disruptor from 3.3.4 to 3.3.5.
       </action>

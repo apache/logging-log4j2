@@ -100,6 +100,8 @@ public abstract class AbstractManager implements AutoCloseable {
      * @param <T> The type of the Factory data.
      * @return A Manager with the specified name and type.
      */
+    // @SuppressWarnings("resource"): this is a factory method, the resource is allocated and released elsewhere.
+    @SuppressWarnings("resource")
     public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory,
                                                               final T data) {
         LOCK.lock();

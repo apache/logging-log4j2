@@ -46,7 +46,7 @@ public class RandomAccessFileManagerTest {
     public void testWrite_multiplesOfBufferSize() throws IOException {
         final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
                     os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
@@ -67,7 +67,7 @@ public class RandomAccessFileManagerTest {
     public void testWrite_dataExceedingBufferSize() throws IOException {
         final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
                     os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
@@ -85,7 +85,7 @@ public class RandomAccessFileManagerTest {
     public void testConfigurableBufferSize() throws IOException {
         final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             final int bufferSize = 4 * 1024;
             assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
@@ -100,7 +100,7 @@ public class RandomAccessFileManagerTest {
     public void testWrite_dataExceedingMinBufferSize() throws IOException {
         final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             final int bufferSize = 1;
             final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
                     os, bufferSize, null, null, true);

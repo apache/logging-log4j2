@@ -195,7 +195,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
             }
 
             final boolean writeHeader = !data.append || !file.exists();
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             RandomAccessFile raf;
             try {
                 raf = new RandomAccessFile(name, "rw");

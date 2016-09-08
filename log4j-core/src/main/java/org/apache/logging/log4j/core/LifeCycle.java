@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
  * stopped, this goes into the {@link State#STOPPED} state. In most circumstances, implementation classes should
  * store their {@link State} in a {@code volatile} field or inside an
  * {@link java.util.concurrent.atomic.AtomicReference} dependent on synchronization and concurrency requirements.
+ * 
+ * @see AbstractLifeCycle
  */
 public interface LifeCycle {
     
