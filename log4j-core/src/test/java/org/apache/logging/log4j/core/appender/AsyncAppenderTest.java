@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +39,7 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class AsyncAppenderTest {
 
-    private static final int SLEEP_MILLIS = 100;
+    private static final int TIMEOUT_MILLIS = 1000;
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] data() {
@@ -77,8 +78,7 @@ public class AsyncAppenderTest {
         final Logger logger = LogManager.getLogger(AsyncAppender.class);
         logger.error("This is a test");
         logger.warn("Hello world!");
-        Thread.sleep(SLEEP_MILLIS);
-        final List<String> list = listAppender.getMessages();
+        final List<String> list = listAppender.getMessages(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
         String msg = list.get(0);
@@ -95,8 +95,7 @@ public class AsyncAppenderTest {
         final Exception parent = new IllegalStateException("Test");
         final Throwable child = new LoggingException("This is a test", parent);
         logger.error("This is a test", child);
-        Thread.sleep(SLEEP_MILLIS);
-        final List<String> list = listAppender.getMessages();
+        final List<String> list = listAppender.getMessages(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         final String msg = list.get(0);
