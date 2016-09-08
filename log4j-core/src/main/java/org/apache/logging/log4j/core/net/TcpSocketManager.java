@@ -314,7 +314,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                         data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize);
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager (" + name + ") " + ex, ex);
-                os = NullOutputStream.NULL_OUTPUT_STREAM;
+                os = NullOutputStream.getInstance();
             }
             if (data.reconnectDelayMillis == 0) {
                 return null;

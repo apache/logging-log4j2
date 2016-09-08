@@ -189,7 +189,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                     raf.setLength(0);
                 }
                 return new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
-                        NullOutputStream.NULL_OUTPUT_STREAM, data.append, data.immediateFlush, data.bufferSize, size, time, data.policy,
+                        NullOutputStream.getInstance(), data.append, data.immediateFlush, data.bufferSize, size, time, data.policy,
                         data.strategy, data.advertiseURI, data.layout, writeHeader);
             } catch (final IOException ex) {
                 LOGGER.error("Cannot access RandomAccessFile " + ex, ex);
