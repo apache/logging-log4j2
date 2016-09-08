@@ -17,12 +17,10 @@
 package org.apache.logging.log4j.test;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
  *
  */
-@Plugin(name="ExtendedLevel", category="Level")
 public class ExtendedLevels {
 
     public static final Level NOTE = Level.forName("NOTE", 350);

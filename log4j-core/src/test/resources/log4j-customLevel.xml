@@ -18,6 +18,11 @@
 -->
 <Configuration status="OFF" name="XMLConfigTest">
 
+  <CustomLevels>
+    <CustomLevel name="NOTE" intLevel="350"/>
+    <CustomLevel name="DETAIL" intLevel="450"/>
+  </CustomLevels>
+
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
