@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.status.StatusLogger;
@@ -126,6 +127,17 @@ public class AbstractLifeCycle implements LifeCycle {
         stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEUNIT);
     }
 
+    protected boolean stop(Future<?> future) {
+        boolean stopped = true;
+        if (future != null) {
+            if (future.isCancelled() || future.isDone()) {
+                return true;
+            }
+            stopped = future.cancel(true);
+        }
+        return stopped;
+    }
+    
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.state = LifeCycle.State.STOPPED;

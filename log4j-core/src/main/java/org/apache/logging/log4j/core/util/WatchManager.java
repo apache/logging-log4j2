@@ -71,9 +71,9 @@ public class WatchManager extends AbstractLifeCycle {
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        future.cancel(true);
+        final boolean stopped = stop(future);
         setStopped();
-        return true;
+        return stopped;
     }
 
     public void watchFile(final File file, final FileWatcher watcher) {

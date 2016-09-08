@@ -140,15 +140,9 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        boolean canceled = true;
-        if (future != null) {
-            if (future.isCancelled() || future.isDone()) {
-                return true;
-            }
-            canceled = future.cancel(true);
-        }
+        final boolean stopped = stop(future);
         setStopped();
-        return canceled;
+        return stopped;
     }
 
     @Override
