@@ -14,17 +14,19 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.test;
+package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- *
- */
-@Plugin(name="ExtendedLevel", category=Level.CATEGORY)
-public class ExtendedLevels {
-
-    public static final Level NOTE = Level.forName("NOTE", 350);
-    public static final Level DETAIL = Level.forName("DETAIL", 450);
+class AsyncLoggerClassLoadDeadlock {
+    static {
+        final Logger log = LogManager.getLogger("com.foo.bar.deadlock");
+        final Exception e = new Exception();
+        // the key to reproducing the problem is to fill up the ring buffer so that
+        // log.info call will block on ring buffer as well
+        for (int i = 0; i < AsyncLoggerClassLoadDeadlockTest.RING_BUFFER_SIZE * 2; ++i) {
+            log.info("clinit", e);
+        }
+    }
 }

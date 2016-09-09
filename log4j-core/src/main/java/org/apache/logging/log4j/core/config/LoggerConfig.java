@@ -399,6 +399,44 @@ public class LoggerConfig extends AbstractFilterable {
     /**
      * Factory method to create a LoggerConfig.
      *
+     * @param additivity True if additive, false otherwise.
+     * @param level The Level to be associated with the Logger.
+     * @param loggerName The name of the Logger.
+     * @param includeLocation whether location should be passed downstream
+     * @param refs An array of Appender names.
+     * @param properties Properties to pass to the Logger.
+     * @param config The Configuration.
+     * @param filter A Filter.
+     * @return A new LoggerConfig.
+     * @deprecated Deprecated in 2.7; use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
+     */
+    @Deprecated
+    public static LoggerConfig createLogger(final String additivity,
+            // @formatter:off
+            final Level level, 
+            @PluginAttribute("name") final String loggerName,
+            final String includeLocation,
+            final AppenderRef[] refs,
+            final Property[] properties, 
+            @PluginConfiguration final Configuration config,
+            final Filter filter) {
+            // @formatter:on
+        if (loggerName == null) {
+            LOGGER.error("Loggers cannot be configured without a name");
+            return null;
+        }
+
+        final List<AppenderRef> appenderRefs = Arrays.asList(refs);
+        final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
+        final boolean additive = Booleans.parseBoolean(additivity, true);
+
+        return new LoggerConfig(name, appenderRefs, filter, level, additive, properties, config,
+                includeLocation(includeLocation));
+    }
+
+    /**
+     * Factory method to create a LoggerConfig.
+     *
      * @param additivity true if additive, false otherwise.
      * @param level The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
@@ -412,6 +450,7 @@ public class LoggerConfig extends AbstractFilterable {
      */
     @PluginFactory
     public static LoggerConfig createLogger(
+         // @formatter:off
         @PluginAttribute(value = "additivity", defaultBoolean = true) final boolean additivity,
         @PluginAttribute("level") final Level level,
         @Required(message = "Loggers cannot be configured without a name") @PluginAttribute("name") final String loggerName,
@@ -420,6 +459,7 @@ public class LoggerConfig extends AbstractFilterable {
         @PluginElement("Properties") final Property[] properties,
         @PluginConfiguration final Configuration config,
         @PluginElement("Filter") final Filter filter
+        // @formatter:on
     ) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,

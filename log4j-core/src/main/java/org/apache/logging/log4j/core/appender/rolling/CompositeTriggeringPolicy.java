@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -82,7 +83,9 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
         setStopping();
         boolean stopped = true;
         for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
-            stopped &= triggeringPolicy.stop(timeout, timeUnit);
+            if (triggeringPolicy instanceof LifeCycle) {
+                stopped &= ((LifeCycle) triggeringPolicy).stop(timeout, timeUnit);
+            }
         }
         setStopped();
         return stopped;

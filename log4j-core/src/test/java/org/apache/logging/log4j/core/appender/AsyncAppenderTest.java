@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +39,9 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class AsyncAppenderTest {
 
-    @Parameterized.Parameters
+    private static final long TIMEOUT_MILLIS = 2000;
+
+    @Parameterized.Parameters(name = "{0}")
     public static Object[] data() {
         return new String[]{
             // default async config uses array blocking queue
@@ -75,10 +78,12 @@ public class AsyncAppenderTest {
         final Logger logger = LogManager.getLogger(AsyncAppender.class);
         logger.error("This is a test");
         logger.warn("Hello world!");
-        Thread.sleep(100);
-        final List<String> list = listAppender.getMessages();
+        final long timeoutMillis = TIMEOUT_MILLIS;
+        final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+        final List<String> list = listAppender.getMessages(2, timeoutMillis, timeUnit);
         assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
+        assertTrue("Incorrect number of events after " + timeoutMillis + " " + timeUnit + ". Expected 2, got "
+                + list.size(), list.size() == 2);
         String msg = list.get(0);
         String expected = AsyncAppenderTest.class.getName() + " rewriteTest This is a test";
         assertTrue("Expected " + expected + ", Actual " + msg, expected.equals(msg));
@@ -93,10 +98,12 @@ public class AsyncAppenderTest {
         final Exception parent = new IllegalStateException("Test");
         final Throwable child = new LoggingException("This is a test", parent);
         logger.error("This is a test", child);
-        Thread.sleep(100);
-        final List<String> list = listAppender.getMessages();
+        final long timeoutMillis = TIMEOUT_MILLIS;
+        final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+        final List<String> list = listAppender.getMessages(1, timeoutMillis, timeUnit);
         assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertTrue("Incorrect number of events after " + timeoutMillis + " " + timeUnit + ". Expected 1, got "
+                + list.size(), list.size() == 1);
         final String msg = list.get(0);
         assertTrue("No parent exception", msg.contains("java.lang.IllegalStateException"));
     }

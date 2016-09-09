@@ -208,6 +208,17 @@ public class LoggerContextRule implements TestRule {
     }
 
     /**
+     * Gets a named Logger for the given class in this LoggerContext.
+     *
+     * @param clazz
+     *            The Class whose name should be used as the Logger name. If null it will default to the calling class.
+     * @return the named Logger.
+     */
+    public Logger getLogger(final Class<?> clazz) {
+        return loggerContext.getLogger(clazz.getName());
+    }
+
+    /**
      * Gets a named Logger in this LoggerContext.
      *
      * @param name

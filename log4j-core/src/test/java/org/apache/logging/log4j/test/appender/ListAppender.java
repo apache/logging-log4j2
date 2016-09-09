@@ -174,6 +174,18 @@ public class ListAppender extends AbstractAppender {
         return Collections.unmodifiableList(messages);
     }
 
+    /**
+     * Polls the messages list for it to grow to a given minimum size at most timeout timeUnits and return a copy of
+     * what we have so far.
+     */
+    public List<String> getMessages(int minSize, long timeout, TimeUnit timeUnit) throws InterruptedException {
+        final long endMillis = System.currentTimeMillis() + timeUnit.toMillis(timeout);
+        while (messages.size() < minSize && System.currentTimeMillis() < endMillis) {
+            Thread.sleep(100);
+        }
+        return Collections.unmodifiableList(messages);
+    }
+
     public synchronized List<byte[]> getData() {
         return Collections.unmodifiableList(data);
     }

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 
 /**
@@ -26,7 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
  * 
  * @see AbstractTriggeringPolicy
  */
-public interface TriggeringPolicy extends LifeCycle {
+public interface TriggeringPolicy /* TODO 3.0: extends LifeCycle */ {
 
     /**
      * Initializes this triggering policy.

@@ -84,7 +84,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
-     * @deprecated Use {@link #newBuilder()}.
+     * @deprecated Deprecated in 2.7; use {@link #newBuilder()}.
      */
     @Deprecated
     public static ConsoleAppender createAppender(Layout<? extends Serializable> layout,
@@ -119,7 +119,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
-     * @deprecated Use {@link #newBuilder()}.
+     * @deprecated Deprecated in 2.7; use {@link #newBuilder()}.
      */
     @Deprecated
     public static ConsoleAppender createAppender(
@@ -193,7 +193,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         @Override
         public ConsoleAppender build() {
             if (follow && direct) {
-                throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender");
+                throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout();
             return new ConsoleAppender(getName(), layout, getFilter(), getManager(target, follow, direct, layout),
