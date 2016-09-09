@@ -1688,6 +1688,20 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
+    <td><a name="log4j2.ContextDataInjector"/>log4j2.ContextDataInjector</td>
+    <td>&nbsp;</td>
+    <td>
+      Fully specified class name of a custom <tt>ContextDataInjector</tt> implementation class.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.garbagefree.threadContextMap"/>log4j2.garbagefree.threadContextMap</td>
+    <td>false</td>
+    <td>
+      Specify "true" to make the ThreadContext map garbage-free.
+    </td>
+  </tr>
+  <tr>
     <td><a name="log4j2.disable.jmx"/>log4j2.disable.jmx</td>
     <td>false</td>
     <td>
