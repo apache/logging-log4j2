@@ -193,7 +193,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         @Override
         public ConsoleAppender build() {
             if (follow && direct) {
-                throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender");
+                throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout();
             return new ConsoleAppender(getName(), layout, getFilter(), getManager(target, follow, direct, layout),
