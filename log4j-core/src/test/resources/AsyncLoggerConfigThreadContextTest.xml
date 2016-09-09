@@ -4,6 +4,24 @@
     <Property name="configProp">configValue</Property>
   </Properties>
   <Appenders>
+    <RandomAccessFile name="AsyncLoggerAndAsyncAppenderFile" fileName="target/AsyncLoggerAndAsyncAppenderTest.log"
+        immediateFlush="false" append="false">
+      <PatternLayout>
+        <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+    <Async name="AsyncLoggerAndAsyncAppender">
+      <AppenderRef ref="AsyncLoggerAndAsyncAppenderFile" />
+    </Async>
+    <RandomAccessFile name="AsyncAppenderFile" fileName="target/AsyncAppenderContextTest.log"
+        immediateFlush="false" append="false">
+      <PatternLayout>
+        <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+    <Async name="AsyncAppender">
+      <AppenderRef ref="AsyncAppenderFile" />
+    </Async>
     <RandomAccessFile name="RandomAccessFile" fileName="target/AsyncLoggerTest.log"
         immediateFlush="false" append="false">
       <PatternLayout>
@@ -21,9 +39,11 @@
   <Loggers>
     <AsyncLogger name="com.foo" level="info" includeLocation="false" additivity="true">
       <AppenderRef ref="RandomAccessFile"/>
+      <AppenderRef ref="AsyncLoggerAndAsyncAppender"/>
     </AsyncLogger>
     <Root level="info" includeLocation="false">
       <AppenderRef ref="SynchronousRandomAccessFile"/>
+      <AppenderRef ref="AsyncAppender"/>
     </Root>
   </Loggers>
 </Configuration>

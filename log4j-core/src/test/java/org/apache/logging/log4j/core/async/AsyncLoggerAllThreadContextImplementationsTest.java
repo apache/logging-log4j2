@@ -132,12 +132,15 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
 
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
-        final File file = new File("target", "AsyncLoggerTest.log");
-        // System.out.println(f.getAbsolutePath());
-        file.delete();
-
-        final File sync = new File("target", "SynchronousContextTest.log");
-        sync.delete();
+        final File[] files = new File[] {
+                new File("target", "AsyncLoggerTest.log"), //
+                new File("target", "SynchronousContextTest.log"), //
+                new File("target", "AsyncLoggerAndAsyncAppenderTest.log"), //
+                new File("target", "AsyncAppenderContextTest.log"), //
+        };
+        for (final File f : files) {
+            f.delete();
+        }
 
         ThreadContext.push("stackvalue");
         ThreadContext.put("KEY", "mapvalue");
@@ -159,11 +162,13 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
             log.info("{} {} {} i={}", contextImpl, contextmap, loggerContextName, Unbox.box(i));
         }
         ThreadContext.pop();
-        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(false, files[0]); // stop async thread
 
-        checkResult(file, loggerContextName);
+        checkResult(files[0], loggerContextName);
         if (asyncMode == Mode.MIXED || asyncMode == Mode.BOTH_ALL_ASYNC_AND_MIXED) {
-            checkResult(sync, loggerContextName);
+            for (int i = 1; i < files.length; i++) {
+                checkResult(files[i], loggerContextName);
+            }
         }
         LogManager.shutdown();
     }
@@ -180,7 +185,7 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
                 } else {
                     expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue} " + contextDesc + " i=" + i;
                 }
-                assertEquals("line " + i, expect, line);
+                assertEquals(file.getName() + ": line " + i, expect, line);
             }
             final String noMoreLines = reader.readLine();
             assertNull("done", noMoreLines);

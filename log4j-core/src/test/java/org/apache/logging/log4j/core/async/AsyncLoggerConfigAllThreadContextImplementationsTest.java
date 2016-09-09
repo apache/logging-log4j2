@@ -105,8 +105,15 @@ public class AsyncLoggerConfigAllThreadContextImplementationsTest {
 
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
-        final File file = new File("target", "SynchronousContextTest.log");
-        file.delete();
+        final File[] files = new File[] {
+                new File("target", "AsyncLoggerTest.log"), //
+                new File("target", "SynchronousContextTest.log"), //
+                new File("target", "AsyncLoggerAndAsyncAppenderTest.log"), //
+                new File("target", "AsyncAppenderContextTest.log"), //
+        };
+        for (final File f : files) {
+            f.delete();
+        }
 
         ThreadContext.push("stackvalue");
         ThreadContext.put("KEY", "mapvalue");
@@ -129,9 +136,11 @@ public class AsyncLoggerConfigAllThreadContextImplementationsTest {
             log.info("{} {} {} i={}", contextImpl, contextmap, loggerContextName, Unbox.box(i));
         }
         ThreadContext.pop();
-        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(false, files[files.length - 1]); // stop async thread
 
-        checkResult(file, loggerContextName);
+        for (final File f : files) {
+            checkResult(f, loggerContextName);
+        }
         LogManager.shutdown();
     }
 
@@ -147,7 +156,7 @@ public class AsyncLoggerConfigAllThreadContextImplementationsTest {
                 } else {
                     expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue} " + contextDesc + " i=" + i;
                 }
-                assertEquals("line " + i, expect, line);
+                assertEquals(file.getName() + ": line " + i, expect, line);
             }
             final String noMoreLines = reader.readLine();
             assertNull("done", noMoreLines);
