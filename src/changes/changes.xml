@@ -195,6 +195,9 @@
       <action issue="LOG4J2-1540" dev="ggregory" type="add" due-to="Gary Gregory">
         The Core AbstractManager should track its LoggerContext.
       </action>
+      <action issue="LOG4J2-1574" dev="ggregory" type="update">
+        Allow the RollingFileAppender to use default pattern layout. 
+      </action>
       <action issue="LOG4J2-1556" dev="ggregory" type="update">
         Custom Log4j threads should extend Log4jThread.
       </action>
