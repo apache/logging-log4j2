@@ -84,7 +84,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
-     * @deprecated Use {@link #newBuilder()}.
+     * @deprecated Deprecated in 2.7; use {@link #newBuilder()}.
      */
     @Deprecated
     public static ConsoleAppender createAppender(Layout<? extends Serializable> layout,
@@ -119,7 +119,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
-     * @deprecated Use {@link #newBuilder()}.
+     * @deprecated Deprecated in 2.7; use {@link #newBuilder()}.
      */
     @Deprecated
     public static ConsoleAppender createAppender(
