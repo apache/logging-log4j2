@@ -44,15 +44,14 @@ import org.junit.runners.Parameterized;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class AsyncLoggerAllThreadContextImplementationsTest {
+public class AsyncLoggerConfigAllThreadContextImplementationsTest {
 
     final static int LINE_COUNT = 130;
     private ContextImpl contextImpl;
-    private Mode asyncMode;
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigThreadContextTest.xml");
         System.setProperty("AsyncLoggerConfig.RingBufferSize", "128"); // minimum ringbuffer size
     }
 
@@ -65,24 +64,6 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
         System.clearProperty("log4j2.garbagefree.threadContextMap");
         System.clearProperty("log4j2.is.webapp");
         System.clearProperty("log4j2.threadContextMap");
-    }
-
-    static enum Mode {
-        ALL_ASYNC, MIXED, BOTH_ALL_ASYNC_AND_MIXED;
-
-        void initSelector() {
-            if (this == ALL_ASYNC || this == BOTH_ALL_ASYNC_AND_MIXED) {
-                System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,  AsyncLoggerContextSelector.class.getName());
-            } else {
-                System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
-            }
-        }
-
-        void initConfigFile() {
-            System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, this == ALL_ASYNC //
-                    ? "AsyncLoggerThreadContextTest.xml" //
-                    : "AsyncLoggerConfigThreadContextTest.xml");
-        }
     }
 
     static enum ContextImpl {
@@ -111,33 +92,21 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { ContextImpl.WEBAPP, Mode.ALL_ASYNC},
-                { ContextImpl.WEBAPP, Mode.BOTH_ALL_ASYNC_AND_MIXED},
-                { ContextImpl.GARBAGE_FREE, Mode.ALL_ASYNC},
-                { ContextImpl.GARBAGE_FREE, Mode.BOTH_ALL_ASYNC_AND_MIXED},
-                { ContextImpl.COPY_ON_WRITE, Mode.ALL_ASYNC},
-                { ContextImpl.COPY_ON_WRITE, Mode.BOTH_ALL_ASYNC_AND_MIXED}
+                { ContextImpl.WEBAPP, },
+                { ContextImpl.GARBAGE_FREE, },
+                { ContextImpl.COPY_ON_WRITE, }
         });
     }
 
-    public AsyncLoggerAllThreadContextImplementationsTest(ContextImpl contextImpl, Mode asyncMode) {
+    public AsyncLoggerConfigAllThreadContextImplementationsTest(ContextImpl contextImpl) {
         this.contextImpl = contextImpl;
-        this.asyncMode = asyncMode;
-
-        asyncMode.initSelector();
-        asyncMode.initConfigFile();
-
         contextImpl.init();
     }
 
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
-        final File file = new File("target", "AsyncLoggerTest.log");
-        // System.out.println(f.getAbsolutePath());
+        final File file = new File("target", "SynchronousContextTest.log");
         file.delete();
-
-        final File sync = new File("target", "SynchronousContextTest.log");
-        sync.delete();
 
         ThreadContext.push("stackvalue");
         ThreadContext.put("KEY", "mapvalue");
@@ -145,7 +114,8 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final LoggerContext loggerContext = LogManager.getContext(false);
         final String loggerContextName = loggerContext.getClass().getSimpleName();
-        final RingBufferAdmin ring = ((AsyncLoggerContext) loggerContext).createRingBufferAdmin();
+        final RingBufferAdmin ring = ((AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) log).get())
+                .createRingBufferAdmin("");
         for (int i = 0; i < LINE_COUNT; i++) {
             while (i >= 128 && ring.getRemainingCapacity() == 0) { // buffer may be full
                 Thread.sleep(1);
@@ -162,9 +132,6 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
         checkResult(file, loggerContextName);
-        if (asyncMode == Mode.MIXED || asyncMode == Mode.BOTH_ALL_ASYNC_AND_MIXED) {
-            checkResult(sync, loggerContextName);
-        }
         LogManager.shutdown();
     }
 
