@@ -36,7 +36,7 @@ public class PropertyTest {
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
-    @Ignore // TODO fix LOG4J2-1313
+    @Ignore("TODO fix LOG4J2-1313")
     @Test
     public void testEmptyAttribute() throws Exception {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
