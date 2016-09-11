@@ -129,6 +129,9 @@
       <action issue="LOG4J2-1349" dev="rpopma" type="add">
         (GC) Added support for garbage-free ThreadContext map. Disabled by default, users need to enable this explicitly.
       </action>
+      <action issue="LOG4J2-1447" dev="rpopma" type="add">
+        (GC) Changed LogEvent's internal data structure for context data to be garbage-free. Added method LogEvent#getContextData(), deprecated method #getContextMap().
+      </action>
       <action issue="LOG4J2-1568" dev="mattsicker" type="add">
         Added support for java.util.concurrent.LinkedTransferQueue to AsyncAppender.
       </action>
