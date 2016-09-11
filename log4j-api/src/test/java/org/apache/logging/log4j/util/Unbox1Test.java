@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 /**
  * Tests the Unbox class.
  */
-public class UnboxTest {
+public class Unbox1Test {
     @BeforeClass
     public static void beforeClass() {
         System.clearProperty("log4j.unbox.ringbuffer.size");

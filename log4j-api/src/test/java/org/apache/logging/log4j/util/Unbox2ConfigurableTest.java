@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
  * Tests that the Unbox ring buffer size is configurable.
  * Must be run in a separate process as the other UnboxTest or the last-run test will fail.
  */
-public class UnboxConfigurableTest {
+public class Unbox2ConfigurableTest {
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("log4j.unbox.ringbuffer.size", "65");
