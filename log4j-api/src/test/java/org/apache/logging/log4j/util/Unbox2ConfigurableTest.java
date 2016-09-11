@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -30,11 +31,13 @@ import static org.junit.Assert.*;
  * Must be run in a separate process as the other UnboxTest or the last-run test will fail.
  */
 public class Unbox2ConfigurableTest {
+    @Ignore
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("log4j.unbox.ringbuffer.size", "65");
     }
 
+    @Ignore
     @AfterClass
     public static void afterClass() throws Exception {
         System.clearProperty("log4j.unbox.ringbuffer.size");
@@ -56,12 +59,14 @@ public class Unbox2ConfigurableTest {
         threadLocalField.set(null, new ThreadLocal<>());
     }
 
+    @Ignore
     @Test
     public void testBoxConfiguredTo128Slots() throws Exception {
         // next power of 2 that is 65 or more
         assertEquals(128, Unbox.getRingbufferSize());
     }
 
+    @Ignore
     @Test
     public void testBoxSuccessfullyConfiguredTo128Slots() throws Exception {
         final int MAX = 128;
