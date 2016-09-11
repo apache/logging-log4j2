@@ -328,6 +328,10 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return contextData;
     }
 
+    void setContextData(final MutableContextData contextData) {
+        this.contextData = contextData;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, String> getContextMap() {

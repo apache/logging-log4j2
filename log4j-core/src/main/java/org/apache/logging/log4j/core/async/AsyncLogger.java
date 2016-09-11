@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Map;
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -27,10 +27,10 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventTranslatorVararg;
@@ -304,20 +305,26 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * @param event the event to log
      */
     public void actualAsyncLog(final RingBufferLogEvent event) {
-        final Map<Property, Boolean> properties = privateConfig.loggerConfig.getProperties();
+        final List<Property> properties = privateConfig.loggerConfig.getPropertyList();
 
         if (properties != null) {
             MutableContextData contextData = (MutableContextData) event.getContextData();
-            for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
-                final Property prop = entry.getKey();
+            if (contextData.isFrozen()) {
+                final MutableContextData temp = ContextDataFactory.createContextData();
+                temp.putAll(contextData);
+                contextData = temp;
+            }
+            for (int i = 0; i < properties.size(); i++) {
+                final Property prop = properties.get(i);
                 if (contextData.getValue(prop.getName()) != null) {
                     continue; // contextMap overrides config properties
                 }
-                final String value = entry.getValue() //
+                final String value = prop.isValueNeedsLookup() //
                         ? privateConfig.config.getStrSubstitutor().replace(event, prop.getValue()) //
                         : prop.getValue();
                 contextData.putValue(prop.getName(), prop.getValue());
             }
+            event.setContextData(contextData);
         }
 
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
