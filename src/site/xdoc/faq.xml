@@ -374,7 +374,7 @@ public interface StringBuilderFormattable {
 }
 </pre>
 
-        <a name="#logger-wrapper" />
+        <a name="logger-wrapper" />
         <h4>How do I create a custom logger wrapper that shows the correct class, method and line number?</h4>
         <p>
           Log4j remembers the fully qualified class name (FQCN) of the logger and uses this to walk the stack trace
