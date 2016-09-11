@@ -128,8 +128,9 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
                         String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, configuration);
             }
 
+            final Layout<? extends Serializable> layout = getOrCreateLayout();
             final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, append,
-                    isBufferedIo, policy, strategy, advertiseUri, getLayout(), bufferSize, isImmediateFlush(),
+                    isBufferedIo, policy, strategy, advertiseUri, layout, bufferSize, isImmediateFlush(),
                     createOnDemand, configuration);
             if (manager == null) {
                 return null;
@@ -137,7 +138,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
             manager.initialize();
 
-            return new RollingFileAppender(getName(), getLayout(), getFilter(), manager, fileName, filePattern,
+            return new RollingFileAppender(getName(), layout, getFilter(), manager, fileName, filePattern,
                     isIgnoreExceptions(), isImmediateFlush(), advertise ? configuration.getAdvertiser() : null);
         }
 
