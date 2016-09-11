@@ -86,4 +86,5 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
             }
         }
     }
+
 }

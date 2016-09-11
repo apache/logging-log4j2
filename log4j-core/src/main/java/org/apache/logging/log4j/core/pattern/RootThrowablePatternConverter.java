@@ -45,6 +45,7 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
     /**
      * Gets an instance of the class.
      *
+     *
      * @param options pattern options, may be null.  If first element is "short",
      *                only the first line of the throwable will be formatted.
      * @return instance of class.

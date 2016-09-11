@@ -17,12 +17,13 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
-import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
+import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
@@ -76,6 +77,8 @@ public final class ThrowableFormatOptions {
      */
     private final List<String> ignorePackages;
 
+    private final List<String> mdcKeys;
+
     public static final String CLASS_NAME = "short.className";
     public static final String METHOD_NAME = "short.methodName";
     public static final String LINE_NUMBER = "short.lineNumber";
@@ -85,44 +88,44 @@ public final class ThrowableFormatOptions {
 
     /**
      * Constructs the options for printing stack trace.
-     * 
-     * @param lines
+     *  @param lines
      *            The number of lines.
      * @param separator
      *            The stack trace separator.
      * @param ignorePackages
-     *            The packages to filter.
+ *            The packages to filter.
      * @param textRenderer
-     *            The ANSI renderer
+     * @param mdcKeys
      */
     protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
-            TextRenderer textRenderer) {
+                                     TextRenderer textRenderer, final List<String> mdcKeys) {
         this.lines = lines;
         this.separator = separator == null ? Constants.LINE_SEPARATOR : separator;
         this.ignorePackages = ignorePackages;
         this.textRenderer = textRenderer == null ? PlainTextRenderer.getInstance() : textRenderer;
+        this.mdcKeys = mdcKeys;
     }
 
     /**
      * Constructs the options for printing stack trace.
-     * 
+     *
      * @param packages
      *            The packages to filter.
      */
     protected ThrowableFormatOptions(final List<String> packages) {
-        this(DEFAULT_LINES, null, packages, null);
+        this(DEFAULT_LINES, null, packages, null, null);
     }
 
     /**
      * Constructs the options for printing stack trace.
      */
     protected ThrowableFormatOptions() {
-        this(DEFAULT_LINES, null, null, null);
+        this(DEFAULT_LINES, null, null, null, null);
     }
 
     /**
      * Returns the number of lines to write.
-     * 
+     *
      * @return The number of lines to write.
      */
     public int getLines() {
@@ -131,7 +134,7 @@ public final class ThrowableFormatOptions {
 
     /**
      * Returns the stack trace separator.
-     * 
+     *
      * @return The stack trace separator.
      */
     public String getSeparator() {
@@ -140,7 +143,7 @@ public final class ThrowableFormatOptions {
 
     /**
      * Returns the message rendered.
-     * 
+     *
      * @return the message rendered.
      */
     public TextRenderer getTextRenderer() {
@@ -149,7 +152,7 @@ public final class ThrowableFormatOptions {
 
     /**
      * Returns the list of packages to ignore (filter out).
-     * 
+     *
      * @return The list of packages to ignore (filter out).
      */
     public List<String> getIgnorePackages() {
@@ -158,7 +161,7 @@ public final class ThrowableFormatOptions {
 
     /**
      * Determines if all lines should be printed.
-     * 
+     *
      * @return true for all lines, false otherwise.
      */
     public boolean allLines() {
@@ -167,7 +170,7 @@ public final class ThrowableFormatOptions {
 
     /**
      * Determines if any lines should be printed.
-     * 
+     *
      * @return true for any lines, false otherwise.
      */
     public boolean anyLines() {
@@ -176,7 +179,7 @@ public final class ThrowableFormatOptions {
 
     /**
      * Returns the minimum between the lines and the max lines.
-     * 
+     *
      * @param maxLines
      *            The maximum number of lines.
      * @return The number of lines to print.
@@ -187,7 +190,7 @@ public final class ThrowableFormatOptions {
 
     /**
      * Determines if there are any packages to filter.
-     * 
+     *
      * @return true if there are packages, false otherwise.
      */
     public boolean hasPackages() {
@@ -217,7 +220,7 @@ public final class ThrowableFormatOptions {
 
     /**
      * Creates a new instance based on the array of options.
-     * 
+     *
      * @param options
      *            The array of options.
      * @return A new initialized instance.
@@ -247,6 +250,7 @@ public final class ThrowableFormatOptions {
         String separator = DEFAULT.separator;
         List<String> packages = DEFAULT.ignorePackages;
         TextRenderer ansiRenderer = DEFAULT.textRenderer;
+        List<String> mdcKeys = DEFAULT.mdcKeys;
         for (final String rawOption : options) {
             if (rawOption != null) {
                 final String option = rawOption.trim();
@@ -279,18 +283,29 @@ public final class ThrowableFormatOptions {
                     if (Loader.isJansiAvailable()) {
                         String styleMapStr = option.equals("ansi") ? Strings.EMPTY
                                 : option.substring("ansi(".length(), option.length() - 1);
-                        ansiRenderer = new JAnsiTextRenderer(new String[] { null, styleMapStr },
+                        ansiRenderer = new JAnsiTextRenderer(new String[] {null, styleMapStr},
                                 JAnsiTextRenderer.DefaultExceptionStyleMap);
                     } else {
                         StatusLogger.getLogger().warn(
                                 "You requested ANSI exception rendering but JANSI is not on the classpath. Please see https://logging.apache.org/log4j/2.x/runtime-dependencies.html");
                     }
+                } else if (option.startsWith("mdc(") && option.endsWith(")")){
+                    String suffixPattern = option.substring("mdc(".length(), option.length() - 1);
+                    mdcKeys = parseMdcKeys(suffixPattern);
+                } else if (option.startsWith("X(") && option.endsWith(")")){
+                    String suffixPattern = option.substring("X(".length(), option.length() - 1);
+                    mdcKeys = parseMdcKeys(suffixPattern);
                 } else if (!option.equalsIgnoreCase(FULL)) {
                     lines = Integer.parseInt(option);
                 }
             }
         }
-        return new ThrowableFormatOptions(lines, separator, packages, ansiRenderer);
+        return new ThrowableFormatOptions(lines, separator, packages, ansiRenderer, mdcKeys);
+    }
+
+    private static List<String> parseMdcKeys(final String mdcKeyExp) {
+        String[] keys = mdcKeyExp.split(",");
+        return Arrays.asList(keys);
     }
 
 }
