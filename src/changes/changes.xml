@@ -132,6 +132,9 @@
       <action issue="LOG4J2-1447" dev="rpopma" type="add">
         (GC) Changed LogEvent's internal data structure for context data to be garbage-free. Added method LogEvent#getContextData(), deprecated method #getContextMap().
       </action>
+      <action issue="LOG4J2-1010" dev="rpopma" type="add" due-to="Mikael Ståldal">
+        Users can now inject context data from other sources than ThreadContext. Values can be any Object, not just Strings.
+      </action>
       <action issue="LOG4J2-1568" dev="mattsicker" type="add">
         Added support for java.util.concurrent.LinkedTransferQueue to AsyncAppender.
       </action>
