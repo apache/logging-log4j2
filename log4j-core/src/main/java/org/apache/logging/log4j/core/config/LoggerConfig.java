@@ -67,7 +67,9 @@ public class LoggerConfig extends AbstractFilterable {
     private boolean additive = true;
     private boolean includeLocation = true;
     private LoggerConfig parent;
-    private final Map<Property, Boolean> properties;
+    private Map<Property, Boolean> propertiesMap;
+    private final List<Property> properties;
+    private final boolean propertiesRequireLookup;
     private final Configuration config;
     private final ReliabilityStrategy reliabilityStrategy;
 
@@ -98,6 +100,7 @@ public class LoggerConfig extends AbstractFilterable {
         this.level = Level.ERROR;
         this.name = Strings.EMPTY;
         this.properties = null;
+        this.propertiesRequireLookup = false;
         this.config = null;
         this.reliabilityStrategy = new DefaultReliabilityStrategy(this);
     }
@@ -115,6 +118,7 @@ public class LoggerConfig extends AbstractFilterable {
         this.level = level;
         this.additive = additive;
         this.properties = null;
+        this.propertiesRequireLookup = false;
         this.config = null;
         this.reliabilityStrategy = new DefaultReliabilityStrategy(this);
     }
@@ -131,16 +135,25 @@ public class LoggerConfig extends AbstractFilterable {
         this.includeLocation = includeLocation;
         this.config = config;
         if (properties != null && properties.length > 0) {
-            final Map<Property, Boolean> map = new HashMap<>(properties.length);
-            for (final Property prop : properties) {
-                final boolean interpolate = prop.getValue().contains("${");
-                map.put(prop, interpolate);
-            }
-            this.properties = Collections.unmodifiableMap(map);
+            this.properties = Collections.unmodifiableList(Arrays.asList(Arrays.copyOf(
+                    properties, properties.length)));
         } else {
             this.properties = null;
         }
+        this.propertiesRequireLookup = containsPropertyRequiringLookup(properties);
         this.reliabilityStrategy = config.getReliabilityStrategy(this);
+    }
+
+    private static boolean containsPropertyRequiringLookup(final Property[] properties) {
+        if (properties == null) {
+            return false;
+        }
+        for (int i = 0; i < properties.length; i++) {
+            if (properties[i].isValueNeedsLookup()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -310,10 +323,41 @@ public class LoggerConfig extends AbstractFilterable {
      * @return an unmodifiable map with the configuration properties, or {@code null}
      * @see Configuration#getStrSubstitutor()
      * @see StrSubstitutor
+     * @deprecated use {@link #getPropertyList()} instead
      */
     // LOG4J2-157
     public Map<Property, Boolean> getProperties() {
+        if (properties == null) {
+            return null;
+        }
+        if (propertiesMap == null) { // lazily initialize: only used by user custom code, not by Log4j any more
+            final Map<Property, Boolean> result = new HashMap<>(properties.size() * 2);
+            for (int i = 0; i < properties.size(); i++) {
+                result.put(properties.get(i), Boolean.valueOf(properties.get(i).isValueNeedsLookup()));
+            }
+            propertiesMap = Collections.unmodifiableMap(result);
+        }
+        return propertiesMap;
+    }
+
+    /**
+     * Returns an unmodifiable list with the configuration properties, or {@code null} if this {@code LoggerConfig} does
+     * not have any configuration properties.
+     * <p>
+     * Each {@code Property} in the list has an attribute {@link Property#isValueNeedsLookup() valueNeedsLookup} that
+     * is {@code true} if the property value has a variable that needs to be substituted.
+     *
+     * @return an unmodifiable list with the configuration properties, or {@code null}
+     * @see Configuration#getStrSubstitutor()
+     * @see StrSubstitutor
+     * @since 2.7
+     */
+    public List<Property> getPropertyList() {
         return properties;
+    }
+
+    public boolean isPropertiesRequireLookup() {
+        return propertiesRequireLookup;
     }
 
     /**
@@ -326,24 +370,30 @@ public class LoggerConfig extends AbstractFilterable {
      * @param data The Message.
      * @param t A Throwable or null.
      */
+    @PerformanceSensitive("allocation")
     public void log(final String loggerName, final String fqcn, final Marker marker, final Level level,
             final Message data, final Throwable t) {
         List<Property> props = null;
-        if (properties != null) {
-            props = new ArrayList<>(properties.size());
-            final LogEvent event = Log4jLogEvent.newBuilder()
-                .setMessage(data)
-                .setMarker(marker)
-                .setLevel(level)
-                .setLoggerName(loggerName)
-                .setLoggerFqcn(fqcn)
-                .setThrown(t)
-                .build();
-            for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
-                final Property prop = entry.getKey();
-                final String value = entry.getValue() ? config.getStrSubstitutor().replace(event, prop.getValue())
-                        : prop.getValue();
-                props.add(Property.createProperty(prop.getName(), value));
+        if (!propertiesRequireLookup) {
+            props = properties;
+        } else {
+            if (properties != null) {
+                props = new ArrayList<>(properties.size());
+                final LogEvent event = Log4jLogEvent.newBuilder()
+                        .setMessage(data)
+                        .setMarker(marker)
+                        .setLevel(level)
+                        .setLoggerName(loggerName)
+                        .setLoggerFqcn(fqcn)
+                        .setThrown(t)
+                        .build();
+                for (int i = 0; i < properties.size(); i++) {
+                    final Property prop = properties.get(i);
+                    final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
+                            ? config.getStrSubstitutor().replace(event, prop.getValue()) //
+                            : prop.getValue();
+                    props.add(Property.createProperty(prop.getName(), value));
+                }
             }
         }
         log(logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t));
@@ -413,11 +463,11 @@ public class LoggerConfig extends AbstractFilterable {
     @Deprecated
     public static LoggerConfig createLogger(final String additivity,
             // @formatter:off
-            final Level level, 
+            final Level level,
             @PluginAttribute("name") final String loggerName,
             final String includeLocation,
             final AppenderRef[] refs,
-            final Property[] properties, 
+            final Property[] properties,
             @PluginConfiguration final Configuration config,
             final Filter filter) {
             // @formatter:on

@@ -33,10 +33,12 @@ public final class Property {
 
     private final String name;
     private final String value;
+    private final boolean valueNeedsLookup;
 
     private Property(final String name, final String value) {
         this.name = name;
         this.value = value;
+        this.valueNeedsLookup = value != null && value.contains("${");
     }
 
     /**
@@ -56,8 +58,16 @@ public final class Property {
     }
 
     /**
+     * Returns {@code true} if the value contains a substitutable property that requires a lookup to be resolved.
+     * @return {@code true} if the value contains {@code "${"}, {@code false} otherwise
+     */
+    public boolean isValueNeedsLookup() {
+        return valueNeedsLookup;
+    }
+
+    /**
      * Creates a Property.
-     * 
+     *
      * @param name The key.
      * @param value The value.
      * @return A Property.

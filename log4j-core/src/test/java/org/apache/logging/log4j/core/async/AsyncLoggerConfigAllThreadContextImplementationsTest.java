@@ -151,10 +151,10 @@ public class AsyncLoggerConfigAllThreadContextImplementationsTest {
             for (int i = 0; i < LINE_COUNT; i++) {
                 String line = reader.readLine();
                 if ((i & 1) == 1) {
-                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, count=" + i + "} "
+                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2, count=" + i + "} "
                             + contextDesc + " i=" + i;
                 } else {
-                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue} " + contextDesc + " i=" + i;
+                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} " + contextDesc + " i=" + i;
                 }
                 assertEquals(file.getName() + ": line " + i, expect, line);
             }

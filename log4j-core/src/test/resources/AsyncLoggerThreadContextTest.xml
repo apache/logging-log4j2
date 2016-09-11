@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="ERROR">
-  <Properties>
-    <Property name="configProp">configValue</Property>
-  </Properties>
   <Appenders>
     <RandomAccessFile name="RandomAccessFile" fileName="target/AsyncLoggerTest.log"
 	    		immediateFlush="false" append="false">
@@ -14,6 +11,8 @@
 
   <Loggers>
     <Root level="info" includeLocation="false">
+      <Property name="configProp">configValue</Property>
+      <Property name="configProp2">configValue2</Property>
       <AppenderRef ref="RandomAccessFile"/>
     </Root>
   </Loggers>

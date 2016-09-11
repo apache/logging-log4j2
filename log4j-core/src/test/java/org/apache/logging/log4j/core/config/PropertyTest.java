@@ -60,4 +60,14 @@ public class PropertyTest {
         assertEquals(expect, messages.get(0));
         app.clear();
     }
+
+    @Test
+    public void testIsValueNeedsLookup() {
+        assertTrue("with ${ as value", Property.createProperty("", "${").isValueNeedsLookup());
+        assertTrue("with ${ in value", Property.createProperty("", "blah${blah").isValueNeedsLookup());
+        assertFalse("empty value", Property.createProperty("", "").isValueNeedsLookup());
+        assertFalse("without ${ in value", Property.createProperty("", "blahblah").isValueNeedsLookup());
+        assertFalse("without $ in value", Property.createProperty("", "blahb{sys:lah").isValueNeedsLookup());
+        assertFalse("without { in value", Property.createProperty("", "blahb$sys:lah").isValueNeedsLookup());
+    }
 }

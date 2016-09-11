@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.7" date="2016-MM-DD" description="GA Release 2.7">
+      <action issue="LOG4J2-1575" dev="rpopma" type="fix">
+        (GC) LoggerConfig now stores configuration properties in a List, not a Map to prevent creating temporary Iterator objects. Added method LoggerConfig#getPropertyList(), deprecated method #getProperties().
+      </action>
       <action issue="LOG4J2-1457" dev="mattsicker" type="fix" due-to="Leon Finker">
         Fixed class loader deadlock when using async logging and extended stack trace pattern.
       </action>

@@ -48,6 +48,8 @@
   </Appenders>
   <Loggers>
     <Root level="trace" includeLocation="false">
+      <Property name="prop1">value1</Property>
+      <Property name="prop2">value2</Property>
       <appender-ref ref="Console" level="FATAL" />
       <appender-ref ref="File"/>
       <appender-ref ref="RandomAccessFile"/>

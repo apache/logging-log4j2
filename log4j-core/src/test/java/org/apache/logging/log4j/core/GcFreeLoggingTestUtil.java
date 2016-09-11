@@ -132,7 +132,7 @@ public class GcFreeLoggingTestUtil {
         final String text = new String(Files.readAllBytes(tempFile.toPath()));
         final List<String> lines = Files.readAllLines(tempFile.toPath(), Charset.defaultCharset());
         final String className = cls.getSimpleName();
-        assertEquals(text, "FATAL o.a.l.l.c." + className + " [main] value1 {aKey=value1, key2=value2} This message is logged to the console",
+        assertEquals(text, "FATAL o.a.l.l.c." + className + " [main] value1 {aKey=value1, key2=value2, prop1=value1, prop2=value2} This message is logged to the console",
                 lines.get(0));
 
         final String LINESEP = System.getProperty("line.separator");
