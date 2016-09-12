@@ -47,7 +47,6 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         private boolean ignoreExceptions = true;
         
         @PluginElement("Layout")
-        @Required
         private Layout<? extends Serializable> layout;
 
         @PluginBuilderAttribute
