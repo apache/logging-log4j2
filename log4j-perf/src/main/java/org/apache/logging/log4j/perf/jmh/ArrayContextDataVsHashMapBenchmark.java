@@ -221,7 +221,7 @@ public class ArrayContextDataVsHashMapBenchmark {
 
     @Benchmark
     public int putArrayContextData() {
-        populatedContextData.put("someKey", "someValue");
+        populatedContextData.putValue("someKey", "someValue");
         return populatedContextData.size();
     }
 

@@ -146,35 +146,9 @@ public class ArrayContextDataTest {
         expected.put("3", "3value");
 
         assertEquals(expected, original.asMap());
-    }
-
-    @Test
-    public void testGetCopyDelegatesToAsMap() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
-        original.putValue("a", "avalue");
-        assertEquals(original.getCopy(), original.asMap());
-
-        original.putValue("B", "Bvalue");
-        assertEquals(original.getCopy(), original.asMap());
-
-        original.putValue("3", "3value");
-        assertEquals(original.getCopy(), original.asMap());
-    }
-
-    @Test
-    public void testGetImmutableMapOrNull() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
-        original.putValue("a", "avalue");
-        assertEquals(original.getImmutableMapOrNull(), original.asMap());
-
-        original.putValue("B", "Bvalue");
-        assertEquals(original.getImmutableMapOrNull(), original.asMap());
-
-        original.putValue("3", "3value");
-        assertEquals(original.getImmutableMapOrNull(), original.asMap());
 
         try {
-            original.getImmutableMapOrNull().put("abc", "xyz");
+            original.asMap().put("abc", "xyz");
             fail("Expected map to be immutable");
         } catch (final UnsupportedOperationException ok) {
             //ok
@@ -184,57 +158,57 @@ public class ArrayContextDataTest {
     @Test
     public void testPutAll_KeepsExistingValues() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
-        original.put("b", "bbb");
-        original.put("c", "ccc");
+        original.putValue("a", "aaa");
+        original.putValue("b", "bbb");
+        original.putValue("c", "ccc");
         assertEquals("size", 3, original.size());
 
         // add empty context data
         original.putAll(new ArrayContextData());
         assertEquals("size after put empty", 3, original.size());
-        assertEquals("aaa", original.get("a"));
-        assertEquals("bbb", original.get("b"));
-        assertEquals("ccc", original.get("c"));
+        assertEquals("aaa", original.getValue("a"));
+        assertEquals("bbb", original.getValue("b"));
+        assertEquals("ccc", original.getValue("c"));
 
         final ArrayContextData other = new ArrayContextData();
-        other.put("1", "111");
-        other.put("2", "222");
-        other.put("3", "333");
+        other.putValue("1", "111");
+        other.putValue("2", "222");
+        other.putValue("3", "333");
         original.putAll(other);
 
         assertEquals("size after put other", 6, original.size());
-        assertEquals("aaa", original.get("a"));
-        assertEquals("bbb", original.get("b"));
-        assertEquals("ccc", original.get("c"));
-        assertEquals("111", original.get("1"));
-        assertEquals("222", original.get("2"));
-        assertEquals("333", original.get("3"));
+        assertEquals("aaa", original.getValue("a"));
+        assertEquals("bbb", original.getValue("b"));
+        assertEquals("ccc", original.getValue("c"));
+        assertEquals("111", original.getValue("1"));
+        assertEquals("222", original.getValue("2"));
+        assertEquals("333", original.getValue("3"));
     }
 
     @Test
     public void testPutAllSelfDoesNotModify() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
-        original.put("b", "bbb");
-        original.put("c", "ccc");
+        original.putValue("a", "aaa");
+        original.putValue("b", "bbb");
+        original.putValue("c", "ccc");
         assertEquals("size", 3, original.size());
 
         // putAll with self
         original.putAll(original);
         assertEquals("size after put empty", 3, original.size());
-        assertEquals("aaa", original.get("a"));
-        assertEquals("bbb", original.get("b"));
-        assertEquals("ccc", original.get("c"));
+        assertEquals("aaa", original.getValue("a"));
+        assertEquals("bbb", original.getValue("b"));
+        assertEquals("ccc", original.getValue("c"));
     }
 
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationBiConsumerPut() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
+        original.putValue("a", "aaa");
         original.forEach(new BiConsumer<String, Object>() {
             @Override
             public void accept(final String s, final Object o) {
-                original.put("c", "other");
+                original.putValue("c", "other");
             }
         });
     }
@@ -242,7 +216,7 @@ public class ArrayContextDataTest {
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationBiConsumerPutValue() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
+        original.putValue("a", "aaa");
         original.forEach(new BiConsumer<String, Object>() {
             @Override
             public void accept(final String s, final Object o) {
@@ -254,7 +228,7 @@ public class ArrayContextDataTest {
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationBiConsumerRemove() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
+        original.putValue("a", "aaa");
         original.forEach(new BiConsumer<String, Object>() {
             @Override
             public void accept(final String s, final Object o) {
@@ -266,7 +240,7 @@ public class ArrayContextDataTest {
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationBiConsumerClear() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
+        original.putValue("a", "aaa");
         original.forEach(new BiConsumer<String, Object>() {
             @Override
             public void accept(final String s, final Object o) {
@@ -278,11 +252,11 @@ public class ArrayContextDataTest {
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationTriConsumerPut() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
+        original.putValue("a", "aaa");
         original.forEach(new TriConsumer<String, Object, Object>() {
             @Override
             public void accept(final String s, final Object o, final Object o2) {
-                original.put("c", "other");
+                original.putValue("c", "other");
             }
         }, null);
     }
@@ -290,7 +264,7 @@ public class ArrayContextDataTest {
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationTriConsumerPutValue() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
+        original.putValue("a", "aaa");
         original.forEach(new TriConsumer<String, Object, Object>() {
             @Override
             public void accept(final String s, final Object o, final Object o2) {
@@ -302,7 +276,7 @@ public class ArrayContextDataTest {
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationTriConsumerRemove() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
+        original.putValue("a", "aaa");
         original.forEach(new TriConsumer<String, Object, Object>() {
             @Override
             public void accept(final String s, final Object o, final Object o2) {
@@ -314,7 +288,7 @@ public class ArrayContextDataTest {
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationTriConsumerClear() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
+        original.putValue("a", "aaa");
         original.forEach(new TriConsumer<String, Object, Object>() {
             @Override
             public void accept(final String s, final Object o, final Object o2) {
@@ -337,13 +311,6 @@ public class ArrayContextDataTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testFreezeProhibitsPut() {
-        final ArrayContextData original = new ArrayContextData();
-        original.freeze();
-        original.put("a", "aaa");
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
     public void testFreezeProhibitsPutValue() {
         final ArrayContextData original = new ArrayContextData();
         original.freeze();
@@ -353,7 +320,7 @@ public class ArrayContextDataTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testFreezeProhibitsRemove() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("b", "bbb");
+        original.putValue("b", "bbb");
         original.freeze();
         original.remove("b"); // existing key: modifies the collection
     }
@@ -361,7 +328,7 @@ public class ArrayContextDataTest {
     @Test
     public void testFreezeAllowsRemoveOfNonExistingKey() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("b", "bbb");
+        original.putValue("b", "bbb");
         original.freeze();
         original.remove("a"); // no actual modification
     }
@@ -376,7 +343,7 @@ public class ArrayContextDataTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testFreezeProhibitsClear() {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "aaa");
+        original.putValue("a", "aaa");
         original.freeze();
         original.clear();
     }
@@ -391,11 +358,11 @@ public class ArrayContextDataTest {
     @Test
     public void testPutInsertsInAlphabeticOrder() throws Exception {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "avalue");
-        original.put("B", "Bvalue");
-        original.put("3", "3value");
-        original.put("c", "cvalue");
-        original.put("d", "dvalue");
+        original.putValue("a", "avalue");
+        original.putValue("B", "Bvalue");
+        original.putValue("3", "3value");
+        original.putValue("c", "cvalue");
+        original.putValue("d", "dvalue");
 
         assertEquals("avalue", original.getValue("a"));
         assertEquals("avalue", original.getValueAt(2));
@@ -540,19 +507,19 @@ public class ArrayContextDataTest {
     @Test
     public void testGet() throws Exception {
         final ArrayContextData original = new ArrayContextData();
-        original.put("a", "avalue");
-        original.put("B", "Bvalue");
-        original.put("3", "3value");
+        original.putValue("a", "avalue");
+        original.putValue("B", "Bvalue");
+        original.putValue("3", "3value");
 
-        assertEquals("avalue", original.get("a"));
-        assertEquals("Bvalue", original.get("B"));
-        assertEquals("3value", original.get("3"));
+        assertEquals("avalue", original.getValue("a"));
+        assertEquals("Bvalue", original.getValue("B"));
+        assertEquals("3value", original.getValue("3"));
 
         original.putValue("0", "0value");
-        assertEquals("0value", original.get("0"));
-        assertEquals("3value", original.get("3"));
-        assertEquals("Bvalue", original.get("B"));
-        assertEquals("avalue", original.get("a"));
+        assertEquals("0value", original.getValue("0"));
+        assertEquals("3value", original.getValue("3"));
+        assertEquals("Bvalue", original.getValue("B"));
+        assertEquals("avalue", original.getValue("a"));
     }
 
     @Test

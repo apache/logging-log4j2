@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,6 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
-import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**
  * Array-based implementation of the {@code ContextData} interface. Keys are held in a sorted array.
@@ -51,7 +49,7 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
  *
  * @since 2.7
  */
-public class ArrayContextData implements MutableContextData, ThreadContextMap {
+public class ArrayContextData implements MutableContextData {
 
     /**
      * The default initial capacity.
@@ -161,22 +159,6 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
         return immutable;
     }
 
-    @Override
-    public Map<String, String> getCopy() {
-        return asMap();
-    }
-
-    @Override
-    public Map<String, String> getImmutableMapOrNull() {
-        return isEmpty() ? null : Collections.unmodifiableMap(asMap());
-    }
-
-    @Override
-    public String get(final String key) {
-        final Object result = getValue(key);
-        return result == null ? null : String.valueOf(result);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <V> V getValue(final String key) {
@@ -205,11 +187,6 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
 
     private int nullKeyIndex() {
         return size > 0 && keys[0] == null ? 0 : ~0;
-    }
-
-    @Override
-    public void put(final String key, final String value) {
-        putValue(key, value);
     }
 
     @Override
@@ -251,10 +228,6 @@ public class ArrayContextData implements MutableContextData, ThreadContextMap {
             }
             source.forEach(PUT_ALL, this);
         }
-    }
-
-    public void initFrom(final ArrayContextData other) {
-        initFrom0(other);
     }
 
     private void initFrom0(final ArrayContextData other) {
