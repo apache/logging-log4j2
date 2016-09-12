@@ -335,7 +335,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, String> getContextMap() {
-        return contextData.asMap();
+        return contextData.toMap();
     }
 
     @Override

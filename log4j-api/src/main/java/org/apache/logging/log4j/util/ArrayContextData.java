@@ -140,7 +140,7 @@ public class ArrayContextData implements MutableContextData {
     }
 
     @Override
-    public Map<String, String> asMap() {
+    public Map<String, String> toMap() {
         final Map<String, String> result = new HashMap<>(size());
         for (int i = 0; i < size(); i++) {
             final Object value = getValueAt(i);

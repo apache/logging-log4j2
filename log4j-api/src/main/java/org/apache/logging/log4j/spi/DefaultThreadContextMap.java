@@ -115,7 +115,7 @@ public class DefaultThreadContextMap implements ThreadContextMap2, ContextData {
     }
 
     @Override
-    public Map<String, String> asMap() {
+    public Map<String, String> toMap() {
         return getCopy();
     }
 

@@ -134,7 +134,7 @@ public class ArrayContextDataTest {
     }
 
     @Test
-    public void testAsMap() throws Exception {
+    public void testToMap() throws Exception {
         final ArrayContextData original = new ArrayContextData();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -145,13 +145,12 @@ public class ArrayContextDataTest {
         expected.put("B", "Bvalue");
         expected.put("3", "3value");
 
-        assertEquals(expected, original.asMap());
+        assertEquals(expected, original.toMap());
 
         try {
-            original.asMap().put("abc", "xyz");
-            fail("Expected map to be immutable");
-        } catch (final UnsupportedOperationException ok) {
-            //ok
+            original.toMap().put("abc", "xyz");
+        } catch (final UnsupportedOperationException ex) {
+            fail("Expected map to be mutable, but " + ex);
         }
     }
 
@@ -449,27 +448,27 @@ public class ArrayContextDataTest {
         expected.put("3", "3value");
         expected.put("c", "cvalue");
         expected.put("d", "dvalue");
-        assertEquals("initial", expected, original.asMap());
+        assertEquals("initial", expected, original.toMap());
 
         original.putValue(null, "nullvalue");
         expected.put(null, "nullvalue");
         assertEquals(6, original.size());
-        assertEquals("with null key", expected, original.asMap());
+        assertEquals("with null key", expected, original.toMap());
 
         original.putValue(null, "otherNullvalue");
         expected.put(null, "otherNullvalue");
         assertEquals(6, original.size());
-        assertEquals("with null key value2", expected, original.asMap());
+        assertEquals("with null key value2", expected, original.toMap());
 
         original.putValue(null, "nullvalue");
         expected.put(null, "nullvalue");
         assertEquals(6, original.size());
-        assertEquals("with null key value1 again", expected, original.asMap());
+        assertEquals("with null key value1 again", expected, original.toMap());
 
         original.putValue(null, "abc");
         expected.put(null, "abc");
         assertEquals(6, original.size());
-        assertEquals("with null key value3", expected, original.asMap());
+        assertEquals("with null key value3", expected, original.toMap());
     }
 
     @Test

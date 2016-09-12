@@ -355,7 +355,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     @Override
     public Map<String, String> getContextMap() {
-        return contextData.asMap();
+        return contextData.toMap();
     }
 
     public void setContextData(final MutableContextData mutableContextData) {

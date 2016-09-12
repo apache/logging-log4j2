@@ -153,7 +153,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
     @Override
     public Map<String, String> getCopy() {
         final MutableContextData map = localMap.get();
-        return map == null ? new HashMap<String, String>() : map.asMap();
+        return map == null ? new HashMap<String, String>() : map.toMap();
     }
 
     /**
@@ -168,7 +168,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
     @Override
     public Map<String, String> getImmutableMapOrNull() {
         final MutableContextData map = localMap.get();
-        return map == null ? null : Collections.unmodifiableMap(map.asMap());
+        return map == null ? null : Collections.unmodifiableMap(map.toMap());
     }
 
     @Override

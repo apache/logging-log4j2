@@ -240,7 +240,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     }
 
     @Override
-    public Map<String, String> asMap() {
+    public Map<String, String> toMap() {
         final Map<String, String> result = new HashMap<>(size);
         forEach(COPY_INTO_MAP, result);
         return result;
@@ -426,12 +426,12 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
 
     @Override
     public Map<String, String> getCopy() {
-        return asMap();
+        return toMap();
     }
 
     @Override
     public Map<String, String> getImmutableMapOrNull() {
-        return isEmpty() ? null : Collections.unmodifiableMap(asMap());
+        return isEmpty() ? null : Collections.unmodifiableMap(toMap());
     }
 
     @Override

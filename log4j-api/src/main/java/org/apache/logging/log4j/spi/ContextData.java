@@ -35,11 +35,11 @@ import org.apache.logging.log4j.util.TriConsumer;
  */
 public interface ContextData extends Serializable {
     /**
-     * Returns a {@code Map<String, String>} view of this context data.
+     * Returns a non-{@code null} mutable {@code Map<String, String>} containing a snapshot of this context data.
      *
-     * @return a map view of this context data
+     * @return a mutable copy of this context data in {@code Map<String, String>} form
      */
-    Map<String, String> asMap();
+    Map<String, String> toMap();
 
     /**
      * Returns {@code true} if this context data contains the specified key, {@code false} otherwise.

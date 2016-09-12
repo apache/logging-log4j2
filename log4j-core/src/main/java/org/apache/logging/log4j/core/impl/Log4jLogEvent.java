@@ -591,7 +591,7 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public Map<String, String> getContextMap() {
-        return contextData.asMap();
+        return contextData.toMap();
     }
 
     /**
