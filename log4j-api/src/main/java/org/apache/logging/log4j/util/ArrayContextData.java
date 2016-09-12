@@ -28,6 +28,7 @@ import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
 
 /**
+ * <em>Consider this class private.</em>
  * Array-based implementation of the {@code ContextData} interface. Keys are held in a sorted array.
  * <p>
  * This is not a generic collection, but makes some trade-offs to optimize for the Log4j ContextData use case:
