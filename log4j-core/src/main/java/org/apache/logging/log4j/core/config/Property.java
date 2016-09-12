@@ -54,7 +54,7 @@ public final class Property {
      * @return the value of the property.
      */
     public String getValue() {
-        return value;
+        return value == null ? "" : value; // LOG4J2-1313 null would be same as Property not existing
     }
 
     /**
@@ -84,6 +84,6 @@ public final class Property {
 
     @Override
     public String toString() {
-        return name + '=' + value;
+        return name + '=' + getValue();
     }
 }

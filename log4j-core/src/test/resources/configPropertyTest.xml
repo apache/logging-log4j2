@@ -17,15 +17,17 @@
   -->
 <Configuration status="ERROR">
   <Properties>
+    <Property name="emptyElementKey" />
+    <Property name="emptyAttributeKey" value="" />
+    <Property name="emptyAttributeKey2" value=""></Property>
     <Property name="elementKey">elementValue</Property>
-    <Property name="emptyElementKey"></Property>
     <Property name="attributeKey" value="attributeValue" />
     <Property name="attributeWithEmptyElementKey" value="attributeValue2"></Property>
     <Property name="bothElementAndAttributeKey" value="attributeValue3">elementValue3</Property>
   </Properties>
   <Appenders>
     <List name="List">
-      <PatternLayout pattern="1=${sys:elementKey},2=${sys:emptyElementKey},3=${sys:attributeKey},4=${sys:attributeWithEmptyElementKey},5=${sys:bothElementAndAttributeKey},m=%m" />
+      <PatternLayout pattern="1=${sys:elementKey},2=${sys:emptyElementKey},a=${sys:emptyAttributeKey},b=${sys:emptyAttributeKey2},3=${sys:attributeKey},4=${sys:attributeWithEmptyElementKey},5=${sys:bothElementAndAttributeKey},m=%m" />
     </List>
   </Appenders>
   <Loggers>
