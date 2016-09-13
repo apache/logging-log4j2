@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -47,6 +48,74 @@ import org.apache.logging.log4j.core.util.Booleans;
  */
 @Plugin(name = "Routing", category = "Core", elementType = "appender", printObject = true)
 public final class RoutingAppender extends AbstractAppender {
+    
+    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<RoutingAppender> {
+                
+        @PluginElement("Routes") 
+        private Routes routes;
+        
+        @PluginConfiguration 
+        private Configuration configuration;
+        
+        @PluginElement("RewritePolicy") 
+        private RewritePolicy rewritePolicy;
+        
+        @PluginElement("PurgePolicy") 
+        private PurgePolicy purgePolicy;
+        
+        @Override
+        public RoutingAppender build() {
+            if (getName() == null) {
+                LOGGER.error("No name provided for RoutingAppender");
+                return null;
+            }
+            if (routes == null) {
+                LOGGER.error("No routes defined for RoutingAppender");
+                return null;
+            }
+            return new RoutingAppender(getName(), getFilter(), isIgnoreExceptions(), routes, rewritePolicy, getConfiguration(), purgePolicy);
+        }
+
+        public Routes getRoutes() {
+            return routes;
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+        public RewritePolicy getRewritePolicy() {
+            return rewritePolicy;
+        }
+
+        public PurgePolicy getPurgePolicy() {
+            return purgePolicy;
+        }
+
+        public void withRoutes(@SuppressWarnings("hiding") final Routes routes) {
+            this.routes = routes;
+        }
+
+        public void withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+            this.configuration = configuration;
+        }
+
+        public void withRewritePolicy(@SuppressWarnings("hiding") final RewritePolicy rewritePolicy) {
+            this.rewritePolicy = rewritePolicy;
+        }
+
+        public void withPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
+            this.purgePolicy = purgePolicy;
+        }
+
+    }
+    
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
+
     private static final String DEFAULT_KEY = "ROUTING_APPENDER_DEFAULT";
     private final Routes routes;
     private final Route defaultRoute;
@@ -206,16 +275,17 @@ public final class RoutingAppender extends AbstractAppender {
      * @param rewritePolicy A RewritePolicy, if any.
      * @param filter A Filter to restrict events processed by the Appender or null.
      * @return The RoutingAppender
+     * @deprecated Since 2.7; use {@link #newBuilder()}
      */
-    @PluginFactory
+    @Deprecated
     public static RoutingAppender createAppender(
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("ignoreExceptions") final String ignore,
-            @PluginElement("Routes") final Routes routes,
-            @PluginConfiguration final Configuration config,
-            @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
-            @PluginElement("PurgePolicy") final PurgePolicy purgePolicy,
-            @PluginElement("Filter") final Filter filter) {
+            final String name,
+            final String ignore,
+            final Routes routes,
+            final Configuration config,
+            final RewritePolicy rewritePolicy,
+            final PurgePolicy purgePolicy,
+            final Filter filter) {
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         if (name == null) {

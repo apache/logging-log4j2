@@ -210,6 +210,9 @@
       <action issue="LOG4J2-1540" dev="ggregory" type="add">
         The Core AbstractManager now tracks its LoggerContext.
       </action>
+      <action issue="LOG4J2-1577" dev="ggregory" type="add">
+        Add a Builder to the RoutingAppender and deprecate factory method.
+      </action>
       <action issue="LOG4J2-1574" dev="ggregory" type="update">
         Allow the RollingFileAppender to use default pattern layout.
       </action>
