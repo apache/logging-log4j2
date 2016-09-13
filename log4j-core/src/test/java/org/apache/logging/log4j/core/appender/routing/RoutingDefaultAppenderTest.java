@@ -56,7 +56,6 @@ public class RoutingDefaultAppenderTest {
         if (app != null) {
             app.clear();
         }
-        this.loggerContextRule.getLoggerContext().stop();
     }
 
     @Test
