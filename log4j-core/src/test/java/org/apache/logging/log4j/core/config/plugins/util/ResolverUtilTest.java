@@ -37,13 +37,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
+import org.apache.logging.log4j.junit.CleanFolders;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
  * Tests the ResolverUtil class.
  */
 public class ResolverUtilTest {
 
+    static final String WORK_DIR = "target/testpluginsutil";
+
+    @Rule
+    public RuleChain chain = RuleChain.outerRule(new CleanFolders(WORK_DIR));
+    
     @Test
     public void testExtractPathFromJarUrl() throws Exception {
         final URL url = new URL("jar:file:/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar!/org/junit/Test.class");
@@ -141,28 +149,26 @@ public class ResolverUtilTest {
 
     @Test
     public void testFindInPackageFromDirectoryPath() throws Exception {
-      final ClassLoader cl = compileAndCreateClassLoader("1");
-
-      final ResolverUtil resolverUtil = new ResolverUtil();
-      resolverUtil.setClassLoader(cl);
-      resolverUtil.findInPackage(new PluginTest(), "customplugin1");
-      assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-      assertEquals("Unexpected class resolved",
-            cl.loadClass("customplugin1.FixedString1Layout"),
-            resolverUtil.getClasses().iterator().next());
+        try (final URLClassLoader cl = compileAndCreateClassLoader("1")) {
+            final ResolverUtil resolverUtil = new ResolverUtil();
+            resolverUtil.setClassLoader(cl);
+            resolverUtil.findInPackage(new PluginTest(), "customplugin1");
+            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
+            assertEquals("Unexpected class resolved", cl.loadClass("customplugin1.FixedString1Layout"),
+                    resolverUtil.getClasses().iterator().next());
+        }
     }
 
     @Test
     public void testFindInPackageFromJarPath() throws Exception {
-      final ClassLoader cl = compileJarAndCreateClassLoader("2");
-
-      final ResolverUtil resolverUtil = new ResolverUtil();
-      resolverUtil.setClassLoader(cl);
-      resolverUtil.findInPackage(new PluginTest(), "customplugin2");
-      assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-      assertEquals("Unexpected class resolved",
-            cl.loadClass("customplugin2.FixedString2Layout"),
-            resolverUtil.getClasses().iterator().next());
+        try (final URLClassLoader cl = compileJarAndCreateClassLoader("2")) {
+            final ResolverUtil resolverUtil = new ResolverUtil();
+            resolverUtil.setClassLoader(cl);
+            resolverUtil.findInPackage(new PluginTest(), "customplugin2");
+            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
+            assertEquals("Unexpected class resolved", cl.loadClass("customplugin2.FixedString2Layout"),
+                    resolverUtil.getClasses().iterator().next());
+        }
     }
 
     static URLClassLoader compileJarAndCreateClassLoader(final String suffix) throws IOException, Exception {
