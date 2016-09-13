@@ -282,8 +282,10 @@ public class ArrayContextData implements MutableContextData {
             assertNotFrozen();
             assertNoConcurrentModification();
 
-            System.arraycopy(keys, index + 1, keys, index, size - index);
-            System.arraycopy(values, index + 1, values, index, size - index);
+            System.arraycopy(keys, index + 1, keys, index, size - 1 - index);
+            System.arraycopy(values, index + 1, values, index, size - 1 - index);
+            keys[size - 1] = null;
+            values[size - 1] = null;
             size--;
         }
     }

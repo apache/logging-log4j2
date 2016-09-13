@@ -488,6 +488,38 @@ public class ArrayContextDataTest {
     }
 
     @Test
+    public void testRemoveNullsOutRemovedSlot() throws Exception {
+        final ArrayContextData original = new ArrayContextData();
+        original.putValue("a", "avalue");
+        original.putValue("b", "bvalue");
+        original.putValue("c", "cvalue");
+        original.putValue("d", "dvalue");
+        original.remove("a");
+        original.remove("b");
+        original.remove("c");
+        original.remove("d");
+        assertNull(original.getValueAt(0));
+
+        // ensure slots in the values array are nulled out
+        Field f = ArrayContextData.class.getDeclaredField("values");
+        f.setAccessible(true);
+        Object[] values = (Object[]) f.get(original);
+        for (int i = 0; i < values.length; i++) {
+            assertNull(values[i]);
+        }
+    }
+
+    @Test
+    public void testRemoveWhenFull() throws Exception {
+        final ArrayContextData original = new ArrayContextData();
+        original.putValue("a", "avalue");
+        original.putValue("b", "bvalue");
+        original.putValue("c", "cvalue");
+        original.putValue("d", "dvalue"); // default capacity = 4
+        original.remove("d");
+    }
+
+    @Test
     public void testNullValuesArePreserved() {
         final ArrayContextData original = new ArrayContextData();
         original.putValue("a", "avalue");
