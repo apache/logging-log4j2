@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -24,7 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Used to contain the individual Route elements.
+ * Contains the individual Route elements.
  */
 @Plugin(name = "Routes", category = "Core", printObject = true)
 public final class Routes {
@@ -32,6 +34,8 @@ public final class Routes {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String pattern;
+    
+    // TODO Why not make this a Map or add a Map.
     private final Route[] routes;
 
     private Routes(final String pattern, final Route... routes) {
@@ -45,6 +49,16 @@ public final class Routes {
      */
     public String getPattern() {
         return pattern;
+    }
+
+    public Route getRoute(String key) {
+        for (int i = 0; i < routes.length; i++) {
+            final Route route = routes[i];
+            if (Objects.equals(route.getKey(), key)) {
+                return route;
+            }
+        }
+        return null;
     }
 
     /**
@@ -72,7 +86,7 @@ public final class Routes {
     }
 
     /**
-     * Create the Routes.
+     * Creates the Routes.
      * @param pattern The pattern.
      * @param routes An array of Route elements.
      * @return The Routes container.
@@ -81,14 +95,11 @@ public final class Routes {
     public static Routes createRoutes(
             @PluginAttribute("pattern") final String pattern,
             @PluginElement("Routes") final Route... routes) {
-        if (pattern == null) {
-            LOGGER.error("A pattern is required");
-            return null;
-        }
         if (routes == null || routes.length == 0) {
             LOGGER.error("No routes configured");
             return null;
         }
         return new Routes(pattern, routes);
     }
+
 }
