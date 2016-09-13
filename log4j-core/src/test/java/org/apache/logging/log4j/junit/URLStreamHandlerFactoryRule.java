@@ -82,7 +82,7 @@ public class URLStreamHandlerFactoryRule implements TestRule {
                 Assert.assertNotNull("java.net URL does not declare a java.net.URLStreamHandlerFactory field",
                         factoryField);
                 Assert.assertEquals("java.net.URL declares multiple java.net.URLStreamHandlerFactory fields.", 1,
-                        matches);
+                        matches); // FIXME There is a break in the loop so always 0 or 1
                 URL.setURLStreamHandlerFactory(newURLStreamHandlerFactory);
                 try {
                     base.evaluate();
