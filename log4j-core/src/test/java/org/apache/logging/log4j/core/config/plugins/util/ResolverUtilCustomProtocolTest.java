@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import static org.apache.logging.log4j.core.config.plugins.util.ResolverUtilTest.compileAndCreateClassLoader;
-import static org.apache.logging.log4j.core.config.plugins.util.ResolverUtilTest.compileJarAndCreateClassLoader;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -178,7 +176,7 @@ public class ResolverUtilCustomProtocolTest {
 
     @Test
     public void testFindInPackageFromVfsDirectoryURL() throws Exception {
-        final ClassLoader cl = compileAndCreateClassLoader("3");
+        final ClassLoader cl = ResolverUtilTest.compileAndCreateClassLoader("3");
 
         final ResolverUtil resolverUtil = new ResolverUtil();
         resolverUtil.setClassLoader(new SingleURLClassLoader(new URL("vfs:/target/resolverutil3/customplugin3/"), cl));
@@ -190,7 +188,7 @@ public class ResolverUtilCustomProtocolTest {
 
     @Test
     public void testFindInPackageFromVfsJarURL() throws Exception {
-        final ClassLoader cl = compileJarAndCreateClassLoader("4");
+        final ClassLoader cl = ResolverUtilTest.compileJarAndCreateClassLoader("4");
 
         final ResolverUtil resolverUtil = new ResolverUtil();
         resolverUtil.setClassLoader(
