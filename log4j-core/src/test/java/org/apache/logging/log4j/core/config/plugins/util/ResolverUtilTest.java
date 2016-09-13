@@ -187,7 +187,7 @@ public class ResolverUtilTest {
 
     static File compile(final String suffix) throws IOException {
         final File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
-        final File workDir = new File("target/resolverutil" + suffix);
+        final File workDir = new File(WORK_DIR, "resolverutil" + suffix);
         final File f = new File(workDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.java");
         final File parent = f.getParentFile();
         if (!parent.exists()) {
