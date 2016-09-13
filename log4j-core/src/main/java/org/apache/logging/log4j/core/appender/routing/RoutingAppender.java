@@ -181,7 +181,7 @@ public final class RoutingAppender extends AbstractAppender {
     }
 
     /**
-     * Delete specified appender
+     * Deletes the specified appender.
      *
      * @param key The appender's key
      */
@@ -197,7 +197,7 @@ public final class RoutingAppender extends AbstractAppender {
     }
 
     /**
-     * Create a RoutingAppender.
+     * Creates a RoutingAppender.
      * @param name The name of the Appender.
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
