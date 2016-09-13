@@ -96,9 +96,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
         } catch (final Throwable e) {
             // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
-            LOGGER.warn(
-                    "JNDI lookup class is not available because this JRE does not support JNDI. JNDI string lookups will not be available, continuing configuration.",
-                    e);
+            LOGGER.warn( // LOG4J2-1582 don't print the whole stack trace (it is just a warning...)
+                    "JNDI lookup class is not available because this JRE does not support JNDI." +
+                    " JNDI string lookups will not be available, continuing configuration. Ignoring: " + e);
         }
         // JMX input args
         try {

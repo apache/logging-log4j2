@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.7" date="2016-MM-DD" description="GA Release 2.7">
+      <action issue="LOG4J2-1582" dev="rpopma" type="fix">
+        When initializing on platforms where JMX is not available, Interpolator component no longer prints stack trace for warning messages.
+      </action>
       <action issue="LOG4J2-1313" dev="rpopma" type="fix" due-to="Philipp Knobel, Leon Finker">
         Support Property values to be specified in configuration as a value attribute as well as an element.
       </action>
