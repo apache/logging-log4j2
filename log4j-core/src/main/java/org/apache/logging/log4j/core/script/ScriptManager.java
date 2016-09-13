@@ -107,7 +107,7 @@ public class ScriptManager implements FileWatcher, Serializable {
         }
 
         if (script instanceof ScriptFile) {
-            final ScriptFile scriptFile = (ScriptFile)script;
+            final ScriptFile scriptFile = (ScriptFile) script;
             final Path path = scriptFile.getPath();
             if (scriptFile.isWatched() && path != null) {
                 watchManager.watchFile(path.toFile(), this);
