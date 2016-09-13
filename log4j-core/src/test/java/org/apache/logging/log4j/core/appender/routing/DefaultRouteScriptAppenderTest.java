@@ -123,7 +123,7 @@ public class DefaultRouteScriptAppenderTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testRoutingPresence2() {
         logAndCheck();
     }
