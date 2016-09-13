@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 
 /**
- * Testing Routing appender purge facilities
+ * Tests Routing appender purge facilities
  */
 public class RoutingAppenderWithPurgingTest {
     private static final String CONFIG = "log4j-routing-purge.xml";
