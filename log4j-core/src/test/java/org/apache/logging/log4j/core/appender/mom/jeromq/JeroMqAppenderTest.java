@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -116,7 +118,8 @@ public class JeroMqAppenderTest {
             Assert.assertEquals(nThreads, hello);
             Assert.assertEquals(nThreads, again);
         } finally {
-            executor.shutdown();
+            ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS,
+                    JeroMqAppenderTest.class.getSimpleName());
         }
     }
 
