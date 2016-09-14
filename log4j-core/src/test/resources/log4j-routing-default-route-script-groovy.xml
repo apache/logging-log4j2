@@ -20,10 +20,7 @@
   <Appenders>
     <Routing name="Routing">
       <Script name="RoutingInit" language="groovy"><![CDATA[
-        if ("OSNameFoo".contains("Foo")) {
-          return "Service2";
-        }
-        return "Service1";]]>
+        return "OSNameFoo".contains("Foo") ? "Service2": "Service1";]]>
       </Script>
       <Routes>
         <Route key="Service1">
