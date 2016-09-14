@@ -218,15 +218,15 @@ public class ArrayContextData implements MutableContextData {
 
     @Override
     public void putAll(final ContextData source) {
+        if (source == this) {
+            return; // this.putAll(this) does not modify this collection
+        }
         assertNotFrozen();
         assertNoConcurrentModification();
 
         if (source instanceof ArrayContextData && this.size == 0) {
             initFrom0((ArrayContextData) source);
         } else if (source != null) {
-            if (source == this) {
-                return; // this.putAll(this) does not modify this collection
-            }
             source.forEach(PUT_ALL, this);
         }
     }
