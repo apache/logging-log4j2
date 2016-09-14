@@ -205,7 +205,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
         subst.setConfiguration(this);
-        scriptManager = new ScriptManager(watchManager);
+        scriptManager = new ScriptManager(this, watchManager);
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
         levelPlugins.collectPlugins(pluginPackages);

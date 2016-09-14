@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.appender.routing;
 
 import java.util.Objects;
 
-import javax.script.SimpleBindings;
+import javax.script.Bindings;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.script.AbstractScript;
+import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -61,6 +62,7 @@ public final class Routes {
             if (patternScript != null && pattern != null) {
                 LOGGER.warn("In a Routes element, you must configure either a Script element or a pattern attribute.");
             }
+            Bindings bindings = null;
             if (patternScript != null) {
                 if (configuration == null) {
                     LOGGER.error("No Configuration defined for Routes; required for Script");
@@ -134,12 +136,14 @@ public final class Routes {
         return new Builder();
     }
     
+    private Bindings bindings;
+    
     private final Configuration configuration;
     
     private final String pattern;
-    
-    private final AbstractScript patternScript;
 
+    private final AbstractScript patternScript;
+    
     // TODO Why not make this a Map or add a Map.
     private final Route[] routes;
 
@@ -150,16 +154,21 @@ public final class Routes {
         this.routes = routes;
     }
 
+    public Bindings getBindings() {
+        return bindings;
+    }
+
     /**
      * Returns the pattern.
      * @return the pattern.
      */
     public String getPattern() {
         if (patternScript != null) {
-            final SimpleBindings bindings = new SimpleBindings();
-            bindings.put("configuration", configuration);
-            bindings.put("statusLogger", LOGGER);
-            final Object object = configuration.getScriptManager().execute(patternScript.getName(), bindings);
+            final ScriptManager scriptManager = configuration.getScriptManager();
+            if (bindings == null) {
+                bindings = scriptManager.createBindings(patternScript);
+            }
+            final Object object = scriptManager.execute(patternScript.getName(), bindings);
             return Objects.toString(object, null);
         }
         return pattern;
@@ -188,6 +197,10 @@ public final class Routes {
      */
     public Route[] getRoutes() {
         return routes;
+    }
+
+    public void setBindings(final Bindings bindings) {
+        this.bindings = bindings;
     }
 
     @Override

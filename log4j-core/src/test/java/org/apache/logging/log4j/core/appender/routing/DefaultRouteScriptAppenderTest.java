@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.Bindings;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderControl;
@@ -39,18 +41,34 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class DefaultRouteScriptAppenderTest {
 
-    @Parameterized.Parameters(name = "{0}")
-    public static String[] getParameters() {
-        return new String[] { 
-                "log4j-routing-default-route-script-groovy.xml",
-                "log4j-routing-default-route-script-javascript.xml" };
+    @Parameterized.Parameters(name = "{0} {1}")
+    public static Object[][] getParameters() {
+        // @formatter:off
+        return new Object[][] { 
+                { "log4j-routing-default-route-script-groovy.xml", false },
+                { "log4j-routing-default-route-script-javascript.xml", false },
+                { "log4j-routing-script-staticvars-javascript.xml", true },
+                { "log4j-routing-script-staticvars-groovy.xml", true },
+        };
+        // @formatter:on
     }
 
     @Rule
     public final LoggerContextRule loggerContextRule;
 
-    public DefaultRouteScriptAppenderTest(final String configLocation) {
+    private final boolean expectBindingEntries;
+
+    public DefaultRouteScriptAppenderTest(final String configLocation, final boolean expectBindingEntries) {
         this.loggerContextRule = new LoggerContextRule(configLocation);
+        this.expectBindingEntries = expectBindingEntries;
+    }
+
+    private void checkStaticVars() {
+        final RoutingAppender routingAppender = getRoutingAppender();
+        final Bindings bindings = routingAppender.getBindings();
+        if (expectBindingEntries) {
+            Assert.assertEquals("TestValue2", ((Map<?, ?>) bindings.get("staticVariables")).get("TestKey"));
+        }
     }
 
     private ListAppender getListAppender() {
@@ -118,10 +136,12 @@ public class DefaultRouteScriptAppenderTest {
     @Test
     public void testRoutingPresence1() {
         logAndCheck();
+        checkStaticVars();
     }
 
     @Test
     public void testRoutingPresence2() {
         logAndCheck();
+        checkStaticVars();
     }
 }

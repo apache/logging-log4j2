@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.script.Bindings;
 import javax.script.SimpleBindings;
 
 import org.apache.logging.log4j.core.Appender;
@@ -38,6 +39,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.script.AbstractScript;
+import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.util.Booleans;
 
 /**
@@ -137,6 +139,7 @@ public final class RoutingAppender extends AbstractAppender {
     }
 
     private static final String DEFAULT_KEY = "ROUTING_APPENDER_DEFAULT";
+    
     private final Routes routes;
     private Route defaultRoute;
     private final Configuration configuration;
@@ -144,7 +147,8 @@ public final class RoutingAppender extends AbstractAppender {
     private final RewritePolicy rewritePolicy;
     private final PurgePolicy purgePolicy;
     private final AbstractScript defaultRouteScript;
-
+    private Bindings bindings;
+    
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
             AbstractScript defaultRouteScript) {
@@ -176,11 +180,11 @@ public final class RoutingAppender extends AbstractAppender {
             if (configuration == null) {
                 error("No Configuration defined for RoutingAppender; required for Script element.");
             } else {
-                configuration.getScriptManager().addScript(defaultRouteScript);
-                final SimpleBindings bindings = new SimpleBindings();
-                bindings.put("configuration", configuration);
-                bindings.put("statusLogger", LOGGER);
-                final Object object = configuration.getScriptManager().execute(defaultRouteScript.getName(), bindings);
+                final ScriptManager scriptManager = configuration.getScriptManager();
+                scriptManager.addScript(defaultRouteScript);
+                bindings = scriptManager.createBindings(defaultRouteScript);
+                routes.setBindings(bindings);
+                final Object object = scriptManager.execute(defaultRouteScript.getName(), bindings);
                 final Route route = routes.getRoute(Objects.toString(object, null));
                 if (route != null) {
                     defaultRoute = route;
@@ -360,5 +364,9 @@ public final class RoutingAppender extends AbstractAppender {
 
     public Configuration getConfiguration() {
         return configuration;
+    }
+
+    public Bindings getBindings() {
+        return bindings;
     }
 }
