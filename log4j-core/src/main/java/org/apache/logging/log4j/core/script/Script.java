@@ -16,13 +16,11 @@
  */
 package org.apache.logging.log4j.core.script;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Container for the language and body of a script.
