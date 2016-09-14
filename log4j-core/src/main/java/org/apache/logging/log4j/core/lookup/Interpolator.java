@@ -98,18 +98,19 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
             LOGGER.warn( // LOG4J2-1582 don't print the whole stack trace (it is just a warning...)
                     "JNDI lookup class is not available because this JRE does not support JNDI." +
-                    " JNDI string lookups will not be available, continuing configuration. Ignoring: " + e);
+                    " JNDI string lookups will not be available, continuing configuration. Ignoring " + e);
         }
         // JMX input args
         try {
             // We might be on Android
             lookups.put("jvmrunargs",
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup", StrLookup.class));
+                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
+                        StrLookup.class));
         } catch (final Throwable e) {
             // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JmxRuntimeInputArgumentsLookup
             LOGGER.warn(
-                    "JMX runtime input lookup class is not available because this JRE does not support JMX. JMX lookups will not be available, continuing configuration.",
-                    e);
+                    "JMX runtime input lookup class is not available because this JRE does not support JMX. " +
+                            "JMX lookups will not be available, continuing configuration. Ignoring " + e);
         }
         lookups.put("date", new DateLookup());
         lookups.put("ctx", new ContextMapLookup());
