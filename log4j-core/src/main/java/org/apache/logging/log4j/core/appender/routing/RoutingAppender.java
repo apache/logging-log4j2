@@ -72,15 +72,16 @@ public final class RoutingAppender extends AbstractAppender {
         
         @Override
         public RoutingAppender build() {
-            if (getName() == null) {
-                LOGGER.error("No name defined for RoutingAppender");
+            final String name = getName();
+            if (name == null) {
+                LOGGER.error("No name defined for this RoutingAppender");
                 return null;
             }
             if (routes == null) {
-                LOGGER.error("No routes defined for RoutingAppender");
+                LOGGER.error("No routes defined for RoutingAppender {}", name);
                 return null;
             }
-            return new RoutingAppender(getName(), getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
+            return new RoutingAppender(name, getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
                     configuration, purgePolicy, defaultRouteScript);
         }
 
@@ -173,7 +174,7 @@ public final class RoutingAppender extends AbstractAppender {
     public void start() {
         if (defaultRouteScript != null) {
             if (configuration == null) {
-                error("No Configuration defined for RoutingAppender; required for DefaultRouteScript");
+                error("No Configuration defined for RoutingAppender; required for Script element.");
             } else {
                 configuration.getScriptManager().addScript(defaultRouteScript);
                 final SimpleBindings bindings = new SimpleBindings();
@@ -351,5 +352,13 @@ public final class RoutingAppender extends AbstractAppender {
 
     public RewritePolicy getRewritePolicy() {
         return rewritePolicy;
+    }
+
+    public Routes getRoutes() {
+        return routes;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
     }
 }

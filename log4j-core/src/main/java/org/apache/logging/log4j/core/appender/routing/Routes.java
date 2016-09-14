@@ -18,11 +18,17 @@ package org.apache.logging.log4j.core.appender.routing;
 
 import java.util.Objects;
 
+import javax.script.SimpleBindings;
+
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -33,54 +39,113 @@ public final class Routes {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<Routes>  {
 
+        @PluginConfiguration 
+        private Configuration configuration;
+
         @PluginAttribute("pattern") 
         private String pattern;
         
-        @PluginElement("Routes") 
+        @PluginElement("Script")
+        private AbstractScript patternScript;
+
+        @PluginElement("Routes")
+        @Required
         private Route[] routes;
 
         @Override
         public Routes build() {
             if (routes == null || routes.length == 0) {
-                LOGGER.error("No routes configured");
+                LOGGER.error("No Routes configured.");
                 return null;
             }
-            return new Routes(pattern, routes);
+            if (patternScript != null && pattern != null) {
+                LOGGER.warn("In a Routes element, you must configure either a Script element or a pattern attribute.");
+            }
+            if (patternScript != null) {
+                if (configuration == null) {
+                    LOGGER.error("No Configuration defined for Routes; required for Script");
+                } else {
+                    configuration.getScriptManager().addScript(patternScript);
+                }
+            }
+            return new Routes(configuration, patternScript, pattern, routes);
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
         }
 
         public String getPattern() {
             return pattern;
         }
 
+        public AbstractScript getPatternScript() {
+            return patternScript;
+        }
+
         public Route[] getRoutes() {
             return routes;
         }
 
-        public Builder withPattern(@SuppressWarnings("hiding") String pattern) {
+        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        public Builder withPattern(@SuppressWarnings("hiding") final String pattern) {
             this.pattern = pattern;
             return this;
         }
 
-        public Builder withRoutes(@SuppressWarnings("hiding") Route[] routes) {
+        public Builder withPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
+            this.patternScript = patternScript;
+            return this;
+        }
+
+        public Builder withRoutes(@SuppressWarnings("hiding") final Route[] routes) {
             this.routes = routes;
             return this;
         }
         
     }
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    /**
+     * Creates the Routes.
+     * @param pattern The pattern.
+     * @param routes An array of Route elements.
+     * @return The Routes container.
+     * @deprecated since 2.7; use {@link #newBuilder()}.
+     */
+    @Deprecated
+    public static Routes createRoutes(
+            final String pattern,
+            final Route... routes) {
+        if (routes == null || routes.length == 0) {
+            LOGGER.error("No routes configured");
+            return null;
+        }
+        return new Routes(null, null, pattern, routes);
+    }
+
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
     }
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
+    
+    private final Configuration configuration;
+    
     private final String pattern;
     
+    private final AbstractScript patternScript;
+
     // TODO Why not make this a Map or add a Map.
     private final Route[] routes;
 
-    private Routes(final String pattern, final Route... routes) {
+    private Routes(final Configuration configuration, final AbstractScript patternScript, final String pattern, final Route... routes) {
+        this.configuration = configuration;
+        this.patternScript = patternScript;
         this.pattern = pattern;
         this.routes = routes;
     }
@@ -90,12 +155,26 @@ public final class Routes {
      * @return the pattern.
      */
     public String getPattern() {
+        if (patternScript != null) {
+            final SimpleBindings bindings = new SimpleBindings();
+            bindings.put("configuration", configuration);
+            bindings.put("statusLogger", LOGGER);
+            final Object object = configuration.getScriptManager().execute(patternScript.getName(), bindings);
+            return Objects.toString(object, null);
+        }
         return pattern;
     }
 
-    public Route getRoute(String key) {
-        for (int i = 0; i < routes.length; i++) {
-            final Route route = routes[i];
+    /**
+     * Gets the optional script that decides which route to pick.
+     * @return the optional script that decides which route to pick. May be null.
+     */
+    public AbstractScript getPatternScript() {
+        return patternScript;
+    }
+
+    public Route getRoute(final String key) {
+        for (final Route route : routes) {
             if (Objects.equals(route.getKey(), key)) {
                 return route;
             }
@@ -125,24 +204,6 @@ public final class Routes {
         sb.append('}');
         return sb.toString();
 
-    }
-
-    /**
-     * Creates the Routes.
-     * @param pattern The pattern.
-     * @param routes An array of Route elements.
-     * @return The Routes container.
-     * @deprecated since 2.7; use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static Routes createRoutes(
-            final String pattern,
-            final Route... routes) {
-        if (routes == null || routes.length == 0) {
-            LOGGER.error("No routes configured");
-            return null;
-        }
-        return new Routes(pattern, routes);
     }
 
 }
