@@ -273,7 +273,7 @@ public class ScriptManager implements FileWatcher, Serializable {
         }
     }
 
-    public ScriptRunner getScriptRunner(AbstractScript script) {
+    private ScriptRunner getScriptRunner(AbstractScript script) {
         return scriptRunners.get(script.getName());
     }
 }
