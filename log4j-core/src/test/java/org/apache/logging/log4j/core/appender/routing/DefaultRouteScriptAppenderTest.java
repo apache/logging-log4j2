@@ -22,14 +22,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +42,7 @@ public class DefaultRouteScriptAppenderTest {
     @Parameterized.Parameters(name = "{0}")
     public static String[] getParameters() {
         return new String[] { 
-                // @Ignore "log4j-routing-default-route-script-groovy.xml",
+                "log4j-routing-default-route-script-groovy.xml",
                 "log4j-routing-default-route-script-javascript.xml" };
     }
 
@@ -71,13 +69,13 @@ public class DefaultRouteScriptAppenderTest {
     }
 
     private void logAndCheck() {
-        final StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Alert");
-        EventLogger.logEvent(msg);
+        final Logger logger = loggerContextRule.getLogger(DefaultRouteScriptAppenderTest.class);
+        logger.error("Hello");
         final ListAppender listAppender = getListAppender();
         final List<LogEvent> list = listAppender.getEvents();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
-        EventLogger.logEvent(msg);
+        logger.error("World");
         assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
     }
 
@@ -123,7 +121,6 @@ public class DefaultRouteScriptAppenderTest {
     }
 
     @Test
-    @Ignore
     public void testRoutingPresence2() {
         logAndCheck();
     }
