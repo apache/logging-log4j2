@@ -62,7 +62,6 @@ public final class Routes {
             if (patternScript != null && pattern != null) {
                 LOGGER.warn("In a Routes element, you must configure either a Script element or a pattern attribute.");
             }
-            Bindings bindings = null;
             if (patternScript != null) {
                 if (configuration == null) {
                     LOGGER.error("No Configuration defined for Routes; required for Script");
