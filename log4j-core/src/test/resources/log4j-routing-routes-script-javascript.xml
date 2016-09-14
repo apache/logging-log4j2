@@ -20,7 +20,7 @@
   <Appenders>
     <Routing name="Routing">
       <Routes>
-        <Script name="RoutingInit" language="JavaScript"><![CDATA[
+        <Script name="RoutesInit" language="JavaScript"><![CDATA[
           "OSNameFoo".search("Foo") > -1 ? "Service2" : "Service1";]]>
         </Script>
         <Route key="Service1">
