@@ -37,19 +37,19 @@ import org.junit.runners.Parameterized;
  *
  */
 @RunWith(Parameterized.class)
-public class DefaultRouteScriptAppenderTest {
+public class RoutesScriptAppenderTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static String[] getParameters() {
         return new String[] { 
-                "log4j-routing-default-route-script-groovy.xml",
-                "log4j-routing-default-route-script-javascript.xml" };
+                "log4j-routing-routes-script-groovy.xml",
+                "log4j-routing-routes-script-javascript.xml" };
     }
 
     @Rule
     public final LoggerContextRule loggerContextRule;
 
-    public DefaultRouteScriptAppenderTest(final String configLocation) {
+    public RoutesScriptAppenderTest(final String configLocation) {
         this.loggerContextRule = new LoggerContextRule(configLocation);
     }
 
@@ -69,7 +69,7 @@ public class DefaultRouteScriptAppenderTest {
     }
 
     private void logAndCheck() {
-        final Logger logger = loggerContextRule.getLogger(DefaultRouteScriptAppenderTest.class);
+        final Logger logger = loggerContextRule.getLogger(RoutesScriptAppenderTest.class);
         logger.error("Hello");
         final ListAppender listAppender = getListAppender();
         final List<LogEvent> list = listAppender.getEvents();
@@ -103,11 +103,14 @@ public class DefaultRouteScriptAppenderTest {
     }
 
     @Test
-    public void testRoutingAppenderDefaultRouteKey() {
+    public void testRoutingAppenderRoutes() {
         final RoutingAppender routingAppender = getRoutingAppender();
-        Assert.assertNotNull(routingAppender.getDefaultRouteScript());
-        Assert.assertNotNull(routingAppender.getDefaultRoute());
-        Assert.assertEquals("Service2", routingAppender.getDefaultRoute().getKey());
+        Assert.assertNull(routingAppender.getDefaultRouteScript());
+        Assert.assertNull(routingAppender.getDefaultRoute());
+        final Routes routes = routingAppender.getRoutes();
+        Assert.assertNotNull(routes);
+        Assert.assertNotNull(routes.getPatternScript());
+        Assert.assertEquals("Service2", routes.getPattern());
     }
 
     @Test

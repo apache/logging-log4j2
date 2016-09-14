@@ -19,10 +19,13 @@
 <Configuration status="WARN" name="RoutingTest">
   <Appenders>
     <Routing name="Routing">
-      <Script name="RoutingInit" language="JavaScript"><![CDATA[
-        "OSNameFoo".search("Foo") > -1 ? "Service2" : "Service1";]]>
-      </Script>
       <Routes>
+        <Script name="RoutingInit" language="groovy"><![CDATA[
+          if ("OSNameFoo".contains("Foo")) {
+            return "Service2";
+          }
+          return "Service1";]]>
+        </Script>
         <Route key="Service1">
           <List name="List1" />
         </Route>

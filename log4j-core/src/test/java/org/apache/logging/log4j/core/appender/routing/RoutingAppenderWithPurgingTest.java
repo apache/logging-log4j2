@@ -46,7 +46,6 @@ public class RoutingAppenderWithPurgingTest {
     private static final String MANUAL_LOG_FILE2 = "target/routing-purge-manual/routingtest-2.log";
     private static final String MANUAL_LOG_FILE3 = "target/routing-purge-manual/routingtest-3.log";
 
-
     private ListAppender app;
     private RoutingAppender routingAppenderIdle;
     private RoutingAppender routingAppenderIdleWithHangingAppender;
