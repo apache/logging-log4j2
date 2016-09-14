@@ -21,8 +21,8 @@ import java.util.Objects;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -30,6 +30,48 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "Routes", category = "Core", printObject = true)
 public final class Routes {
+
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<Routes>  {
+
+        @PluginAttribute("pattern") 
+        private String pattern;
+        
+        @PluginElement("Routes") 
+        private Route[] routes;
+
+        @Override
+        public Routes build() {
+            if (routes == null || routes.length == 0) {
+                LOGGER.error("No routes configured");
+                return null;
+            }
+            return new Routes(pattern, routes);
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
+
+        public Route[] getRoutes() {
+            return routes;
+        }
+
+        public Builder withPattern(@SuppressWarnings("hiding") String pattern) {
+            this.pattern = pattern;
+            return this;
+        }
+
+        public Builder withRoutes(@SuppressWarnings("hiding") Route[] routes) {
+            this.routes = routes;
+            return this;
+        }
+        
+    }
+
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -90,11 +132,12 @@ public final class Routes {
      * @param pattern The pattern.
      * @param routes An array of Route elements.
      * @return The Routes container.
+     * @deprecated since 2.7; use {@link #newBuilder()}.
      */
-    @PluginFactory
+    @Deprecated
     public static Routes createRoutes(
-            @PluginAttribute("pattern") final String pattern,
-            @PluginElement("Routes") final Route... routes) {
+            final String pattern,
+            final Route... routes) {
         if (routes == null || routes.length == 0) {
             LOGGER.error("No routes configured");
             return null;
