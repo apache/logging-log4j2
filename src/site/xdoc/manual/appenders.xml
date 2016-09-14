@@ -3341,10 +3341,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         System.getProperty("os.name").search("Windows") > -1 ? "ServiceWindows" : "ServiceOther";]]]]><![CDATA[>
       </Script>
       <Routes>
-        <Route key="Service1">
+        <Route key="ServiceOther">
           <List name="List1" />
         </Route>
-        <Route key="Service2">
+        <Route key="ServiceWindows">
           <List name="List2" />
         </Route>
       </Routes>
