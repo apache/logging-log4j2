@@ -53,7 +53,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     }
 
     @Override
-    public void initialize(final RoutingAppender routingAppender) {
+    public void initialize(@SuppressWarnings("hiding") final RoutingAppender routingAppender) {
         this.routingAppender = routingAppender;
     }
 
