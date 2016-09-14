@@ -21,6 +21,7 @@ import java.util.Objects;
 import javax.script.Bindings;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -37,6 +38,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "Routes", category = "Core", printObject = true)
 public final class Routes {
+
+    private static final String LOG_EVENT_KEY = "logEvent";
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<Routes>  {
 
@@ -159,15 +162,18 @@ public final class Routes {
 
     /**
      * Returns the pattern.
+     * @param event The log event passed to the script (if there is a script.)
      * @return the pattern.
      */
-    public String getPattern() {
+    public String getPattern(final LogEvent event) {
         if (patternScript != null) {
             final ScriptManager scriptManager = configuration.getScriptManager();
             if (bindings == null) {
                 bindings = scriptManager.createBindings(patternScript);
             }
+            bindings.put(LOG_EVENT_KEY, event);
             final Object object = scriptManager.execute(patternScript.getName(), bindings);
+            bindings.remove(LOG_EVENT_KEY);
             return Objects.toString(object, null);
         }
         return pattern;

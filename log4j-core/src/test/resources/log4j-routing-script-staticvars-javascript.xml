@@ -28,6 +28,9 @@
           if (staticVariables.containsKey("TestKey")) {
             staticVariables.put("TestKey", "TestValue2");
           }
+          if (logEvent.getMarker() != null) {
+            staticVariables.put("MarkerName", logEvent.getMarker().getName());
+          }
           "OSNameFoo".search("Foo") > -1 ? "Service2" : "Service1";]]>
         </Script>
         <Route key="Service1">

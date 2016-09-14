@@ -110,7 +110,7 @@ public class RoutesScriptAppenderTest {
         final Routes routes = routingAppender.getRoutes();
         Assert.assertNotNull(routes);
         Assert.assertNotNull(routes.getPatternScript());
-        Assert.assertEquals("Service2", routes.getPattern());
+        Assert.assertEquals("Service2", routes.getPattern(null));
     }
 
     @Test

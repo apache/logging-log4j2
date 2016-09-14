@@ -116,7 +116,7 @@ public final class RoutingAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public B withDefaultRouteScript(@SuppressWarnings("hiding") AbstractScript defaultRouteScript) {
+        public B withDefaultRouteScript(@SuppressWarnings("hiding") final AbstractScript defaultRouteScript) {
             this.defaultRouteScript = defaultRouteScript;
             return asBuilder();
         }
@@ -150,7 +150,7 @@ public final class RoutingAppender extends AbstractAppender {
     
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
-            AbstractScript defaultRouteScript) {
+            final AbstractScript defaultRouteScript) {
         super(name, filter, null, ignoreExceptions);
         this.routes = routes;
         this.configuration = configuration;
@@ -225,7 +225,7 @@ public final class RoutingAppender extends AbstractAppender {
         if (rewritePolicy != null) {
             event = rewritePolicy.rewrite(event);
         }
-        final String pattern = routes.getPattern();
+        final String pattern = routes.getPattern(event);
         final String key = pattern != null ? configuration.getStrSubstitutor().replace(event, pattern) : defaultRoute.getKey();
         final AppenderControl control = getControl(key, event);
         if (control != null) {

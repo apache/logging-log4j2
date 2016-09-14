@@ -24,6 +24,8 @@ import java.util.Map;
 
 import javax.script.Bindings;
 
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderControl;
@@ -68,6 +70,7 @@ public class DefaultRouteScriptAppenderTest {
         final Bindings bindings = routingAppender.getBindings();
         if (expectBindingEntries) {
             Assert.assertEquals("TestValue2", ((Map<?, ?>) bindings.get("staticVariables")).get("TestKey"));
+            Assert.assertEquals("HEXDUMP", ((Map<?, ?>) bindings.get("staticVariables")).get("MarkerName"));
         }
     }
 
@@ -87,6 +90,7 @@ public class DefaultRouteScriptAppenderTest {
     }
 
     private void logAndCheck() {
+        Marker marker = MarkerManager.getMarker("HEXDUMP");
         final Logger logger = loggerContextRule.getLogger(DefaultRouteScriptAppenderTest.class);
         logger.error("Hello");
         final ListAppender listAppender = getListAppender();
@@ -95,6 +99,8 @@ public class DefaultRouteScriptAppenderTest {
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         logger.error("World");
         assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
+        logger.error(marker, "DEADBEEF");
+        assertTrue("Incorrect number of events. Expected 3, got " + list.size(), list.size() == 3);
     }
 
     @Test(expected = AssertionError.class)
