@@ -51,7 +51,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap, Thread
      */
     public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
-    private final ThreadLocal<MutableContextData> localMap;
+    protected final ThreadLocal<MutableContextData> localMap;
 
     public GarbageFreeSortedArrayThreadContextMap() {
         this.localMap = createThreadLocalMap();
