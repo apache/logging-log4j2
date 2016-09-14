@@ -31,7 +31,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "ScriptRef", category = Node.CATEGORY, printObject = true)
 public class ScriptRef extends AbstractScript {
 
-    private static final Logger logger = StatusLogger.getLogger();
     private final ScriptManager scriptManager;
 
     public ScriptRef(final String name, final ScriptManager scriptManager) {
@@ -59,7 +58,7 @@ public class ScriptRef extends AbstractScript {
             @PluginConfiguration final Configuration configuration) {
             // @formatter:on
         if (name == null) {
-            logger.error("No script name provided");
+            LOGGER.error("No script name provided");
             return null;
         }
         return new ScriptRef(name, configuration.getScriptManager());

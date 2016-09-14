@@ -30,8 +30,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "Script", category = Node.CATEGORY, printObject = true)
 public class Script extends AbstractScript {
 
-    private static final Logger logger = StatusLogger.getLogger();
-
     public Script(final String name, final String language, final String scriptText) {
         super(name, language, scriptText);
     }
@@ -44,11 +42,11 @@ public class Script extends AbstractScript {
             @PluginValue("scriptText") final String scriptText) {
             // @formatter:on
         if (language == null) {
-            logger.info("No script language supplied, defaulting to {}", DEFAULT_LANGUAGE);
+            LOGGER.info("No script language supplied, defaulting to {}", DEFAULT_LANGUAGE);
             language = DEFAULT_LANGUAGE;
         }
         if (scriptText == null) {
-            logger.error("No scriptText attribute provided for ScriptFile {}", name);
+            LOGGER.error("No scriptText attribute provided for ScriptFile {}", name);
             return null;
         }
         return new Script(name, language, scriptText);
