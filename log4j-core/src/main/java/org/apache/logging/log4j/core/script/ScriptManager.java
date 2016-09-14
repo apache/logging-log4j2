@@ -165,7 +165,6 @@ public class ScriptManager implements FileWatcher, Serializable {
         private final CompiledScript compiledScript;
         private final ScriptEngine scriptEngine;
 
-
         public MainScriptRunner(final ScriptEngine scriptEngine, final AbstractScript script) {
             this.script = script;
             this.scriptEngine = scriptEngine;
