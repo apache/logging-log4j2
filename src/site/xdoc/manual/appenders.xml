@@ -3327,6 +3327,35 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
           </table>
+          <p>
+            In this example, the script causes the "ServiceWindows" route to be the default route on Windows and 
+            "ServiceOther" on all other operating systems. Note that the List Appender is one of our test appenders, 
+            any appender can be used, it is only used as a shorthand. 
+          </p>
+<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="RoutingTest">
+  <Appenders>
+    <Routing name="Routing">
+      <Script name="RoutingInit" language="JavaScript"><![CDATA[
+        importPackage(java.lang);
+        System.getProperty("os.name").search("Windows") > -1 ? "ServiceWindows" : "ServiceOther";]]]]><![CDATA[>
+      </Script>
+      <Routes>
+        <Route key="Service1">
+          <List name="List1" />
+        </Route>
+        <Route key="Service2">
+          <List name="List2" />
+        </Route>
+      </Routes>
+    </Routing>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Routing" />
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           <h4>Routes</h4>
             <p>
               The Routes element accepts a single attribute named "pattern". The pattern is evaluated
@@ -3348,6 +3377,53 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               Appender definition then an Appender will be created within the context of the RoutingAppender and
               will be reused each time a matching Appender name is referenced through a Route.
             </p>
+          <p>
+            In this example, the script runs for each log event and picks a route based on the presence of a 
+            Marker named "AUDIT".
+          </p>
+<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="RoutingTest">
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT" />
+    <Flume name="AuditLogger" compress="true">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>    
+    <Routing name="Routing">
+      <Routes>
+        <Script name="RoutingInit" language="JavaScript"><![CDATA[
+          if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("AUDIT")) {
+                return "AUDIT";
+            } else if (logEvent.getContextMap().containsKey("UserId")) { 
+                return logEvent.getContextMap().get("UserId");
+            }
+            return "STDOUT";]]]]><![CDATA[>
+        </Script>
+        <Route>
+          <RollingFile 
+              name="Rolling-${mdc:UserId}" 
+              fileName="${mdc:UserId}.log"
+              filePattern="${mdc:UserId}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route ref="AuditLogger" key="AUDIT"/>
+        <Route ref="STDOUT" key="STDOUT"/>
+      </Routes>
+      <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>      
+    </Routing>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Routing" />
+    </Root>
+  </Loggers>
+</Configuration>
+]]></pre>            
           <h4>Purge Policy</h4>
           <p>The RoutingAppender can be configured with a PurgePolicy whose purpose is to stop and remove dormant
             Appenders that have been dynamically created by the RoutingAppender. Log4j currently provides the
