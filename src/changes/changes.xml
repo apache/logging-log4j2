@@ -141,6 +141,9 @@
       <action issue="LOG4J2-1502" dev="ggregory" type="fix" due-to="Sumit Singhal">
         Fixed issue where CsvParameterLayout and CsvLogEventLayout inserted NUL characters if data starts with {, (, [ or "
       </action>
+      <action issue="LOG4J2-1573" dev="ggregory" type="fix" due-to="Steffen Offermann">
+        Layout is no longer optional.
+      </action>
       <action issue="LOG4J2-1578" dev="ggregory" type="add">
         RoutingAppender can be configured with scripts. Add Script in a Routes element.
       </action>
