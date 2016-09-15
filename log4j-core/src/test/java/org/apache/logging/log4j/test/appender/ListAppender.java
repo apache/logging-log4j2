@@ -39,6 +39,8 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
  * List could eventually grow to cause an OutOfMemoryError.
+ * 
+ * This appender is not thread-safe.
  *
  * This appender will use {@link Layout#toByteArray(LogEvent)}.
  *
