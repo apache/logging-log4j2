@@ -21,8 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.script.Bindings;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -67,10 +66,10 @@ public class DefaultRouteScriptAppenderTest {
 
     private void checkStaticVars() {
         final RoutingAppender routingAppender = getRoutingAppender();
-        final Bindings bindings = routingAppender.getBindings();
+        final ConcurrentMap<Object, Object> map = routingAppender.getScriptStaticVariables();
         if (expectBindingEntries) {
-            Assert.assertEquals("TestValue2", ((Map<?, ?>) bindings.get("staticVariables")).get("TestKey"));
-            Assert.assertEquals("HEXDUMP", ((Map<?, ?>) bindings.get("staticVariables")).get("MarkerName"));
+            Assert.assertEquals("TestValue2", map.get("TestKey"));
+            Assert.assertEquals("HEXDUMP", map.get("MarkerName"));
         }
     }
 

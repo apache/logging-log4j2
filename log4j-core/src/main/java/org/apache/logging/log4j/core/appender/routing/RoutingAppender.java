@@ -52,6 +52,8 @@ import org.apache.logging.log4j.core.util.Booleans;
 @Plugin(name = "Routing", category = "Core", elementType = "appender", printObject = true)
 public final class RoutingAppender extends AbstractAppender {
     
+    public static final String STATIC_VARIABLES_KEY = "staticVariables";
+
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<RoutingAppender> {
                 
@@ -146,7 +148,7 @@ public final class RoutingAppender extends AbstractAppender {
     private final RewritePolicy rewritePolicy;
     private final PurgePolicy purgePolicy;
     private final AbstractScript defaultRouteScript;
-    private Bindings bindings;
+    private final ConcurrentMap<Object, Object> scriptStaticVariables = new ConcurrentHashMap<>();
     
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
@@ -181,8 +183,8 @@ public final class RoutingAppender extends AbstractAppender {
             } else {
                 final ScriptManager scriptManager = configuration.getScriptManager();
                 scriptManager.addScript(defaultRouteScript);
-                bindings = scriptManager.createBindings(defaultRouteScript);
-                routes.setBindings(bindings);
+                final Bindings bindings = scriptManager.createBindings(defaultRouteScript);
+                bindings.put(STATIC_VARIABLES_KEY, scriptStaticVariables);
                 final Object object = scriptManager.execute(defaultRouteScript.getName(), bindings);
                 final Route route = routes.getRoute(Objects.toString(object, null));
                 if (route != null) {
@@ -225,7 +227,7 @@ public final class RoutingAppender extends AbstractAppender {
         if (rewritePolicy != null) {
             event = rewritePolicy.rewrite(event);
         }
-        final String pattern = routes.getPattern(event);
+        final String pattern = routes.getPattern(event, scriptStaticVariables);
         final String key = pattern != null ? configuration.getStrSubstitutor().replace(event, pattern) : defaultRoute.getKey();
         final AppenderControl control = getControl(key, event);
         if (control != null) {
@@ -365,7 +367,7 @@ public final class RoutingAppender extends AbstractAppender {
         return configuration;
     }
 
-    public Bindings getBindings() {
-        return bindings;
+    public ConcurrentMap<Object, Object> getScriptStaticVariables() {
+        return scriptStaticVariables;
     }
 }

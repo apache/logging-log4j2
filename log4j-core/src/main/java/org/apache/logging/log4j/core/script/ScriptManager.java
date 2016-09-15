@@ -46,14 +46,15 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class ScriptManager implements FileWatcher, Serializable {
     
     private abstract class AbstractScriptRunner implements ScriptRunner {
-        private final ConcurrentMap<Object, Object> scriptStaticVariables = new ConcurrentHashMap<>();
+        
+        private static final String KEY_STATUS_LOGGER = "statusLogger";
+        private static final String KEY_CONFIGURATION = "configuration";
         
         @Override
         public Bindings createBindings() {
             final SimpleBindings bindings = new SimpleBindings();
-            bindings.put("configuration", configuration);
-            bindings.put("statusLogger", logger);
-            bindings.put("staticVariables", scriptStaticVariables);
+            bindings.put(KEY_CONFIGURATION, configuration);
+            bindings.put(KEY_STATUS_LOGGER, logger);
             return bindings;
         }
 

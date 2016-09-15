@@ -21,10 +21,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderControl;
+import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Assert;
@@ -39,20 +45,36 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class RoutesScriptAppenderTest {
 
-    @Parameterized.Parameters(name = "{0}")
-    public static String[] getParameters() {
-        return new String[] { 
-                "log4j-routing-routes-script-groovy.xml",
-                "log4j-routing-routes-script-javascript.xml" };
+    @Parameterized.Parameters(name = "{0} {1}")
+    public static Object[][] getParameters() {
+        // @formatter:off
+        return new Object[][] { 
+            { "log4j-routing-routes-script-groovy.xml", false },
+            { "log4j-routing-routes-script-javascript.xml", false },
+            { "log4j-routing-script-staticvars-javascript.xml", true },
+            { "log4j-routing-script-staticvars-groovy.xml", true },
+        };
+        // @formatter:on
     }
 
     @Rule
     public final LoggerContextRule loggerContextRule;
 
-    public RoutesScriptAppenderTest(final String configLocation) {
+    private final boolean expectBindingEntries;
+    
+    public RoutesScriptAppenderTest(final String configLocation, final boolean expectBindingEntries) {
         this.loggerContextRule = new LoggerContextRule(configLocation);
+        this.expectBindingEntries = expectBindingEntries;
     }
 
+    private void checkStaticVars() {
+        final RoutingAppender routingAppender = getRoutingAppender();
+        final ConcurrentMap<Object, Object> map = routingAppender.getScriptStaticVariables();
+        if (expectBindingEntries) {
+            Assert.assertEquals("TestValue2", map.get("TestKey"));
+            Assert.assertEquals("HEXDUMP", map.get("MarkerName"));
+        }
+    }
     private ListAppender getListAppender() {
         final String key = "Service2";
         final RoutingAppender routingAppender = getRoutingAppender();
@@ -69,6 +91,7 @@ public class RoutesScriptAppenderTest {
     }
 
     private void logAndCheck() {
+        Marker marker = MarkerManager.getMarker("HEXDUMP");
         final Logger logger = loggerContextRule.getLogger(RoutesScriptAppenderTest.class);
         logger.error("Hello");
         final ListAppender listAppender = getListAppender();
@@ -77,6 +100,8 @@ public class RoutesScriptAppenderTest {
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         logger.error("World");
         assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
+        logger.error(marker, "DEADBEEF");
+        assertTrue("Incorrect number of events. Expected 3, got " + list.size(), list.size() == 3);
     }
 
     @Test(expected = AssertionError.class)
@@ -105,12 +130,14 @@ public class RoutesScriptAppenderTest {
     @Test
     public void testRoutingAppenderRoutes() {
         final RoutingAppender routingAppender = getRoutingAppender();
-        Assert.assertNull(routingAppender.getDefaultRouteScript());
-        Assert.assertNull(routingAppender.getDefaultRoute());
+        Assert.assertEquals(expectBindingEntries, routingAppender.getDefaultRouteScript() != null);
+        Assert.assertEquals(expectBindingEntries, routingAppender.getDefaultRoute() != null);
         final Routes routes = routingAppender.getRoutes();
         Assert.assertNotNull(routes);
         Assert.assertNotNull(routes.getPatternScript());
-        Assert.assertEquals("Service2", routes.getPattern(null));
+        final LogEvent logEvent = DefaultLogEventFactory.getInstance().createEvent("", null, "", Level.ERROR, null,
+                null, null);
+        Assert.assertEquals("Service2", routes.getPattern(logEvent, new ConcurrentHashMap<>()));
     }
 
     @Test
@@ -121,10 +148,12 @@ public class RoutesScriptAppenderTest {
     @Test
     public void testRoutingPresence1() {
         logAndCheck();
+        checkStaticVars();
     }
 
     @Test
     public void testRoutingPresence2() {
         logAndCheck();
+        checkStaticVars();
     }
 }

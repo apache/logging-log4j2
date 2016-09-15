@@ -16,7 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.apache.logging.log4j.core.appender.routing.RoutingAppender.STATIC_VARIABLES_KEY;
+
 import java.util.Objects;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.script.Bindings;
 
@@ -138,8 +141,6 @@ public final class Routes {
         return new Builder();
     }
     
-    private Bindings bindings;
-    
     private final Configuration configuration;
     
     private final String pattern;
@@ -148,7 +149,7 @@ public final class Routes {
     
     // TODO Why not make this a Map or add a Map.
     private final Route[] routes;
-
+    
     private Routes(final Configuration configuration, final AbstractScript patternScript, final String pattern, final Route... routes) {
         this.configuration = configuration;
         this.patternScript = patternScript;
@@ -156,21 +157,17 @@ public final class Routes {
         this.routes = routes;
     }
 
-    public Bindings getBindings() {
-        return bindings;
-    }
-
     /**
      * Returns the pattern.
      * @param event The log event passed to the script (if there is a script.)
+     * @param scriptStaticVariables The script's static variables.
      * @return the pattern.
      */
-    public String getPattern(final LogEvent event) {
+    public String getPattern(final LogEvent event, ConcurrentMap<Object, Object> scriptStaticVariables) {
         if (patternScript != null) {
             final ScriptManager scriptManager = configuration.getScriptManager();
-            if (bindings == null) {
-                bindings = scriptManager.createBindings(patternScript);
-            }
+            final Bindings bindings = scriptManager.createBindings(patternScript);
+            bindings.put(STATIC_VARIABLES_KEY, scriptStaticVariables);
             bindings.put(LOG_EVENT_KEY, event);
             final Object object = scriptManager.execute(patternScript.getName(), bindings);
             bindings.remove(LOG_EVENT_KEY);
@@ -202,10 +199,6 @@ public final class Routes {
      */
     public Route[] getRoutes() {
         return routes;
-    }
-
-    public void setBindings(final Bindings bindings) {
-        this.bindings = bindings;
     }
 
     @Override
