@@ -163,7 +163,7 @@ public final class Routes {
      * @param scriptStaticVariables The script's static variables.
      * @return the pattern.
      */
-    public String getPattern(final LogEvent event, ConcurrentMap<Object, Object> scriptStaticVariables) {
+    public String getPattern(final LogEvent event, final ConcurrentMap<Object, Object> scriptStaticVariables) {
         if (patternScript != null) {
             final ScriptManager scriptManager = configuration.getScriptManager();
             final Bindings bindings = scriptManager.createBindings(patternScript);
