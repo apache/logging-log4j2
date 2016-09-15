@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.7" date="2016-MM-DD" description="GA Release 2.7">
+      <action issue="LOG4J2-1259" dev="ggregory" type="fix" due-to="Misagh Moayyed, Steffen Offermann">
+        Log4j threads are leaking on Tomcat shutdown.
+      </action>
       <action issue="LOG4J2-1051" dev="rpopma" type="fix" due-to="Lukasz Lenart">
         When starting on Google App Engine, Interpolator now suppresses the NoClassDefFoundError stack trace  for the jvmrunargs lookup.
       </action>
