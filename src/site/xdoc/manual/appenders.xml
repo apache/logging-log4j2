@@ -3315,8 +3315,36 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>Script</td>
               <td>Script</td>
-              <td>This Script runs when Log4j starts the RoutingAppender and returns a String Route key to determine 
-                the default Route.</td>
+              <td>
+                <p>
+                  This Script runs when Log4j starts the RoutingAppender and returns a String Route key to 
+                  determine the default Route.
+                </p>
+                <p>
+                  This script is passed the following variables:
+                </p>
+                <table>
+                  <caption align="top">RoutingAppender Script Parameters</caption>
+                  <tr>
+                    <th>Parameter Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td>configuration</td>
+                    <td>Configuration</td>
+                    <td>The active Configuration.</td>
+                  </tr>
+                  <tr>
+                    <td>staticVariables</td>
+                    <td>Map</td>
+                    <td>
+                      A Map shared between all script invocations for this appender instance. This is
+                      the same map passed to the Routes Script. 
+                    </td>
+                  </tr>
+                </table>
+              </td>
             </tr>
             <tr>
               <td>ignoreExceptions</td>
@@ -3377,10 +3405,39 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               Appender definition then an Appender will be created within the context of the RoutingAppender and
               will be reused each time a matching Appender name is referenced through a Route.
             </p>
-          <p>
-            In this example, the script runs for each log event and picks a route based on the presence of a 
-            Marker named "AUDIT".
-          </p>
+            <p>
+              This script is passed the following variables:
+            </p>
+            <table>
+              <caption align="top">RoutingAppender Routes Script Parameters</caption>
+              <tr>
+                <th>Parameter Name</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td>configuration</td>
+                <td>Configuration</td>
+                <td>The active Configuration.</td>
+              </tr>
+              <tr>
+                <td>staticVariables</td>
+                <td>Map</td>
+                <td>
+                  A Map shared between all script invocations for this appender instance. This is
+                  the same map passed to the Routes Script. 
+                </td>
+              </tr>
+              <tr>
+                <td>logEvent</td>
+                <td>LogEvent</td>
+                <td>The log event.</td>
+              </tr>
+            </table>
+            <p>
+              In this example, the script runs for each log event and picks a route based on the presence of a 
+              Marker named "AUDIT".
+            </p>
 <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" name="RoutingTest">
   <Appenders>
