@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.ThreadNameCachingStrategy;
 import org.apache.logging.log4j.core.config.Property;

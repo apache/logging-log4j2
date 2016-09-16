@@ -33,12 +33,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.impl.ContextDataInjector;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.spi.ContextData;
-import org.apache.logging.log4j.spi.MutableContextData;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).

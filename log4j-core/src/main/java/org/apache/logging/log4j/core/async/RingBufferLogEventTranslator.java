@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.core.impl.ContextDataInjector;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.message.Message;

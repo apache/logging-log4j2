@@ -43,7 +43,7 @@ import org.apache.logging.log4j.spi.ContextData;
  * Since version 2.7, {@link #getContextMap()} is deprecated in favor of {@link #getContextData()}, which
  * can carry both {@code ThreadContext} data as well as other context data supplied by the
  * {@linkplain org.apache.logging.log4j.core.impl.ContextDataInjectorFactory configured}
- * {@link org.apache.logging.log4j.core.impl.ContextDataInjector}.
+ * {@link ContextDataInjector}.
  * </p>
  */
 public interface LogEvent extends Serializable {

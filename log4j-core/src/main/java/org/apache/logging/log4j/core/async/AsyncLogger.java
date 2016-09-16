@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.ContextDataInjector;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Clock;

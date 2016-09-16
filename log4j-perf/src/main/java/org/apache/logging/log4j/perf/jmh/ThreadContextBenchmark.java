@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.ContextDataInjector;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
 import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;

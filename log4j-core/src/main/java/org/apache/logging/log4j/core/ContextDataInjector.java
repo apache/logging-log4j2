@@ -14,11 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.core;
 
 import java.util.List;
 
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
 
