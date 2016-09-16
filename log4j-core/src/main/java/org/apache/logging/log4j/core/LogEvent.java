@@ -54,6 +54,7 @@ public interface LogEvent extends Serializable {
      * @return The context map, never {@code null}.
      * @deprecated use {@link #getContextData()} instead
      */
+    @Deprecated
     Map<String, String> getContextMap();
 
     /**

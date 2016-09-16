@@ -326,6 +326,7 @@ public class LoggerConfig extends AbstractFilterable {
      * @deprecated use {@link #getPropertyList()} instead
      */
     // LOG4J2-157
+    @Deprecated
     public Map<Property, Boolean> getProperties() {
         if (properties == null) {
             return null;
