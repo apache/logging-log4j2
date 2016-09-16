@@ -405,5 +405,10 @@ dependencies {
 ]]></pre>
       </subsection>
     </section>
+      <subsection name="Snapshot builds">
+        <p>You can access the latest development snapshot by using the Maven repository
+        <code>https://repository.apache.org/content/repositories/snapshots/</code> and version
+        <code>2.6.3-SNAPSHOT</code>.</p>
+      </subsection>
   </body>
 </document>
