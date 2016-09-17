@@ -33,7 +33,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
     private static final long serialVersionUID = 7800075879295123856L;
-    private ThreadLocal<StringBuilder> buffer; // non-static: LOG4J2-1583
+    private transient ThreadLocal<StringBuilder> buffer; // non-static: LOG4J2-1583
 
     private String messagePattern;
     private int argCount;
