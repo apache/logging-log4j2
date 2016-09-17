@@ -146,7 +146,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object p0) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0});
     }
 
     /**
@@ -162,7 +162,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object p0, final Object p1) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0, p1});
     }
 
     /**
@@ -179,7 +179,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object p0, final Object p1, final Object p2) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0, p1, p2});
     }
 
     /**
@@ -197,7 +197,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object p0, final Object p1, final Object p2, final Object p3) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3});
     }
 
     /**
@@ -217,7 +217,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4});
     }
 
     /**
@@ -238,7 +238,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5});
     }
 
     /**
@@ -260,7 +260,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5, p6});
     }
 
     /**
@@ -284,7 +284,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
             final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6,
             final Object p7) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7});
     }
 
     /**
@@ -309,7 +309,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
             final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6,
             final Object p7, final Object p8) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7, p8});
     }
 
     /**
@@ -335,7 +335,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
             final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6,
             final Object p7, final Object p8, final Object p9) {
-        return Result.NEUTRAL;
+        return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7, p8, p9});
     }
 
     /**
