@@ -397,7 +397,13 @@ public class LoggerConfig extends AbstractFilterable {
                 }
             }
         }
-        log(logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t));
+        final LogEvent logEvent = logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t);
+        try {
+            log(logEvent);
+        } finally {
+            // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
+            ReusableLogEventFactory.release(logEvent);
+        }
     }
 
     /**

@@ -61,6 +61,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private String loggerFqcn;
     private StackTraceElement source;
     private ThreadContext.ContextStack contextStack;
+    transient boolean reserved = false;
 
     public MutableLogEvent() {
         this(new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE), new Object[10]);

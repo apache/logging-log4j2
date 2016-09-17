@@ -59,15 +59,19 @@ public class ReusableLogEventFactory implements LogEventFactory {
                                 final String fqcn, final Level level, final Message message,
                                 final List<Property> properties, final Throwable t) {
         MutableLogEvent result = mutableLogEventThreadLocal.get();
-        if (result == null) {
+        if (result == null || result.reserved) {
+            final boolean initThreadLocal = result == null;
             result = new MutableLogEvent();
 
             // usually no need to re-initialize thread-specific fields since the event is stored in a ThreadLocal
             result.setThreadId(Thread.currentThread().getId());
             result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call
             result.setThreadPriority(Thread.currentThread().getPriority());
-            mutableLogEventThreadLocal.set(result);
+            if (initThreadLocal) {
+                mutableLogEventThreadLocal.set(result);
+            }
         }
+        result.reserved = true;
         result.clear(); // ensure any previously cached values (thrownProxy, source, etc.) are cleared
 
         result.setLoggerName(loggerName);
@@ -88,5 +92,17 @@ public class ReusableLogEventFactory implements LogEventFactory {
             result.setThreadPriority(Thread.currentThread().getPriority());
         }
         return result;
+    }
+
+    /**
+     * Switches the {@code reserved} flag off if the specified event is a MutableLogEvent, otherwise does nothing.
+     * This flag is used internally to verify that a reusable log event is no longer in use and can be reused.
+     * @param logEvent the log event to make available again
+     * @since 2.7
+     */
+    public static void release(final LogEvent logEvent) { // LOG4J2-1583
+        if (logEvent instanceof MutableLogEvent) {
+            ((MutableLogEvent) logEvent).reserved = false;
+        }
     }
 }

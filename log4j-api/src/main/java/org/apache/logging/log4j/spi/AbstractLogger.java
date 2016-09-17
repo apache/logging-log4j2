@@ -169,14 +169,14 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     protected void catching(final String fqcn, final Level level, final Throwable t) {
         if (isEnabled(level, CATCHING_MARKER, (Object) null, null)) {
-            logMessage(fqcn, level, CATCHING_MARKER, catchingMsg(t), t);
+            logMessageSafely(fqcn, level, CATCHING_MARKER, catchingMsg(t), t);
         }
     }
 
     @Override
     public void catching(final Throwable t) {
         if (isEnabled(Level.ERROR, CATCHING_MARKER, (Object) null, null)) {
-            logMessage(FQCN, Level.ERROR, CATCHING_MARKER, catchingMsg(t), t);
+            logMessageSafely(FQCN, Level.ERROR, CATCHING_MARKER, catchingMsg(t), t);
         }
     }
 
@@ -501,7 +501,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected EntryMessage enter(final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, paramSuppliers), null);
+            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, paramSuppliers), null);
         }
         return entryMsg;
     }
@@ -517,7 +517,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected EntryMessage enter(final String fqcn, final String format, final MessageSupplier... paramSuppliers) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, paramSuppliers), null);
+            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, paramSuppliers), null);
         }
         return entryMsg;
     }
@@ -532,7 +532,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected EntryMessage enter(final String fqcn, final String format, final Object... params) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, params), null);
+            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, params), null);
         }
         return entryMsg;
     }
@@ -547,7 +547,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected EntryMessage enter(final String fqcn, final MessageSupplier msgSupplier) {
         EntryMessage message = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, message = flowMessageFactory.newEntryMessage(
+            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, message = flowMessageFactory.newEntryMessage(
                     msgSupplier.get()), null);
         }
         return message;
@@ -565,7 +565,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected EntryMessage enter(final String fqcn, final Message message) {
         EntryMessage flowMessage = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, flowMessage = flowMessageFactory.newEntryMessage(message),
+            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, flowMessage = flowMessageFactory.newEntryMessage(message),
                     null);
         }
         return flowMessage;
@@ -590,9 +590,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected void entry(final String fqcn, final Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             if (params == null) {
-                logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, (Supplier<?>[]) null), null);
+                logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, (Supplier<?>[]) null), null);
             } else {
-                logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, params), null);
+                logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, params), null);
             }
         }
     }
@@ -1810,7 +1810,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Message msg,
             final Throwable t) {
         if (isEnabled(level, marker, msg, t)) {
-            logMessage(fqcn, level, marker, msg, t);
+            logMessageSafely(fqcn, level, marker, msg, t);
         }
     }
 
@@ -1963,117 +1963,117 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final CharSequence message,
             final Throwable t) {
-        logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
+        logMessageSafely(fqcn, level, marker, messageFactory.newMessage(message), t);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final Object message,
             final Throwable t) {
-        logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
+        logMessageSafely(fqcn, level, marker, messageFactory.newMessage(message), t);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker,
             final MessageSupplier msgSupplier, final Throwable t) {
         final Message message = LambdaUtil.get(msgSupplier);
-        logMessage(fqcn, level, marker, message, t);
+        logMessageSafely(fqcn, level, marker, message, t);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final Supplier<?> msgSupplier,
             final Throwable t) {
         final Message message = LambdaUtil.getMessage(msgSupplier, messageFactory);
-        logMessage(fqcn, level, marker, message, t);
+        logMessageSafely(fqcn, level, marker, message, t);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Throwable t) {
-        logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
+        logMessageSafely(fqcn, level, marker, messageFactory.newMessage(message), t);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message) {
         final Message msg = messageFactory.newMessage(message);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object... params) {
         final Message msg = messageFactory.newMessage(message, params);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0) {
         final Message msg = messageFactory.newMessage(message, p0);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1) {
         final Message msg = messageFactory.newMessage(message, p0, p1);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7, final Object p8) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7, final Object p8, final Object p9) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Supplier<?>... paramSuppliers) {
         final Message msg = messageFactory.newMessage(message, LambdaUtil.getAll(paramSuppliers));
-        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     @Override
     public void printf(final Level level, final Marker marker, final String format, final Object... params) {
         if (isEnabled(level, marker, format, params)) {
             final Message msg = new StringFormattedMessage(format, params);
-            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+            logMessageSafely(FQCN, level, marker, msg, msg.getThrowable());
         }
     }
 
@@ -2081,7 +2081,17 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public void printf(final Level level, final String format, final Object... params) {
         if (isEnabled(level, null, format, params)) {
             final Message msg = new StringFormattedMessage(format, params);
-            logMessage(FQCN, level, null, msg, msg.getThrowable());
+            logMessageSafely(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    private void logMessageSafely(final String fqcn, final Level level, final Marker marker, final Message msg,
+            final Throwable throwable) {
+        try {
+            logMessage(fqcn, level, marker, msg, throwable);
+        } finally {
+            // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
+            ReusableMessageFactory.release(msg);
         }
     }
 
@@ -2106,7 +2116,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     protected <T extends Throwable> T throwing(final String fqcn, final Level level, final T t) {
         if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
-            logMessage(fqcn, level, THROWING_MARKER, throwingMsg(t), t);
+            logMessageSafely(fqcn, level, THROWING_MARKER, throwingMsg(t), t);
         }
         return t;
     }
@@ -2414,7 +2424,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public void traceExit(final EntryMessage message) {
         // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
         if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(message), null);
+            logMessageSafely(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(message), null);
         }
     }
 
@@ -2422,7 +2432,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public <R> R traceExit(final EntryMessage message, final R result) {
         // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
         if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
+            logMessageSafely(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;
     }
@@ -2431,7 +2441,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public <R> R traceExit(final Message message, final R result) {
         // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
         if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
+            logMessageSafely(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;
     }
