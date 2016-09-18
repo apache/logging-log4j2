@@ -27,6 +27,7 @@ import javax.script.Bindings;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.rewrite.RewritePolicy;
@@ -51,28 +52,28 @@ import org.apache.logging.log4j.core.util.Booleans;
  */
 @Plugin(name = "Routing", category = "Core", elementType = "appender", printObject = true)
 public final class RoutingAppender extends AbstractAppender {
-    
+
     public static final String STATIC_VARIABLES_KEY = "staticVariables";
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<RoutingAppender> {
-                
+
         // Does not work unless the element is called "Script", I wanted "DefaultRounteScript"...
         @PluginElement("Script")
         private AbstractScript defaultRouteScript;
-        
-        @PluginElement("Routes") 
+
+        @PluginElement("Routes")
         private Routes routes;
-        
-        @PluginConfiguration 
+
+        @PluginConfiguration
         private Configuration configuration;
-        
-        @PluginElement("RewritePolicy") 
+
+        @PluginElement("RewritePolicy")
         private RewritePolicy rewritePolicy;
-        
-        @PluginElement("PurgePolicy") 
+
+        @PluginElement("PurgePolicy")
         private PurgePolicy purgePolicy;
-        
+
         @Override
         public RoutingAppender build() {
             final String name = getName();
@@ -122,7 +123,7 @@ public final class RoutingAppender extends AbstractAppender {
             this.defaultRouteScript = defaultRouteScript;
             return asBuilder();
         }
-        
+
         public B withRewritePolicy(@SuppressWarnings("hiding") final RewritePolicy rewritePolicy) {
             this.rewritePolicy = rewritePolicy;
             return asBuilder();
@@ -133,14 +134,14 @@ public final class RoutingAppender extends AbstractAppender {
         }
 
     }
-    
+
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
 
     private static final String DEFAULT_KEY = "ROUTING_APPENDER_DEFAULT";
-    
+
     private final Routes routes;
     private Route defaultRoute;
     private final Configuration configuration;
@@ -149,7 +150,7 @@ public final class RoutingAppender extends AbstractAppender {
     private final PurgePolicy purgePolicy;
     private final AbstractScript defaultRouteScript;
     private final ConcurrentMap<Object, Object> scriptStaticVariables = new ConcurrentHashMap<>();
-    
+
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
             final AbstractScript defaultRouteScript) {
@@ -213,9 +214,13 @@ public final class RoutingAppender extends AbstractAppender {
         super.stop(timeout, timeUnit, false);
         final Map<String, Appender> map = configuration.getAppenders();
         for (final Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
-            final String name = entry.getValue().getAppender().getName();
-            if (!map.containsKey(name)) {
-                entry.getValue().getAppender().stop(timeout, timeUnit);
+            final Appender appender = entry.getValue().getAppender();
+            if (!map.containsKey(appender.getName())) {
+                if (appender instanceof LifeCycle2) {
+                    ((LifeCycle2) appender).stop(timeout, timeUnit);
+                } else {
+                    appender.stop();
+                }
             }
         }
         setStopped();

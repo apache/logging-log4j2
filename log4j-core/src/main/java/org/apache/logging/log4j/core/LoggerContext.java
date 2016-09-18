@@ -325,7 +325,11 @@ public class LoggerContext extends AbstractLifeCycle
             final Configuration prev = configuration;
             configuration = NULL_CONFIGURATION;
             updateLoggers();
-            prev.stop(timeout, timeUnit);
+            if (prev instanceof LifeCycle2) {
+                ((LifeCycle2) prev).stop(timeout, timeUnit);
+            } else {
+                prev.stop();
+            }
             externalContext = null;
             LogManager.getFactory().removeContext(this);
             final String source = "LoggerContext \'" + getName() + "\'";
@@ -659,7 +663,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     /**
      * Gets the executor service to submit normal tasks.
-     *  
+     *
      * @return the ExecutorService to submit normal tasks.
      */
     public ExecutorService getExecutorService() {
@@ -668,7 +672,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     /**
      * Gets the executor service to submit daemon tasks.
-     *  
+     *
      * @return the ExecutorService to submit normal daemon tasks.
      */
     public ExecutorService getExecutorServiceDeamons() {

@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 
@@ -30,8 +31,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 public abstract class AbstractFilterable extends AbstractLifeCycle implements Filterable {
 
     /**
-     * Subclasses can extend this abstract Builder. 
-     * 
+     * Subclasses can extend this abstract Builder.
+     *
      * @param <B> This builder class.
      */
     public abstract static class Builder<B extends Builder<B>> {
@@ -54,7 +55,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         }
 
     }
-    
+
     /**
      * May be null.
      */
@@ -158,7 +159,12 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         }
         boolean stopped = true;
         if (filter != null) {
-            stopped = filter.stop(timeout, timeUnit);
+            if (filter instanceof LifeCycle2) {
+                stopped = ((LifeCycle2) filter).stop(timeout, timeUnit);
+            } else {
+                filter.stop();
+                stopped = true;
+            }
         }
         if (changeLifeCycleState) {
             this.setStopped();

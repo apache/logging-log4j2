@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
@@ -126,7 +127,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
     private NanoClock nanoClock = new DummyNanoClock();
     private final WeakReference<LoggerContext> loggerContext;
-    
+
     /**
      * Constructor.
      */
@@ -326,7 +327,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
             LOGGER.trace("{} stopping {} AsyncAppenders.", cls, async.size());
             for (final Appender appender : async) {
-                appender.stop(timeout, timeUnit);
+                if (appender instanceof LifeCycle2) {
+                    ((LifeCycle2) appender).stop(timeout, timeUnit);
+                } else {
+                    appender.stop();
+                }
             }
         }
 
@@ -340,7 +345,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i].isStarted()) { // then stop remaining Appenders
-                array[i].stop(timeout, timeUnit);
+                if (array[i] instanceof LifeCycle2) {
+                    ((LifeCycle2) array[i]).stop(timeout, timeUnit);
+                } else {
+                    array[i].stop();
+                }
                 appenderCount++;
             }
         }
@@ -800,7 +809,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public LoggerContext getLoggerContext() {
         return loggerContext.get();
     }
-    
+
     /**
      * Returns the root Logger.
      *

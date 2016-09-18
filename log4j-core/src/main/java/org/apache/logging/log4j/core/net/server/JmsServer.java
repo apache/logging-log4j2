@@ -31,7 +31,7 @@ import javax.jms.ObjectMessage;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.appender.mom.JmsManager;
@@ -42,7 +42,7 @@ import org.apache.logging.log4j.core.net.JndiManager;
  *
  * @since 2.1
  */
-public class JmsServer extends LogEventListener implements MessageListener, LifeCycle {
+public class JmsServer extends LogEventListener implements MessageListener, LifeCycle2 {
 
     private final AtomicReference<State> state = new AtomicReference<>(State.INITIALIZED);
     private final JmsManager jmsManager;
@@ -98,11 +98,11 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
         }
     }
 
-    @Override    
+    @Override
     public void stop() {
         stop(AbstractLifeCycle.DEFAULT_STOP_TIMEOUT, AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
     }
-    
+
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         boolean stopped = true;

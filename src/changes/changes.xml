@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.7" date="2016-MM-DD" description="GA Release 2.7">
+      <action issue="LOG4J2-1591" dev="rpopma" type="fix">
+        Introduced new interface LifeCycle2 with stop(long,TimeUnit) method to avoid breaking backwards compatibility with new Configurator.shutdown(LoggerContext, long, TimeUnit) API.
+      </action>
       <action issue="LOG4J2-1590" dev="rpopma" type="fix">
         Fixed issue with filters extending AbstractFilter that did not override methods with unrolled varargs.
       </action>

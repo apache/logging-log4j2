@@ -35,6 +35,12 @@ import org.apache.logging.log4j.core.util.WatchManager;
 
 /**
  * Interface that must be implemented to create a configuration.
+ * <p>
+ * Custom implementations are recommended to extend {@link AbstractConfiguration}.
+ * </p>
+ *
+ * @see AbstractConfiguration
+ * @see org.apache.logging.log4j.core.LifeCycle2
  */
 public interface Configuration extends Filterable {
 
@@ -192,7 +198,7 @@ public interface Configuration extends Filterable {
 
     /**
      * Gets the logger context.
-     * 
+     *
      * @return the logger context.
      */
     LoggerContext getLoggerContext();
