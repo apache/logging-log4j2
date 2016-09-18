@@ -35,13 +35,13 @@ public class AbstractFilterTest {
     public void testUnrolledBackwardsCompatible() {
         ConcreteFilter filter = new ConcreteFilter();
         Filter.Result expected = Filter.Result.DENY;
-        verify(filter, Filter.Result.DENY);
+        verifyMethodsWithUnrolledVarargs(filter, Filter.Result.DENY);
 
         filter.testResult = Filter.Result.ACCEPT;
-        verify(filter, Filter.Result.ACCEPT);
+        verifyMethodsWithUnrolledVarargs(filter, Filter.Result.ACCEPT);
     }
 
-    private void verify(final ConcreteFilter filter, final Filter.Result expected) {
+    private void verifyMethodsWithUnrolledVarargs(final ConcreteFilter filter, final Filter.Result expected) {
         Logger logger = null;
         Level level = null;
         Marker marker = null;
