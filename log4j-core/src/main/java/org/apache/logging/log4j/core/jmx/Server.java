@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.NotCompliantMBeanException;
@@ -343,6 +344,8 @@ public final class Server {
             for (final ObjectName objectName : found) {
                 mbs.unregisterMBean(objectName);
             }
+        } catch (final InstanceNotFoundException ex) {
+            LOGGER.debug("Could not unregister MBeans for " + search + ". Ignoring " + ex);
         } catch (final Exception ex) {
             LOGGER.error("Could not unregister MBeans for " + search, ex);
         }

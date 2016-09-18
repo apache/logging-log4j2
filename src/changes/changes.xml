@@ -39,6 +39,9 @@
       <action issue="LOG4J2-1582" dev="rpopma" type="fix">
         When initializing on platforms where JMX is not available, Interpolator component no longer prints stack trace for warning messages.
       </action>
+      <action issue="LOG4J2-1581" dev="rpopma" type="fix">
+        Unregistering JMX components no longer prints a stack trace when the MBean has already been unregistered.
+      </action>
       <action issue="LOG4J2-1313" dev="rpopma" type="fix" due-to="Philipp Knobel, Leon Finker">
         Support Property values to be specified in configuration as a value attribute as well as an element.
       </action>
