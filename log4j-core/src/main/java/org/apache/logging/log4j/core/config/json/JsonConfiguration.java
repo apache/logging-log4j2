@@ -130,7 +130,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         LOGGER.debug("Completed parsing configuration");
         if (status.size() > 0) {
             for (final Status s : status) {
-                LOGGER.error("Error processing element " + s.name + ": " + s.errorType);
+                LOGGER.error("Error processing element {}: {}", s.name, s.errorType);
             }
         }
     }
