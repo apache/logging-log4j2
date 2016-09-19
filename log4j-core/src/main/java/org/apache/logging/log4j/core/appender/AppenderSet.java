@@ -129,8 +129,4 @@ public class AppenderSet {
         LOGGER.error("No Appender was configured for name {} " + appenderName);
         return null;
     }
-
-    public Map<String, Node> getAppenders() {
-        return nodeMap;
-    }
 }
