@@ -48,7 +48,7 @@ public class AppenderSet {
         @Override
         public AppenderSet build() {
             if (configuration == null) {
-                LOGGER.error("Configuration is missing from AppenderNodeSet");
+                LOGGER.error("Configuration is missing from AppenderSet");
             }
             final List<Node> children = node.getChildren();
             final Map<String, Node> map = new HashMap<>(node == null ? 0 : children.size());
@@ -59,7 +59,7 @@ public class AppenderSet {
             for (final Node childNode : children) {
                 final String key = childNode.getAttributes().get("name");
                 if (key == null) {
-                    LOGGER.error("The attribute 'name' is missing from from the node {} in the AppenderNodeSet {}",
+                    LOGGER.error("The attribute 'name' is missing from from the node {} in the AppenderSet {}",
                             childNode, children);
                 } else {
                     map.put(key, childNode);
