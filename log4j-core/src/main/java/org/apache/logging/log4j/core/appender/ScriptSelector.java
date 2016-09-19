@@ -78,9 +78,7 @@ public class ScriptSelector extends AbstractAppender {
             final Bindings bindings = scriptManager.createBindings(script);
             final Object object = scriptManager.execute(script.getName(), bindings);
             final String appenderName = Objects.toString(object, null);
-            final Appender appender = appenderSet.createAppender(appenderName);
-            // This feels like a hack and it does not work:
-            configuration.getAppenders().put(name, appender);
+            final Appender appender = appenderSet.createAppender(appenderName, name);
             return appender;
         }
 

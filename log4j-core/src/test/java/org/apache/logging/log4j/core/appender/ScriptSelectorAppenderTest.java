@@ -56,7 +56,7 @@ public class ScriptSelectorAppenderTest {
     }
 
     private ListAppender getListAppender() {
-        return loggerContextRule.getListAppender("List2");
+        return loggerContextRule.getListAppender("SelectIt");
     }
 
     private void logAndCheck() {
@@ -74,8 +74,13 @@ public class ScriptSelectorAppenderTest {
     }
 
     @Test(expected = AssertionError.class)
-    public void testAppenderAbsence() {
+    public void testAppender1Absence() {
         loggerContextRule.getListAppender("List1");
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testAppender2Absence() {
+        loggerContextRule.getListAppender("List2");
     }
 
     @Test

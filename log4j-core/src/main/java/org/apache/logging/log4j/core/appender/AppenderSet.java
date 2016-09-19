@@ -108,12 +108,13 @@ public class AppenderSet {
         this.nodeMap = appenders;
     }
 
-    public Appender createAppender(final String appenderName) {
+    public Appender createAppender(final String appenderName, String actualName) {
         final Node node = nodeMap.get(appenderName);
         if (node == null) {
             LOGGER.error("No node named {} in {}", appenderName, this);
             return null;
         }
+        node.getAttributes().put("name", actualName);
         if (node.getType().getElementName().equals("appender")) {
             final Node appNode = new Node(node);
             configuration.createConfiguration(appNode, null);
