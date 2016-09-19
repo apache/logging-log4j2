@@ -38,11 +38,11 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class ScriptSelectorAppenderTest {
 
-    @Parameterized.Parameters(name = "{0} {1}")
+    @Parameterized.Parameters(name = "{0}")
     public static Object[][] getParameters() {
         // @formatter:off
         return new Object[][] { 
-            // { "log4j-appender-selector-groovy.xml" },
+            { "log4j-appender-selector-groovy.xml" },
             { "log4j-appender-selector-javascript.xml" },
         };
         // @formatter:on
