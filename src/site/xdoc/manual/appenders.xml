@@ -3657,6 +3657,40 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </Loggers>
 </Configuration>]]></pre>
         </subsection>
+        <a name="ScriptSelector"/>
+        <subsection name="ScriptSelector">
+          <p>
+            When the configuration is built, the <code>ScriptSelector</code> appender calls a <code>Script</code> 
+            to compute an appender name. Log4j then creates one of the appender named listed under 
+            <code>AppenderSet</code> using the name of the <code>ScriptSelector</code>. After configuration, Log4j 
+            ignores the <code>ScriptSelector</code>. Log4j only builds the one selected appender from the 
+            configuration tree, and ignores other <code>AppenderSet</code> child nodes. 
+          </p>
+          <p>
+            In the following example, the script returns the name "List2". The appender name is recorded under 
+            the name of the <code>ScriptSelector</code>, not the name of the selected appender, in this example, 
+            "SelectIt".
+          </p>
+<pre class="prettyprint linenums"><![CDATA[<Configuration status="WARN" name="RoutingTest">
+  <Appenders>
+    <ScriptSelector name="SelectIt">
+      <Script language="JavaScript"><![CDATA[
+        importPackage(java.lang);
+        System.getProperty("os.name").search("Windows") ? "List2" : "List1";]]]]><![CDATA[>
+      </Script>
+      <AppenderSet>
+        <List name="List1" />
+        <List name="List2" />
+      </AppenderSet>
+    </ScriptSelector>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="SelectIt" />
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>          
+        </subsection>
         <a name="SocketAppender"/>
         <subsection name="SocketAppender">
           <p>
