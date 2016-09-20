@@ -305,7 +305,8 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
         }
     }
 
-    public boolean equals(final Object obj) {
+    @Override
+	public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
@@ -705,7 +706,8 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
      *
      * @return a hash code for this map.
      */
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         int result = 0;
         for (int j = realSize(), i = 0, t = 0; j-- != 0;) {
             while (keys[i] == null) {
