@@ -148,7 +148,7 @@ public class Provider {
     @Override
     public String toString() {
         String result = "Provider[";
-        if (priority != DEFAULT_PRIORITY) {
+        if (!DEFAULT_PRIORITY.equals(priority)) {
             result += "priority=" + priority + ", ";
         }
         if (threadContextMap != null) {
