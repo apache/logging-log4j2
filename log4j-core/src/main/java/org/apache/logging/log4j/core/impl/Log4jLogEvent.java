@@ -189,7 +189,6 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
-        @SuppressWarnings("unchecked")
         @Deprecated
         public Builder setContextMap(final Map<String, String> contextMap) {
             contextData = ContextDataFactory.createContextData(); // replace with new instance
