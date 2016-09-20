@@ -80,4 +80,22 @@ public interface MutableContextData extends ContextData {
      * @return  {@code true} if this object has been {@linkplain #freeze() frozen}, {@code false} otherwise
      */
     boolean isFrozen();
+
+    /**
+     * Returns a hash code value for the object.
+     * @return a hash code value for this object.
+     */
+    @Override
+    int hashCode();
+
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     * 
+     * @param obj
+     *            the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+     * @see #hashCode()
+     */
+    @Override
+    boolean equals(final Object obj);
 }
