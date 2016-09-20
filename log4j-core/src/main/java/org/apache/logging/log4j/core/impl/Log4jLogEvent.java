@@ -194,7 +194,7 @@ public class Log4jLogEvent implements LogEvent {
         public Builder setContextMap(final Map<String, String> contextMap) {
             contextData = ContextDataFactory.createContextData(); // replace with new instance
             if (contextMap != null) {
-                for (Map.Entry<String, String> entry : contextMap.entrySet()) {
+                for (final Map.Entry<String, String> entry : contextMap.entrySet()) {
                     contextData.putValue(entry.getKey(), entry.getValue());
                 }
             }
@@ -428,7 +428,7 @@ public class Log4jLogEvent implements LogEvent {
     private static MutableContextData createContextData(final Map<String, String> contextMap) {
         final MutableContextData result = ContextDataFactory.createContextData();
         if (contextMap != null) {
-            for (Map.Entry<String, String> entry : contextMap.entrySet()) {
+            for (final Map.Entry<String, String> entry : contextMap.entrySet()) {
                 result.putValue(entry.getKey(), entry.getValue());
             }
         }
@@ -915,7 +915,7 @@ public class Log4jLogEvent implements LogEvent {
         }
 
         private static MutableContextData memento(final ContextData data) {
-            MutableContextData result = ContextDataFactory.createContextData();
+            final MutableContextData result = ContextDataFactory.createContextData();
             result.putAll(data);
             return result;
         }

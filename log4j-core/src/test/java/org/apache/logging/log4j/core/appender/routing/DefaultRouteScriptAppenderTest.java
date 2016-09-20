@@ -89,7 +89,7 @@ public class DefaultRouteScriptAppenderTest {
     }
 
     private void logAndCheck() {
-        Marker marker = MarkerManager.getMarker("HEXDUMP");
+        final Marker marker = MarkerManager.getMarker("HEXDUMP");
         final Logger logger = loggerContextRule.getLogger(DefaultRouteScriptAppenderTest.class);
         logger.error("Hello");
         final ListAppender listAppender = getListAppender();

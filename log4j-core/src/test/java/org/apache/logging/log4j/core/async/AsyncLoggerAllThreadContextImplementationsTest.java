@@ -178,7 +178,7 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
         try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String expect = null;
             for (int i = 0; i < LINE_COUNT; i++) {
-                String line = reader.readLine();
+                final String line = reader.readLine();
                 if ((i & 1) == 1) {
                     expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2, count=" + i + "} "
                             + contextDesc + " i=" + i;

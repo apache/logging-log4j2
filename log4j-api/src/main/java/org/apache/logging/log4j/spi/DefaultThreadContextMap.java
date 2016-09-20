@@ -131,7 +131,7 @@ public class DefaultThreadContextMap implements ThreadContextMap2, ContextData {
         if (map == null) {
             return;
         }
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
             action.accept(entry.getKey(), (V) entry.getValue());
         }
     }
@@ -142,7 +142,7 @@ public class DefaultThreadContextMap implements ThreadContextMap2, ContextData {
         if (map == null) {
             return;
         }
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
             action.accept(entry.getKey(), (V) entry.getValue(), state);
         }
     }

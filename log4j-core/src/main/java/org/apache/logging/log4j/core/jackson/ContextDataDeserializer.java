@@ -54,7 +54,7 @@ public class ContextDataDeserializer extends StdDeserializer<MutableContextData>
         final MutableContextData contextData = ContextDataFactory.createContextData();
         // Iterate over object fields:
         while (jp.nextToken() != JsonToken.END_OBJECT) {
-            String fieldName = jp.getCurrentName();
+            final String fieldName = jp.getCurrentName();
 
             // move to value
             jp.nextToken();

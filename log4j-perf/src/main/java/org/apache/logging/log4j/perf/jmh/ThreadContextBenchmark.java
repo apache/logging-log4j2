@@ -115,9 +115,9 @@ public class ThreadContextBenchmark {
 
         keys = new String[count];
         values = new String[count];
-        Random r = new Random();
+        final Random r = new Random();
         for (int j = 0; j < keys.length; j++) {
-            char[] str = new char[KEY_LENGTH];
+            final char[] str = new char[KEY_LENGTH];
             for (int i = 0; i < str.length; i++) {
                 str[i] = (char) r.nextInt();
             }
@@ -127,7 +127,7 @@ public class ThreadContextBenchmark {
         final int PROPERTIES_COUNT = 5; // count
         propertyList = new ArrayList<>(PROPERTIES_COUNT);
         for (int j = 0; j < PROPERTIES_COUNT; j++) {
-            char[] str = new char[KEY_LENGTH];
+            final char[] str = new char[KEY_LENGTH];
             for (int i = 0; i < str.length; i++) {
                 str[i] = (char) r.nextInt();
             }

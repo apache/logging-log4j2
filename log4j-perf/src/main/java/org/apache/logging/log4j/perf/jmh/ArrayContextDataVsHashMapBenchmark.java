@@ -86,9 +86,9 @@ public class ArrayContextDataVsHashMapBenchmark {
         map = new HashMap<>();
 
         keys = new String[count];
-        Random r = new Random();
+        final Random r = new Random();
         for (int j = 0; j < keys.length; j++) {
-            char[] str = new char[length];
+            final char[] str = new char[length];
             for (int i = 0; i < str.length; i++) {
                 str[i] = (char) r.nextInt();
             }
@@ -198,7 +198,7 @@ public class ArrayContextDataVsHashMapBenchmark {
     public int iterateMap() {
         final int[] result = {0};
 
-        for (Map.Entry<String, Object> entry : populatedMap.entrySet()) {
+        for (final Map.Entry<String, Object> entry : populatedMap.entrySet()) {
             result[0] += entry.getKey().hashCode() + entry.getValue().hashCode();
         }
         return result[0];

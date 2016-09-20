@@ -147,7 +147,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     @Override
     protected synchronized boolean closeOutputStream() {
-        boolean closed = super.closeOutputStream();
+        final boolean closed = super.closeOutputStream();
         if (reconnector != null) {
             reconnector.shutdown();
             reconnector.interrupt();

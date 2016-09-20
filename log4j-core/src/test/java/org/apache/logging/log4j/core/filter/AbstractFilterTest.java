@@ -33,8 +33,8 @@ public class AbstractFilterTest {
 
     @Test
     public void testUnrolledBackwardsCompatible() {
-        ConcreteFilter filter = new ConcreteFilter();
-        Filter.Result expected = Filter.Result.DENY;
+        final ConcreteFilter filter = new ConcreteFilter();
+        final Filter.Result expected = Filter.Result.DENY;
         verifyMethodsWithUnrolledVarargs(filter, Filter.Result.DENY);
 
         filter.testResult = Filter.Result.ACCEPT;
@@ -42,9 +42,9 @@ public class AbstractFilterTest {
     }
 
     private void verifyMethodsWithUnrolledVarargs(final ConcreteFilter filter, final Filter.Result expected) {
-        Logger logger = null;
-        Level level = null;
-        Marker marker = null;
+        final Logger logger = null;
+        final Level level = null;
+        final Marker marker = null;
         assertEquals(expected, filter.filter(logger, level, marker, "", 1));
         assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2));
         assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2, 3));

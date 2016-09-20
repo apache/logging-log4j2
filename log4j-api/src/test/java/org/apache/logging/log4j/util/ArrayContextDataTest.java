@@ -442,7 +442,7 @@ public class ArrayContextDataTest {
         original.putValue("d", "dvalue");
         assertEquals(5, original.size());
 
-        HashMap<String, String> expected = new HashMap<>();
+        final HashMap<String, String> expected = new HashMap<>();
         expected.put("a", "avalue");
         expected.put("B", "Bvalue");
         expected.put("3", "3value");
@@ -501,9 +501,9 @@ public class ArrayContextDataTest {
         assertNull(original.getValueAt(0));
 
         // ensure slots in the values array are nulled out
-        Field f = ArrayContextData.class.getDeclaredField("values");
+        final Field f = ArrayContextData.class.getDeclaredField("values");
         f.setAccessible(true);
-        Object[] values = (Object[]) f.get(original);
+        final Object[] values = (Object[]) f.get(original);
         for (int i = 0; i < values.length; i++) {
             assertNull(values[i]);
         }
@@ -592,9 +592,9 @@ public class ArrayContextDataTest {
         assertEquals(0, original.size());
 
         // ensure slots in the values array are nulled out
-        Field f = ArrayContextData.class.getDeclaredField("values");
+        final Field f = ArrayContextData.class.getDeclaredField("values");
         f.setAccessible(true);
-        Object[] values = (Object[]) f.get(original);
+        final Object[] values = (Object[]) f.get(original);
         for (int i = 0; i < values.length; i++) {
             assertNull(values[i]);
         }

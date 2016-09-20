@@ -344,7 +344,7 @@ public class ArrayContextData implements MutableContextData {
         if (!(obj instanceof ArrayContextData)) {
             return false;
         }
-        ArrayContextData other = (ArrayContextData) obj;
+        final ArrayContextData other = (ArrayContextData) obj;
         if (this.size() != other.size()) {
             return false;
         }
@@ -452,13 +452,13 @@ public class ArrayContextData implements MutableContextData {
         values = EMPTY;
 
         // Read in number of buckets
-        int capacity = s.readInt();
+        final int capacity = s.readInt();
         if (capacity < 0) {
             throw new InvalidObjectException("Illegal capacity: " + capacity);
         }
 
         // Read number of mappings
-        int mappings = s.readInt();
+        final int mappings = s.readInt();
         if (mappings < 0) {
             throw new InvalidObjectException("Illegal mappings count: " + mappings);
         }

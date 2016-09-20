@@ -90,7 +90,7 @@ public class ThreadContextDataInjector  {
          */
         private static void copyThreadContextMap(final Map<String, String> map, final MutableContextData result) {
             if (map != null) {
-                for (Map.Entry<String, String> entry : map.entrySet()) {
+                for (final Map.Entry<String, String> entry : map.entrySet()) {
                     result.putValue(entry.getKey(), entry.getValue());
                 }
             }

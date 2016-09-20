@@ -503,7 +503,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
             // The resulting map will be tentatively sized for size() +  m.size() elements
             tryCapacity(size() + map.size());
         }
-        for (Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
+        for (final Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
             putObjectValue(entry.getKey(), entry.getValue());
         }
     }
@@ -656,7 +656,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
 		}
         try {
             rehash(l);
-        } catch (OutOfMemoryError cantDoIt) { // unusual to catch OOME but in this case appropriate
+        } catch (final OutOfMemoryError cantDoIt) { // unusual to catch OOME but in this case appropriate
             return false;
         }
         return true;
