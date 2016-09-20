@@ -82,8 +82,7 @@ public final class MarkerManager {
         if (parentMarker == null) {
             throw new IllegalArgumentException("Parent Marker " + parent + " has not been defined");
         }
-        final Marker marker = getMarker(name, parentMarker);
-        return marker;
+        return getMarker(name, parentMarker);
     }
 
     /**
