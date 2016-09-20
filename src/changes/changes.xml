@@ -159,6 +159,9 @@
       <action issue="LOG4J2-1599" dev="ggregory" type="fix">
         NPE in org.apache.logging.log4j.message.ParameterFormatter.formatMessage3(StringBuilder, char[], int, Object[], int, int[]).
       </action>
+      <action issue="LOG4J2-1600" dev="ggregory" type="fix">
+        NPE due to org.apache.logging.log4j.core.layout.MarkerPatternSelector.createSelector(PatternMatch[], String, boolean, boolean, Configuration).
+      </action>
       <action issue="LOG4J2-1578" dev="ggregory" type="add">
         RoutingAppender can be configured with scripts. Add Script in a Routes element.
       </action>
