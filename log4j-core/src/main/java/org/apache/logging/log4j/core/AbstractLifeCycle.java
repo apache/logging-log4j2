@@ -127,7 +127,7 @@ public class AbstractLifeCycle implements LifeCycle2 {
         stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEUNIT);
     }
 
-    protected boolean stop(Future<?> future) {
+    protected boolean stop(final Future<?> future) {
         boolean stopped = true;
         if (future != null) {
             if (future.isCancelled() || future.isDone()) {

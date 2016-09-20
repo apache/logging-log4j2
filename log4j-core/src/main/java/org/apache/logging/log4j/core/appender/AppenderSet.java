@@ -108,7 +108,7 @@ public class AppenderSet {
         this.nodeMap = appenders;
     }
 
-    public Appender createAppender(final String appenderName, String actualName) {
+    public Appender createAppender(final String appenderName, final String actualName) {
         final Node node = nodeMap.get(appenderName);
         if (node == null) {
             LOGGER.error("No node named {} in {}", appenderName, this);

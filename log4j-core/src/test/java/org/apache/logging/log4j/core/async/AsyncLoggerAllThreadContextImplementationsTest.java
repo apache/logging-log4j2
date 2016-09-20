@@ -120,7 +120,7 @@ public class AsyncLoggerAllThreadContextImplementationsTest {
         });
     }
 
-    public AsyncLoggerAllThreadContextImplementationsTest(ContextImpl contextImpl, Mode asyncMode) {
+    public AsyncLoggerAllThreadContextImplementationsTest(final ContextImpl contextImpl, final Mode asyncMode) {
         this.contextImpl = contextImpl;
         this.asyncMode = asyncMode;
 

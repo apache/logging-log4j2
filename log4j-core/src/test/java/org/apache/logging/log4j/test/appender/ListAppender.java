@@ -180,7 +180,7 @@ public class ListAppender extends AbstractAppender {
      * Polls the messages list for it to grow to a given minimum size at most timeout timeUnits and return a copy of
      * what we have so far.
      */
-    public List<String> getMessages(int minSize, long timeout, TimeUnit timeUnit) throws InterruptedException {
+    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit) throws InterruptedException {
         final long endMillis = System.currentTimeMillis() + timeUnit.toMillis(timeout);
         while (messages.size() < minSize && System.currentTimeMillis() < endMillis) {
             Thread.sleep(100);

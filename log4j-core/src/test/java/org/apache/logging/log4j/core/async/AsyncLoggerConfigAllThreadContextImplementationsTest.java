@@ -98,7 +98,7 @@ public class AsyncLoggerConfigAllThreadContextImplementationsTest {
         });
     }
 
-    public AsyncLoggerConfigAllThreadContextImplementationsTest(ContextImpl contextImpl) {
+    public AsyncLoggerConfigAllThreadContextImplementationsTest(final ContextImpl contextImpl) {
         this.contextImpl = contextImpl;
         contextImpl.init();
     }

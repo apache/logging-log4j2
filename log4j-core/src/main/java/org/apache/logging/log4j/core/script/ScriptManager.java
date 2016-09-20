@@ -135,7 +135,7 @@ public class ScriptManager implements FileWatcher, Serializable {
         }
     }
 
-    public Bindings createBindings(AbstractScript script) {
+    public Bindings createBindings(final AbstractScript script) {
         return getScriptRunner(script).createBindings();
     }
 
@@ -274,7 +274,7 @@ public class ScriptManager implements FileWatcher, Serializable {
         }
     }
 
-    private ScriptRunner getScriptRunner(AbstractScript script) {
+    private ScriptRunner getScriptRunner(final AbstractScript script) {
         return scriptRunners.get(script.getName());
     }
 }

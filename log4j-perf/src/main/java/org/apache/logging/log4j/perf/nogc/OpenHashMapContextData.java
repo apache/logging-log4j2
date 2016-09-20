@@ -495,7 +495,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     }
 
     /** {@inheritDoc} */
-    public void putAll(Map<? extends K, ? extends V> map) {
+    public void putAll(final Map<? extends K, ? extends V> map) {
         if (loadFactor <= .5) {
             // The resulting map will be sized for m.size() elements
             ensureCapacity(map.size());

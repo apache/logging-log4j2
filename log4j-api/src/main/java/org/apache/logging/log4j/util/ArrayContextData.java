@@ -265,7 +265,7 @@ public class ArrayContextData implements MutableContextData {
     /**
      * Inflates the table.
      */
-    private void inflateTable(int toSize) {
+    private void inflateTable(final int toSize) {
         threshold = toSize;
         keys = new String[toSize];
         values = new Object[toSize];
@@ -312,7 +312,7 @@ public class ArrayContextData implements MutableContextData {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <V> void forEach(BiConsumer<String, ? super V> action) {
+    public <V> void forEach(final BiConsumer<String, ? super V> action) {
         iterating = true;
         try {
             for (int i = 0; i < size; i++) {
@@ -325,7 +325,7 @@ public class ArrayContextData implements MutableContextData {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <V, T> void forEach(TriConsumer<String, ? super V, T> action, T state) {
+    public <V, T> void forEach(final TriConsumer<String, ? super V, T> action, final T state) {
         iterating = true;
         try {
             for (int i = 0; i < size; i++) {
@@ -368,7 +368,7 @@ public class ArrayContextData implements MutableContextData {
         return result;
     }
 
-    private static int hashCode(Object[] values, int length) {
+    private static int hashCode(final Object[] values, final int length) {
         int result = 1;
         for (int i = 0; i < length; i++) {
             result = HASHVAL * result + (values[i] == null ? 0 : values[i].hashCode());
@@ -402,7 +402,7 @@ public class ArrayContextData implements MutableContextData {
      *             for each key-value mapping.  The key-value mappings are
      *             emitted in no particular order.
      */
-    private void writeObject(java.io.ObjectOutputStream s) throws IOException {
+    private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
         // Write out the threshold, and any hidden stuff
         s.defaultWriteObject();
 
@@ -443,7 +443,7 @@ public class ArrayContextData implements MutableContextData {
      * Reconstitute the {@code ArrayContextData} instance from a stream (i.e.,
      * deserialize it).
      */
-    private void readObject(java.io.ObjectInputStream s)  throws IOException, ClassNotFoundException {
+    private void readObject(final java.io.ObjectInputStream s)  throws IOException, ClassNotFoundException {
         // Read in the threshold (ignored), and any hidden stuff
         s.defaultReadObject();
 

@@ -147,7 +147,7 @@ public class ArrayContextDataVsHashMapBenchmark {
 
     static TriConsumer<String, Object, int[]> COUNTER = new TriConsumer<String, Object, int[]>() {
         @Override
-        public void accept(String s, Object o, int[] result) {
+        public void accept(final String s, final Object o, final int[] result) {
             result[0] += s.hashCode() + o.hashCode();
         }
     };
@@ -174,7 +174,7 @@ public class ArrayContextDataVsHashMapBenchmark {
 
         populatedContextData.forEach(new BiConsumer<String, Object>() {
             @Override
-            public void accept(String s, Object o) {
+            public void accept(final String s, final Object o) {
                 result[0] += s.hashCode() + o.hashCode();
             }
         });
@@ -187,7 +187,7 @@ public class ArrayContextDataVsHashMapBenchmark {
 
         populatedHashContextData.forEach(new BiConsumer<String, Object>() {
             @Override
-            public void accept(String s, Object o) {
+            public void accept(final String s, final Object o) {
                 result[0] += s.hashCode() + o.hashCode();
             }
         });
