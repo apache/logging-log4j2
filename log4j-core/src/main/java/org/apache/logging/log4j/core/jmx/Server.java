@@ -284,14 +284,12 @@ public final class Server {
     }
 
     private static void unregisterStatusLogger(final String contextName, final MBeanServer mbs) {
-        final String pattern = StatusLoggerAdminMBean.PATTERN;
-        final String search = String.format(pattern, escape(contextName), "*");
+        final String search = String.format(StatusLoggerAdminMBean.PATTERN, escape(contextName), "*");
         unregisterAllMatching(search, mbs);
     }
 
     private static void unregisterContextSelector(final String contextName, final MBeanServer mbs) {
-        final String pattern = ContextSelectorAdminMBean.PATTERN;
-        final String search = String.format(pattern, escape(contextName), "*");
+        final String search = String.format(ContextSelectorAdminMBean.PATTERN, escape(contextName), "*");
         unregisterAllMatching(search, mbs);
     }
 
