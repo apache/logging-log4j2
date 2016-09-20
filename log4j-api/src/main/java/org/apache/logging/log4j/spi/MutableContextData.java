@@ -37,16 +37,34 @@ public interface MutableContextData extends ContextData {
     void clear();
 
     /**
-     * Puts the specified key-value pair into the collection.
-     *
-     * @param key the key to add or remove. Keys may be {@code null}.
-     * @param value the value to add. Values may be {@code null}.
-     * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
-     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
-     *          {@link #forEach(TriConsumer, Object)}.
-     * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
+     * Indicates whether some other object is "equal to" this one.
+     * 
+     * @param obj
+     *            the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+     * @see #hashCode()
      */
-    void putValue(final String key, final Object value);
+    @Override
+    boolean equals(final Object obj);
+
+    /**
+     * Makes this collection immutable. Attempts to modify the collection after the {@code freeze()} method was called
+     * will result in an {@code UnsupportedOperationException} being thrown.
+     */
+    void freeze();
+
+    /**
+     * Returns a hash code value for the object.
+     * @return a hash code value for this object.
+     */
+    @Override
+    int hashCode();
+
+    /**
+     * Returns {@code true} if this object has been {@linkplain #freeze() frozen}, {@code false} otherwise.
+     * @return  {@code true} if this object has been {@linkplain #freeze() frozen}, {@code false} otherwise
+     */
+    boolean isFrozen();
 
     /**
      * Copy all key-value pairs from the specified {@code ContextData} into this {@code MutableContextData}.
@@ -59,6 +77,18 @@ public interface MutableContextData extends ContextData {
     void putAll(final ContextData source);
 
     /**
+     * Puts the specified key-value pair into the collection.
+     *
+     * @param key the key to add or remove. Keys may be {@code null}.
+     * @param value the value to add. Values may be {@code null}.
+     * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
+     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          {@link #forEach(TriConsumer, Object)}.
+     * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
+     */
+    void putValue(final String key, final Object value);
+
+    /**
      * Removes the key-value pair for the specified key from this context data collection.
      *
      * @param key the key to remove. May be {@code null}.
@@ -68,34 +98,4 @@ public interface MutableContextData extends ContextData {
      * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */
     void remove(final String key);
-
-    /**
-     * Makes this collection immutable. Attempts to modify the collection after the {@code freeze()} method was called
-     * will result in an {@code UnsupportedOperationException} being thrown.
-     */
-    void freeze();
-
-    /**
-     * Returns {@code true} if this object has been {@linkplain #freeze() frozen}, {@code false} otherwise.
-     * @return  {@code true} if this object has been {@linkplain #freeze() frozen}, {@code false} otherwise
-     */
-    boolean isFrozen();
-
-    /**
-     * Returns a hash code value for the object.
-     * @return a hash code value for this object.
-     */
-    @Override
-    int hashCode();
-
-    /**
-     * Indicates whether some other object is "equal to" this one.
-     * 
-     * @param obj
-     *            the reference object with which to compare.
-     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
-     * @see #hashCode()
-     */
-    @Override
-    boolean equals(final Object obj);
 }
