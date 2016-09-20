@@ -34,6 +34,10 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     private final String keyManagerFactoryAlgorithm;
 
+    /**
+     * 
+     * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
+     */
     public KeyStoreConfiguration(final String location, final String password, final String keyStoreType,
             final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
         super(location, password, keyStoreType);
@@ -53,7 +57,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      * @param keyManagerFactoryAlgorithm
      *         The standard name of the requested algorithm. See the Java Secure Socket Extension Reference Guide for information about these names.
      * @return a new KeyStoreConfiguration
-     * @throws StoreConfigurationException
+     * @throws StoreConfigurationException Thrown if this call cannot load the KeyStore.
      */
     @PluginFactory
     public static KeyStoreConfiguration createKeyStoreConfiguration(

@@ -52,7 +52,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
      * @param trustManagerFactoryAlgorithm
      *        The standard name of the requested trust management algorithm. See the Java Secure Socket Extension Reference Guide for information these names.
      * @return a new TrustStoreConfiguration
-     * @throws StoreConfigurationException
+     * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
      */
     @PluginFactory
     public static TrustStoreConfiguration createKeyStoreConfiguration(
