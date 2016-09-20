@@ -120,6 +120,7 @@ public class ScriptPatternSelector implements PatternSelector {
         }
         if (properties == null || properties.length == 0) {
             LOGGER.warn("No marker patterns were provided");
+            return null;
         }
         return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, config);
     }
