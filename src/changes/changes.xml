@@ -159,6 +159,9 @@
       <action issue="LOG4J2-1578" dev="ggregory" type="add">
         RoutingAppender can be configured with scripts. Add Script in a Routes element.
       </action>
+      <action issue="LOG4J2-1597" dev="ggregory" type="add">
+        Add a ScriptAppenderSelector to create an Appender specified by a Script.
+      </action>
       <action issue="LOG4J2-1349" dev="rpopma" type="add">
         (GC) Added support for garbage-free ThreadContext map. Disabled by default, users need to enable this explicitly.
       </action>
