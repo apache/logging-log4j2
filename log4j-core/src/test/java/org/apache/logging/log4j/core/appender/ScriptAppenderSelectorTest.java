@@ -36,7 +36,7 @@ import org.junit.runners.Parameterized;
  *
  */
 @RunWith(Parameterized.class)
-public class ScriptSelectorAppenderTest {
+public class ScriptAppenderSelectorTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[][] getParameters() {
@@ -51,7 +51,7 @@ public class ScriptSelectorAppenderTest {
     @Rule
     public final LoggerContextRule loggerContextRule;
 
-    public ScriptSelectorAppenderTest(final String configLocation) {
+    public ScriptAppenderSelectorTest(final String configLocation) {
         this.loggerContextRule = new LoggerContextRule(configLocation);
     }
 
@@ -61,7 +61,7 @@ public class ScriptSelectorAppenderTest {
 
     private void logAndCheck() {
         Marker marker = MarkerManager.getMarker("HEXDUMP");
-        final Logger logger = loggerContextRule.getLogger(ScriptSelectorAppenderTest.class);
+        final Logger logger = loggerContextRule.getLogger(ScriptAppenderSelectorTest.class);
         logger.error("Hello");
         final ListAppender listAppender = getListAppender();
         final List<LogEvent> list = listAppender.getEvents();

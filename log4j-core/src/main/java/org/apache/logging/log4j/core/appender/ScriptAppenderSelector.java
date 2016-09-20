@@ -35,8 +35,8 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
 
-@Plugin(name = "ScriptSelector", category = "Core", elementType = "appender", printObject = true)
-public class ScriptSelector extends AbstractAppender {
+@Plugin(name = "ScriptAppenderSelector", category = "Core", elementType = "appender", printObject = true)
+public class ScriptAppenderSelector extends AbstractAppender {
 
     /**
      * Builds an appender.
@@ -65,13 +65,13 @@ public class ScriptSelector extends AbstractAppender {
                 LOGGER.error("Name missing.");
             }
             if (script == null) {
-                LOGGER.error("Script missing for ScriptSelector appender {}", name);
+                LOGGER.error("Script missing for ScriptAppenderSelector appender {}", name);
             }
             if (appenderSet == null) {
-                LOGGER.error("AppenderSet missing for ScriptSelector appender {}", name);
+                LOGGER.error("AppenderSet missing for ScriptAppenderSelector appender {}", name);
             }
             if (configuration == null) {
-                LOGGER.error("Configuration missing for ScriptSelector appender {}", name);
+                LOGGER.error("Configuration missing for ScriptAppenderSelector appender {}", name);
             }
             final ScriptManager scriptManager = configuration.getScriptManager();
             scriptManager.addScript(script);
@@ -125,7 +125,7 @@ public class ScriptSelector extends AbstractAppender {
         return new Builder();
     }
 
-    private ScriptSelector(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
+    private ScriptAppenderSelector(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
         super(name, filter, layout);
     }
 

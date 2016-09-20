@@ -17,7 +17,7 @@
 -->
 <Configuration status="WARN" name="RoutingTest">
   <Appenders>
-    <ScriptSelector name="SelectIt">
+    <ScriptAppenderSelector name="SelectIt">
       <Script language="JavaScript"><![CDATA[
          "OSNameFoo".search("Foo") > -1 ? "List2" : "List1";]]>
       </Script>
@@ -25,7 +25,7 @@
         <List name="List1" />
         <List name="List2" />
       </AppenderSet>
-    </ScriptSelector>
+    </ScriptAppenderSelector>
   </Appenders>
   <Loggers>
     <Root level="error">
