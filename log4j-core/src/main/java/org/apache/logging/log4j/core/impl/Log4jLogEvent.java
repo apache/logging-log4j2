@@ -200,7 +200,7 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
-        public Builder setContextData(final MutableContextData contextData) {
+        public Builder setMutableContextData(final MutableContextData contextData) {
             this.mutableContextData = contextData;
             return this;
         }

@@ -455,7 +455,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
      * @param builder the builder whose fields to populate
      */
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
-        builder.setContextData(contextData) //
+        builder.setMutableContextData(contextData) //
                 .setContextStack(contextStack) //
                 .setEndOfBatch(endOfBatch) //
                 .setIncludeLocation(includeLocation) //

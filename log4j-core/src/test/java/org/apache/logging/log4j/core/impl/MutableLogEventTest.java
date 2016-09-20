@@ -54,7 +54,7 @@ public class MutableLogEventTest {
     public void testInitFromCopiesAllFields() {
 //        private ThrowableProxy thrownProxy;
         final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
-                .setContextData(CONTEXT_DATA) //
+                .setMutableContextData(CONTEXT_DATA) //
                 .setContextStack(STACK) //
                 .setEndOfBatch(true) //
                 .setIncludeLocation(true) //
