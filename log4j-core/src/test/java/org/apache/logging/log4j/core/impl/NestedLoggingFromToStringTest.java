@@ -58,7 +58,7 @@ public class NestedLoggingFromToStringTest {
 
     static class ParameterizedLoggingThing {
         final Logger innerLogger = LogManager.getLogger(ParameterizedLoggingThing.class);
-        private int x = 3, y = 4, z = 5;
+        private final int x = 3, y = 4, z = 5;
         public int getX() {
             innerLogger.debug("getX: values x={} y={} z={}", x, y, z);
             return x;

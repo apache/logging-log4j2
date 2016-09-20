@@ -89,7 +89,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     /** The acceptable load factor. */
     protected final float loadFactor;
 
-    private V defRetValue = null;
+    private final V defRetValue = null;
     private boolean immutable;
     private transient boolean iterating;
 

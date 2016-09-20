@@ -47,8 +47,8 @@ import static org.junit.Assert.*;
 public class AsyncLoggerAllThreadContextImplementationsTest {
 
     final static int LINE_COUNT = 130;
-    private ContextImpl contextImpl;
-    private Mode asyncMode;
+    private final ContextImpl contextImpl;
+    private final Mode asyncMode;
 
     @BeforeClass
     public static void beforeClass() {
