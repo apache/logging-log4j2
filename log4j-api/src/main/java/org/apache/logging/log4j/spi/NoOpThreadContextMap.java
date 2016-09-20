@@ -42,7 +42,7 @@ public class NoOpThreadContextMap implements ThreadContextMap {
 
     @Override
     public Map<String, String> getCopy() {
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
 
     @Override
