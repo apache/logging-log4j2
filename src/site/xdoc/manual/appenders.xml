@@ -3671,7 +3671,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             the name of the <code>ScriptAppenderSelector</code>, not the name of the selected appender, in this example, 
             "SelectIt".
           </p>
-<pre class="prettyprint linenums"><![CDATA[<Configuration status="WARN" name="RoutingTest">
+<pre class="prettyprint linenums"><![CDATA[<Configuration status="WARN" name="ScriptAppenderSelectorExample">
   <Appenders>
     <ScriptAppenderSelector name="SelectIt">
       <Script language="JavaScript"><![CDATA[
