@@ -19,9 +19,9 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class NoConsoleNoAnsiTest {
 
     private static final String EXPECTED =
             "ERROR LoggerTest o.a.l.l.c.p.NoConsoleNoAnsiTest org.apache.logging.log4j.core.pattern.NoConsoleNoAnsiTest"
-            + Constants.LINE_SEPARATOR;
+            + Strings.LINE_SEPARATOR;
 
     @Rule
     public LoggerContextRule init = new LoggerContextRule("log4j2-console-noConsoleNoAnsi.xml");

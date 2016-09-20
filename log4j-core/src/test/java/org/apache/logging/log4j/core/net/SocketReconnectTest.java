@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,11 +40,11 @@ public class SocketReconnectTest {
 
     private static final String CONFIG = "log4j-socket.xml";
 
-    private static final String SHUTDOWN = "Shutdown" + Constants.LINE_SEPARATOR +
-        "................................................................" + Constants.LINE_SEPARATOR +
-        "................................................................" + Constants.LINE_SEPARATOR +
-        "................................................................" + Constants.LINE_SEPARATOR +
-        "................................................................" + Constants.LINE_SEPARATOR;
+    private static final String SHUTDOWN = "Shutdown" + Strings.LINE_SEPARATOR +
+        "................................................................" + Strings.LINE_SEPARATOR +
+        "................................................................" + Strings.LINE_SEPARATOR +
+        "................................................................" + Strings.LINE_SEPARATOR +
+        "................................................................" + Strings.LINE_SEPARATOR;
 
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);

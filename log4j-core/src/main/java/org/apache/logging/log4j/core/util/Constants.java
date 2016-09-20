@@ -44,12 +44,6 @@ public final class Constants {
     public static final String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
 
     /**
-     * Line separator.
-     */
-    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
-            "\n");
-
-    /**
      * Number of milliseconds in a second.
      */
     public static final int MILLIS_IN_SECONDS = 1000;

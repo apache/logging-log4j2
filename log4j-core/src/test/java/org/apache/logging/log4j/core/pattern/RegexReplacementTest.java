@@ -23,10 +23,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.junit.ThreadContextMapRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -40,7 +40,7 @@ public class RegexReplacementTest {
     private static ListAppender app;
     private static ListAppender app2;
 
-    private static final String EXPECTED = "/RegexReplacementTest" + Constants.LINE_SEPARATOR;
+    private static final String EXPECTED = "/RegexReplacementTest" + Strings.LINE_SEPARATOR;
 
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);
@@ -71,7 +71,7 @@ public class RegexReplacementTest {
         msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
-        assertEquals("LoggerTest This is a test for Apache" + Constants.LINE_SEPARATOR, msgs.get(0));
+        assertEquals("LoggerTest This is a test for Apache" + Strings.LINE_SEPARATOR, msgs.get(0));
     }
      @Test
     public void testConverter() {

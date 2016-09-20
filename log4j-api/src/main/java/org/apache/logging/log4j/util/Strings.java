@@ -31,6 +31,13 @@ public final class Strings {
      * The empty string.
      */
     public static final String EMPTY = "";
+    
+    /**
+     * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
+     * read.
+     */
+    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
+            "\n");
 
     private Strings() {
         // empty

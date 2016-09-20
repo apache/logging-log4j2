@@ -23,7 +23,6 @@ import java.util.Scanner;
 import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -98,7 +97,7 @@ public final class ThrowableFormatOptions {
     protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
             final TextRenderer textRenderer) {
         this.lines = lines;
-        this.separator = separator == null ? Constants.LINE_SEPARATOR : separator;
+        this.separator = separator == null ? Strings.LINE_SEPARATOR : separator;
         this.ignorePackages = ignorePackages;
         this.textRenderer = textRenderer == null ? PlainTextRenderer.getInstance() : textRenderer;
     }

@@ -19,9 +19,9 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
 public class MessageStyledConverterTest {
 
     private static final String EXPECTED = "\u001B[31;1mWarning!\u001B[m Pants on \u001B[31;1mfire!\u001B[m"
-            + Constants.LINE_SEPARATOR;
+            + Strings.LINE_SEPARATOR;
 
     @Rule
     public LoggerContextRule init = new LoggerContextRule("log4j-message-styled.xml");

@@ -21,8 +21,8 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -49,6 +49,6 @@ public class RegexReplacementConverterTest {
             options);
         converter.format(event, sb);
         assertEquals("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test" +
-            Constants.LINE_SEPARATOR, sb.toString());
+            Strings.LINE_SEPARATOR, sb.toString());
     }
 }

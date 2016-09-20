@@ -25,8 +25,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.Strings;
 import org.easymock.EasyMockSupport;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -151,7 +151,7 @@ public class ConsoleAppenderTest {
             }
             final String msg = baos.toString();
             assertNotNull("No message", msg);
-            assertTrue("Incorrect message: \"" + msg + "\"", msg.endsWith("Test" + Constants.LINE_SEPARATOR));
+            assertTrue("Incorrect message: \"" + msg + "\"", msg.endsWith("Test" + Strings.LINE_SEPARATOR));
         } finally {
             app.stop();
         }

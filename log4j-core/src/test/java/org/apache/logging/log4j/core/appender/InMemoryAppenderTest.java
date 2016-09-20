@@ -21,9 +21,9 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.InMemoryAppender;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -74,7 +74,7 @@ public class InMemoryAppenderTest {
         final String msg = app.toString();
         assertNotNull("No message", msg);
         final String expectedHeader = header == null ? "" : header;
-        final String expected = expectedHeader + "Test" + Constants.LINE_SEPARATOR + "Test" + Constants.LINE_SEPARATOR;
+        final String expected = expectedHeader + "Test" + Strings.LINE_SEPARATOR + "Test" + Strings.LINE_SEPARATOR;
         assertTrue("Incorrect message: " + msg, msg.equals(expected));
         app.stop();
         assertFalse("Appender did not stop", app.isStarted());
