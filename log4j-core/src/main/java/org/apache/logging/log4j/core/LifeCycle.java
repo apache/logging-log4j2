@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.core;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * All proper Java frameworks implement some sort of object life cycle. In Log4j, the main interface for handling
  * the life cycle context of an object is this one. An object first starts in the {@link State#INITIALIZED} state

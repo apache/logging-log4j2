@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
@@ -40,7 +39,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * When rolling over, <code>DefaultRolloverStrategy</code> renames files according to an algorithm as described below.
