@@ -129,7 +129,6 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
         // @formatter:on
 
-        // TODO: add Protocol to TypeConverters
         final Protocol protocol = EnglishEnums.valueOf(Protocol.class, protocolStr);
         final boolean useTlsMessageFormat = sslConfig != null || protocol == Protocol.SSL;
         final Layout<? extends Serializable> layout = RFC5424.equalsIgnoreCase(format) ?
