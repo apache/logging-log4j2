@@ -200,7 +200,10 @@ final class ParameterFormatter {
      */
     static void formatMessage3(final StringBuilder buffer, final char[] messagePattern, final int patternLength,
             final Object[] arguments, final int argCount, final int[] indices) {
-        if (messagePattern == null || arguments == null || argCount == 0) {
+        if (messagePattern == null) {
+            return;
+        }
+        if (arguments == null || argCount == 0) {
             buffer.append(messagePattern);
             return;
         }
