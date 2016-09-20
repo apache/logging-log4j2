@@ -165,6 +165,9 @@
       <action issue="LOG4J2-1601" dev="ggregory" type="fix">
         NPE due to org.apache.logging.log4j.core.layout.ScriptPatternSelector.createSelector(AbstractScript, PatternMatch[], String, boolean, boolean, Configuration).
       </action>
+      <action issue="LOG4J2-1602" dev="ggregory" type="fix">
+        NPE in org.apache.logging.log4j.core.util.datetime.FormatCache.MultipartKey.equals(Object) when object is null.
+      </action>
       <action issue="LOG4J2-1578" dev="ggregory" type="add">
         RoutingAppender can be configured with scripts. Add Script in a Routes element.
       </action>
