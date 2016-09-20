@@ -48,7 +48,7 @@ public class ContextDataJsonAttributeConverterTest {
 
         assertNotNull("The converted value should not be null.", converted);
 
-        final ContextData reversed = (ContextData) this.converter.convertToEntityAttribute(converted);
+        final ContextData reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The reversed value is not correct.", map, reversed);
@@ -65,7 +65,7 @@ public class ContextDataJsonAttributeConverterTest {
 
         assertNotNull("The converted value should not be null.", converted);
 
-        final ContextData reversed = (ContextData) this.converter.convertToEntityAttribute(converted);
+        final ContextData reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The reversed value is not correct.", map, reversed);

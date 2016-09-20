@@ -232,7 +232,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     }
 
     private void tryCapacity(final long capacity) {
-        final int needed = (int) Math.min(
+        final int needed = Math.min(
                 1 << 30, Math.max(2, HashCommon.nextPowerOfTwo((int) Math.ceil(capacity / loadFactor))));
         if (needed > arraySize) {
             rehash(needed);
@@ -276,7 +276,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
 
     @Override
     public boolean containsKey(final String key) {
-        return containsObjectKey((Object) key);
+        return containsObjectKey(key);
     }
 
     @SuppressWarnings("unchecked")
@@ -437,7 +437,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
 
     @Override
     public <VAL> VAL getValue(final String key) {
-        return (VAL) getObjectValue((Object) key);
+        return (VAL) getObjectValue(key);
     }
 
     @Override
@@ -529,7 +529,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
 
     @Override
     public void remove(final String key) {
-        removeObjectKey((Object) key);
+        removeObjectKey(key);
     }
 
     @Override
