@@ -70,4 +70,35 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
         tmFactory.init(this.getKeyStore());
         return tmFactory;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((trustManagerFactoryAlgorithm == null) ? 0 : trustManagerFactoryAlgorithm.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        TrustStoreConfiguration other = (TrustStoreConfiguration) obj;
+        if (trustManagerFactoryAlgorithm == null) {
+            if (other.trustManagerFactoryAlgorithm != null) {
+                return false;
+            }
+        } else if (!trustManagerFactoryAlgorithm.equals(other.trustManagerFactoryAlgorithm)) {
+            return false;
+        }
+        return true;
+    }
 }

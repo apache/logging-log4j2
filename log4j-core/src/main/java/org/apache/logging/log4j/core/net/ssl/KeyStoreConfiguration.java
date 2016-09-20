@@ -72,4 +72,34 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
         kmFactory.init(this.getKeyStore(), this.getPasswordAsCharArray());
         return kmFactory;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((keyManagerFactoryAlgorithm == null) ? 0 : keyManagerFactoryAlgorithm.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        KeyStoreConfiguration other = (KeyStoreConfiguration) obj;
+        if (keyManagerFactoryAlgorithm == null) {
+            if (other.keyManagerFactoryAlgorithm != null) {
+                return false;
+            }
+        } else if (!keyManagerFactoryAlgorithm.equals(other.keyManagerFactoryAlgorithm)) {
+            return false;
+        }
+        return true;
+    }
 }
