@@ -3676,11 +3676,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     <ScriptAppenderSelector name="SelectIt">
       <Script language="JavaScript"><![CDATA[
         importPackage(java.lang);
-        System.getProperty("os.name").search("Windows") ? "List2" : "List1";]]]]><![CDATA[>
+        System.getProperty("os.name").search("Windows") > -1 ? "MyCustomWindowsAppender" : "MySyslogAppender";]]]]><![CDATA[>
       </Script>
       <AppenderSet>
-        <List name="List1" />
-        <List name="List2" />
+        <MyCustomWindowsAppender name="MyAppender" ... />
+        <SyslogAppender name="MySyslog" ... />
       </AppenderSet>
     </ScriptAppenderSelector>
   </Appenders>
