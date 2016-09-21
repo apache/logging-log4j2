@@ -30,9 +30,9 @@ public class ConfiguratonFileWatcher implements FileWatcher {
     private final Reconfigurable reconfigurable;
     private final List<ConfigurationListener> configurationListeners;
 
-    public ConfiguratonFileWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners) {
+    public ConfiguratonFileWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> configurationListeners) {
         this.reconfigurable = reconfigurable;
-        this.configurationListeners = listeners;
+        this.configurationListeners = configurationListeners;
     }
 
     public List<ConfigurationListener> getListeners() {
