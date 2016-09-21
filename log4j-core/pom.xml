@@ -144,6 +144,12 @@
       <artifactId>commons-csv</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Command line for TCP and UDP servers -->
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <optional>true</optional>
+    </dependency>
 
     <!-- TEST DEPENDENCIES -->
 
