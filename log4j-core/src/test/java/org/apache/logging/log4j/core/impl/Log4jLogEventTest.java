@@ -296,7 +296,7 @@ public class Log4jLogEventTest {
         final String name = "Ceci n'est pas une pipe";
         final String threadName = "threadName";
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
-                .setMutableContextData(contextData) //
+                .setContextData(contextData) //
                 .setContextStack(contextStack) //
                 .setEndOfBatch(true) //
                 .setIncludeLocation(true) //

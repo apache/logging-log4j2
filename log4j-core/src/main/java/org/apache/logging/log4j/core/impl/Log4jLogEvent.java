@@ -63,7 +63,7 @@ public class Log4jLogEvent implements LogEvent {
     private final long timeMillis;
     private final transient Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private final MutableContextData mutableContextData;
+    private final MutableContextData contextData;
     private final ThreadContext.ContextStack contextStack;
     private long threadId;
     private String threadName;
@@ -85,7 +85,7 @@ public class Log4jLogEvent implements LogEvent {
         private Throwable thrown;
         private long timeMillis = CLOCK.currentTimeMillis();
         private ThrowableProxy thrownProxy;
-        private MutableContextData mutableContextData = createContextData((List<Property>) null);
+        private MutableContextData contextData = createContextData((List<Property>) null);
         private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
         private long threadId;
         private String threadName;
@@ -123,7 +123,7 @@ public class Log4jLogEvent implements LogEvent {
             // Avoid unnecessarily initializing thrownProxy, threadName and source if possible
             if (other instanceof Log4jLogEvent) {
                 final Log4jLogEvent evt = (Log4jLogEvent) other;
-                this.mutableContextData = evt.mutableContextData;
+                this.contextData = evt.contextData;
                 this.thrownProxy = evt.thrownProxy;
                 this.source = evt.source;
                 this.threadId = evt.threadId;
@@ -131,14 +131,14 @@ public class Log4jLogEvent implements LogEvent {
                 this.threadPriority = evt.threadPriority;
             } else {
                 if (other.getContextData() instanceof MutableContextData) {
-                    this.mutableContextData = (MutableContextData) other.getContextData();
+                    this.contextData = (MutableContextData) other.getContextData();
                 } else {
-                    if (this.mutableContextData.isFrozen()) {
-                        this.mutableContextData = ContextDataFactory.createContextData();
+                    if (this.contextData.isFrozen()) {
+                        this.contextData = ContextDataFactory.createContextData();
                     } else {
-                        this.mutableContextData.clear();
+                        this.contextData.clear();
                     }
-                    this.mutableContextData.putAll(other.getContextData());
+                    this.contextData.putAll(other.getContextData());
 
                 }
                 this.thrownProxy = other.getThrownProxy();
@@ -191,17 +191,17 @@ public class Log4jLogEvent implements LogEvent {
 
         @Deprecated
         public Builder setContextMap(final Map<String, String> contextMap) {
-            mutableContextData = ContextDataFactory.createContextData(); // replace with new instance
+            contextData = ContextDataFactory.createContextData(); // replace with new instance
             if (contextMap != null) {
                 for (final Map.Entry<String, String> entry : contextMap.entrySet()) {
-                    mutableContextData.putValue(entry.getKey(), entry.getValue());
+                    contextData.putValue(entry.getKey(), entry.getValue());
                 }
             }
             return this;
         }
 
-        public Builder setMutableContextData(final MutableContextData contextData) {
-            this.mutableContextData = contextData;
+        public Builder setContextData(final MutableContextData contextData) {
+            this.contextData = contextData;
             return this;
         }
 
@@ -254,7 +254,7 @@ public class Log4jLogEvent implements LogEvent {
         @Override
         public Log4jLogEvent build() {
             final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFqcn, level, message, thrown,
-                    thrownProxy, mutableContextData, contextStack, threadId, threadName, threadPriority, source, timeMillis,
+                    thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, timeMillis,
                     nanoTime);
             result.setIncludeLocation(includeLocation);
             result.setEndOfBatch(endOfBatch);
@@ -409,7 +409,7 @@ public class Log4jLogEvent implements LogEvent {
         this.message = message;
         this.thrown = thrown;
         this.thrownProxy = thrownProxy;
-        this.mutableContextData = contextData == null ? ContextDataFactory.createContextData() : contextData;
+        this.contextData = contextData == null ? ContextDataFactory.createContextData() : contextData;
         this.contextStack = contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
         this.timeMillis = message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()
@@ -583,7 +583,7 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public ContextData getContextData() {
-        return mutableContextData;
+        return contextData;
     }
     /**
      * Returns the immutable copy of the ThreadContext Map.
@@ -591,7 +591,7 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public Map<String, String> getContextMap() {
-        return mutableContextData.toMap();
+        return contextData.toMap();
     }
 
     /**
@@ -780,7 +780,7 @@ public class Log4jLogEvent implements LogEvent {
         if (marker != null ? !marker.equals(that.marker) : that.marker != null) {
             return false;
         }
-        if (mutableContextData != null ? !mutableContextData.equals(that.mutableContextData) : that.mutableContextData != null) {
+        if (contextData != null ? !contextData.equals(that.contextData) : that.contextData != null) {
             return false;
         }
         if (!message.equals(that.message)) {
@@ -823,7 +823,7 @@ public class Log4jLogEvent implements LogEvent {
         result = 31 * result + (int) (nanoTime ^ (nanoTime >>> 32));
         result = 31 * result + (thrown != null ? thrown.hashCode() : 0);
         result = 31 * result + (thrownProxy != null ? thrownProxy.hashCode() : 0);
-        result = 31 * result + (mutableContextData != null ? mutableContextData.hashCode() : 0);
+        result = 31 * result + (contextData != null ? contextData.hashCode() : 0);
         result = 31 * result + (contextStack != null ? contextStack.hashCode() : 0);
         result = 31 * result + (int) (threadId ^ (threadId >>> 32));
         result = 31 * result + (threadName != null ? threadName.hashCode() : 0);
@@ -874,7 +874,7 @@ public class Log4jLogEvent implements LogEvent {
             this.timeMillis = event.timeMillis;
             this.thrown = event.thrown;
             this.thrownProxy = event.thrownProxy;
-            this.contextData = event.mutableContextData;
+            this.contextData = event.contextData;
             this.contextStack = event.contextStack;
             this.source = includeLocation ? event.getSource() : null;
             this.threadId = event.getThreadId();
