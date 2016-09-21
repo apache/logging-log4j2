@@ -28,22 +28,22 @@ import org.apache.logging.log4j.core.util.FileWatcher;
 public class ConfiguratonFileWatcher implements FileWatcher {
 
     private final Reconfigurable reconfigurable;
-    private final List<ConfigurationListener> configurationListener;
+    private final List<ConfigurationListener> configurationListeners;
 
     public ConfiguratonFileWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners) {
         this.reconfigurable = reconfigurable;
-        this.configurationListener = listeners;
+        this.configurationListeners = listeners;
     }
 
     public List<ConfigurationListener> getListeners() {
-        return configurationListener;
+        return configurationListeners;
     }
 
 
     @Override
     public void fileModified(final File file) {
-        for (final ConfigurationListener listener : configurationListener) {
-            LoggerContext.getContext(false).submitDaemon(new ReconfigurationRunnable(listener, reconfigurable));
+        for (final ConfigurationListener configurationListener : configurationListeners) {
+            LoggerContext.getContext(false).submitDaemon(new ReconfigurationRunnable(configurationListener, reconfigurable));
         }
     }
 
