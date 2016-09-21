@@ -264,6 +264,9 @@
       <action issue="LOG4J2-1556" dev="ggregory" type="update">
         Custom Log4j threads now extend Log4jThread.
       </action>
+      <action issue="LOG4J2-1605" dev="ggregory" type="update">
+        Improve error messages for TcpSocketServer and UdpSocketServer.
+      </action>
       <action issue="LOG4J2-1458" dev="ggregory" type="update">
         Updated Jackson from 2.7.5 to 2.8.0.
       </action>
