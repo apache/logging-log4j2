@@ -181,13 +181,13 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      */
     public static void main(final String[] args) throws Exception {
         if (args.length < 1 || args.length > 2) {
-            System.err.println("Incorrect number of arguments");
+            System.err.println("Incorrect number of arguments: " + args.length);
             printUsage();
             return;
         }
         final int port = Integer.parseInt(args[0]);
         if (port <= 0 || port >= MAX_PORT) {
-            System.err.println("Invalid port number");
+            System.err.println("Invalid port number: " + port);
             printUsage();
             return;
         }
