@@ -63,7 +63,7 @@ public class WatchManager extends AbstractLifeCycle {
     public void start() {
         super.start();
         if (intervalSeconds > 0) {
-            future = scheduler.scheduleWithFixedDelay(new WatchWorker(), intervalSeconds, intervalSeconds,
+            future = scheduler.scheduleWithFixedDelay(new WatchRunnable(), intervalSeconds, intervalSeconds,
                     TimeUnit.SECONDS);
         }
     }
@@ -89,7 +89,7 @@ public class WatchManager extends AbstractLifeCycle {
         return map;
     }
 
-    private class WatchWorker implements Runnable {
+    private class WatchRunnable implements Runnable {
 
         @Override
         public void run() {
