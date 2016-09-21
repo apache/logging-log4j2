@@ -34,6 +34,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class Interpolator extends AbstractConfigurationAwareLookup {
 
+    private static final String LOOKUP_KEY_WEB = "web";
+
+    private static final String LOOKUP_KEY_JNDI = "jndi";
+
+    private static final String LOOKUP_KEY_JVMRUNARGS = "jvmrunargs";
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     /** Constant for the prefix separator. */
@@ -92,28 +98,28 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         // JNDI
         try {
             // [LOG4J2-703] We might be on Android
-            lookups.put("jndi",
+            lookups.put(LOOKUP_KEY_JNDI,
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
         } catch (final Throwable t) {
-            handleError("jndi", t);
+            handleError(LOOKUP_KEY_JNDI, t);
         }
         // JMX input args
         try {
             // We might be on Android
-            lookups.put("jvmrunargs",
+            lookups.put(LOOKUP_KEY_JVMRUNARGS,
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
                         StrLookup.class));
         } catch (final Throwable t) {
-            handleError("jvmrunargs", t);
+            handleError(LOOKUP_KEY_JVMRUNARGS, t);
         }
         lookups.put("date", new DateLookup());
         lookups.put("ctx", new ContextMapLookup());
         if (Loader.isClassAvailable("javax.servlet.ServletContext")) {
             try {
-                lookups.put("web",
+                lookups.put(LOOKUP_KEY_WEB,
                     Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
             } catch (final Exception ignored) {
-                handleError("web", ignored);
+                handleError(LOOKUP_KEY_WEB, ignored);
             }
         } else {
             LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
@@ -122,19 +128,19 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private void handleError(final String lookupKey, final Throwable t) {
         switch (lookupKey) {
-            case "jndi":
+            case LOOKUP_KEY_JNDI:
                 // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
                 LOGGER.warn( // LOG4J2-1582 don't print the whole stack trace (it is just a warning...)
                         "JNDI lookup class is not available because this JRE does not support JNDI." +
                         " JNDI string lookups will not be available, continuing configuration. Ignoring " + t);
                 break;
-            case "jvmrunargs":
+            case LOOKUP_KEY_JVMRUNARGS:
                 // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JmxRuntimeInputArgumentsLookup
                 LOGGER.warn(
                         "JMX runtime input lookup class is not available because this JRE does not support JMX. " +
                         "JMX lookups will not be available, continuing configuration. Ignoring " + t);
                 break;
-            case "web":
+            case LOOKUP_KEY_WEB:
                 LOGGER.info("Log4j appears to be running in a Servlet environment, but there's no log4j-web module " +
                         "available. If you want better web container support, please add the log4j-web JAR to your " +
                         "web archive or server lib directory.");
