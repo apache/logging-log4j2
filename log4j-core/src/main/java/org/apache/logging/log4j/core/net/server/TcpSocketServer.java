@@ -244,7 +244,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                     logger.traceExit(entry);
                     return;
                 }
-                logger.error("Exception encountered on accept. Ignoring. Stack Trace :", e);
+                logger.error("Exception encountered on accept. Ignoring. Stack trace :", e);
             }
         }
         for (final Map.Entry<Long, SocketHandler> handlerEntry : handlers.entrySet()) {
