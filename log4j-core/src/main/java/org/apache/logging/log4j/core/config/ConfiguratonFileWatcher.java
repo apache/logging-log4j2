@@ -28,41 +28,41 @@ import org.apache.logging.log4j.core.util.FileWatcher;
 public class ConfiguratonFileWatcher implements FileWatcher {
 
     private final Reconfigurable reconfigurable;
-    private final List<ConfigurationListener> listeners;
+    private final List<ConfigurationListener> configurationListener;
 
     public ConfiguratonFileWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners) {
         this.reconfigurable = reconfigurable;
-        this.listeners = listeners;
+        this.configurationListener = listeners;
     }
 
     public List<ConfigurationListener> getListeners() {
-        return listeners;
+        return configurationListener;
     }
 
 
     @Override
     public void fileModified(final File file) {
-        for (final ConfigurationListener listener : listeners) {
-            LoggerContext.getContext(false).submitDaemon(new ReconfigurationWorker(listener, reconfigurable));
+        for (final ConfigurationListener listener : configurationListener) {
+            LoggerContext.getContext(false).submitDaemon(new ReconfigurationRunnable(listener, reconfigurable));
         }
     }
 
     /**
      * Helper class for triggering a reconfiguration in a background thread.
      */
-    private static class ReconfigurationWorker implements Runnable {
+    private static class ReconfigurationRunnable implements Runnable {
 
-        private final ConfigurationListener listener;
+        private final ConfigurationListener configurationListener;
         private final Reconfigurable reconfigurable;
 
-        public ReconfigurationWorker(final ConfigurationListener listener, final Reconfigurable reconfigurable) {
-            this.listener = listener;
+        public ReconfigurationRunnable(final ConfigurationListener configurationListener, final Reconfigurable reconfigurable) {
+            this.configurationListener = configurationListener;
             this.reconfigurable = reconfigurable;
         }
 
         @Override
         public void run() {
-            listener.onChange(reconfigurable);
+            configurationListener.onChange(reconfigurable);
         }
     }
 }
