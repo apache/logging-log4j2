@@ -506,7 +506,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     private Configuration setConfiguration(final Configuration config) {
         if (config == null) {
-            LOGGER.error("No configuration found for context '%s'.", contextName);
+            LOGGER.error("No configuration found for context '{}'.", contextName);
             // No change, return the current configuration.
             return this.configuration;
         }
@@ -597,7 +597,7 @@ public class LoggerContext extends AbstractLifeCycle
                 contextName, configURI, this, cl);
         final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(this, contextName, configURI, cl);
         if (instance == null) {
-            LOGGER.error("Reconfiguration failed: No configuration found for '%s' at '%s' in '%s'", contextName, configURI, cl);
+            LOGGER.error("Reconfiguration failed: No configuration found for '{}' at '{}' in '{}'", contextName, configURI, cl);
         } else {
             setConfiguration(instance);
             /*
