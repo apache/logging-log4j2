@@ -157,16 +157,16 @@
         Layout is no longer optional.
       </action>
       <action issue="LOG4J2-1599" dev="ggregory" type="fix">
-        NPE in org.apache.logging.log4j.message.ParameterFormatter.formatMessage3(StringBuilder, char[], int, Object[], int, int[]).
+        Prevented potential NPE in org.apache.logging.log4j.message.ParameterFormatter.formatMessage3(StringBuilder, char[], int, Object[], int, int[]).
       </action>
       <action issue="LOG4J2-1600" dev="ggregory" type="fix">
-        NPE due to org.apache.logging.log4j.core.layout.MarkerPatternSelector.createSelector(PatternMatch[], String, boolean, boolean, Configuration).
+        Prevented potential NPE due to org.apache.logging.log4j.core.layout.MarkerPatternSelector.createSelector(PatternMatch[], String, boolean, boolean, Configuration).
       </action>
       <action issue="LOG4J2-1601" dev="ggregory" type="fix">
-        NPE due to org.apache.logging.log4j.core.layout.ScriptPatternSelector.createSelector(AbstractScript, PatternMatch[], String, boolean, boolean, Configuration).
+        Prevented potential NPE due to org.apache.logging.log4j.core.layout.ScriptPatternSelector.createSelector(AbstractScript, PatternMatch[], String, boolean, boolean, Configuration).
       </action>
       <action issue="LOG4J2-1602" dev="ggregory" type="fix">
-        NPE in org.apache.logging.log4j.core.util.datetime.FormatCache.MultipartKey.equals(Object) when object is null.
+        Prevented potential NPE in org.apache.logging.log4j.core.util.datetime.FormatCache.MultipartKey.equals(Object) when object is null.
       </action>
       <action issue="LOG4J2-1603" dev="ggregory" type="fix">
         Redo hashCode() and equals() methods in org.apache.logging.log4j.core.net.ssl classes.
