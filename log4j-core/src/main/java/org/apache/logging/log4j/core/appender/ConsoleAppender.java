@@ -47,9 +47,10 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * encoding. (RG) Encoding is handled within the Layout. Typically, a Layout will generate a String and then call
  * getBytes which may use a configured encoding or the system default. OTOH, a Writer cannot print byte streams.
  */
-@Plugin(name = "Console", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = ConsoleAppender.PLUGIN_NAME, category = "Core", elementType = "appender", printObject = true)
 public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
+    public static final String PLUGIN_NAME = "Console";
     private static final String JANSI_CLASS = "org.fusesource.jansi.WindowsAnsiOutputStream";
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
     private static final Target DEFAULT_TARGET = Target.SYSTEM_OUT;

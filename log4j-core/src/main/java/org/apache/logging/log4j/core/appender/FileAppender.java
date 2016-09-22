@@ -36,8 +36,10 @@ import org.apache.logging.log4j.core.util.Integers;
 /**
  * File Appender.
  */
-@Plugin(name = "File", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = FileAppender.PLUGIN_NAME, category = "Core", elementType = "appender", printObject = true)
 public final class FileAppender extends AbstractOutputStreamAppender<FileManager> {
+
+    public static final String PLUGIN_NAME = "File";
 
     /**
      * Builds FileAppender instances.

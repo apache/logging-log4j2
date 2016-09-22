@@ -25,6 +25,9 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.appender.NullAppender;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
@@ -43,6 +46,11 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class Log4j1ConfigurationParser {
 
+	private static final String ROOTLOGGER = "rootLogger";
+	private static final String ROOTCATEGORY = "rootCategory";
+	private static final String TRUE = "true";
+	private static final String FALSE = "false";
+	
 	private final Properties properties = new Properties();
 	private StrSubstitutor strSubstitutor;
 	
@@ -65,8 +73,8 @@ public class Log4j1ConfigurationParser {
 			throws IOException {
 		properties.load(input);
 		strSubstitutor = new StrSubstitutor(properties);
-		final String rootCategoryValue = getLog4jValue("rootCategory");
-		final String rootLoggerValue = getLog4jValue("rootLogger");
+		final String rootCategoryValue = getLog4jValue(ROOTCATEGORY);
+		final String rootLoggerValue = getLog4jValue(ROOTLOGGER);
 		if (rootCategoryValue == null && rootLoggerValue == null) {
 			// This is not a Log4j 1 properties configuration file.
 			throw new ConfigurationException("Input does not contain a valid Log4j 1.x properties configuration");
@@ -78,8 +86,8 @@ public class Log4j1ConfigurationParser {
 			builder.setStatusLevel(Level.DEBUG);
 		}
 		// Root
-		final String[] sortedAppenderNamesC = buildRootLogger(getLog4jValue("rootCategory"));
-		final String[] sortedAppenderNamesL = buildRootLogger(getLog4jValue("rootLogger"));
+		final String[] sortedAppenderNamesC = buildRootLogger(getLog4jValue(ROOTCATEGORY));
+		final String[] sortedAppenderNamesL = buildRootLogger(getLog4jValue(ROOTLOGGER));
 		final String[] sortedAppenderNames = sortedAppenderNamesL.length > 0 ? sortedAppenderNamesL
 				: sortedAppenderNamesC;
 		// Appenders
@@ -127,6 +135,9 @@ public class Log4j1ConfigurationParser {
 		case "org.apache.log4j.FileAppender":
 			buildFileAppender(appenderName);
 			break;
+		case "org.apache.log4j.DailyRollingFileAppender":
+			buildDailyRollingFileAppender(appenderName);
+			break;
 		case "org.apache.log4j.RollingFileAppender":
 			buildRollingFileAppender(appenderName);
 			break;
@@ -139,7 +150,7 @@ public class Log4j1ConfigurationParser {
 	}
 
 	private void buildConsoleAppender(final String appenderName) {
-		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, "Console");
+		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, ConsoleAppender.PLUGIN_NAME);
 		final String targetValue = getLog4jAppenderValue(appenderName, "Target", "System.out");
 		if (targetValue != null) {
 			final ConsoleAppender.Target target;
@@ -159,7 +170,7 @@ public class Log4j1ConfigurationParser {
 			}
 		}
 		buildAttribute(appenderName, appenderBuilder, "Follow", "follow");
-		if ("false".equalsIgnoreCase(getLog4jAppenderValue(appenderName, "ImmediateFlush"))) {
+		if (FALSE.equalsIgnoreCase(getLog4jAppenderValue(appenderName, "ImmediateFlush"))) {
 			reportWarning("ImmediateFlush=false is not supported on Console appender");
 		}
 		buildAppenderLayout(appenderName, appenderBuilder);
@@ -167,7 +178,7 @@ public class Log4j1ConfigurationParser {
 	}
 
 	private void buildFileAppender(final String appenderName) {
-		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, "File");
+		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, FileAppender.PLUGIN_NAME);
 		buildFileAppender(appenderName, appenderBuilder);
 		builder.add(appenderBuilder);
 	}
@@ -181,8 +192,22 @@ public class Log4j1ConfigurationParser {
 		buildAppenderLayout(appenderName, appenderBuilder);
 	}
 
+	private void buildDailyRollingFileAppender(final String appenderName) {
+		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, RollingFileAppender.PLUGIN_NAME);
+		buildFileAppender(appenderName, appenderBuilder);
+		final String fileName = getLog4jAppenderValue(appenderName, "File");
+		final String datePattern = getLog4jAppenderValue(appenderName, "DatePattern", fileName + "'.'yyyy-MM-dd");
+		appenderBuilder.addAttribute("filePattern", fileName + "%d{" + datePattern + "}");
+		final ComponentBuilder<?> triggeringPolicy = builder.newComponent("Policies").addComponent(
+				builder.newComponent("TimeBasedTriggeringPolicy").addAttribute("modulate", true));
+		appenderBuilder.addComponent(triggeringPolicy);
+		appenderBuilder.addComponent(
+				builder.newComponent("DefaultRolloverStrategy").addAttribute("max", Integer.MAX_VALUE));
+		builder.add(appenderBuilder);
+	}
+
 	private void buildRollingFileAppender(final String appenderName) {
-		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, "RollingFile");
+		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, RollingFileAppender.PLUGIN_NAME);
 		buildFileAppender(appenderName, appenderBuilder);
 		final String fileName = getLog4jAppenderValue(appenderName, "File");
 		appenderBuilder.addAttribute("filePattern", fileName + ".%i");
@@ -221,7 +246,7 @@ public class Log4j1ConfigurationParser {
 	}
 
 	private void buildNullAppender(String appenderName) {
-		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, "Null");
+		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, NullAppender.PLUGIN_NAME);
 		builder.add(appenderBuilder);
 	}
 
@@ -256,14 +281,14 @@ public class Log4j1ConfigurationParser {
 			}
 			case "org.apache.log4j.TTCCLayout": {
 				String pattern = "%r ";
-				if (Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.ThreadPrinting", "true"))) {
+				if (Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.ThreadPrinting", TRUE))) {
 					pattern += "[%t] ";
 				}
 				pattern += "%p ";
-				if (Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.CategoryPrefixing", "true"))) {
+				if (Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.CategoryPrefixing", TRUE))) {
 					pattern += "%c ";
 				}
-				if (Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.ContextPrinting", "true"))) {
+				if (Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.ContextPrinting", TRUE))) {
 					pattern += "%notEmpty{%ndc }";
 				}
 				pattern += "- %m%n";
@@ -274,16 +299,16 @@ public class Log4j1ConfigurationParser {
 				final LayoutComponentBuilder htmlLayout = builder.newLayout("HtmlLayout");
 				htmlLayout.addAttribute("title", getLog4jAppenderValue(name, "layout.Title", "Log4J Log Messages"));
 				htmlLayout.addAttribute("locationInfo",
-						Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", "false")));
+						Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", FALSE)));
 				appenderBuilder.add(htmlLayout);
 				break;
 			}
 			case "org.apache.log4j.xml.XMLLayout": {
 				final LayoutComponentBuilder xmlLayout = builder.newLayout("Log4j1XmlLayout");
 				xmlLayout.addAttribute("locationInfo",
-						Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", "false")));
+						Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", FALSE)));
 				xmlLayout.addAttribute("properties",
-						Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.Properties", "false")));
+						Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.Properties", FALSE)));
 				appenderBuilder.add(xmlLayout);
 				break;
 			}

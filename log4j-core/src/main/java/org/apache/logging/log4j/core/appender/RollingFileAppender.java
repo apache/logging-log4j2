@@ -43,8 +43,10 @@ import org.apache.logging.log4j.core.util.Integers;
 /**
  * An appender that writes to files and can roll over at intervals.
  */
-@Plugin(name = "RollingFile", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = RollingFileAppender.PLUGIN_NAME, category = "Core", elementType = "appender", printObject = true)
 public final class RollingFileAppender extends AbstractOutputStreamAppender<RollingFileManager> {
+
+    public static final String PLUGIN_NAME = "RollingFile";
 
     /**
      * Builds FileAppender instances.

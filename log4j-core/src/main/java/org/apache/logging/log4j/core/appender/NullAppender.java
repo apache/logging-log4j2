@@ -8,8 +8,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * An Appender that ignores log events. Use for compatibility with version 1.2.
  */
-@Plugin(name = "Null", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = NullAppender.PLUGIN_NAME, category = "Core", elementType = "appender", printObject = true)
 public class NullAppender extends AbstractAppender {
+
+    public static final String PLUGIN_NAME = "Null";
 
     @PluginFactory
     public static NullAppender createAppender(@PluginAttribute("name") final String name) {
