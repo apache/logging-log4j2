@@ -28,7 +28,7 @@ import java.util.Objects;
  * <em>Consider this class private.</em>
  * Array-based implementation of the {@code ReadOnlyStringMap} interface. Keys are held in a sorted array.
  * <p>
- * This is not a generic collection, but makes some trade-offs to optimize for the Log4j ReadOnlyStringMap use case:
+ * This is not a generic collection, but makes some trade-offs to optimize for the Log4j context data use case:
  * </p>
  * <ul>
  *   <li>Garbage-free iteration over key-value pairs with {@code BiConsumer} and {@code TriConsumer}.</li>
