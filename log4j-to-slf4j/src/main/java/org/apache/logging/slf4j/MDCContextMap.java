@@ -19,13 +19,20 @@ package org.apache.logging.slf4j;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.spi.ThreadContextMap2;
+import org.apache.logging.log4j.util.ArrayContextData;
 import org.slf4j.MDC;
 
 /**
  * Bind the ThreadContextMap to the SLF4J MDC.
  */
 public class MDCContextMap implements ThreadContextMap2 {
+
+    private static final MutableContextData EMPTY_CONTEXT_DATA = new ArrayContextData();
+    static {
+        EMPTY_CONTEXT_DATA.freeze();
+    }
 
     @Override
     public void put(final String key, final String value) {
@@ -74,5 +81,18 @@ public class MDCContextMap implements ThreadContextMap2 {
     @Override
     public boolean isEmpty() {
         return MDC.getCopyOfContextMap().isEmpty();
+    }
+
+    @Override
+    public MutableContextData getMutableContextData() {
+        final Map<String, String> copy = getCopy();
+        if (copy.isEmpty()) {
+            return EMPTY_CONTEXT_DATA;
+        }
+        final MutableContextData result = new ArrayContextData();
+        for (Entry<String, String> entry : copy.entrySet()) {
+            result.putValue(entry.getKey(), entry.getValue());
+        }
+        return result;
     }
 }
