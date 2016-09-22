@@ -48,7 +48,7 @@ public class ServletAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        servletContext.log(((AbstractStringLayout) getLayout()).toSerializable(event));
+        servletContext.log(((AbstractStringLayout) getLayout()).toSerializable(event), event.getThrown());
     }
 
     /**

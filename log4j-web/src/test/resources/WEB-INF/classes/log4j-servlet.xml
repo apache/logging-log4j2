@@ -20,7 +20,7 @@
 
     <Appenders>
         <Servlet name="Servlet">
-            <PatternLayout pattern="%m%n"/>
+            <PatternLayout pattern="%m%n%ex{none}"/>
         </Servlet>
     </Appenders>
 
