@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * Provides contextual information about a logged message. A LogEvent must be {@link java.io.Serializable} so that it
@@ -58,11 +58,11 @@ public interface LogEvent extends Serializable {
     Map<String, String> getContextMap();
 
     /**
-     * Returns the {@code ContextData} object holding context key-value pairs.
-     * @return the {@code ContextData} object holding context key-value pairs
+     * Returns the {@code ReadOnlyStringMap} object holding context data key-value pairs.
+     * @return the {@code ReadOnlyStringMap} object holding context data key-value pairs
      * @since 2.7
      */
-    ContextData getContextData();
+    ReadOnlyStringMap getContextData();
 
     /**
      * Gets the context stack (also known as Nested Diagnostic Context or NDC).

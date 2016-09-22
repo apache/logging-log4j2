@@ -34,9 +34,9 @@ import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
 import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -99,7 +99,7 @@ public class ThreadContextBenchmark {
     private List<Property> propertyList;
 
     private ContextDataInjector injector;
-    private MutableContextData reusableContextData;
+    private StringMap reusableContextData;
 
     @Setup
     public void setup() {
@@ -110,7 +110,7 @@ public class ThreadContextBenchmark {
         System.out.println(threadContextMapAlias + ": Injector = " + injector);
 
         reusableContextData = threadContextMapAlias.contains("Array")
-                ? new SortedStringArrayMap()
+                ? new SortedArrayStringMap()
                 : new OpenHashMapContextData<>();
 
         keys = new String[count];
@@ -161,13 +161,13 @@ public class ThreadContextBenchmark {
     }
 
     @Benchmark
-    public MutableContextData injectWithoutProperties() {
+    public StringMap injectWithoutProperties() {
         reusableContextData.clear();
         return injector.injectContextData(null, reusableContextData);
     }
 
     @Benchmark
-    public MutableContextData injectWithProperties() {
+    public StringMap injectWithProperties() {
         reusableContextData.clear();
         return injector.injectContextData(propertyList, reusableContextData);
     }

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Garbage-free LogEventFactory that reuses a single mutable log event.
@@ -80,7 +80,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.setLevel(level == null ? Level.OFF : level);
         result.setMessage(message);
         result.setThrown(t);
-        result.setContextData(injector.injectContextData(properties, (MutableContextData) result.getContextData()));
+        result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));
         result.setContextStack(ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack());// mutable copy
         result.setTimeMillis(message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()

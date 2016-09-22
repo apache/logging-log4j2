@@ -23,11 +23,11 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
@@ -82,7 +82,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private Object[] parameters;
     private transient Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private MutableContextData contextData = ContextDataFactory.createContextData();
+    private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String fqcn;
     private StackTraceElement location;
@@ -92,7 +92,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
             final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-            final MutableContextData mutableContextData, final ContextStack aContextStack, final long threadId,
+            final StringMap mutableContextData, final ContextStack aContextStack, final long threadId,
             final String threadName, final int threadPriority, final StackTraceElement aLocation,
             final long aCurrentTimeMillis, final long aNanoTime) {
         this.threadPriority = threadPriority;
@@ -324,11 +324,11 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     @SuppressWarnings("unchecked")
     @Override
-    public ContextData getContextData() {
+    public ReadOnlyStringMap getContextData() {
         return contextData;
     }
 
-    void setContextData(final MutableContextData contextData) {
+    void setContextData(final StringMap contextData) {
         this.contextData = contextData;
     }
 

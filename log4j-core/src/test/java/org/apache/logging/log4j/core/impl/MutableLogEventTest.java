@@ -29,8 +29,8 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.SortedStringArrayMap;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.Test;
 
@@ -40,11 +40,11 @@ import static org.junit.Assert.*;
  * Tests the MutableLogEvent class.
  */
 public class MutableLogEventTest {
-    private static final MutableContextData CONTEXT_DATA = createContextData();
+    private static final StringMap CONTEXT_DATA = createContextData();
     private static final ThreadContext.ContextStack STACK = new MutableThreadContextStack(Arrays.asList("abc", "xyz"));
 
-    private static MutableContextData createContextData() {
-        final MutableContextData result = new SortedStringArrayMap();
+    private static StringMap createContextData() {
+        final StringMap result = new SortedArrayStringMap();
         result.putValue("a", "1");
         result.putValue("b", "2");
         return result;

@@ -23,7 +23,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
-import org.apache.logging.log4j.util.SortedStringArrayMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -39,7 +39,7 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
 /**
- * Compares performance of SortedStringArrayMap vs. OpenHashMap vs. JDK HashMap.
+ * Compares performance of SortedArrayStringMap vs. OpenHashMap vs. JDK HashMap.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 // (Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
@@ -72,17 +72,17 @@ public class SortedArrayVsHashMapBenchmark {
     private String[] keys;
     private static Object value = new Object();
     private HashMap<String, Object> map;
-    private SortedStringArrayMap sortedStringArrayMap;
+    private SortedArrayStringMap sortedStringArrayMap;
     private OpenHashMapContextData<String, Object> openHashMapContextData;
 
     private HashMap<String, Object> populatedMap;
-    private SortedStringArrayMap populatedSortedStringArrayMap;
+    private SortedArrayStringMap populatedSortedStringArrayMap;
     private OpenHashMapContextData<String, Object> populatedOpenHashContextData;
 
     @Setup
     public void setup() {
         openHashMapContextData = new OpenHashMapContextData<>();
-        sortedStringArrayMap = new SortedStringArrayMap();
+        sortedStringArrayMap = new SortedArrayStringMap();
         map = new HashMap<>();
 
         keys = new String[count];
@@ -99,7 +99,7 @@ public class SortedArrayVsHashMapBenchmark {
         for (int i = 0; i < count; i++) {
             populatedMap.put(keys[i], value);
         }
-        populatedSortedStringArrayMap = new SortedStringArrayMap();
+        populatedSortedStringArrayMap = new SortedArrayStringMap();
         for (int i = 0; i < count; i++) {
             populatedSortedStringArrayMap.putValue(keys[i], value);
         }
@@ -110,7 +110,7 @@ public class SortedArrayVsHashMapBenchmark {
     }
 
     @Benchmark
-    public SortedStringArrayMap putAllArrayContextData() {
+    public SortedArrayStringMap putAllArrayContextData() {
         sortedStringArrayMap.clear();
         sortedStringArrayMap.putAll(populatedSortedStringArrayMap);
         return sortedStringArrayMap;
@@ -131,8 +131,8 @@ public class SortedArrayVsHashMapBenchmark {
     }
 
     @Benchmark
-    public SortedStringArrayMap cloneArrayContextData() {
-        return new SortedStringArrayMap(populatedSortedStringArrayMap);
+    public SortedArrayStringMap cloneArrayContextData() {
+        return new SortedArrayStringMap(populatedSortedStringArrayMap);
     }
 
     @Benchmark

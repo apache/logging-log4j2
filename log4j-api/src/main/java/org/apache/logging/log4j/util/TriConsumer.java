@@ -22,7 +22,7 @@ package org.apache.logging.log4j.util;
  * @param <K> type of the first argument
  * @param <V> type of the second argument
  * @param <S> type of the third argument
- * @see ContextData
+ * @see ReadOnlyStringMap
  * @since 2.7
  */
 public interface TriConsumer<K, V, S> {

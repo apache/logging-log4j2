@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @since 2.7
  */
-public interface ContextData extends Serializable {
+public interface ReadOnlyStringMap extends Serializable {
     /**
      * Returns a non-{@code null} mutable {@code Map<String, String>} containing a snapshot of this data structure.
      *

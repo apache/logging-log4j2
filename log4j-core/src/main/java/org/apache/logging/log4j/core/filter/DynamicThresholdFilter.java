@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * Compares against a log level that is associated with a context value. By default the context is the
@@ -119,7 +119,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return true;
     }
 
-    private Result filter(final Level level, final ContextData contextMap) {
+    private Result filter(final Level level, final ReadOnlyStringMap contextMap) {
         final String value = contextMap.getValue(key);
         if (value != null) {
             Level ctxLevel = levelMap.get(value);
@@ -155,7 +155,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return filter(level, currentContextData());
     }
 
-    private ContextData currentContextData() {
+    private ReadOnlyStringMap currentContextData() {
         return injector.rawContextData();
     }
 

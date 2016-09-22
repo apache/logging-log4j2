@@ -19,9 +19,9 @@ package org.apache.logging.slf4j;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.ThreadContextMap2;
-import org.apache.logging.log4j.util.SortedStringArrayMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.slf4j.MDC;
 
 /**
@@ -29,7 +29,7 @@ import org.slf4j.MDC;
  */
 public class MDCContextMap implements ThreadContextMap2 {
 
-    private static final MutableContextData EMPTY_CONTEXT_DATA = new SortedStringArrayMap();
+    private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap();
     static {
         EMPTY_CONTEXT_DATA.freeze();
     }
@@ -84,12 +84,12 @@ public class MDCContextMap implements ThreadContextMap2 {
     }
 
     @Override
-    public MutableContextData getReadOnlyContextData() {
+    public StringMap getReadOnlyContextData() {
         final Map<String, String> copy = getCopy();
         if (copy.isEmpty()) {
             return EMPTY_CONTEXT_DATA;
         }
-        final MutableContextData result = new SortedStringArrayMap();
+        final StringMap result = new SortedArrayStringMap();
         for (Entry<String, String> entry : copy.entrySet()) {
             result.putValue(entry.getKey(), entry.getValue());
         }

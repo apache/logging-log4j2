@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.jackson;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  * <em>Consider this class private.</em>
  * </p>
  */
-public class ContextDataSerializer extends StdSerializer<ContextData> {
+public class ContextDataSerializer extends StdSerializer<ReadOnlyStringMap> {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class ContextDataSerializer extends StdSerializer<ContextData> {
     }
 
     @Override
-    public void serialize(final ContextData contextData, final JsonGenerator jgen,
+    public void serialize(final ReadOnlyStringMap contextData, final JsonGenerator jgen,
             final SerializerProvider provider) throws IOException, JsonGenerationException {
 
         jgen.writeStartObject();

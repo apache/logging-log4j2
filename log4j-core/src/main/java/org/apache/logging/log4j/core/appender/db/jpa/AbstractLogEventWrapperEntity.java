@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextDataAttributeConverter;
 import org.apache.logging.log4j.message.Message;
@@ -223,7 +223,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      * @param contextData Ignored.
      */
     @SuppressWarnings("unused")
-    public void setContextData(final ContextData contextData) {
+    public void setContextData(final ReadOnlyStringMap contextData) {
         // this entity is write-only
     }
 
@@ -292,7 +292,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     }
 
     /**
-     * Gets the context map. Transient, since the String version of the data is obtained via ContextMap.
+     * Gets the context map. Transient, since the String version of the data is obtained via ReadOnlyStringMap.
      *
      * @return the context data.
      * @see ContextDataAttributeConverter
@@ -301,7 +301,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     @Override
     @Transient
     //@Convert(converter = ContextDataAttributeConverter.class)
-    public ContextData getContextData() {
+    public ReadOnlyStringMap getContextData() {
         return this.getWrappedEvent().getContextData();
     }
 

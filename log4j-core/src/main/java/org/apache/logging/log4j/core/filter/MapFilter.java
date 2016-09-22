@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * A Filter that operates on a Map.
@@ -85,7 +85,7 @@ public class MapFilter extends AbstractFilter {
         return match;
     }
 
-    protected boolean filter(final ContextData data) {
+    protected boolean filter(final ReadOnlyStringMap data) {
         boolean match = false;
         for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
             final String toMatch = data.getValue(entry.getKey());

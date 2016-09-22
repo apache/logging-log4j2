@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
@@ -95,7 +95,7 @@ public class ThreadContextMapFilter extends MapFilter {
     private Result filter() {
         boolean match = false;
         if (useMap) {
-            ContextData currentContextData = null;
+            ReadOnlyStringMap currentContextData = null;
             for (final Map.Entry<String, List<String>> entry : getMap().entrySet()) {
                 if (currentContextData == null) {
                     currentContextData = currentContextData();
@@ -112,7 +112,7 @@ public class ThreadContextMapFilter extends MapFilter {
         return match ? onMatch : onMismatch;
     }
 
-    private ContextData currentContextData() {
+    private ReadOnlyStringMap currentContextData() {
         return injector.rawContextData();
     }
 

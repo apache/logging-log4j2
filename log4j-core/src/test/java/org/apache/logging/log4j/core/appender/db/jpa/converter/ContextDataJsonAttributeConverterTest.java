@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import org.apache.logging.log4j.util.ContextData;
-import org.apache.logging.log4j.util.SortedStringArrayMap;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class ContextDataJsonAttributeConverterTest {
 
     @Test
     public void testConvert01() {
-        final MutableContextData map = new SortedStringArrayMap();
+        final StringMap map = new SortedArrayStringMap();
         map.putValue("test1", "another1");
         map.putValue("key2", "value2");
 
@@ -48,7 +48,7 @@ public class ContextDataJsonAttributeConverterTest {
 
         assertNotNull("The converted value should not be null.", converted);
 
-        final ContextData reversed = this.converter.convertToEntityAttribute(converted);
+        final ReadOnlyStringMap reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The reversed value is not correct.", map, reversed);
@@ -56,7 +56,7 @@ public class ContextDataJsonAttributeConverterTest {
 
     @Test
     public void testConvert02() {
-        final MutableContextData map = new SortedStringArrayMap();
+        final StringMap map = new SortedArrayStringMap();
         map.putValue("someKey", "coolValue");
         map.putValue("anotherKey", "testValue");
         map.putValue("myKey", "yourValue");
@@ -65,7 +65,7 @@ public class ContextDataJsonAttributeConverterTest {
 
         assertNotNull("The converted value should not be null.", converted);
 
-        final ContextData reversed = this.converter.convertToEntityAttribute(converted);
+        final ReadOnlyStringMap reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The reversed value is not correct.", map, reversed);

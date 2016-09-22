@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
  * <em>Consider this class private.</em>
  * </p>
  */
-public class ContextDataDeserializer extends StdDeserializer<MutableContextData> {
+public class ContextDataDeserializer extends StdDeserializer<StringMap> {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,7 +43,7 @@ public class ContextDataDeserializer extends StdDeserializer<MutableContextData>
     }
 
     @Override
-    public MutableContextData deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
+    public StringMap deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
 
         // Sanity check: verify that we got "Json Object":
@@ -51,7 +51,7 @@ public class ContextDataDeserializer extends StdDeserializer<MutableContextData>
 //        if (tok != JsonToken.START_OBJECT) {
 //            throw new IOException("Expected data to start with an Object");
 //        }
-        final MutableContextData contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = ContextDataFactory.createContextData();
         // Iterate over object fields:
         while (jp.nextToken() != JsonToken.END_OBJECT) {
             final String fieldName = jp.getCurrentName();

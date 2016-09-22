@@ -20,13 +20,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.util.ContextData;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.SortedStringArrayMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 
 /**
- * {@code SortedStringArrayMap}-based implementation of the {@code ThreadContextMap} interface that attempts not to
+ * {@code SortedArrayStringMap}-based implementation of the {@code ThreadContextMap} interface that attempts not to
  * create temporary objects. Adding and removing key-value pairs will not create temporary objects.
  * <p>
  * This implementation does <em>not</em> make a copy of its contents on every operation, so this data structure cannot
@@ -52,7 +52,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
      */
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
-    protected final ThreadLocal<MutableContextData> localMap;
+    protected final ThreadLocal<StringMap> localMap;
 
     public GarbageFreeSortedArrayThreadContextMap() {
         this.localMap = createThreadLocalMap();
@@ -60,14 +60,14 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
 
     // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
     // (This method is package protected for JUnit tests.)
-    private ThreadLocal<MutableContextData> createThreadLocalMap() {
+    private ThreadLocal<StringMap> createThreadLocalMap() {
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
         final boolean inheritable = managerProps.getBooleanProperty(INHERITABLE_MAP);
         if (inheritable) {
-            return new InheritableThreadLocal<MutableContextData>() {
+            return new InheritableThreadLocal<StringMap>() {
                 @Override
-                protected MutableContextData childValue(final MutableContextData parentValue) {
-                    return parentValue != null ? createMutableContextData(parentValue) : null;
+                protected StringMap childValue(final StringMap parentValue) {
+                    return parentValue != null ? createStringMap(parentValue) : null;
                 }
             };
         }
@@ -76,34 +76,34 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
     }
 
     /**
-     * Returns an implementation of the {@code MutableContextData} used to back this thread context map.
+     * Returns an implementation of the {@code StringMap} used to back this thread context map.
      * <p>
      * Subclasses may override.
      * </p>
-     * @return an implementation of the {@code MutableContextData} used to back this thread context map
+     * @return an implementation of the {@code StringMap} used to back this thread context map
      */
-    protected MutableContextData createMutableContextData() {
-        return new SortedStringArrayMap(PropertiesUtil.getProperties().getIntegerProperty(
+    protected StringMap createStringMap() {
+        return new SortedArrayStringMap(PropertiesUtil.getProperties().getIntegerProperty(
                 PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
     /**
-     * Returns an implementation of the {@code MutableContextData} used to back this thread context map, pre-populated
+     * Returns an implementation of the {@code StringMap} used to back this thread context map, pre-populated
      * with the contents of the specified context data.
      * <p>
      * Subclasses may override.
      * </p>
      * @param original the key-value pairs to initialize the returned context data with
-     * @return an implementation of the {@code MutableContextData} used to back this thread context map
+     * @return an implementation of the {@code StringMap} used to back this thread context map
      */
-    protected MutableContextData createMutableContextData(final ContextData original) {
-        return new SortedStringArrayMap(original);
+    protected StringMap createStringMap(final ReadOnlyStringMap original) {
+        return new SortedArrayStringMap(original);
     }
 
-    private MutableContextData getThreadLocalMap() {
-        MutableContextData map = localMap.get();
+    private StringMap getThreadLocalMap() {
+        StringMap map = localMap.get();
         if (map == null) {
-            map = createMutableContextData();
+            map = createStringMap();
             localMap.set(map);
         }
         return map;
@@ -119,7 +119,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
         if (values == null || values.isEmpty()) {
             return;
         }
-        final MutableContextData map = getThreadLocalMap();
+        final StringMap map = getThreadLocalMap();
         for (final Map.Entry<String, String> entry : values.entrySet()) {
             map.putValue(entry.getKey(), entry.getValue());
         }
@@ -127,13 +127,13 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
 
     @Override
     public String get(final String key) {
-        final MutableContextData map = localMap.get();
+        final StringMap map = localMap.get();
         return map == null ? null : (String) map.getValue(key);
     }
 
     @Override
     public void remove(final String key) {
-        final MutableContextData map = localMap.get();
+        final StringMap map = localMap.get();
         if (map != null) {
             map.remove(key);
         }
@@ -141,7 +141,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
 
     @Override
     public void clear() {
-        final MutableContextData map = localMap.get();
+        final StringMap map = localMap.get();
         if (map != null) {
             map.clear();
         }
@@ -149,13 +149,13 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
 
     @Override
     public boolean containsKey(final String key) {
-        final MutableContextData map = localMap.get();
+        final StringMap map = localMap.get();
         return map != null && map.containsKey(key);
     }
 
     @Override
     public Map<String, String> getCopy() {
-        final MutableContextData map = localMap.get();
+        final StringMap map = localMap.get();
         return map == null ? new HashMap<String, String>() : map.toMap();
     }
 
@@ -163,10 +163,10 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
      * {@inheritDoc}
      */
     @Override
-    public MutableContextData getReadOnlyContextData() {
-        MutableContextData map = localMap.get();
+    public StringMap getReadOnlyContextData() {
+        StringMap map = localMap.get();
         if (map == null) {
-            map = createMutableContextData();
+            map = createStringMap();
             localMap.set(map);
         }
         return map;
@@ -174,19 +174,19 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
 
     @Override
     public Map<String, String> getImmutableMapOrNull() {
-        final MutableContextData map = localMap.get();
+        final StringMap map = localMap.get();
         return map == null ? null : Collections.unmodifiableMap(map.toMap());
     }
 
     @Override
     public boolean isEmpty() {
-        final MutableContextData map = localMap.get();
+        final StringMap map = localMap.get();
         return map == null || map.size() == 0;
     }
 
     @Override
     public String toString() {
-        final MutableContextData map = localMap.get();
+        final StringMap map = localMap.get();
         return map == null ? "{}" : map.toString();
     }
 
@@ -194,7 +194,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        final MutableContextData map = this.localMap.get();
+        final StringMap map = this.localMap.get();
         result = prime * result + ((map == null) ? 0 : map.hashCode());
         return result;
     }

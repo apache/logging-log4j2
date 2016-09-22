@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import org.apache.logging.log4j.util.SortedStringArrayMap;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class ContextDataAttributeConverterTest {
 
     @Test
     public void testConvertToDatabaseColumn01() {
-        final MutableContextData map = new SortedStringArrayMap();
+        final StringMap map = new SortedArrayStringMap();
         map.putValue("test1", "another1");
         map.putValue("key2", "value2");
 
@@ -49,7 +49,7 @@ public class ContextDataAttributeConverterTest {
 
     @Test
     public void testConvertToDatabaseColumn02() {
-        final MutableContextData map = new SortedStringArrayMap();
+        final StringMap map = new SortedArrayStringMap();
         map.putValue("someKey", "coolValue");
         map.putValue("anotherKey", "testValue");
         map.putValue("myKey", "yourValue");

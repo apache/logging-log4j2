@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
  * <em>Consider this class private.</em>
  * </p>
  */
-public class ContextDataAsEntryListDeserializer extends StdDeserializer<MutableContextData> {
+public class ContextDataAsEntryListDeserializer extends StdDeserializer<StringMap> {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,12 +43,12 @@ public class ContextDataAsEntryListDeserializer extends StdDeserializer<MutableC
     }
 
     @Override
-    public MutableContextData deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
+    public StringMap deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
         final List<MapEntry> list = jp.readValueAs(new TypeReference<List<MapEntry>>() {
             // empty
         });
-        final MutableContextData contextData = new ContextDataFactory().createContextData();
+        final StringMap contextData = new ContextDataFactory().createContextData();
         for (final MapEntry mapEntry : list) {
             contextData.putValue(mapEntry.getKey(), mapEntry.getValue());
         }
