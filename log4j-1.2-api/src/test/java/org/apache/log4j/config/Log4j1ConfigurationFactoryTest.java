@@ -42,7 +42,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class Log4j1ConfigurationFactoryTest {
@@ -136,8 +136,17 @@ public class Log4j1ConfigurationFactoryTest {
 
 	@Test
 	public void testRollingFileAppender() throws Exception {
-		StatusLogger.getLogger().setLevel(Level.TRACE);
-		final Configuration configuration = configure("config-1.2/log4j-RollingFileAppender.properties");
+		testRollingFileAppender("config-1.2/log4j-RollingFileAppender.properties");
+	}
+
+	@Test
+	@Ignore("TODO")
+	public void testRollingFileAppenderWithProperties() throws Exception {
+		testRollingFileAppender("config-1.2/log4j-RollingFileAppender-with-props.properties");
+	}
+
+	private void testRollingFileAppender(final String configResource) throws URISyntaxException {
+		final Configuration configuration = configure(configResource);
 		final Appender appender = configuration.getAppender("RFA");
 		assertNotNull(appender);
 		assertEquals("RFA", appender.getName());
