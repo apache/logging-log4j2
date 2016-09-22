@@ -54,13 +54,13 @@ import org.apache.logging.log4j.util.TriConsumer;
  * <p>
  * <ul>
  *   <li>Garbage-free iteration over key-value pairs with {@code BiConsumer} and {@code TriConsumer}.</li>
- *   <li>Fast copy. If the ThreadContextMap is also an instance of {@code OpenHashMapContextData},
+ *   <li>Fast copy. If the ThreadContextMap is also an instance of {@code OpenHashStringMap},
  *     the full thread context data can be transferred with two array copies and five field updates.</li>
  * </ul>
  *
  * @since 2.7
  */
-public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap {
+public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     /** The initial default size of a hash table. */
     public static final int DEFAULT_INITIAL_SIZE = 16;
 
@@ -98,7 +98,7 @@ public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap
      * {@link #DEFAULT_INITIAL_SIZE} entries and
      * {@link #DEFAULT_LOAD_FACTOR} as load factor.
      */
-    public OpenHashMapContextData() {
+    public OpenHashStringMap() {
         this(DEFAULT_INITIAL_SIZE, DEFAULT_LOAD_FACTOR);
     }
     /**
@@ -107,7 +107,7 @@ public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap
      * @param expected
      *            the expected number of elements in the hash map.
      */
-    public OpenHashMapContextData(final int expected) {
+    public OpenHashStringMap(final int expected) {
         this(expected, DEFAULT_LOAD_FACTOR);
     }
     /**
@@ -123,7 +123,7 @@ public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap
      *            the load factor.
      */
     @SuppressWarnings("unchecked")
-    public OpenHashMapContextData(final int expected, final float f) {
+    public OpenHashStringMap(final int expected, final float f) {
         if (f <= 0 || f > 1) {
             throw new IllegalArgumentException(
                     "Load factor must be greater than 0 and smaller than or equal to 1");
@@ -146,7 +146,7 @@ public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap
      * @param map
      *            a {@link Map} to be copied into the new hash map.
      */
-    public OpenHashMapContextData(final Map<? extends K, ? extends V> map) {
+    public OpenHashStringMap(final Map<? extends K, ? extends V> map) {
         this(map, DEFAULT_LOAD_FACTOR);
     }
     /**
@@ -157,7 +157,7 @@ public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap
      * @param f
      *            the load factor.
      */
-    public OpenHashMapContextData(final Map<? extends K, ? extends V> map, final float f) {
+    public OpenHashStringMap(final Map<? extends K, ? extends V> map, final float f) {
         this(map.size(), f);
         putAll(map);
     }
@@ -169,7 +169,7 @@ public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap
      * @param contextData
      *            a type-specific map to be copied into the new hash map.
      */
-    public OpenHashMapContextData(final ReadOnlyStringMap contextData) {
+    public OpenHashStringMap(final ReadOnlyStringMap contextData) {
         this(contextData, DEFAULT_LOAD_FACTOR);
     }
     /**
@@ -180,10 +180,10 @@ public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap
      * @param f
      *            the load factor.
      */
-    public OpenHashMapContextData(final ReadOnlyStringMap contextData, final float f) {
+    public OpenHashStringMap(final ReadOnlyStringMap contextData, final float f) {
         this(contextData.size(), f);
-        if (contextData instanceof OpenHashMapContextData) {
-            initFrom0((OpenHashMapContextData) contextData);
+        if (contextData instanceof OpenHashStringMap) {
+            initFrom0((OpenHashStringMap) contextData);
         } else {
             contextData.forEach(PUT_ALL, this);
         }
@@ -209,7 +209,7 @@ public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap
     }
 
     @SuppressWarnings("unchecked")
-    private void initFrom0(final OpenHashMapContextData other) {
+    private void initFrom0(final OpenHashStringMap other) {
         // this.loadFactor = other.loadFactor; // final field
         this.arraySize = other.arraySize;
         this.size = other.size;
@@ -487,8 +487,8 @@ public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap
         assertNotFrozen();
         assertNoConcurrentModification();
 
-        if (size() == 0 && source instanceof OpenHashMapContextData) {
-            initFrom0((OpenHashMapContextData) source);
+        if (size() == 0 && source instanceof OpenHashStringMap) {
+            initFrom0((OpenHashStringMap) source);
         } else if (source != null) {
             source.forEach(PUT_ALL, this);
         }

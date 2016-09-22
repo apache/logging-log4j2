@@ -30,7 +30,7 @@ import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
+import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
@@ -111,7 +111,7 @@ public class ThreadContextBenchmark {
 
         reusableContextData = threadContextMapAlias.contains("Array")
                 ? new SortedArrayStringMap()
-                : new OpenHashMapContextData<>();
+                : new OpenHashStringMap<>();
 
         keys = new String[count];
         values = new String[count];

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
+import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -73,15 +73,15 @@ public class SortedArrayVsHashMapBenchmark {
     private static Object value = new Object();
     private HashMap<String, Object> map;
     private SortedArrayStringMap sortedStringArrayMap;
-    private OpenHashMapContextData<String, Object> openHashMapContextData;
+    private OpenHashStringMap<String, Object> openHashMapContextData;
 
     private HashMap<String, Object> populatedMap;
     private SortedArrayStringMap populatedSortedStringArrayMap;
-    private OpenHashMapContextData<String, Object> populatedOpenHashContextData;
+    private OpenHashStringMap<String, Object> populatedOpenHashContextData;
 
     @Setup
     public void setup() {
-        openHashMapContextData = new OpenHashMapContextData<>();
+        openHashMapContextData = new OpenHashStringMap<>();
         sortedStringArrayMap = new SortedArrayStringMap();
         map = new HashMap<>();
 
@@ -103,7 +103,7 @@ public class SortedArrayVsHashMapBenchmark {
         for (int i = 0; i < count; i++) {
             populatedSortedStringArrayMap.putValue(keys[i], value);
         }
-        populatedOpenHashContextData = new OpenHashMapContextData<>();
+        populatedOpenHashContextData = new OpenHashStringMap<>();
         for (int i = 0; i < count; i++) {
             populatedOpenHashContextData.putValue(keys[i], value);
         }
@@ -117,7 +117,7 @@ public class SortedArrayVsHashMapBenchmark {
     }
 
     @Benchmark
-    public OpenHashMapContextData<String, Object> putAllHashContextData() {
+    public OpenHashStringMap<String, Object> putAllHashContextData() {
         openHashMapContextData.clear();
         openHashMapContextData.putAll(populatedOpenHashContextData);
         return openHashMapContextData;
@@ -136,8 +136,8 @@ public class SortedArrayVsHashMapBenchmark {
     }
 
     @Benchmark
-    public OpenHashMapContextData<String, Object> cloneHashContextData() {
-        return new OpenHashMapContextData<>(populatedOpenHashContextData);
+    public OpenHashStringMap<String, Object> cloneHashContextData() {
+        return new OpenHashStringMap<>(populatedOpenHashContextData);
     }
 
     @Benchmark

@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
+import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * {@code OpenHashMapContextData}-based implementation of the {@code ThreadContextMap} interface that attempts not to
+ * {@code OpenHashStringMap}-based implementation of the {@code ThreadContextMap} interface that attempts not to
  * create temporary objects. Adding and removing key-value pairs will not create temporary objects.
  * <p>
  * Since the underlying data structure is modified directly it is not suitable for passing by reference to other
@@ -38,12 +38,12 @@ public class GarbageFreeOpenHashMapThreadContextMap extends GarbageFreeSortedArr
 
     @Override
     protected StringMap createStringMap() {
-        return new OpenHashMapContextData<>(PropertiesUtil.getProperties().getIntegerProperty(
+        return new OpenHashStringMap<>(PropertiesUtil.getProperties().getIntegerProperty(
                 PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
     @Override
     protected StringMap createStringMap(final ReadOnlyStringMap original) {
-        return new OpenHashMapContextData<>(original);
+        return new OpenHashStringMap<>(original);
     }
 }

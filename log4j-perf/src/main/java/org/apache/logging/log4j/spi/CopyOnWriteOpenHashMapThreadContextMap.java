@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
+import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * {@code OpenHashMapContextData}-based implementation of the {@code ThreadContextMap} interface that creates a copy of
+ * {@code OpenHashStringMap}-based implementation of the {@code ThreadContextMap} interface that creates a copy of
  * the data structure on every modification. Any particular instance of the data structure is a snapshot of the
  * ThreadContext at some point in time and can safely be passed off to other threads
  *
@@ -35,12 +35,12 @@ public class CopyOnWriteOpenHashMapThreadContextMap extends CopyOnWriteSortedArr
 
     @Override
     protected StringMap createStringMap() {
-        return new OpenHashMapContextData<>(PropertiesUtil.getProperties().getIntegerProperty(
+        return new OpenHashStringMap<>(PropertiesUtil.getProperties().getIntegerProperty(
                 PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
     @Override
     protected StringMap createStringMap(final ReadOnlyStringMap original) {
-        return new OpenHashMapContextData<>(original);
+        return new OpenHashStringMap<>(original);
     }
 }
