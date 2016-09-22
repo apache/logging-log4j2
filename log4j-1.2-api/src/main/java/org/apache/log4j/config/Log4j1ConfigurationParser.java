@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -43,6 +44,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class Log4j1ConfigurationParser {
 
 	private final Properties properties = new Properties();
+	private StrSubstitutor strSubstitutor;
+	
 	private final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory
 			.newConfigurationBuilder();
 
@@ -61,6 +64,7 @@ public class Log4j1ConfigurationParser {
 	public ConfigurationBuilder<BuiltConfiguration> buildConfigurationBuilder(final InputStream input)
 			throws IOException {
 		properties.load(input);
+		strSubstitutor = new StrSubstitutor(properties);
 		final String rootCategoryValue = getLog4jValue("rootCategory");
 		final String rootLoggerValue = getLog4jValue("rootLogger");
 		if (rootCategoryValue == null && rootLoggerValue == null) {
@@ -324,7 +328,6 @@ public class Log4j1ConfigurationParser {
 				}
 			}
 		}
-
 	}
 
 	private String getLog4jAppenderValue(final String appenderName, final String attributeName) {
@@ -332,11 +335,11 @@ public class Log4j1ConfigurationParser {
 	}
 
 	private String getProperty(final String key) {
-		return properties.getProperty(key);
+		return strSubstitutor.replace(properties.getProperty(key));
 	}
 
 	private String getProperty(final String key, String defaultValue) {
-		return properties.getProperty(key, defaultValue);
+		return strSubstitutor.replace(properties.getProperty(key, defaultValue));
 	}
 
 	private String getLog4jAppenderValue(final String appenderName, final String attributeName,

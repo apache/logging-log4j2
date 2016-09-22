@@ -140,7 +140,6 @@ public class Log4j1ConfigurationFactoryTest {
 	}
 
 	@Test
-	@Ignore("TODO")
 	public void testRollingFileAppenderWithProperties() throws Exception {
 		testRollingFileAppender("config-1.2/log4j-RollingFileAppender-with-props.properties");
 	}
