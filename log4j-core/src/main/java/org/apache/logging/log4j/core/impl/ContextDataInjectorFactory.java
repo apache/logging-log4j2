@@ -21,8 +21,8 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.CopyOnWrite;
-import org.apache.logging.log4j.spi.MutableContextDataSupplier;
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap2;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -79,10 +79,10 @@ public class ContextDataInjectorFactory {
 
     private static ContextDataInjector createDefaultInjector() {
         final ThreadContextMap threadContextMap = ThreadContextAccess.getThreadContextMap();
-        if (threadContextMap instanceof CopyOnWrite && threadContextMap instanceof MutableContextDataSupplier) {
+        if (threadContextMap instanceof CopyOnWrite && threadContextMap instanceof ThreadContextMap2) {
             return new ThreadContextDataInjector.ForCopyOnWriteMutableThreadContextMap();
         }
-        if (threadContextMap instanceof MutableContextDataSupplier) {
+        if (threadContextMap instanceof ThreadContextMap2) {
             return new ThreadContextDataInjector.ForGarbageFreeMutableThreadContextMap();
         }
         return new ThreadContextDataInjector.ForDefaultThreadContextMap();

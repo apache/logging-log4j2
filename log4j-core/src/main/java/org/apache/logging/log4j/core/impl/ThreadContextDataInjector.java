@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.spi.ContextData;
 import org.apache.logging.log4j.spi.MutableContextData;
-import org.apache.logging.log4j.spi.MutableContextDataSupplier;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**
@@ -119,15 +118,14 @@ public class ThreadContextDataInjector  {
             // modified.
             copyProperties(props, reusable);
 
-            final ContextData immutableCopy = ((MutableContextDataSupplier) ThreadContextAccess.getThreadContextMap())
-                    .getMutableContextData();
+            final ContextData immutableCopy = ThreadContextAccess.getThreadContextMap2().getMutableContextData();
             reusable.putAll(immutableCopy);
             return reusable;
         }
 
         @Override
         public ContextData rawContextData() {
-            return ((MutableContextDataSupplier) ThreadContextAccess.getThreadContextMap()).getMutableContextData();
+            return ThreadContextAccess.getThreadContextMap2().getMutableContextData();
         }
     }
 
@@ -153,8 +151,7 @@ public class ThreadContextDataInjector  {
         public MutableContextData injectContextData(final List<Property> props, final MutableContextData reusable) {
             // If there are no configuration properties we want to just return the ThreadContext's MutableContextData:
             // it is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
-            final MutableContextData immutableCopy =
-                    ((MutableContextDataSupplier) ThreadContextAccess.getThreadContextMap()).getMutableContextData();
+            final MutableContextData immutableCopy = ThreadContextAccess.getThreadContextMap2().getMutableContextData();
             if (props == null || props.isEmpty()) {
                 return immutableCopy;
             }
@@ -167,7 +164,7 @@ public class ThreadContextDataInjector  {
 
         @Override
         public ContextData rawContextData() {
-            return ((MutableContextDataSupplier) ThreadContextAccess.getThreadContextMap()).getMutableContextData();
+            return ThreadContextAccess.getThreadContextMap2().getMutableContextData();
         }
     }
 

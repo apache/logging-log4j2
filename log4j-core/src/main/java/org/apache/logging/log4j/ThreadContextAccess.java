@@ -18,6 +18,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap2;
 
 /**
  * <em>This class is intended for internal log4j2 usage and should not be used directly by applications.</em>
@@ -42,5 +43,17 @@ public final class ThreadContextAccess {
      */
     public static ThreadContextMap getThreadContextMap() {
         return ThreadContext.getThreadContextMap();
+    }
+
+    /**
+     * Returns the internal data structure used to store thread context key-value pairs.
+     * <p><em>
+     * This method is intended for internal log4j2 usage.
+     * The returned data structure is not intended to be used directly by applications.
+     * </em></p>
+     * @return the internal data structure used to store thread context key-value pairs
+     */
+    public static ThreadContextMap2 getThreadContextMap2() {
+        return (ThreadContextMap2) ThreadContext.getThreadContextMap();
     }
 }
