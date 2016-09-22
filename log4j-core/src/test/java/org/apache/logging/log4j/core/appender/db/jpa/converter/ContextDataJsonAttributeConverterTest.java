@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
 import org.apache.logging.log4j.spi.ContextData;
-import org.apache.logging.log4j.util.ArrayContextData;
+import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.junit.After;
 import org.junit.Before;
@@ -40,7 +40,7 @@ public class ContextDataJsonAttributeConverterTest {
 
     @Test
     public void testConvert01() {
-        final MutableContextData map = new ArrayContextData();
+        final MutableContextData map = new SortedStringArrayMap();
         map.putValue("test1", "another1");
         map.putValue("key2", "value2");
 
@@ -56,7 +56,7 @@ public class ContextDataJsonAttributeConverterTest {
 
     @Test
     public void testConvert02() {
-        final MutableContextData map = new ArrayContextData();
+        final MutableContextData map = new SortedStringArrayMap();
         map.putValue("someKey", "coolValue");
         map.putValue("anotherKey", "testValue");
         map.putValue("myKey", "yourValue");

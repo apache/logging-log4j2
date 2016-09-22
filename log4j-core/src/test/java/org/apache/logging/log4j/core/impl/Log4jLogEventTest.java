@@ -40,7 +40,7 @@ import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.ArrayContextData;
+import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
@@ -285,7 +285,7 @@ public class Log4jLogEventTest {
 
     @Test
     public void testBuilderCorrectlyCopiesAllEventAttributesInclContextData() {
-        final MutableContextData contextData = new ArrayContextData();
+        final MutableContextData contextData = new SortedStringArrayMap();
         contextData.putValue("A", "B");
         final ContextStack contextStack = ThreadContext.getImmutableStack();
         final Exception exception = new Exception("test");
@@ -334,7 +334,7 @@ public class Log4jLogEventTest {
 
     @Test
     public void testBuilderCorrectlyCopiesMutableLogEvent() throws Exception {
-        final MutableContextData contextData = new ArrayContextData();
+        final MutableContextData contextData = new SortedStringArrayMap();
         contextData.putValue("A", "B");
         final ContextStack contextStack = ThreadContext.getImmutableStack();
         final Exception exception = new Exception("test");

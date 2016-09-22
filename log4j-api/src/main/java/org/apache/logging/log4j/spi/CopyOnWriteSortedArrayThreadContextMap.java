@@ -20,11 +20,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.util.ArrayContextData;
+import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * {@code ArrayContextData}-based implementation of the {@code ThreadContextMap} interface that creates a copy of
+ * {@code SortedStringArrayMap}-based implementation of the {@code ThreadContextMap} interface that creates a copy of
  * the data structure on every modification. Any particular instance of the data structure is a snapshot of the
  * ThreadContext at some point in time and can safely be passed off to other threads.  Since it is
  * expected that the Map will be passed to many more log events than the number of keys it contains the performance
@@ -51,7 +51,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
      */
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
-    private static final MutableContextData EMPTY_CONTEXT_DATA = new ArrayContextData();
+    private static final MutableContextData EMPTY_CONTEXT_DATA = new SortedStringArrayMap();
     static {
         EMPTY_CONTEXT_DATA.freeze();
     }
@@ -87,7 +87,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
      * @return an implementation of the {@code MutableContextData} used to back this thread context map
      */
     protected MutableContextData createMutableContextData() {
-        return new ArrayContextData(PropertiesUtil.getProperties().getIntegerProperty(
+        return new SortedStringArrayMap(PropertiesUtil.getProperties().getIntegerProperty(
                 PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
@@ -101,7 +101,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
      * @return an implementation of the {@code MutableContextData} used to back this thread context map
      */
     protected MutableContextData createMutableContextData(final ContextData original) {
-        return new ArrayContextData(original);
+        return new SortedStringArrayMap(original);
     }
 
     @Override

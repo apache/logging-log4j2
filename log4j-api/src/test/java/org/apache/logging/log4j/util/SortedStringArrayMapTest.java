@@ -30,28 +30,28 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Tests the ArrayContextData class.
+ * Tests the SortedStringArrayMap class.
  */
-public class ArrayContextDataTest {
+public class SortedStringArrayMapTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorDisallowsNegativeCapacity() throws Exception {
-        new ArrayContextData(-1);
+        new SortedStringArrayMap(-1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorDisallowsZeroCapacity() throws Exception {
-        new ArrayContextData(0);
+        new SortedStringArrayMap(0);
     }
 
     @Test
     public void testConstructorIgnoresNull() throws Exception {
-        assertEquals(0, new ArrayContextData(null).size());
+        assertEquals(0, new SortedStringArrayMap(null).size());
     }
 
     @Test
     public void testToString() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -60,38 +60,38 @@ public class ArrayContextDataTest {
 
     @Test
     public void testSerialization() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
 
         final byte[] binary = serialize(original);
-        final ArrayContextData copy = deserialize(binary);
+        final SortedStringArrayMap copy = deserialize(binary);
         assertEquals(original, copy);
     }
 
-    private byte[] serialize(final ArrayContextData data) throws IOException {
+    private byte[] serialize(final SortedStringArrayMap data) throws IOException {
         final ByteArrayOutputStream arr = new ByteArrayOutputStream();
         final ObjectOutputStream out = new ObjectOutputStream(arr);
         out.writeObject(data);
         return arr.toByteArray();
     }
 
-    private ArrayContextData deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
+    private SortedStringArrayMap deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
         final ObjectInputStream in = new ObjectInputStream(inArr);
-        final ArrayContextData result = (ArrayContextData) in.readObject();
+        final SortedStringArrayMap result = (SortedStringArrayMap) in.readObject();
         return result;
     }
 
     @Test
     public void testPutAll() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
 
-        final ArrayContextData other = new ArrayContextData();
+        final SortedStringArrayMap other = new SortedStringArrayMap();
         other.putAll(original);
         assertEquals(original, other);
 
@@ -107,13 +107,13 @@ public class ArrayContextDataTest {
 
     @Test
     public void testEquals() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
         assertEquals(original, original); // equal to itself
 
-        final ArrayContextData other = new ArrayContextData();
+        final SortedStringArrayMap other = new SortedStringArrayMap();
         other.putValue("a", "avalue");
         assertNotEquals(original, other);
 
@@ -135,7 +135,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testToMap() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -156,20 +156,20 @@ public class ArrayContextDataTest {
 
     @Test
     public void testPutAll_KeepsExistingValues() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
         assertEquals("size", 3, original.size());
 
         // add empty context data
-        original.putAll(new ArrayContextData());
+        original.putAll(new SortedStringArrayMap());
         assertEquals("size after put empty", 3, original.size());
         assertEquals("aaa", original.getValue("a"));
         assertEquals("bbb", original.getValue("b"));
         assertEquals("ccc", original.getValue("c"));
 
-        final ArrayContextData other = new ArrayContextData();
+        final SortedStringArrayMap other = new SortedStringArrayMap();
         other.putValue("1", "111");
         other.putValue("2", "222");
         other.putValue("3", "333");
@@ -186,7 +186,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testPutAllSelfDoesNotModify() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
@@ -202,7 +202,7 @@ public class ArrayContextDataTest {
 
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationBiConsumerPut() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.forEach(new BiConsumer<String, Object>() {
             @Override
@@ -214,7 +214,7 @@ public class ArrayContextDataTest {
 
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationBiConsumerPutValue() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.forEach(new BiConsumer<String, Object>() {
             @Override
@@ -226,7 +226,7 @@ public class ArrayContextDataTest {
 
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationBiConsumerRemove() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.forEach(new BiConsumer<String, Object>() {
             @Override
@@ -238,7 +238,7 @@ public class ArrayContextDataTest {
 
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationBiConsumerClear() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.forEach(new BiConsumer<String, Object>() {
             @Override
@@ -250,7 +250,7 @@ public class ArrayContextDataTest {
 
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationTriConsumerPut() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.forEach(new TriConsumer<String, Object, Object>() {
             @Override
@@ -262,7 +262,7 @@ public class ArrayContextDataTest {
 
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationTriConsumerPutValue() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.forEach(new TriConsumer<String, Object, Object>() {
             @Override
@@ -274,7 +274,7 @@ public class ArrayContextDataTest {
 
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationTriConsumerRemove() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.forEach(new TriConsumer<String, Object, Object>() {
             @Override
@@ -286,7 +286,7 @@ public class ArrayContextDataTest {
 
     @Test(expected = ConcurrentModificationException.class)
     public void testConcurrentModificationTriConsumerClear() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.forEach(new TriConsumer<String, Object, Object>() {
             @Override
@@ -298,12 +298,12 @@ public class ArrayContextDataTest {
 
     @Test
     public void testInitiallyNotFrozen() {
-        assertFalse(new ArrayContextData().isFrozen());
+        assertFalse(new SortedStringArrayMap().isFrozen());
     }
 
     @Test
     public void testIsFrozenAfterCallingFreeze() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         assertFalse("before freeze", original.isFrozen());
         original.freeze();
         assertTrue("after freeze", original.isFrozen());
@@ -311,14 +311,14 @@ public class ArrayContextDataTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testFreezeProhibitsPutValue() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.freeze();
         original.putValue("a", "aaa");
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testFreezeProhibitsRemove() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("b", "bbb");
         original.freeze();
         original.remove("b"); // existing key: modifies the collection
@@ -326,7 +326,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testFreezeAllowsRemoveOfNonExistingKey() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("b", "bbb");
         original.freeze();
         original.remove("a"); // no actual modification
@@ -334,14 +334,14 @@ public class ArrayContextDataTest {
 
     @Test
     public void testFreezeAllowsRemoveIfEmpty() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.freeze();
         original.remove("a"); // no exception
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testFreezeProhibitsClear() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "aaa");
         original.freeze();
         original.clear();
@@ -349,14 +349,14 @@ public class ArrayContextDataTest {
 
     @Test
     public void testFreezeAllowsClearIfEmpty() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.freeze();
         original.clear();
     }
 
     @Test
     public void testPutInsertsInAlphabeticOrder() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -381,7 +381,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testPutValueInsertsInAlphabeticOrder() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -406,7 +406,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testNullKeysAllowed() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -434,7 +434,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testNullKeysCopiedToAsMap() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -473,7 +473,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testRemove() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         assertEquals(1, original.size());
         assertEquals("avalue", original.getValue("a"));
@@ -489,7 +489,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testRemoveNullsOutRemovedSlot() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("b", "bvalue");
         original.putValue("c", "cvalue");
@@ -501,7 +501,7 @@ public class ArrayContextDataTest {
         assertNull(original.getValueAt(0));
 
         // ensure slots in the values array are nulled out
-        final Field f = ArrayContextData.class.getDeclaredField("values");
+        final Field f = SortedStringArrayMap.class.getDeclaredField("values");
         f.setAccessible(true);
         final Object[] values = (Object[]) f.get(original);
         for (int i = 0; i < values.length; i++) {
@@ -511,7 +511,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testRemoveWhenFull() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("b", "bvalue");
         original.putValue("c", "cvalue");
@@ -521,7 +521,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testNullValuesArePreserved() {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         assertEquals(1, original.size());
         assertEquals("avalue", original.getValue("a"));
@@ -537,7 +537,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testGet() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -555,7 +555,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testGetValue_GetValueAt() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -582,7 +582,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testClear() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -592,7 +592,7 @@ public class ArrayContextDataTest {
         assertEquals(0, original.size());
 
         // ensure slots in the values array are nulled out
-        final Field f = ArrayContextData.class.getDeclaredField("values");
+        final Field f = SortedStringArrayMap.class.getDeclaredField("values");
         f.setAccessible(true);
         final Object[] values = (Object[]) f.get(original);
         for (int i = 0; i < values.length; i++) {
@@ -602,7 +602,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testIndexOfKey() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         assertEquals(0, original.indexOfKey("a"));
 
@@ -639,7 +639,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testContainsKey() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         assertFalse("a", original.containsKey("a"));
         assertFalse("B", original.containsKey("B"));
         assertFalse("3", original.containsKey("3"));
@@ -672,7 +672,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testGetValueAt() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         assertEquals("a", original.getKeyAt(0));
         assertEquals("avalue", original.getValueAt(0));
@@ -694,7 +694,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testSizeAndIsEmpty() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         assertEquals(0, original.size());
         assertTrue("initial", original.isEmpty());
 
@@ -725,7 +725,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testForEachBiConsumer() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
@@ -743,7 +743,7 @@ public class ArrayContextDataTest {
     }
 
     static class State {
-        ArrayContextData data;
+        SortedStringArrayMap data;
         int count;
     }
     static TriConsumer<String, String, State> COUNTER = new TriConsumer<String, String, State>() {
@@ -759,7 +759,7 @@ public class ArrayContextDataTest {
 
     @Test
     public void testForEachTriConsumer() throws Exception {
-        final ArrayContextData original = new ArrayContextData();
+        final SortedStringArrayMap original = new SortedStringArrayMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");

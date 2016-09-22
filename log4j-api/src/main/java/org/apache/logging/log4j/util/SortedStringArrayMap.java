@@ -35,7 +35,7 @@ import org.apache.logging.log4j.spi.MutableContextData;
  * </p>
  * <ul>
  *   <li>Garbage-free iteration over key-value pairs with {@code BiConsumer} and {@code TriConsumer}.</li>
- *   <li>Fast copy. If the ThreadContextMap is also an instance of {@code ArrayContextData}, the full thread context
+ *   <li>Fast copy. If the ThreadContextMap is also an instance of {@code SortedStringArrayMap}, the full thread context
  *     data can be transferred with two array copies and two field updates.</li>
  *   <li>Acceptable performance for small data sets. The current implementation stores keys in a sorted array, values
  *     are stored in a separate array at the same index.
@@ -50,7 +50,7 @@ import org.apache.logging.log4j.spi.MutableContextData;
  *
  * @since 2.7
  */
-public class ArrayContextData implements MutableContextData {
+public class SortedStringArrayMap implements MutableContextData {
 
     /**
      * The default initial capacity.
@@ -90,20 +90,20 @@ public class ArrayContextData implements MutableContextData {
     private boolean immutable;
     private transient boolean iterating;
 
-    public ArrayContextData() {
+    public SortedStringArrayMap() {
         this(DEFAULT_INITIAL_CAPACITY);
     }
 
-    public ArrayContextData(final int initialCapacity) {
+    public SortedStringArrayMap(final int initialCapacity) {
         if (initialCapacity < 1) {
             throw new IllegalArgumentException("Initial capacity must be at least one but was " + initialCapacity);
         }
         threshold = ceilingNextPowerOfTwo(initialCapacity);
     }
 
-    public ArrayContextData(final ContextData other) {
-        if (other instanceof ArrayContextData) {
-            initFrom0((ArrayContextData) other);
+    public SortedStringArrayMap(final ContextData other) {
+        if (other instanceof SortedStringArrayMap) {
+            initFrom0((SortedStringArrayMap) other);
         } else if (other != null) {
             resize(ceilingNextPowerOfTwo(other.size()));
             other.forEach(PUT_ALL, this);
@@ -224,14 +224,14 @@ public class ArrayContextData implements MutableContextData {
         assertNotFrozen();
         assertNoConcurrentModification();
 
-        if (source instanceof ArrayContextData && this.size == 0) {
-            initFrom0((ArrayContextData) source);
+        if (source instanceof SortedStringArrayMap && this.size == 0) {
+            initFrom0((SortedStringArrayMap) source);
         } else if (source != null) {
             source.forEach(PUT_ALL, this);
         }
     }
 
-    private void initFrom0(final ArrayContextData other) {
+    private void initFrom0(final SortedStringArrayMap other) {
         if (keys.length < other.size) {
             keys = new String[other.threshold];
             values = new Object[other.threshold];
@@ -341,10 +341,10 @@ public class ArrayContextData implements MutableContextData {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ArrayContextData)) {
+        if (!(obj instanceof SortedStringArrayMap)) {
             return false;
         }
-        final ArrayContextData other = (ArrayContextData) obj;
+        final SortedStringArrayMap other = (SortedStringArrayMap) obj;
         if (this.size() != other.size()) {
             return false;
         }
@@ -392,10 +392,10 @@ public class ArrayContextData implements MutableContextData {
     }
 
     /**
-     * Save the state of the {@code ArrayContextData} instance to a stream (i.e.,
+     * Save the state of the {@code SortedStringArrayMap} instance to a stream (i.e.,
      * serialize it).
      *
-     * @serialData The <i>capacity</i> of the ArrayContextData (the length of the
+     * @serialData The <i>capacity</i> of the SortedStringArrayMap (the length of the
      *             bucket array) is emitted (int), followed by the
      *             <i>size</i> (an int, the number of key-value
      *             mappings), followed by the key (Object) and value (Object)
@@ -440,7 +440,7 @@ public class ArrayContextData implements MutableContextData {
     }
 
     /**
-     * Reconstitute the {@code ArrayContextData} instance from a stream (i.e.,
+     * Reconstitute the {@code SortedStringArrayMap} instance from a stream (i.e.,
      * deserialize it).
      */
     private void readObject(final java.io.ObjectInputStream s)  throws IOException, ClassNotFoundException {

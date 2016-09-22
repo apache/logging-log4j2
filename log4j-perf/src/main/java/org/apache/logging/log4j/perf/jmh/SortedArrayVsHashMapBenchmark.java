@@ -23,7 +23,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
-import org.apache.logging.log4j.util.ArrayContextData;
+import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -39,13 +39,13 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
 /**
- * Compares performance of ArrayContextDataVsHashMapBenchmark.
+ * Compares performance of SortedStringArrayMap vs. OpenHashMap vs. JDK HashMap.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 // (Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
 //
 // single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*ArrayContextDataVsHashMapBenchmark.*" -f 1 -wi 10 -i 20 -tu ns -bm sample
+// java -jar log4j-perf/target/benchmarks.jar ".*SortedArrayVsHashMapBenchmark.*" -f 1 -wi 10 -i 20 -tu ns -bm sample
 //
 //
 // Usage help:
@@ -58,7 +58,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Benchmark)
-public class ArrayContextDataVsHashMapBenchmark {
+public class SortedArrayVsHashMapBenchmark {
 
     //@Param({"1", "2", "5", "11", "23", "47", "95", "191", "383"})
     //@Param({"1", "5", "50", "500"})
@@ -72,17 +72,17 @@ public class ArrayContextDataVsHashMapBenchmark {
     private String[] keys;
     private static Object value = new Object();
     private HashMap<String, Object> map;
-    private ArrayContextData contextData;
-    private OpenHashMapContextData<String, Object> hashContextData;
+    private SortedStringArrayMap sortedStringArrayMap;
+    private OpenHashMapContextData<String, Object> openHashMapContextData;
 
     private HashMap<String, Object> populatedMap;
-    private ArrayContextData populatedContextData;
-    private OpenHashMapContextData<String, Object> populatedHashContextData;
+    private SortedStringArrayMap populatedSortedStringArrayMap;
+    private OpenHashMapContextData<String, Object> populatedOpenHashContextData;
 
     @Setup
     public void setup() {
-        hashContextData = new OpenHashMapContextData<>();
-        contextData = new ArrayContextData();
+        openHashMapContextData = new OpenHashMapContextData<>();
+        sortedStringArrayMap = new SortedStringArrayMap();
         map = new HashMap<>();
 
         keys = new String[count];
@@ -99,28 +99,28 @@ public class ArrayContextDataVsHashMapBenchmark {
         for (int i = 0; i < count; i++) {
             populatedMap.put(keys[i], value);
         }
-        populatedContextData = new ArrayContextData();
+        populatedSortedStringArrayMap = new SortedStringArrayMap();
         for (int i = 0; i < count; i++) {
-            populatedContextData.putValue(keys[i], value);
+            populatedSortedStringArrayMap.putValue(keys[i], value);
         }
-        populatedHashContextData = new OpenHashMapContextData<>();
+        populatedOpenHashContextData = new OpenHashMapContextData<>();
         for (int i = 0; i < count; i++) {
-            populatedHashContextData.putValue(keys[i], value);
+            populatedOpenHashContextData.putValue(keys[i], value);
         }
     }
 
     @Benchmark
-    public ArrayContextData putAllArrayContextData() {
-        contextData.clear();
-        contextData.putAll(populatedContextData);
-        return contextData;
+    public SortedStringArrayMap putAllArrayContextData() {
+        sortedStringArrayMap.clear();
+        sortedStringArrayMap.putAll(populatedSortedStringArrayMap);
+        return sortedStringArrayMap;
     }
 
     @Benchmark
     public OpenHashMapContextData<String, Object> putAllHashContextData() {
-        hashContextData.clear();
-        hashContextData.putAll(populatedHashContextData);
-        return hashContextData;
+        openHashMapContextData.clear();
+        openHashMapContextData.putAll(populatedOpenHashContextData);
+        return openHashMapContextData;
     }
 
     @Benchmark
@@ -131,13 +131,13 @@ public class ArrayContextDataVsHashMapBenchmark {
     }
 
     @Benchmark
-    public ArrayContextData cloneArrayContextData() {
-        return new ArrayContextData(populatedContextData);
+    public SortedStringArrayMap cloneArrayContextData() {
+        return new SortedStringArrayMap(populatedSortedStringArrayMap);
     }
 
     @Benchmark
     public OpenHashMapContextData<String, Object> cloneHashContextData() {
-        return new OpenHashMapContextData<>(populatedHashContextData);
+        return new OpenHashMapContextData<>(populatedOpenHashContextData);
     }
 
     @Benchmark
@@ -156,7 +156,7 @@ public class ArrayContextDataVsHashMapBenchmark {
     public int iterateArrayContextDataTriConsumer() {
         final int[] result = {0};
 
-        populatedContextData.forEach(COUNTER, result);
+        populatedSortedStringArrayMap.forEach(COUNTER, result);
         return result[0];
     }
 
@@ -164,7 +164,7 @@ public class ArrayContextDataVsHashMapBenchmark {
     public int iterateHashContextDataTriConsumer() {
         final int[] result = {0};
 
-        populatedHashContextData.forEach(COUNTER, result);
+        populatedOpenHashContextData.forEach(COUNTER, result);
         return result[0];
     }
 
@@ -172,7 +172,7 @@ public class ArrayContextDataVsHashMapBenchmark {
     public int iterateArrayContextDataBiConsumer() {
         final int[] result = {0};
 
-        populatedContextData.forEach(new BiConsumer<String, Object>() {
+        populatedSortedStringArrayMap.forEach(new BiConsumer<String, Object>() {
             @Override
             public void accept(final String s, final Object o) {
                 result[0] += s.hashCode() + o.hashCode();
@@ -185,7 +185,7 @@ public class ArrayContextDataVsHashMapBenchmark {
     public int iterateHashContextDataBiConsumer() {
         final int[] result = {0};
 
-        populatedHashContextData.forEach(new BiConsumer<String, Object>() {
+        populatedOpenHashContextData.forEach(new BiConsumer<String, Object>() {
             @Override
             public void accept(final String s, final Object o) {
                 result[0] += s.hashCode() + o.hashCode();
@@ -206,12 +206,12 @@ public class ArrayContextDataVsHashMapBenchmark {
 
     @Benchmark
     public Object getValueArrayContextData() {
-        return populatedContextData.getValue(keys[count - 1]);
+        return populatedSortedStringArrayMap.getValue(keys[count - 1]);
     }
 
     @Benchmark
     public Object getValueHashContextData() {
-        return populatedHashContextData.getValue(keys[count - 1]);
+        return populatedOpenHashContextData.getValue(keys[count - 1]);
     }
 
     @Benchmark
@@ -221,14 +221,14 @@ public class ArrayContextDataVsHashMapBenchmark {
 
     @Benchmark
     public int putArrayContextData() {
-        populatedContextData.putValue("someKey", "someValue");
-        return populatedContextData.size();
+        populatedSortedStringArrayMap.putValue("someKey", "someValue");
+        return populatedSortedStringArrayMap.size();
     }
 
     @Benchmark
     public int putHashContextData() {
-        hashContextData.put("someKey", "someValue");
-        return hashContextData.size();
+        openHashMapContextData.put("someKey", "someValue");
+        return openHashMapContextData.size();
     }
 
     @Benchmark

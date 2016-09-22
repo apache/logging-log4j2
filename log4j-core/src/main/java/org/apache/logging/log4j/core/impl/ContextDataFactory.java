@@ -16,19 +16,19 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.util.ArrayContextData;
+import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Factory for creating MutableContextData instances.
  * <p>
- * By default returns {@code ArrayContextData} objects. Can be configured by setting system property
+ * By default returns {@code SortedStringArrayMap} objects. Can be configured by setting system property
  * {@code "log4j2.ContextData"} to the fully qualified class name of a class implementing the
  * {@code MutableContextData} interface. The class must have a public default constructor.
  * </p>
  *
- * @see ArrayContextData
+ * @see SortedStringArrayMap
  * @since 2.7
  */
 public class ContextDataFactory {
@@ -36,11 +36,11 @@ public class ContextDataFactory {
     @SuppressWarnings("unchecked")
     public static MutableContextData createContextData() {
         final String CLASS = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData",
-                ArrayContextData.class.getName());
+                SortedStringArrayMap.class.getName());
         try {
             return (MutableContextData) Class.forName(CLASS).newInstance();
         } catch (final Exception any) {
-            return new ArrayContextData();
+            return new SortedStringArrayMap();
         }
     }
 }

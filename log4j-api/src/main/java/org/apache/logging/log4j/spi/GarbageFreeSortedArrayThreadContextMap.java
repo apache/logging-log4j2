@@ -20,11 +20,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.util.ArrayContextData;
+import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * {@code ArrayContextData}-based implementation of the {@code ThreadContextMap} interface that attempts not to
+ * {@code SortedStringArrayMap}-based implementation of the {@code ThreadContextMap} interface that attempts not to
  * create temporary objects. Adding and removing key-value pairs will not create temporary objects.
  * <p>
  * This implementation does <em>not</em> make a copy of its contents on every operation, so this data structure cannot
@@ -82,7 +82,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap, Thread
      * @return an implementation of the {@code MutableContextData} used to back this thread context map
      */
     protected MutableContextData createMutableContextData() {
-        return new ArrayContextData(PropertiesUtil.getProperties().getIntegerProperty(
+        return new SortedStringArrayMap(PropertiesUtil.getProperties().getIntegerProperty(
                 PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
@@ -96,7 +96,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap, Thread
      * @return an implementation of the {@code MutableContextData} used to back this thread context map
      */
     protected MutableContextData createMutableContextData(final ContextData original) {
-        return new ArrayContextData(original);
+        return new SortedStringArrayMap(original);
     }
 
     private MutableContextData getThreadLocalMap() {

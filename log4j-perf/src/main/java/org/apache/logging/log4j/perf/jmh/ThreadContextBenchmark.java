@@ -36,7 +36,7 @@ import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.MutableContextData;
 import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.util.ArrayContextData;
+import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -110,7 +110,7 @@ public class ThreadContextBenchmark {
         System.out.println(threadContextMapAlias + ": Injector = " + injector);
 
         reusableContextData = threadContextMapAlias.contains("Array")
-                ? new ArrayContextData()
+                ? new SortedStringArrayMap()
                 : new OpenHashMapContextData<>();
 
         keys = new String[count];
