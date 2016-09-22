@@ -19,7 +19,7 @@
 <Configuration status="WARN" name="ServletTest">
 
     <Appenders>
-        <Servlet name="Servlet">
+        <Servlet name="Servlet" logThrowables="true">
             <PatternLayout pattern="%m%n%ex{none}"/>
         </Servlet>
     </Appenders>

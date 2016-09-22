@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -38,6 +39,9 @@ public class ServletAppender extends AbstractAppender {
 
 	public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
 			implements org.apache.logging.log4j.core.util.Builder<ServletAppender> {
+
+        @PluginBuilderAttribute
+        private boolean logThrowables;
 
 		@Override
 		public ServletAppender build() {
@@ -57,8 +61,24 @@ public class ServletAppender extends AbstractAppender {
 				LOGGER.error("Layout must be a StringLayout to log to ServletContext");
 				return null;
 			}
-			return new ServletAppender(name, layout, getFilter(), servletContext, isIgnoreExceptions());
+			return new ServletAppender(name, layout, getFilter(), servletContext, isIgnoreExceptions(), logThrowables);
 		}
+
+        /**
+         * Logs with {@link ServletContext#log(String, Throwable)} if true and with {@link ServletContext#log(String)} if false.
+         * 
+         * @return whether to log a Throwable with the servlet context.
+         */
+        public boolean isLogThrowables() {
+            return logThrowables;
+        }
+
+        /**
+         * Logs with {@link ServletContext#log(String, Throwable)} if true and with {@link ServletContext#log(String)} if false.
+         */
+        public void setLogThrowables(boolean logThrowables) {
+            this.logThrowables = logThrowables;
+        }
 
 	}
     
@@ -68,17 +88,23 @@ public class ServletAppender extends AbstractAppender {
     }
 
     private final ServletContext servletContext;
-
+    private boolean logThrowables;
     
-	private ServletAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-			final ServletContext servletContext, final boolean ignoreExceptions) {
-		super(name, filter, layout, ignoreExceptions);
-		this.servletContext = servletContext;
-	}
+    private ServletAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+            final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables) {
+        super(name, filter, layout, ignoreExceptions);
+        this.servletContext = servletContext;
+        this.logThrowables = logThrowables;
+    }
 
     @Override
     public void append(final LogEvent event) {
-        servletContext.log(((AbstractStringLayout) getLayout()).toSerializable(event), event.getThrown());
+        final String serialized = ((AbstractStringLayout) getLayout()).toSerializable(event);
+        if (logThrowables) {
+            servletContext.log(serialized, event.getThrown());
+        } else {
+            servletContext.log(serialized);
+        }
     }
 
     /**
