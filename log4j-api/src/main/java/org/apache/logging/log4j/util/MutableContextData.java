@@ -27,7 +27,7 @@ public interface MutableContextData extends ContextData {
     /**
      * Removes all key-value pairs from this collection.
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
-     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
      * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */
@@ -67,7 +67,7 @@ public interface MutableContextData extends ContextData {
      * Copy all key-value pairs from the specified {@code ContextData} into this {@code MutableContextData}.
      * @param source the {@code ContextData} to copy key-value pairs from
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
-     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
      * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */
@@ -79,18 +79,18 @@ public interface MutableContextData extends ContextData {
      * @param key the key to add or remove. Keys may be {@code null}.
      * @param value the value to add. Values may be {@code null}.
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
-     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
      * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */
     void putValue(final String key, final Object value);
 
     /**
-     * Removes the key-value pair for the specified key from this context data collection.
+     * Removes the key-value pair for the specified key from this data structure.
      *
      * @param key the key to remove. May be {@code null}.
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
-     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
      * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */

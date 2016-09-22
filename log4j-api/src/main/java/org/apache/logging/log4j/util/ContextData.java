@@ -19,33 +19,24 @@ package org.apache.logging.log4j.util;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.TriConsumer;
-
 /**
- * A read-only collection of context data. Context data items are String keys and values of arbitrary type that are
- * set by the application to be included in all subsequent log events. A typical source of context data is the
- * {@code ThreadContextMap} and the {@code Properties} defined in the configuration.
- * <p>
- * Applications can put custom data in this collection by installing a custom {@code ContextDataInjector}.
- * </p>
+ * A read-only collection of String keys and values of arbitrary type.
  *
- * @see org.apache.logging.log4j.spi.ThreadContextMap
  * @since 2.7
  */
 public interface ContextData extends Serializable {
     /**
-     * Returns a non-{@code null} mutable {@code Map<String, String>} containing a snapshot of this context data.
+     * Returns a non-{@code null} mutable {@code Map<String, String>} containing a snapshot of this data structure.
      *
-     * @return a mutable copy of this context data in {@code Map<String, String>} form
+     * @return a mutable copy of this data structure in {@code Map<String, String>} form
      */
     Map<String, String> toMap();
 
     /**
-     * Returns {@code true} if this context data contains the specified key, {@code false} otherwise.
+     * Returns {@code true} if this data structure contains the specified key, {@code false} otherwise.
      *
      * @param key the key whose presence to check. May be {@code null}.
-     * @return {@code true} if this context data contains the specified key, {@code false} otherwise
+     * @return {@code true} if this data structure contains the specified key, {@code false} otherwise
      */
     boolean containsKey(String key);
 
@@ -62,7 +53,7 @@ public interface ContextData extends Serializable {
      * @param action The action to be performed for each key-value pair in this collection
      * @param <V> type of the value
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
-     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
      */
     <V> void forEach(final BiConsumer<String, ? super V> action);
@@ -87,7 +78,7 @@ public interface ContextData extends Serializable {
      * @param <V> type of the value
      * @param <S> type of the third parameter
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
-     *          to this context data while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
      */
     <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state);
