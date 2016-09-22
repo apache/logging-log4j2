@@ -36,6 +36,12 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap, Thread
         MutableContextDataSupplier {
 
     /**
+     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
+     * {@code ThreadLocal} (value is not "true") in the implementation.
+     */
+    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
+
+    /**
      * The default initial capacity.
      */
     protected static final int DEFAULT_INITIAL_CAPACITY = 16;
@@ -44,12 +50,6 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap, Thread
      * System property name that can be used to control the data structure's initial capacity.
      */
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
-
-    /**
-     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
-     * {@code ThreadLocal} (value is not "true") in the implementation.
-     */
-    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
     protected final ThreadLocal<MutableContextData> localMap;
 
