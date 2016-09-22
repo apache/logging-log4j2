@@ -32,6 +32,12 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.NullAppender;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
+import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
+import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
+import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
+import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
@@ -121,12 +127,38 @@ public class Log4j1ConfigurationFactoryTest {
 
 	@Test
 	public void testNullAppender() throws Exception {
-		StatusLogger.getLogger().setLevel(Level.TRACE);
 		final Configuration configuration = configure("config-1.2/log4j-NullAppender.properties");
 		final Appender appender = configuration.getAppender("NullAppender");
 		assertNotNull(appender);
 		assertEquals("NullAppender", appender.getName());
 		assertTrue(appender.getClass().getName(), appender instanceof NullAppender);
+	}
+
+	@Test
+	public void testRollingFileAppender() throws Exception {
+		StatusLogger.getLogger().setLevel(Level.TRACE);
+		final Configuration configuration = configure("config-1.2/log4j-RollingFileAppender.properties");
+		final Appender appender = configuration.getAppender("RFA");
+		assertNotNull(appender);
+		assertEquals("RFA", appender.getName());
+		assertTrue(appender.getClass().getName(), appender instanceof RollingFileAppender);
+		final RollingFileAppender rfa = (RollingFileAppender) appender;
+		assertEquals("./hadoop.log", rfa.getFileName());
+		assertEquals("./hadoop.log.%i", rfa.getFilePattern());
+		final TriggeringPolicy triggeringPolicy = rfa.getTriggeringPolicy();
+		assertNotNull(triggeringPolicy);
+		assertTrue(triggeringPolicy.getClass().getName(), triggeringPolicy instanceof CompositeTriggeringPolicy);
+		final CompositeTriggeringPolicy ctp = (CompositeTriggeringPolicy) triggeringPolicy;
+		final TriggeringPolicy[] triggeringPolicies = ctp.getTriggeringPolicies();
+		assertEquals(1, triggeringPolicies.length);
+		final TriggeringPolicy tp = triggeringPolicies[0];
+		assertTrue(tp.getClass().getName(), tp instanceof SizeBasedTriggeringPolicy);
+		final SizeBasedTriggeringPolicy sbtp = (SizeBasedTriggeringPolicy) tp;
+		assertEquals(256 * 1024 * 1024, sbtp.getMaxFileSize());
+		final RolloverStrategy rolloverStrategy = rfa.getManager().getRolloverStrategy();
+		assertTrue(rolloverStrategy.getClass().getName(), rolloverStrategy instanceof DefaultRolloverStrategy);
+		final DefaultRolloverStrategy drs = (DefaultRolloverStrategy) rolloverStrategy;
+		assertEquals(20, drs.getMaxIndex());
 	}
 
 }
