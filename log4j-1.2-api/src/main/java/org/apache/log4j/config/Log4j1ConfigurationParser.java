@@ -117,12 +117,15 @@ public class Log4j1ConfigurationParser {
         case "org.apache.log4j.FileAppender":
             buildFileAppender(appenderName);
             break;
+        case "org.apache.log4j.varia.NullAppender":
+            buildNullAppender(appenderName);
+            break;
         default:
             reportWarning("Unknown appender class: " + appenderClass + "; ignoring appender: " + appenderName);
         }
     }
 
-    private void buildConsoleAppender(final String appenderName) {
+	private void buildConsoleAppender(final String appenderName) {
         final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, "Console");
         final String targetValue = getLog4jAppenderValue(appenderName, "Target", "System.out");
         if (targetValue != null) {
@@ -184,6 +187,11 @@ public class Log4j1ConfigurationParser {
             reportWarning("Missing " + sourceAttributeName + " for " + componentName);
         }
     }
+
+    private void buildNullAppender(String appenderName) {
+        final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, "Null");
+        builder.add(appenderBuilder);
+	}
 
     private void buildAppenderLayout(final String name, final AppenderComponentBuilder appenderBuilder) {
         final String layoutClass = getLog4jAppenderValue(name, "layout", null);
