@@ -24,14 +24,14 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -56,7 +56,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private Object[] parameters;
     private Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private MutableContextData contextData = ContextDataFactory.createContextData();
+    private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String loggerFqcn;
     private StackTraceElement source;
@@ -93,7 +93,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
         // NOTE: this ringbuffer event SHOULD NOT keep a reference to the specified
         // thread-local MutableLogEvent's context data, because then two threads would call
-        // ContextData.clear() on the same shared instance, resulting in data corruption.
+        // ReadOnlyStringMap.clear() on the same shared instance, resulting in data corruption.
         this.contextData.putAll(event.getContextData());
 
         this.contextStack = event.getContextStack();
@@ -350,7 +350,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     @SuppressWarnings("unchecked")
     @Override
-    public ContextData getContextData() {
+    public ReadOnlyStringMap getContextData() {
         return contextData;
     }
 
@@ -359,7 +359,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return contextData.toMap();
     }
 
-    public void setContextData(final MutableContextData mutableContextData) {
+    public void setContextData(final StringMap mutableContextData) {
         this.contextData = mutableContextData;
     }
 

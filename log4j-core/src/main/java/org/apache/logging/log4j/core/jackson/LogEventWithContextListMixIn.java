@@ -21,7 +21,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
@@ -60,7 +60,7 @@ abstract class LogEventWithContextListMixIn implements LogEvent {
     @JsonDeserialize(using = ContextDataAsEntryListDeserializer.class)
 //    @JsonIgnore
     @Override
-    public abstract ContextData getContextData();
+    public abstract ReadOnlyStringMap getContextData();
 
     @JsonProperty(JsonConstants.ELT_CONTEXT_STACK)
     @JacksonXmlElementWrapper(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_STACK)

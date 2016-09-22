@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Constants;
@@ -97,7 +97,7 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final ContextData contextData = event.getContextData();
+        final ReadOnlyStringMap contextData = event.getContextData();
         // if there is no additional options, we output every single
         // Key/Value pair for the MDC in a similar format to Hashtable.toString()
         if (full) {
@@ -123,7 +123,7 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
         }
     }
 
-    private static void appendFully(final ContextData contextData, final StringBuilder toAppendTo) {
+    private static void appendFully(final ReadOnlyStringMap contextData, final StringBuilder toAppendTo) {
         final StringBuilder sb = getStringBuilder();
         sb.append("{");
         contextData.forEach(WRITE_KEY_VALUES_INTO, sb);
@@ -132,7 +132,7 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
         trimToMaxSize(sb);
     }
 
-    private static void appendSelectedKeys(final String[] keys, final ContextData contextData, final StringBuilder toAppendTo) {
+    private static void appendSelectedKeys(final String[] keys, final ReadOnlyStringMap contextData, final StringBuilder toAppendTo) {
         // Print all the keys in the array that have a value.
         final StringBuilder sb = getStringBuilder();
         sb.append("{");

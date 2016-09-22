@@ -18,7 +18,7 @@ package org.apache.logging.log4j.spi;
 
 import java.util.Map;
 
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Extension service provider interface to implement additional custom MDC behavior for
@@ -42,10 +42,10 @@ public interface ThreadContextMap2 extends ThreadContextMap {
 
     /**
      * Returns the context data for reading. Note that regardless of whether the returned context data has been
-     * {@linkplain MutableContextData#freeze() frozen} (made read-only) or not, callers should not attempt to modify
+     * {@linkplain StringMap#freeze() frozen} (made read-only) or not, callers should not attempt to modify
      * the returned data structure.
      *
-     * @return the {@code MutableContextData}
+     * @return the {@code StringMap}
      */
-    MutableContextData getReadOnlyContextData();
+    StringMap getReadOnlyContextData();
 }

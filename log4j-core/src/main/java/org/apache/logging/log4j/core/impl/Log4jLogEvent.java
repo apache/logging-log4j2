@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -41,7 +41,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -63,7 +63,7 @@ public class Log4jLogEvent implements LogEvent {
     private final long timeMillis;
     private final transient Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private final MutableContextData contextData;
+    private final StringMap contextData;
     private final ThreadContext.ContextStack contextStack;
     private long threadId;
     private String threadName;
@@ -85,7 +85,7 @@ public class Log4jLogEvent implements LogEvent {
         private Throwable thrown;
         private long timeMillis = CLOCK.currentTimeMillis();
         private ThrowableProxy thrownProxy;
-        private MutableContextData contextData = createContextData((List<Property>) null);
+        private StringMap contextData = createContextData((List<Property>) null);
         private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
         private long threadId;
         private String threadName;
@@ -130,8 +130,8 @@ public class Log4jLogEvent implements LogEvent {
                 this.threadName = evt.threadName;
                 this.threadPriority = evt.threadPriority;
             } else {
-                if (other.getContextData() instanceof MutableContextData) {
-                    this.contextData = (MutableContextData) other.getContextData();
+                if (other.getContextData() instanceof StringMap) {
+                    this.contextData = (StringMap) other.getContextData();
                 } else {
                     if (this.contextData.isFrozen()) {
                         this.contextData = ContextDataFactory.createContextData();
@@ -200,7 +200,7 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
-        public Builder setContextData(final MutableContextData contextData) {
+        public Builder setContextData(final StringMap contextData) {
             this.contextData = contextData;
             return this;
         }
@@ -308,7 +308,7 @@ public class Log4jLogEvent implements LogEvent {
     * @param loggerFQCN The fully qualified class name of the caller.
     * @param level The logging Level.
     * @param message The Message.
-    * @param properties the properties to be merged with ThreadContext key-value pairs into the event's ContextData.
+    * @param properties the properties to be merged with ThreadContext key-value pairs into the event's ReadOnlyStringMap.
     * @param t A Throwable or null.
     */
    // This constructor is called from LogEventFactories.
@@ -399,7 +399,7 @@ public class Log4jLogEvent implements LogEvent {
      */
     private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
             final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
-            final MutableContextData contextData, final ThreadContext.ContextStack contextStack, final long threadId,
+            final StringMap contextData, final ThreadContext.ContextStack contextStack, final long threadId,
             final String threadName, final int threadPriority, final StackTraceElement source,
             final long timestampMillis, final long nanoTime) {
         this.loggerName = loggerName;
@@ -424,8 +424,8 @@ public class Log4jLogEvent implements LogEvent {
         this.nanoTime = nanoTime;
     }
 
-    private static MutableContextData createContextData(final Map<String, String> contextMap) {
-        final MutableContextData result = ContextDataFactory.createContextData();
+    private static StringMap createContextData(final Map<String, String> contextMap) {
+        final StringMap result = ContextDataFactory.createContextData();
         if (contextMap != null) {
             for (final Map.Entry<String, String> entry : contextMap.entrySet()) {
                 result.putValue(entry.getKey(), entry.getValue());
@@ -434,8 +434,8 @@ public class Log4jLogEvent implements LogEvent {
         return result;
     }
 
-    private static MutableContextData createContextData(final List<Property> properties) {
-        final MutableContextData reusable = ContextDataFactory.createContextData();
+    private static StringMap createContextData(final List<Property> properties) {
+        final StringMap reusable = ContextDataFactory.createContextData();
         return CONTEXT_DATA_INJECTOR.injectContextData(properties, reusable);
     }
 
@@ -577,12 +577,12 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     /**
-     * Returns the {@code ContextData} containing context data key-value pairs.
-     * @return the {@code ContextData} containing context data key-value pairs
+     * Returns the {@code ReadOnlyStringMap} containing context data key-value pairs.
+     * @return the {@code ReadOnlyStringMap} containing context data key-value pairs
      * @since 2.7
      */
     @Override
-    public ContextData getContextData() {
+    public ReadOnlyStringMap getContextData() {
         return contextData;
     }
     /**
@@ -850,7 +850,7 @@ public class Log4jLogEvent implements LogEvent {
         private final transient Throwable thrown;
         private final ThrowableProxy thrownProxy;
         /** @since 2.7 */
-        private final MutableContextData contextData;
+        private final StringMap contextData;
         private final ThreadContext.ContextStack contextStack;
         /** @since 2.6 */
         private final long threadId;
@@ -913,8 +913,8 @@ public class Log4jLogEvent implements LogEvent {
             return message.memento();
         }
 
-        private static MutableContextData memento(final ContextData data) {
-            final MutableContextData result = ContextDataFactory.createContextData();
+        private static StringMap memento(final ReadOnlyStringMap data) {
+            final StringMap result = ContextDataFactory.createContextData();
             result.putAll(data);
             return result;
         }

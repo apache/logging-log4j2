@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.message.Message;
 
 import com.lmax.disruptor.EventTranslator;
@@ -58,7 +58,7 @@ public class RingBufferLogEventTranslator implements
         event.setValues(asyncLogger, loggerName, marker, fqcn, level, message, thrown,
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method
-                injector.injectContextData(null, (MutableContextData) event.getContextData()), contextStack,
+                injector.injectContextData(null, (StringMap) event.getContextData()), contextStack,
                 threadId, threadName, threadPriority, location, currentTimeMillis, nanoTime);
 
         clear(); // clear the translator

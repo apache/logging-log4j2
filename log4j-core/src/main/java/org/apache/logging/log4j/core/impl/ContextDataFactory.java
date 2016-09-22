@@ -16,31 +16,31 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.util.SortedStringArrayMap;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * Factory for creating MutableContextData instances.
+ * Factory for creating StringMap instances.
  * <p>
- * By default returns {@code SortedStringArrayMap} objects. Can be configured by setting system property
- * {@code "log4j2.ContextData"} to the fully qualified class name of a class implementing the
- * {@code MutableContextData} interface. The class must have a public default constructor.
+ * By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
+ * {@code "log4j2.ReadOnlyStringMap"} to the fully qualified class name of a class implementing the
+ * {@code StringMap} interface. The class must have a public default constructor.
  * </p>
  *
- * @see SortedStringArrayMap
+ * @see SortedArrayStringMap
  * @since 2.7
  */
 public class ContextDataFactory {
 
     @SuppressWarnings("unchecked")
-    public static MutableContextData createContextData() {
-        final String CLASS = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData",
-                SortedStringArrayMap.class.getName());
+    public static StringMap createContextData() {
+        final String CLASS = PropertiesUtil.getProperties().getStringProperty("log4j2.ReadOnlyStringMap",
+                SortedArrayStringMap.class.getName());
         try {
-            return (MutableContextData) Class.forName(CLASS).newInstance();
+            return (StringMap) Class.forName(CLASS).newInstance();
         } catch (final Exception any) {
-            return new SortedStringArrayMap();
+            return new SortedArrayStringMap();
         }
     }
 }

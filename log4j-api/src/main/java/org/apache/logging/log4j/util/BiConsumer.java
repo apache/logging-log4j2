@@ -21,7 +21,7 @@ package org.apache.logging.log4j.util;
  *
  * @param <K> type of the first argument
  * @param <V> type of the second argument
- * @see ContextData
+ * @see ReadOnlyStringMap
  * @since 2.7
  */
 public interface BiConsumer<K, V> {

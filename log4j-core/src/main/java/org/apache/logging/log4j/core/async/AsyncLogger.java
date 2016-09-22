@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventTranslatorVararg;
@@ -275,7 +275,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown,
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method
-                CONTEXT_DATA_INJECTOR.injectContextData(null, (MutableContextData) event.getContextData()),
+                CONTEXT_DATA_INJECTOR.injectContextData(null, (StringMap) event.getContextData()),
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
                 CLOCK.currentTimeMillis(), nanoClock.nanoTime());
     }
@@ -308,9 +308,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         final List<Property> properties = privateConfig.loggerConfig.getPropertyList();
 
         if (properties != null) {
-            MutableContextData contextData = (MutableContextData) event.getContextData();
+            StringMap contextData = (StringMap) event.getContextData();
             if (contextData.isFrozen()) {
-                final MutableContextData temp = ContextDataFactory.createContextData();
+                final StringMap temp = ContextDataFactory.createContextData();
                 temp.putAll(contextData);
                 contextData = temp;
             }

@@ -34,7 +34,7 @@ import javax.persistence.Transient;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
@@ -162,7 +162,7 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
 
     @Override
     @Transient
-    public ContextData getContextData() {
+    public ReadOnlyStringMap getContextData() {
         return this.getWrappedEvent().getContextData();
     }
 

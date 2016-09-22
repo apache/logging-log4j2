@@ -26,14 +26,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.logging.log4j.util.ContextData;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**
- * Open hash map-based implementation of the {@code ContextData} interface.
+ * Open hash map-based implementation of the {@code ReadOnlyStringMap} interface.
  * Implementation based on <a href="http://fastutil.di.unimi.it/">fastutil</a>'s
  * <a href="http://fastutil.di.unimi.it/docs/it/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap.html">Object2ObjectOpenHashMap</a>.
  * <p>
@@ -60,7 +60,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  *
  * @since 2.7
  */
-public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadContextMap {
+public class OpenHashMapContextData<K, V> implements StringMap, ThreadContextMap {
     /** The initial default size of a hash table. */
     public static final int DEFAULT_INITIAL_SIZE = 16;
 
@@ -169,7 +169,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
      * @param contextData
      *            a type-specific map to be copied into the new hash map.
      */
-    public OpenHashMapContextData(final ContextData contextData) {
+    public OpenHashMapContextData(final ReadOnlyStringMap contextData) {
         this(contextData, DEFAULT_LOAD_FACTOR);
     }
     /**
@@ -180,7 +180,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
      * @param f
      *            the load factor.
      */
-    public OpenHashMapContextData(final ContextData contextData, final float f) {
+    public OpenHashMapContextData(final ReadOnlyStringMap contextData, final float f) {
         this(contextData.size(), f);
         if (contextData instanceof OpenHashMapContextData) {
             initFrom0((OpenHashMapContextData) contextData);
@@ -188,10 +188,10 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
             contextData.forEach(PUT_ALL, this);
         }
     }
-    private static final TriConsumer<String, Object, MutableContextData> PUT_ALL =
-            new TriConsumer<String, Object, MutableContextData>() {
+    private static final TriConsumer<String, Object, StringMap> PUT_ALL =
+            new TriConsumer<String, Object, StringMap>() {
         @Override
-        public void accept(final String key, final Object value, final MutableContextData contextData) {
+        public void accept(final String key, final Object value, final StringMap contextData) {
             contextData.putValue(key, value);
         }
     };
@@ -310,10 +310,10 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ContextData)) {
+        if (!(obj instanceof ReadOnlyStringMap)) {
             return false;
         }
-        final ContextData other = (ContextData) obj;
+        final ReadOnlyStringMap other = (ReadOnlyStringMap) obj;
         if (other.size() != size()) {
             return false;
         }
@@ -483,7 +483,7 @@ public class OpenHashMapContextData<K, V> implements MutableContextData, ThreadC
     }
 
     @Override
-    public void putAll(final ContextData source) {
+    public void putAll(final ReadOnlyStringMap source) {
         assertNotFrozen();
         assertNoConcurrentModification();
 

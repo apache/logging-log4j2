@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
-import org.apache.logging.log4j.util.ContextData;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -37,13 +37,13 @@ public class GarbageFreeOpenHashMapThreadContextMap extends GarbageFreeSortedArr
     public static final Class<? extends ThreadContextMap> SUPER = GarbageFreeSortedArrayThreadContextMap.class;
 
     @Override
-    protected MutableContextData createMutableContextData() {
+    protected StringMap createStringMap() {
         return new OpenHashMapContextData<>(PropertiesUtil.getProperties().getIntegerProperty(
                 PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
     @Override
-    protected MutableContextData createMutableContextData(final ContextData original) {
+    protected StringMap createStringMap(final ReadOnlyStringMap original) {
         return new OpenHashMapContextData<>(original);
     }
 }

@@ -19,19 +19,19 @@ package org.apache.logging.log4j.core.appender.db.jpa.converter;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
- * A JPA 2.1 attribute converter for {@link ContextData ContextData&lt;Object&gt;}s in
+ * A JPA 2.1 attribute converter for {@link ReadOnlyStringMap}s in
  * {@link org.apache.logging.log4j.core.LogEvent}s. This converter is only capable of converting to {@link String}s. The
  * {@link #convertToEntityAttribute(String)} method throws an {@link UnsupportedOperationException}. If you need to
  * support converting to an entity attribute, you should use the {@link ContextMapJsonAttributeConverter} for conversion
  * both ways.
  */
 @Converter(autoApply = false)
-public class ContextDataAttributeConverter implements AttributeConverter<ContextData, String> {
+public class ContextDataAttributeConverter implements AttributeConverter<ReadOnlyStringMap, String> {
     @Override
-    public String convertToDatabaseColumn(final ContextData contextData) {
+    public String convertToDatabaseColumn(final ReadOnlyStringMap contextData) {
         if (contextData == null) {
             return null;
         }
@@ -40,7 +40,7 @@ public class ContextDataAttributeConverter implements AttributeConverter<Context
     }
 
     @Override
-    public ContextData convertToEntityAttribute(final String s) {
+    public ReadOnlyStringMap convertToEntityAttribute(final String s) {
         throw new UnsupportedOperationException("Log events can only be persisted, not extracted.");
     }
 }

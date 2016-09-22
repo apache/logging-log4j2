@@ -23,9 +23,9 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import javax.persistence.PersistenceException;
 
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.Strings;
 
@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * A JPA 2.1 attribute converter for {@link ContextData ContextData&lt;Object&gt;}s in
+ * A JPA 2.1 attribute converter for {@link ReadOnlyStringMap}s in
  * {@link org.apache.logging.log4j.core.LogEvent}s. This converter is capable of converting both to and from
  * {@link String}s.
  *
@@ -43,11 +43,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * Processor.
  */
 @Converter(autoApply = false)
-public class ContextDataJsonAttributeConverter implements AttributeConverter<ContextData, String> {
+public class ContextDataJsonAttributeConverter implements AttributeConverter<ReadOnlyStringMap, String> {
     static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(final ContextData contextData) {
+    public String convertToDatabaseColumn(final ReadOnlyStringMap contextData) {
         if (contextData == null) {
             return null;
         }
@@ -69,12 +69,12 @@ public class ContextDataJsonAttributeConverter implements AttributeConverter<Con
     }
 
     @Override
-    public ContextData convertToEntityAttribute(final String s) {
+    public ReadOnlyStringMap convertToEntityAttribute(final String s) {
         if (Strings.isEmpty(s)) {
             return null;
         }
         try {
-            final MutableContextData result = ContextDataFactory.createContextData();
+            final StringMap result = ContextDataFactory.createContextData();
             final ObjectNode root = (ObjectNode) OBJECT_MAPPER.readTree(s);
             final Iterator<Map.Entry<String, JsonNode>> entries = root.fields();
             while (entries.hasNext()) {

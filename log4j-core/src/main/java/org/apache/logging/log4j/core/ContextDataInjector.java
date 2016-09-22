@@ -21,11 +21,11 @@ import java.util.List;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
-import org.apache.logging.log4j.util.ContextData;
-import org.apache.logging.log4j.util.MutableContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
- * Responsible for initializing the ContextData of LogEvents. Context data is data that is set by the application to be
+ * Responsible for initializing the context data of LogEvents. Context data is data that is set by the application to be
  * included in all subsequent log events.
  * <p>
  * The source of the context data is implementation-specific. The default source for context data is the ThreadContext.
@@ -45,7 +45,7 @@ import org.apache.logging.log4j.util.MutableContextData;
  * guarantees to enable optimal performance.
  * </p>
  *
- * @see ContextData
+ * @see ReadOnlyStringMap
  * @see ContextDataInjectorFactory
  * @see org.apache.logging.log4j.ThreadContext
  * @see ThreadContextDataInjector
@@ -53,7 +53,7 @@ import org.apache.logging.log4j.util.MutableContextData;
  */
 public interface ContextDataInjector {
     /**
-     * Returns a {@code MutableContextData} object initialized with the specified properties and the appropriate
+     * Returns a {@code StringMap} object initialized with the specified properties and the appropriate
      * context data. The returned value may be the specified parameter or a different object.
      * <p>
      * This method will be called for each log event to initialize its context data and implementors should take
@@ -66,10 +66,10 @@ public interface ContextDataInjector {
      * Example implementation:
      * </p>
      * <pre>
-     * public MutableContextData injectContextData(List<Property> properties, MutableContextData reusable) {
+     * public StringMap injectContextData(List<Property> properties, StringMap reusable) {
      *     if (properties == null || properties.isEmpty()) {
      *         // assume context data is stored in a copy-on-write data structure that is safe to pass to another thread
-     *         return (MutableContextData) rawContextData();
+     *         return (StringMap) rawContextData();
      *     }
      *     // first copy configuration properties into the result
      *     ThreadContextDataInjector.copyProperties(properties, reusable);
@@ -80,17 +80,17 @@ public interface ContextDataInjector {
      * }
      * </pre>
      *
-     * @param properties Properties from the log4j configuration to be added to the resulting ContextData. May be
+     * @param properties Properties from the log4j configuration to be added to the resulting ReadOnlyStringMap. May be
      *          {@code null} or empty
-     * @param reusable a {@code MutableContextData} instance that may be reused to avoid creating temporary objects
-     * @return a {@code MutableContextData} instance initialized with the specified properties and the appropriate
+     * @param reusable a {@code StringMap} instance that may be reused to avoid creating temporary objects
+     * @return a {@code StringMap} instance initialized with the specified properties and the appropriate
      *          context data. The returned value may be the specified parameter or a different object.
-     * @see ThreadContextDataInjector#copyProperties(List, MutableContextData)
+     * @see ThreadContextDataInjector#copyProperties(List, StringMap)
      */
-    MutableContextData injectContextData(final List<Property> properties, final MutableContextData reusable);
+    StringMap injectContextData(final List<Property> properties, final StringMap reusable);
 
     /**
-     * Returns a {@code ContextData} object reflecting the current state of the context. Configuration properties
+     * Returns a {@code ReadOnlyStringMap} object reflecting the current state of the context. Configuration properties
      * are not included in the result.
      * <p>
      * This method may be called multiple times for each log event by Filters and Lookups and implementors should take
@@ -101,7 +101,7 @@ public interface ContextDataInjector {
      * underlying context may or may not be reflected in the returned object, depending on the context data source and
      * the implementation of this method. It is not safe to pass the returned object to another thread.
      * </p>
-     * @return a {@code ContextData} object reflecting the current state of the context
+     * @return a {@code ReadOnlyStringMap} object reflecting the current state of the context
      */
-    ContextData rawContextData();
+    ReadOnlyStringMap rawContextData();
 }

@@ -17,12 +17,12 @@
 package org.apache.logging.log4j.util;
 
 /**
- * Exposes methods to add and remove key-value pairs to and from {@code ContextData}.
+ * Exposes methods to add and remove key-value pairs to and from {@code ReadOnlyStringMap}.
  *
- * @see ContextData
+ * @see ReadOnlyStringMap
  * @since 2.7
  */
-public interface MutableContextData extends ContextData {
+public interface StringMap extends ReadOnlyStringMap {
 
     /**
      * Removes all key-value pairs from this collection.
@@ -64,14 +64,14 @@ public interface MutableContextData extends ContextData {
     boolean isFrozen();
 
     /**
-     * Copy all key-value pairs from the specified {@code ContextData} into this {@code MutableContextData}.
-     * @param source the {@code ContextData} to copy key-value pairs from
+     * Copy all key-value pairs from the specified {@code ReadOnlyStringMap} into this {@code StringMap}.
+     * @param source the {@code ReadOnlyStringMap} to copy key-value pairs from
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
      *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
      *          {@link #forEach(TriConsumer, Object)}.
      * @throws UnsupportedOperationException if this collection has been {@linkplain #isFrozen() frozen}.
      */
-    void putAll(final ContextData source);
+    void putAll(final ReadOnlyStringMap source);
 
     /**
      * Puts the specified key-value pair into the collection.

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap2;
@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * {@code ThreadContextDataInjector}.
  *
  * @see ContextDataInjector
- * @see ContextData
+ * @see ReadOnlyStringMap
  * @see ThreadContextDataInjector
  * @see LogEvent#getContextData()
  * @since 2.7
@@ -57,7 +57,7 @@ public class ContextDataInjectorFactory {
      * context data to determine whether an event should be logged.
      * </p>
      *
-     * @return a ContextDataInjector that populates the {@code ContextData} of all {@code LogEvent} objects
+     * @return a ContextDataInjector that populates the {@code ReadOnlyStringMap} of all {@code LogEvent} objects
      */
     public static ContextDataInjector createInjector() {
         final String className = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextDataInjector");

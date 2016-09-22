@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * expected that the Map will be passed to many more log events than the number of keys it contains the performance
  * should be much better than if the Map was copied for each event.
  */
-public class DefaultThreadContextMap implements ThreadContextMap, ContextData {
+public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyStringMap {
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
