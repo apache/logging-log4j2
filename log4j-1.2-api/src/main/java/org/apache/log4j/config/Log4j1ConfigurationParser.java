@@ -328,16 +328,24 @@ public class Log4j1ConfigurationParser {
 	}
 
 	private String getLog4jAppenderValue(final String appenderName, final String attributeName) {
-		return properties.getProperty("log4j.appender." + appenderName + "." + attributeName);
+		return getProperty("log4j.appender." + appenderName + "." + attributeName);
+	}
+
+	private String getProperty(final String key) {
+		return properties.getProperty(key);
+	}
+
+	private String getProperty(final String key, String defaultValue) {
+		return properties.getProperty(key, defaultValue);
 	}
 
 	private String getLog4jAppenderValue(final String appenderName, final String attributeName,
 			final String defaultValue) {
-		return properties.getProperty("log4j.appender." + appenderName + "." + attributeName, defaultValue);
+		return getProperty("log4j.appender." + appenderName + "." + attributeName, defaultValue);
 	}
 
 	private String getLog4jValue(final String key) {
-		return properties.getProperty("log4j." + key);
+		return getProperty("log4j." + key);
 	}
 
 	private void reportWarning(final String msg) {
