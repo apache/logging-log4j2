@@ -77,7 +77,7 @@ public class Log4j1ConfigurationFactoryTest {
 
 	private Configuration configure(final String configResource) throws URISyntaxException {
 		final URL configLocation = ClassLoader.getSystemResource(configResource);
-		assertNotNull(configLocation);
+		assertNotNull(configResource, configLocation);
 		final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null, "test",
 				configLocation.toURI());
 		assertNotNull(configuration);
@@ -151,6 +151,20 @@ public class Log4j1ConfigurationFactoryTest {
 	@Test
 	public void testRollingFileAppenderWithProperties() throws Exception {
 		testRollingFileAppender("config-1.2/log4j-RollingFileAppender-with-props.properties", "RFA", "./hadoop.log.%i");
+	}
+
+	@Test
+	public void testSystemProperties1() throws Exception {
+		final Configuration configuration = configure("config-1.2/log4j-system-properties-1.properties");
+		final RollingFileAppender appender = configuration.getAppender("RFA");
+		assertEquals(System.getProperty("java.io.tmpdir") + "/hadoop.log", appender.getFileName());
+	}
+
+	@Test
+	public void testSystemProperties2() throws Exception {
+		final Configuration configuration = configure("config-1.2/log4j-system-properties-2.properties");
+		final RollingFileAppender appender = configuration.getAppender("RFA");
+		assertEquals("${java.io.tmpdir}/hadoop.log", appender.getFileName());
 	}
 
 	private void testRollingFileAppender(final String configResource, final String name, final String filePattern) throws URISyntaxException {

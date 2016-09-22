@@ -43,6 +43,21 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Experimental parser for Log4j 1.2 properties configuration files.
  *
  * This class is not thread-safe.
+ * 
+ * <p>
+ * From the Log4j 1.2 Javadocs:
+ * </p>
+ * <p>
+ * All option values admit variable substitution. The syntax of variable
+ * substitution is similar to that of Unix shells. The string between an opening
+ * "${" and closing "}" is interpreted as a key. The value of the substituted
+ * variable can be defined as a system property or in the configuration file
+ * itself. The value of the key is first searched in the system properties, and
+ * if not found there, it is then searched in the configuration file being
+ * parsed. The corresponding value replaces the ${variableName} sequence. For
+ * example, if java.home system property is set to /home/xyz, then every
+ * occurrence of the sequence ${java.home} will be interpreted as /home/xyz.
+ * </p>
  */
 public class Log4j1ConfigurationParser {
 
@@ -52,7 +67,8 @@ public class Log4j1ConfigurationParser {
 	private static final String FALSE = "false";
 	
 	private final Properties properties = new Properties();
-	private StrSubstitutor strSubstitutor;
+	private StrSubstitutor strSubstitutorProperties;
+	private StrSubstitutor strSubstitutorSystem;
 	
 	private final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory
 			.newConfigurationBuilder();
@@ -72,7 +88,8 @@ public class Log4j1ConfigurationParser {
 	public ConfigurationBuilder<BuiltConfiguration> buildConfigurationBuilder(final InputStream input)
 			throws IOException {
 		properties.load(input);
-		strSubstitutor = new StrSubstitutor(properties);
+		strSubstitutorProperties = new StrSubstitutor(properties);
+		strSubstitutorSystem = new StrSubstitutor(System.getProperties());
 		final String rootCategoryValue = getLog4jValue(ROOTCATEGORY);
 		final String rootLoggerValue = getLog4jValue(ROOTLOGGER);
 		if (rootCategoryValue == null && rootLoggerValue == null) {
@@ -364,11 +381,14 @@ public class Log4j1ConfigurationParser {
 	}
 
 	private String getProperty(final String key) {
-		return strSubstitutor.replace(properties.getProperty(key));
+		final String value = properties.getProperty(key);
+		final String sysValue = strSubstitutorSystem.replace(value);
+		return strSubstitutorProperties.replace(sysValue);
 	}
 
 	private String getProperty(final String key, String defaultValue) {
-		return strSubstitutor.replace(properties.getProperty(key, defaultValue));
+		final String value = getProperty(key);
+		return value == null ? defaultValue : value;
 	}
 
 	private String getLog4jAppenderValue(final String appenderName, final String attributeName,
