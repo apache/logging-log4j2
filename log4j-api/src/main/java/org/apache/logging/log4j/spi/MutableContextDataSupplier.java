@@ -18,13 +18,19 @@ package org.apache.logging.log4j.spi;
 
 /**
  * Interface for objects that know how to provide a {@code MutableContextData} object.
+ * <p>
+ * This interface offers no guarantee that the returned context data is actually mutable; it may have been
+ * {@linkplain MutableContextData#freeze() frozen}, making the data structure read-only.
+ * </p>
  *
  * @since 2.7
  */
 public interface MutableContextDataSupplier {
 
     /**
-     * Retuns the {@code MutableContextData}.
+     * Returns the {@code MutableContextData}. Note that the returned context data may not be mutable; it may have been
+     * {@linkplain MutableContextData#freeze() frozen}, making the data structure read-only.
+     *
      * @return the {@code MutableContextData}
      */
     MutableContextData getMutableContextData();
