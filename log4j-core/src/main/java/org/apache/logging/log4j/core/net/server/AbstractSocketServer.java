@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -34,17 +35,84 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
+import org.apache.logging.log4j.core.util.InetAddressConverter;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.util.Strings;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.validators.PositiveInteger;
 
 /**
  * Abstract socket server for TCP and UDP implementations.
  * 
- * @param <T> The kind of input stream read
+ * @param <T>
+ *            The kind of input stream read
  * 
- * TODO Make a LifeCycle
+ *            TODO Make a LifeCycle
  */
 public abstract class AbstractSocketServer<T extends InputStream> extends LogEventListener implements Runnable {
+
+    protected static class CommandLineArguments {
+
+        @Parameter(names = { "--config", "-c" }, description = "Log4j configuration file location (path or URL).")
+        private String configLocation;
+
+        @Parameter(names = { "--help", "-?", "-h" }, help = true, description = "Prints this help.")
+        private boolean help;
+
+        @Parameter(names = { "--interactive",
+                "-i" }, description = "Accepts commands on standard input (\"exit\" is the only command).")
+        private boolean interactive;
+
+        @Parameter(names = { "--port",
+                "-p" }, validateWith = PositiveInteger.class, description = "Server socket port.")
+        private int port;
+
+        @Parameter(names = { "--localbindaddress",
+                "-a" }, converter = InetAddressConverter.class, description = "Server socket local bind address.")
+        private InetAddress localBindAddress;
+
+        String getConfigLocation() {
+            return configLocation;
+        }
+
+        int getPort() {
+            return port;
+        }
+
+        boolean isHelp() {
+            return help;
+        }
+
+        protected boolean isInteractive() {
+            return interactive;
+        }
+
+        void setConfigLocation(final String configLocation) {
+            this.configLocation = configLocation;
+        }
+
+        void setHelp(final boolean help) {
+            this.help = help;
+        }
+
+        void setInteractive(final boolean interactive) {
+            this.interactive = interactive;
+        }
+
+        void setPort(final int port) {
+            this.port = port;
+        }
+
+        InetAddress getLocalBindAddress() {
+            return localBindAddress;
+        }
+
+        void setLocalBindAddress(InetAddress localBindAddress) {
+            this.localBindAddress = localBindAddress;
+        }
+    }
 
     /**
      * Factory that creates a Configuration for the server.
@@ -58,7 +126,8 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
         }
 
         @Override
-        public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+        public Configuration getConfiguration(final LoggerContext loggerContext, final String name,
+                final URI configLocation) {
             if (Strings.isNotEmpty(path)) {
                 File file = null;
                 ConfigurationSource source = null;
@@ -95,6 +164,18 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
     protected static final int MAX_PORT = 65534;
 
+    static <T extends CommandLineArguments> T parseCommandLine(final String[] mainArgs, final Class<?> clazz,
+            final T args) {
+        final JCommander jCommander = new JCommander(args);
+        jCommander.setProgramName(clazz.getName());
+        jCommander.setCaseSensitiveOptions(false);
+        jCommander.parse(mainArgs);
+        if (args.isHelp()) {
+            jCommander.usage();
+        }
+        return args;
+    }
+
     private volatile boolean active = true;
 
     protected final LogEventBridge<T> logEventInput;
@@ -104,8 +185,10 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
     /**
      * Creates a new socket server.
      * 
-     * @param port listen to this port
-     * @param logEventInput Use this input to read log events.
+     * @param port
+     *            listen to this port
+     * @param logEventInput
+     *            Use this input to read log events.
      */
     public AbstractSocketServer(final int port, final LogEventBridge<T> logEventInput) {
         this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);

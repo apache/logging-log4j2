@@ -29,7 +29,10 @@
         dependencies.
       </p>
       <p>
-        As of version 2.4, Log4J requires Java 7. Versions 2.3 and earlier require Java 6.
+        As of version 2.4, Log4J requires Java 7.
+      </p>
+      <p>
+        Log4j version 2.3 and older require Java 6.
       </p>
 
       <a name="log4j-api" />
@@ -136,6 +139,13 @@
             The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library which is
             licensed under the terms of the GNU Lesser General Public License (LGPL). For details see the
             files <code>COPYING</code> and <code>COPYING.LESSER</code> included with the JeroMQ distribution.
+          </td>
+        </tr>
+        <tr>
+          <td>TcpSocketServer and UdpSocketServer</td>
+          <td>
+            TcpSocketServer and UdpSocketServer use the <a href="http://www.jcommander.org/">JCommander</a> library 
+            which is licensed under the terms of the Apache License version 2.0.
           </td>
         </tr>
       </table>
