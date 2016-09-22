@@ -36,6 +36,12 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
         MutableContextDataSupplier {
 
     /**
+     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
+     * {@code ThreadLocal} (value is not "true") in the implementation.
+     */
+    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
+
+    /**
      * The default initial capacity.
      */
     protected static final int DEFAULT_INITIAL_CAPACITY = 16;
@@ -45,11 +51,10 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
      */
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
-    /**
-     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
-     * {@code ThreadLocal} (value is not "true") in the implementation.
-     */
-    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
+    private static final MutableContextData EMPTY_CONTEXT_DATA = new ArrayContextData();
+    static {
+        EMPTY_CONTEXT_DATA.freeze();
+    }
 
     private final ThreadLocal<MutableContextData> localMap;
 
@@ -162,7 +167,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, Thread
     @Override
     public MutableContextData getMutableContextData() {
         final MutableContextData map = localMap.get();
-        return map == null ? createMutableContextData() : map;
+        return map == null ? EMPTY_CONTEXT_DATA : map;
     }
 
     @Override
