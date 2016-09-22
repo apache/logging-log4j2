@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * A read-only collection of String keys and values of arbitrary type.
+ * A read-only collection of String keys mapped to values of arbitrary type.
  *
  * @since 2.7
  */
