@@ -41,7 +41,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.SortedStringArrayMap;
-import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.util.MutableContextData;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

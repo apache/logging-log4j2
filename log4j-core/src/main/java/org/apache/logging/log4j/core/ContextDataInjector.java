@@ -21,8 +21,8 @@ import java.util.List;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
-import org.apache.logging.log4j.spi.ContextData;
-import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.MutableContextData;
 
 /**
  * Responsible for initializing the ContextData of LogEvents. Context data is data that is set by the application to be

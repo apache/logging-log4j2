@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.util.ContextData;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap2;

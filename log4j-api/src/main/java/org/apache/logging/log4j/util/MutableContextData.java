@@ -14,10 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.spi;
-
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.TriConsumer;
+package org.apache.logging.log4j.util;
 
 /**
  * Exposes methods to add and remove key-value pairs to and from {@code ContextData}.
@@ -38,7 +35,7 @@ public interface MutableContextData extends ContextData {
 
     /**
      * Indicates whether some other object is "equal to" this one.
-     * 
+     *
      * @param obj
      *            the reference object with which to compare.
      * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.

@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
-import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.util.MutableContextData;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventTranslatorVararg;

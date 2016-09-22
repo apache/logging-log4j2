@@ -18,6 +18,8 @@ package org.apache.logging.log4j.spi;
 
 import java.util.Map;
 
+import org.apache.logging.log4j.util.MutableContextData;
+
 /**
  * Extension service provider interface to implement additional custom MDC behavior for
  * {@link org.apache.logging.log4j.ThreadContext}.

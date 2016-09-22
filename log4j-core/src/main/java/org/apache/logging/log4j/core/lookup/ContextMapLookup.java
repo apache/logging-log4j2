@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.util.ContextData;
 
 /**
  * Looks up keys from the context. By default this is the {@link ThreadContext}, but users may

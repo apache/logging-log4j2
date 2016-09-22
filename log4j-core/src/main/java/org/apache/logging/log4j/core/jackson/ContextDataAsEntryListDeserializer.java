@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.util.MutableContextData;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

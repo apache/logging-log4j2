@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.util.ContextData;
 
 /**
  * Compares against a log level that is associated with a context value. By default the context is the

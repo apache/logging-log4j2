@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.spi.ContextData;
+import org.apache.logging.log4j.util.ContextData;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.util.Patterns;
@@ -322,8 +322,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Returns the {@code ContextData} of the {@code LogEvent} that this {@code FlumeEvent} was constructed with.
-     * @return the {@code ContextData} of the {@code LogEvent} that this {@code FlumeEvent} was constructed with.
+     * Returns the context data of the {@code LogEvent} that this {@code FlumeEvent} was constructed with.
+     * @return the context data of the {@code LogEvent} that this {@code FlumeEvent} was constructed with.
      */
     @Override
     public ContextData getContextData() {

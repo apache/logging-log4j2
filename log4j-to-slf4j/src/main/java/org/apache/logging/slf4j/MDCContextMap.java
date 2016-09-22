@@ -19,7 +19,7 @@ package org.apache.logging.slf4j;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.util.MutableContextData;
 import org.apache.logging.log4j.spi.ThreadContextMap2;
 import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.slf4j.MDC;

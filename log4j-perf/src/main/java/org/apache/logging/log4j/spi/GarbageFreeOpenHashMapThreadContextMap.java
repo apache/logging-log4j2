@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.perf.nogc.OpenHashMapContextData;
+import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.MutableContextData;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**

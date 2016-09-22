@@ -23,8 +23,8 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.spi.ContextData;
-import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.MutableContextData;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**

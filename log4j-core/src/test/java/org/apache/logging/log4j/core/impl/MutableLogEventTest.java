@@ -30,7 +30,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.SortedStringArrayMap;
-import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.util.MutableContextData;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.Test;
 

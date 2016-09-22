@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.logging.log4j.spi.ContextData;
-import org.apache.logging.log4j.spi.MutableContextData;
+import org.apache.logging.log4j.util.ContextData;
+import org.apache.logging.log4j.util.MutableContextData;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;

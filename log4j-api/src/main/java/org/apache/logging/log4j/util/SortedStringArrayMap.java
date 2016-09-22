@@ -24,9 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.logging.log4j.spi.ContextData;
-import org.apache.logging.log4j.spi.MutableContextData;
-
 /**
  * <em>Consider this class private.</em>
  * Array-based implementation of the {@code ContextData} interface. Keys are held in a sorted array.

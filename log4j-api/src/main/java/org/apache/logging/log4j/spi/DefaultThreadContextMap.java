@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.ContextData;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.TriConsumer;
 
