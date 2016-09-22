@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * expected that the Map will be passed to many more log events than the number of keys it contains the performance
  * should be much better than if the Map was copied for each event.
  */
-public class DefaultThreadContextMap implements ThreadContextMap2, ContextData {
+public class DefaultThreadContextMap implements ThreadContextMap, ContextData {
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
@@ -80,7 +80,6 @@ public class DefaultThreadContextMap implements ThreadContextMap2, ContextData {
         localMap.set(Collections.unmodifiableMap(map));
     }
 
-    @Override
     public void putAll(final Map<String, String> m) {
         if (!useMap) {
             return;
