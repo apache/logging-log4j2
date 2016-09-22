@@ -161,7 +161,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ThreadContextMap2  {
      * {@inheritDoc}
      */
     @Override
-    public MutableContextData getMutableContextData() {
+    public MutableContextData getReadOnlyContextData() {
         MutableContextData map = localMap.get();
         if (map == null) {
             map = createMutableContextData();

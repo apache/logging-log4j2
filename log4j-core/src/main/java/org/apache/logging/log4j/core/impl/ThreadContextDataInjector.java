@@ -118,14 +118,14 @@ public class ThreadContextDataInjector  {
             // modified.
             copyProperties(props, reusable);
 
-            final ContextData immutableCopy = ThreadContextAccess.getThreadContextMap2().getMutableContextData();
+            final ContextData immutableCopy = ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
             reusable.putAll(immutableCopy);
             return reusable;
         }
 
         @Override
         public ContextData rawContextData() {
-            return ThreadContextAccess.getThreadContextMap2().getMutableContextData();
+            return ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
         }
     }
 
@@ -151,7 +151,7 @@ public class ThreadContextDataInjector  {
         public MutableContextData injectContextData(final List<Property> props, final MutableContextData reusable) {
             // If there are no configuration properties we want to just return the ThreadContext's MutableContextData:
             // it is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
-            final MutableContextData immutableCopy = ThreadContextAccess.getThreadContextMap2().getMutableContextData();
+            final MutableContextData immutableCopy = ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
             if (props == null || props.isEmpty()) {
                 return immutableCopy;
             }
@@ -164,7 +164,7 @@ public class ThreadContextDataInjector  {
 
         @Override
         public ContextData rawContextData() {
-            return ThreadContextAccess.getThreadContextMap2().getMutableContextData();
+            return ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
         }
     }
 

@@ -39,10 +39,11 @@ public interface ThreadContextMap2 extends ThreadContextMap {
     void putAll(final Map<String, String> map);
 
     /**
-     * Returns the {@code MutableContextData}. Note that the returned context data may not be mutable; it may have been
-     * {@linkplain MutableContextData#freeze() frozen}, making the data structure read-only.
+     * Returns the context data for reading. Note that regardless of whether the returned context data has been
+     * {@linkplain MutableContextData#freeze() frozen} (made read-only) or not, callers should not attempt to modify
+     * the returned data structure.
      *
      * @return the {@code MutableContextData}
      */
-    MutableContextData getMutableContextData();
+    MutableContextData getReadOnlyContextData();
 }

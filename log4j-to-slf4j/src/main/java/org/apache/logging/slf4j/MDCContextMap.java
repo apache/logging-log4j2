@@ -84,7 +84,7 @@ public class MDCContextMap implements ThreadContextMap2 {
     }
 
     @Override
-    public MutableContextData getMutableContextData() {
+    public MutableContextData getReadOnlyContextData() {
         final Map<String, String> copy = getCopy();
         if (copy.isEmpty()) {
             return EMPTY_CONTEXT_DATA;

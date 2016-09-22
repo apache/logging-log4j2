@@ -164,7 +164,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap2, CopyO
      * {@inheritDoc}
      */
     @Override
-    public MutableContextData getMutableContextData() {
+    public MutableContextData getReadOnlyContextData() {
         final MutableContextData map = localMap.get();
         return map == null ? EMPTY_CONTEXT_DATA : map;
     }
