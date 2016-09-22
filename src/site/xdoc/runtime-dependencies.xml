@@ -138,6 +138,13 @@
             files <code>COPYING</code> and <code>COPYING.LESSER</code> included with the JeroMQ distribution.
           </td>
         </tr>
+        <tr>
+          <td>TcpSocketServer and UdpSocketServer</td>
+          <td>
+            TcpSocketServer and UdpSocketServer use the <a href="http://www.jcommander.org/">JCommander</a> library 
+            which is licensed under the terms of the Apache License version 2.0.
+          </td>
+        </tr>
       </table>
 
       <a name="log4j-jcl" />
