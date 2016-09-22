@@ -419,6 +419,32 @@ public class TestAsyncServlet extends HttpServlet {
           context in a <code>finally</code> block, which will always execute.
         </p>
       </subsection>
+      <subsection name="Using the Servlet Appender">
+        <p>
+          Log4j provides a Servlet Appender that uses the servlet context as the log target. For example:
+        </p>
+        <pre class="prettyprint linenums"><![CDATA[
+<Configuration status="WARN" name="ServletTest">
+
+    <Appenders>
+        <Servlet name="Servlet">
+            <PatternLayout pattern="%m%n%ex{none}"/>
+        </Servlet>
+    </Appenders>
+
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Servlet"/>
+        </Root>
+    </Loggers>
+
+</Configuration>]]></pre>
+        <p>
+          To avoid double logging of exceptions to the servlet context, you must use <code>%ex{none}</code> in your 
+          <code>PatternLayout</code> as shown in the example. The exception will be omitted from the message text but 
+          it is passed to the servlet context as the actual Throwable object. 
+        </p>
+      </subsection>
     </section>
   </body>
 
