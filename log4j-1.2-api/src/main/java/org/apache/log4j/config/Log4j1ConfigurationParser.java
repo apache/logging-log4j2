@@ -168,18 +168,22 @@ public class Log4j1ConfigurationParser {
 
 	private void buildFileAppender(final String appenderName) {
 		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, "File");
+		buildFileAppender(appenderName, appenderBuilder);
+		builder.add(appenderBuilder);
+	}
+
+	private void buildFileAppender(final String appenderName, final AppenderComponentBuilder appenderBuilder) {
 		buildMandatoryAttribute(appenderName, appenderBuilder, "File", "fileName");
 		buildAttribute(appenderName, appenderBuilder, "Append", "append");
 		buildAttribute(appenderName, appenderBuilder, "BufferedIO", "bufferedIo");
 		buildAttribute(appenderName, appenderBuilder, "BufferSize", "bufferSize");
 		buildAttribute(appenderName, appenderBuilder, "ImmediateFlush", "immediateFlush");
 		buildAppenderLayout(appenderName, appenderBuilder);
-		builder.add(appenderBuilder);
 	}
 
 	private void buildRollingFileAppender(final String appenderName) {
 		final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, "RollingFile");
-		buildMandatoryAttribute(appenderName, appenderBuilder, "File", "fileName");
+		buildFileAppender(appenderName, appenderBuilder);
 		final String fileName = getLog4jAppenderValue(appenderName, "File");
 		appenderBuilder.addAttribute("filePattern", fileName + ".%i");
 		final String maxFileSizeString = getLog4jAppenderValue(appenderName, "MaxFileSize", "10485760");
