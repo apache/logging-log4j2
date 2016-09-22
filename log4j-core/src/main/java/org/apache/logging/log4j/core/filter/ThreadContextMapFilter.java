@@ -101,11 +101,7 @@ public class ThreadContextMapFilter extends MapFilter {
                     currentContextData = currentContextData();
                 }
                 final String toMatch = currentContextData.getValue(entry.getKey());
-                if (toMatch != null) {
-                    match = entry.getValue().contains(toMatch);
-                } else {
-                    match = false;
-                }
+                match = toMatch != null && entry.getValue().contains(toMatch);
                 if ((!isAnd() && match) || (isAnd() && !match)) {
                     break;
                 }

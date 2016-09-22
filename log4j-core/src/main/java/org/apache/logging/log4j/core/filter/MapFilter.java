@@ -77,11 +77,7 @@ public class MapFilter extends AbstractFilter {
         boolean match = false;
         for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
             final String toMatch = data.get(entry.getKey());
-            if (toMatch != null) {
-                match = entry.getValue().contains(toMatch);
-            } else {
-                match = false;
-            }
+            match = toMatch != null && entry.getValue().contains(toMatch);
             if ((!isAnd && match) || (isAnd && !match)) {
                 break;
             }
@@ -93,11 +89,7 @@ public class MapFilter extends AbstractFilter {
         boolean match = false;
         for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
             final String toMatch = data.getValue(entry.getKey());
-            if (toMatch != null) {
-                match = entry.getValue().contains(toMatch);
-            } else {
-                match = false;
-            }
+            match = toMatch != null && entry.getValue().contains(toMatch);
             if ((!isAnd && match) || (isAnd && !match)) {
                 break;
             }
