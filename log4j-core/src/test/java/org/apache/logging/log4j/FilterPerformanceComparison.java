@@ -16,12 +16,18 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.MDC;
 
 /**
  *
@@ -55,15 +61,48 @@ public class FilterPerformanceComparison {
         System.clearProperty(LOGBACK_CONF);
     }
 
-    @Test
-    public void testPerformance() throws Exception {
-        logback(WARMUP);
-        log4j2(WARMUP);
+    @After
+    public void after() {
+        ThreadContext.clearAll();
+    }
 
-        System.out.println("Starting Log4j 2.0");
-        final long result3 = log4j2(COUNT);
-        System.out.println("Starting Logback");
-        final long result2 = logback(COUNT);
+    @Test
+    public void testPerformanceEmptyContext() throws Exception {
+        testPerformance(Collections.<String, String>emptyMap());
+    }
+
+    @Test
+    public void testPerformanceNonEmptyContext() throws Exception {
+        testPerformance(createNonEmptyContextData());
+    }
+
+    private Map<String, String> createNonEmptyContextData() {
+        final Map<String, String> context = new HashMap<>();
+        context.put("user0", "Apache");
+        context.put("user1", "Apache");
+        return context;
+    }
+
+    private static void putContextData(final Map<String, String> contextData) {
+        ThreadContext.putAll(contextData);
+        for (Map.Entry<String, String> entry : contextData.entrySet()) {
+            MDC.put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void testPerformance(final Map<String, String> contextData) throws Exception {
+        putContextData(contextData);
+        Target.LOGBACK.timedLoop(logger, logbacklogger, WARMUP);
+        Target.LOG4J2.timedLoop(logger, logbacklogger, WARMUP);
+
+        System.out.println("Single-threaded Log4j 2.0, "
+                + (contextData.isEmpty() ? "EMPTY context" : "NON-EMPTY context"));
+
+        final long result3 = Target.LOG4J2.timedLoop(logger, logbacklogger, COUNT);
+        System.out.println("Single-threaded Logback, "
+                + (contextData.isEmpty() ? "EMPTY context" : "NON-EMPTY context"));
+
+        final long result2 = Target.LOGBACK.timedLoop(logger, logbacklogger, COUNT);
 
         System.out.println("###############################################");
         System.out.println("Logback: " + result2);
@@ -72,16 +111,26 @@ public class FilterPerformanceComparison {
     }
 
     @Test
-    public void testThreads() throws Exception {
+    public void testThreadsEmptyContext() throws Exception {
+        testThreads(Collections.<String, String>emptyMap());
+    }
+
+    @Test
+    public void testThreadsNonEmptyContext() throws Exception {
+        testThreads(createNonEmptyContextData());
+    }
+
+    private void testThreads(final Map<String, String> contextData) throws Exception {
         System.out.println("Testing multithreading");
         final int threadedCount = COUNT; // THREADED_COUNT * threadCount < COUNT ? COUNT / threadCount : THREADED_COUNT;
         final int[] threadCounts = new int[] {1, 2, 5, 10, 20, 50};
         for (final int threadCount : threadCounts) {
-            System.out.println("Testing " + threadCount + " threads");
+            System.out.println("Testing " + threadCount + " threads, "
+                    + (contextData.isEmpty() ? "EMPTY context" : "NON-EMPTY context"));
             final Worker[] workers = new Worker[threadCount];
             final long[] results = new long[threadCount];
             for (int i=0; i < threadCount; ++i) {
-                workers[i] = new Worker(true, threadedCount, results, i);
+                workers[i] = new Worker(Target.LOG4J2, threadedCount, results, i, contextData);
             }
             for (int i=0; i < threadCount; ++i) {
                 workers[i].start();
@@ -94,7 +143,7 @@ public class FilterPerformanceComparison {
             final long result3 = total / threadCount;
             total = 0;
             for (int i=0; i < threadCount; ++i) {
-                workers[i] = new Worker(false, threadedCount, results, i);
+                workers[i] = new Worker(Target.LOGBACK, threadedCount, results, i, contextData);
             }
             for (int i=0; i < threadCount; ++i) {
                 workers[i].start();
@@ -109,45 +158,54 @@ public class FilterPerformanceComparison {
             System.out.println("Log4j 2.0: " + result3 );
             System.out.println("###############################################");
         }
-
     }
 
-    private long logback(final int loop) {
-        final Integer j = Integer.valueOf(2);
-        final long start = System.nanoTime();
-        for (int i = 0; i < loop; i++) {
-            logbacklogger.debug("SEE IF THIS IS LOGGED {}.", j);
-        }
-        return (System.nanoTime() - start) / loop;
-    }
+    private enum Target {
+        LOGBACK {
+            long timedLoop(final Logger logger, final org.slf4j.Logger logbacklogger, final int loop) {
+                final Integer j = Integer.valueOf(2);
+                final long start = System.nanoTime();
+                for (int i = 0; i < loop; i++) {
+                    logbacklogger.debug("SEE IF THIS IS LOGGED {}.", j);
+                }
+                return (System.nanoTime() - start) / loop;
+            }
+        },
 
-
-    private long log4j2(final int loop) {
-        final Integer j = Integer.valueOf(2);
-        final long start = System.nanoTime();
-        for (int i = 0; i < loop; i++) {
-            logger.debug("SEE IF THIS IS LOGGED {}.", j);
-        }
-        return (System.nanoTime() - start) / loop;
+        LOG4J2 {
+            long timedLoop(final Logger logger, final org.slf4j.Logger logbacklogger, final int loop) {
+                final Integer j = Integer.valueOf(2);
+                final long start = System.nanoTime();
+                for (int i = 0; i < loop; i++) {
+                    logger.debug("SEE IF THIS IS LOGGED {}.", j);
+                }
+                return (System.nanoTime() - start) / loop;
+            }
+        };
+        abstract long timedLoop(final Logger logger, final org.slf4j.Logger logbacklogger, final int loop);
     }
 
     private class Worker extends Thread {
 
-        private final boolean isLog4j;
+        private final Target target;
         private final int count;
         private final long[] results;
         private final int index;
+        private Map<String, String> contextData;
 
-        public Worker(final boolean isLog4j, final int count, final long[] results, final int index) {
-            this.isLog4j = isLog4j;
+        public Worker(final Target target, final int count, final long[] results, final int index,
+                final Map<String, String> contextData) {
+            this.target = target;
             this.count = count;
             this.results = results;
             this.index = index;
+            this.contextData = contextData;
         }
 
         @Override
         public void run() {
-            results[index] = isLog4j ? log4j2(count) : logback(count);
+            putContextData(contextData);
+            results[index] = target.timedLoop(logger, logbacklogger, count);
         }
     }
 
