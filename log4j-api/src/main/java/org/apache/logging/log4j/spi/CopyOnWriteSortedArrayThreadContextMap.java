@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.util.SortedStringArrayMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.SortedStringArrayMap;
 
 /**
  * {@code SortedStringArrayMap}-based implementation of the {@code ThreadContextMap} interface that creates a copy of
@@ -32,8 +32,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  *
  * @since 2.7
  */
-class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap, ThreadContextMap2, CopyOnWrite,
-        MutableContextDataSupplier {
+class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap2, CopyOnWrite {
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain

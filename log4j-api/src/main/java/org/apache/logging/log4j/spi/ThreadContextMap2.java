@@ -25,7 +25,7 @@ import java.util.Map;
  * @see ThreadContextMap
  * @since 2.7
  */
-public interface ThreadContextMap2 extends ThreadContextMap, MutableContextDataSupplier {
+public interface ThreadContextMap2 extends ThreadContextMap {
 
     /**
      * Puts all given context map entries into the current thread's
@@ -37,4 +37,12 @@ public interface ThreadContextMap2 extends ThreadContextMap, MutableContextDataS
      * @since 2.7
      */
     void putAll(final Map<String, String> map);
+
+    /**
+     * Returns the {@code MutableContextData}. Note that the returned context data may not be mutable; it may have been
+     * {@linkplain MutableContextData#freeze() frozen}, making the data structure read-only.
+     *
+     * @return the {@code MutableContextData}
+     */
+    MutableContextData getMutableContextData();
 }
