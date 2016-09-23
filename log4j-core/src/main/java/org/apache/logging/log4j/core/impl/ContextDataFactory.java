@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -51,7 +52,7 @@ public class ContextDataFactory {
             return null;
         }
         try {
-            return Class.forName(className);
+            return LoaderUtil.loadClass(className);
         } catch (final Exception any) {
             return null;
         }
