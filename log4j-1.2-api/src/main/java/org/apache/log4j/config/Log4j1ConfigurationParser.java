@@ -93,7 +93,7 @@ public class Log4j1ConfigurationParser {
 		final String rootLoggerValue = getLog4jValue(ROOTLOGGER);
 		if (rootCategoryValue == null && rootLoggerValue == null) {
 			// This is not a Log4j 1 properties configuration file.
-			throw new ConfigurationException("Input does not contain a valid Log4j 1.x properties configuration");
+			throw new ConfigurationException("Input does not contain a valid Log4j 1.x properties configuration: " + input);
 		}
 		builder.setConfigurationName("Log4j1");
 		// DEBUG
