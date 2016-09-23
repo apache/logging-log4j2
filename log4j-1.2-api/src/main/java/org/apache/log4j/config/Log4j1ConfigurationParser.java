@@ -85,39 +85,44 @@ public class Log4j1ConfigurationParser {
      *             if the input does not contain a valid configuration
      */
 	public ConfigurationBuilder<BuiltConfiguration> buildConfigurationBuilder(final InputStream input)
-			throws IOException {
-		properties.load(input);
-		strSubstitutorProperties = new StrSubstitutor(properties);
-		strSubstitutorSystem = new StrSubstitutor(System.getProperties());
-		final String rootCategoryValue = getLog4jValue(ROOTCATEGORY);
-		final String rootLoggerValue = getLog4jValue(ROOTLOGGER);
-		if (rootCategoryValue == null && rootLoggerValue == null) {
-			// This is not a Log4j 1 properties configuration file.
-			throw new ConfigurationException("Input does not contain a valid Log4j 1.x properties configuration: " + input);
-		}
-		builder.setConfigurationName("Log4j1");
-		// DEBUG
-		final String debugValue = getLog4jValue("debug");
-		if (Boolean.valueOf(debugValue)) {
-			builder.setStatusLevel(Level.DEBUG);
-		}
-		// Root
-		final String[] sortedAppenderNamesC = buildRootLogger(getLog4jValue(ROOTCATEGORY));
-		final String[] sortedAppenderNamesL = buildRootLogger(getLog4jValue(ROOTLOGGER));
-		final String[] sortedAppenderNames = sortedAppenderNamesL.length > 0 ? sortedAppenderNamesL
-				: sortedAppenderNamesC;
-		// Appenders
-		final Map<String, String> classNameToProperty = buildClassToPropertyPrefixMap(sortedAppenderNames);
-		for (final Map.Entry<String, String> entry : classNameToProperty.entrySet()) {
-			final String appenderName = entry.getKey();
-			final String appenderClass = entry.getValue();
-			buildAppender(appenderName, appenderClass);
-		}
-		// Loggers
-		buildLoggers("log4j.category.");
-		buildLoggers("log4j.logger.");
-		return builder;
-	}
+            throws IOException {
+        try {
+            properties.load(input);
+            strSubstitutorProperties = new StrSubstitutor(properties);
+            strSubstitutorSystem = new StrSubstitutor(System.getProperties());
+            final String rootCategoryValue = getLog4jValue(ROOTCATEGORY);
+            final String rootLoggerValue = getLog4jValue(ROOTLOGGER);
+            if (rootCategoryValue == null && rootLoggerValue == null) {
+                // This is not a Log4j 1 properties configuration file.
+                throw new ConfigurationException(
+                        "Input does not contain a valid Log4j 1.x properties configuration: " + input);
+            }
+            builder.setConfigurationName("Log4j1");
+            // DEBUG
+            final String debugValue = getLog4jValue("debug");
+            if (Boolean.valueOf(debugValue)) {
+                builder.setStatusLevel(Level.DEBUG);
+            }
+            // Root
+            final String[] sortedAppenderNamesC = buildRootLogger(getLog4jValue(ROOTCATEGORY));
+            final String[] sortedAppenderNamesL = buildRootLogger(getLog4jValue(ROOTLOGGER));
+            final String[] sortedAppenderNames = sortedAppenderNamesL.length > 0 ? sortedAppenderNamesL
+                    : sortedAppenderNamesC;
+            // Appenders
+            final Map<String, String> classNameToProperty = buildClassToPropertyPrefixMap(sortedAppenderNames);
+            for (final Map.Entry<String, String> entry : classNameToProperty.entrySet()) {
+                final String appenderName = entry.getKey();
+                final String appenderClass = entry.getValue();
+                buildAppender(appenderName, appenderClass);
+            }
+            // Loggers
+            buildLoggers("log4j.category.");
+            buildLoggers("log4j.logger.");
+            return builder;
+        } catch (final IllegalArgumentException e) {
+            throw new ConfigurationException(e);
+        }
+    }
 
 	private Map<String, String> buildClassToPropertyPrefixMap(final String[] sortedAppenderNames) {
 		final String prefix = "log4j.appender.";
