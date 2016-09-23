@@ -73,18 +73,17 @@ public class Log4j1ConfigurationParser {
 	private final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory
 			.newConfigurationBuilder();
 
-	/**
-	 * Parse a Log4j 1.2 properties configuration file into a
-	 * ConfigurationBuilder.
-	 *
-	 * @param input
-	 *            InputStream to read from, will not be closed.
-	 * @return the populated ConfigurationBuilder, never {@literal null}
-	 * @throws IOException
-	 *             if unable to read the input
-	 * @throws ConfigurationException
-	 *             if the input does not contain a valid configuration
-	 */
+    /**
+     * Parses a Log4j 1.2 properties configuration file in ISO 8859-1 encoding into a ConfigurationBuilder.
+     *
+     * @param input
+     *            InputStream to read from is assumed to be ISO 8859-1, and will not be closed.
+     * @return the populated ConfigurationBuilder, never {@literal null}
+     * @throws IOException
+     *             if unable to read the input
+     * @throws ConfigurationException
+     *             if the input does not contain a valid configuration
+     */
 	public ConfigurationBuilder<BuiltConfiguration> buildConfigurationBuilder(final InputStream input)
 			throws IOException {
 		properties.load(input);

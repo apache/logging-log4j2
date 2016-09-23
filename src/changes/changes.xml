@@ -174,6 +174,9 @@
       <action issue="LOG4J2-1603" dev="ggregory" type="fix">
         Redo hashCode() and equals() methods in org.apache.logging.log4j.core.net.ssl classes.
       </action>
+      <action issue="LOG4J2-1610" dev="ggregory" type="fix" due-to="Shubhankar">
+        Add targetNamespace to log4j-config.xsd. GitHub #43.
+      </action>
       <action issue="LOG4J2-1578" dev="ggregory" type="add">
         RoutingAppender can be configured with scripts. Add Script in a Routes element.
       </action>
