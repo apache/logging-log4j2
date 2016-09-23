@@ -519,8 +519,9 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
         <subsection name="Custom ContextDataInjector">
           <p>
             The <code>ContextDataInjector</code> (introduced in Log4j 2.7) is responsible for
-            populating the LogEvent's <code>ContextData</code> with key-value pairs
-            or replacing it completely.
+            populating the LogEvent's
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/LogEvent.html#getContextData()">context data</a>
+            with key-value pairs or replacing it completely.
             The default implementation is ThreadContextDataInjector, which obtains context attributes from the ThreadContext.
           </p><p>
           Applications may replace the default ContextDataInjector by setting the value of the system property
