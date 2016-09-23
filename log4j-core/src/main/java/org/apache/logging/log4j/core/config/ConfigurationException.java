@@ -42,4 +42,14 @@ public class ConfigurationException extends RuntimeException {
     public ConfigurationException(final String message, final Throwable cause) {
         super(message, cause);
     }
+
+    /**
+     * Construct an exception with a message and underlying cause.
+     *
+     * @param cause The underlying cause of the exception
+     */
+    public ConfigurationException(final Throwable cause) {
+        super(cause);
+    }
+
 }
