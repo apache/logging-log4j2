@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
+import org.apache.logging.log4j.core.util.BasicCommandLineArguments;
 import org.apache.logging.log4j.core.util.InetAddressConverter;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.util.Strings;
@@ -53,13 +54,10 @@ import com.beust.jcommander.validators.PositiveInteger;
  */
 public abstract class AbstractSocketServer<T extends InputStream> extends LogEventListener implements Runnable {
 
-    protected static class CommandLineArguments {
+    protected static class CommandLineArguments extends BasicCommandLineArguments {
 
         @Parameter(names = { "--config", "-c" }, description = "Log4j configuration file location (path or URL).")
         private String configLocation;
-
-        @Parameter(names = { "--help", "-?", "-h" }, help = true, description = "Prints this help.")
-        private boolean help;
 
         @Parameter(names = { "--interactive",
                 "-i" }, description = "Accepts commands on standard input (\"exit\" is the only command).")
@@ -81,20 +79,12 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
             return port;
         }
 
-        boolean isHelp() {
-            return help;
-        }
-
         protected boolean isInteractive() {
             return interactive;
         }
 
         void setConfigLocation(final String configLocation) {
             this.configLocation = configLocation;
-        }
-
-        void setHelp(final boolean help) {
-            this.help = help;
         }
 
         void setInteractive(final boolean interactive) {
