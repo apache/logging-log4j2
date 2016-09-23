@@ -102,7 +102,7 @@ public class ThreadContextDataInjector  {
      * <p>
      * This injector always puts key-value pairs into the specified reusable StringMap.
      */
-    public static class ForGarbageFreeMutableThreadContextMap implements ContextDataInjector {
+    public static class ForGarbageFreeThreadContextMap implements ContextDataInjector {
         /**
          * Puts key-value pairs from both the specified list of properties as well as the thread context into the
          * specified reusable StringMap.
@@ -137,7 +137,7 @@ public class ThreadContextDataInjector  {
      * structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
      * specified reusable StringMap.
      */
-    public static class ForCopyOnWriteMutableThreadContextMap implements ContextDataInjector {
+    public static class ForCopyOnWriteThreadContextMap implements ContextDataInjector {
         /**
          * If there are no configuration properties, this injector will return the thread context's internal data
          * structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
