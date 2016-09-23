@@ -35,9 +35,9 @@ import org.apache.logging.log4j.util.StringMap;
  * Users can configure the {@code ContextDataInjectorFactory} to provide custom {@code ContextDataInjector} objects,
  * in order to initialize log events with context data from any arbitrary context.
  * </p><p>
- * When providing a custom {@code ContextDataInjector}, be aware that the {@code ContextDataFactory} may be invoked
- * multiple times and the various components in Log4j that need access to context data may each have their own instance
- * of {@code ContextDataInjector}.
+ * When providing a custom {@code ContextDataInjector}, be aware that the {@code ContextDataInjectorFactory} may be
+ * invoked multiple times and the various components in Log4j that need access to context data may each have their own
+ * instance of {@code ContextDataInjector}.
  * This includes the object(s) that populate log events, but also various lookups and filters that look at
  * context data to determine whether an event should be logged.
  * </p><p>
@@ -45,6 +45,7 @@ import org.apache.logging.log4j.util.StringMap;
  * guarantees to enable optimal performance.
  * </p>
  *
+ * @see StringMap
  * @see ReadOnlyStringMap
  * @see ContextDataInjectorFactory
  * @see org.apache.logging.log4j.ThreadContext
