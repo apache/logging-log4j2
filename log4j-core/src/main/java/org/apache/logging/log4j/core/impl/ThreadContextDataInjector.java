@@ -62,11 +62,11 @@ public class ThreadContextDataInjector  {
          * specified reusable StringMap.
          *
          * @param props list of configuration properties, may be {@code null}
-         * @param reusable a {@code StringMap} instance that may be reused to avoid creating temporary objects
+         * @param ignore a {@code StringMap} instance from the log event
          * @return a {@code StringMap} combining configuration properties with thread context data
          */
         @Override
-        public StringMap injectContextData(final List<Property> props, final StringMap reusable) {
+        public StringMap injectContextData(final List<Property> props, final StringMap ignore) {
 
             final Map<String, String> copy = ThreadContext.getImmutableContext();
 
