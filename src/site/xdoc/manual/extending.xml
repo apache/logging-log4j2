@@ -528,7 +528,7 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
         </p><p>
           Implementors should be aware there are some subtleties related to thread-safety and implementing a
           context data injector in a garbage-free manner.
-          See the <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/impl/ContextDataInjector.html">ContextDataInjector</a>
+          See the <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/ContextDataInjector.html">ContextDataInjector</a>
           javadoc for detail.
         </p>
         </subsection>
