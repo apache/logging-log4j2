@@ -16,18 +16,25 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * Factory for creating StringMap instances.
+ * Factory for creating the StringMap instances used to initialize LogEvents'
+ * {@linkplain LogEvent#getContextData() context data}. When context data is
+ * {@linkplain ContextDataInjector injected} into the log event, these StringMap
+ * instances may be either populated with key-value pairs from the context, or completely replaced altogether.
  * <p>
  * By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
- * {@code "log4j2.ReadOnlyStringMap"} to the fully qualified class name of a class implementing the
+ * {@code "log4j2.ContextData"} to the fully qualified class name of a class implementing the
  * {@code StringMap} interface. The class must have a public default constructor.
  * </p>
  *
+ * @see LogEvent#getContextData()
+ * @see ContextDataInjector
  * @see SortedArrayStringMap
  * @since 2.7
  */
@@ -35,7 +42,7 @@ public class ContextDataFactory {
 
     @SuppressWarnings("unchecked")
     public static StringMap createContextData() {
-        final String CLASS = PropertiesUtil.getProperties().getStringProperty("log4j2.ReadOnlyStringMap",
+        final String CLASS = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData",
                 SortedArrayStringMap.class.getName());
         try {
             return (StringMap) Class.forName(CLASS).newInstance();
