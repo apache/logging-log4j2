@@ -51,6 +51,11 @@ public class ThreadContextDataInjector  {
      * This injector always puts key-value pairs into the specified reusable StringMap.
      */
     public static class ForDefaultThreadContextMap implements ContextDataInjector {
+        private static final StringMap EMPTY_STRING_MAP = ContextDataFactory.createContextData();
+        static {
+            EMPTY_STRING_MAP.freeze();
+        }
+
         /**
          * Puts key-value pairs from both the specified list of properties as well as the thread context into the
          * specified reusable StringMap.
@@ -61,13 +66,25 @@ public class ThreadContextDataInjector  {
          */
         @Override
         public StringMap injectContextData(final List<Property> props, final StringMap reusable) {
-            // implementation note:
-            // The DefaultThreadContextMap stores context data in a Map<String, String>, not in a ReadOnlyStringMap object.
-            // Therefore we can populate the specified reusable StringMap, but
-            // we need to copy the ThreadContext key-value pairs one by one.
-            copyProperties(props, reusable);
-            copyThreadContextMap(ThreadContext.getImmutableContext(), reusable);
-            return reusable;
+
+            final Map<String, String> copy = ThreadContext.getImmutableContext();
+
+            // The DefaultThreadContextMap stores context data in a Map<String, String>.
+            // This is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
+            // If there are no configuration properties returning a thin wrapper around the copy
+            // is faster than copying the elements into the LogEvent's reusable StringMap.
+            if (props == null || props.isEmpty()) {
+                // this will replace the LogEvent's context data with the returned instance
+                return copy.isEmpty() ? EMPTY_STRING_MAP : new JdkMapAdapterStringMap(copy);
+            }
+            // However, if the list of Properties is non-empty we need to combine the properties and the ThreadContext
+            // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
+            // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
+            // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
+            final StringMap result = ContextDataFactory.createContextData();
+            copyProperties(props, result);
+            copyThreadContextMap(copy, result);
+            return result;
         }
 
         @Override
@@ -114,8 +131,8 @@ public class ThreadContextDataInjector  {
         @Override
         public StringMap injectContextData(final List<Property> props, final StringMap reusable) {
             // When the ThreadContext is garbage-free, we must copy its key-value pairs into the specified reusable
-            // StringMap. We cannot return the ThreadContext's internal data structure because it will be
-            // modified.
+            // StringMap. We cannot return the ThreadContext's internal data structure because it may be modified later
+            // and such modifications should not be reflected in the log event.
             copyProperties(props, reusable);
 
             final ReadOnlyStringMap immutableCopy = ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
