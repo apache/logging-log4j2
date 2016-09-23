@@ -24,6 +24,7 @@ import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 
@@ -81,7 +82,7 @@ public class ThreadContextDataInjector  {
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
             // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
-            final StringMap result = ContextDataFactory.createContextData();
+            final StringMap result = new SortedArrayStringMap(props.size() + copy.size());
             copyProperties(props, result);
             copyThreadContextMap(copy, result);
             return result;
@@ -93,9 +94,7 @@ public class ThreadContextDataInjector  {
             if (map instanceof ReadOnlyStringMap) {
                 return (ReadOnlyStringMap) map;
             }
-            final StringMap result = ContextDataFactory.createContextData();
-            copyThreadContextMap(ThreadContext.getImmutableContext(), result);
-            return result;
+            return map.isEmpty() ? EMPTY_STRING_MAP : new JdkMapAdapterStringMap(map.getImmutableMapOrNull());
         }
 
         /**
@@ -176,7 +175,7 @@ public class ThreadContextDataInjector  {
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
             // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
-            final StringMap result = ContextDataFactory.createContextData();
+            final StringMap result = new SortedArrayStringMap(props.size() + immutableCopy.size());
             copyProperties(props, result);
             result.putAll(immutableCopy);
             return result;
