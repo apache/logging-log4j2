@@ -59,7 +59,16 @@ public interface LogEvent extends Serializable {
 
     /**
      * Returns the {@code ReadOnlyStringMap} object holding context data key-value pairs.
+     * <p>
+     * Context data (also known as Mapped Diagnostic Context or MDC) is data that is set by the application to be
+     * included in all subsequent log events. The default source for context data is the {@link ThreadContext} (and
+     * <a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#PropertySubstitution">properties</a>
+     * configured on the Logger that logged the event), but users can configure a custom {@link ContextDataInjector}
+     * to inject key-value pairs from any arbitrary source.
+     *
      * @return the {@code ReadOnlyStringMap} object holding context data key-value pairs
+     * @see ContextDataInjector
+     * @see ThreadContext
      * @since 2.7
      */
     ReadOnlyStringMap getContextData();

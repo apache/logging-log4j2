@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.core.LogEvent;
+import java.lang.reflect.Constructor;
+
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Factory for creating the StringMap instances used to initialize LogEvents'
@@ -30,7 +33,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * <p>
  * By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
  * {@code "log4j2.ContextData"} to the fully qualified class name of a class implementing the
- * {@code StringMap} interface. The class must have a public default constructor.
+ * {@code StringMap} interface. The class must have a public default constructor, and if possible should also have a
+ * public constructor that takes a single {@code int} argument for the initial capacity.
  * </p>
  *
  * @see LogEvent#getContextData()
@@ -39,15 +43,53 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * @since 2.7
  */
 public class ContextDataFactory {
+    private static final String CLASS_NAME = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData");
+    private static final Class<?> CACHED_CLASS = createCachedClass(CLASS_NAME);
+    private static final Constructor<?> CACHED_CONSTRUCTOR = createCachedConstructor(CACHED_CLASS);
+
+    private static Class<?> createCachedClass(final String className) {
+        if (className == null) {
+            return null;
+        }
+        try {
+            return LoaderUtil.loadClass(className);
+        } catch (final Exception any) {
+            return null;
+        }
+    }
+
+    private static Constructor<?> createCachedConstructor(final Class<?> cachedClass) {
+        if (cachedClass == null) {
+            return null;
+        }
+        try {
+            return cachedClass.getDeclaredConstructor(int.class);
+        } catch (final Exception any) {
+            return null;
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public static StringMap createContextData() {
-        final String CLASS = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData",
-                SortedArrayStringMap.class.getName());
+        if (CACHED_CLASS == null) {
+            return new SortedArrayStringMap();
+        }
         try {
-            return (StringMap) Class.forName(CLASS).newInstance();
+            return (StringMap) CACHED_CLASS.newInstance();
         } catch (final Exception any) {
             return new SortedArrayStringMap();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static StringMap createContextData(final int initialCapacity) {
+        if (CACHED_CONSTRUCTOR == null) {
+            return new SortedArrayStringMap(initialCapacity);
+        }
+        try {
+            return (StringMap) CACHED_CONSTRUCTOR.newInstance(initialCapacity);
+        } catch (final Exception any) {
+            return new SortedArrayStringMap(initialCapacity);
         }
     }
 }

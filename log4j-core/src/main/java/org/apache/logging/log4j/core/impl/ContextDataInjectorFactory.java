@@ -58,6 +58,8 @@ public class ContextDataInjectorFactory {
      * </p>
      *
      * @return a ContextDataInjector that populates the {@code ReadOnlyStringMap} of all {@code LogEvent} objects
+     * @see LogEvent#getContextData()
+     * @see ContextDataInjector
      */
     public static ContextDataInjector createInjector() {
         final String className = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextDataInjector");
@@ -80,10 +82,10 @@ public class ContextDataInjectorFactory {
     private static ContextDataInjector createDefaultInjector() {
         final ThreadContextMap threadContextMap = ThreadContextAccess.getThreadContextMap();
         if (threadContextMap instanceof CopyOnWrite && threadContextMap instanceof ThreadContextMap2) {
-            return new ThreadContextDataInjector.ForCopyOnWriteMutableThreadContextMap();
+            return new ThreadContextDataInjector.ForCopyOnWriteThreadContextMap();
         }
         if (threadContextMap instanceof ThreadContextMap2) {
-            return new ThreadContextDataInjector.ForGarbageFreeMutableThreadContextMap();
+            return new ThreadContextDataInjector.ForGarbageFreeThreadContextMap();
         }
         return new ThreadContextDataInjector.ForDefaultThreadContextMap();
     }
