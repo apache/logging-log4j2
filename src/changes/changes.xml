@@ -202,7 +202,10 @@
         SocketAppender now supports IO buffering.
       </action>
       <action issue="LOG4J2-1557" dev="ggregory" type="add">
-        Added a Builder for the SocketAppender (deprecates factory method).
+        Add a Builder for the SocketAppender (deprecates factory method).
+      </action>
+      <action issue="LOG4J2-1609" dev="ggregory" type="add">
+        Add a Builder to ServletAppender and deprecate factory method.
       </action>
       <action issue="LOG4J2-1553" dev="ggregory" type="add">
         AbstractManager now implements AutoCloseable.
