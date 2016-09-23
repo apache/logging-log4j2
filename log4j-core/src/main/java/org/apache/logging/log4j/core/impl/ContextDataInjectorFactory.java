@@ -58,6 +58,8 @@ public class ContextDataInjectorFactory {
      * </p>
      *
      * @return a ContextDataInjector that populates the {@code ReadOnlyStringMap} of all {@code LogEvent} objects
+     * @see LogEvent#getContextData()
+     * @see ContextDataInjector
      */
     public static ContextDataInjector createInjector() {
         final String className = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextDataInjector");
