@@ -144,22 +144,25 @@ public class ThreadContextDataInjector  {
          * specified reusable StringMap.
          *
          * @param props list of configuration properties, may be {@code null}
-         * @param reusable a {@code StringMap} instance that may be reused to avoid creating temporary objects
+         * @param ignore a {@code StringMap} instance from the log event
          * @return a {@code StringMap} combining configuration properties with thread context data
          */
         @Override
-        public StringMap injectContextData(final List<Property> props, final StringMap reusable) {
+        public StringMap injectContextData(final List<Property> props, final StringMap ignore) {
             // If there are no configuration properties we want to just return the ThreadContext's StringMap:
             // it is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
             final StringMap immutableCopy = ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
             if (props == null || props.isEmpty()) {
-                return immutableCopy;
+                return immutableCopy; // this will replace the LogEvent's context data with the returned instance
             }
             // However, if the list of Properties is non-empty we need to combine the properties and the ThreadContext
-            // data. In that case we will copy the key-value pairs into the specified reusable StringMap.
-            copyProperties(props, reusable);
-            reusable.putAll(immutableCopy);
-            return reusable;
+            // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
+            // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
+            // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
+            final StringMap result = ContextDataFactory.createContextData();
+            copyProperties(props, result);
+            result.putAll(immutableCopy);
+            return result;
         }
 
         @Override
