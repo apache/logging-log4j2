@@ -23,10 +23,9 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * {@code ThreadContextDataInjector} contains a number of strategies for copying key-value pairs from the various
@@ -82,7 +81,7 @@ public class ThreadContextDataInjector  {
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
             // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
-            final StringMap result = new SortedArrayStringMap(props.size() + copy.size());
+            final StringMap result = ContextDataFactory.createContextData(props.size() + copy.size());
             copyProperties(props, result);
             copyThreadContextMap(copy, result);
             return result;
@@ -175,7 +174,7 @@ public class ThreadContextDataInjector  {
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
             // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
-            final StringMap result = new SortedArrayStringMap(props.size() + immutableCopy.size());
+            final StringMap result = ContextDataFactory.createContextData(props.size() + immutableCopy.size());
             copyProperties(props, result);
             result.putAll(immutableCopy);
             return result;
