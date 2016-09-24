@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -127,7 +128,7 @@ public class Log4j1ConfigurationParser {
     }
 
     private void buildProperties() {
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+        for (Map.Entry<Object, Object> entry : new TreeMap<>(properties).entrySet()) {
             final String key = entry.getKey().toString();
             if (!key.startsWith("log4j.") && !key.equals(ROOTCATEGORY) && !key.equals(ROOTLOGGER)) {
                 builder.addProperty(key, Objects.toString(entry.getValue(), Strings.EMPTY));
