@@ -106,6 +106,200 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
+    public void testPutAll_overwritesSameKeys2() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "aORIG");
+        original.putValue("b", "bORIG");
+        original.putValue("c", "cORIG");
+        original.putValue("d", "dORIG");
+        original.putValue("e", "eORIG");
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        other.putValue("1", "11");
+        other.putValue("2", "22");
+        other.putValue("a", "aa");
+        other.putValue("c", "cc");
+        original.putAll(other);
+
+        assertEquals("size after put other", 7, original.size());
+        assertEquals("aa", original.getValue("a"));
+        assertEquals("bORIG", original.getValue("b"));
+        assertEquals("cc", original.getValue("c"));
+        assertEquals("dORIG", original.getValue("d"));
+        assertEquals("eORIG", original.getValue("e"));
+        assertEquals("11", original.getValue("1"));
+        assertEquals("22", original.getValue("2"));
+    }
+
+    @Test
+    public void testPutAll_nullKeyInLargeOriginal() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue(null, "nullORIG");
+        original.putValue("a", "aORIG");
+        original.putValue("b", "bORIG");
+        original.putValue("c", "cORIG");
+        original.putValue("d", "dORIG");
+        original.putValue("e", "eORIG");
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        other.putValue("1", "11");
+        other.putValue("a", "aa");
+        original.putAll(other);
+
+        assertEquals("size after put other", 7, original.size());
+        assertEquals("aa", original.getValue("a"));
+        assertEquals("bORIG", original.getValue("b"));
+        assertEquals("cORIG", original.getValue("c"));
+        assertEquals("dORIG", original.getValue("d"));
+        assertEquals("eORIG", original.getValue("e"));
+        assertEquals("11", original.getValue("1"));
+        assertEquals("nullORIG", original.getValue(null));
+    }
+
+    @Test
+    public void testPutAll_nullKeyInSmallOriginal() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue(null, "nullORIG");
+        original.putValue("a", "aORIG");
+        original.putValue("b", "bORIG");
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        other.putValue("1", "11");
+        other.putValue("2", "22");
+        other.putValue("3", "33");
+        other.putValue("a", "aa");
+        original.putAll(other);
+
+        assertEquals("size after put other", 6, original.size());
+        assertEquals("aa", original.getValue("a"));
+        assertEquals("bORIG", original.getValue("b"));
+        assertEquals("11", original.getValue("1"));
+        assertEquals("22", original.getValue("2"));
+        assertEquals("33", original.getValue("3"));
+        assertEquals("nullORIG", original.getValue(null));
+    }
+
+    @Test
+    public void testPutAll_nullKeyInSmallAdditional() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "aORIG");
+        original.putValue("b", "bORIG");
+        original.putValue("c", "cORIG");
+        original.putValue("d", "dORIG");
+        original.putValue("e", "eORIG");
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        other.putValue(null, "nullNEW");
+        other.putValue("1", "11");
+        other.putValue("a", "aa");
+        original.putAll(other);
+
+        assertEquals("size after put other", 7, original.size());
+        assertEquals("aa", original.getValue("a"));
+        assertEquals("bORIG", original.getValue("b"));
+        assertEquals("cORIG", original.getValue("c"));
+        assertEquals("dORIG", original.getValue("d"));
+        assertEquals("eORIG", original.getValue("e"));
+        assertEquals("11", original.getValue("1"));
+        assertEquals("nullNEW", original.getValue(null));
+    }
+
+    @Test
+    public void testPutAll_nullKeyInLargeAdditional() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "aORIG");
+        original.putValue("b", "bORIG");
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        other.putValue(null, "nullNEW");
+        other.putValue("1", "11");
+        other.putValue("2", "22");
+        other.putValue("3", "33");
+        other.putValue("a", "aa");
+        original.putAll(other);
+
+        assertEquals("size after put other", 6, original.size());
+        assertEquals("aa", original.getValue("a"));
+        assertEquals("bORIG", original.getValue("b"));
+        assertEquals("11", original.getValue("1"));
+        assertEquals("22", original.getValue("2"));
+        assertEquals("33", original.getValue("3"));
+        assertEquals("nullNEW", original.getValue(null));
+    }
+
+    @Test
+    public void testPutAll_nullKeyInBoth_LargeOriginal() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue(null, "nullORIG");
+        original.putValue("a", "aORIG");
+        original.putValue("b", "bORIG");
+        original.putValue("c", "cORIG");
+        original.putValue("d", "dORIG");
+        original.putValue("e", "eORIG");
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        other.putValue(null, "nullNEW");
+        other.putValue("1", "11");
+        other.putValue("a", "aa");
+        original.putAll(other);
+
+        assertEquals("size after put other", 7, original.size());
+        assertEquals("aa", original.getValue("a"));
+        assertEquals("bORIG", original.getValue("b"));
+        assertEquals("cORIG", original.getValue("c"));
+        assertEquals("dORIG", original.getValue("d"));
+        assertEquals("eORIG", original.getValue("e"));
+        assertEquals("11", original.getValue("1"));
+        assertEquals("nullNEW", original.getValue(null));
+    }
+
+    @Test
+    public void testPutAll_nullKeyInBoth_SmallOriginal() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue(null, "nullORIG");
+        original.putValue("a", "aORIG");
+        original.putValue("b", "bORIG");
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        other.putValue(null, "nullNEW");
+        other.putValue("1", "11");
+        other.putValue("2", "22");
+        other.putValue("3", "33");
+        other.putValue("a", "aa");
+        original.putAll(other);
+
+        assertEquals("size after put other", 6, original.size());
+        assertEquals("aa", original.getValue("a"));
+        assertEquals("bORIG", original.getValue("b"));
+        assertEquals("11", original.getValue("1"));
+        assertEquals("22", original.getValue("2"));
+        assertEquals("33", original.getValue("3"));
+        assertEquals("nullNEW", original.getValue(null));
+    }
+
+    @Test
+    public void testPutAll_overwritesSameKeys1() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "aORIG");
+        original.putValue("b", "bORIG");
+        original.putValue("c", "cORIG");
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        other.putValue("1", "11");
+        other.putValue("2", "22");
+        other.putValue("a", "aa");
+        other.putValue("c", "cc");
+        original.putAll(other);
+
+        assertEquals("size after put other", 5, original.size());
+        assertEquals("aa", original.getValue("a"));
+        assertEquals("bORIG", original.getValue("b"));
+        assertEquals("cc", original.getValue("c"));
+        assertEquals("11", original.getValue("1"));
+        assertEquals("22", original.getValue("2"));
+    }
+
+    @Test
     public void testEquals() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
@@ -182,6 +376,69 @@ public class SortedArrayStringMapTest {
         assertEquals("111", original.getValue("1"));
         assertEquals("222", original.getValue("2"));
         assertEquals("333", original.getValue("3"));
+    }
+
+    @Test
+    public void testPutAll_sizePowerOfTwo() {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "aaa");
+        original.putValue("b", "bbb");
+        original.putValue("c", "ccc");
+        original.putValue("d", "ddd");
+        assertEquals("size", 4, original.size());
+
+        // add empty context data
+        original.putAll(new SortedArrayStringMap());
+        assertEquals("size after put empty", 4, original.size());
+        assertEquals("aaa", original.getValue("a"));
+        assertEquals("bbb", original.getValue("b"));
+        assertEquals("ccc", original.getValue("c"));
+        assertEquals("ddd", original.getValue("d"));
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        other.putValue("1", "111");
+        other.putValue("2", "222");
+        other.putValue("3", "333");
+        other.putValue("4", "444");
+        original.putAll(other);
+
+        assertEquals("size after put other", 8, original.size());
+        assertEquals("aaa", original.getValue("a"));
+        assertEquals("bbb", original.getValue("b"));
+        assertEquals("ccc", original.getValue("c"));
+        assertEquals("ddd", original.getValue("d"));
+        assertEquals("111", original.getValue("1"));
+        assertEquals("222", original.getValue("2"));
+        assertEquals("333", original.getValue("3"));
+        assertEquals("444", original.getValue("4"));
+    }
+
+    @Test
+    public void testPutAll_largeAddition() {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue(null, "nullVal");
+        original.putValue("a", "aaa");
+        original.putValue("b", "bbb");
+        original.putValue("c", "ccc");
+        original.putValue("d", "ddd");
+        assertEquals("size", 5, original.size());
+
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+        for (int i = 0 ; i < 500; i++) {
+            other.putValue(String.valueOf(i), String.valueOf(i));
+        }
+        other.putValue(null, "otherVal");
+        original.putAll(other);
+
+        assertEquals("size after put other", 505, original.size());
+        assertEquals("otherVal", original.getValue(null));
+        assertEquals("aaa", original.getValue("a"));
+        assertEquals("bbb", original.getValue("b"));
+        assertEquals("ccc", original.getValue("c"));
+        assertEquals("ddd", original.getValue("d"));
+        for (int i = 0 ; i < 500; i++) {
+            assertEquals(String.valueOf(i), original.getValue(String.valueOf(i)));
+        }
     }
 
     @Test
