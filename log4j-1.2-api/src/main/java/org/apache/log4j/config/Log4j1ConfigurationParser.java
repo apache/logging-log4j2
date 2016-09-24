@@ -140,7 +140,7 @@ public class Log4j1ConfigurationParser {
                 if (key.startsWith(prefix)) {
                     if (key.indexOf('.', preLength) < 0) {
                         final String name = key.substring(preLength);
-                        if (Arrays.binarySearch(sortedAppenderNames, name) >= 0) {
+                        if (Arrays.binarySearch(sortedAppenderNames, name) == -1) {
                             final Object value = entry.getValue();
                             if (value != null) {
                                 map.put(name, value.toString());
