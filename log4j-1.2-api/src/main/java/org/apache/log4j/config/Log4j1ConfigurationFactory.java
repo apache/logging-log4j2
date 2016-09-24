@@ -45,7 +45,7 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
         try (final InputStream configStream = source.getInputStream()) {
             builder = new Log4j1ConfigurationParser().buildConfigurationBuilder(configStream);
         } catch (final IOException e) {
-            throw new ConfigurationException("Unable to load " + source.toString(), e);
+            throw new ConfigurationException("Unable to load " + source, e);
         }
         return builder.build();
     }
