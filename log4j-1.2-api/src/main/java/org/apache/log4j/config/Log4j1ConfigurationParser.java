@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
@@ -34,10 +36,12 @@ import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.velocity.runtime.directive.Foreach;
 
 /**
  * Experimental parser for Log4j 1.2 properties configuration files.
@@ -376,7 +380,22 @@ public class Log4j1ConfigurationParser {
                     final String name = key.substring(preLength);
                     final Object value = entry.getValue();
                     if (value != null) {
-                        builder.add(builder.newLogger(name, Level.valueOf(value.toString())));
+                        // a Level may be followed by a list of Appender refs.
+                        final String valueStr = value.toString();
+                        final String[] split = valueStr.split("\\s*,\\s*");
+                        final String levelStr = split.length > 0 ? split[0] : null;
+                        if (levelStr == null) {
+                            warn("Level is missing: " + entry);
+                        } else {
+                            final LoggerComponentBuilder newLogger = builder.newLogger(name, Level.valueOf(levelStr));
+                            if (split.length > 1) {
+                                // Add Appenders to this logger
+                                for (int i = 1; i < split.length; i++) {
+                                    newLogger.add(builder.newAppenderRef(split[i]));
+                                }
+                            }
+                            builder.add(newLogger);
+                        }
                     }
                 }
             }
