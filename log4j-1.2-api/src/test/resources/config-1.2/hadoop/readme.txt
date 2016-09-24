@@ -1,0 +1,1 @@
+These files were all copied from Hadoop sources in Git.
