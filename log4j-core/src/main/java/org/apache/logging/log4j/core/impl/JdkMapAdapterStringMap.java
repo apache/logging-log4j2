@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -32,9 +33,22 @@ import org.apache.logging.log4j.util.TriConsumer;
 class JdkMapAdapterStringMap implements StringMap {
     private static final long serialVersionUID = -7348247784983193612L;
     private static final String FROZEN = "Frozen collection cannot be modified";
+    private static final Comparator<? super String> NULL_FIRST_COMPARATOR = new Comparator<String>() {
+        @Override
+        public int compare(final String left, final String right) {
+            if (left == null) {
+                return -1;
+            }
+            if (right == null) {
+                return 1;
+            }
+            return left.compareTo(right);
+        }
+    };
 
     private final Map<String, String> map;
     private boolean immutable = false;
+    private transient String[] sortedKeys;
 
     public JdkMapAdapterStringMap() {
         this(new HashMap<String, String>());
@@ -63,17 +77,27 @@ class JdkMapAdapterStringMap implements StringMap {
     @SuppressWarnings("unchecked")
     @Override
     public <V> void forEach(final BiConsumer<String, ? super V> action) {
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            action.accept(entry.getKey(), (V) entry.getValue());
+        final String[] keys = getSortedKeys();
+        for (int i = 0; i < keys.length; i++) {
+            action.accept(keys[i], (V) map.get(keys[i]));
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            action.accept(entry.getKey(), (V) entry.getValue(), state);
+        final String[] keys = getSortedKeys();
+        for (int i = 0; i < keys.length; i++) {
+            action.accept(keys[i], (V) map.get(keys[i]), state);
         }
+    }
+
+    private String[] getSortedKeys() {
+        if (sortedKeys == null) {
+            sortedKeys = map.keySet().toArray(new String[map.size()]);
+            Arrays.sort(sortedKeys, NULL_FIRST_COMPARATOR);
+        }
+        return sortedKeys;
     }
 
     @SuppressWarnings("unchecked")
@@ -99,6 +123,7 @@ class JdkMapAdapterStringMap implements StringMap {
         }
         assertNotFrozen();
         map.clear();
+        sortedKeys = null;
     }
 
     @Override
@@ -115,6 +140,7 @@ class JdkMapAdapterStringMap implements StringMap {
     public void putAll(final ReadOnlyStringMap source) {
         assertNotFrozen();
         source.forEach(PUT_ALL, map);
+        sortedKeys = null;
     }
 
     private static TriConsumer<String, String, Map<String, String>> PUT_ALL = new TriConsumer<String, String, Map<String, String>>() {
@@ -128,6 +154,7 @@ class JdkMapAdapterStringMap implements StringMap {
     public void putValue(final String key, final Object value) {
         assertNotFrozen();
         map.put(key, value == null ? null : String.valueOf(value));
+        sortedKeys = null;
     }
 
     @Override
@@ -137,11 +164,22 @@ class JdkMapAdapterStringMap implements StringMap {
         }
         assertNotFrozen();
         map.remove(key);
+        sortedKeys = null;
     }
 
     @Override
     public String toString() {
-        return new TreeMap<>(map).toString();
+        final StringBuilder result = new StringBuilder(map.size() * 13);
+        result.append('{');
+        final String[] keys = getSortedKeys();
+        for (int i = 0; i < keys.length; i++) {
+            if (i > 0) {
+                result.append(", ");
+            }
+            result.append(keys[i]).append('=').append(map.get(keys[i]));
+        }
+        result.append('}');
+        return result.toString();
     }
 
     @Override

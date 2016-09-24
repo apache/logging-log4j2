@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -451,8 +450,8 @@ public class JdkMapAdapterStringMapTest {
         assertEquals("ccc", original.getValue("c"));
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void testConcurrentModificationBiConsumerPut() {
+    @Test
+    public void testNoConcurrentModificationBiConsumerPut() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -467,8 +466,8 @@ public class JdkMapAdapterStringMapTest {
         });
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void testConcurrentModificationBiConsumerPutValue() {
+    @Test
+    public void testNoConcurrentModificationBiConsumerPutValue() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -483,8 +482,8 @@ public class JdkMapAdapterStringMapTest {
         });
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void testConcurrentModificationBiConsumerRemove() {
+    @Test
+    public void testNoConcurrentModificationBiConsumerRemove() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -497,8 +496,8 @@ public class JdkMapAdapterStringMapTest {
         });
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void testConcurrentModificationBiConsumerClear() {
+    @Test
+    public void testNoConcurrentModificationBiConsumerClear() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -513,8 +512,8 @@ public class JdkMapAdapterStringMapTest {
         });
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void testConcurrentModificationTriConsumerPut() {
+    @Test
+    public void testNoConcurrentModificationTriConsumerPut() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -528,8 +527,8 @@ public class JdkMapAdapterStringMapTest {
         }, null);
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void testConcurrentModificationTriConsumerPutValue() {
+    @Test
+    public void testNoConcurrentModificationTriConsumerPutValue() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -544,8 +543,8 @@ public class JdkMapAdapterStringMapTest {
         }, null);
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void testConcurrentModificationTriConsumerRemove() {
+    @Test
+    public void testNoConcurrentModificationTriConsumerRemove() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -558,8 +557,8 @@ public class JdkMapAdapterStringMapTest {
         }, null);
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void testConcurrentModificationTriConsumerClear() {
+    @Test
+    public void testNoConcurrentModificationTriConsumerClear() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
