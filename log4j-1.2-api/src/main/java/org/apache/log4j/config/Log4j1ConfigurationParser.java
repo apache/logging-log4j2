@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.swing.text.StyledEditorKit.ForegroundAction;
@@ -41,6 +42,7 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.apache.velocity.runtime.directive.Foreach;
 
 /**
@@ -120,9 +122,19 @@ public class Log4j1ConfigurationParser {
             // Loggers
             buildLoggers("log4j.category.");
             buildLoggers("log4j.logger.");
+            buildProperties();
             return builder;
         } catch (final IllegalArgumentException e) {
             throw new ConfigurationException(e);
+        }
+    }
+
+    private void buildProperties() {
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            final String key = entry.getKey().toString();
+            if (!key.startsWith("log4j.") && !key.equals(ROOTCATEGORY) && !key.equals(ROOTLOGGER)) {
+                builder.addProperty(key, Objects.toString(entry.getValue(), Strings.EMPTY));
+            }
         }
     }
 
