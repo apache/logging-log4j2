@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,13 +78,18 @@ public class ThreadContextDataInjector  {
                 // this will replace the LogEvent's context data with the returned instance
                 return copy.isEmpty() ? EMPTY_STRING_MAP : new JdkMapAdapterStringMap(copy);
             }
-            // However, if the list of Properties is non-empty we need to combine the properties and the ThreadContext
+            // If the list of Properties is non-empty we need to combine the properties and the ThreadContext
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
             // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
-            final StringMap result = ContextDataFactory.createContextData(props.size() + copy.size());
-            copyProperties(props, result);
-            copyThreadContextMap(copy, result);
+            final StringMap result = new JdkMapAdapterStringMap(new HashMap<>(copy));
+            for (int i = 0; i < props.size(); i++) {
+                final Property prop = props.get(i);
+                if (!copy.containsKey(prop.getName())) {
+                    result.putValue(prop.getName(), prop.getValue());
+                }
+            }
+            result.freeze();
             return result;
         }
 
@@ -94,20 +100,6 @@ public class ThreadContextDataInjector  {
                 return (ReadOnlyStringMap) map;
             }
             return map.isEmpty() ? EMPTY_STRING_MAP : new JdkMapAdapterStringMap(map.getImmutableMapOrNull());
-        }
-
-        /**
-         * Copies key-value pairs from the specified map into the specified {@code StringMap}.
-         *
-         * @param map map with key-value pairs, may be {@code null}
-         * @param result the {@code StringMap} object to add the key-values to. Must be non-{@code null}.
-         */
-        private static void copyThreadContextMap(final Map<String, String> map, final StringMap result) {
-            if (map != null) {
-                for (final Map.Entry<String, String> entry : map.entrySet()) {
-                    result.putValue(entry.getKey(), entry.getValue());
-                }
-            }
         }
     }
 
