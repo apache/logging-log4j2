@@ -361,20 +361,20 @@ public class Log4j1ConfigurationParser {
         return layoutBuilder;
     }
 
-    private String[] buildRootLogger(final String rootLoggerValue) {
+    private void buildRootLogger(final String rootLoggerValue) {
         if (rootLoggerValue == null) {
-            return new String[0];
+            return;
         }
         final String[] rootLoggerParts = rootLoggerValue.split(COMMA_DELIMITED_RE);
         final String rootLoggerLevel = getLevelString(rootLoggerParts, Level.ERROR.name());
+        final RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
+        //
         final String[] sortedAppenderNames = Arrays.copyOfRange(rootLoggerParts, 1, rootLoggerParts.length);
         Arrays.sort(sortedAppenderNames);
-        final RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
         for (final String appender : sortedAppenderNames) {
             loggerBuilder.add(builder.newAppenderRef(appender));
         }
         builder.add(loggerBuilder);
-        return sortedAppenderNames;
     }
 
     private String getLevelString(final String[] loggerParts, final String defaultLevel) {
@@ -401,8 +401,10 @@ public class Log4j1ConfigurationParser {
                             final LoggerComponentBuilder newLogger = builder.newLogger(name, level);
                             if (split.length > 1) {
                                 // Add Appenders to this logger
-                                for (int i = 1; i < split.length; i++) {
-                                    newLogger.add(builder.newAppenderRef(split[i]));
+                                final String[] sortedAppenderNames = Arrays.copyOfRange(split, 1, split.length);
+                                Arrays.sort(sortedAppenderNames);
+                                for (String appenderName : sortedAppenderNames) {
+                                    newLogger.add(builder.newAppenderRef(appenderName));
                                 }
                             }
                             builder.add(newLogger);
