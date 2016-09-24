@@ -142,11 +142,13 @@ public final class Log4j1ConfigurationConverter {
     }
 
     InputStream getInputStream() throws IOException {
-        return cla.pathIn == null ? System.in : new InputStreamWrapper(Files.newInputStream(cla.pathIn), cla.pathIn.toString());
+        final Path pathIn = cla.getPathIn();
+        return pathIn == null ? System.in : new InputStreamWrapper(Files.newInputStream(pathIn), pathIn.toString());
     }
 
     OutputStream getOutputStream() throws IOException {
-        return cla.pathOut == null ? System.out : Files.newOutputStream(cla.pathOut);
+        final Path pathOut = cla.getPathOut();
+        return pathOut == null ? System.out : Files.newOutputStream(pathOut);
     }
 
     private void run() {
