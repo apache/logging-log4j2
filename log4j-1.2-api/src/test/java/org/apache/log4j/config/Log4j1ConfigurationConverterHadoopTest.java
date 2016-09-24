@@ -25,7 +25,6 @@ import org.junit.runners.Parameterized;
  * limitations under the license.
  */
 
-@Ignore("Some files cannot be converted!")
 @RunWith(Parameterized.class)
 public class Log4j1ConfigurationConverterHadoopTest extends AbstractLog4j1ConfigurationConverterTest {
 

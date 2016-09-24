@@ -360,7 +360,7 @@ public class Log4j1ConfigurationParser {
             return new String[0];
         }
         final String[] rootLoggerParts = rootLoggerValue.split(COMMA_DELIMITED_RE);
-        final Level rootLoggerLevel = getLevel(rootLoggerParts, Level.ERROR);
+        final String rootLoggerLevel = getLevelString(rootLoggerParts, Level.ERROR.name());
         final String[] sortedAppenderNames = Arrays.copyOfRange(rootLoggerParts, 1, rootLoggerParts.length);
         Arrays.sort(sortedAppenderNames);
         final RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
@@ -371,8 +371,8 @@ public class Log4j1ConfigurationParser {
         return sortedAppenderNames;
     }
 
-    private Level getLevel(final String[] loggerParts, final Level defaultLevel) {
-        return loggerParts.length > 0 ? Level.valueOf(loggerParts[0]) : defaultLevel;
+    private String getLevelString(final String[] loggerParts, final String defaultLevel) {
+        return loggerParts.length > 0 ? loggerParts[0] : defaultLevel;
     }
 
     private void buildLoggers(final String prefix) {
@@ -388,7 +388,7 @@ public class Log4j1ConfigurationParser {
                         // a Level may be followed by a list of Appender refs.
                         final String valueStr = value.toString();
                         final String[] split = valueStr.split(COMMA_DELIMITED_RE);
-                        final Level level = getLevel(split, null);
+                        final String level = getLevelString(split, null);
                         if (level == null) {
                             warn("Level is missing for entry " + entry);
                         } else {
