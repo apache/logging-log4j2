@@ -35,8 +35,6 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public abstract class AbstractLog4j1ConfigurationConverterTest {
 
-    private static String outputFile = "target/log4j1-log4j2.txt";
-
     protected static List<Path> getPaths(final String root) throws IOException {
         final List<Path> paths = new ArrayList<>();
         Files.walkFileTree(Paths.get(root), new SimpleFileVisitor<Path>() {
@@ -50,24 +48,22 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
     }
 
     private final Path pathIn;
-    private final Path pathOut;
 
     public AbstractLog4j1ConfigurationConverterTest(final Path path) {
         super();
         this.pathIn = path;
-        this.pathOut = Paths.get(outputFile);
     }
 
-    @After
-    public void tearDown() throws IOException {
-        Files.deleteIfExists(pathOut);
-    }
-    
     @Test
-    public void test() {
-        final Log4j1ConfigurationConverter.CommandLineArguments cla = new Log4j1ConfigurationConverter.CommandLineArguments();
-        cla.setPathIn(pathIn);
-        cla.setPathOut(pathOut);
-        Log4j1ConfigurationConverter.run(cla);
+    public void test() throws IOException {
+        final Path tempFile = Files.createTempFile("log4j2", ".xml");
+        try {
+            final Log4j1ConfigurationConverter.CommandLineArguments cla = new Log4j1ConfigurationConverter.CommandLineArguments();
+            cla.setPathIn(pathIn);
+            cla.setPathOut(tempFile);
+            Log4j1ConfigurationConverter.run(cla);
+        } finally {
+            Files.deleteIfExists(tempFile);
+        }
     }
 }
