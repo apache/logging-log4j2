@@ -39,7 +39,7 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
         Files.walkFileTree(Paths.get(root), new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                paths.add(file);
+                paths.add(file.toAbsolutePath());
                 return FileVisitResult.CONTINUE;
             }
         });
