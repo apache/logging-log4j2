@@ -75,8 +75,9 @@ public class ThreadContextDataInjector  {
             // If there are no configuration properties returning a thin wrapper around the copy
             // is faster than copying the elements into the LogEvent's reusable StringMap.
             if (props == null || props.isEmpty()) {
-                // this will replace the LogEvent's context data with the returned instance
-                return copy.isEmpty() ? EMPTY_STRING_MAP : new JdkMapAdapterStringMap(copy);
+                // this will replace the LogEvent's context data with the returned instance.
+                // NOTE: must mark as frozen or downstream components may attempt to modify (UnsupportedOperationEx)
+                return copy.isEmpty() ? EMPTY_STRING_MAP : frozenStringMap(copy);
             }
             // If the list of Properties is non-empty we need to combine the properties and the ThreadContext
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
@@ -89,6 +90,12 @@ public class ThreadContextDataInjector  {
                     result.putValue(prop.getName(), prop.getValue());
                 }
             }
+            result.freeze();
+            return result;
+        }
+
+        private static JdkMapAdapterStringMap frozenStringMap(final Map<String, String> copy) {
+            final JdkMapAdapterStringMap result = new JdkMapAdapterStringMap(copy);
             result.freeze();
             return result;
         }
