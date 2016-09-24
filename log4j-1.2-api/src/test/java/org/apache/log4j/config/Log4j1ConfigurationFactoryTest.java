@@ -48,7 +48,7 @@ import org.junit.Test;
 public class Log4j1ConfigurationFactoryTest {
 
     private Layout<?> testConsole(final String configResource) throws Exception {
-        final Configuration configuration = configure(configResource);
+        final Configuration configuration = getConfiguration(configResource);
         final String name = "Console";
         final ConsoleAppender appender = configuration.getAppender(name);
         assertNotNull("Missing appender '" + name + "' in configuration " + configResource + " → " + configuration,
@@ -64,7 +64,7 @@ public class Log4j1ConfigurationFactoryTest {
     }
 
 	private Layout<?> testFile(final String configResource) throws Exception {
-		final Configuration configuration = configure(configResource);
+		final Configuration configuration = getConfiguration(configResource);
 		final FileAppender appender = configuration.getAppender("File");
 		assertNotNull(appender);
 		assertEquals("target/mylog.txt", appender.getFileName());
@@ -77,7 +77,7 @@ public class Log4j1ConfigurationFactoryTest {
 		return appender.getLayout();
 	}
 
-	private Configuration configure(final String configResource) throws URISyntaxException {
+	private Configuration getConfiguration(final String configResource) throws URISyntaxException {
 		final URL configLocation = ClassLoader.getSystemResource(configResource);
 		assertNotNull(configResource, configLocation);
 		final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null, "test",
@@ -133,7 +133,7 @@ public class Log4j1ConfigurationFactoryTest {
 
 	@Test
 	public void testNullAppender() throws Exception {
-		final Configuration configuration = configure("config-1.2/log4j-NullAppender.properties");
+		final Configuration configuration = getConfiguration("config-1.2/log4j-NullAppender.properties");
 		final Appender appender = configuration.getAppender("NullAppender");
 		assertNotNull(appender);
 		assertEquals("NullAppender", appender.getName());
@@ -157,20 +157,20 @@ public class Log4j1ConfigurationFactoryTest {
 
 	@Test
 	public void testSystemProperties1() throws Exception {
-		final Configuration configuration = configure("config-1.2/log4j-system-properties-1.properties");
+		final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-1.properties");
 		final RollingFileAppender appender = configuration.getAppender("RFA");
 		assertEquals(System.getProperty("java.io.tmpdir") + "/hadoop.log", appender.getFileName());
 	}
 
 	@Test
 	public void testSystemProperties2() throws Exception {
-		final Configuration configuration = configure("config-1.2/log4j-system-properties-2.properties");
+		final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-2.properties");
 		final RollingFileAppender appender = configuration.getAppender("RFA");
 		assertEquals("${java.io.tmpdir}/hadoop.log", appender.getFileName());
 	}
 
 	private void testRollingFileAppender(final String configResource, final String name, final String filePattern) throws URISyntaxException {
-		final Configuration configuration = configure(configResource);
+		final Configuration configuration = getConfiguration(configResource);
 		final Appender appender = configuration.getAppender(name);
 		assertNotNull(appender);
 		assertEquals(name, appender.getName());
@@ -197,7 +197,7 @@ public class Log4j1ConfigurationFactoryTest {
 	}
 
 	private void testDailyRollingFileAppender(final String configResource, final String name, final String filePattern) throws URISyntaxException {
-		final Configuration configuration = configure(configResource);
+		final Configuration configuration = getConfiguration(configResource);
 		final Appender appender = configuration.getAppender(name);
 		assertNotNull(appender);
 		assertEquals(name, appender.getName());
