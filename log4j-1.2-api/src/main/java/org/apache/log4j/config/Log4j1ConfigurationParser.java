@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
-import javax.swing.text.StyledEditorKit.ForegroundAction;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
@@ -43,7 +41,6 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.velocity.runtime.directive.Foreach;
 
 /**
  * Experimental parser for Log4j 1.2 properties configuration files.
