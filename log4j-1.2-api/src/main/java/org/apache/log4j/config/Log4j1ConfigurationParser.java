@@ -61,6 +61,7 @@ import org.apache.velocity.runtime.directive.Foreach;
  */
 public class Log4j1ConfigurationParser {
 
+    private static final String COMMA_DELIMITED_RE = "\\s*,\\s*";
     private static final String ROOTLOGGER = "rootLogger";
     private static final String ROOTCATEGORY = "rootCategory";
     private static final String TRUE = "true";
@@ -358,8 +359,8 @@ public class Log4j1ConfigurationParser {
         if (rootLoggerValue == null) {
             return new String[0];
         }
-        final String[] rootLoggerParts = rootLoggerValue.split("\\s*,\\s*");
-        final Level rootLoggerLevel = rootLoggerParts.length > 0 ? Level.valueOf(rootLoggerParts[0]) : Level.ERROR;
+        final String[] rootLoggerParts = rootLoggerValue.split(COMMA_DELIMITED_RE);
+        final Level rootLoggerLevel = getLevel(rootLoggerParts, Level.ERROR);
         final String[] sortedAppenderNames = Arrays.copyOfRange(rootLoggerParts, 1, rootLoggerParts.length);
         Arrays.sort(sortedAppenderNames);
         final RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
@@ -368,6 +369,10 @@ public class Log4j1ConfigurationParser {
         }
         builder.add(loggerBuilder);
         return sortedAppenderNames;
+    }
+
+    private Level getLevel(final String[] loggerParts, final Level defaultLevel) {
+        return loggerParts.length > 0 ? Level.valueOf(loggerParts[0]) : defaultLevel;
     }
 
     private void buildLoggers(final String prefix) {
@@ -382,12 +387,12 @@ public class Log4j1ConfigurationParser {
                     if (value != null) {
                         // a Level may be followed by a list of Appender refs.
                         final String valueStr = value.toString();
-                        final String[] split = valueStr.split("\\s*,\\s*");
-                        final String levelStr = split.length > 0 ? split[0] : null;
-                        if (levelStr == null) {
-                            warn("Level is missing: " + entry);
+                        final String[] split = valueStr.split(COMMA_DELIMITED_RE);
+                        final Level level = getLevel(split, null);
+                        if (level == null) {
+                            warn("Level is missing for entry " + entry);
                         } else {
-                            final LoggerComponentBuilder newLogger = builder.newLogger(name, Level.valueOf(levelStr));
+                            final LoggerComponentBuilder newLogger = builder.newLogger(name, level);
                             if (split.length > 1) {
                                 // Add Appenders to this logger
                                 for (int i = 1; i < split.length; i++) {
