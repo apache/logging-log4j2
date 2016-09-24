@@ -54,9 +54,15 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
     }
 
     @Test
-    public void test() {
-        final Log4j1ConfigurationConverter.CommandLineArguments cla = new Log4j1ConfigurationConverter.CommandLineArguments();
-        cla.setPathIn(pathIn);
-        Log4j1ConfigurationConverter.run(cla);
+    public void test() throws IOException {
+        final Path tempFile = Files.createTempFile("log4j", ".xml");
+        try {
+            final Log4j1ConfigurationConverter.CommandLineArguments cla = new Log4j1ConfigurationConverter.CommandLineArguments();
+            cla.setPathIn(pathIn);
+            cla.setPathOut(tempFile);
+            Log4j1ConfigurationConverter.run(cla);
+        } finally {
+            Files.deleteIfExists(tempFile);
+        }
     }
 }
