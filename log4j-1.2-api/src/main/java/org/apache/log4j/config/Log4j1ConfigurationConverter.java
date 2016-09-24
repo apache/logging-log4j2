@@ -142,7 +142,7 @@ public final class Log4j1ConfigurationConverter {
     }
 
     InputStream getInputStream() throws IOException {
-        return cla.pathIn == null ? System.in : Files.newInputStream(cla.pathIn);
+        return cla.pathIn == null ? System.in : new InputStreamWrapper(Files.newInputStream(cla.pathIn), cla.pathIn.toString());
     }
 
     OutputStream getOutputStream() throws IOException {
@@ -165,7 +165,7 @@ public final class Log4j1ConfigurationConverter {
                             newFile = lastIndex < 0 ? newFile + FILE_EXT_XML
                                     : newFile.substring(0, lastIndex) + FILE_EXT_XML;
                             final Path resolved = file.resolveSibling(newFile);
-                            try (final InputStream input = Files.newInputStream(file);
+                            try (final InputStream input = new InputStreamWrapper(Files.newInputStream(file), file.toString());
                                     final OutputStream output = Files.newOutputStream(resolved)) {
                                 try {
                                     convert(input, output);
