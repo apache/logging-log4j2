@@ -156,8 +156,9 @@ public class ThreadContextBenchmark {
     }
 
     @Benchmark
-    public void put() {
+    public void putAndRemove() {
         ThreadContext.put("someKey", "someValue");
+        ThreadContext.remove("someKey");
     }
 
     @Benchmark
