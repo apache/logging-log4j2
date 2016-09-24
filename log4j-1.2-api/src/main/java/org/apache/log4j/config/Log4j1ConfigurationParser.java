@@ -106,13 +106,11 @@ public class Log4j1ConfigurationParser {
                 builder.setStatusLevel(Level.DEBUG);
             }
             // Root
-            final String[] sortedAppenderNamesC = buildRootLogger(getLog4jValue(ROOTCATEGORY));
-            final String[] sortedAppenderNamesL = buildRootLogger(getLog4jValue(ROOTLOGGER));
-            final String[] sortedAppenderNames = sortedAppenderNamesL.length > 0 ? sortedAppenderNamesL
-                    : sortedAppenderNamesC;
+            buildRootLogger(getLog4jValue(ROOTCATEGORY));
+            buildRootLogger(getLog4jValue(ROOTLOGGER));
             // Appenders
-            final Map<String, String> classNameToProperty = buildClassToPropertyPrefixMap(sortedAppenderNames);
-            for (final Map.Entry<String, String> entry : classNameToProperty.entrySet()) {
+            final Map<String, String> appenderNameToClassName = buildClassToPropertyPrefixMap();
+            for (final Map.Entry<String, String> entry : appenderNameToClassName.entrySet()) {
                 final String appenderName = entry.getKey();
                 final String appenderClass = entry.getValue();
                 buildAppender(appenderName, appenderClass);
@@ -140,10 +138,10 @@ public class Log4j1ConfigurationParser {
         System.err.println(string);
     }
 
-    private Map<String, String> buildClassToPropertyPrefixMap(final String[] sortedAppenderNames) {
+    private Map<String, String> buildClassToPropertyPrefixMap() {
         final String prefix = "log4j.appender.";
         final int preLength = prefix.length();
-        final Map<String, String> map = new HashMap<>(sortedAppenderNames.length);
+        final Map<String, String> map = new HashMap<>();
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
             final Object keyObj = entry.getKey();
             if (keyObj != null) {
@@ -151,11 +149,9 @@ public class Log4j1ConfigurationParser {
                 if (key.startsWith(prefix)) {
                     if (key.indexOf('.', preLength) < 0) {
                         final String name = key.substring(preLength);
-                        if (Arrays.binarySearch(sortedAppenderNames, name) == -1) {
-                            final Object value = entry.getValue();
-                            if (value != null) {
-                                map.put(name, value.toString());
-                            }
+                        final Object value = entry.getValue();
+                        if (value != null) {
+                            map.put(name, value.toString());
                         }
                     }
                 }
