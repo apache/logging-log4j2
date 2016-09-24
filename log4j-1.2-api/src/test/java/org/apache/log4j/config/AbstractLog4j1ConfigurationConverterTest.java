@@ -1,6 +1,5 @@
 package org.apache.log4j.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -11,6 +10,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -55,20 +55,19 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
     public AbstractLog4j1ConfigurationConverterTest(final Path path) {
         super();
         this.pathIn = path;
-        File file = new File(outputFile);
-        this.pathOut = file.toPath();
+        this.pathOut = Paths.get(outputFile);
     }
 
+    @After
+    public void tearDown() throws IOException {
+        Files.deleteIfExists(pathOut);
+    }
+    
     @Test
-    public void test() throws IOException {
-        final Path tempFile = Files.createTempFile("log4j", ".xml");
-        try {
-            final Log4j1ConfigurationConverter.CommandLineArguments cla = new Log4j1ConfigurationConverter.CommandLineArguments();
-            cla.setPathIn(pathIn);
-            cla.setPathOut(tempFile);
-            Log4j1ConfigurationConverter.run(cla);
-        } finally {
-            Files.deleteIfExists(tempFile);
-        }
+    public void test() {
+        final Log4j1ConfigurationConverter.CommandLineArguments cla = new Log4j1ConfigurationConverter.CommandLineArguments();
+        cla.setPathIn(pathIn);
+        cla.setPathOut(pathOut);
+        Log4j1ConfigurationConverter.run(cla);
     }
 }
