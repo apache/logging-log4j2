@@ -1,5 +1,6 @@
 package org.apache.log4j.config;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -34,6 +35,8 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public abstract class AbstractLog4j1ConfigurationConverterTest {
 
+    private static String outputFile = "target/log4j1-log4j2.txt";
+
     protected static List<Path> getPaths(final String root) throws IOException {
         final List<Path> paths = new ArrayList<>();
         Files.walkFileTree(Paths.get(root), new SimpleFileVisitor<Path>() {
@@ -47,16 +50,20 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
     }
 
     private final Path pathIn;
+    private final Path pathOut;
 
     public AbstractLog4j1ConfigurationConverterTest(final Path path) {
         super();
         this.pathIn = path;
+        File file = new File(outputFile);
+        this.pathOut = file.toPath();
     }
 
     @Test
     public void test() {
         final Log4j1ConfigurationConverter.CommandLineArguments cla = new Log4j1ConfigurationConverter.CommandLineArguments();
         cla.setPathIn(pathIn);
+        cla.setPathOut(pathOut);
         Log4j1ConfigurationConverter.run(cla);
     }
 }
