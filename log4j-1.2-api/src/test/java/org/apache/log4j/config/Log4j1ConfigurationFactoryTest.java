@@ -21,9 +21,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -142,24 +146,26 @@ public class Log4j1ConfigurationFactoryTest {
 
 	@Test
 	public void testRollingFileAppender() throws Exception {
-		testRollingFileAppender("config-1.2/log4j-RollingFileAppender.properties", "RFA", "./hadoop.log.%i");
+		testRollingFileAppender("config-1.2/log4j-RollingFileAppender.properties", "RFA", "target/hadoop.log.%i");
 	}
 
 	@Test
 	public void testDailyRollingFileAppender() throws Exception {
-		testDailyRollingFileAppender("config-1.2/log4j-DailyRollingFileAppender.properties", "DRFA", "./hadoop.log%d{.yyyy-MM-dd}");
+		testDailyRollingFileAppender("config-1.2/log4j-DailyRollingFileAppender.properties", "DRFA", "target/hadoop.log%d{.yyyy-MM-dd}");
 	}
 
 	@Test
 	public void testRollingFileAppenderWithProperties() throws Exception {
-		testRollingFileAppender("config-1.2/log4j-RollingFileAppender-with-props.properties", "RFA", "./hadoop.log.%i");
+		testRollingFileAppender("config-1.2/log4j-RollingFileAppender-with-props.properties", "RFA", "target/hadoop.log.%i");
 	}
 
 	@Test
 	public void testSystemProperties1() throws Exception {
 		final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-1.properties");
 		final RollingFileAppender appender = configuration.getAppender("RFA");
-		assertEquals(System.getProperty("java.io.tmpdir") + "/hadoop.log", appender.getFileName());
+        String tempFileName = System.getProperty("java.io.tmpdir") + "/hadoop.log";
+        System.out.println("expected: " + tempFileName + " Actual: " + appender.getFileName());
+		assertEquals(tempFileName, appender.getFileName());
 	}
 
 	@Test
@@ -167,6 +173,10 @@ public class Log4j1ConfigurationFactoryTest {
 		final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-2.properties");
 		final RollingFileAppender appender = configuration.getAppender("RFA");
 		assertEquals("${java.io.tmpdir}/hadoop.log", appender.getFileName());
+        Path path = new File(appender.getFileName()).toPath();
+        Files.deleteIfExists(path);
+        path = new File("${java.io.tmpdir}").toPath();
+        Files.deleteIfExists(path);
 	}
 
 	private void testRollingFileAppender(final String configResource, final String name, final String filePattern) throws URISyntaxException {
@@ -176,7 +186,7 @@ public class Log4j1ConfigurationFactoryTest {
 		assertEquals(name, appender.getName());
 		assertTrue(appender.getClass().getName(), appender instanceof RollingFileAppender);
 		final RollingFileAppender rfa = (RollingFileAppender) appender;
-		assertEquals("./hadoop.log", rfa.getFileName());
+		assertEquals("target/hadoop.log", rfa.getFileName());
 		assertEquals(filePattern, rfa.getFilePattern());
 		final TriggeringPolicy triggeringPolicy = rfa.getTriggeringPolicy();
 		assertNotNull(triggeringPolicy);
@@ -203,7 +213,7 @@ public class Log4j1ConfigurationFactoryTest {
 		assertEquals(name, appender.getName());
 		assertTrue(appender.getClass().getName(), appender instanceof RollingFileAppender);
 		final RollingFileAppender rfa = (RollingFileAppender) appender;
-		assertEquals("./hadoop.log", rfa.getFileName());
+		assertEquals("target/hadoop.log", rfa.getFileName());
 		assertEquals(filePattern, rfa.getFilePattern());
 		final TriggeringPolicy triggeringPolicy = rfa.getTriggeringPolicy();
 		assertNotNull(triggeringPolicy);
