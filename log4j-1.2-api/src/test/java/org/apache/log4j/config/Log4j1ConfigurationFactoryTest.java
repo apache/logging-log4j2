@@ -24,10 +24,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -173,7 +173,8 @@ public class Log4j1ConfigurationFactoryTest {
 		final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-2.properties");
 		final RollingFileAppender appender = configuration.getAppender("RFA");
 		assertEquals("${java.io.tmpdir}/hadoop.log", appender.getFileName());
-        Path path = new File(appender.getFileName()).toPath();
+		appender.stop(10, TimeUnit.SECONDS);
+		Path path = new File(appender.getFileName()).toPath();
         Files.deleteIfExists(path);
         path = new File("${java.io.tmpdir}").toPath();
         Files.deleteIfExists(path);
