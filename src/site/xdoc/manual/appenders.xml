@@ -2228,12 +2228,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>filePattern</td>
               <td>String</td>
-              <td>The pattern of the file name of the archived log file. The format of the pattern should is
+              <td>The pattern of the file name of the archived log file. The format of the pattern is
                 dependent on the RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
                 a date/time pattern compatible with
                 <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
                 and/or a %i which represents an integer counter. The pattern also supports interpolation at
-                runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a> can
+                runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a>) can
                 be included in the pattern.</td>
             </tr>
             <tr>
