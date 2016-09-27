@@ -58,7 +58,6 @@ public class GcFreeLoggingTestUtil {
 
         // initialize LoggerContext etc.
         // This is not steady-state logging and will allocate objects.
-
         ThreadContext.put("aKey", "value1");
         ThreadContext.put("key2", "value2");
 
@@ -70,6 +69,8 @@ public class GcFreeLoggingTestUtil {
         for (int i = 0; i < 256; i++) {
             logger.debug("ensure all ringbuffer slots have been used once"); // allocate MutableLogEvent.messageText
         }
+        ThreadContext.remove("aKey");
+        ThreadContext.remove("key2");
 
         // BlockingWaitStrategy uses ReentrantLock which allocates Node objects. Ignore this.
         final String[] exclude = new String[] {
@@ -102,6 +103,10 @@ public class GcFreeLoggingTestUtil {
         AllocationRecorder.addSampler(sampler);
 
         // now do some steady-state logging
+
+        ThreadContext.put("aKey", "value1");
+        ThreadContext.put("key2", "value2");
+
         final int ITERATIONS = 5;
         for (int i = 0; i < ITERATIONS; i++) {
             logger.error(myCharSeq);
@@ -110,6 +115,8 @@ public class GcFreeLoggingTestUtil {
             logger.error("Test parameterized message {}", "param");
             logger.error("Test parameterized message {}{}", "param", "param2");
             logger.error("Test parameterized message {}{}{}", "param", "param2", "abc");
+            ThreadContext.remove("aKey");
+            ThreadContext.put("aKey", "value1");
         }
         Thread.sleep(50);
         samplingEnabled.set(false); // reliably ignore all allocations from now on
