@@ -180,6 +180,9 @@
       <action issue="LOG4J2-1610" dev="ggregory" type="fix" due-to="Shubhankar">
         Add targetNamespace to log4j-config.xsd. GitHub #43.
       </action>
+      <action issue="LOG4J2-1619" dev="ggregory" type="fix">
+        new Log4jLogEvent().toString() throws an NPE.
+      </action>
       <action issue="LOG4J2-1578" dev="ggregory" type="add">
         RoutingAppender can be configured with scripts. Add Script in a Routes element.
       </action>

@@ -741,7 +741,7 @@ public class Log4jLogEvent implements LogEvent {
         final String n = loggerName.isEmpty() ? LoggerConfig.ROOT : loggerName;
         sb.append("Logger=").append(n);
         sb.append(" Level=").append(level.name());
-        sb.append(" Message=").append(message.getFormattedMessage());
+        sb.append(" Message=").append(message == null ? null : message.getFormattedMessage());
         return sb.toString();
     }
 
