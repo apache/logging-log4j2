@@ -58,7 +58,20 @@ public class KafkaManager extends AbstractManager {
     @Override
     public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
-            producer.close(timeout, timeUnit);
+            // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
+            final Runnable task = new Runnable() {
+                @Override
+                public void run() {
+                    if (producer != null) {
+                        producer.close();
+                    }
+                }
+            };
+            try {
+                getLoggerContext().submitDaemon(task).get(timeout, timeUnit);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                // ignore
+            }
         }
         return true;
     }
