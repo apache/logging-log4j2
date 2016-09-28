@@ -315,8 +315,8 @@ public class LoggerContext extends AbstractLifeCycle
             this.setStopping();
             try {
                 Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
-            } catch (final Exception ex) {
-                LOGGER.error("Unable to unregister MBeans", ex);
+            } catch (final Throwable t) {
+                LOGGER.error("Unable to unregister MBeans", t);
             }
             if (shutdownCallback != null) {
                 shutdownCallback.cancel();
