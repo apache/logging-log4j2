@@ -61,42 +61,42 @@ public class ThreadContextTest {
 
     @Test
     public void perfTest() throws Exception {
-        UtilityClass.perfTest();
+        ThreadContextUtilityClass.perfTest();
     }
 
     @Test
     public void testGetContextReturnsEmptyMapIfEmpty() {
-        UtilityClass.testGetContextReturnsEmptyMapIfEmpty();
+        ThreadContextUtilityClass.testGetContextReturnsEmptyMapIfEmpty();
     }
 
     @Test
     public void testGetContextReturnsMutableCopy() {
-        UtilityClass.testGetContextReturnsMutableCopy();
+        ThreadContextUtilityClass.testGetContextReturnsMutableCopy();
     }
 
     @Test
     public void testGetImmutableContextReturnsEmptyMapIfEmpty() {
-        UtilityClass.testGetImmutableContextReturnsEmptyMapIfEmpty();
+        ThreadContextUtilityClass.testGetImmutableContextReturnsEmptyMapIfEmpty();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
-        UtilityClass.testGetImmutableContextReturnsImmutableMapIfNonEmpty();
+        ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfNonEmpty();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetImmutableContextReturnsImmutableMapIfEmpty() {
-        UtilityClass.testGetImmutableContextReturnsImmutableMapIfEmpty();
+        ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfEmpty();
     }
 
     @Test
     public void testGetImmutableStackReturnsEmptyStackIfEmpty() {
-        UtilityClass.testGetImmutableStackReturnsEmptyStackIfEmpty();
+        ThreadContextUtilityClass.testGetImmutableStackReturnsEmptyStackIfEmpty();
     }
 
     @Test
     public void testPut() {
-        UtilityClass.testPut();
+        ThreadContextUtilityClass.testPut();
     }
 
     @Test
