@@ -100,8 +100,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             // [LOG4J2-703] We might be on Android
             lookups.put(LOOKUP_KEY_JNDI,
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
-        } catch (final Throwable t) {
-            handleError(LOOKUP_KEY_JNDI, t);
+        } catch (final LinkageError | Exception e) {
+            handleError(LOOKUP_KEY_JNDI, e);
         }
         // JMX input args
         try {
@@ -109,8 +109,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             lookups.put(LOOKUP_KEY_JVMRUNARGS,
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
                         StrLookup.class));
-        } catch (final Throwable t) {
-            handleError(LOOKUP_KEY_JVMRUNARGS, t);
+        } catch (final LinkageError | Exception e) {
+            handleError(LOOKUP_KEY_JVMRUNARGS, e);
         }
         lookups.put("date", new DateLookup());
         lookups.put("ctx", new ContextMapLookup());

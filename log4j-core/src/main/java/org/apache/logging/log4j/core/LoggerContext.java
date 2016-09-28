@@ -315,8 +315,9 @@ public class LoggerContext extends AbstractLifeCycle
             this.setStopping();
             try {
                 Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
-            } catch (final Throwable t) {
-                LOGGER.error("Unable to unregister MBeans", t);
+            } catch (final LinkageError | Exception e) {
+                // LOG4J2-1506 Hello Android, GAE
+                LOGGER.error("Unable to unregister MBeans", e);
             }
             if (shutdownCallback != null) {
                 shutdownCallback.cancel();
@@ -538,9 +539,9 @@ public class LoggerContext extends AbstractLifeCycle
 
             try {
                 Server.reregisterMBeansAfterReconfigure();
-            } catch (final Throwable t) {
+            } catch (final LinkageError | Exception e) {
                 // LOG4J2-716: Android has no java.lang.management
-                LOGGER.error("Could not reconfigure JMX", t);
+                LOGGER.error("Could not reconfigure JMX", e);
             }
             // AsyncLoggers update their nanoClock when the configuration changes
             Log4jLogEvent.setNanoClock(configuration.getNanoClock());
