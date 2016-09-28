@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -46,7 +47,7 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
  *
  * @see org.apache.logging.log4j.junit.LoggerContextRule#getListAppender(String) ILC.getListAppender
  */
-@Plugin(name = "List", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "List", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class ListAppender extends AbstractAppender {
 
     // Use CopyOnWriteArrayList?

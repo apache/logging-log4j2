@@ -50,7 +50,7 @@ import org.apache.logging.log4j.core.util.Booleans;
  * the form "$${[key:]token}". The pattern will be resolved each time the Appender is called using
  * the built in StrSubstitutor and the StrLookup plugin that matches the specified key.
  */
-@Plugin(name = "Routing", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Routing", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RoutingAppender extends AbstractAppender {
 
     public static final String STATIC_VARIABLES_KEY = "staticVariables";
@@ -278,7 +278,7 @@ public final class RoutingAppender extends AbstractAppender {
     private Appender createAppender(final Route route, final LogEvent event) {
         final Node routeNode = route.getNode();
         for (final Node node : routeNode.getChildren()) {
-            if (node.getType().getElementName().equals("appender")) {
+            if (node.getType().getElementName().equals(Appender.ELEMENT_TYPE)) {
                 final Node appNode = new Node(node);
                 configuration.createConfiguration(appNode, event);
                 if (appNode.getObject() instanceof Appender) {

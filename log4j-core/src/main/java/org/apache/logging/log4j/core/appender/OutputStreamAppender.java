@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.OutputStream;
 import java.io.Serializable;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -33,7 +34,7 @@ import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
  * Character encoding is handled within the Layout.
  * </p>
  */
-@Plugin(name = "OutputStream", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "OutputStream", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class OutputStreamAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
     /**

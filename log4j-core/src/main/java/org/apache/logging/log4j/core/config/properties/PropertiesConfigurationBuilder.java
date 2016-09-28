@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -148,7 +149,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         } else {
             final Map<String, Properties> appenders = PropertiesUtil
-                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "appender"));
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, Appender.ELEMENT_TYPE));
             for (final Map.Entry<String, Properties> entry : appenders.entrySet()) {
                 builder.add(createAppender(entry.getKey().trim(), entry.getValue()));
             }

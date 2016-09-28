@@ -18,6 +18,7 @@ package org.apache.logging.log4j.test.appender;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -28,7 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name="Block", category ="Core", elementType="appender", printObject=true)
+@Plugin(name="Block", category ="Core", elementType=Appender.ELEMENT_TYPE, printObject=true)
 public class BlockingAppender extends AbstractAppender {
     public volatile boolean running = true;
 

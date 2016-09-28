@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -30,7 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name="FailOnce", category ="Core", elementType="appender", printObject=true)
+@Plugin(name="FailOnce", category ="Core", elementType=Appender.ELEMENT_TYPE, printObject=true)
 public class FailOnceAppender extends AbstractAppender {
 
     boolean fail = true;

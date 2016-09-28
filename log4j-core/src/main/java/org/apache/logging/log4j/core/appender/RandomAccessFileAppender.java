@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.core.util.Integers;
 /**
  * File Appender.
  */
-@Plugin(name = "RandomAccessFile", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "RandomAccessFile", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RandomAccessFileAppender extends AbstractOutputStreamAppender<RandomAccessFileManager> {
 
     private final String fileName;

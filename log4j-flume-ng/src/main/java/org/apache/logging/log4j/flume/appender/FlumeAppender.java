@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.core.util.Integers;
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
  */
-@Plugin(name = "Flume", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Flume", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class FlumeAppender extends AbstractAppender implements FlumeEventFactory {
 
     private static final String[] EXCLUDED_PACKAGES = {"org.apache.flume", "org.apache.avro"};

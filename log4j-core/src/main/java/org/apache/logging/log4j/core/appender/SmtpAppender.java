@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -52,7 +53,7 @@ import org.apache.logging.log4j.core.util.Booleans;
  * message is appended. This can be modified by setting a filter for the
  * appender.
  */
-@Plugin(name = "SMTP", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "SMTP", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class SmtpAppender extends AbstractAppender {
 
     private static final int DEFAULT_BUFFER_SIZE = 512;

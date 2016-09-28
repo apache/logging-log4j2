@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
 
-@Plugin(name = "ScriptAppenderSelector", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "ScriptAppenderSelector", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class ScriptAppenderSelector extends AbstractAppender {
 
     /**

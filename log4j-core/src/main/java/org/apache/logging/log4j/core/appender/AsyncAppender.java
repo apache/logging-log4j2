@@ -54,7 +54,7 @@ import org.apache.logging.log4j.core.util.Log4jThread;
  * Appender to append to if the queue is full. The AsyncAppender does not allow a filter to be specified on the Appender
  * references.
  */
-@Plugin(name = "Async", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Async", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class AsyncAppender extends AbstractAppender {
 
     private static final int DEFAULT_QUEUE_SIZE = 128;

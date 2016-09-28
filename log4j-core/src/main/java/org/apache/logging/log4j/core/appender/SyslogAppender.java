@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -42,7 +43,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
 /**
  * The Syslog Appender.
  */
-@Plugin(name = "Syslog", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Syslog", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class SyslogAppender extends SocketAppender {
 
     protected static final String RFC5424 = "RFC5424";

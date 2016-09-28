@@ -120,7 +120,7 @@ public class AppenderSet {
             return null;
         }
         node.getAttributes().put("name", actualName);
-        if (node.getType().getElementName().equals("appender")) {
+        if (node.getType().getElementName().equals(Appender.ELEMENT_TYPE)) {
             final Node appNode = new Node(node);
             configuration.createConfiguration(appNode, null);
             if (appNode.getObject() instanceof Appender) {
