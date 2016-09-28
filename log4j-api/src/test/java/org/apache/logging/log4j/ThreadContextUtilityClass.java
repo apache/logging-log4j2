@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 
 
-public class UtilityClass {
+public class ThreadContextUtilityClass {
 
     public static void perfTest() throws Exception {
         ThreadContext.clearMap();
