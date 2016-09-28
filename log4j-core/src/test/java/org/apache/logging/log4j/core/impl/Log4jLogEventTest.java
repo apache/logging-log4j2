@@ -521,4 +521,10 @@ public class Log4jLogEventTest {
         assertNotEquals(reason, other, event);
         assertNotEquals(reason + " hashCode", other.hashCode(), event.hashCode());
     }
+    
+    @Test
+    public void testToString() {
+        // Throws an NPE in 2.6.2
+        assertNotNull(new Log4jLogEvent().toString());
+    }
 }
