@@ -49,7 +49,7 @@ public class SyslogAppenderTestBase {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        (LoggerContext.getContext()).reconfigure();
+        LoggerContext.getContext().reconfigure();
     }
 
     protected void sendAndCheckLegacyBSDMessages(final List<String> messagesToSend) throws InterruptedException {
