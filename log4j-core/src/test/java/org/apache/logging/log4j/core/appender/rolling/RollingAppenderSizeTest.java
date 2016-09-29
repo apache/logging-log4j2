@@ -140,7 +140,9 @@ public class RollingAppenderSizeTest {
             return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these formats
         }
         // Stop the context to make sure all files are compressed and closed. Trying to remedy failures in CI builds.
-        loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS);
+        if (loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
+            System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
+        }
         for (final File file : files) {
             if (file.getName().endsWith(fileExtension)) {
                 CompressorInputStream in = null;
