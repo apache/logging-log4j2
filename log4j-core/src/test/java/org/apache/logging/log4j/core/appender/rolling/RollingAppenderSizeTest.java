@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
@@ -138,6 +139,8 @@ public class RollingAppenderSizeTest {
                 || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
             return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these formats
         }
+        // Stop the context to make sure all files are compressed and closed. Trying to remedy failures in CI builds.
+        loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS);
         for (final File file : files) {
             if (file.getName().endsWith(fileExtension)) {
                 CompressorInputStream in = null;
