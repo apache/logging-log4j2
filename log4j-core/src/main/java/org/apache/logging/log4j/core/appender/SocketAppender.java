@@ -301,27 +301,26 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             .withSslConfiguration(sslConfig)
             .build();
         // @formatter:on
-        } else {
-            if (layout == null) {
-                layout = SerializedLayout.createLayout();
-            }
-
-            if (name == null) {
-                LOGGER.error("No name provided for SocketAppender");
-                return null;
-            }
-
-            final Protocol actualProtocol = protocol != null ? protocol : Protocol.TCP;
-            if (actualProtocol == Protocol.UDP) {
-                immediateFlush = true;
-            }
-
-            final AbstractSocketManager manager = createSocketManager(name, actualProtocol, host, port,
-                    connectTimeoutMillis, sslConfig, reconnectDelayMillis, immediateFail, layout, Constants.ENCODER_BYTE_BUFFER_SIZE);
-
-            return new SocketAppender(name, layout, filter, manager, ignoreExceptions, immediateFlush,
-                    advertise ? configuration.getAdvertiser() : null);
         }
+        if (layout == null) {
+            layout = SerializedLayout.createLayout();
+        }
+
+        if (name == null) {
+            LOGGER.error("No name provided for SocketAppender");
+            return null;
+        }
+
+        final Protocol actualProtocol = protocol != null ? protocol : Protocol.TCP;
+        if (actualProtocol == Protocol.UDP) {
+            immediateFlush = true;
+        }
+
+        final AbstractSocketManager manager = createSocketManager(name, actualProtocol, host, port,
+                connectTimeoutMillis, sslConfig, reconnectDelayMillis, immediateFail, layout, Constants.ENCODER_BYTE_BUFFER_SIZE);
+
+        return new SocketAppender(name, layout, filter, manager, ignoreExceptions, immediateFlush,
+                advertise ? configuration.getAdvertiser() : null);
     }
     /**
      * Creates a socket appender.
