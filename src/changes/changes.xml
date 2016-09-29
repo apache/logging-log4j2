@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.7" date="2016-09-25" description="GA Release 2.7">
+      <action issue="LOG4J2-1620" dev="ggregory" type="fix" due-to="Sascha Scholz">
+        2.7-rc1: RollingFileAppender immediateFlush default value should be true, not false.
+      </action>
       <action issue="LOG4J2-1611" dev="rpopma" type="fix">
         Improved performance of context data injector for web applications to be on par with standalone applications.
       </action>

@@ -46,7 +46,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         private int bufferSize = Constants.ENCODER_BYTE_BUFFER_SIZE;
 
         @PluginBuilderAttribute
-        private boolean immediateFlush;
+        private boolean immediateFlush = true;
 
         public int getBufferSize() {
             return bufferSize;
