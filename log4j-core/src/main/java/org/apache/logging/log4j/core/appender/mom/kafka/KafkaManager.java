@@ -57,6 +57,15 @@ public class KafkaManager extends AbstractManager {
 
     @Override
     public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        if (timeout > 0) {
+            closeProducer(timeout, timeUnit);
+        } else {
+            closeProducer(timeoutMillis, TimeUnit.MILLISECONDS);
+        }
+        return true;
+    }
+
+    private void closeProducer(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
             // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
             final Runnable task = new Runnable() {
@@ -73,7 +82,6 @@ public class KafkaManager extends AbstractManager {
                 // ignore
             }
         }
-        return true;
     }
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
