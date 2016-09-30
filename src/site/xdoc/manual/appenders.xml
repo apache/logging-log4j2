@@ -430,7 +430,7 @@
               <td>createOnDemand</td>
               <td>boolean</td>
               <td>The appender creates the file on-demand. The appender only creates the file when a log event 
-                passes all filters and is routed to this appender.</td>
+                passes all filters and is routed to this appender. Defaults to false.</td>
             </tr>
             <tr>
               <td>filter</td>
