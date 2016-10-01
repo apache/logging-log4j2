@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.7" date="2016-09-25" description="GA Release 2.7">
+      <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">
+        Fixed ClassCastException when using JUL logging during shutdown.
+      </action>
       <action issue="LOG4J2-1620" dev="ggregory" type="fix" due-to="Sascha Scholz">
         2.7-rc1: RollingFileAppender immediateFlush default value should be true, not false.
       </action>
