@@ -69,6 +69,8 @@ o LOG4J2-1540:  The Core AbstractManager now tracks its LoggerContext.
 o LOG4J2-1577:  Add a Builder to the RoutingAppender and deprecate factory method. 
 
 Fixed Bugs:
+o LOG4J2-1618:  Fixed ClassCastException when using JUL logging during shutdown. Thanks to Raman Gupta. 
+o LOG4J2-1620:  2.7-rc1: RollingFileAppender immediateFlush default value should be true, not false. Thanks to Sascha Scholz. 
 o LOG4J2-1611:  Improved performance of context data injector for web applications to be on par with standalone applications. 
 o LOG4J2-1591:  Introduced new interface LifeCycle2 with stop(long,TimeUnit) method to avoid breaking backwards compatibility with new Configurator.shutdown(LoggerContext, long, TimeUnit) API. 
 o LOG4J2-1590:  Fixed issue with filters extending AbstractFilter that did not override methods with unrolled varargs. 
@@ -121,6 +123,7 @@ o LOG4J2-1601:  Prevent potential NPE due to org.apache.logging.log4j.core.layou
 o LOG4J2-1602:  Prevent potential NPE in org.apache.logging.log4j.core.util.datetime.FormatCache.MultipartKey.equals(Object) when object is null. 
 o LOG4J2-1603:  Redo hashCode() and equals() methods in org.apache.logging.log4j.core.net.ssl classes. 
 o LOG4J2-1610:  Add targetNamespace to log4j-config.xsd. GitHub #43. Thanks to Shubhankar. 
+o LOG4J2-1619:  new Log4jLogEvent().toString() throws an NPE. 
 
 Changes:
 o LOG4J2-1604:  Log4j2 TcpSocketServer in background. Thanks to Colin Hillman. 
