@@ -128,6 +128,8 @@ public interface Configuration extends Filterable {
 
     boolean isShutdownHookEnabled();
 
+    long getShutdownTimeoutMillis();
+
     ConfigurationScheduler getScheduler();
 
     /**

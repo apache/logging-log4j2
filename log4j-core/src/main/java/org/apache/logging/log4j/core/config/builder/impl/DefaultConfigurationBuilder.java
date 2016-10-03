@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -71,6 +72,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private String destination;
     private String packages;
     private String shutdownFlag;
+    private long shutdownTimeoutMillis;
     private String advertiser;
     private LoggerContext loggerContext;
     private String name;
@@ -186,6 +188,9 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (shutdownFlag != null) {
                 configuration.setShutdownHook(shutdownFlag);
             }
+            if (shutdownTimeoutMillis > 0) {
+                configuration.setShutdownTimeoutMillis(shutdownTimeoutMillis);
+            }
             if (advertiser != null) {
                 configuration.createAdvertiser(advertiser, source);
             }
@@ -248,6 +253,9 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         }
         if (shutdownFlag != null) {
             xmlWriter.writeAttribute("shutdownHook", shutdownFlag);
+        }
+        if (shutdownTimeoutMillis > 0) {
+            xmlWriter.writeAttribute("shutdownTimeout", String.valueOf(shutdownTimeoutMillis));
         }
         if (advertiser != null) {
             xmlWriter.writeAttribute("advertiser", advertiser);
@@ -510,6 +518,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> setShutdownHook(final String flag) {
         this.shutdownFlag = flag;
+        return this;
+    }
+
+    @Override
+    public ConfigurationBuilder<T> setShutdownTimeout(final long timeout, final TimeUnit timeUnit) {
+        this.shutdownTimeoutMillis = timeUnit.toMillis(timeout);
         return this;
     }
 

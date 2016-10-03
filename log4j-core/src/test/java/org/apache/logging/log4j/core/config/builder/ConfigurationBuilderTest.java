@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -36,6 +38,7 @@ public class ConfigurationBuilderTest {
     private void addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
+        builder.setShutdownTimeout(5000, TimeUnit.MILLISECONDS);
         builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy").addIsWatched(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
@@ -56,7 +59,7 @@ public class ConfigurationBuilderTest {
 
     private final static String expectedXml =
             "<?xml version='1.0' encoding='UTF-8'?>" + EOL +
-            "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\">" + EOL +
+            "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\" shutdownTimeout=\"5000\">" + EOL +
                 INDENT + "<Properties>" + EOL +
                 INDENT + INDENT + "<Property name=\"MyKey\">MyValue</Property>" + EOL +
                 INDENT + "</Properties>" + EOL +

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -120,6 +119,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                     statusConfig.withDestination(value);
                 } else if ("shutdownHook".equalsIgnoreCase(key)) {
                     isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
+                } else if ("shutdownTimeout".equalsIgnoreCase(key)) {
+                    shutdownTimeoutMillis = Long.parseLong(value);
                 } else if ("verbose".equalsIgnoreCase(key)) {
                     statusConfig.withVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {

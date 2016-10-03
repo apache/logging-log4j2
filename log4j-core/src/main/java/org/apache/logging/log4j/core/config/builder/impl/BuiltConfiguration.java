@@ -147,6 +147,10 @@ public class BuiltConfiguration extends AbstractConfiguration {
         isShutdownHookEnabled = !"disable".equalsIgnoreCase(flag);
     }
 
+    public void setShutdownTimeoutMillis(long shutdownTimeoutMillis) {
+        this.shutdownTimeoutMillis = shutdownTimeoutMillis;
+    }
+
     public void setMonitorInterval(final int intervalSeconds) {
         if (this instanceof Reconfigurable && intervalSeconds > 0) {
             final ConfigurationSource configSource = getConfigurationSource();

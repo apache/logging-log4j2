@@ -87,6 +87,8 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 statusConfig.withDestination(value);
             } else if ("shutdownHook".equalsIgnoreCase(key)) {
                 isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
+            } else if ("shutdownTimeout".equalsIgnoreCase(key)) {
+                shutdownTimeoutMillis = Long.parseLong(value);
             } else if ("verbose".equalsIgnoreCase(key)) {
                 statusConfig.withVerbosity(value);
             } else if ("packages".equalsIgnoreCase(key)) {

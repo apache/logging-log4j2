@@ -408,6 +408,10 @@ public class Bar {
                  shutdown hook is enabled by default but may be disabled by setting this attribute to "disable"</td>
               </tr>
               <tr>
+                 <td>shutdownTimeout</td>
+                 <td>Specifies how many milliseconds appenders and other plugins will get to shutdown when the JVM shuts down.
+                 Default is zero. (Not used if <tt>shutdownHook</tt> is set to "disable".)</td>
+              <tr>
                 <td>status</td>
                 <td>The level of internal Log4j events that should be logged to the console.
                 Valid values for this attribute are "trace", "debug", "info", "warn", "error" and "fatal".
@@ -841,8 +845,8 @@ public class Bar {
             </p>
             <p>
               Properties configuration files support the advertiser, monitorInterval, name, packages, shutdownHook,
-              status, verbose, and dest attrbutes. See <a href="#ConfigurationSyntax">Configuration Syntax</a> for the
-              definitions of these attributes.
+              shutdownTimeout, status, verbose, and dest attrbutes. See <a href="#ConfigurationSyntax">Configuration Syntax</a>
+              for the definitions of these attributes.
             </p>
           <pre class="prettyprint linenums">
 status = error

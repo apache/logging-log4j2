@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config.properties;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -54,6 +55,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private static final String ADVERTISER_KEY = "advertiser";
     private static final String STATUS_KEY = "status";
     private static final String SHUTDOWN_HOOK = "shutdownHook";
+    private static final String SHUTDOWN_TIMEOUT = "shutdownTimeout";
     private static final String VERBOSE = "verbose";
     private static final String DEST = "dest";
     private static final String PACKAGES = "packages";
@@ -89,6 +91,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         builder
             .setStatusLevel(Level.toLevel(rootProperties.getProperty(STATUS_KEY), Level.ERROR))
             .setShutdownHook(rootProperties.getProperty(SHUTDOWN_HOOK))
+            .setShutdownTimeout(Long.parseLong(rootProperties.getProperty(SHUTDOWN_TIMEOUT, "0")), TimeUnit.MILLISECONDS)
             .setVerbosity(rootProperties.getProperty(VERBOSE))
             .setDestination(rootProperties.getProperty(DEST))
             .setPackages(rootProperties.getProperty(PACKAGES))

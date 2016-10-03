@@ -23,6 +23,11 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.7.1" date="2016-XX-XX" description="GA Release 2.7.1">
+      <action issue="LOG4J2-1623" dev="mikes" type="fix">
+        Configurable JVM shutdown hook timeout.
+      </action>
+    </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">
         Fixed ClassCastException when using JUL logging during shutdown.

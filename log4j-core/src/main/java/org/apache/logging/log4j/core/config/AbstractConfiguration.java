@@ -102,6 +102,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected boolean isShutdownHookEnabled = true;
 
     /**
+     * Shutdown timeout in milliseconds.
+     */
+    protected long shutdownTimeoutMillis = 0;
+
+    /**
      * The Script manager.
      */
     protected ScriptManager scriptManager;
@@ -393,6 +398,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public boolean isShutdownHookEnabled() {
         return isShutdownHookEnabled;
+    }
+
+    @Override
+    public long getShutdownTimeoutMillis() {
+        return shutdownTimeoutMillis;
     }
 
     public void setup() {

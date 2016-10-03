@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config.builder.api;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -367,6 +368,12 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      */
     ConfigurationBuilder<T> setShutdownHook(String flag);
 
+    /**
+     * Specifies how long time appenders and other plugins will get to shutdown when the JVM shuts down.
+     * Default is zero. (Not used if {@link #setShutdownHook(String)} is set to "disable".)
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setShutdownTimeout(long timeout, TimeUnit timeUnit);
 
     /**
      * Sets the level of the StatusLogger.
