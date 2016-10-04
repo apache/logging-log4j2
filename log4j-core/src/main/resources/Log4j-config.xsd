@@ -38,6 +38,7 @@
         <xs:attribute name="strict" type="xs:string"/>
         <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="advertiser" type="xs:string"/>
+        <xs:attribute name="shutdownTimeout" type="xs:string" use="optional"/>
         <xs:attribute name="schema" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="PropertiesType">
