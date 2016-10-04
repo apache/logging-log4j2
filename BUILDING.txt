@@ -26,6 +26,10 @@ mvn clirr:check -pl log4j-1.2-api
 
 Next, to build the site:
 
+If Java 7 runs out of memory building the site, you will need:
+
+set MAVEN_OPTS=-Xmx2000m -XX:MaxPermSize=384m
+
 mvn site
 
 On Windows, use a local staging directory, for example:
