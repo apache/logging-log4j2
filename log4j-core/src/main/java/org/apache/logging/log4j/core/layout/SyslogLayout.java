@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.Chars;
  * Formats a log event as a BSD Log record.
  */
 @Plugin(name = "SyslogLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
-public final class SyslogLayout extends AbstractStringLayout {
+public class SyslogLayout extends AbstractStringLayout {
 
     /**
      * Match newlines in a platform-independent manner.
@@ -76,6 +76,12 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
+
+        String message = getLogContent(event);
+        if (null != escapeNewLine) {
+            message = NEWLINE_PATTERN.matcher(message).replaceAll(escapeNewLine);
+        }
+
         final StringBuilder buf = getStringBuilder();
 
         buf.append('<');
@@ -86,10 +92,6 @@ public final class SyslogLayout extends AbstractStringLayout {
         buf.append(localHostname);
         buf.append(Chars.SPACE);
 
-        String message = event.getMessage().getFormattedMessage();
-        if (null != escapeNewLine) {
-            message = NEWLINE_PATTERN.matcher(message).replaceAll(escapeNewLine);
-        }
         buf.append(message);
 
         if (includeNewLine) {
@@ -105,6 +107,15 @@ public final class SyslogLayout extends AbstractStringLayout {
         if (buf.charAt(index) == '0') {
             buf.setCharAt(index, Chars.SPACE);
         }
+    }
+
+    /**
+     * format message content
+     * @param event
+     * @return the formatted content
+     */
+    protected String getLogContent(final LogEvent event){
+        return event.getMessage().getFormattedMessage();
     }
 
     /**
