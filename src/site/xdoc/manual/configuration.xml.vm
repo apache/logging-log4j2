@@ -409,8 +409,13 @@ public class Bar {
               </tr>
               <tr>
                  <td>shutdownTimeout</td>
-                 <td>Specifies how many milliseconds appenders and other plugins will get to shutdown when the JVM shuts down.
-                 Default is zero. (Not used if <tt>shutdownHook</tt> is set to "disable".)</td>
+                 <td>Specifies how many milliseconds appenders and other plugins will get to shutdown when the JVM shuts
+                 down. Default is zero which mean that each plugin uses its default timeout. Not all plugins will honor
+                 this, it is a hint and not an absolute guarantee that the shutdown procedure will not take longer.
+                 Setting this too low increase the risk of losing outstanding log events not yet written to the final
+                 destination. See <a class="javadoc"
+                 href="../log4j-core/target/site/apidocs/org/apache/logging/log4j/core/LoggerContext.html#stop(long, java.util.concurrent.TimeUnit)">LoggerContext.stop(long, java.util.concurrent.TimeUnit)</a>.
+                  (Not used if <tt>shutdownHook</tt> is set to "disable".)</td>
               <tr>
                 <td>status</td>
                 <td>The level of internal Log4j events that should be logged to the console.

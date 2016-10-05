@@ -302,6 +302,18 @@ public class LoggerContext extends AbstractLifeCycle
         stop();
     }
 
+    /**
+     * How many milliseconds appenders and other plugins will get to shutdown.
+     *
+     * Not all plugins will honor this, it is a hint and not an absolute guarantee that the this method not block longer.
+     * Setting timeout too low increase the risk of losing outstanding log events not yet written to the final
+     * destination.
+     *
+     * @param timeout the maximum time to wait, or 0 which mean that each plugin uses its default timeout
+     * @param timeUnit the time unit of the timeout argument
+     * @return true if the context was stopped cleanly and normally, false otherwise.
+     * @since 2.7
+     */
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
