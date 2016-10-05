@@ -346,13 +346,12 @@ public final class Configurator {
     }
 
     /**
-     * Blocks until all Log4j tasks have completed execution after a shutdown request, or the timeout occurs, or the
-     * current thread is interrupted, whichever happens first.
+     * Shuts down the given logger context.
      * <p>
-     * Log4j can start threads to perform certain actions like file rollovers, calling this method with a timeout will
-     * block until the rollover thread is done.
+     * Log4j can start threads to perform certain actions like file rollovers; calling this method with a positive
+     * timeout will block until the rollover thread is done.
      * </p>
-     * 
+     *
      * @param ctx
      *            the logger context to shut down, may be null.
      * @param timeout
@@ -361,6 +360,10 @@ public final class Configurator {
      *            the time unit of the timeout argument
      * @return {@code true} if the logger context terminated and {@code false} if the timeout elapsed before
      *         termination.
+     *
+     * @see LoggerContext#stop(long, TimeUnit)
+     *
+     * @since 2.7
      */
     public static boolean shutdown(final LoggerContext ctx, final long timeout, final TimeUnit timeUnit) {
         if (ctx != null) {

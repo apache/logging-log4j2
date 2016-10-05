@@ -303,15 +303,22 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     /**
-     * How many milliseconds appenders and other plugins will get to shutdown.
-     *
-     * Not all plugins will honor this, it is a hint and not an absolute guarantee that the this method not block longer.
+     * Blocks until all Log4j tasks have completed execution after a shutdown request and all appenders have shut down,
+     * or the timeout occurs, or the current thread is interrupted, whichever happens first.
+     * <p>
+     * Not all appenders will honor this, it is a hint and not an absolute guarantee that the this method not block longer.
      * Setting timeout too low increase the risk of losing outstanding log events not yet written to the final
      * destination.
+     * <p>
+     * Log4j can start threads to perform certain actions like file rollovers, calling this method with a positive timeout will
+     * block until the rollover thread is done.
      *
-     * @param timeout the maximum time to wait, or 0 which mean that each plugin uses its default timeout
-     * @param timeUnit the time unit of the timeout argument
-     * @return true if the context was stopped cleanly and normally, false otherwise.
+     * @param timeout the maximum time to wait, or 0 which mean that each apppender uses its default timeout, and don't wait for background
+    tasks
+     * @param timeUnit
+     *            the time unit of the timeout argument
+     * @return {@code true} if the logger context terminated and {@code false} if the timeout elapsed before
+     *         termination.
      * @since 2.7
      */
     @Override
