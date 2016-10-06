@@ -369,9 +369,14 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> setShutdownHook(String flag);
 
     /**
-     * Specifies how long time appenders and other plugins will get to shutdown when the JVM shuts down.
-     * Default is zero. (Not used if {@link #setShutdownHook(String)} is set to "disable".)
+     * How long appenders and background tasks will get to shutdown when the JVM shuts down.
+     * Default is zero which mean that each appender uses its default timeout, and don't wait for background
+     * tasks. Not all appenders will honor this, it is a hint and not an absolute guarantee that the shutdown
+     * procedure will not take longer. Setting this too low increase the risk of losing outstanding log events
+     * not yet written to the final destination. (Not used if {@link #setShutdownHook(String)} is set to "disable".)
      * @return this builder instance.
+     *
+     * @see LoggerContext#stop(long, TimeUnit)
      */
     ConfigurationBuilder<T> setShutdownTimeout(long timeout, TimeUnit timeUnit);
 
