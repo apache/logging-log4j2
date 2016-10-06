@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -38,7 +36,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
-import org.apache.logging.log4j.core.config.ConfigurationSource; // SUPPRESS CHECKSTYLE
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
@@ -55,6 +53,8 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
@@ -336,7 +336,7 @@ public class LoggerContext extends AbstractLifeCycle
             final String source = "LoggerContext \'" + getName() + "\'";
             shutdownEs = ExecutorServices.shutdown(executorService, timeout, timeUnit, source);
             // Do not wait for daemon threads
-            shutdownEsd = ExecutorServices.shutdown(executorServiceDeamons, -1, timeUnit, source);
+            shutdownEsd = ExecutorServices.shutdown(executorServiceDeamons, 0, timeUnit, source);
         } finally {
             configLock.unlock();
             this.setStopped();
