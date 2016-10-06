@@ -30,13 +30,13 @@ public class ExecutorServices {
      * Shuts down the given {@link ExecutorService} in an orderly fashion. Disables new tasks from submission and then
      * waits for existing tasks to terminate. Eventually cancels running tasks if too much time elapses.
      * <p>
-     * If the timeout is < 0, then a plain shutdown takes place.
+     * If the timeout is 0, then a plain shutdown takes place.
      * </p>
      * 
      * @param executorService
      *            the pool to shutdown.
      * @param timeout
-     *            the maximum time to wait
+     *            the maximum time to wait, or 0 to not wait for existing tasks to terminate.
      * @param timeUnit
      *            the time unit of the timeout argument
      * @param source

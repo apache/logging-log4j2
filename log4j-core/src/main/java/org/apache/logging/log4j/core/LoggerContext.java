@@ -356,7 +356,7 @@ public class LoggerContext extends AbstractLifeCycle
             final String source = "LoggerContext \'" + getName() + "\'";
             shutdownEs = ExecutorServices.shutdown(executorService, timeout, timeUnit, source);
             // Do not wait for daemon threads
-            shutdownEsd = ExecutorServices.shutdown(executorServiceDeamons, -1, timeUnit, source);
+            shutdownEsd = ExecutorServices.shutdown(executorServiceDeamons, 0, timeUnit, source);
         } finally {
             configLock.unlock();
             this.setStopped();
