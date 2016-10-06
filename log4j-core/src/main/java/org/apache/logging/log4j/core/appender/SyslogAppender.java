@@ -135,7 +135,7 @@ public class SyslogAppender extends SocketAppender {
             Rfc5424Layout.createLayout(facility, id, enterpriseNumber, includeMdc, mdcId, mdcPrefix, eventPrefix, newLine,
                 escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, useTlsMessageFormat, loggerFields,
                 config) :
-            SyslogLayout.createLayout(facility, newLine, escapeNL, charsetName);
+            SyslogLayout.createLayout(facility, newLine, escapeNL, charsetName, null);
 
         if (name == null) {
             LOGGER.error("No name provided for SyslogAppender");

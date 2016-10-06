@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,10 +32,7 @@ import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 
 import static org.junit.Assert.*;
 
@@ -50,12 +48,12 @@ public class SyslogLayoutTest {
     private static final String line2 = "empty mdc";
     private static final String line3 = "filled mdc";
     private static final String line4 =
-        "Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
+            "Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @BeforeClass
     public static void setupClass() {
@@ -69,19 +67,21 @@ public class SyslogLayoutTest {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
-
-
+    @Before
+    public void setup() {
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+        root.setLevel(Level.DEBUG);
+    }
 
     /**
      * Test case for MDC conversion pattern.
      */
     @Test
     public void testLayout() throws Exception {
-        for (final Appender appender : root.getAppenders().values()) {
-            root.removeAppender(appender);
-        }
         // set up appender
-        final SyslogLayout layout = SyslogLayout.createLayout(Facility.LOCAL0, true, null, null);
+        final SyslogLayout layout = SyslogLayout.createLayout(Facility.LOCAL0, true, null, null, null);
         //ConsoleAppender appender = new ConsoleAppender("Console", layout);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
@@ -117,5 +117,38 @@ public class SyslogLayoutTest {
         assertTrue("Expected line 2 to end with: " + line2 + " Actual " + list.get(1), list.get(1).endsWith(line2));
         assertTrue("Expected line 3 to end with: " + line3 + " Actual " + list.get(2), list.get(2).endsWith(line3));
         assertTrue("Expected line 4 to end with: " + line4 + " Actual " + list.get(3), list.get(3).endsWith(line4));
+    }
+
+    /**
+     * Test case for MDC conversion pattern.
+     */
+    @Test
+    public void testCompositeLayout() throws Exception {
+
+        final PatternLayout patternLayout =
+            PatternLayout.createLayout("%m %X", null, null, null, Charset.defaultCharset(), true, false, null, null);
+
+        // set up appender
+        final SyslogLayout layout = SyslogLayout.createLayout(Facility.LOCAL0, true, null, null, patternLayout);
+
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+        appender.start();
+
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+
+        ThreadContext.put("key1", "value1");
+
+        root.debug("filled mdc");
+
+        appender.stop();
+
+        final List<String> list = appender.getMessages();
+
+        assertEquals(1, list.size());
+        final String log = list.get(0);
+        assertTrue(log, log.startsWith("<135>"));
+        assertTrue(log, log.contains("filled mdc"));
+        assertTrue(log, log.endsWith(" {key1=value1}"));
     }
 }
