@@ -132,7 +132,7 @@ public final class HtmlLayout extends AbstractStringLayout {
     }
 
     /**
-     * Format as a String.
+     * Formats as a String.
      *
      * @param event The Logging Event.
      * @return A String containing the LogEvent as HTML.
@@ -325,7 +325,7 @@ public final class HtmlLayout extends AbstractStringLayout {
     }
 
     /**
-     * Create an HTML Layout.
+     * Creates an HTML Layout.
      * @param locationInfo If "true", location information will be included. The default is false.
      * @param title The title to include in the file header. If none is specified the default title will be used.
      * @param contentType The content type. Defaults to "text/html".
