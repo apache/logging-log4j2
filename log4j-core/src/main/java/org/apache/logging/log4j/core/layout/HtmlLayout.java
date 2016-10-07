@@ -258,6 +258,16 @@ public final class HtmlLayout extends AbstractStringLayout {
         }
     }
 
+    private StringBuilder appendLs(StringBuilder sbuilder, String s) {
+        sbuilder.append(s).append(Strings.LINE_SEPARATOR);
+        return sbuilder;
+    }
+    
+    private StringBuilder append(StringBuilder sbuilder, String s) {
+        sbuilder.append(s);
+        return sbuilder;
+    }
+    
     /**
      * Returns appropriate HTML headers.
      * @return The header as a byte array.
@@ -265,38 +275,39 @@ public final class HtmlLayout extends AbstractStringLayout {
     @Override
     public byte[] getHeader() {
         final StringBuilder sbuf = new StringBuilder();
-        sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" ");
-        sbuf.append("\"http://www.w3.org/TR/html4/loose.dtd\">");
-        sbuf.append(Strings.LINE_SEPARATOR);
-        sbuf.append("<html>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<head>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<meta charset=\"").append(getCharset()).append("\"/>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<title>").append(title).append("</title>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<style type=\"text/css\">").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<!--").append(Strings.LINE_SEPARATOR);
-        sbuf.append("body, table {font-family:").append(font).append("; font-size: ");
-        sbuf.append(headerSize).append(";}").append(Strings.LINE_SEPARATOR);
-        sbuf.append("th {background: #336699; color: #FFFFFF; text-align: left;}").append(Strings.LINE_SEPARATOR);
-        sbuf.append("-->").append(Strings.LINE_SEPARATOR);
-        sbuf.append("</style>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("</head>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<hr size=\"1\" noshade=\"noshade\">").append(Strings.LINE_SEPARATOR);
-        sbuf.append("Log session start time " + new java.util.Date() + "<br>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<br>").append(Strings.LINE_SEPARATOR);
-        sbuf.append(
-            "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">");
-        sbuf.append(Strings.LINE_SEPARATOR);
-        sbuf.append("<tr>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<th>Time</th>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<th>Thread</th>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<th>Level</th>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<th>Logger</th>").append(Strings.LINE_SEPARATOR);
+        append(sbuf, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" ");
+        appendLs(sbuf, "\"http://www.w3.org/TR/html4/loose.dtd\">");
+        appendLs(sbuf, "<html>");
+        appendLs(sbuf, "<head>");
+        append(sbuf, "<meta charset=\"");
+        append(sbuf, getCharset().toString());
+        appendLs(sbuf, "\"/>");
+        append(sbuf, "<title>").append(title);
+        appendLs(sbuf, "</title>");
+        appendLs(sbuf, "<style type=\"text/css\">");
+        appendLs(sbuf, "<!--");
+        append(sbuf, "body, table {font-family:").append(font).append("; font-size: ");
+        appendLs(sbuf, headerSize).append(";}");
+        appendLs(sbuf, "th {background: #336699; color: #FFFFFF; text-align: left;}");
+        appendLs(sbuf, "-->");
+        appendLs(sbuf, "</style>");
+        appendLs(sbuf, "</head>");
+        appendLs(sbuf, "<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">");
+        appendLs(sbuf, "<hr size=\"1\" noshade=\"noshade\">");
+        appendLs(sbuf, "Log session start time " + new java.util.Date() + "<br>");
+        appendLs(sbuf, "<br>");
+        appendLs(sbuf,
+                "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">");
+        appendLs(sbuf, "<tr>");
+        appendLs(sbuf, "<th>Time</th>");
+        appendLs(sbuf, "<th>Thread</th>");
+        appendLs(sbuf, "<th>Level</th>");
+        appendLs(sbuf, "<th>Logger</th>");
         if (locationInfo) {
-            sbuf.append("<th>File:Line</th>").append(Strings.LINE_SEPARATOR);
+            appendLs(sbuf, "<th>File:Line</th>");
         }
-        sbuf.append("<th>Message</th>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("</tr>").append(Strings.LINE_SEPARATOR);
+        appendLs(sbuf, "<th>Message</th>");
+        appendLs(sbuf, "</tr>");
         return sbuf.toString().getBytes(getCharset());
     }
 
@@ -307,9 +318,9 @@ public final class HtmlLayout extends AbstractStringLayout {
     @Override
     public byte[] getFooter() {
         final StringBuilder sbuf = new StringBuilder();
-        sbuf.append("</table>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("<br>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("</body></html>");
+        appendLs(sbuf, "</table>");
+        appendLs(sbuf, "<br>");
+        appendLs(sbuf, "</body></html>");
         return getBytes(sbuf.toString());
     }
 
