@@ -30,6 +30,9 @@
       <action issue="LOG4J2-1639" dev="ggregory" type="fix" due-to="Sridhar Gopinath">
         Fix MemoryMappedFileAppender.createAppender() Javadoc for immediateFlush.
       </action>
+      <action issue="LOG4J2-1641" dev="ggregory" type="update">
+        Update JeroMQ from 0.3.5 to 0.3.6.
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">
