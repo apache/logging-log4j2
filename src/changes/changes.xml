@@ -27,6 +27,9 @@
       <action issue="LOG4J2-1636" dev="ggregory" type="fix" due-to="Eldar Gabdullin">
         Console Appender does not pick up Oracle Java 8's sun.stdout.encoding and sun.stderr.encoding.
       </action>
+      <action issue="LOG4J2-1639" dev="ggregory" type="fix" due-to="Sridhar Gopinath">
+        Fix MemoryMappedFileAppender.createAppender() Javadoc for immediateFlush.
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">
