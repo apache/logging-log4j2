@@ -64,9 +64,26 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      */
     public enum Target {
         /** Standard output. */
-        SYSTEM_OUT,
+        SYSTEM_OUT {
+            @Override
+            public Charset getDefaultCharset() {
+                return getCharset("sun.stdout.encoding");
+            }
+        },
         /** Standard error output. */
-        SYSTEM_ERR
+        SYSTEM_ERR {
+            @Override
+            public Charset getDefaultCharset() {
+                return getCharset("sun.stderr.encoding");
+            }
+        };
+        
+        public abstract Charset getDefaultCharset();
+        
+        protected Charset getCharset(String property) {
+            return new PropertiesUtil(PropertiesUtil.getSystemProperties()).getCharsetProperty(property);
+        }
+
     }
 
     private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
@@ -197,7 +214,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             if (follow && direct) {
                 throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
             }
-            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            final Layout<? extends Serializable> layout = getOrCreateLayout(target.getDefaultCharset());
             return new ConsoleAppender(getName(), layout, getFilter(), getManager(target, follow, direct, layout),
                     isIgnoreExceptions(), target);
         }

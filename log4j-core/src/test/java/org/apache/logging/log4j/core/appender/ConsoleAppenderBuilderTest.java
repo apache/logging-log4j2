@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.nio.charset.Charset;
+
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,4 +31,19 @@ public class ConsoleAppenderBuilderTest {
     public void testDefaultImmediateFlush() {
         Assert.assertTrue(ConsoleAppender.newBuilder().isImmediateFlush());
     }
+
+    /**
+     * Tests https://issues.apache.org/jira/browse/LOG4J2-1636
+     * 
+     * Tested with Oracle 7 and 8 and IBM Java 8.
+     */
+    @Test
+    public void testDefaultLayoutDefaultCharset() {
+        final ConsoleAppender appender = ConsoleAppender.newBuilder().build();
+        final PatternLayout layout = (PatternLayout) appender.getLayout();
+        final String charsetName = System.getProperty("sun.stdout.encoding");
+        final String expectedName = charsetName != null ? charsetName : Charset.defaultCharset().name();
+        Assert.assertEquals(expectedName, layout.getCharset().name());
+    }
+
 }

@@ -23,9 +23,18 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.7.1" date="2016-XX-XX" description="GA Release 2.7.1">
+    <release version="2.7.1" date="2016-MM-DD" description="GA Release 2.7.1">
       <action issue="LOG4J2-1623" dev="mikes" type="fix">
         Configurable JVM shutdown hook timeout.
+      </action>
+      <action issue="LOG4J2-1636" dev="ggregory" type="fix" due-to="Eldar Gabdullin">
+        Console Appender does not pick up Oracle Java 8's sun.stdout.encoding and sun.stderr.encoding.
+      </action>
+      <action issue="LOG4J2-1639" dev="ggregory" type="fix" due-to="Sridhar Gopinath">
+        Fix MemoryMappedFileAppender.createAppender() Javadoc for immediateFlush.
+      </action>
+      <action issue="LOG4J2-1641" dev="ggregory" type="update">
+        Update JeroMQ from 0.3.5 to 0.3.6.
       </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">

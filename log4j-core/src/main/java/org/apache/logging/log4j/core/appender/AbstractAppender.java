@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
@@ -83,6 +84,13 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         public Layout<? extends Serializable> getOrCreateLayout() {
             if (layout == null) {
                 return PatternLayout.createDefaultLayout();
+            }
+            return layout;
+        }
+        
+        public Layout<? extends Serializable> getOrCreateLayout(Charset charset) {
+            if (layout == null) {
+                return PatternLayout.newBuilder().withCharset(charset).build();
             }
             return layout;
         }

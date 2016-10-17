@@ -50,15 +50,12 @@ public class JndiLookup extends AbstractLookup {
             return null;
         }
         final String jndiName = convertJndiName(key);
-        final JndiManager jndiManager = JndiManager.getDefaultManager();
-        try {
+        try (final JndiManager jndiManager = JndiManager.getDefaultManager()) {
             final Object value = jndiManager.lookup(jndiName);
             return value == null ? null : String.valueOf(value);
         } catch (final NamingException e) {
             LOGGER.warn(LOOKUP, "Error looking up JNDI resource [{}].", jndiName, e);
             return null;
-        } finally {
-            jndiManager.close();
         }
     }
 
