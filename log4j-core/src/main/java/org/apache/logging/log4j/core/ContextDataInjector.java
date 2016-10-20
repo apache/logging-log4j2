@@ -76,7 +76,7 @@ public interface ContextDataInjector {
      *     ThreadContextDataInjector.copyProperties(properties, reusable);
      *
      *     // then copy context data key-value pairs (may overwrite configuration properties)
-     *     reusable.addAll(rawContextData());
+     *     reusable.putAll(rawContextData());
      *     return reusable;
      * }
      * </pre>
@@ -102,7 +102,7 @@ public interface ContextDataInjector {
      * underlying context may or may not be reflected in the returned object, depending on the context data source and
      * the implementation of this method. It is not safe to pass the returned object to another thread.
      * </p>
-     * @return a {@code ReadOnlyStringMap} object reflecting the current state of the context
+     * @return a {@code ReadOnlyStringMap} object reflecting the current state of the context, may not return {@code null}
      */
     ReadOnlyStringMap rawContextData();
 }
