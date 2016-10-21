@@ -43,7 +43,7 @@ import org.apache.logging.log4j.util.StringMap;
  * @see ContextDataInjectorFactory
  * @since 2.7
  */
-public class ThreadContextDataInjector  {
+public class ThreadContextDataInjector {
 
     /**
      * Default {@code ContextDataInjector} for the legacy {@code Map<String, String>}-based ThreadContext (which is
@@ -52,10 +52,6 @@ public class ThreadContextDataInjector  {
      * This injector always puts key-value pairs into the specified reusable StringMap.
      */
     public static class ForDefaultThreadContextMap implements ContextDataInjector {
-        private static final StringMap EMPTY_STRING_MAP = ContextDataFactory.createContextData();
-        static {
-            EMPTY_STRING_MAP.freeze();
-        }
 
         /**
          * Puts key-value pairs from both the specified list of properties as well as the thread context into the
@@ -77,7 +73,7 @@ public class ThreadContextDataInjector  {
             if (props == null || props.isEmpty()) {
                 // this will replace the LogEvent's context data with the returned instance.
                 // NOTE: must mark as frozen or downstream components may attempt to modify (UnsupportedOperationEx)
-                return copy.isEmpty() ? EMPTY_STRING_MAP : frozenStringMap(copy);
+                return copy.isEmpty() ? ContextDataFactory.emptyFrozenContextData() : frozenStringMap(copy);
             }
             // If the list of Properties is non-empty we need to combine the properties and the ThreadContext
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
@@ -106,7 +102,7 @@ public class ThreadContextDataInjector  {
             if (map instanceof ReadOnlyStringMap) {
                 return (ReadOnlyStringMap) map;
             }
-            return map.isEmpty() ? EMPTY_STRING_MAP : new JdkMapAdapterStringMap(map.getImmutableMapOrNull());
+            return map.isEmpty() ? ContextDataFactory.emptyFrozenContextData() : new JdkMapAdapterStringMap(map.getImmutableMapOrNull());
         }
     }
 

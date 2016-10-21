@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.EmptyFrozenStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -51,11 +52,6 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap2, CopyO
      * System property name that can be used to control the data structure's initial capacity.
      */
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
-
-    private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap();
-    static {
-        EMPTY_CONTEXT_DATA.freeze();
-    }
 
     private final ThreadLocal<StringMap> localMap;
 
@@ -168,7 +164,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap2, CopyO
     @Override
     public StringMap getReadOnlyContextData() {
         final StringMap map = localMap.get();
-        return map == null ? EMPTY_CONTEXT_DATA : map;
+        return map == null ? EmptyFrozenStringMap.INSTANCE : map;
     }
 
     @Override

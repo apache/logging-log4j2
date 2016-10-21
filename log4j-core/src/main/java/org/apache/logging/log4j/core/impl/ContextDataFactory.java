@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.util.EmptyFrozenStringMap;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -91,5 +92,16 @@ public class ContextDataFactory {
         } catch (final Exception any) {
             return new SortedArrayStringMap(initialCapacity);
         }
+    }
+
+    /**
+     * An empty pre-frozen StringMap. The returned object may be shared.
+     * <p>
+     * Not affected by the system property {@code "log4j2.ContextData"}.
+     *
+     * @return an empty pre-frozen StringMap
+     */
+    public static StringMap emptyFrozenContextData() {
+        return EmptyFrozenStringMap.INSTANCE;
     }
 }
