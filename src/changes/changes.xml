@@ -33,6 +33,9 @@
       <action issue="LOG4J2-1639" dev="ggregory" type="fix" due-to="Sridhar Gopinath">
         Fix MemoryMappedFileAppender.createAppender() Javadoc for immediateFlush.
       </action>
+      <action issue="LOG4J2-1644" dev="ggregory" type="update" due-to="Tim Gokcen, Pavel Sivolobtchik">
+        Inefficient locking in AbstractLoggerAdapter.
+      </action>
       <action issue="LOG4J2-1641" dev="ggregory" type="update">
         Update JeroMQ from 0.3.5 to 0.3.6.
       </action>
