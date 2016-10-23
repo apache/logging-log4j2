@@ -20,13 +20,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
 
 public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest {
     
@@ -63,10 +62,7 @@ public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest 
 
     @Test
     public void testFlush() throws IOException {
-        final OutputStream os = EasyMock.createMock("out", OutputStream.class);
-        os.flush(); // expect the flush to come through to the mocked OutputStream
-        os.close();
-        replay(os);
+        final OutputStream os = mock(OutputStream.class);
 
         try (final OutputStream filteredOut =
             IoBuilder.forLogger(getExtendedLogger())
@@ -75,7 +71,10 @@ public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest 
                 .buildOutputStream()) {
           filteredOut.flush();
         }
-        verify(os);
+
+        then(os).should().flush();
+        then(os).should().close();
+        then(os).shouldHaveNoMoreInteractions();
     }
 
     @Test

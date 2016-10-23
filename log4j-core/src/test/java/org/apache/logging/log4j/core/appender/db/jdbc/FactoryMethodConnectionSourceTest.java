@@ -18,46 +18,23 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
-
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 public class FactoryMethodConnectionSourceTest {
     private static ThreadLocal<Object> holder = new ThreadLocal<>();
     private static final String CONFIG = "log4j-fatalOnly.xml";
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.reconfigure();
-        final StatusLogger logger = StatusLogger.getLogger();
-        logger.setLevel(Level.FATAL);
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        holder.remove();
-        holder = null;
-    }
-
-    @Before
-    public void setUp() {
-
-    }
+    @ClassRule
+    public static LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
     @After
     public void tearDown() {
@@ -107,13 +84,11 @@ public class FactoryMethodConnectionSourceTest {
 
     @Test
     public void testDataSourceReturnType() throws SQLException {
-        final DataSource dataSource = createStrictMock(DataSource.class);
-        final Connection connection1 = createStrictMock(Connection.class);
-        final Connection connection2 = createStrictMock(Connection.class);
+        final DataSource dataSource = mock(DataSource.class);
+        final Connection connection1 = mock(Connection.class);
+        final Connection connection2 = mock(Connection.class);
 
-        expect(dataSource.getConnection()).andReturn(connection1);
-        expect(dataSource.getConnection()).andReturn(connection2);
-        replay(dataSource, connection1, connection2);
+        given(dataSource.getConnection()).willReturn(connection1, connection2);
 
         holder.set(dataSource);
 
@@ -126,15 +101,11 @@ public class FactoryMethodConnectionSourceTest {
                 + "] " + DataSourceFactory.class.getName() + ".factoryMethod02() }", source.toString());
         assertSame("The connection is not correct (1).", connection1, source.getConnection());
         assertSame("The connection is not correct (2).", connection2, source.getConnection());
-
-        verify(connection1, connection2);
     }
 
     @Test
     public void testConnectionReturnType() throws SQLException {
-        final Connection connection = createStrictMock(Connection.class);
-
-        replay(connection);
+        final Connection connection = mock(Connection.class);
 
         holder.set(connection);
 
@@ -147,8 +118,6 @@ public class FactoryMethodConnectionSourceTest {
                 + ConnectionFactory.class.getName() + ".anotherMethod03() }", source.toString());
         assertSame("The connection is not correct (1).", connection, source.getConnection());
         assertSame("The connection is not correct (2).", connection, source.getConnection());
-
-        verify(connection);
     }
 
     @SuppressWarnings("unused")

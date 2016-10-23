@@ -42,6 +42,9 @@
       <action issue="LOG4J2-1647" dev="mattsicker" type="update">
         Update Commons Lang from 3.4 to 4.5.
       </action>
+      <action issue="LOG4J2-1646" dev="mattsicker" type="update">
+        Migrate to Mockito 2.x in unit tests.
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">

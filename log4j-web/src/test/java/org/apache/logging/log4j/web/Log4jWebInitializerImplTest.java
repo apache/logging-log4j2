@@ -20,71 +20,56 @@ import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.easymock.Capture;
-import org.easymock.EasyMock;
-import org.easymock.IAnswer;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
+@RunWith(MockitoJUnitRunner.class)
 public class Log4jWebInitializerImplTest {
+    @Mock
     private ServletContext servletContext;
+    @Captor
+    private ArgumentCaptor<Log4jWebLifeCycle> initializerCaptor;
+    @Captor
+    private ArgumentCaptor<org.apache.logging.log4j.spi.LoggerContext> loggerContextCaptor;
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     private Log4jWebInitializerImpl initializerImpl;
 
     @Before
     public void setUp() {
-        final Capture<Log4jWebLifeCycle> initializerCapture = EasyMock.newCapture();
-
-        this.servletContext = createStrictMock(ServletContext.class);
-        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(null);
-        this.servletContext.setAttribute(eq(Log4jWebSupport.SUPPORT_ATTRIBUTE), capture(initializerCapture));
-        expectLastCall();
-
-        replay(this.servletContext);
+        given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(null);
 
         final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
 
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.SUPPORT_ATTRIBUTE), initializerCaptor.capture());
         assertNotNull("The initializer should not be null.", initializer);
-        assertSame("The capture is not correct.", initializer, initializerCapture.getValue());
+        assertSame("The capture is not correct.", initializer, initializerCaptor.getValue());
         assertTrue("The initializer is not correct.", initializer instanceof Log4jWebInitializerImpl);
-        verify(this.servletContext);
-        reset(this.servletContext);
 
         this.initializerImpl = (Log4jWebInitializerImpl) initializer;
     }
 
-    @After
-    public void tearDown() {
-        verify(this.servletContext);
-    }
-
     @Test
     public void testDeinitializeBeforeInitialize() {
-        replay(this.servletContext);
-
-        try {
-            this.initializerImpl.stop();
-            fail("Expected an IllegalStateException.");
-        } catch (final IllegalStateException ignore) {
-
-        }
+        expectedException.expect(IllegalStateException.class);
+        this.initializerImpl.stop();
     }
 
     @Test
     public void testSetLoggerContextBeforeInitialize() {
-        replay(this.servletContext);
-
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
         this.initializerImpl.setLoggerContext();
@@ -94,8 +79,6 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testClearLoggerContextBeforeInitialize() {
-        replay(this.servletContext);
-
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
         this.initializerImpl.clearLoggerContext();
@@ -105,32 +88,17 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeWithNoParametersThenSetLoggerContextThenDeinitialize() throws Exception {
-        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
-
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
-                .andReturn(null);
-        expect(this.servletContext.getServletContextName()).andReturn("helloWorld01");
-        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
-        this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
-        expectLastCall();
-
-        replay(this.servletContext);
-
-        assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
+        given(servletContext.getServletContextName()).willReturn("helloWorld01");
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
 
         this.initializerImpl.start();
 
-        assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
-        assertTrue("The context attribute is not correct.",
-                loggerContextCapture.getValue() instanceof org.apache.logging.log4j.spi.LoggerContext);
-        final org.apache.logging.log4j.spi.LoggerContext loggerContext =
-                (org.apache.logging.log4j.spi.LoggerContext)loggerContextCapture.getValue();
-
-        verify(this.servletContext);
-        reset(this.servletContext);
-        replay(this.servletContext);
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
+        final org.apache.logging.log4j.spi.LoggerContext loggerContext = loggerContextCaptor.getValue();
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -144,19 +112,9 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null again.", ContextAnchor.THREAD_CONTEXT.get());
 
-        verify(this.servletContext);
-        reset(this.servletContext);
-
-        this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
-        expectLastCall();
-
-        replay(this.servletContext);
-
         this.initializerImpl.stop();
 
-        verify(this.servletContext);
-        reset(this.servletContext);
-        replay(this.servletContext);
+        then(servletContext).should().removeAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE));
 
         assertNull("The context should again still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -167,33 +125,19 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeWithClassLoaderNoParametersThenSetLoggerContextThenDeinitialize() throws Exception {
-        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
-
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
-                .andReturn("false");
-        expect(this.servletContext.getServletContextName()).andReturn("helloWorld02");
-        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
-        expect(this.servletContext.getClassLoader()).andReturn(this.getClass().getClassLoader());
-        this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
-        expectLastCall();
-
-        replay(this.servletContext);
-
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("false");
+        given(servletContext.getServletContextName()).willReturn("helloWorld02");
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
+        given(servletContext.getClassLoader()).willReturn(getClass().getClassLoader());
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
         this.initializerImpl.start();
 
-        assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
-        assertTrue("The context attribute is not correct.",
-                loggerContextCapture.getValue() instanceof org.apache.logging.log4j.spi.LoggerContext);
-        final org.apache.logging.log4j.spi.LoggerContext loggerContext =
-                (org.apache.logging.log4j.spi.LoggerContext)loggerContextCapture.getValue();
-
-        verify(this.servletContext);
-        reset(this.servletContext);
-        replay(this.servletContext);
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
+        final org.apache.logging.log4j.spi.LoggerContext loggerContext = loggerContextCaptor.getValue();
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -207,19 +151,9 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null again.", ContextAnchor.THREAD_CONTEXT.get());
 
-        verify(this.servletContext);
-        reset(this.servletContext);
-
-        this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
-        expectLastCall();
-
-        replay(this.servletContext);
-
         this.initializerImpl.stop();
 
-        verify(this.servletContext);
-        reset(this.servletContext);
-        replay(this.servletContext);
+        then(servletContext).should().removeAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE));
 
         assertNull("The context should again still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -230,168 +164,95 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeIsIdempotent() throws Exception {
-        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
-
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
-                .andReturn("nothing");
-        expect(this.servletContext.getServletContextName()).andReturn("helloWorld03");
-        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
-        expect(this.servletContext.getClassLoader()).andReturn(this.getClass().getClassLoader());
-        this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
-        expectLastCall();
-
-        replay(this.servletContext);
-
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("nothing");
+        given(servletContext.getServletContextName()).willReturn("helloWorld03");
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
+        given(servletContext.getClassLoader()).willReturn(getClass().getClassLoader());
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
         this.initializerImpl.start();
 
-        assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
-        assertTrue("The context attribute is not correct.",
-                loggerContextCapture.getValue() instanceof org.apache.logging.log4j.spi.LoggerContext);
-
-        verify(this.servletContext);
-        reset(this.servletContext);
-        replay(this.servletContext);
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
 
         this.initializerImpl.start();
         this.initializerImpl.start();
         this.initializerImpl.start();
-
-        verify(this.servletContext);
-        reset(this.servletContext);
-
-        this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
-        expectLastCall();
-
-        replay(this.servletContext);
-
         this.initializerImpl.stop();
+
+        then(servletContext).should().removeAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE));
     }
 
     @Test
     public void testInitializeFailsAfterDeinitialize() throws Exception {
-        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
-
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
-                .andReturn(null);
-        expect(this.servletContext.getServletContextName()).andReturn("helloWorld04");
-        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
-        expect(this.servletContext.getClassLoader()).andReturn(this.getClass().getClassLoader());
-        this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
-        expectLastCall();
-
-        replay(this.servletContext);
-
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
+        given(servletContext.getServletContextName()).willReturn("helloWorld04");
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
+        given(servletContext.getClassLoader()).willReturn(getClass().getClassLoader());
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
         this.initializerImpl.start();
 
-        assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
-        assertTrue("The context attribute is not correct.",
-                loggerContextCapture.getValue() instanceof org.apache.logging.log4j.spi.LoggerContext);
-
-        verify(this.servletContext);
-        reset(this.servletContext);
-
-        this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
-        expectLastCall();
-
-        replay(this.servletContext);
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
 
         this.initializerImpl.stop();
 
-        try {
-            this.initializerImpl.start();
-            fail("Expected an IllegalStateException.");
-        } catch (final IllegalStateException ignore) {
+        then(servletContext).should().removeAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE));
 
-        }
+        expectedException.expect(IllegalStateException.class);
+        this.initializerImpl.start();
     }
 
     @Test
     public void testDeinitializeIsIdempotent() throws Exception {
-        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
-
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
-                .andReturn(null);
-        expect(this.servletContext.getServletContextName()).andReturn("helloWorld05");
-        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
-        expect(this.servletContext.getClassLoader()).andReturn(this.getClass().getClassLoader());
-        this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
-        expectLastCall();
-
-        replay(this.servletContext);
-
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
+        given(servletContext.getServletContextName()).willReturn("helloWorld05");
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
+        given(servletContext.getClassLoader()).willReturn(getClass().getClassLoader());
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
         this.initializerImpl.start();
 
-        assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
-        assertTrue("The context attribute is not correct.",
-                loggerContextCapture.getValue() instanceof org.apache.logging.log4j.spi.LoggerContext);
-
-        verify(this.servletContext);
-        reset(this.servletContext);
-
-        this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
-        expectLastCall();
-
-        replay(this.servletContext);
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
 
         this.initializerImpl.stop();
         this.initializerImpl.stop();
         this.initializerImpl.stop();
+        then(servletContext).should().removeAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE));
     }
 
     @Test
     public void testInitializeUsingJndiSelectorFails() throws Exception {
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
-                .andReturn("true");
-        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
-        replay(this.servletContext);
-
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("true");
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        try {
-            this.initializerImpl.start();
-            fail("Expected an IllegalStateException.");
-        } catch (final IllegalStateException ignore) {
-            // ignore
-        }
+        expectedException.expect(IllegalStateException.class);
+        this.initializerImpl.start();
     }
 
     @Test
     public void testInitializeUsingJndiSelector() throws Exception {
-        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
-
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn("helloWorld6");
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
-                .andReturn("true");
-        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
-        this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
-        expectLastCall();
-
-        replay(this.servletContext);
-
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn("helloWorld06");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("true");
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
         this.initializerImpl.start();
 
-        assertNull("The context attribute should be null.", loggerContextCapture.getValue());
-
-        verify(this.servletContext);
-        reset(this.servletContext);
-        replay(this.servletContext);
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNull("The context attribute should be null.", loggerContextCaptor.getValue());
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -403,15 +264,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null again.", ContextAnchor.THREAD_CONTEXT.get());
 
-        verify(this.servletContext);
-        reset(this.servletContext);
-        replay(this.servletContext);
-
         this.initializerImpl.stop();
-
-        verify(this.servletContext);
-        reset(this.servletContext);
-        replay(this.servletContext);
 
         assertNull("The context should again still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -422,65 +275,37 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testWrapExecutionWithNoParameters() throws Exception {
-        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
-
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
-        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
-                .andReturn(null);
-        expect(this.servletContext.getServletContextName()).andReturn("helloWorld01");
-        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
-        this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
-        expectLastCall();
-
-        replay(this.servletContext);
-
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
+        given(servletContext.getServletContextName()).willReturn("helloWorld07");
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
         this.initializerImpl.start();
 
-        assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
-        assertTrue("The context attribute is not correct.",
-                loggerContextCapture.getValue() instanceof org.apache.logging.log4j.spi.LoggerContext);
-        final org.apache.logging.log4j.spi.LoggerContext loggerContext =
-                (org.apache.logging.log4j.spi.LoggerContext)loggerContextCapture.getValue();
-
-        verify(this.servletContext);
-        reset(this.servletContext);
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
+        final org.apache.logging.log4j.spi.LoggerContext loggerContext = loggerContextCaptor.getValue();
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        final Runnable runnable = createStrictMock(Runnable.class);
-        runnable.run();
-        expectLastCall().andAnswer(new IAnswer<Void>() {
+        final Runnable runnable = new Runnable() {
             @Override
-            public Void answer() {
+            public void run() {
                 final LoggerContext context = ContextAnchor.THREAD_CONTEXT.get();
                 assertNotNull("The context should not be null.", context);
                 assertSame("The context is not correct.", loggerContext, context);
-                return null;
             }
-        });
-
-        replay(this.servletContext, runnable);
+        };
 
         this.initializerImpl.wrapExecution(runnable);
 
         assertNull("The context should be null again.", ContextAnchor.THREAD_CONTEXT.get());
 
-        verify(this.servletContext, runnable);
-        reset(this.servletContext);
-
-        this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
-        expectLastCall();
-
-        replay(this.servletContext);
-
         this.initializerImpl.stop();
 
-        verify(this.servletContext);
-        reset(this.servletContext);
-        replay(this.servletContext);
+        then(servletContext).should().removeAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE));
 
         assertNull("The context should again still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
