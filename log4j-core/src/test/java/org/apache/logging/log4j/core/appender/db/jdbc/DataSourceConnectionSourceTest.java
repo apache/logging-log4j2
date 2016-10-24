@@ -20,7 +20,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -37,9 +36,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockejb.jndi.MockContextFactory;
 
-import static org.easymock.EasyMock.*;
-
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
 public class DataSourceConnectionSourceTest {
@@ -112,13 +111,11 @@ public class DataSourceConnectionSourceTest {
 
     @Test
     public void testDataSource() throws NamingException, SQLException {
-        final DataSource dataSource = createStrictMock(DataSource.class);
-        final Connection connection1 = createStrictMock(Connection.class);
-        final Connection connection2 = createStrictMock(Connection.class);
+        final DataSource dataSource = mock(DataSource.class);
+        final Connection connection1 = mock(Connection.class);
+        final Connection connection2 = mock(Connection.class);
 
-        expect(dataSource.getConnection()).andReturn(connection1);
-        expect(dataSource.getConnection()).andReturn(connection2);
-        replay(dataSource, connection1, connection2);
+        given(dataSource.getConnection()).willReturn(connection1, connection2);
 
         this.context.bind(this.jndiURL, dataSource);
 
@@ -134,8 +131,6 @@ public class DataSourceConnectionSourceTest {
         source = DataSourceConnectionSource.createConnectionSource(jndiURL.substring(0, jndiURL.length() - 1));
 
         assertNull("The connection source should be null now.", source);
-
-        verify(dataSource, connection1, connection2);
     }
 
 }

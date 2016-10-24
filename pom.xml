@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
   ~ contributor license agreements. See the NOTICE file distributed with
@@ -225,6 +224,7 @@
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
+    <mockitoVersion>2.2.7</mockitoVersion>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -288,7 +288,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.4</version>
+        <version>3.5</version>
       </dependency>
       <dependency>
         <groupId>com.beust</groupId>
@@ -654,9 +654,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.easymock</groupId>
-        <artifactId>easymock</artifactId>
-        <version>3.4</version>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockitoVersion}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

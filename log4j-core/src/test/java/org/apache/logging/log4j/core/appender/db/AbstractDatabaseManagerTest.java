@@ -17,261 +17,201 @@
 package org.apache.logging.log4j.core.appender.db;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.junit.After;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
-
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 
 public class AbstractDatabaseManagerTest {
     private AbstractDatabaseManager manager;
 
     public void setUp(final String name, final int buffer) {
-        this.manager = createMockBuilder(AbstractDatabaseManager.class)
-                .withConstructor(String.class, int.class)
-                .withArgs(name, buffer)
-                .addMockedMethod("release")
-                .createStrictMock();
-    }
-
-    @After
-    public void tearDown() {
-        verify(this.manager);
+        manager = spy(new StubDatabaseManager(name, buffer));
     }
 
     @Test
     public void testStartupShutdown01() throws Exception {
-        this.setUp("testName01", 0);
+        setUp("testName01", 0);
 
-        replay(this.manager);
+        assertEquals("The name is not correct.", "testName01", manager.getName());
+        assertFalse("The manager should not have started.", manager.isRunning());
 
-        assertEquals("The name is not correct.", "testName01", this.manager.getName());
-        assertFalse("The manager should not have started.", this.manager.isRunning());
+        manager.startup();
+        then(manager).should().startupInternal();
+        assertTrue("The manager should be running now.", manager.isRunning());
 
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.startupInternal();
-        expectLastCall();
-        replay(this.manager);
-
-        this.manager.startup();
-        assertTrue("The manager should be running now.", this.manager.isRunning());
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.shutdownInternal();
-        expectLastCall().andReturn(Boolean.TRUE);
-        replay(this.manager);
-
-        this.manager.shutdown();
-        assertFalse("The manager should not be running anymore.", this.manager.isRunning());
+        manager.shutdown();
+        then(manager).should().shutdownInternal();
+        assertFalse("The manager should not be running anymore.", manager.isRunning());
     }
 
     @Test
     public void testStartupShutdown02() throws Exception {
-        this.setUp("anotherName02", 0);
+        setUp("anotherName02", 0);
 
-        replay(this.manager);
+        assertEquals("The name is not correct.", "anotherName02", manager.getName());
+        assertFalse("The manager should not have started.", manager.isRunning());
 
-        assertEquals("The name is not correct.", "anotherName02", this.manager.getName());
-        assertFalse("The manager should not have started.", this.manager.isRunning());
+        manager.startup();
+        then(manager).should().startupInternal();
+        assertTrue("The manager should be running now.", manager.isRunning());
 
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.startupInternal();
-        expectLastCall();
-        replay(this.manager);
-
-        this.manager.startup();
-        assertTrue("The manager should be running now.", this.manager.isRunning());
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.shutdownInternal();
-        expectLastCall().andReturn(Boolean.TRUE);
-        replay(this.manager);
-
-        this.manager.releaseSub(-1, null);
-        assertFalse("The manager should not be running anymore.", this.manager.isRunning());
+        manager.releaseSub(-1, null);
+        then(manager).should().shutdownInternal();
+        assertFalse("The manager should not be running anymore.", manager.isRunning());
     }
 
     @Test
     public void testToString01() {
-        this.setUp("someName01", 0);
+        setUp("someName01", 0);
 
-        replay(this.manager);
-
-        assertEquals("The string is not correct.", "someName01", this.manager.toString());
+        assertEquals("The string is not correct.", "someName01", manager.toString());
     }
 
     @Test
     public void testToString02() {
-        this.setUp("bufferSize=12, anotherKey02=coolValue02", 12);
+        setUp("bufferSize=12, anotherKey02=coolValue02", 12);
 
-        replay(this.manager);
-
-        assertEquals("The string is not correct.", "bufferSize=12, anotherKey02=coolValue02", this.manager.toString());
+        assertEquals("The string is not correct.", "bufferSize=12, anotherKey02=coolValue02", manager.toString());
     }
 
     @Test
     public void testBuffering01() throws Exception {
-        this.setUp("name", 0);
+        setUp("name", 0);
 
-        final LogEvent event1 = createStrictMock(LogEvent.class);
-        final LogEvent event2 = createStrictMock(LogEvent.class);
-        final LogEvent event3 = createStrictMock(LogEvent.class);
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        final LogEvent event3 = mock(LogEvent.class);
 
-        this.manager.startupInternal();
-        expectLastCall();
-        replay(this.manager);
+        manager.startup();
+        then(manager).should().startupInternal();
+        reset(manager);
 
-        this.manager.startup();
+        manager.write(event1);
+        then(manager).should().connectAndStart();
+        then(manager).should().writeInternal(same(event1));
+        then(manager).should().commitAndClose();
+        reset(manager);
 
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.connectAndStart();
-        expectLastCall();
-        this.manager.writeInternal(same(event1));
-        expectLastCall();
-        this.manager.commitAndClose();
-        expectLastCall().andReturn(Boolean.TRUE);
-        replay(this.manager);
+        manager.write(event2);
+        then(manager).should().connectAndStart();
+        then(manager).should().writeInternal(same(event2));
+        then(manager).should().commitAndClose();
+        reset(manager);
 
-        this.manager.write(event1);
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.connectAndStart();
-        expectLastCall();
-        this.manager.writeInternal(same(event2));
-        expectLastCall();
-        this.manager.commitAndClose();
-        expectLastCall().andReturn(Boolean.TRUE);
-        replay(this.manager);
-
-        this.manager.write(event2);
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.connectAndStart();
-        expectLastCall();
-        this.manager.writeInternal(same(event3));
-        expectLastCall();
-        this.manager.commitAndClose();
-        expectLastCall().andReturn(Boolean.TRUE);
-        replay(this.manager);
-
-        this.manager.write(event3);
+        manager.write(event3);
+        then(manager).should().connectAndStart();
+        then(manager).should().writeInternal(same(event3));
+        then(manager).should().commitAndClose();
+        then(manager).shouldHaveNoMoreInteractions();
     }
 
     @Test
     public void testBuffering02() throws Exception {
-        this.setUp("name", 4);
+        setUp("name", 4);
 
-        final LogEvent event1 = createStrictMock(LogEvent.class);
-        final LogEvent event2 = createStrictMock(LogEvent.class);
-        final LogEvent event3 = createStrictMock(LogEvent.class);
-        final LogEvent event4 = createStrictMock(LogEvent.class);
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        final LogEvent event3 = mock(LogEvent.class);
+        final LogEvent event4 = mock(LogEvent.class);
 
-        this.manager.startupInternal();
-        expectLastCall();
-        replay(this.manager);
+        manager.startup();
+        then(manager).should().startupInternal();
 
-        this.manager.startup();
+        manager.write(event1);
+        manager.write(event2);
+        manager.write(event3);
+        manager.write(event4);
 
-        this.manager.write(event1);
-        this.manager.write(event2);
-        this.manager.write(event3);
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.connectAndStart();
-        expectLastCall();
-        this.manager.writeInternal(same(event1));
-        expectLastCall();
-        this.manager.writeInternal(same(event2));
-        expectLastCall();
-        this.manager.writeInternal(same(event3));
-        expectLastCall();
-        this.manager.writeInternal(same(event4));
-        expectLastCall();
-        this.manager.commitAndClose();
-        expectLastCall().andReturn(Boolean.TRUE);
-        replay(this.manager);
-
-        this.manager.write(event4);
+        then(manager).should().connectAndStart();
+        then(manager).should().writeInternal(same(event1));
+        then(manager).should().writeInternal(same(event2));
+        then(manager).should().writeInternal(same(event3));
+        then(manager).should().writeInternal(same(event4));
+        then(manager).should().commitAndClose();
+        then(manager).shouldHaveNoMoreInteractions();
     }
 
     @Test
     public void testBuffering03() throws Exception {
-        this.setUp("name", 10);
+        setUp("name", 10);
 
-        final LogEvent event1 = createStrictMock(LogEvent.class);
-        final LogEvent event2 = createStrictMock(LogEvent.class);
-        final LogEvent event3 = createStrictMock(LogEvent.class);
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        final LogEvent event3 = mock(LogEvent.class);
 
-        this.manager.startupInternal();
-        expectLastCall();
-        replay(this.manager);
+        manager.startup();
+        then(manager).should().startupInternal();
 
-        this.manager.startup();
+        manager.write(event1);
+        manager.write(event2);
+        manager.write(event3);
+        manager.flush();
 
-        this.manager.write(event1);
-        this.manager.write(event2);
-        this.manager.write(event3);
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.connectAndStart();
-        expectLastCall();
-        this.manager.writeInternal(same(event1));
-        expectLastCall();
-        this.manager.writeInternal(same(event2));
-        expectLastCall();
-        this.manager.writeInternal(same(event3));
-        expectLastCall();
-        this.manager.commitAndClose();
-        expectLastCall().andReturn(Boolean.TRUE);
-        replay(this.manager);
-
-        this.manager.flush();
+        then(manager).should().connectAndStart();
+        then(manager).should().writeInternal(same(event1));
+        then(manager).should().writeInternal(same(event2));
+        then(manager).should().writeInternal(same(event3));
+        then(manager).should().commitAndClose();
+        then(manager).shouldHaveNoMoreInteractions();
     }
 
     @Test
     public void testBuffering04() throws Exception {
-        this.setUp("name", 10);
+        setUp("name", 10);
 
-        final LogEvent event1 = createStrictMock(LogEvent.class);
-        final LogEvent event2 = createStrictMock(LogEvent.class);
-        final LogEvent event3 = createStrictMock(LogEvent.class);
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        final LogEvent event3 = mock(LogEvent.class);
 
-        this.manager.startupInternal();
-        expectLastCall();
-        replay(this.manager);
+        manager.startup();
+        then(manager).should().startupInternal();
 
-        this.manager.startup();
+        manager.write(event1);
+        manager.write(event2);
+        manager.write(event3);
+        manager.shutdown();
 
-        this.manager.write(event1);
-        this.manager.write(event2);
-        this.manager.write(event3);
+        then(manager).should().connectAndStart();
+        then(manager).should().writeInternal(same(event1));
+        then(manager).should().writeInternal(same(event2));
+        then(manager).should().writeInternal(same(event3));
+        then(manager).should().commitAndClose();
+        then(manager).should().shutdownInternal();
+        then(manager).shouldHaveNoMoreInteractions();
+    }
 
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.connectAndStart();
-        expectLastCall();
-        this.manager.writeInternal(same(event1));
-        expectLastCall();
-        this.manager.writeInternal(same(event2));
-        expectLastCall();
-        this.manager.writeInternal(same(event3));
-        expectLastCall();
-        this.manager.commitAndClose();
-        expectLastCall().andReturn(Boolean.TRUE);
-        this.manager.shutdownInternal();
-        expectLastCall().andReturn(Boolean.TRUE);
-        replay(this.manager);
+    // this stub is provided because mocking constructors is hard
+    private static class StubDatabaseManager extends AbstractDatabaseManager {
 
-        this.manager.shutdown();
+        protected StubDatabaseManager(final String name, final int bufferSize) {
+            super(name, bufferSize);
+        }
+
+        @Override
+        protected void startupInternal() throws Exception {
+        }
+
+        @Override
+        protected boolean shutdownInternal() throws Exception {
+            return true;
+        }
+
+        @Override
+        protected void connectAndStart() {
+        }
+
+        @Override
+        protected void writeInternal(final LogEvent event) {
+        }
+
+        @Override
+        protected boolean commitAndClose() {
+            return true;
+        }
     }
 }
