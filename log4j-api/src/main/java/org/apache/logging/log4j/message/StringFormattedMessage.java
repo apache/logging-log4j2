@@ -28,6 +28,12 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Handles messages that consist of a format string conforming to {@link java.util.Formatter}.
+ * 
+ * <h4>Note to implementors</h4>
+ * <p>
+ * This class implements the unrolled args API even though StringFormattedMessage does not. This leaves the room for
+ * StringFormattedMessage to unroll itself later.
+ * </p>
  */
 public class StringFormattedMessage implements Message {
 

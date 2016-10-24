@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.util.Booleans;
 /**
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
  */
-@Plugin(name = "Rewrite", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Rewrite", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RewriteAppender extends AbstractAppender {
 
     private final Configuration config;
@@ -67,11 +67,6 @@ public final class RewriteAppender extends AbstractAppender {
             }
         }
         super.start();
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
     }
 
     /**

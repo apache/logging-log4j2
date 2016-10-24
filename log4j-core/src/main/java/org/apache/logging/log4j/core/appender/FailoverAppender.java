@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.util.Constants;
  * to a different appender. Hopefully it is obvious that the Appenders must be configured
  * to not suppress exceptions for the FailoverAppender to work.
  */
-@Plugin(name = "Failover", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Failover", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class FailoverAppender extends AbstractAppender {
 
     private static final int DEFAULT_INTERVAL_SECONDS = 60;

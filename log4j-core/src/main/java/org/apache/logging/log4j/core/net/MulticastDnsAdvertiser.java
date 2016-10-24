@@ -25,8 +25,8 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Advertise an entity via ZeroConf/MulticastDNS and the JmDNS library.
@@ -186,8 +186,8 @@ public class MulticastDnsAdvertiser implements Advertiser {
 
     private static Object initializeJmDns() {
         try {
-            jmDNSClass = Loader.loadClass("javax.jmdns.JmDNS");
-            serviceInfoClass = Loader.loadClass("javax.jmdns.ServiceInfo");
+            jmDNSClass = LoaderUtil.loadClass("javax.jmdns.JmDNS");
+            serviceInfoClass = LoaderUtil.loadClass("javax.jmdns.ServiceInfo");
             // if version 3 is available, use it to constuct a serviceInfo instance, otherwise support the version1 API
             boolean isVersion3 = false;
             try {

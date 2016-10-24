@@ -240,7 +240,7 @@ public class ParameterizedMessageInliningBenchmark {
      * Returns the sum of the lengths of all Strings in the specified array.
      */
     // 27 bytes
-    private static int sumStringLengths(String[] arguments) {
+    private static int sumStringLengths(final String[] arguments) {
         int result = 0;
         for (int i = 0; i < arguments.length; i++) {
             result += arguments[i].length();
@@ -249,13 +249,13 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 22 bytes
-    private static boolean isDelimPair(final String messagePattern, int i, final char curChar) {
+    private static boolean isDelimPair(final String messagePattern, final int i, final char curChar) {
         return curChar == DELIM_START && messagePattern.charAt(i + 1) == DELIM_STOP;
     }
 
     // 28 bytes
     private static int format0_handleMaybeLastChar(final String messagePattern, final int len, final char[] result,
-            int pos, int escapeCounter, int i) {
+            int pos, final int escapeCounter, final int i) {
         if (i == len - 1) {
             final char curChar = messagePattern.charAt(i);
             pos = format0_handleLastChar(result, pos, escapeCounter, curChar);
@@ -264,7 +264,7 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 28 bytes
-    private static int format0_handleLastChar(final char[] result, int pos, int escapeCounter, final char curChar) {
+    private static int format0_handleLastChar(final char[] result, int pos, final int escapeCounter, final char curChar) {
         if (curChar == ESCAPE_CHAR) {
             pos = format0_writeUnescapedEscapeChars(escapeCounter + 1, result, pos);
         } else {
@@ -274,7 +274,7 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 16 bytes
-    private static int format0_handleLiteralChar(final char[] result, int pos, int escapeCounter, final char curChar) {
+    private static int format0_handleLiteralChar(final char[] result, int pos, final int escapeCounter, final char curChar) {
         // any other char beside ESCAPE or DELIM_START/STOP-combo
         // write unescaped escape chars
         pos = format0_writeUnescapedEscapeChars(escapeCounter, result, pos);
@@ -293,18 +293,18 @@ public class ParameterizedMessageInliningBenchmark {
      * Returns {@code true} if the specified parameter is odd.
      */
     // 11 bytes
-    private static boolean isOdd(int number) {
+    private static boolean isOdd(final int number) {
         return (number & 1) == 1;
     }
 
     // 11 bytes
-    private static int format0_writeEscapedEscapeChars(int escapeCounter, char[] result, int pos) {
+    private static int format0_writeEscapedEscapeChars(final int escapeCounter, final char[] result, final int pos) {
         final int escapedEscapes = escapeCounter >> 1; // divide by two
         return format0_writeUnescapedEscapeChars(escapedEscapes, result, pos);
     }
 
     // 20 bytes
-    private static int format0_writeUnescapedEscapeChars(int escapeCounter, char[] result, int pos) {
+    private static int format0_writeUnescapedEscapeChars(int escapeCounter, final char[] result, int pos) {
         while (escapeCounter > 0) {
             result[pos++] = ESCAPE_CHAR;
             escapeCounter--;
@@ -313,7 +313,7 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 25 bytes
-    private static int format0_appendArg(final String[] arguments, int currentArgument, final char[] result, int pos) {
+    private static int format0_appendArg(final String[] arguments, final int currentArgument, final char[] result, int pos) {
         if (currentArgument < arguments.length) {
             pos = format0_appendArg0(arguments, currentArgument, result, pos);
         } else {
@@ -323,7 +323,7 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 27 bytes
-    private static int format0_appendArg0(final String[] arguments, int currentArgument, final char[] result, int pos) {
+    private static int format0_appendArg0(final String[] arguments, final int currentArgument, final char[] result, final int pos) {
         final String arg = arguments[currentArgument];
         final int argLen = arg.length();
         arg.getChars(0, argLen, result, pos);

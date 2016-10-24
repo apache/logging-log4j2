@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.test.appender;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LoggingException;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name="Block", category ="Core", elementType="appender", printObject=true)
+@Plugin(name="Block", category ="Core", elementType=Appender.ELEMENT_TYPE, printObject=true)
 public class BlockingAppender extends AbstractAppender {
     public volatile boolean running = true;
 
@@ -42,15 +42,19 @@ public class BlockingAppender extends AbstractAppender {
         while (running) {
             try {
                 Thread.sleep(10L);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
+                running = false; // LOG4J2-1422 cooperate with signal to get us unstuck
                 Thread.currentThread().interrupt(); // set interrupt status
             }
         }
     }
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         running = false;
-        super.stop();
+        setStopped();
+        return true;
     }
 
     @PluginFactory

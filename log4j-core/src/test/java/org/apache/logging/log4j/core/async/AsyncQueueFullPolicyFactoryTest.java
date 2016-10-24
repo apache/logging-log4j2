@@ -45,7 +45,7 @@ public class AsyncQueueFullPolicyFactoryTest {
 
     @Test
     public void testCreateReturnsDefaultRouterByDefault() throws Exception {
-        AsyncQueueFullPolicy router = AsyncQueueFullPolicyFactory.create();
+        final AsyncQueueFullPolicy router = AsyncQueueFullPolicyFactory.create();
         assertEquals(DefaultAsyncQueueFullPolicy.class, router.getClass());
     }
 
@@ -77,7 +77,7 @@ public class AsyncQueueFullPolicyFactoryTest {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
 
-        for (Level level : Level.values()) {
+        for (final Level level : Level.values()) {
             System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL,
                     level.name());
             assertEquals(level, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).

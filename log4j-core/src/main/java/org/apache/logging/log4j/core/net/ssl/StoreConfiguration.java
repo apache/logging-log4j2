@@ -52,6 +52,9 @@ public class StoreConfiguration<T> {
         this.password = password;
     }
 
+    /**
+     * @throws StoreConfigurationException May be thrown by subclasses 
+     */
     protected T load() throws StoreConfigurationException {
         return null;
     }

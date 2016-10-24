@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -31,20 +36,19 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
  */
 public class PatternLayoutTest {
     public class FauxLogger {
-        public String formatEvent(LogEvent event, Layout<?> layout) {
+        public String formatEvent(final LogEvent event, final Layout<?> layout) {
             return new String(layout.toByteArray(event));
         }
     }
@@ -68,12 +72,10 @@ public class PatternLayoutTest {
 
     LoggerContext ctx = LoggerContext.getContext();
 
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
-    @After
-    public void after() {
-        ThreadContext.clearMap();
-    }
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     private static class Destination implements ByteBufferDestination {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[2048]);
@@ -201,6 +203,11 @@ public class PatternLayoutTest {
     }
 
     @Test
+    public void testMdcPattern0() throws Exception {
+        testMdcPattern("%m : %X", "Hello : {key1=value1, key2=value2}", true);
+    }
+
+    @Test
     public void testMdcPattern1() throws Exception {
         testMdcPattern("%m : %X", "Hello : {}", false);
     }
@@ -227,9 +234,9 @@ public class PatternLayoutTest {
 
     @Test
     public void testPatternSelector() throws Exception {
-        PatternMatch[] patterns = new PatternMatch[1];
+        final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
-        PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
+        final PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
         final PatternLayout layout = PatternLayout.newBuilder().withPatternSelector(selector)
                 .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
@@ -239,7 +246,7 @@ public class PatternLayoutTest {
                 .setIncludeLocation(true)
                 .setMessage(new SimpleMessage("entry")).build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
-        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:241 entry ======%n");
+        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:248 entry ======%n");
         assertTrue("Unexpected result: " + result1, result1.endsWith(expectSuffix1));
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -499,7 +506,7 @@ public class PatternLayoutTest {
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!")).build();
             final String result1 = layout.toSerializable(event1);
-            String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
+            final String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {
@@ -553,7 +560,7 @@ public class PatternLayoutTest {
                     .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
                     .build();
             final String result1 = layout.toSerializable(event1);
-            String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
+            final String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {

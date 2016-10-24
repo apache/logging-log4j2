@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +34,12 @@ import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.*;
 /**
  *
  */
@@ -57,6 +54,7 @@ public class LoggerTest {
     }
 
     private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
+    private final Marker marker = MarkerManager.getMarker("test");
     private final List<String> results = logger.getEntries();
 
     @Test
@@ -105,7 +103,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingString_ObjectArray2() {
-        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg, 3);
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
@@ -116,7 +114,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingVoidReturn() {
-        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg);
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
@@ -145,7 +143,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingString_SupplierOfObjectMessages() {
-        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<Message>() {
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<Message>() {
             @Override
             public Message get() {
                 return new ObjectMessage(1);
@@ -166,7 +164,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingString_SupplierOfStrings() {
-        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<String>() {
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<String>() {
             @Override
             public String get() {
                 return "1";
@@ -254,7 +252,7 @@ public class LoggerTest {
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
     }
 
-    private static void assertMessageFactoryInstanceOf(MessageFactory factory, Class cls) {
+    private static void assertMessageFactoryInstanceOf(MessageFactory factory, final Class<?> cls) {
         if (factory instanceof MessageFactory2Adapter) {
             factory = ((MessageFactory2Adapter) factory).getOriginal();
         }
@@ -490,6 +488,52 @@ public class LoggerTest {
     }
 
     @Test
+    public void isAllEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isEnabled(Level.ALL, marker));
+    }
+
+    @Test
+    public void isDebugEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isDebugEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.DEBUG, marker));
+    }
+
+    @Test
+    public void isErrorEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isErrorEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.ERROR, marker));
+    }
+
+    @Test
+    public void isFatalEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isFatalEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.FATAL, marker));
+    }
+
+    @Test
+    public void isInfoEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isInfoEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.INFO, marker));
+    }
+
+    @Test
+    public void isOffEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isEnabled(Level.OFF, marker));
+    }
+
+    @Test
+    public void isTraceEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isTraceEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.TRACE, marker));
+    }
+
+    @Test
+    public void isWarnEnabledWithMarker() {
+        assertTrue("Incorrect level", logger.isWarnEnabled(marker));
+        assertTrue("Incorrect level", logger.isEnabled(Level.WARN, marker));
+    }
+
+    @Test
     public void mdc() {
 
         ThreadContext.put("TestYear", Integer.valueOf(2010).toString());
@@ -546,7 +590,7 @@ public class LoggerTest {
         int status;
         String message;
 
-        public Response(int status, String message) {
+        public Response(final int status, final String message) {
             this.status = status;
             this.message = message;
         }
@@ -555,7 +599,7 @@ public class LoggerTest {
             return status;
         }
 
-        public void setStatus(int status) {
+        public void setStatus(final int status) {
             this.status = status;
         }
 
@@ -563,7 +607,7 @@ public class LoggerTest {
             return message;
         }
 
-        public void setMessage(String message) {
+        public void setMessage(final String message) {
             this.message = message;
         }
     }

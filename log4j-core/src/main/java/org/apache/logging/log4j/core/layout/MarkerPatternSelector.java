@@ -55,31 +55,31 @@ public class MarkerPatternSelector implements PatternSelector {
                                  final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
                                  final Configuration config) {
         final PatternParser parser = PatternLayout.createPatternParser(config);
-        for (PatternMatch property : properties) {
+        for (final PatternMatch property : properties) {
             try {
-                List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, noConsoleNoAnsi);
+                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, noConsoleNoAnsi);
                 formatterMap.put(property.getKey(), list.toArray(new PatternFormatter[list.size()]));
                 patternMap.put(property.getKey(), property.getPattern());
-            } catch (RuntimeException ex) {
+            } catch (final RuntimeException ex) {
                 throw new IllegalArgumentException("Cannot parse pattern '" + property.getPattern() + "'", ex);
             }
         }
         try {
-            List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi);
+            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
             this.defaultPattern = defaultPattern;
-        } catch (RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             throw new IllegalArgumentException("Cannot parse pattern '" + defaultPattern + "'", ex);
         }
     }
 
     @Override
-    public PatternFormatter[] getFormatters(LogEvent event) {
-        Marker marker = event.getMarker();
+    public PatternFormatter[] getFormatters(final LogEvent event) {
+        final Marker marker = event.getMarker();
         if (marker == null) {
             return defaultFormatters;
         }
-        for (String key : formatterMap.keySet()) {
+        for (final String key : formatterMap.keySet()) {
             if (marker.isInstanceOf(key)) {
                 return formatterMap.get(key);
             }
@@ -98,7 +98,8 @@ public class MarkerPatternSelector implements PatternSelector {
             defaultPattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
         }
         if (properties == null || properties.length == 0) {
-            LOGGER.warn("No marker patterns were provided");
+            LOGGER.warn("No marker patterns were provided with PatternMatch");
+            return null;
         }
         return new MarkerPatternSelector(properties, defaultPattern, alwaysWriteExceptions,
                 noConsoleNoAnsi, config);
@@ -106,9 +107,9 @@ public class MarkerPatternSelector implements PatternSelector {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (Map.Entry<String, String> entry : patternMap.entrySet()) {
+        for (final Map.Entry<String, String> entry : patternMap.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }

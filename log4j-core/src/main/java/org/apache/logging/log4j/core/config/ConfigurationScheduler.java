@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.async.DaemonThreadFactory;
-import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,38 +23,43 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.util.CronExpression;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+
 /**
  *
  */
 public class ConfigurationScheduler extends AbstractLifeCycle {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final String SIMPLE_NAME = "Log4j2 " + ConfigurationScheduler.class.getSimpleName();
+    private static final int MAX_SCHEDULED_ITEMS = 5;
     private ScheduledExecutorService executorService;
 
     private int scheduledItems = 0;
-
 
     @Override
     public void start() {
         super.start();
         if (scheduledItems > 0) {
-            LOGGER.debug("Starting {} Log4j2Scheduled threads", scheduledItems);
-            if (scheduledItems > 5) {
-                scheduledItems = 5;
-            }
-            executorService = new ScheduledThreadPoolExecutor(scheduledItems, new DaemonThreadFactory("Log4j2Scheduled-"));
+            LOGGER.debug("{} starting {} threads", scheduledItems, SIMPLE_NAME);
+            scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
+            executorService = new ScheduledThreadPoolExecutor(scheduledItems,
+                    Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
         } else {
-            LOGGER.debug("No scheduled items");
+            LOGGER.debug("{}: No scheduled items", SIMPLE_NAME);
         }
     }
 
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
         if (executorService != null) {
-            LOGGER.debug("Stopping Log4j2Scheduled threads.");
+            LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, executorService);
             executorService.shutdown();
         }
-        super.stop();
+        setStopped();
+        return true;
     }
 
     /**
@@ -70,7 +69,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         if (!isStarted()) {
             ++scheduledItems;
         } else {
-            LOGGER.error("Attempted to increment scheduled items after start");
+            LOGGER.error("{} attempted to increment scheduled items after start", SIMPLE_NAME);
         }
     }
 
@@ -85,13 +84,14 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
 
     /**
      * Creates and executes a ScheduledFuture that becomes enabled after the given delay.
+     * @param <V> The result type returned by this Future
      * @param callable the function to execute.
      * @param delay the time from now to delay execution.
      * @param unit the time unit of the delay parameter.
      * @return a ScheduledFuture that can be used to extract result or cancel.
      *
      */
-    public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
+    public <V> ScheduledFuture<V> schedule(final Callable<V> callable, final long delay, final TimeUnit unit) {
         return executorService.schedule(callable, delay, unit);
     }
 
@@ -103,7 +103,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing pending completion of the task and whose get() method will return null
      * upon completion.
      */
-    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+    public ScheduledFuture<?> schedule(final Runnable command, final long delay, final TimeUnit unit) {
         return executorService.schedule(command, delay, unit);
     }
 
@@ -114,10 +114,11 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @param command The Runnable to run,
      * @return a ScheduledFuture representing the next time the command will run.
      */
-    public CronScheduledFuture<?> scheduleWithCron(CronExpression cronExpression, Runnable command) {
-        CronRunnable runnable = new CronRunnable(command, cronExpression);
-        ScheduledFuture<?> future = schedule(runnable, nextFireInterval(cronExpression), TimeUnit.MILLISECONDS);
-        CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future);
+    public CronScheduledFuture<?> scheduleWithCron(final CronExpression cronExpression, final Runnable command) {
+        final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
+        final CronRunnable runnable = new CronRunnable(command, cronExpression);
+        final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
+        final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future, fireDate);
         runnable.setScheduledFuture(cronScheduledFuture);
         return cronScheduledFuture;
     }
@@ -134,7 +135,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing pending completion of the task, and whose get() method will throw an
      * exception upon cancellation
      */
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
+    public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
         return executorService.scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
@@ -148,22 +149,26 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing pending completion of the task, and whose get() method will throw an
      * exception upon cancellation
      */
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+    public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay, final TimeUnit unit) {
         return executorService.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
-    private class CronRunnable implements Runnable {
+    public long nextFireInterval(final Date fireDate) {
+        return fireDate.getTime() - new Date().getTime();
+    }
+
+    public class CronRunnable implements Runnable {
 
         private final CronExpression cronExpression;
         private final Runnable runnable;
         private CronScheduledFuture<?> scheduledFuture;
 
-        public CronRunnable(Runnable runnable, CronExpression cronExpression) {
+        public CronRunnable(final Runnable runnable, final CronExpression cronExpression) {
             this.cronExpression = cronExpression;
             this.runnable = runnable;
         }
 
-        public void setScheduledFuture(CronScheduledFuture<?> future) {
+        public void setScheduledFuture(final CronScheduledFuture<?> future) {
             this.scheduledFuture = future;
         }
 
@@ -171,19 +176,14 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         public void run() {
             try {
                 runnable.run();
-            } catch(Throwable ex) {
-                LOGGER.error("Error running command", ex);
+            } catch(final Throwable ex) {
+                LOGGER.error("{} caught error running command", SIMPLE_NAME, ex);
             } finally {
-                ScheduledFuture<?> future = schedule(this, nextFireInterval(cronExpression), TimeUnit.MILLISECONDS);
-                scheduledFuture.setScheduledFuture(future);
+                final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
+                final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
+                scheduledFuture.reset(future, fireDate);
             }
         }
-    }
-
-    private long nextFireInterval(CronExpression cronExpression) {
-        Date now = new Date();
-        Date fireDate = cronExpression.getNextValidTimeAfter(now);
-        return fireDate.getTime() - now.getTime();
     }
 
 }

@@ -75,7 +75,7 @@ final class ParameterFormatter {
         if (messagePattern == null) {
             return 0;
         }
-        int length = messagePattern.length();
+        final int length = messagePattern.length();
         int result = 0;
         boolean isEscaped = false;
         for (int i = 0; i < length - 1; i++) {
@@ -105,7 +105,7 @@ final class ParameterFormatter {
         if (messagePattern == null) {
             return 0;
         }
-        int length = messagePattern.length();
+        final int length = messagePattern.length();
         int result = 0;
         boolean isEscaped = false;
         for (int i = 0; i < length - 1; i++) {
@@ -134,7 +134,7 @@ final class ParameterFormatter {
      * @param messagePattern the message pattern to be analyzed.
      * @return the number of unescaped placeholders.
      */
-    static int countArgumentPlaceholders3(final char[] messagePattern, int length, final int[] indices) {
+    static int countArgumentPlaceholders3(final char[] messagePattern, final int length, final int[] indices) {
         int result = 0;
         boolean isEscaped = false;
         for (int i = 0; i < length - 1; i++) {
@@ -200,7 +200,10 @@ final class ParameterFormatter {
      */
     static void formatMessage3(final StringBuilder buffer, final char[] messagePattern, final int patternLength,
             final Object[] arguments, final int argCount, final int[] indices) {
-        if (messagePattern == null || arguments == null || argCount == 0) {
+        if (messagePattern == null) {
+            return;
+        }
+        if (arguments == null || argCount == 0) {
             buffer.append(messagePattern);
             return;
         }
@@ -229,7 +232,7 @@ final class ParameterFormatter {
         int escapeCounter = 0;
         int currentArgument = 0;
         int i = 0;
-        int len = messagePattern.length();
+        final int len = messagePattern.length();
         for (; i < len - 1; i++) { // last char is excluded from the loop
             final char curChar = messagePattern.charAt(i);
             if (curChar == ESCAPE_CHAR) {
@@ -275,7 +278,7 @@ final class ParameterFormatter {
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static void handleRemainingCharIfAny(final String messagePattern, final int len,
-            final StringBuilder buffer, int escapeCounter, int i) {
+            final StringBuilder buffer, final int escapeCounter, final int i) {
         if (i == len - 1) {
             final char curChar = messagePattern.charAt(i);
             handleLastChar(buffer, escapeCounter, curChar);
@@ -441,6 +444,27 @@ final class ParameterFormatter {
             return true;
         } else if (o instanceof StringBuilderFormattable) {
             ((StringBuilderFormattable) o).formatTo(str);
+            return true;
+        } else if (o instanceof Integer) { // LOG4J2-1415 unbox auto-boxed primitives to avoid calling toString()
+            str.append(((Integer) o).intValue());
+            return true;
+        } else if (o instanceof Long) {
+            str.append(((Long) o).longValue());
+            return true;
+        } else if (o instanceof Double) {
+            str.append(((Double) o).doubleValue());
+            return true;
+        } else if (o instanceof Boolean) {
+            str.append(((Boolean) o).booleanValue());
+            return true;
+        } else if (o instanceof Character) {
+            str.append(((Character) o).charValue());
+            return true;
+        } else if (o instanceof Short) {
+            str.append(((Short) o).shortValue());
+            return true;
+        } else if (o instanceof Float) {
+            str.append(((Float) o).floatValue());
             return true;
         }
         return appendDate(o, str);

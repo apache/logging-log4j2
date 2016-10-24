@@ -56,33 +56,33 @@ public class ScriptConditionTest {
 
     @Test
     public void testSelectFilesToDelete() {
-        Configuration config = new DefaultConfiguration();
+        final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
 
-        Script script = new Script("test", "javascript", "pathList;"); // script that returns pathList
-        ScriptCondition condition = new ScriptCondition(script, config);
-        List<PathWithAttributes> pathList = new ArrayList<>();
-        Path base = Paths.get("baseDirectory");
-        List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
+        final Script script = new Script("test", "javascript", "pathList;"); // script that returns pathList
+        final ScriptCondition condition = new ScriptCondition(script, config);
+        final List<PathWithAttributes> pathList = new ArrayList<>();
+        final Path base = Paths.get("baseDirectory");
+        final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
         assertSame(result, pathList);
     }
 
     @Test
     public void testSelectFilesToDelete2() {
-        Configuration config = new DefaultConfiguration();
+        final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
 
-        List<PathWithAttributes> pathList = new ArrayList<>();
+        final List<PathWithAttributes> pathList = new ArrayList<>();
         pathList.add(new PathWithAttributes(Paths.get("/path/1"), new DummyFileAttributes()));
         pathList.add(new PathWithAttributes(Paths.get("/path/2"), new DummyFileAttributes()));
         pathList.add(new PathWithAttributes(Paths.get("/path/3"), new DummyFileAttributes()));
 
-        String scriptText = "pathList.remove(1);" //
+        final String scriptText = "pathList.remove(1);" //
                 + "pathList;";
-        Script script = new Script("test", "javascript", scriptText);
-        ScriptCondition condition = new ScriptCondition(script, config);
-        Path base = Paths.get("baseDirectory");
-        List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
+        final Script script = new Script("test", "javascript", scriptText);
+        final ScriptCondition condition = new ScriptCondition(script, config);
+        final Path base = Paths.get("baseDirectory");
+        final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
         assertSame(result, pathList);
         assertEquals(2, result.size());
         assertEquals(Paths.get("/path/1"), result.get(0).getPath());
@@ -91,15 +91,15 @@ public class ScriptConditionTest {
 
     @Test
     public void testSelectFilesToDelete3() {
-        Configuration config = new DefaultConfiguration();
+        final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
 
-        List<PathWithAttributes> pathList = new ArrayList<>();
+        final List<PathWithAttributes> pathList = new ArrayList<>();
         pathList.add(new PathWithAttributes(Paths.get("/path/1/abc/a.txt"), new DummyFileAttributes()));
         pathList.add(new PathWithAttributes(Paths.get("/path/2/abc/bbb.txt"), new DummyFileAttributes()));
         pathList.add(new PathWithAttributes(Paths.get("/path/3/abc/c.txt"), new DummyFileAttributes()));
 
-        String scriptText = "" //
+        final String scriptText = "" //
                 + "import java.nio.file.*;" //
                 + "def pattern = ~/(\\d*)[\\/\\\\]abc[\\/\\\\].*\\.txt/;" //
                 + "assert pattern.getClass() == java.util.regex.Pattern;" //
@@ -119,10 +119,10 @@ public class ScriptConditionTest {
                 + "}" //
                 + "println copy;"
                 + "copy;";
-        Script script = new Script("test", "groovy", scriptText);
-        ScriptCondition condition = new ScriptCondition(script, config);
-        Path base = Paths.get("/path");
-        List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
+        final Script script = new Script("test", "groovy", scriptText);
+        final ScriptCondition condition = new ScriptCondition(script, config);
+        final Path base = Paths.get("/path");
+        final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
         assertEquals(1, result.size());
         assertEquals(Paths.get("/path/2/abc/bbb.txt"), result.get(0).getPath());
     }

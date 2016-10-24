@@ -34,14 +34,14 @@ import org.apache.logging.log4j.util.Strings;
  * <p>
  * For example:
  * </p>
- * 
+ *
  * <pre>
  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}
  * </pre>
  * <p>
  * You can define custom colors for each Level:
  * </p>
- * 
+ *
  * <pre>
  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan,
  * TRACE=black}
@@ -49,9 +49,9 @@ import org.apache.logging.log4j.util.Strings;
  * <p>
  * You can use a predefined style:
  * </p>
- * 
+ *
  * <pre>
- * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=Log4j}
+ * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=DEFAULT}
  * </pre>
  * <p>
  * The available predefined styles are:
@@ -108,7 +108,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      * <p>
      * The format of the option string in {@code option[1]} is:
      * </p>
-     * 
+     *
      * <pre>
      * Level1=Value, Level2=Value, ...
      * </pre>
@@ -193,6 +193,8 @@ public final class HighlightConverter extends LogEventPatternConverter implement
 
     private final boolean noAnsi;
 
+    private final String defaultStyle;
+
     /**
      * Construct the converter.
      *
@@ -205,6 +207,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         super("style", "style");
         this.patternFormatters = patternFormatters;
         this.levelStyles = levelStyles;
+        this.defaultStyle = AnsiEscape.getDefaultStyle();
         this.noAnsi = noAnsi;
     }
 
@@ -213,17 +216,26 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : patternFormatters) {
-            formatter.format(event, buf);
+        int start = 0;
+        int end = 0;
+        if (!noAnsi) { // use ANSI: set prefix
+            start = toAppendTo.length();
+            toAppendTo.append(levelStyles.get(event.getLevel()));
+            end = toAppendTo.length();
         }
 
-        if (buf.length() > 0) {
-            if (noAnsi) {
-                toAppendTo.append(buf.toString());
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0, size = patternFormatters.size(); i <  size; i++) {
+            patternFormatters.get(i).format(event, toAppendTo);
+        }
+
+        // if we use ANSI we need to add the postfix or erase the unnecessary prefix
+        final boolean empty = toAppendTo.length() == end;
+        if (!noAnsi) {
+            if (empty) {
+                toAppendTo.setLength(start); // erase prefix
             } else {
-                toAppendTo.append(levelStyles.get(event.getLevel())).append(buf.toString()).
-                    append(AnsiEscape.getDefaultStyle());
+                toAppendTo.append(defaultStyle); // add postfix
             }
         }
     }

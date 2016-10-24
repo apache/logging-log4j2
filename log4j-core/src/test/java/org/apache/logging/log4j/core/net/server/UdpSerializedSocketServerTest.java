@@ -24,7 +24,9 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
+@Ignore
 public class UdpSerializedSocketServerTest extends AbstractSocketServerTest {
 
     private static UdpSocketServer<ObjectInputStream> server;

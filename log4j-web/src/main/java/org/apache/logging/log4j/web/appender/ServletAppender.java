@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.web.appender;
 
 import java.io.Serializable;
+
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.core.Filter;
@@ -24,10 +25,8 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.web.WebLoggerContextUtils;
@@ -38,46 +37,97 @@ import org.apache.logging.log4j.web.WebLoggerContextUtils;
 @Plugin(name = "Servlet", category = "Core", elementType = "appender", printObject = true)
 public class ServletAppender extends AbstractAppender {
 
-    private final ServletContext servletContext;
+	public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+			implements org.apache.logging.log4j.core.util.Builder<ServletAppender> {
 
-    private ServletAppender(final String name, final AbstractStringLayout layout, final Filter filter,
-                            final ServletContext servletContext, final boolean ignoreExceptions) {
+        @PluginBuilderAttribute
+        private boolean logThrowables;
+
+		@Override
+		public ServletAppender build() {
+			final String name = getName();
+			if (name == null) {
+				LOGGER.error("No name provided for ServletAppender");
+			}
+			final ServletContext servletContext = WebLoggerContextUtils.getServletContext();
+			if (servletContext == null) {
+				LOGGER.error("No servlet context is available");
+				return null;
+			}
+			Layout<? extends Serializable> layout = getLayout();
+			if (layout == null) {
+				layout = PatternLayout.createDefaultLayout();
+			} else if (!(layout instanceof AbstractStringLayout)) {
+				LOGGER.error("Layout must be a StringLayout to log to ServletContext");
+				return null;
+			}
+			return new ServletAppender(name, layout, getFilter(), servletContext, isIgnoreExceptions(), logThrowables);
+		}
+
+        /**
+         * Logs with {@link ServletContext#log(String, Throwable)} if true and with {@link ServletContext#log(String)} if false.
+         * 
+         * @return whether to log a Throwable with the servlet context.
+         */
+        public boolean isLogThrowables() {
+            return logThrowables;
+        }
+
+        /**
+         * Logs with {@link ServletContext#log(String, Throwable)} if true and with {@link ServletContext#log(String)} if false.
+         */
+        public void setLogThrowables(boolean logThrowables) {
+            this.logThrowables = logThrowables;
+        }
+
+	}
+    
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
+
+    private final ServletContext servletContext;
+    private boolean logThrowables;
+    
+    private ServletAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+            final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables) {
         super(name, filter, layout, ignoreExceptions);
         this.servletContext = servletContext;
+        this.logThrowables = logThrowables;
     }
 
     @Override
     public void append(final LogEvent event) {
-        servletContext.log(((AbstractStringLayout) getLayout()).toSerializable(event));
+        final String serialized = ((AbstractStringLayout) getLayout()).toSerializable(event);
+        if (logThrowables) {
+            servletContext.log(serialized, event.getThrown());
+        } else {
+            servletContext.log(serialized);
+        }
     }
 
     /**
-     * Create a Servlet Appender.
+     * Creates a Servlet Appender.
      * @param layout The layout to use (required). Must extend {@link AbstractStringLayout}.
      * @param filter The Filter or null.
      * @param name The name of the Appender (required).
      * @param ignoreExceptions If {@code true} (default) exceptions encountered when appending events are logged;
      *                         otherwise they are propagated to the caller.
      * @return The ServletAppender.
+     * @deprecated Use {@link #newBuilder()}.
      */
-    @PluginFactory
-    public static ServletAppender createAppender(
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("name") @Required(message = "No name provided for ServletAppender") final String name,
-            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions) {
-        final ServletContext servletContext = WebLoggerContextUtils.getServletContext();
-        if (servletContext == null) {
-            LOGGER.error("No servlet context is available");
-            return null;
-        }
-        if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
-        } else if (!(layout instanceof AbstractStringLayout)) {
-            LOGGER.error("Layout must be a StringLayout to log to ServletContext");
-            return null;
-        }
-        return new ServletAppender(name, (AbstractStringLayout) layout, filter, servletContext, ignoreExceptions);
+    @Deprecated
+    public static ServletAppender createAppender(Layout<? extends Serializable> layout, final Filter filter,
+            final String name, final boolean ignoreExceptions) {
+        // @formatter:off
+    	return newBuilder()
+    			.withFilter(filter)
+    			.withIgnoreExceptions(ignoreExceptions)
+    			.withLayout(layout)
+    			.withName(name)
+    			.build();
+    	// @formatter:on
     }
 
 }

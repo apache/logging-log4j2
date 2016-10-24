@@ -19,7 +19,9 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -37,7 +39,7 @@ import org.apache.logging.log4j.core.util.Integers;
 /**
  * File Appender.
  */
-@Plugin(name = "RandomAccessFile", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "RandomAccessFile", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RandomAccessFileAppender extends AbstractOutputStreamAppender<RandomAccessFileManager> {
 
     private final String fileName;
@@ -62,11 +64,14 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         if (advertiser != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
+        return true;
     }
 
     /**
@@ -156,23 +161,19 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         }
 
         if (fileName == null) {
-            LOGGER.error("No filename provided for FileAppender with name "
-                    + name);
+            LOGGER.error("No filename provided for FileAppender with name " + name);
             return null;
         }
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-                fileName, isAppend, isFlush, bufferSize, advertiseURI, layout
-        );
+        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(fileName, isAppend, isFlush,
+                bufferSize, advertiseURI, layout, null);
         if (manager == null) {
             return null;
         }
 
-        return new RandomAccessFileAppender(
-                name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
-                isAdvertise ? config.getAdvertiser() : null
-        );
+        return new RandomAccessFileAppender(name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
+                isAdvertise ? config.getAdvertiser() : null);
     }
 }

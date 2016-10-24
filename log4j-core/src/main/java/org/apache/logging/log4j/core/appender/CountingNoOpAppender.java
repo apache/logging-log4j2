@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -28,12 +29,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * No-Operation Appender that counts events.
  */
-@Plugin(name = "CountingNoOp", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "CountingNoOp", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class CountingNoOpAppender extends AbstractAppender  {
 
-    private AtomicLong total = new AtomicLong();
+    private final AtomicLong total = new AtomicLong();
 
-    public CountingNoOpAppender(String name, Layout<?> layout) {
+    public CountingNoOpAppender(final String name, final Layout<?> layout) {
         super(name, null, layout);
     }
 
@@ -42,7 +43,7 @@ public class CountingNoOpAppender extends AbstractAppender  {
     }
 
     @Override
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         total.incrementAndGet();
     }
 

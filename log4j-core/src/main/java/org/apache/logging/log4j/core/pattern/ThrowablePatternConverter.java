@@ -22,7 +22,6 @@ import java.io.StringWriter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 
 
@@ -141,9 +140,9 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
             buffer.append(' ');
         }
-        if (!options.allLines() || !Constants.LINE_SEPARATOR.equals(options.getSeparator())) {
+        if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator())) {
             final StringBuilder sb = new StringBuilder();
-            final String[] array = w.toString().split(Constants.LINE_SEPARATOR);
+            final String[] array = w.toString().split(Strings.LINE_SEPARATOR);
             final int limit = options.minLines(array.length) - 1;
             for (int i = 0; i <= limit; ++i) {
                 sb.append(array[i]);

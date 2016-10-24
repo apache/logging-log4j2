@@ -67,7 +67,7 @@ public class SmtpManager extends AbstractManager {
 
     private final FactoryData data;
 
-    private static MimeMessage createMimeMessage(final FactoryData data, final Session session, LogEvent appendEvent)
+    private static MimeMessage createMimeMessage(final FactoryData data, final Session session, final LogEvent appendEvent)
             throws MessagingException {
         return new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
                 .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
@@ -77,7 +77,7 @@ public class SmtpManager extends AbstractManager {
 
     protected SmtpManager(final String name, final Session session, final MimeMessage message,
                           final FactoryData data) {
-        super(name);
+        super(null, name);
         this.session = session;
         this.message = message;
         this.data = data;
@@ -171,7 +171,7 @@ public class SmtpManager extends AbstractManager {
 
             sendMultipartMessage(message, mp);
         } catch (final MessagingException | IOException | RuntimeException e) {
-            logError("caught exception while sending e-mail notification.", e);
+            logError("Caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }
     }
@@ -295,7 +295,7 @@ public class SmtpManager extends AbstractManager {
         }
     }
 
-    private synchronized void connect(LogEvent appendEvent) {
+    private synchronized void connect(final LogEvent appendEvent) {
         if (message != null) {
             return;
         }

@@ -40,11 +40,11 @@ public class WatchManager extends AbstractLifeCycle {
     private ScheduledFuture<?> future;
     private final ConfigurationScheduler scheduler;
 
-    public WatchManager(ConfigurationScheduler scheduler) {
+    public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = scheduler;
     }
 
-    public void setIntervalSeconds(int intervalSeconds) {
+    public void setIntervalSeconds(final int intervalSeconds) {
         if (!isStarted()) {
             if (this.intervalSeconds > 0 && intervalSeconds == 0) {
                 scheduler.decrementScheduledItems();
@@ -63,47 +63,49 @@ public class WatchManager extends AbstractLifeCycle {
     public void start() {
         super.start();
         if (intervalSeconds > 0) {
-            future = scheduler.scheduleWithFixedDelay(new WatchWorker(), intervalSeconds, intervalSeconds,
+            future = scheduler.scheduleWithFixedDelay(new WatchRunnable(), intervalSeconds, intervalSeconds,
                     TimeUnit.SECONDS);
         }
     }
 
     @Override
-    public void stop() {
-        future.cancel(true);
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        final boolean stopped = stop(future);
+        setStopped();
+        return stopped;
     }
 
-    public void watchFile(File file, FileWatcher watcher) {
+    public void watchFile(final File file, final FileWatcher watcher) {
         watchers.put(file, new FileMonitor(file.lastModified(), watcher));
 
     }
 
     public Map<File, FileWatcher> getWatchers() {
-        Map<File, FileWatcher> map = new HashMap<>();
-        for (Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
+        final Map<File, FileWatcher> map = new HashMap<>();
+        for (final Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
             map.put(entry.getKey(), entry.getValue().fileWatcher);
         }
         return map;
     }
 
-    private class WatchWorker implements Runnable {
+    private class WatchRunnable implements Runnable {
 
         @Override
         public void run() {
-            for (Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
-                File file = entry.getKey();
-                FileMonitor fileMonitor = entry.getValue();
-                long lastModfied = file.lastModified();
+            for (final Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
+                final File file = entry.getKey();
+                final FileMonitor fileMonitor = entry.getValue();
+                final long lastModfied = file.lastModified();
                 if (fileModified(fileMonitor, lastModfied)) {
-                    logger.info("File {} was modified", file.toString());
+                    logger.info("File {} was modified on {}, previous modification was {}", file, lastModfied, fileMonitor.lastModified);
                     fileMonitor.lastModified = lastModfied;
                     fileMonitor.fileWatcher.fileModified(file);
                 }
             }
         }
 
-        private boolean fileModified(FileMonitor fileMonitor, long lastModfied) {
+        private boolean fileModified(final FileMonitor fileMonitor, final long lastModfied) {
             return lastModfied != fileMonitor.lastModified;
         }
     }
@@ -112,7 +114,7 @@ public class WatchManager extends AbstractLifeCycle {
         private final FileWatcher fileWatcher;
         private long lastModified;
 
-        public FileMonitor(long lastModified, FileWatcher fileWatcher) {
+        public FileMonitor(final long lastModified, final FileWatcher fileWatcher) {
             this.fileWatcher = fileWatcher;
             this.lastModified = lastModified;
         }

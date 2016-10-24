@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -47,23 +44,9 @@ public final class Constants {
     public static final String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
 
     /**
-     * Line separator.
-     */
-    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
-            "\n");
-
-    /**
      * Number of milliseconds in a second.
      */
     public static final int MILLIS_IN_SECONDS = 1000;
-
-    /**
-     * Equivalent to StandardCharsets.UTF_8.
-     *
-     * @deprecated Use {@link StandardCharsets#UTF_8}. Will be removed in 2.5.
-     */
-    @Deprecated
-    public static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     /**
      * Supports user request LOG4J2-898 to have the option to format a message in the background thread.
@@ -76,8 +59,7 @@ public final class Constants {
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
      */
-    public static final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.is.webapp", Loader.isClassAvailable("javax.servlet.Servlet"));
+    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.IS_WEB_APP;
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -87,8 +69,7 @@ public final class Constants {
      *
      * @since 2.6
      */
-    public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.enable.threadlocals", true);
+    public static final boolean ENABLE_THREADLOCALS = org.apache.logging.log4j.util.Constants.ENABLE_THREADLOCALS;
 
     /**
      * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into

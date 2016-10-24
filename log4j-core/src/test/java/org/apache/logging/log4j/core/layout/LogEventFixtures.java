@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -80,9 +81,10 @@ class LogEventFixtures {
         return expected;
     }
 
-    static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource, 
-            final boolean includeContext) {
+    static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
+            final boolean includeContext, final boolean includeStacktrace) {
         assertEquals(expected.getClass(), actual.getClass());
+        assertEquals(includeContext ? expected.getContextData() : ContextDataFactory.createContextData(), actual.getContextData());
         assertEquals(includeContext ? expected.getContextMap() : Collections.EMPTY_MAP, actual.getContextMap());
         assertEquals(expected.getContextStack(), actual.getContextStack());
         assertEquals(expected.getLevel(), actual.getLevel());
@@ -95,7 +97,9 @@ class LogEventFixtures {
         assertEquals(expected.getThreadName(), actual.getThreadName());
         assertNotNull("original should have an exception", expected.getThrown());
         assertNull("exception should not be serialized", actual.getThrown());
-        assertEquals(expected.getThrownProxy(), actual.getThrownProxy());
+        if (includeStacktrace) { // TODO should compare the rest of the ThrowableProxy
+            assertEquals(expected.getThrownProxy(), actual.getThrownProxy());
+        }
         assertEquals(expected.isEndOfBatch(), actual.isEndOfBatch());
         assertEquals(expected.isIncludeLocation(), actual.isIncludeLocation());
 

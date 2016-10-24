@@ -19,10 +19,10 @@ package org.apache.logging.log4j.core;
 import java.util.List;
 
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class HostNameTest {
         testLogger.debug("Hello, {}", "World");
         final List<String> msgs = host.getMessages();
         assertThat(msgs, hasSize(1));
-        String expected = NetUtils.getLocalHostname() + Constants.LINE_SEPARATOR;
+        String expected = NetUtils.getLocalHostname() + Strings.LINE_SEPARATOR;
         assertThat(msgs.get(0), endsWith(expected));
         assertNotNull("No Host FileAppender file name", hostFile.getFileName());
         expected = "target/" + NetUtils.getLocalHostname() + ".log";

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.lang.reflect.Constructor;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -27,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Booleans;
-import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.util.Strings;
  *
  * @see AbstractLogEventWrapperEntity
  */
-@Plugin(name = "JPA", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "JPA", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManager> {
 
     private final String description;
@@ -85,7 +86,7 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
 
         try {
             final Class<? extends AbstractLogEventWrapperEntity> entityClass =
-                Loader.loadClass(entityClassName).asSubclass(AbstractLogEventWrapperEntity.class);
+                LoaderUtil.loadClass(entityClassName).asSubclass(AbstractLogEventWrapperEntity.class);
 
             try {
                 entityClass.getConstructor();

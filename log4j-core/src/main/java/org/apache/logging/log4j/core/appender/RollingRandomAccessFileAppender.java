@@ -19,8 +19,10 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -43,7 +45,7 @@ import org.apache.logging.log4j.core.util.Integers;
  * An appender that writes to random access files and can roll over at
  * intervals.
  */
-@Plugin(name = "RollingRandomAccessFile", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "RollingRandomAccessFile", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
 
     private final String fileName;
@@ -70,11 +72,14 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         if (advertiser != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
+        return true;
     }
 
     /**
@@ -205,10 +210,12 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         }
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
-                fileName, filePattern, isAppend, isFlush, bufferSize, policy, strategy, advertiseURI, layout);
+                fileName, filePattern, isAppend, isFlush, bufferSize, policy, strategy, advertiseURI, layout, config);
         if (manager == null) {
             return null;
         }
+
+        manager.initialize();
 
         return new RollingRandomAccessFileAppender(name, layout, filter, manager,
                 fileName, filePattern, ignoreExceptions, isFlush, bufferSize,

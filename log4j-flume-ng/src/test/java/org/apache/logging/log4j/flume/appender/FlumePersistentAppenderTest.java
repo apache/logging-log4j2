@@ -91,7 +91,7 @@ public class FlumePersistentAppenderTest {
     public void setUp() throws Exception {
 
         final File file = new File("target/persistent");
-        final boolean result = deleteFiles(file);
+        deleteFiles(file);
 
         /*
         * Clear out all other appenders associated with this logger to ensure we're
@@ -115,7 +115,7 @@ public class FlumePersistentAppenderTest {
         primary.stop();
         alternate.stop();
         final File file = new File("target/file-channel");
-        final boolean result = deleteFiles(file);
+        deleteFiles(file);
         final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
         final Set<ObjectName> names = server.queryNames(new ObjectName("org.apache.flume.*:*"), null);
         for (final ObjectName name : names) {

@@ -24,12 +24,14 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -54,11 +56,12 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private Object[] parameters;
     private Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private Map<String, String> contextMap;
+    private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String loggerFqcn;
     private StackTraceElement source;
     private ThreadContext.ContextStack contextStack;
+    transient boolean reserved = false;
 
     public MutableLogEvent() {
         this(new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE), new Object[10]);
@@ -87,7 +90,12 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         this.timeMillis = event.getTimeMillis();
         this.thrown = event.getThrown();
         this.thrownProxy = event.getThrownProxy();
-        this.contextMap = event.getContextMap();
+
+        // NOTE: this ringbuffer event SHOULD NOT keep a reference to the specified
+        // thread-local MutableLogEvent's context data, because then two threads would call
+        // ReadOnlyStringMap.clear() on the same shared instance, resulting in data corruption.
+        this.contextData.putAll(event.getContextData());
+
         this.contextStack = event.getContextStack();
         this.source = event.isIncludeLocation() ? event.getSource() : null;
         this.threadId = event.getThreadId();
@@ -101,6 +109,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     /**
      * Clears all references this event has to other objects.
+     *
      */
     public void clear() {
         loggerFqcn = null;
@@ -111,7 +120,13 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         thrown = null;
         thrownProxy = null;
         source = null;
-        contextMap = null;
+        if (contextData != null) {
+            if (contextData.isFrozen()) { // came from CopyOnWrite thread context
+                contextData = null;
+            } else {
+                contextData.clear();
+            }
+        }
         contextStack = null;
 
         // ThreadName should not be cleared: this field is set in the ReusableLogEventFactory
@@ -147,7 +162,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return loggerFqcn;
     }
 
-    public void setLoggerFqcn(String loggerFqcn) {
+    public void setLoggerFqcn(final String loggerFqcn) {
         this.loggerFqcn = loggerFqcn;
     }
 
@@ -156,7 +171,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return marker;
     }
 
-    public void setMarker(Marker marker) {
+    public void setMarker(final Marker marker) {
         this.marker = marker;
     }
 
@@ -168,7 +183,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return level;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(final Level level) {
         this.level = level;
     }
 
@@ -177,7 +192,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return loggerName;
     }
 
-    public void setLoggerName(String loggerName) {
+    public void setLoggerName(final String loggerName) {
         this.loggerName = loggerName;
     }
 
@@ -191,7 +206,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
-            ReusableMessage reusable = (ReusableMessage) msg;
+            final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
             if (parameters != null) {
                 parameters = reusable.swapParameters(parameters);
@@ -282,7 +297,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         if (message != null) {
             return message;
         }
-        Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
+        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
         return new ParameterizedMessage(messageText.toString(), params);
     }
 
@@ -291,7 +306,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return thrown;
     }
 
-    public void setThrown(Throwable thrown) {
+    public void setThrown(final Throwable thrown) {
         this.thrown = thrown;
     }
 
@@ -300,7 +315,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return timeMillis;
     }
 
-    public void setTimeMillis(long timeMillis) {
+    public void setTimeMillis(final long timeMillis) {
         this.timeMillis = timeMillis;
     }
 
@@ -333,13 +348,19 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return source;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, String> getContextMap() {
-        return contextMap;
+    public ReadOnlyStringMap getContextData() {
+        return contextData;
     }
 
-    public void setContextMap(Map<String, String> contextMap) {
-        this.contextMap = contextMap;
+    @Override
+    public Map<String, String> getContextMap() {
+        return contextData.toMap();
+    }
+
+    public void setContextData(final StringMap mutableContextData) {
+        this.contextData = mutableContextData;
     }
 
     @Override
@@ -347,7 +368,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return contextStack;
     }
 
-    public void setContextStack(ThreadContext.ContextStack contextStack) {
+    public void setContextStack(final ThreadContext.ContextStack contextStack) {
         this.contextStack = contextStack;
     }
 
@@ -356,7 +377,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return threadId;
     }
 
-    public void setThreadId(long threadId) {
+    public void setThreadId(final long threadId) {
         this.threadId = threadId;
     }
 
@@ -365,7 +386,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return threadName;
     }
 
-    public void setThreadName(String threadName) {
+    public void setThreadName(final String threadName) {
         this.threadName = threadName;
     }
 
@@ -374,7 +395,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return threadPriority;
     }
 
-    public void setThreadPriority(int threadPriority) {
+    public void setThreadPriority(final int threadPriority) {
         this.threadPriority = threadPriority;
     }
 
@@ -384,7 +405,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     }
 
     @Override
-    public void setIncludeLocation(boolean includeLocation) {
+    public void setIncludeLocation(final boolean includeLocation) {
         this.includeLocation = includeLocation;
     }
 
@@ -394,7 +415,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     }
 
     @Override
-    public void setEndOfBatch(boolean endOfBatch) {
+    public void setEndOfBatch(final boolean endOfBatch) {
         this.endOfBatch = endOfBatch;
     }
 
@@ -403,7 +424,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return nanoTime;
     }
 
-    public void setNanoTime(long nanoTime) {
+    public void setNanoTime(final long nanoTime) {
         this.nanoTime = nanoTime;
     }
 
@@ -433,8 +454,8 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
      * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code MutableLogEvent}.
      * @param builder the builder whose fields to populate
      */
-    public void initializeBuilder(Log4jLogEvent.Builder builder) {
-        builder.setContextMap(contextMap) //
+    public void initializeBuilder(final Log4jLogEvent.Builder builder) {
+        builder.setContextData(contextData) //
                 .setContextStack(contextStack) //
                 .setEndOfBatch(endOfBatch) //
                 .setIncludeLocation(includeLocation) //

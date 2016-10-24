@@ -30,22 +30,39 @@ import static org.junit.Assert.*;
 public class ReusableLogEventFactoryTest {
 
     @Test
+    public void testCreateEventReturnsDifferentInstanceIfNotReleased() throws Exception {
+        final ReusableLogEventFactory factory = new ReusableLogEventFactory();
+        final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
+        final LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
+        assertNotSame(event1, event2);
+        ReusableLogEventFactory.release(event1);
+        ReusableLogEventFactory.release(event2);
+    }
+
+    @Test
     public void testCreateEventReturnsSameInstance() throws Exception {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
-        LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
-        LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
+        final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
+        ReusableLogEventFactory.release(event1);
+        final LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
         assertSame(event1, event2);
+
+        ReusableLogEventFactory.release(event2);
+        final LogEvent event3 = callCreateEvent(factory, "c", Level.INFO, new SimpleMessage("123"), null);
+        assertSame(event2, event3);
+        ReusableLogEventFactory.release(event3);
     }
 
     @Test
     public void testCreateEventOverwritesFields() throws Exception {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
-        LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
+        final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
         assertEquals("logger", "a", event1.getLoggerName());
         assertEquals("level", Level.DEBUG, event1.getLevel());
         assertEquals("msg", new SimpleMessage("abc"), event1.getMessage());
 
-        LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
+        ReusableLogEventFactory.release(event1);
+        final LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
         assertSame(event1, event2);
 
         assertEquals("logger", "b", event1.getLoggerName());
@@ -66,12 +83,14 @@ public class ReusableLogEventFactoryTest {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
         final LogEvent[] event1 = new LogEvent[1];
         final LogEvent[] event2 = new LogEvent[1];
-        Thread t1 = new Thread("THREAD 1") {
+        final Thread t1 = new Thread("THREAD 1") {
+            @Override
             public void run() {
                 event1[0] = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
             }
         };
-        Thread t2 = new Thread("Thread 2") {
+        final Thread t2 = new Thread("Thread 2") {
+            @Override
             public void run() {
                 event2[0] = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
             }
@@ -94,6 +113,17 @@ public class ReusableLogEventFactoryTest {
         assertEquals("msg", new SimpleMessage("xyz"), event2[0].getMessage());
         assertEquals("thread name", "Thread 2", event2[0].getThreadName());
         assertEquals("tid", t2.getId(), event2[0].getThreadId());
+        ReusableLogEventFactory.release(event1[0]);
+        ReusableLogEventFactory.release(event2[0]);
+    }
+
+    @Test
+    public void testCreateEventInitFieldsProperly() throws Exception {
+        final ReusableLogEventFactory factory = new ReusableLogEventFactory();
+        final LogEvent event = callCreateEvent(factory, "logger", Level.INFO, new SimpleMessage("xyz"), null);
+        ReusableLogEventFactory.release(event);
+        assertNotNull(event.getContextMap());
+        assertNotNull(event.getContextStack());
     }
 
 }

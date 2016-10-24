@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.StringLayout;
 
@@ -46,7 +47,7 @@ public class WriterManager extends AbstractManager {
 
     public WriterManager(final Writer writer, final String streamName, final StringLayout layout,
             final boolean writeHeader) {
-        super(streamName);
+        super(null, streamName);
         this.writer = writer;
         this.layout = layout;
         if (writeHeader && layout != null) {
@@ -61,7 +62,7 @@ public class WriterManager extends AbstractManager {
         }
     }
 
-    protected synchronized void close() {
+    protected synchronized void closeWriter() {
         final Writer w = writer; // access volatile field only once per method
         try {
             w.close();
@@ -98,9 +99,10 @@ public class WriterManager extends AbstractManager {
      * Default hook to write footer during close.
      */
     @Override
-    public void releaseSub() {
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         writeFooter();
-        close();
+        closeWriter();
+        return true;
     }
 
     protected void setWriter(final Writer writer) {

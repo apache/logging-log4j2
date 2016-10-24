@@ -375,7 +375,39 @@ dependencies {
   compile group: 'org.apache.logging.log4j', name: 'log4j-iostreams', version: '${Log4jReleaseVersion}'
 }
 ]]></pre>
+        <h4>Scala API</h4>
+        <p>A convenient Scala wrapper for the Logger API</p>
+        <code>build.sbt</code>
+        <pre class="prettyprint linenums"><![CDATA[
+"org.apache.logging.log4j" %% "log4j-api-scala" % "${Log4jReleaseVersion}"
+]]></pre>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api-scala_2.11</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-api-scala_2.11" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api-scala_2.11', version: '${Log4jReleaseVersion}'
+}
+]]></pre>
       </subsection>
     </section>
+      <subsection name="Snapshot builds">
+        <p>You can access the latest development snapshot by using the Maven repository
+        <code>https://repository.apache.org/content/repositories/snapshots/</code> and the current SNAPSHOT version.</p>
+      </subsection>
   </body>
 </document>

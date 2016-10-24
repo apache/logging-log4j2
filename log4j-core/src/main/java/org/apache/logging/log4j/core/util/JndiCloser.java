@@ -47,11 +47,13 @@ public final class JndiCloser {
      *
      * @param context the JNDI Context to close, may be {@code null}
      */
-    public static void closeSilently(final Context context) {
+    public static boolean closeSilently(final Context context) {
         try {
             close(context);
+            return true;
         } catch (final NamingException ignored) {
             // ignored
+            return false;
         }
     }
 

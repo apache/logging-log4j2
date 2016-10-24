@@ -46,7 +46,7 @@ public class EqualsIgnoreCaseReplacementConverterTest {
         testReplacement("%logger", "aaa[" + EqualsIgnoreCaseReplacementConverterTest.class.getName() + "]zzz");
     }
 
-    private void testReplacement(String tag, String expectedValue) {
+    private void testReplacement(final String tag, final String expectedValue) {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(EqualsIgnoreCaseReplacementConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Outputs the Throwable portion of the LoggingEvent as a full stack trace
@@ -58,21 +58,21 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        ThrowableProxy proxy = event.getThrownProxy();
+        final ThrowableProxy proxy = event.getThrownProxy();
         final Throwable throwable = event.getThrown();
         if ((throwable != null || proxy != null) && options.anyLines()) {
             if (proxy == null) {
                 super.format(event, toAppendTo);
                 return;
             }
-            final String extStackTrace = proxy.getExtendedStackTraceAsString(options.getPackages());
+            final String extStackTrace = proxy.getExtendedStackTraceAsString(options.getIgnorePackages(), options.getTextRenderer());
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');
             }
-            if (!options.allLines() || !Constants.LINE_SEPARATOR.equals(options.getSeparator())) {
+            if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator())) {
                 final StringBuilder sb = new StringBuilder();
-                final String[] array = extStackTrace.split(Constants.LINE_SEPARATOR);
+                final String[] array = extStackTrace.split(Strings.LINE_SEPARATOR);
                 final int limit = options.minLines(array.length) - 1;
                 for (int i = 0; i <= limit; ++i) {
                     sb.append(array[i]);
@@ -81,7 +81,6 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
                     }
                 }
                 toAppendTo.append(sb.toString());
-
             } else {
                 toAppendTo.append(extStackTrace);
             }

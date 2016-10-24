@@ -42,7 +42,7 @@ public class SpyByteBufferDestination implements ByteBufferDestination {
         }
     }
 
-    public SpyByteBufferDestination(int bufferSize, int destinationSize) {
+    public SpyByteBufferDestination(final int bufferSize, final int destinationSize) {
         buffer = ByteBuffer.wrap(new byte[bufferSize]);
         drained = ByteBuffer.wrap(new byte[destinationSize]);
     }

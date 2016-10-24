@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,12 +34,15 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
@@ -98,6 +102,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected boolean isShutdownHookEnabled = true;
 
     /**
+     * Shutdown timeout in milliseconds.
+     */
+    protected long shutdownTimeoutMillis = 0;
+
+    /**
      * The Script manager.
      */
     protected ScriptManager scriptManager;
@@ -122,11 +131,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final WatchManager watchManager = new WatchManager(configurationScheduler);
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
     private NanoClock nanoClock = new DummyNanoClock();
+    private final WeakReference<LoggerContext> loggerContext;
 
     /**
      * Constructor.
      */
-    protected AbstractConfiguration(final ConfigurationSource configurationSource) {
+    protected AbstractConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
+        this.loggerContext = new WeakReference<>(loggerContext);
+        // The loggerContext is null for the NullConfiguration class.
+        // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager(Node.CATEGORY);
@@ -155,7 +168,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return scriptManager;
     }
 
-    public void setScriptManager(ScriptManager scriptManager) {
+    public void setScriptManager(final ScriptManager scriptManager) {
         this.scriptManager = scriptManager;
     }
 
@@ -163,7 +176,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return pluginManager;
     }
 
-    public void setPluginManager(PluginManager pluginManager) {
+    public void setPluginManager(final PluginManager pluginManager) {
         this.pluginManager = pluginManager;
     }
 
@@ -182,14 +195,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     @Override
-	public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
-	    // lazily instantiate only when requested by AsyncLoggers:
-	    // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
-	    if (asyncLoggerConfigDisruptor == null) {
-	        asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor();
-	    }
-		return asyncLoggerConfigDisruptor;
-	}
+    public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
+        // lazily instantiate only when requested by AsyncLoggers:
+        // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
+        if (asyncLoggerConfigDisruptor == null) {
+            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor();
+        }
+        return asyncLoggerConfigDisruptor;
+    }
 
     /**
      * Initialize the configuration.
@@ -198,7 +211,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
         subst.setConfiguration(this);
-        scriptManager = new ScriptManager(watchManager);
+        scriptManager = new ScriptManager(this, watchManager);
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
         levelPlugins.collectPlugins(pluginPackages);
@@ -236,7 +249,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
-        	asyncLoggerConfigDisruptor.start();
+            asyncLoggerConfigDisruptor.start();
         }
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggerConfigs.values()) {
@@ -259,18 +272,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         for (final LoggerConfig logger : loggerConfigs.values()) {
             if (logger instanceof AsyncLoggerConfig) {
-            	return true;
+                return true;
             }
         }
-		return false;
-	}
+        return false;
+    }
 
-	/**
+    /**
      * Tear down the configuration.
      */
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.setStopping();
+        super.stop(timeout, timeUnit, false);
         LOGGER.trace("Stopping {}...", this);
 
         // Stop the components that are closest to the application first:
@@ -298,17 +312,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (!loggerConfigs.isEmpty()) {
             LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggerConfigs.size());
             for (final LoggerConfig logger : loggerConfigs.values()) {
-                logger.stop();
+                logger.stop(timeout, timeUnit);
             }
         }
         LOGGER.trace("{} stopping root LoggerConfig.", cls);
         if (!root.isStopped()) {
-            root.stop();
+            root.stop(timeout, timeUnit);
         }
 
         if (hasAsyncLoggers()) {
             LOGGER.trace("{} stopping AsyncLoggerConfigDisruptor.", cls);
-            asyncLoggerConfigDisruptor.stop();
+            asyncLoggerConfigDisruptor.stop(timeout, timeUnit);
         }
 
         // Stop the appenders in reverse order in case they still have activity.
@@ -317,8 +331,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (!async.isEmpty()) {
             // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
             LOGGER.trace("{} stopping {} AsyncAppenders.", cls, async.size());
-            for (Appender appender : async) {
-                appender.stop();
+            for (final Appender appender : async) {
+                if (appender instanceof LifeCycle2) {
+                    ((LifeCycle2) appender).stop(timeout, timeUnit);
+                } else {
+                    appender.stop();
+                }
             }
         }
 
@@ -332,7 +350,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i].isStarted()) { // then stop remaining Appenders
-                array[i].stop();
+                if (array[i] instanceof LifeCycle2) {
+                    ((LifeCycle2) array[i]).stop(timeout, timeUnit);
+                } else {
+                    array[i].stop();
+                }
                 appenderCount++;
             }
         }
@@ -355,11 +377,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         configurationScheduler.stop();
 
-        super.stop();
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
         LOGGER.debug("Stopped {} OK", this);
+        return true;
     }
 
     private List<Appender> getAsyncAppenders(final Appender[] all) {
@@ -377,7 +400,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return isShutdownHookEnabled;
     }
 
+    @Override
+    public long getShutdownTimeoutMillis() {
+        return shutdownTimeoutMillis;
+    }
+
     public void setup() {
+        // default does nothing, subclasses do work.
     }
 
     protected Level getDefaultStatus() {
@@ -434,20 +463,20 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.putIfAbsent(componentName, obj);
     }
 
-    protected void preConfigure(Node node) {
+    protected void preConfigure(final Node node) {
         try {
             for (final Node child : node.getChildren()) {
                 if (child.getType() == null) {
                     LOGGER.error("Unable to locate plugin type for " + child.getName());
                     continue;
                 }
-                Class<?> clazz = child.getType().getPluginClass();
+                final Class<?> clazz = child.getType().getPluginClass();
                 if (clazz.isAnnotationPresent(Scheduled.class)) {
                     configurationScheduler.incrementScheduledItems();
                 }
                 preConfigure(child);
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Error capturing node data for node " + node.getName(), ex);
         }
     }
@@ -481,7 +510,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 continue;
             }
             if (child.getName().equalsIgnoreCase("Scripts")) {
-                for (AbstractScript script : child.getObject(AbstractScript[].class)) {
+                for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
                     if (script instanceof ScriptRef) {
                         LOGGER.error("Script reference to {} not added. Scripts definition cannot contain script references",
                                 script.getName());
@@ -655,7 +684,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * .core.config.LoggerConfig)
      */
     @Override
-    public ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig) {
+    public ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
         return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig);
     }
 
@@ -784,6 +813,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
         return root;
+    }
+
+    @Override
+    public LoggerContext getLoggerContext() {
+        return loggerContext.get();
     }
 
     /**

@@ -77,7 +77,7 @@ public class RandomAccessFileAppenderTests {
         final Logger logger = this.init.getLogger("com.foo.Bar");
         final String message = "This is a test log message brought to you by Slurm.";
         logger.info(message);
-        this.init.getContext().stop(); // stop async thread
+        this.init.getLoggerContext().stop(); // stop async thread
 
         String line;
         try (final BufferedReader reader = new BufferedReader(new FileReader(this.logFile))) {

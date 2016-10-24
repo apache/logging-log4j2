@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.mom.jeromq;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.AbstractManager;
@@ -69,7 +70,7 @@ public class JeroMqManager extends AbstractManager {
     private final ZMQ.Socket publisher;
 
     private JeroMqManager(final String name, final JeroMqConfiguration config) {
-        super(name);
+        super(null, name);
         publisher = CONTEXT.socket(ZMQ.PUB);
         publisher.setAffinity(config.affinity);
         publisher.setBacklog(config.backlog);
@@ -104,8 +105,9 @@ public class JeroMqManager extends AbstractManager {
     }
 
     @Override
-    protected void releaseSub() {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         publisher.close();
+        return true;
     }
 
     public static JeroMqManager getJeroMqManager(final String name, final long affinity, final long backlog,

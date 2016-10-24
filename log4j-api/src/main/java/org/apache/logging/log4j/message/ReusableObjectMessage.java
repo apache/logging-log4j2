@@ -30,7 +30,7 @@ public class ReusableObjectMessage implements ReusableMessage {
     private transient Object obj;
     private transient String objectString;
 
-    public void set(Object object) {
+    public void set(final Object object) {
         this.obj = object;
     }
 
@@ -52,6 +52,20 @@ public class ReusableObjectMessage implements ReusableMessage {
             ((StringBuilderFormattable) obj).formatTo(buffer);
         } else if (obj instanceof CharSequence) {
             buffer.append((CharSequence) obj);
+        } else if (obj instanceof Integer) { // LOG4J2-1437 unbox auto-boxed primitives to avoid calling toString()
+            buffer.append(((Integer) obj).intValue());
+        } else if (obj instanceof Long) {
+            buffer.append(((Long) obj).longValue());
+        } else if (obj instanceof Double) {
+            buffer.append(((Double) obj).doubleValue());
+        } else if (obj instanceof Boolean) {
+            buffer.append(((Boolean) obj).booleanValue());
+        } else if (obj instanceof Character) {
+            buffer.append(((Character) obj).charValue());
+        } else if (obj instanceof Short) {
+            buffer.append(((Short) obj).shortValue());
+        } else if (obj instanceof Float) {
+            buffer.append(((Float) obj).floatValue());
         } else {
             buffer.append(obj);
         }
@@ -65,6 +79,16 @@ public class ReusableObjectMessage implements ReusableMessage {
     @Override
     public String getFormat() {
         return getFormattedMessage();
+    }
+
+    /**
+     * Returns the object parameter.
+     *
+     * @return The object.
+     * @since 2.7
+     */
+    public Object getParameter() {
+        return obj;
     }
 
     /**

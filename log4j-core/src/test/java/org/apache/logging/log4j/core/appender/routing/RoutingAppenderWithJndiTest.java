@@ -45,13 +45,13 @@ public class RoutingAppenderWithJndiTest {
     private ListAppender listAppender2;
 
     @ClassRule
-    public static LoggerContextRule init = new LoggerContextRule("log4j-routing-by-jndi.xml");
+    public static LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing-by-jndi.xml");
 
     @Before
     public void before() throws NamingException {
         MockContextFactory.setAsInitial();
-        listAppender1 = RoutingAppenderWithJndiTest.init.getListAppender("List1");
-        listAppender2 = RoutingAppenderWithJndiTest.init.getListAppender("List2");
+        listAppender1 = RoutingAppenderWithJndiTest.loggerContextRule.getListAppender("List1");
+        listAppender2 = RoutingAppenderWithJndiTest.loggerContextRule.getListAppender("List2");
     }
 
     @After

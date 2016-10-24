@@ -56,12 +56,12 @@ public class TestLoggerContext implements LoggerContext {
     }
 
     @Override
-    public boolean hasLogger(String name, MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         return false;
     }
 
     @Override
-    public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
+    public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         return false;
     }
 

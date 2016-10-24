@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.util.Constants;
 @Plugin(name = "BasicLayout", category = "Core", elementType = "layout", printObject = true)
 public class BasicLayout extends AbstractStringLayout {
 
-    private static final String HEADER = "Header" + Constants.LINE_SEPARATOR;
+    private static final String HEADER = "Header" + Strings.LINE_SEPARATOR;
 
     public BasicLayout(final Charset charset) {
         super(charset);
@@ -44,7 +44,7 @@ public class BasicLayout extends AbstractStringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        return event.getMessage().getFormattedMessage() + Constants.LINE_SEPARATOR;
+        return event.getMessage().getFormattedMessage() + Strings.LINE_SEPARATOR;
     }
 
     /**

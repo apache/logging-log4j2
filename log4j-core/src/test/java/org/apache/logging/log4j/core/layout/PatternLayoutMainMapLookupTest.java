@@ -43,15 +43,15 @@ public class PatternLayoutMainMapLookupTest {
 
     @Test
     public void testFileName() {
-        FileAppender fileApp = (FileAppender) context.getRequiredAppender("File");
+        final FileAppender fileApp = (FileAppender) context.getRequiredAppender("File");
         final String name = fileApp.getFileName();
         Assert.assertEquals("target/value0.log", name);
     }
 
     @Test
     public void testHeader() {
-        ListAppender listApp = context.getListAppender("List");
-        Logger logger = context.getLogger(this.getClass().getName());
+        final ListAppender listApp = context.getListAppender("List");
+        final Logger logger = context.getLogger(this.getClass().getName());
         logger.info("Hello World");
         final List<String> messages = listApp.getMessages();
         Assert.assertFalse(messages.isEmpty());

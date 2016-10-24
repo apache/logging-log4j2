@@ -16,18 +16,21 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.ThreadContextMapRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.After;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -37,20 +40,18 @@ public class RegexReplacementTest {
     private static ListAppender app;
     private static ListAppender app2;
 
-    private static final String EXPECTED = "/RegexReplacementTest" + Constants.LINE_SEPARATOR;
+    private static final String EXPECTED = "/RegexReplacementTest" + Strings.LINE_SEPARATOR;
 
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);
+
+    @Rule
+    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule(); 
 
     @Before
     public void setUp() throws Exception {
         app = context.getListAppender("List").clear();
         app2 = context.getListAppender("List2").clear();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        ThreadContext.clearMap();
     }
 
     org.apache.logging.log4j.Logger logger = context.getLogger("LoggerTest");
@@ -70,7 +71,7 @@ public class RegexReplacementTest {
         msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
-        assertEquals("LoggerTest This is a test for Apache" + Constants.LINE_SEPARATOR, msgs.get(0));
+        assertEquals("LoggerTest This is a test for Apache" + Strings.LINE_SEPARATOR, msgs.get(0));
     }
      @Test
     public void testConverter() {

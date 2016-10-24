@@ -12,7 +12,7 @@
 <document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
-    <title>Log4j 2 Asynchronous Loggers for Low-Latency Logging</title>
+    <title>Log4j 2 Lock-free Asynchronous Loggers for Low-Latency Logging</title>
     <author email="rpopma@apache.org">Remko Popma</author>
   </properties>
   <body>
@@ -109,6 +109,9 @@
             implementations should be designed with asynchronous use in mind, and either take a snapshot
             of their parameters at construction time, or document their thread-safety characteristics.
           </li>
+          <li>If your application is running in an environment where CPU resources are scarce, like a machine
+            with one CPU with a single core, starting another thread is not likely
+            to give better performance.</li>
           <li>
             If the <em>sustained rate</em> at which your application is logging messages is faster than the
             maximum sustained throughput of the underlying appender, the queue will fill up and the
@@ -263,7 +266,7 @@
             </td>
             <td>
               <p>
-                Implementation of the <tt>org.apache.logging.log4j.core.helpers.Clock</tt>
+                Implementation of the <tt>org.apache.logging.log4j.core.util.Clock</tt>
                 interface that is used for timestamping the log events when all loggers are asynchronous.
                 <br />
                 By default, <tt>System.currentTimeMillis</tt> is called on every log event.
@@ -289,7 +292,7 @@
           There are also a few system properties that can be used to maintain application throughput even when
           the underlying appender cannot keep up with the logging rate and the queue is filling up.
           See the details for system properties
-          <a href="configuration.html#AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
+          <a href="configuration.html#log4j2.AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
             <tt>log4j2.DiscardThreshold</tt></a>.
         </p>
       </subsection>
@@ -417,7 +420,7 @@
           There are also a few system properties that can be used to maintain application throughput even when
           the underlying appender cannot keep up with the logging rate and the queue is filling up.
           See the details for system properties
-          <a href="configuration.html#AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
+          <a href="configuration.html#log4j2.AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
             <tt>log4j2.DiscardThreshold</tt></a>.
         </p>
       </subsection>

@@ -20,7 +20,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored is always
@@ -28,7 +31,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * expected that the Map will be passed to many more log events than the number of keys it contains the performance
  * should be much better than if the Map was copied for each event.
  */
-public class DefaultThreadContextMap implements ThreadContextMap {
+public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyStringMap {
+
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.
@@ -37,6 +41,10 @@ public class DefaultThreadContextMap implements ThreadContextMap {
 
     private final boolean useMap;
     private final ThreadLocal<Map<String, String>> localMap;
+
+    public DefaultThreadContextMap() {
+        this(true);
+    }
 
     public DefaultThreadContextMap(final boolean useMap) {
         this.useMap = useMap;
@@ -68,8 +76,20 @@ public class DefaultThreadContextMap implements ThreadContextMap {
             return;
         }
         Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<String, String>() : new HashMap<>(map);
+        map = map == null ? new HashMap<String, String>(1) : new HashMap<>(map);
         map.put(key, value);
+        localMap.set(Collections.unmodifiableMap(map));
+    }
+
+    public void putAll(final Map<String, String> m) {
+        if (!useMap) {
+            return;
+        }
+        Map<String, String> map = localMap.get();
+        map = map == null ? new HashMap<String, String>(m.size()) : new HashMap<>(map);
+        for (final Map.Entry<String, String> e : m.entrySet()) {
+            map.put(e.getKey(), e.getValue());
+        }
         localMap.set(Collections.unmodifiableMap(map));
     }
 
@@ -95,9 +115,43 @@ public class DefaultThreadContextMap implements ThreadContextMap {
     }
 
     @Override
+    public Map<String, String> toMap() {
+        return getCopy();
+    }
+
+    @Override
     public boolean containsKey(final String key) {
         final Map<String, String> map = localMap.get();
         return map != null && map.containsKey(key);
+    }
+
+    @Override
+    public <V> void forEach(final BiConsumer<String, ? super V> action) {
+        final Map<String, String> map = localMap.get();
+        if (map == null) {
+            return;
+        }
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
+            action.accept(entry.getKey(), (V) entry.getValue());
+        }
+    }
+
+    @Override
+    public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
+        final Map<String, String> map = localMap.get();
+        if (map == null) {
+            return;
+        }
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
+            action.accept(entry.getKey(), (V) entry.getValue(), state);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <V> V getValue(final String key) {
+        final Map<String, String> map = localMap.get();
+        return (V) (map == null ? null : map.get(key));
     }
 
     @Override
@@ -115,6 +169,12 @@ public class DefaultThreadContextMap implements ThreadContextMap {
     public boolean isEmpty() {
         final Map<String, String> map = localMap.get();
         return map == null || map.size() == 0;
+    }
+
+    @Override
+    public int size() {
+        final Map<String, String> map = localMap.get();
+        return map == null ? 0 : map.size();
     }
 
     @Override

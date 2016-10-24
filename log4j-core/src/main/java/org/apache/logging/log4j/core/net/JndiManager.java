@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.net;
 
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -39,7 +40,7 @@ public class JndiManager extends AbstractManager {
     private final Context context;
 
     private JndiManager(final String name, final Context context) {
-        super(name);
+        super(null, name);
         this.context = context;
     }
 
@@ -111,8 +112,8 @@ public class JndiManager extends AbstractManager {
     }
 
     @Override
-    protected void releaseSub() {
-        JndiCloser.closeSilently(this.context);
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        return JndiCloser.closeSilently(this.context);
     }
 
     /**

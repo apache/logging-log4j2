@@ -32,7 +32,7 @@ public class ClassicLogger extends AbstractLogger {
         return PatternLayout.newBuilder().withCharset(StandardCharsets.UTF_8).withPattern("%m").build();
     }
 
-    public void log(String message, Object... params) {
+    public void log(final String message, final Object... params) {
         log(new ParameterizedMessage(message, params));
         //log(new NoGcMessage(16).set(message, params[0], params[1], params[2], params[3]));
     }

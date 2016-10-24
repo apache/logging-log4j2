@@ -52,8 +52,8 @@ public class NoGcMessage implements Message {
         return getState().buffer;
     }
 
-    public void set(String message, Object p1, Object p2, Object p3, Object p4) {
-        InternalState state = getState();
+    public void set(final String message, final Object p1, final Object p2, final Object p3, final Object p4) {
+        final InternalState state = getState();
         state.params[0] = p1;
         state.params[1] = p2;
         state.params[2] = p3;
@@ -62,7 +62,7 @@ public class NoGcMessage implements Message {
         int current = 0;
         state.buffer.setLength(0);
         for (int i = 0; i < message.length() - 1; i++) {
-            char c = message.charAt(i);
+            final char c = message.charAt(i);
             if (c == '{' && message.charAt(i + 1) == '}') {
                 append(state.params[current++], state.buffer);
                 i++;
@@ -70,13 +70,13 @@ public class NoGcMessage implements Message {
                 state.buffer.append(c);
             }
         }
-        char c = message.charAt(message.length() - 1);
+        final char c = message.charAt(message.length() - 1);
         if (c != '}') {
             state.buffer.append(c);
         }
     }
 
-    private void append(Object param, StringBuilder buffer) {
+    private void append(final Object param, final StringBuilder buffer) {
         if (param instanceof StringBuilder) {
             buffer.append((StringBuilder) param);
         } else {

@@ -94,17 +94,25 @@ public final class StyleConverter extends LogEventPatternConverter implements An
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : patternFormatters) {
-            formatter.format(event, buf);
+        int start = 0;
+        int end = 0;
+        if (!noAnsi) { // use ANSI: set prefix
+            start = toAppendTo.length();
+            toAppendTo.append(style);
+            end = toAppendTo.length();
         }
 
-        if (buf.length() > 0) {
-            if (noAnsi) {
-                // faster to test and do this than setting style and defaultStyle to empty strings.
-                toAppendTo.append(buf.toString());
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0, size = patternFormatters.size(); i <  size; i++) {
+            patternFormatters.get(i).format(event, toAppendTo);
+        }
+
+        // if we use ANSI we need to add the postfix or erase the unnecessary prefix
+        if (!noAnsi) {
+            if (toAppendTo.length() == end) {
+                toAppendTo.setLength(start); // erase prefix
             } else {
-                toAppendTo.append(style).append(buf.toString()).append(defaultStyle);
+                toAppendTo.append(defaultStyle); // add postfix
             }
         }
     }

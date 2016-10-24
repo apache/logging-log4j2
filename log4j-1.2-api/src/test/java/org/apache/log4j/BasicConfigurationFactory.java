@@ -19,6 +19,7 @@ package org.apache.log4j;
 import java.net.URI;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -36,13 +37,13 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(final ConfigurationSource source) {
-        return new BasicConfiguration();
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return new BasicConfiguration(loggerContext);
     }
 
     @Override
-    public Configuration getConfiguration(final String name, final URI configLocation) {
-        return new BasicConfiguration();
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+        return new BasicConfiguration(loggerContext);
     }
 
     public class BasicConfiguration extends AbstractConfiguration {
@@ -51,8 +52,8 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
 
         private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 
-        public BasicConfiguration() {
-            super(ConfigurationSource.NULL_SOURCE);
+        public BasicConfiguration(final LoggerContext loggerContext) {
+            super(loggerContext, ConfigurationSource.NULL_SOURCE);
 
             final LoggerConfig root = getRootLogger();
             setName("BasicConfiguration");

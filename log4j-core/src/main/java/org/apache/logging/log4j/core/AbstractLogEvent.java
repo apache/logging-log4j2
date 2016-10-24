@@ -25,6 +25,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 
 /**
@@ -33,6 +34,11 @@ import org.apache.logging.log4j.message.Message;
 public abstract class AbstractLogEvent implements LogEvent {
 
     private static final long serialVersionUID = 1L;
+
+    @Override
+    public ReadOnlyStringMap getContextData() {
+        return null;
+    }
 
     /**
      * Returns {@link Collections#emptyMap()}.

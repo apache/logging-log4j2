@@ -48,7 +48,7 @@ public class AsyncLoggerConfigTest {
         final String msg = "Additive logging: 2 for the price of 1!";
         log.info(msg);
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
-        
+
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();
@@ -62,15 +62,15 @@ public class AsyncLoggerConfigTest {
         final String location = "testAdditivity";
         assertTrue("location", line1.contains(location) || line2.contains(location));
     }
-    
+
     @Test
     public void testIncludeLocationDefaultsToFalse() {
-    	final LoggerConfig rootLoggerConfig = 
+    	final LoggerConfig rootLoggerConfig =
     			AsyncLoggerConfig.RootLogger.createLogger(
     					null, "INFO", null, new AppenderRef[0], null, new DefaultConfiguration(), null);
     	assertFalse("Include location should default to false for async logggers",
     			    rootLoggerConfig.isIncludeLocation());
-    	
+
     	final LoggerConfig loggerConfig =
     	        AsyncLoggerConfig.createLogger(
     	        		null, "INFO", "com.foo.Bar", null, new AppenderRef[0], null, new DefaultConfiguration(),

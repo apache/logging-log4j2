@@ -31,31 +31,13 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
- * Listens for events over a socket connection.
+ * Listens for Log4j events on a datagram socket and passes them on to Log4j. 
  * 
  * @param <T>
  *            The kind of input stream read
+ * @see #main(String[])
  */
 public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer<T> {
-
-    private final DatagramSocket datagramSocket;
-
-    // max size so we only have to deal with one packet
-    private final int maxBufferSize = 1024 * 65 + 1024;
-
-    /**
-     * Constructor.
-     * 
-     * @param port
-     *            to listen on.
-     * @param logEventInput
-     * @throws IOException
-     *             If an error occurs.
-     */
-    public UdpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
-        super(port, logEventInput);
-        this.datagramSocket = new DatagramSocket(port);
-    }
 
     /**
      * Creates a socket server that reads JSON log events.
@@ -97,7 +79,7 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
     }
 
     /**
-     * Main startup for the server.
+     * Main startup for the server. Run with "--help" for to print command line help on the console.
      * 
      * @param args
      *            The command line arguments.
@@ -105,37 +87,48 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
      *             if an error occurs.
      */
     public static void main(final String[] args) throws Exception {
-        if (args.length < 1 || args.length > 2) {
-            System.err.println("Incorrect number of arguments");
-            printUsage();
+        final CommandLineArguments cla = parseCommandLine(args, UdpSocketServer.class, new CommandLineArguments());
+        if (cla.isHelp()) {
             return;
         }
-        final int port = Integer.parseInt(args[0]);
-        if (port <= 0 || port >= MAX_PORT) {
-            System.err.println("Invalid port number");
-            printUsage();
-            return;
+        if (cla.getConfigLocation() != null) {
+            ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(cla.getConfigLocation()));
         }
-        if (args.length == 2 && args[1].length() > 0) {
-            ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
-        }
-        final UdpSocketServer<ObjectInputStream> socketServer = UdpSocketServer.createSerializedSocketServer(port);
-        final Thread server = new Log4jThread(socketServer);
-        server.start();
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        while (true) {
-            final String line = reader.readLine();
-            if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop")
-                    || line.equalsIgnoreCase("Exit")) {
-                socketServer.shutdown();
-                server.join();
-                break;
+        final UdpSocketServer<ObjectInputStream> socketServer = UdpSocketServer
+                .createSerializedSocketServer(cla.getPort());
+        final Thread serverThread = new Log4jThread(socketServer);
+        serverThread.start();
+        if (cla.isInteractive()) {
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            while (true) {
+                final String line = reader.readLine();
+                if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop")
+                        || line.equalsIgnoreCase("Exit")) {
+                    socketServer.shutdown();
+                    serverThread.join();
+                    break;
+                }
             }
         }
     }
 
-    private static void printUsage() {
-        System.out.println("Usage: ServerSocket port configFilePath");
+    private final DatagramSocket datagramSocket;
+
+    // max size so we only have to deal with one packet
+    private final int maxBufferSize = 1024 * 65 + 1024;
+
+    /**
+     * Constructor.
+     * 
+     * @param port
+     *            to listen on.
+     * @param logEventInput
+     * @throws IOException
+     *             If an error occurs.
+     */
+    public UdpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
+        super(port, logEventInput);
+        this.datagramSocket = new DatagramSocket(port);
     }
 
     /**

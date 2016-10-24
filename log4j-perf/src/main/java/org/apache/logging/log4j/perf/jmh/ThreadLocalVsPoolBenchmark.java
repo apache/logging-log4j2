@@ -78,10 +78,10 @@ public class ThreadLocalVsPoolBenchmark {
     /**
      */
     private static PatternFormatter[] createFormatters() {
-        Configuration config = new DefaultConfiguration();
-        PatternParser parser = new PatternParser(config, "Converter", LogEventPatternConverter.class);
-        List<PatternFormatter> result = parser.parse(LOG4JPATTERN, false, true);
-        return (PatternFormatter[]) result.toArray(new PatternFormatter[result.size()]);
+        final Configuration config = new DefaultConfiguration();
+        final PatternParser parser = new PatternParser(config, "Converter", LogEventPatternConverter.class);
+        final List<PatternFormatter> result = parser.parse(LOG4JPATTERN, false, true);
+        return result.toArray(new PatternFormatter[result.size()]);
     }
 
     @Benchmark
@@ -183,11 +183,11 @@ abstract class ObjectPool<T> {
     private final Deque<T> pool = new ConcurrentLinkedDeque<>();
 
     public T borrowObject() {
-        T object = pool.poll();
+        final T object = pool.poll();
         return object == null ? createObject() : object;
     }
 
-    public void returnObject(T object) {
+    public void returnObject(final T object) {
         pool.add(object);
     }
 
@@ -200,12 +200,12 @@ abstract class ObjectPool<T> {
 class StringBuilderPool extends ObjectPool<StringBuilder> {
     private final int initialSize;
 
-    public StringBuilderPool(int stringBuilderSize) {
+    public StringBuilderPool(final int stringBuilderSize) {
         this.initialSize = stringBuilderSize;
     }
 
     @Override
-    public void returnObject(StringBuilder stringBuilder) {
+    public void returnObject(final StringBuilder stringBuilder) {
         stringBuilder.setLength(0);
         super.returnObject(stringBuilder);
     }

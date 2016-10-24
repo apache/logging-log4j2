@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements. See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License. You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<Configuration status="ERROR">
+  <Properties>
+    <Property name="emptyElementKey" />
+    <Property name="emptyAttributeKey" value="" />
+    <Property name="emptyAttributeKey2" value=""></Property>
+    <Property name="elementKey">elementValue</Property>
+    <Property name="attributeKey" value="attributeValue" />
+    <Property name="attributeWithEmptyElementKey" value="attributeValue2"></Property>
+    <Property name="bothElementAndAttributeKey" value="attributeValue3">elementValue3</Property>
+  </Properties>
+  <Appenders>
+    <List name="List">
+      <PatternLayout pattern="1=${sys:elementKey},2=${sys:emptyElementKey},a=${sys:emptyAttributeKey},b=${sys:emptyAttributeKey2},3=${sys:attributeKey},4=${sys:attributeWithEmptyElementKey},5=${sys:bothElementAndAttributeKey},m=%m" />
+    </List>
+  </Appenders>
+  <Loggers>
+    <Root level="trace">
+      <AppenderRef ref="List" />
+    </Root>
+  </Loggers>
+</Configuration>

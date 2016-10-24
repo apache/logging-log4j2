@@ -34,25 +34,25 @@ class DefaultScriptFileComponentBuilder extends DefaultComponentAndConfiguration
     }
 
     @Override
-    public DefaultScriptFileComponentBuilder addLanguage(String language) {
+    public DefaultScriptFileComponentBuilder addLanguage(final String language) {
         addAttribute("language", language);
         return this;
     }
 
     @Override
-    public DefaultScriptFileComponentBuilder addIsWatched(boolean isWatched) {
+    public DefaultScriptFileComponentBuilder addIsWatched(final boolean isWatched) {
         addAttribute("isWatched", Boolean.toString(isWatched));
         return this;
     }
 
     @Override
-    public DefaultScriptFileComponentBuilder addIsWatched(String isWatched) {
+    public DefaultScriptFileComponentBuilder addIsWatched(final String isWatched) {
         addAttribute("isWatched", isWatched);
         return this;
     }
 
     @Override
-    public DefaultScriptFileComponentBuilder addCharset(String charset) {
+    public DefaultScriptFileComponentBuilder addCharset(final String charset) {
         addAttribute("charset", charset);
         return this;
     }

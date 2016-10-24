@@ -22,131 +22,87 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.same;
-import static org.easymock.EasyMock.verify;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.reset;
 
+@RunWith(MockitoJUnitRunner.class)
 public class Log4jServletFilterTest {
+    @Mock
     private FilterConfig filterConfig;
+    @Mock
     private ServletContext servletContext;
+    @Mock
     private Log4jWebLifeCycle initializer;
+    @Mock
+    private ServletRequest request;
+    @Mock
+    private ServletResponse response;
+    @Mock
+    private FilterChain chain;
 
     private Log4jServletFilter filter;
 
     @Before
     public void setUp() {
-        this.filterConfig = createStrictMock(FilterConfig.class);
-        this.servletContext = createStrictMock(ServletContext.class);
-        this.initializer = createStrictMock(Log4jWebLifeCycle.class);
-
+        given(filterConfig.getServletContext()).willReturn(servletContext);
+        given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
         this.filter = new Log4jServletFilter();
-    }
-
-    @After
-    public void tearDown() {
-        verify(this.filterConfig, this.servletContext, this.initializer);
     }
 
     @Test
     public void testInitAndDestroy() throws Exception {
-        expect(this.filterConfig.getServletContext()).andReturn(this.servletContext);
-        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.clearLoggerContext();
-        expectLastCall();
-
-        replay(this.filterConfig, this.servletContext, this.initializer);
-
         this.filter.init(this.filterConfig);
 
-        verify(this.filterConfig, this.servletContext, this.initializer);
-        reset(this.filterConfig, this.servletContext, this.initializer);
-
-        this.initializer.setLoggerContext();
-        expectLastCall();
-
-        replay(this.filterConfig, this.servletContext, this.initializer);
+        then(initializer).should().clearLoggerContext();
 
         this.filter.destroy();
+
+        then(initializer).should().setLoggerContext();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testDestroy() {
-        replay(this.filterConfig, this.servletContext, this.initializer);
-
         this.filter.destroy();
     }
 
     @Test
     public void testDoFilterFirstTime() throws Exception {
-        expect(this.filterConfig.getServletContext()).andReturn(this.servletContext);
-        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.clearLoggerContext();
-        expectLastCall();
-
-        replay(this.filterConfig, this.servletContext, this.initializer);
-
         this.filter.init(this.filterConfig);
 
-        verify(this.filterConfig, this.servletContext, this.initializer);
-        reset(this.filterConfig, this.servletContext, this.initializer);
+        then(initializer).should().clearLoggerContext();
+        reset(initializer);
 
-        final ServletRequest request = createStrictMock(ServletRequest.class);
-        final ServletResponse response = createStrictMock(ServletResponse.class);
-        final FilterChain chain = createStrictMock(FilterChain.class);
-
-        expect(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE)).andReturn(null);
-        request.setAttribute(eq(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE), eq(Boolean.TRUE));
-        expectLastCall();
-        this.initializer.setLoggerContext();
-        expectLastCall();
-        chain.doFilter(same(request), same(response));
-        expectLastCall();
-        this.initializer.clearLoggerContext();
-        expectLastCall();
-
-        replay(this.filterConfig, this.servletContext, this.initializer, request, response, chain);
+        given(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE)).willReturn(null);
 
         this.filter.doFilter(request, response, chain);
 
-        verify(request, response, chain);
+        then(request).should().setAttribute(eq(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE), eq(true));
+        then(initializer).should().setLoggerContext();
+        then(chain).should().doFilter(same(request), same(response));
+        then(chain).shouldHaveNoMoreInteractions();
+        then(initializer).should().clearLoggerContext();
     }
 
     @Test
     public void testDoFilterSecondTime() throws Exception {
-        expect(this.filterConfig.getServletContext()).andReturn(this.servletContext);
-        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.clearLoggerContext();
-        expectLastCall();
-
-        replay(this.filterConfig, this.servletContext, this.initializer);
-
         this.filter.init(this.filterConfig);
 
-        verify(this.filterConfig, this.servletContext, this.initializer);
-        reset(this.filterConfig, this.servletContext, this.initializer);
+        then(initializer).should().clearLoggerContext();
 
-        final ServletRequest request = createStrictMock(ServletRequest.class);
-        final ServletResponse response = createStrictMock(ServletResponse.class);
-        final FilterChain chain = createStrictMock(FilterChain.class);
-
-        expect(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE)).andReturn(true);
-        expectLastCall();
-        chain.doFilter(same(request), same(response));
-        expectLastCall();
-
-        replay(this.filterConfig, this.servletContext, this.initializer, request, response, chain);
+        given(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE)).willReturn(true);
 
         this.filter.doFilter(request, response, chain);
 
-        verify(request, response, chain);
+        then(chain).should().doFilter(same(request), same(response));
+        then(chain).shouldHaveNoMoreInteractions();
     }
 }

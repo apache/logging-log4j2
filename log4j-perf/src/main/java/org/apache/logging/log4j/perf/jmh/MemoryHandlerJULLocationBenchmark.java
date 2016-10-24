@@ -32,8 +32,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
-
 /**
  * Tests JUL (java.util.logging) Memory Handler performance when including caller location information.
  */
@@ -67,7 +65,7 @@ public class MemoryHandlerJULLocationBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughputSimple() {
-        LogRecord logRecord = new LogRecord(java.util.logging.Level.INFO, BenchmarkMessageParams.TEST);
+        final LogRecord logRecord = new LogRecord(java.util.logging.Level.INFO, BenchmarkMessageParams.TEST);
         logRecord.getSourceClassName(); // force location
         logger.log(logRecord);
     }

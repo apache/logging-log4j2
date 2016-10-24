@@ -38,10 +38,10 @@ import org.apache.logging.log4j.spi.LoggerContext;
 public class SimplePerfTest {
     static final int ITERATIONS = 100000;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
 
-        Logger logger = LogManager.getLogger();
+        final Logger logger = LogManager.getLogger();
         if (!(logger instanceof AsyncLogger)) {
             throw new IllegalStateException();
         }
@@ -58,8 +58,8 @@ public class SimplePerfTest {
         final long[] DURATIONS = new long[1024];
 
         // warmup
-        long startMs = System.currentTimeMillis();
-        long end = startMs + TimeUnit.SECONDS.toMillis(10);
+        final long startMs = System.currentTimeMillis();
+        final long end = startMs + TimeUnit.SECONDS.toMillis(10);
         int warmupCount = 0;
         do {
             runTest(logger, runtimeMXBean, UPTIMES, DURATIONS, warmupCount);
@@ -69,23 +69,23 @@ public class SimplePerfTest {
 
         final int COUNT = 10;
         for (int i = 0; i < COUNT; i++) {
-            int count = warmupCount + i;
+            final int count = warmupCount + i;
             runTest(logger, runtimeMXBean, UPTIMES, DURATIONS, count);
             // Thread.sleep(1000);// drain buffer
         }
-        double testDurationNanos = System.nanoTime() - testStartNanos;
+        final double testDurationNanos = System.nanoTime() - testStartNanos;
         System.out.println("Done. Calculating stats...");
 
         printReport("Warmup", UPTIMES, DURATIONS, 0, warmupCount);
         printReport("Test", UPTIMES, DURATIONS, warmupCount, COUNT);
 
-        StringBuilder sb = new StringBuilder(512);
+        final StringBuilder sb = new StringBuilder(512);
         sb.append("Test took: ").append(testDurationNanos/(1000.0*1000.0*1000.0)).append(" sec");
         System.out.println(sb);
 
         final List<GarbageCollectorMXBean> gcBeans = ManagementFactory.getGarbageCollectorMXBeans();
         for (int i = 0; i < gcBeans.size(); i++) {
-            GarbageCollectorMXBean gcBean = gcBeans.get(i);
+            final GarbageCollectorMXBean gcBean = gcBeans.get(i);
             sb.setLength(0);
             sb.append("GC[").append(gcBean.getName()).append("] ");
             sb.append(gcBean.getCollectionCount()).append(" collections, collection time=");
@@ -96,7 +96,7 @@ public class SimplePerfTest {
 
     private static void printReport(final String label, final long[] UPTIMES, final long[] DURATIONS,
             final int offset, final int length) {
-        StringBuilder sb = new StringBuilder(512);
+        final StringBuilder sb = new StringBuilder(512);
         long total = 0;
         for (int i = offset; i < offset + length; i++) {
             sb.setLength(0);
@@ -117,9 +117,9 @@ public class SimplePerfTest {
     private static void runTest(final Logger logger, final RuntimeMXBean runtimeMXBean, final long[] UPTIMES,
             final long[] DURATIONS, final int index) {
         UPTIMES[index] = runtimeMXBean.getUptime();
-        long startNanos = System.nanoTime();
+        final long startNanos = System.nanoTime();
         loop(logger, ITERATIONS);
-        long endNanos = System.nanoTime();
+        final long endNanos = System.nanoTime();
         DURATIONS[index] = endNanos - startNanos;
     }
 
@@ -138,11 +138,11 @@ public class SimplePerfTest {
     private static void workAroundLog4j2_5Bug() {
         // use reflection so we can use the same test with older versions of log4j2
         try {
-            Method setUseThreadLocals =
+            final Method setUseThreadLocals =
                     AsyncLoggerContext.class.getDeclaredMethod("setUseThreadLocals", new Class[]{boolean.class});
-            LoggerContext context = LogManager.getContext(false);
+            final LoggerContext context = LogManager.getContext(false);
             setUseThreadLocals.invoke(context, new Object[] {Boolean.TRUE});
-        } catch (Throwable ignored) {
+        } catch (final Throwable ignored) {
         }
     }
 }

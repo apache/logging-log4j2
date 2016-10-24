@@ -66,11 +66,11 @@ public class SortingVisitorTest {
 
     @Test
     public void testRecentFirst() throws Exception {
-        SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(true));
-        Set<FileVisitOption> options = Collections.emptySet();
+        final SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(true));
+        final Set<FileVisitOption> options = Collections.emptySet();
         Files.walkFileTree(base, options, 1, visitor);
 
-        List<PathWithAttributes> found = visitor.getSortedPaths();
+        final List<PathWithAttributes> found = visitor.getSortedPaths();
         assertNotNull(found);
         assertEquals("file count", 3, found.size());
         assertEquals("1st: most recent; sorted=" + found, ccc, found.get(0).getPath());
@@ -80,11 +80,11 @@ public class SortingVisitorTest {
 
     @Test
     public void testRecentLast() throws Exception {
-        SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
-        Set<FileVisitOption> options = Collections.emptySet();
+        final SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
+        final Set<FileVisitOption> options = Collections.emptySet();
         Files.walkFileTree(base, options, 1, visitor);
 
-        List<PathWithAttributes> found = visitor.getSortedPaths();
+        final List<PathWithAttributes> found = visitor.getSortedPaths();
         assertNotNull(found);
         assertEquals("file count", 3, found.size());
         assertEquals("1st: oldest first; sorted=" + found, aaa, found.get(0).getPath());

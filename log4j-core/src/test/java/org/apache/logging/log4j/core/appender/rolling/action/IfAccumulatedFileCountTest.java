@@ -34,9 +34,9 @@ public class IfAccumulatedFileCountTest {
 
     @Test
     public void testAccept() {
-        int[] counts = {3, 5, 9};
-        for (int count : counts) {
-            IfAccumulatedFileCount condition = IfAccumulatedFileCount.createFileCountCondition(count);
+        final int[] counts = {3, 5, 9};
+        for (final int count : counts) {
+            final IfAccumulatedFileCount condition = IfAccumulatedFileCount.createFileCountCondition(count);
             for (int i = 0; i < count; i++) {
                 assertFalse(condition.accept(null, null, null));
                 // exact match: does not accept
@@ -50,7 +50,7 @@ public class IfAccumulatedFileCountTest {
     @Test
     public void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
         final CountingCondition counter = new CountingCondition(true);
-        IfAccumulatedFileCount condition = IfAccumulatedFileCount.createFileCountCondition(3, counter);
+        final IfAccumulatedFileCount condition = IfAccumulatedFileCount.createFileCountCondition(3, counter);
 
         for (int i = 1; i < 10; i++) {
             if (i <= 3) {

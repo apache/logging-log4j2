@@ -46,7 +46,7 @@ public final class JsonUtils {
     /**
      * Quote text contents using JSON standard quoting, and append results to a supplied {@link StringBuilder}.
      */
-    public static void quoteAsString(CharSequence input, StringBuilder output) {
+    public static void quoteAsString(final CharSequence input, final StringBuilder output) {
         final char[] qbuf = getQBuf();
         final int[] escCodes = CharTypes.get7BitOutputEscapes();
         final int escCodeCount = escCodes.length;
@@ -57,7 +57,7 @@ public final class JsonUtils {
         while (inPtr < inputLen) {
             tight_loop:
             while (true) {
-                char c = input.charAt(inPtr);
+                final char c = input.charAt(inPtr);
                 if (c < escCodeCount && escCodes[c] != 0) {
                     break tight_loop;
                 }
@@ -67,9 +67,9 @@ public final class JsonUtils {
                 }
             }
             // something to escape; 2 or 6-char variant?
-            char d = input.charAt(inPtr++);
-            int escCode = escCodes[d];
-            int length = (escCode < 0)
+            final char d = input.charAt(inPtr++);
+            final int escCode = escCodes[d];
+            final int length = (escCode < 0)
                     ? _appendNumeric(d, qbuf)
                     : _appendNamed(escCode, qbuf);
 
@@ -77,7 +77,7 @@ public final class JsonUtils {
         }
     }
 
-    private static int _appendNumeric(int value, char[] qbuf) {
+    private static int _appendNumeric(final int value, final char[] qbuf) {
         qbuf[1] = 'u';
         // We know it's a control char, so only the last 2 chars are non-0
         qbuf[4] = HC[value >> 4];
@@ -85,7 +85,7 @@ public final class JsonUtils {
         return 6;
     }
 
-    private static int _appendNamed(int esc, char[] qbuf) {
+    private static int _appendNamed(final int esc, final char[] qbuf) {
         qbuf[1] = (char) esc;
         return 2;
     }

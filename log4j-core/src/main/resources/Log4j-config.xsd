@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://logging.apache.org/log4j/2.0/config" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:element name="Configuration" type="ConfigurationType"/>
     <xs:complexType name="ConfigurationType">
         <xs:sequence>
@@ -38,6 +38,7 @@
         <xs:attribute name="strict" type="xs:string"/>
         <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="advertiser" type="xs:string"/>
+        <xs:attribute name="shutdownTimeout" type="xs:string" use="optional"/>
         <xs:attribute name="schema" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="PropertiesType">

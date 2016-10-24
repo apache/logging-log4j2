@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.appender.mom.jeromq;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -149,9 +150,12 @@ public final class JeroMqAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        manager.release();
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        boolean stopped = super.stop(timeout, timeUnit, false);
+        stopped &= manager.stop(timeout, timeUnit);
+        setStopped();
+        return stopped;
     }
 
     // not public, handy for testing

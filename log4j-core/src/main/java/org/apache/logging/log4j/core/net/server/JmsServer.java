@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -29,7 +30,8 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
 import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.appender.mom.JmsManager;
@@ -40,7 +42,7 @@ import org.apache.logging.log4j.core.net.JndiManager;
  *
  * @since 2.1
  */
-public class JmsServer extends LogEventListener implements MessageListener, LifeCycle {
+public class JmsServer extends LogEventListener implements MessageListener, LifeCycle2 {
 
     private final AtomicReference<State> state = new AtomicReference<>(State.INITIALIZED);
     private final JmsManager jmsManager;
@@ -98,11 +100,19 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
 
     @Override
     public void stop() {
+        stop(AbstractLifeCycle.DEFAULT_STOP_TIMEOUT, AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
+    }
+
+    @Override
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        boolean stopped = true;
         try {
             messageConsumer.close();
-        } catch (final JMSException ignored) {
+        } catch (final JMSException e) {
+            LOGGER.debug("Exception closing {}", messageConsumer, e);
+            stopped = false;
         }
-        jmsManager.release();
+        return stopped && jmsManager.stop(timeout, timeUnit);
     }
 
     @Override

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.util;
 import java.io.File;
 
 /**
- * Watches for changes in a Path and performs an action when the file is modified.
+ * Watches for changes in a File and performs an action when the file is modified.
  */
 public interface FileWatcher {
 

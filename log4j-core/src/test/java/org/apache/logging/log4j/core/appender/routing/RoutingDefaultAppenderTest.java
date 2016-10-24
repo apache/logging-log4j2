@@ -16,21 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.List;
 
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.rules.RuleChain;
 
 /**
  *
@@ -38,32 +36,16 @@ import static org.junit.Assert.*;
 public class RoutingDefaultAppenderTest {
     private static final String LOG_FILE = "target/routing1/routingtest.log";
 
-    private ListAppender app;
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing3.xml");
 
     @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-routing3.xml");
-
-    @Rule
-    public CleanFiles files = new CleanFiles(LOG_FILE);
-
-    @Before
-    public void setUp() throws Exception {
-        app = this.init.getListAppender("List");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        if (app != null) {
-            app.clear();
-        }
-        this.init.getContext().stop();
-    }
+    public RuleChain rules = loggerContextRule.withCleanFilesRule(LOG_FILE);
 
     @Test
     public void routingTest() {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
-        final List<LogEvent> list = app.getEvents();
+        final List<LogEvent> list = loggerContextRule.getListAppender("List").getEvents();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         msg = new StructuredDataMessage("Test", "This is a test", "Alert");

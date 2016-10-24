@@ -18,62 +18,38 @@ package org.apache.logging.log4j.junit;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.rules.ExternalResource;
-
-import static org.junit.Assert.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
- * A JUnit test rule to automatically delete certain files after a test is run.
+ * A JUnit test rule to automatically delete files after a test is run.
  */
-public class CleanFiles extends ExternalResource {
+public class CleanFiles extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;
-    private final List<File> files;
+
+    public CleanFiles(final boolean before, final boolean after, final int maxTries, final File... files) {
+        super(before, after, maxTries, files);
+    }
+
+    public CleanFiles(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
+        super(before, after, maxTries, fileNames);
+    }
 
     public CleanFiles(final File... files) {
-        this.files = Arrays.asList(files);
+        super(true, true, MAX_TRIES, files);
+    }
+
+    public CleanFiles(final Path... paths) {
+        super(true, true, MAX_TRIES, paths);
     }
 
     public CleanFiles(final String... fileNames) {
-        this.files = new ArrayList<>(fileNames.length);
-        for (final String fileName : fileNames) {
-            this.files.add(new File(fileName));
-        }
-    }
-
-    private void clean() {
-        for (final File file : files) {
-            for (int i = 0; i < MAX_TRIES; i++) {
-                if (file.exists()) {
-                    try {
-                        FileSystems.getDefault().provider().delete(file.toPath());
-                    } catch (IOException e) {
-                        fail(e.toString());
-                    }
-                }
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException ignored) {
-                }
-            }
-        }
+        super(true, true, MAX_TRIES, fileNames);
     }
 
     @Override
-    protected void after() {
-        this.clean();
+    protected boolean clean(final Path path, final int tryIndex) throws IOException {
+        return Files.deleteIfExists(path);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("CleanFiles [");
-        builder.append(files);
-        builder.append("]");
-        return builder.toString();
-    }
 }

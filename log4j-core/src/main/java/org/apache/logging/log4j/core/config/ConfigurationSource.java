@@ -141,7 +141,7 @@ public class ConfigurationSource {
         if (url != null) {
             try {
                 sourceURI = url.toURI();
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                     /* Ignore the exception */
             }
         }
@@ -151,11 +151,11 @@ public class ConfigurationSource {
         if (sourceURI == null && location != null) {
             try {
                 sourceURI = new URI(location);
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 // Assume the scheme was missing.
                 try {
                     sourceURI = new URI("file://" + location);
-                } catch (URISyntaxException uriEx) {
+                } catch (final URISyntaxException uriEx) {
                     /* Ignore the exception */
                 }
             }

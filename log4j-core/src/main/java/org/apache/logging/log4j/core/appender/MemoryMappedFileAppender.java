@@ -19,7 +19,9 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -39,7 +41,7 @@ import org.apache.logging.log4j.core.util.Integers;
  *
  * @since 2.1
  */
-@Plugin(name = "MemoryMappedFile", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "MemoryMappedFile", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender<MemoryMappedFileManager> {
 
     private static final int BIT_POSITION_1GB = 30; // 2^30 ~= 1GB
@@ -66,11 +68,14 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         if (advertiser != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
+        return true;
     }
 
     /**
@@ -117,7 +122,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      *            "true".
      * @param name The name of the Appender.
      * @param immediateFlush "true" if the contents should be flushed on every write, "false" otherwise. The default is
-     *            "true".
+     *            "false".
      * @param regionLengthStr The buffer size, defaults to {@value MemoryMappedFileManager#DEFAULT_REGION_LENGTH}.
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.

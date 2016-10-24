@@ -55,6 +55,10 @@
           <td><a href="log4j-taglib/tlddoc/index.html">JSP Tag Library (TLD Doc)</a></td>
           <td>The special Javadoc-like Tag Library Documentation for the Log4j 2 JSP Tag Library.</td>
         </tr>
+        <tr>
+          <td><a href="log4j-api-scala_2.11/scaladocs/index.html#org.apache.logging.log4j.scala.package">Scala API (Scaladoc)</a></td>
+          <td>The Scala wrapper for the Log4j API.</td>
+        </tr>
       </table>
 
       <p>

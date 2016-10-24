@@ -59,13 +59,15 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void shutdownInternal() {
+    protected boolean shutdownInternal() {
+        boolean closed = true;
         if (this.entityManager != null || this.transaction != null) {
-            this.commitAndClose();
+            closed &= this.commitAndClose();
         }
         if (this.entityManagerFactory != null && this.entityManagerFactory.isOpen()) {
             this.entityManagerFactory.close();
         }
+        return closed;
     }
 
     @Override
@@ -109,7 +111,8 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void commitAndClose() {
+    protected boolean commitAndClose() {
+        boolean closed = true;
         try {
             if (this.transaction != null && this.transaction.isActive()) {
                 this.transaction.commit();
@@ -125,11 +128,13 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
                     this.entityManager.close();
                 }
             } catch (final Exception e) {
-                logWarn("failed to close entity manager while logging event or flushing buffer", e);
+                logWarn("Failed to close entity manager while logging event or flushing buffer", e);
+                closed = false;
             } finally {
                 this.entityManager = null;
             }
         }
+        return closed;
     }
 
     /**

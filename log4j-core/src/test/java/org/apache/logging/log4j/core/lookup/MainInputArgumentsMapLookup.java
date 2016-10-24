@@ -32,7 +32,7 @@ public class MainInputArgumentsMapLookup extends MapLookup {
         final String[] args = null;
         for (final Map.Entry<Thread, StackTraceElement[]> entry : allStackTraces.entrySet()) {
             final StackTraceElement[] stackTraceElements = entry.getValue();
-            final Thread thread = entry.getKey();
+            entry.getKey();
             // Can't use the thread name to look for "main" since anyone can set it.
             // Can't use thread ID since it can be any positive value, and is likely vender dependent. Oracle seems to
             // use 1.

@@ -27,7 +27,7 @@ public class ReusableObjectMessageTest {
 
     @Test
     public void testSet_InitializesFormattedMessage() throws Exception {
-        ReusableObjectMessage msg = new ReusableObjectMessage();
+        final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormattedMessage());
     }
@@ -39,7 +39,7 @@ public class ReusableObjectMessageTest {
 
     @Test
     public void testGetFormattedMessage_ReturnsLatestSetString() throws Exception {
-        ReusableObjectMessage msg = new ReusableObjectMessage();
+        final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormattedMessage());
         msg.set("def");
@@ -55,7 +55,7 @@ public class ReusableObjectMessageTest {
 
     @Test
     public void testGetFormat_ReturnsLatestSetString() throws Exception {
-        ReusableObjectMessage msg = new ReusableObjectMessage();
+        final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormat());
         msg.set("def");
@@ -71,7 +71,7 @@ public class ReusableObjectMessageTest {
 
     @Test
     public void testGetParameters_ReturnsSetObjectInParameterArrayAfterMessageSet() throws Exception {
-        ReusableObjectMessage msg = new ReusableObjectMessage();
+        final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertArrayEquals(new Object[]{"abc"}, msg.getParameters());
         msg.set("def");
@@ -85,7 +85,7 @@ public class ReusableObjectMessageTest {
 
     @Test
     public void testGetThrowable_ReturnsNullAfterMessageSet() throws Exception {
-        ReusableObjectMessage msg = new ReusableObjectMessage();
+        final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertNull(msg.getThrowable());
         msg.set("def");
@@ -94,16 +94,16 @@ public class ReusableObjectMessageTest {
 
     @Test
     public void testFormatTo_InitiallyWritesNull() throws Exception {
-        ReusableObjectMessage msg = new ReusableObjectMessage();
-        StringBuilder sb = new StringBuilder();
+        final ReusableObjectMessage msg = new ReusableObjectMessage();
+        final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);
         assertEquals("null", sb.toString());
     }
 
     @Test
     public void testFormatTo_WritesLatestSetString() throws Exception {
-        ReusableObjectMessage msg = new ReusableObjectMessage();
-        StringBuilder sb = new StringBuilder();
+        final ReusableObjectMessage msg = new ReusableObjectMessage();
+        final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);
         assertEquals("null", sb.toString());
         sb.setLength(0);

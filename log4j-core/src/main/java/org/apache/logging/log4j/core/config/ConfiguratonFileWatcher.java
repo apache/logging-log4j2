@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.util.FileWatcher;
-import org.apache.logging.log4j.core.util.Log4jThread;
-
 import java.io.File;
 import java.util.List;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.util.FileWatcher;
 
 /**
  * Watcher for configuration files. Causes a reconfiguration when a file changes.
@@ -28,43 +28,41 @@ import java.util.List;
 public class ConfiguratonFileWatcher implements FileWatcher {
 
     private final Reconfigurable reconfigurable;
-    private final List<ConfigurationListener> listeners;
+    private final List<ConfigurationListener> configurationListeners;
 
-    public ConfiguratonFileWatcher(Reconfigurable reconfigurable, final List<ConfigurationListener> listeners) {
+    public ConfiguratonFileWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> configurationListeners) {
         this.reconfigurable = reconfigurable;
-        this.listeners = listeners;
+        this.configurationListeners = configurationListeners;
     }
 
     public List<ConfigurationListener> getListeners() {
-        return listeners;
+        return configurationListeners;
     }
 
 
     @Override
-    public void fileModified(File file) {
-        for (final ConfigurationListener listener : listeners) {
-            final Thread thread = new Log4jThread(new ReconfigurationWorker(listener, reconfigurable));
-            thread.setDaemon(true);
-            thread.start();
+    public void fileModified(final File file) {
+        for (final ConfigurationListener configurationListener : configurationListeners) {
+            LoggerContext.getContext(false).submitDaemon(new ReconfigurationRunnable(configurationListener, reconfigurable));
         }
     }
 
     /**
      * Helper class for triggering a reconfiguration in a background thread.
      */
-    private static class ReconfigurationWorker implements Runnable {
+    private static class ReconfigurationRunnable implements Runnable {
 
-        private final ConfigurationListener listener;
+        private final ConfigurationListener configurationListener;
         private final Reconfigurable reconfigurable;
 
-        public ReconfigurationWorker(final ConfigurationListener listener, final Reconfigurable reconfigurable) {
-            this.listener = listener;
+        public ReconfigurationRunnable(final ConfigurationListener configurationListener, final Reconfigurable reconfigurable) {
+            this.configurationListener = configurationListener;
             this.reconfigurable = reconfigurable;
         }
 
         @Override
         public void run() {
-            listener.onChange(reconfigurable);
+            configurationListener.onChange(reconfigurable);
         }
     }
 }

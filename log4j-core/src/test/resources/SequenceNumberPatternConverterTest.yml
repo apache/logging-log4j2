@@ -1,0 +1,15 @@
+Configuration:
+  status: OFF
+  name: SequenceNumberPatternConverterTest
+
+  Appenders:
+    List:
+      name: List
+      PatternLayout:
+        pattern: '%sn'
+
+  Loggers:
+    Root:
+      level: INFO
+      AppenderRef:
+        ref: List

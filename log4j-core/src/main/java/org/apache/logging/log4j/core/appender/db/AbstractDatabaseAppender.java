@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -90,11 +91,14 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     }
 
     @Override
-    public final void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        boolean stopped = super.stop(timeout, timeUnit, false);
         if (this.getManager() != null) {
-            this.getManager().release();
+            stopped &= this.getManager().stop(timeout, timeUnit);
         }
+        setStopped();
+        return stopped;
     }
 
     @Override
@@ -130,7 +134,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
                 manager.startup();
             }
             this.manager = manager;
-            old.release();
+            old.close();
         } finally {
             this.writeLock.unlock();
         }

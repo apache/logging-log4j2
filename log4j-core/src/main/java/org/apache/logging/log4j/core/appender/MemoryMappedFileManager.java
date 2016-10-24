@@ -146,7 +146,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             this.byteBuffer = mappedBuffer;
             mappingOffset = offset;
         } catch (final Exception ex) {
-            logError("unable to remap", ex);
+            logError("Unable to remap", ex);
         }
     }
 
@@ -156,21 +156,23 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    public synchronized void close() {
+    public synchronized boolean closeOutputStream() {
         final long position = mappedBuffer.position();
         final long length = mappingOffset + position;
         try {
             unsafeUnmap(mappedBuffer);
         } catch (final Exception ex) {
-            logError("unable to unmap MappedBuffer", ex);
+            logError("Unable to unmap MappedBuffer", ex);
         }
         try {
             LOGGER.debug("MMapAppender closing. Setting {} length to {} (offset {} + position {})", getFileName(),
                     length, mappingOffset, position);
             randomAccessFile.setLength(length);
             randomAccessFile.close();
+            return true;
         } catch (final IOException ex) {
-            logError("unable to close MemoryMappedFile", ex);
+            logError("Unable to close MemoryMappedFile", ex);
+            return false;
         }
     }
 
@@ -300,6 +302,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
          * @param append Append to existing file or truncate.
          * @param force forces the memory content to be written to the storage device on every event
          * @param regionLength length of the mapped region
+         * @param advertiseURI the URI to use when advertising the file
+         * @param layout The layout.
          */
         public FactoryData(final boolean append, final boolean force, final int regionLength,
                 final String advertiseURI, final Layout<? extends Serializable> layout) {
@@ -337,7 +341,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             }
 
             final boolean writeHeader = !data.append || !file.exists();
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             RandomAccessFile raf = null;
             try {
                 raf = new RandomAccessFile(name, "rw");

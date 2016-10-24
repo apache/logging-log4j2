@@ -26,9 +26,11 @@ package org.apache.logging.log4j.core;
  * stopped, this goes into the {@link State#STOPPED} state. In most circumstances, implementation classes should
  * store their {@link State} in a {@code volatile} field or inside an
  * {@link java.util.concurrent.atomic.AtomicReference} dependent on synchronization and concurrency requirements.
+ *
+ * @see AbstractLifeCycle
  */
 public interface LifeCycle {
-    
+
     /**
      * Status of a life cycle like a {@link LoggerContext}.
      */
@@ -46,16 +48,16 @@ public interface LifeCycle {
         /** Has stopped. */
         STOPPED
     }
-    
+
     /**
      * Gets the life-cycle state.
-     * 
+     *
      * @return the life-cycle state
      */
     State getState();
 
     void initialize();
-    
+
     void start();
 
     void stop();
@@ -63,4 +65,5 @@ public interface LifeCycle {
     boolean isStarted();
 
     boolean isStopped();
+
 }

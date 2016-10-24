@@ -24,6 +24,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
 
@@ -37,13 +38,13 @@ public class KafkaManager extends AbstractManager {
     static KafkaProducerFactory producerFactory = new DefaultKafkaProducerFactory();
 
     private final Properties config = new Properties();
-    private Producer<byte[], byte[]> producer = null;
+    private Producer<byte[], byte[]> producer;
     private final int timeoutMillis;
 
     private final String topic;
 
-    public KafkaManager(final String name, final String topic, final Property[] properties) {
-        super(name);
+    public KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final Property[] properties) {
+        super(loggerContext, name);
         this.topic = topic;
         config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
@@ -55,7 +56,16 @@ public class KafkaManager extends AbstractManager {
     }
 
     @Override
-    public void releaseSub() {
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        if (timeout > 0) {
+            closeProducer(timeout, timeUnit);
+        } else {
+            closeProducer(timeoutMillis, TimeUnit.MILLISECONDS);
+        }
+        return true;
+    }
+
+    private void closeProducer(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
             producer.close(timeoutMillis, TimeUnit.MILLISECONDS);
         }

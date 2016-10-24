@@ -47,7 +47,7 @@ class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuil
      * @param includeLocation
      */
     public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
-            final String level, boolean includeLocation) {
+            final String level, final boolean includeLocation) {
         super(builder, name, "Logger");
         addAttribute("level", level);
         addAttribute("includeLocation", includeLocation);
@@ -75,7 +75,7 @@ class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuil
      * @param includeLocation
      */
     public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
-            final String level, final String type, boolean includeLocation) {
+            final String level, final String type, final boolean includeLocation) {
         super(builder, name, type);
         addAttribute("level", level);
         addAttribute("includeLocation", includeLocation);

@@ -29,9 +29,11 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 final class Log4jXmlModule extends JacksonXmlModule {
 
     private static final long serialVersionUID = 1L;
+    private final boolean includeStacktrace;
 
-    Log4jXmlModule() {
+    Log4jXmlModule(final boolean includeStacktrace) {
         super();
+        this.includeStacktrace = includeStacktrace;
         // MUST init here.
         // Calling this from setupModule is too late!
         new SimpleModuleInitializer().initialize(this);
@@ -41,6 +43,6 @@ final class Log4jXmlModule extends JacksonXmlModule {
     public void setupModule(final SetupContext context) {
         // Calling super is a MUST!
         super.setupModule(context);
-        new SetupContextInitializer().setupModule(context);
+        new SetupContextInitializer().setupModule(context, includeStacktrace);
     }
 }

@@ -33,6 +33,10 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class SimpleLoggerContext implements LoggerContext {
 
+    private static final String SYSTEM_OUT = "system.out";
+
+    private static final String SYSTEM_ERR = "system.err";
+
     /** The default format to use when formatting dates */
     protected static final String DEFAULT_DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss:SSS zzz";
 
@@ -75,11 +79,11 @@ public class SimpleLoggerContext implements LoggerContext {
         dateTimeFormat = showDateTime ? props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + "dateTimeFormat",
                 DEFAULT_DATE_TIME_FORMAT) : null;
 
-        final String fileName = props.getStringProperty(SYSTEM_PREFIX + "logFile", "system.err");
+        final String fileName = props.getStringProperty(SYSTEM_PREFIX + "logFile", SYSTEM_ERR);
         PrintStream ps;
-        if ("system.err".equalsIgnoreCase(fileName)) {
+        if (SYSTEM_ERR.equalsIgnoreCase(fileName)) {
             ps = System.err;
-        } else if ("system.out".equalsIgnoreCase(fileName)) {
+        } else if (SYSTEM_OUT.equalsIgnoreCase(fileName)) {
             ps = System.out;
         } else {
             try {
@@ -117,12 +121,12 @@ public class SimpleLoggerContext implements LoggerContext {
     }
 
     @Override
-    public boolean hasLogger(String name, MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         return false;
     }
 
     @Override
-    public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
+    public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         return false;
     }
 

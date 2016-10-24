@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -26,10 +27,12 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
@@ -49,8 +52,9 @@ public final class KafkaAppender extends AbstractAppender {
             @Required(message = "No name provided for KafkaAppender") @PluginAttribute("name") final String name,
             @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions,
             @Required(message = "No topic provided for KafkaAppender") @PluginAttribute("topic") final String topic,
-            @PluginElement("Properties") final Property[] properties) {
-        final KafkaManager kafkaManager = new KafkaManager(name, topic, properties);
+            @PluginElement("Properties") final Property[] properties,
+            @PluginConfiguration final Configuration configuration) {
+        final KafkaManager kafkaManager = new KafkaManager(configuration.getLoggerContext(), name, topic, properties);
         return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager);
     }
 
@@ -67,12 +71,12 @@ public final class KafkaAppender extends AbstractAppender {
             LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
         } else {
             try {
-                Layout<? extends Serializable> layout = getLayout();
+                final Layout<? extends Serializable> layout = getLayout();
                 byte[] data;
                 if (layout != null) {
                     if (layout instanceof SerializedLayout) {
-                        byte[] header = layout.getHeader();
-                        byte[] body = layout.toByteArray(event);
+                        final byte[] header = layout.getHeader();
+                        final byte[] body = layout.toByteArray(event);
                         data = new byte[header.length + body.length];
                         System.arraycopy(header, 0, data, 0, header.length);
                         System.arraycopy(body, 0, data, header.length, body.length);
@@ -97,9 +101,12 @@ public final class KafkaAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        super.stop();
-        manager.release();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        boolean stopped = super.stop(timeout, timeUnit, false);
+        stopped &= manager.stop(timeout, timeUnit);
+        setStopped();
+        return stopped;
     }
 
     @Override

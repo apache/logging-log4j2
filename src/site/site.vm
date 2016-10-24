@@ -200,9 +200,9 @@
 	#if ($thisProjectDir == $PathTool.getDirectoryComponent( $item.href ))
 	#set ($active = " active")
 	#end
-	#if (${project.artifactId} != "log4j" && $isComponentDocumentation && 
-				($item.href == "team-list.html" || $item.href == "mail-lists.html" 
-				|| $item.href == "issue-tracking.html" || $item.href == "license.html" 
+	#if (${project.artifactId} != "log4j" && $isComponentDocumentation &&
+				($item.href == "team-list.html" || $item.href == "mail-lists.html"
+				|| $item.href == "issue-tracking.html" || $item.href == "license.html"
 				|| $item.href == "source-repository.html"))
 	<!-- Removing overall project item $item.name from component-specific menu -->
 	#else
@@ -474,7 +474,7 @@
 		<a href="https://logging.apache.org/">
 			<img class="logo-left" src="$relativePath/images/ls-logo.jpg" alt="Apache logging services logo" />
 		</a>
-		<img class="logo-right" src="$relativePath/images/logo.jpg" alt="Apache log4j logo" />
+		<img class="logo-right" src="$relativePath/images/logo.png" alt="Apache log4j logo" />
 		<div class="clear"></div>
 
 		<div class="navbar">

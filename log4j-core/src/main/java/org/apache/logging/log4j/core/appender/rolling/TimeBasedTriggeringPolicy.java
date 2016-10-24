@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.util.Integers;
  * Rolls a file over based on time.
  */
 @Plugin(name = "TimeBasedTriggeringPolicy", category = "Core", printObject = true)
-public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
+public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private long nextRolloverMillis;
     private final int interval;

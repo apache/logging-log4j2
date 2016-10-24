@@ -31,7 +31,7 @@ public class NoGcLogger extends AbstractLogger {
         return new NoGcLayout(StandardCharsets.UTF_8);
     }
 
-    public void log(String message, Object p1, Object p2, Object p3, Object p4) {
+    public void log(final String message, final Object p1, final Object p2, final Object p3, final Object p4) {
         reusedMessage.set(message, p1, p2, p3, p4);
         log(reusedMessage);
     }

@@ -57,7 +57,7 @@ public class ValidatingPlugin {
         @Required(message = "The name given by the builder is null")
         private String name;
 
-        public Builder setName(final String name) {
+        public Builder withName(final String name) {
             this.name = name;
             return this;
         }

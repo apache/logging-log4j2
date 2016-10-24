@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Map;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,21 +38,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Map;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -107,7 +108,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final boolean includeStacktrace;
 
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
-                      final int compressionThreshold, boolean includeStacktrace) {
+                      final int compressionThreshold, final boolean includeStacktrace) {
         super(StandardCharsets.UTF_8);
         this.host = host;
         this.additionalFields = additionalFields;
@@ -115,7 +116,7 @@ public final class GelfLayout extends AbstractStringLayout {
         this.compressionThreshold = compressionThreshold;
         this.includeStacktrace = includeStacktrace;
     }
-    
+
     @PluginFactory
     public static GelfLayout createLayout(
             //@formatter:off
@@ -143,7 +144,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        StringBuilder text = toText(event, getStringBuilder(), false);
+        final StringBuilder text = toText(event, getStringBuilder(), false);
         final byte[] bytes = getBytes(text.toString());
         return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
@@ -182,7 +183,7 @@ public final class GelfLayout extends AbstractStringLayout {
         return text.toString();
     }
 
-    private StringBuilder toText(LogEvent event, StringBuilder builder, boolean gcFree) {
+    private StringBuilder toText(final LogEvent event, final StringBuilder builder, final boolean gcFree) {
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
         builder.append("\"host\":\"");
@@ -208,13 +209,7 @@ public final class GelfLayout extends AbstractStringLayout {
             JsonUtils.quoteAsString(toNullSafeString(additionalField.getValue()), builder);
             builder.append(QC);
         }
-        for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
-            builder.append(QU);
-            JsonUtils.quoteAsString(entry.getKey(), builder);
-            builder.append("\":\"");
-            JsonUtils.quoteAsString(toNullSafeString(entry.getValue()), builder);
-            builder.append(QC);
-        }
+        event.getContextData().forEach(WRITE_KEY_VALUES_INTO, builder);
         if (event.getThrown() != null) {
             builder.append("\"full_message\":\"");
             if (includeStacktrace) {
@@ -226,13 +221,17 @@ public final class GelfLayout extends AbstractStringLayout {
         }
 
         builder.append("\"short_message\":\"");
-        Message message = event.getMessage();
+        final Message message = event.getMessage();
         if (message instanceof CharSequence) {
             JsonUtils.quoteAsString(((CharSequence)message), builder);
         } else if (gcFree && message instanceof StringBuilderFormattable) {
-            StringBuilder messageBuffer = getMessageStringBuilder();
-            ((StringBuilderFormattable)message).formatTo(messageBuffer);
-            JsonUtils.quoteAsString(messageBuffer, builder);
+            final StringBuilder messageBuffer = getMessageStringBuilder();
+            try {
+                ((StringBuilderFormattable) message).formatTo(messageBuffer);
+                JsonUtils.quoteAsString(messageBuffer, builder);
+            } finally {
+                trimToMaxSize(messageBuffer);
+            }
         } else {
             JsonUtils.quoteAsString(toNullSafeString(message.getFormattedMessage()), builder);
         }
@@ -240,6 +239,17 @@ public final class GelfLayout extends AbstractStringLayout {
         builder.append('}');
         return builder;
     }
+
+    private static final TriConsumer<String, Object, StringBuilder> WRITE_KEY_VALUES_INTO = new TriConsumer<String, Object, StringBuilder>() {
+        @Override
+        public void accept(final String key, final Object value, final StringBuilder stringBuilder) {
+            stringBuilder.append(QU);
+            JsonUtils.quoteAsString(key, stringBuilder);
+            stringBuilder.append("\":\"");
+            JsonUtils.quoteAsString(toNullSafeString(String.valueOf(value)), stringBuilder);
+            stringBuilder.append(QC);
+        }
+    };
 
     private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
 
@@ -253,7 +263,7 @@ public final class GelfLayout extends AbstractStringLayout {
         return result;
     }
 
-    private CharSequence toNullSafeString(final CharSequence s) {
+    private static CharSequence toNullSafeString(final CharSequence s) {
         return s == null ? Strings.EMPTY : s;
     }
 
@@ -264,7 +274,7 @@ public final class GelfLayout extends AbstractStringLayout {
         if (timeMillis < 1000) {
             return "0";
         }
-        StringBuilder builder = getTimestampStringBuilder();
+        final StringBuilder builder = getTimestampStringBuilder();
         builder.append(timeMillis);
         builder.insert(builder.length() - 3, '.');
         return builder;

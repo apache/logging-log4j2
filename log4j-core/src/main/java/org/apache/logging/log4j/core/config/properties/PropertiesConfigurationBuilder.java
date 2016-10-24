@@ -17,11 +17,13 @@
 
 package org.apache.logging.log4j.core.config.properties;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -53,13 +55,16 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private static final String ADVERTISER_KEY = "advertiser";
     private static final String STATUS_KEY = "status";
     private static final String SHUTDOWN_HOOK = "shutdownHook";
+    private static final String SHUTDOWN_TIMEOUT = "shutdownTimeout";
     private static final String VERBOSE = "verbose";
+    private static final String DEST = "dest";
     private static final String PACKAGES = "packages";
     private static final String CONFIG_NAME = "name";
     private static final String MONITOR_INTERVAL = "monitorInterval";
     private static final String CONFIG_TYPE = "type";
 
     private final ConfigurationBuilder<PropertiesConfiguration> builder;
+    private LoggerContext loggerContext;
     private Properties rootProperties;
 
     public PropertiesConfigurationBuilder() {
@@ -71,15 +76,14 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         return this;
     }
 
-    public PropertiesConfigurationBuilder setConfigurationSource(ConfigurationSource source) {
+    public PropertiesConfigurationBuilder setConfigurationSource(final ConfigurationSource source) {
         builder.setConfigurationSource(source);
         return this;
     }
 
     @Override
     public PropertiesConfiguration build() {
-        Map<String, String> rootProps = new HashMap<>();
-        for (String key : rootProperties.stringPropertyNames()) {
+        for (final String key : rootProperties.stringPropertyNames()) {
             if (!key.contains(".")) {
                 builder.addRootProperty(key, rootProperties.getProperty(key));
             }
@@ -87,7 +91,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         builder
             .setStatusLevel(Level.toLevel(rootProperties.getProperty(STATUS_KEY), Level.ERROR))
             .setShutdownHook(rootProperties.getProperty(SHUTDOWN_HOOK))
+            .setShutdownTimeout(Long.parseLong(rootProperties.getProperty(SHUTDOWN_TIMEOUT, "0")), TimeUnit.MILLISECONDS)
             .setVerbosity(rootProperties.getProperty(VERBOSE))
+            .setDestination(rootProperties.getProperty(DEST))
             .setPackages(rootProperties.getProperty(PACKAGES))
             .setConfigurationName(rootProperties.getProperty(CONFIG_NAME))
             .setMonitorInterval(rootProperties.getProperty(MONITOR_INTERVAL, "0"))
@@ -120,24 +126,56 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
 
-        final Map<String, Properties> filters = PropertiesUtil.partitionOnCommonPrefixes(
-            PropertiesUtil.extractSubset(rootProperties, "filter"));
-        for (final Map.Entry<String, Properties> entry : filters.entrySet()) {
-            builder.add(createFilter(entry.getKey().trim(), entry.getValue()));
+        final String filterProp = rootProperties.getProperty("filters");
+        if (filterProp != null) {
+            final String[] filterNames = filterProp.split(",");
+            for (final String filterName : filterNames) {
+                final String name = filterName.trim();
+                builder.add(createFilter(name, PropertiesUtil.extractSubset(rootProperties, "filter." + name)));
+            }
+        } else {
+
+            final Map<String, Properties> filters = PropertiesUtil
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "filter"));
+            for (final Map.Entry<String, Properties> entry : filters.entrySet()) {
+                builder.add(createFilter(entry.getKey().trim(), entry.getValue()));
+            }
         }
 
-        final Map<String, Properties> appenders = PropertiesUtil.partitionOnCommonPrefixes(
-            PropertiesUtil.extractSubset(rootProperties, "appender"));
-        for (final Map.Entry<String, Properties> entry : appenders.entrySet()) {
-            builder.add(createAppender(entry.getKey().trim(), entry.getValue()));
+        final String appenderProp = rootProperties.getProperty("appenders");
+        if (appenderProp != null) {
+            final String[] appenderNames = appenderProp.split(",");
+            for (final String appenderName : appenderNames) {
+                final String name = appenderName.trim();
+                builder.add(createAppender(appenderName.trim(),
+                        PropertiesUtil.extractSubset(rootProperties, "appender." + name)));
+            }
+        } else {
+            final Map<String, Properties> appenders = PropertiesUtil
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, Appender.ELEMENT_TYPE));
+            for (final Map.Entry<String, Properties> entry : appenders.entrySet()) {
+                builder.add(createAppender(entry.getKey().trim(), entry.getValue()));
+            }
         }
 
-        final Map<String, Properties> loggers = PropertiesUtil.partitionOnCommonPrefixes(
-            PropertiesUtil.extractSubset(rootProperties, "logger"));
-        for (final Map.Entry<String, Properties> entry : loggers.entrySet()) {
-            final String name = entry.getKey().trim();
-            if (!name.equals(LoggerConfig.ROOT)) {
-                builder.add(createLogger(name, entry.getValue()));
+        final String loggerProp = rootProperties.getProperty("loggers");
+        if (loggerProp != null) {
+            final String[] loggerNames = loggerProp.split(",");
+            for (final String loggerName : loggerNames) {
+                final String name = loggerName.trim();
+                if (!name.equals(LoggerConfig.ROOT)) {
+                    builder.add(createLogger(name, PropertiesUtil.extractSubset(rootProperties, "logger." +
+                            name)));
+                }
+            }
+        } else {
+            final Map<String, Properties> loggers = PropertiesUtil
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "logger"));
+            for (final Map.Entry<String, Properties> entry : loggers.entrySet()) {
+                final String name = entry.getKey().trim();
+                if (!name.equals(LoggerConfig.ROOT)) {
+                    builder.add(createLogger(name, entry.getValue()));
+                }
             }
         }
 
@@ -145,7 +183,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (props.size() > 0) {
             builder.add(createRootLogger(props));
         }
-
+        
+        builder.setLoggerContext(loggerContext);
+        
         return builder.build(false);
     }
 
@@ -300,7 +340,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                                                                                 final Properties properties) {
         while (properties.size() > 0) {
             final String propertyName = properties.stringPropertyNames().iterator().next();
-            int index = propertyName.indexOf('.');
+            final int index = propertyName.indexOf('.');
             if (index > 0) {
                 final String prefix = propertyName.substring(0, index);
                 final Properties componentProperties = PropertiesUtil.extractSubset(properties, prefix);
@@ -331,5 +371,14 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             loggerBuilder.add(createAppenderRef(entry.getKey().trim(), entry.getValue()));
         }
         return loggerBuilder;
+    }
+
+    public PropertiesConfigurationBuilder setLoggerContext(final LoggerContext loggerContext) {
+        this.loggerContext = loggerContext;
+        return this;
+    }
+
+    public LoggerContext getLoggerContext() {
+        return loggerContext;
     }
 }

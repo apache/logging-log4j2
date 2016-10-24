@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -31,21 +33,27 @@ import org.junit.Test;
 
 public class JeroMqAppenderTest {
 
+    private static final String ENDPOINT = "tcp://localhost:5556";
+
+    private static final String APPENDER_NAME = "JeroMQAppender";
+
+    private static final int DEFAULT_TIMEOUT_MILLIS = 60000;
+    
     @ClassRule
     public static LoggerContextRule ctx = new LoggerContextRule("JeroMqAppenderTest.xml");
 
-    @Test(timeout = 10000)
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testAppenderLifeCycle() throws Exception {
         // do nothing to make sure the appender starts and stops without
         // locking up resources.
         Assert.assertNotNull(JeroMqManager.getContext());
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testClientServer() throws Exception {
-        final JeroMqAppender appender = ctx.getRequiredAppender("JeroMQAppender", JeroMqAppender.class);
+        final JeroMqAppender appender = ctx.getRequiredAppender(APPENDER_NAME, JeroMqAppender.class);
         final int expectedReceiveCount = 3;
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), "tcp://localhost:5556", expectedReceiveCount);
+        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT, expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
@@ -67,12 +75,12 @@ public class JeroMqAppenderTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testMultiThreadedServer() throws Exception {
         final int nThreads = 10;
-        final JeroMqAppender appender = ctx.getRequiredAppender("JeroMQAppender", JeroMqAppender.class);
+        final JeroMqAppender appender = ctx.getRequiredAppender(APPENDER_NAME, JeroMqAppender.class);
         final int expectedReceiveCount = 2 * nThreads;
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), "tcp://localhost:5556",
+        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT,
                 expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
@@ -110,14 +118,15 @@ public class JeroMqAppenderTest {
             Assert.assertEquals(nThreads, hello);
             Assert.assertEquals(nThreads, again);
         } finally {
-            executor.shutdown();
+            ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS,
+                    JeroMqAppenderTest.class.getSimpleName());
         }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testServerOnly() throws Exception {
         final Logger logger = ctx.getLogger(getClass().getName());
-        final JeroMqAppender appender = ctx.getRequiredAppender("JeroMQAppender", JeroMqAppender.class);
+        final JeroMqAppender appender = ctx.getRequiredAppender(APPENDER_NAME, JeroMqAppender.class);
         appender.resetSendRcs();
         logger.info("Hello");
         logger.info("Again");

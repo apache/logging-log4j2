@@ -199,6 +199,7 @@ public class StrSubstitutor implements ConfigurationAware {
     public StrSubstitutor() {
         this(null, DEFAULT_PREFIX, DEFAULT_SUFFIX, DEFAULT_ESCAPE);
     }
+    
     /**
      * Creates a new instance and initializes it. Uses defaults for variable
      * prefix and suffix and the escaping character.
@@ -250,6 +251,16 @@ public class StrSubstitutor implements ConfigurationAware {
         this(new MapLookup(valueMap), prefix, suffix, escape, valueDelimiter);
     }
 
+    /**
+     * Creates a new instance and initializes it. Uses defaults for variable
+     * prefix and suffix and the escaping character.
+     *
+     * @param properties  the map with the variables' values, may be null
+     */
+    public StrSubstitutor(Properties properties) {
+        this(toTypeSafeMap(properties));
+    }
+    
     /**
      * Creates a new instance and initializes it.
      *
@@ -378,6 +389,14 @@ public class StrSubstitutor implements ConfigurationAware {
             valueMap.put(propName, propValue);
         }
         return StrSubstitutor.replace(source, valueMap);
+    }
+
+    private static Map<String, String> toTypeSafeMap(Properties properties) {
+        Map<String, String> map = new HashMap<>(properties.size());
+        for (final String name : properties.stringPropertyNames()) {
+            map.put(name, properties.getProperty(name));
+        }
+        return map;
     }
 
     //-----------------------------------------------------------------------

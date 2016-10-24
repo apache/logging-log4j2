@@ -28,34 +28,31 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
  *
  */
 public class RollingRandomAccessFileManagerHeaderFooterTest {
 
+    private static final String CONFIG = "RollingRandomAccessFileAppenderHeaderFooterTest.xml";
     private static final String DIR = "target/RollingRandomAccessFileAppenderHeaderFooterTest/";
     private static final String LOGFILE = "target/RollingRandomAccessFileAppenderHeaderFooterTest.log";
 
-    @ClassRule
-    public static LoggerContextRule init = new LoggerContextRule("RollingRandomAccessFileAppenderHeaderFooterTest.xml");
+    public LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+
+    @Rule
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     private Logger logger;
 
     @Before
     public void setUp() throws Exception {
-        this.logger = init.getLogger(RollingRandomAccessFileManagerHeaderFooterTest.class.getName());
-        deleteDir();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        deleteDir();
+        this.logger = loggerContextRule.getLogger(RollingRandomAccessFileManagerHeaderFooterTest.class.getName());
     }
 
     @Ignore // FIXME
@@ -109,17 +106,6 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
             return result;
         } finally {
             Closer.closeSilently(in);
-        }
-    }
-
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
         }
     }
 }

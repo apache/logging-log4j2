@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 
 /**
- *
+ * TODO
  */
 public class MutableThreadContextStack implements ThreadContextStack {
 
@@ -43,6 +43,10 @@ public class MutableThreadContextStack implements ThreadContextStack {
         this(new ArrayList<String>());
     }
 
+    /**
+     * Constructs a new instance.
+     * @param list
+     */
     public MutableThreadContextStack(final List<String> list) {
         this.list = new ArrayList<>(list);
     }
@@ -235,6 +239,10 @@ public class MutableThreadContextStack implements ThreadContextStack {
         frozen = true;
     }
     
+    /**
+     * Returns whether this context stack is frozen.
+     * @return whether this context stack is frozen.
+     */
     public boolean isFrozen() {
         return frozen;
     }

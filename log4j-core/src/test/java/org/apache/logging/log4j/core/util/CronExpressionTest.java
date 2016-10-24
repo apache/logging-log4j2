@@ -31,37 +31,37 @@ public class CronExpressionTest {
 
     @Test
     public void testDayOfMonth() throws Exception {
-        CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 * * ?");
-        Date date = new GregorianCalendar(2015, 11, 2).getTime();
-        Date fireDate = parser.getNextValidTimeAfter(date);
-        Date expected = new GregorianCalendar(2015, 11, 2, 7, 0, 0).getTime();
+        final CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 * * ?");
+        final Date date = new GregorianCalendar(2015, 11, 2).getTime();
+        final Date fireDate = parser.getNextValidTimeAfter(date);
+        final Date expected = new GregorianCalendar(2015, 11, 2, 7, 0, 0).getTime();
         assertEquals("Dates not equal.", expected, fireDate);
     }
 
     @Test
     public void testDayOfWeek() throws Exception {
-        CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 ? * Fri");
-        Date date = new GregorianCalendar(2015, 11, 2).getTime();
-        Date fireDate = parser.getNextValidTimeAfter(date);
-        Date expected = new GregorianCalendar(2015, 11, 4, 7, 0, 0).getTime();
+        final CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 ? * Fri");
+        final Date date = new GregorianCalendar(2015, 11, 2).getTime();
+        final Date fireDate = parser.getNextValidTimeAfter(date);
+        final Date expected = new GregorianCalendar(2015, 11, 4, 7, 0, 0).getTime();
         assertEquals("Dates not equal.", expected, fireDate);
     }
 
     @Test
     public void testNextMonth() throws Exception {
-        CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 1 * ?");
-        Date date = new GregorianCalendar(2015, 11, 2).getTime();
-        Date fireDate = parser.getNextValidTimeAfter(date);
-        Date expected = new GregorianCalendar(2016, 0, 1, 7, 0, 0).getTime();
+        final CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 1 * ?");
+        final Date date = new GregorianCalendar(2015, 11, 2).getTime();
+        final Date fireDate = parser.getNextValidTimeAfter(date);
+        final Date expected = new GregorianCalendar(2016, 0, 1, 7, 0, 0).getTime();
         assertEquals("Dates not equal.", expected, fireDate);
     }
 
     @Test
     public void testLastDayOfMonth() throws Exception {
-        CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 L * ?");
-        Date date = new GregorianCalendar(2015, 10, 2).getTime();
-        Date fireDate = parser.getNextValidTimeAfter(date);
-        Date expected = new GregorianCalendar(2015, 10, 30, 7, 0, 0).getTime();
+        final CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 L * ?");
+        final Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        final Date fireDate = parser.getNextValidTimeAfter(date);
+        final Date expected = new GregorianCalendar(2015, 10, 30, 7, 0, 0).getTime();
         assertEquals("Dates not equal.", expected, fireDate);
     }
 }

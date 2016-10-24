@@ -20,73 +20,51 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.logging.log4j.util.Strings;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
 
+@RunWith(MockitoJUnitRunner.class)
 public class Log4jServletContextListenerTest {
+    @Mock
     private ServletContextEvent event;
+    @Mock
     private ServletContext servletContext;
+    @Mock
     private Log4jWebLifeCycle initializer;
 
     private Log4jServletContextListener listener;
 
     @Before
     public void setUp() {
-        this.event = createStrictMock(ServletContextEvent.class);
-        this.servletContext = createStrictMock(ServletContext.class);
-        this.initializer = createStrictMock(Log4jWebLifeCycle.class);
-
         this.listener = new Log4jServletContextListener();
-    }
-
-    @After
-    public void tearDown() {
-        verify(this.event, this.servletContext, this.initializer);
+        given(event.getServletContext()).willReturn(servletContext);
+        given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
     }
 
     @Test
     public void testInitAndDestroy() throws Exception {
-        expect(this.event.getServletContext()).andReturn(this.servletContext);
-        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.start();
-        expectLastCall();
-        this.initializer.setLoggerContext();
-        expectLastCall();
-
-        replay(this.event, this.servletContext, this.initializer);
-
         this.listener.contextInitialized(this.event);
 
-        verify(this.event, this.servletContext, this.initializer);
-        reset(this.event, this.servletContext, this.initializer);
-
-        this.initializer.clearLoggerContext();
-        expectLastCall();
-        this.initializer.stop();
-        expectLastCall();
-
-        replay(this.event, this.servletContext, this.initializer);
+        then(initializer).should().start();
+        then(initializer).should().setLoggerContext();
 
         this.listener.contextDestroyed(this.event);
+
+        then(initializer).should().clearLoggerContext();
+        then(initializer).should().stop();
     }
 
     @Test
     public void testInitFailure() throws Exception {
-        expect(this.event.getServletContext()).andReturn(this.servletContext);
-        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.start();
-        expectLastCall().andThrow(new IllegalStateException(Strings.EMPTY));
-
-        replay(this.event, this.servletContext, this.initializer);
+        willThrow(new IllegalStateException(Strings.EMPTY)).given(initializer).start();
 
         try {
             this.listener.contextInitialized(this.event);

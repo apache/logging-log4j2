@@ -30,7 +30,7 @@ import org.junit.Test;
 public class PatternSelectorTest {
 
     public class FauxLogger {
-        public String formatEvent(LogEvent event, Layout<?> layout) {
+        public String formatEvent(final LogEvent event, final Layout<?> layout) {
             return new String(layout.toByteArray(event));
         }
     }
@@ -39,9 +39,9 @@ public class PatternSelectorTest {
 
     @Test
     public void testPatternSelector() throws Exception {
-        PatternMatch[] patterns = new PatternMatch[1];
+        final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
-        PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
+        final PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
         final PatternLayout layout = PatternLayout.newBuilder().withPatternSelector(selector)
                 .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //

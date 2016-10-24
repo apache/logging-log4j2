@@ -36,7 +36,7 @@ public enum ExtensionLanguageMapping {
     private final String extension;
     private final String language;
 
-    ExtensionLanguageMapping(String extension, String language) {
+    ExtensionLanguageMapping(final String extension, final String language) {
         this.extension = extension;
         this.language = language;
     }
@@ -49,7 +49,7 @@ public enum ExtensionLanguageMapping {
         return this.language;
     }
 
-    public static ExtensionLanguageMapping getByExtension(String extension) {
+    public static ExtensionLanguageMapping getByExtension(final String extension) {
         for (final ExtensionLanguageMapping mapping : values()) {
             if (mapping.extension.equals(extension)) {
                 return mapping;
@@ -58,7 +58,7 @@ public enum ExtensionLanguageMapping {
         return null;
     }
 
-    public static List<ExtensionLanguageMapping> getByLanguage(String language) {
+    public static List<ExtensionLanguageMapping> getByLanguage(final String language) {
         final List<ExtensionLanguageMapping> list = new ArrayList<>();
         for (final ExtensionLanguageMapping mapping : values()) {
             if (mapping.language.equals(language)) {

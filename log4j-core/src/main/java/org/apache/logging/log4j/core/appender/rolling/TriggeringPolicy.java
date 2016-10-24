@@ -22,11 +22,13 @@ import org.apache.logging.log4j.core.LogEvent;
  * A <code>TriggeringPolicy</code> controls the conditions under which rollover
  * occurs. Such conditions include time of day, file size, an
  * external event, the log request or a combination thereof.
+ * 
+ * @see AbstractTriggeringPolicy
  */
-public interface TriggeringPolicy {
+public interface TriggeringPolicy /* TODO 3.0: extends LifeCycle */ {
 
     /**
-     * Initialize the Policy.
+     * Initializes this triggering policy.
      * @param manager The RollingFileManager.
      */
 
@@ -37,8 +39,8 @@ public interface TriggeringPolicy {
      * true is returned, RolloverPolicy.rollover will be called but it
      * can determine that a rollover is not warranted.
      *
-     * @param event   A reference to the currently event.
+     * @param logEvent   A reference to the current log event.
      * @return true if a rollover should occur.
      */
-    boolean isTriggeringEvent(final LogEvent event);
+    boolean isTriggeringEvent(final LogEvent logEvent);
 }

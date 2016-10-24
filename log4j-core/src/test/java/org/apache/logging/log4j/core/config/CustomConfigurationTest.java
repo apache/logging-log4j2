@@ -21,7 +21,6 @@ import java.io.Serializable;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
@@ -66,7 +65,7 @@ public class CustomConfigurationTest {
     @Test
     public void testConfig() {
         // don't bother using "error" since that's the default; try another level
-        final LoggerContext ctx = this.init.getContext();
+        final LoggerContext ctx = this.init.getLoggerContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
         assertThat(config, instanceOf(XmlConfiguration.class));
@@ -80,8 +79,17 @@ public class CustomConfigurationTest {
             .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
             .withConfiguration(config)
             .build();
-        final Appender appender = FileAppender.createAppender(LOG_FILE, "false", "false", "File", "true",
-            "false", "false", "4000", layout, null, "false", null, config);
+        // @formatter:off
+        final FileAppender appender = FileAppender.newBuilder()
+            .withFileName(LOG_FILE)
+            .withAppend(false)
+            .withName("File")
+            .withIgnoreExceptions(false)
+            .withBufferSize(4000)
+            .withBufferedIo(false)
+            .withLayout(layout)
+            .build();
+        // @formatter:on
         appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);

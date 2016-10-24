@@ -93,8 +93,8 @@ public final class FileUtils {
         return url != null && (url.getProtocol().equals(PROTOCOL_FILE) || url.getProtocol().equals(JBOSS_FILE));
     }
 
-    public static String getFileExtension(File file) {
-        String fileName = file.getName();
+    public static String getFileExtension(final File file) {
+        final String fileName = file.getName();
         if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
         }

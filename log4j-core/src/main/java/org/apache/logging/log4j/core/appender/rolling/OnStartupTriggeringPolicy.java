@@ -20,32 +20,23 @@ import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Triggers a rollover on every restart. The target file's timestamp is compared with the JVM start time
- * and if it is older isTriggeringEvent will return true. After isTriggeringEvent has been called it will
- * always return false.
+ * Triggers a rollover on every restart, but only if the file size is greater than zero.
  */
 @Plugin(name = "OnStartupTriggeringPolicy", category = "Core", printObject = true)
-public class OnStartupTriggeringPolicy implements TriggeringPolicy {
-    private static long JVM_START_TIME = initStartTime();
+public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
 
-    private boolean evaluated = false;
-    private RollingFileManager manager;
+    private static final long JVM_START_TIME = initStartTime();
 
-    /**
-     * Provide the RollingFileManager to the policy.
-     * @param manager The RollingFileManager.
-     */
-    @Override
-    public void initialize(final RollingFileManager manager) {
-        this.manager = manager;
-        if (JVM_START_TIME == 0) {
-            evaluated = true;
-        }
+    private final long minSize;
+
+    private OnStartupTriggeringPolicy(final long minSize) {
+        this.minSize = minSize;
     }
 
     /**
@@ -63,17 +54,33 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
             final Class<?> factoryClass = Loader.loadSystemClass("java.lang.management.ManagementFactory");
             final Method getRuntimeMXBean = factoryClass.getMethod("getRuntimeMXBean");
             final Object runtimeMXBean = getRuntimeMXBean.invoke(null);
-            
+
             final Class<?> runtimeMXBeanClass = Loader.loadSystemClass("java.lang.management.RuntimeMXBean");
             final Method getStartTime = runtimeMXBeanClass.getMethod("getStartTime");
             final Long result = (Long) getStartTime.invoke(runtimeMXBean);
 
-            return result.longValue();
+            return result;
         } catch (final Throwable t) {
-            StatusLogger.getLogger().error("Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), " //
+            StatusLogger.getLogger().error("Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), "
                     + "using system time for OnStartupTriggeringPolicy", t);
             // We have little option but to declare "now" as the beginning of time.
             return System.currentTimeMillis();
+        }
+    }
+
+    /**
+     * Provide the RollingFileManager to the policy.
+     * @param manager The RollingFileManager.
+     */
+    @Override
+    public void initialize(final RollingFileManager manager) {
+        if (manager.getFileTime() < JVM_START_TIME && manager.getFileSize() >= minSize) {
+            if (minSize == 0) {
+                manager.setRenameEmptyFiles(true);
+            }
+            manager.skipFooter(true);
+            manager.rollover();
+            manager.skipFooter(false);
         }
     }
 
@@ -84,11 +91,7 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
      */
     @Override
     public boolean isTriggeringEvent(final LogEvent event) {
-        if (evaluated) {
-            return false;
-        }
-        evaluated = true;
-        return manager.getFileTime() < JVM_START_TIME;
+        return false;
     }
 
     @Override
@@ -97,7 +100,8 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
     }
 
     @PluginFactory
-    public static OnStartupTriggeringPolicy createPolicy() {
-        return new OnStartupTriggeringPolicy();
+    public static OnStartupTriggeringPolicy createPolicy(
+            @PluginAttribute(value = "minSize", defaultLong = 1) final long minSize) {
+        return new OnStartupTriggeringPolicy(minSize);
     }
 }

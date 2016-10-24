@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +34,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -44,25 +44,20 @@ public class RollingAppenderDeleteMaxDepthTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-maxdepth.xml";
     private static final String DIR = "target/rolling-with-delete-depth/test";
 
-    private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            deleteDir();
-        }
-    }).around(ctx);
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
         // create some files that match the glob but exceed maxDepth
-        Path p1 = writeTextTo(DIR + "/1/test-4.log"); // glob="**/test-4.log"
-        Path p2 = writeTextTo(DIR + "/2/test-4.log");
-        Path p3 = writeTextTo(DIR + "/1/2/test-4.log");
-        Path p4 = writeTextTo(DIR + "/1/2/3/test-4.log");
+        final Path p1 = writeTextTo(DIR + "/1/test-4.log"); // glob="**/test-4.log"
+        final Path p2 = writeTextTo(DIR + "/2/test-4.log");
+        final Path p3 = writeTextTo(DIR + "/1/2/test-4.log");
+        final Path p4 = writeTextTo(DIR + "/1/2/3/test-4.log");
 
-        final Logger logger = ctx.getLogger();
+        final Logger logger = loggerContextRule.getLogger();
         for (int i = 0; i < 10; ++i) {
             // 30 chars per message: each message triggers a rollover
             logger.debug("This is a test message number " + i); // 30 chars:
@@ -74,9 +69,9 @@ public class RollingAppenderDeleteMaxDepthTest {
         assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
 
         final File[] files = dir.listFiles();
-        List<String> expected = Arrays.asList("1", "2", "test-1.log", "test-2.log", "test-3.log");
+        final List<String> expected = Arrays.asList("1", "2", "test-1.log", "test-2.log", "test-3.log");
         assertEquals(Arrays.toString(files), expected.size(), files.length);
-        for (File file : files) {
+        for (final File file : files) {
             assertTrue("test-4.log should have been deleted",
                     expected.contains(file.getName()));
         }
@@ -87,8 +82,8 @@ public class RollingAppenderDeleteMaxDepthTest {
         assertTrue(p4 + " should not have been deleted", Files.exists(p4));
     }
 
-    private Path writeTextTo(String location) throws IOException {
-        Path path = Paths.get(location);
+    private Path writeTextTo(final String location) throws IOException {
+        final Path path = Paths.get(location);
         Files.createDirectories(path.getParent());
         try (BufferedWriter buffy = Files.newBufferedWriter(path, Charset.defaultCharset())) {
             buffy.write("some text");
@@ -98,22 +93,11 @@ public class RollingAppenderDeleteMaxDepthTest {
         return path;
     }
 
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
-        }
-    }
-
-    public static void main(String[] args) {
-        Pattern p = Pattern.compile("test-.?[2,4,6,8,0]\\.log\\.gz");
+    public static void main(final String[] args) {
+        final Pattern p = Pattern.compile("test-.?[2,4,6,8,0]\\.log\\.gz");
         for (int i = 0; i < 16; i++) {
-            String str = "test-" + i + ".log.gz";
-            java.util.regex.Matcher m = p.matcher(str);
+            final String str = "test-" + i + ".log.gz";
+            final java.util.regex.Matcher m = p.matcher(str);
             System.out.println(m.matches() + ": " + str);
         }
     }

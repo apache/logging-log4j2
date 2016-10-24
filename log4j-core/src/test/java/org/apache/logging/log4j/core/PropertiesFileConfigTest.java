@@ -57,7 +57,7 @@ public class PropertiesFileConfigTest {
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }
-        int loopCount = 0;
+        final int loopCount = 0;
         Configuration newConfig;
         do {
             Thread.sleep(100);

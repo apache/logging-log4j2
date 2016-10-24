@@ -80,7 +80,7 @@ public class TextEncoderHelper {
         boolean endOfInput = true;
         do {
             charBuf.clear(); // reset character buffer position to zero, limit to capacity
-            int copied = copy(text, start, charBuf);
+            final int copied = copy(text, start, charBuf);
             start += copied;
             todoChars -= copied;
             endOfInput = todoChars <= 0;
@@ -130,7 +130,7 @@ public class TextEncoderHelper {
         return temp;
     }
 
-    private static ByteBuffer drainIfByteBufferFull(ByteBufferDestination destination, ByteBuffer temp, CoderResult result) {
+    private static ByteBuffer drainIfByteBufferFull(final ByteBufferDestination destination, ByteBuffer temp, final CoderResult result) {
         if (result.isOverflow()) { // byte buffer full
 
             // SHOULD NOT HAPPEN:

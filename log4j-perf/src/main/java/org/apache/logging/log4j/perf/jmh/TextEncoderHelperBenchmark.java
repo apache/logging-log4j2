@@ -74,7 +74,7 @@ public class TextEncoderHelperBenchmark {
         }
 
         @Override
-        public ByteBuffer drain(ByteBuffer buf) {
+        public ByteBuffer drain(final ByteBuffer buf) {
             buf.flip();
             count += buf.limit();
             buf.clear();
@@ -119,7 +119,7 @@ public class TextEncoderHelperBenchmark {
     //private static final ThreadLocal<StringBuilderEncoder> textEncoderHelper = new ThreadLocal<>();
     private final StringBuilderEncoder textEncoderHelper = new StringBuilderEncoder(CHARSET_DEFAULT);
     private StringBuilderEncoder getEncoder() {
-        StringBuilderEncoder result = textEncoderHelper;
+        final StringBuilderEncoder result = textEncoderHelper;
         return result;
     }
 
@@ -191,7 +191,7 @@ public class TextEncoderHelperBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long byteArrayMCD() {
-        byte[] data =  PATTERN_M_C_D.toByteArray(EVENT);
+        final byte[] data =  PATTERN_M_C_D.toByteArray(EVENT);
         ByteBuffer buff = destination.getByteBuffer();
         if (buff.remaining() < data.length) {
             buff = destination.drain(buff);
@@ -204,8 +204,8 @@ public class TextEncoderHelperBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long serializableMCD() {
-        String str = PATTERN_M_C_D.toSerializable(EVENT);
-        byte[] data = str.getBytes(CHARSET_DEFAULT);
+        final String str = PATTERN_M_C_D.toSerializable(EVENT);
+        final byte[] data = str.getBytes(CHARSET_DEFAULT);
         ByteBuffer buff = destination.getByteBuffer();
         if (buff.remaining() < data.length) {
             buff = destination.drain(buff);
@@ -226,7 +226,7 @@ public class TextEncoderHelperBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String toStringMCD() {
-        String str = PATTERN_M_C_D.toSerializable(EVENT);
+        final String str = PATTERN_M_C_D.toSerializable(EVENT);
         return str;
     }
 

@@ -42,5 +42,6 @@ public class SimpleLoggerContextFactory implements LoggerContextFactory {
 
     @Override
     public void removeContext(final LoggerContext removeContext) {
+        // do nothing
     }
 }

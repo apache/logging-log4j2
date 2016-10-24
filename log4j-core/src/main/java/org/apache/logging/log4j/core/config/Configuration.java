@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -34,6 +35,12 @@ import org.apache.logging.log4j.core.util.WatchManager;
 
 /**
  * Interface that must be implemented to create a configuration.
+ * <p>
+ * Custom implementations are recommended to extend {@link AbstractConfiguration}.
+ * </p>
+ *
+ * @see AbstractConfiguration
+ * @see org.apache.logging.log4j.core.LifeCycle2
  */
 public interface Configuration extends Filterable {
 
@@ -59,7 +66,7 @@ public interface Configuration extends Filterable {
     /**
      * Returns the Appender with the specified name.
      *
-     * @param <T> The expected Appender type.
+     * @param <T>  The expected Appender type.
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
@@ -98,6 +105,7 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns the root Logger.
+     *
      * @return the root Logger.
      */
     LoggerConfig getRootLogger();
@@ -119,6 +127,8 @@ public interface Configuration extends Filterable {
     Advertiser getAdvertiser();
 
     boolean isShutdownHookEnabled();
+
+    long getShutdownTimeoutMillis();
 
     ConfigurationScheduler getScheduler();
 
@@ -155,10 +165,11 @@ public interface Configuration extends Filterable {
      *
      * @return the {@code AsyncLoggerConfigDelegate}
      */
-	AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate();
+    AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate();
 
     /**
      * Return the WatchManager.
+     *
      * @return the WatchManager.
      */
     WatchManager getWatchManager();
@@ -186,4 +197,11 @@ public interface Configuration extends Filterable {
      * @param nanoClock the new nano clock for this configuration. Must be non-null.
      */
     void setNanoClock(NanoClock nanoClock);
+
+    /**
+     * Gets the logger context.
+     *
+     * @return the logger context.
+     */
+    LoggerContext getLoggerContext();
 }

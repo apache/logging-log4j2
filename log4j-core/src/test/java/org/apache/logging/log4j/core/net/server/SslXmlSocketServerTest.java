@@ -38,21 +38,34 @@ public class SslXmlSocketServerTest extends AbstractSocketServerTest {
 
     private static TcpSocketServer<InputStream> server;
 
-    private static SslConfiguration sslConfig;
+    private static SslConfiguration sslConfiguration;
 
     private static void initServerSocketFactory() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
                 TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
                 TestConstants.TRUSTSTORE_PWD, null, null);
-        sslConfig = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
+        sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 
     @Override
     protected SocketAppender createSocketAppender(final Filter socketFilter,
             final Layout<? extends Serializable> socketLayout) {
-        return SocketAppender.createAppender("localhost", this.port, this.protocol, sslConfig, 0, -1, true,
-                "Test", true, false, socketLayout, socketFilter, false, null);
+        // @formatter:off
+        return SocketAppender.newBuilder()
+                .withProtocol(this.protocol)
+                .withHost("localhost")
+                .withPort(this.port)
+                .withReconnectDelayMillis(-1)
+                .withName("test")
+                .withImmediateFlush(true)
+                .withImmediateFail(false)
+                .withIgnoreExceptions(false)
+                .withLayout(socketLayout)
+                .withFilter(socketFilter)
+                .withSslConfiguration(sslConfiguration)
+                .build();
+        // @formatter:on        
     }
 
     @BeforeClass
@@ -61,7 +74,7 @@ public class SslXmlSocketServerTest extends AbstractSocketServerTest {
         initServerSocketFactory();
         // Use a large buffer just to test the code, the UDP test uses a tiny buffer
         server = new SecureTcpSocketServer<>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
-                Charset.defaultCharset()), sslConfig);
+                Charset.defaultCharset()), sslConfiguration);
         thread = server.startNewThread();
     }
 

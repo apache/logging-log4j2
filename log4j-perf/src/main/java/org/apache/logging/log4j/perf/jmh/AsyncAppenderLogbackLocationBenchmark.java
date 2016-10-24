@@ -34,8 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.core.spi.LifeCycle;
 
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
-
 /**
  * Tests Logback Async Appender performance when including caller location information.
  */

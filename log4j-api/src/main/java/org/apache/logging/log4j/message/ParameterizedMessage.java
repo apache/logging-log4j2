@@ -29,6 +29,10 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * </p>
  */
 public class ParameterizedMessage implements Message, StringBuilderFormattable {
+
+    // Should this be configurable?
+    private static final int DEFAULT_STRING_BUILDER_SIZE = 255;
+
     /**
      * Prefix for recursion.
      */
@@ -42,14 +46,17 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * Prefix for errors.
      */
     public static final String ERROR_PREFIX = ParameterFormatter.ERROR_PREFIX;
+
     /**
      * Separator for errors.
      */
     public static final String ERROR_SEPARATOR = ParameterFormatter.ERROR_SEPARATOR;
+
     /**
      * Separator for error messages.
      */
     public static final String ERROR_MSG_SEPARATOR = ParameterFormatter.ERROR_MSG_SEPARATOR;
+
     /**
      * Suffix for errors.
      */
@@ -133,17 +140,18 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         this(messagePattern, new Object[]{arg0, arg1});
     }
 
-    private void init(String messagePattern) {
+    private void init(final String messagePattern) {
         this.messagePattern = messagePattern;
-        this.indices = new int[messagePattern == null ? 0 : messagePattern.length() >> 1]; // divide by 2
-        int usedCount = ParameterFormatter.countArgumentPlaceholders2(messagePattern, indices);
-        initThrowable(argArray, usedCount);
-        this.usedCount = Math.min(usedCount, (argArray == null) ? 0 : argArray.length);
+        final int len = Math.max(1, messagePattern == null ? 0 : messagePattern.length() >> 1); // divide by 2
+        this.indices = new int[len]; // LOG4J2-1542 ensure non-zero array length
+        final int placeholders = ParameterFormatter.countArgumentPlaceholders2(messagePattern, indices);
+        initThrowable(argArray, placeholders);
+        this.usedCount = Math.min(placeholders, argArray == null ? 0 : argArray.length);
     }
 
     private void initThrowable(final Object[] params, final int usedParams) {
         if (params != null) {
-            int argCount = params.length;
+            final int argCount = params.length;
             if (usedParams < argCount && this.throwable == null && params[argCount - 1] instanceof Throwable) {
                 this.throwable = (Throwable) params[argCount - 1];
             }
@@ -199,7 +207,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     private static StringBuilder getThreadLocalStringBuilder() {
         StringBuilder buffer = threadLocalStringBuilder.get();
         if (buffer == null) {
-            buffer = new StringBuilder(255);
+            buffer = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
             threadLocalStringBuilder.set(buffer);
         }
         buffer.setLength(0);

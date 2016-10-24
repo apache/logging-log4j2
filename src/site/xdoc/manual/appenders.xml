@@ -55,6 +55,15 @@
             on a separate Thread. Note that exceptions while writing to those Appenders will be hidden from
             the application. The AsyncAppender should be configured after the appenders it references to allow it
             to shut down properly.</p>
+          <p>
+            By default, AsyncAppender uses
+            <a class="javadoc" href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">java.util.concurrent.ArrayBlockingQueue</a>
+            which does not require any external libraries. Note that multi-threaded applications should exercise care
+            when using this appender as such: the blocking queue is susceptible to lock contention and our
+            <a href="../performance.html#asyncLogging">tests showed</a>
+            performance may become worse when more threads are logging concurrently.
+            Consider using <a href="async.html">lock-free Async Loggers</a> for optimal performance.
+          </p>
           <table>
             <caption align="top">AsyncAppender Parameters</caption>
             <tr>
@@ -83,7 +92,8 @@
             <tr>
               <td>bufferSize</td>
               <td>integer</td>
-              <td>Specifies the maximum number of events that can be queued. The default is 128.</td>
+              <td>Specifies the maximum number of events that can be queued. The default is 128. Note that when using a
+                disruptor-style <tt>BlockingQueue</tt>, this buffer size must be a power of 2.</td>
             </tr>
             <tr>
               <td>errorRef</td>
@@ -118,12 +128,18 @@
               not included by default when adding a log event to the queue.
               You can change this by setting includeLocation="true".</td>
             </tr>
+            <tr>
+              <td>BlockingQueueFactory</td>
+              <td>BlockingQueueFactory</td>
+              <td>This element overrides what type of <tt>BlockingQueue</tt> to use. See
+                <a href="#BlockingQueueFactory">below documentation</a> for more details.</td>
+            </tr>
           </table>
           <p>
             There are also a few system properties that can be used to maintain application throughput even when
             the underlying appender cannot keep up with the logging rate and the queue is filling up.
             See the details for system properties
-            <a href="configuration.html#AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
+            <a href="configuration.html#log4j2.AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
               <tt>log4j2.DiscardThreshold</tt></a>.
           </p>
           <p>
@@ -148,11 +164,78 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+          <p>
+            <a name="BlockingQueueFactory"/>
+            Starting in Log4j 2.7, a custom implementation of <tt>BlockingQueue</tt> or <tt>TransferQueue</tt> can be
+            specified using a
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/async/BlockingQueueFactory.html">BlockingQueueFactory</a>
+            plugin. To override the default <tt>BlockingQueueFactory</tt>, specify the plugin inside an
+            <code><![CDATA[<Async/>]]></code> element like so:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<Configuration name="LinkedTransferQueueExample">
+  <Appenders>
+    <List name="List"/>
+    <Async name="Async" bufferSize="262144">
+      <AppenderRef ref="List"/>
+      <LinkedTransferQueue/>
+    </Async>
+  </Appenders>
+  <Loggers>
+    <Root>
+      <AppenderRef ref="Async"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+          <p>
+            Log4j ships with the following implementations:
+          </p>
+          <table>
+            <caption align="top">BlockingQueueFactory Implementations</caption>
+            <tr>
+              <th>Plugin Name</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>ArrayBlockingQueue</td>
+              <td>
+                This is the default implementation that uses
+                <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>DisruptorBlockingQueue</td>
+              <td>
+                This uses the <a href="https://github.com/conversant/disruptor">Conversant Disruptor</a> implementation
+                of <tt>BlockingQueue</tt>. This plugin takes a single optional attribute, <tt>spinPolicy</tt>, which
+                corresponds to
+                <!-- TODO: this needs performance charts and links added -->
+              </td>
+            </tr>
+            <tr>
+              <td>JCToolsBlockingQueue</td>
+              <td>
+                This uses <a href="https://jctools.github.io/JCTools/">JCTools</a>, specifically the
+                <abbr title="multiple producer single consumer">MPSC</abbr> bounded lock-free queue.
+                <!-- TODO: this need performance charts and links added -->
+              </td>
+            </tr>
+            <tr>
+              <td>LinkedTransferQueue</td>
+              <td>
+                This uses the new in Java 7 implementation
+                <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>.
+                Note that this queue does not use the <tt>bufferSize</tt> configuration attribute from AsyncAppender as
+                <tt>LinkedTransferQueue</tt> does not support a maximum capacity.
+                <!-- TODO: this needs performance charts and links added -->
+              </td>
+            </tr>
+          </table>
         </subsection>
         <a name="ConsoleAppender"/>
         <subsection name="ConsoleAppender">
           <p>
-            As one might expect, the ConsoleAppender writes its output to either System.err or System.out with System.err
+            As one might expect, the ConsoleAppender writes its output to either System.out or System.err with System.out
             being the default target. A Layout must be provided to format the LogEvent.
           </p>
           <table>
@@ -179,7 +262,18 @@
               <td>boolean</td>
               <td>Identifies whether the appender honors reassignments of System.out or System.err
                 via System.setOut or System.setErr made after configuration. Note that the follow
-                attribute cannot be used with Jansi on Windows.</td>
+                attribute cannot be used with Jansi on Windows. Cannot be used with <code>direct</code>.</td>
+            </tr>
+            <tr>
+              <td>direct</td>
+              <td>boolean</td>
+              <td>Write directly to <code>java.io.FileDescriptor</code> and bypass <code>java.lang.System.out/.err</code>.
+                Can give up to 10x performance boost when the output is redirected to file or other process.
+                Cannot be used with Jansi on Windows. Cannot be used with <code>follow</code>. Output will not respect
+                <code>java.lang.System.setOut()/.setErr()</code> and may get intertwined with other output to
+                <code>java.lang.System.out/.err</code> in a multi-threaded application.
+                <i>New since 2.6.2. Be aware that this is a new addition, and it has only been tested with Oracle JVM
+                  on Linux and Windows so far.</i></td>
             </tr>
             <tr>
               <td>name</td>
@@ -197,7 +291,7 @@
             <tr>
               <td>target</td>
               <td>String</td>
-              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_ERR".</td>
+              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_OUT".</td>
             </tr>
           </table>
           <p>
@@ -333,6 +427,12 @@
               <td>When bufferedIO is true, this is the buffer size, the default is 8192 bytes.</td>
             </tr>
             <tr>
+              <td>createOnDemand</td>
+              <td>boolean</td>
+              <td>The appender creates the file on-demand. The appender only creates the file when a log event
+                passes all filters and is routed to this appender. Defaults to false.</td>
+            </tr>
+            <tr>
               <td>filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
@@ -360,7 +460,8 @@
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+                of "%m%n" will be used.</td>
             </tr>
             <tr>
               <td>locking</td>
@@ -1240,7 +1341,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
         <a name="KafkaAppender"/>
         <subsection name="KafkaAppender">
-          <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.</p>
+          <p>
+            The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.
+            Each log event is sent as a Kafka record with no key.
+          </p>
           <table>
             <caption align="top">KafkaAppender Parameters</caption>
             <tr>
@@ -1285,8 +1389,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>properties</td>
               <td>Property[]</td>
               <td>
-                You can set any properties in <a href="http://kafka.apache.org/documentation.html#newproducerconfigs">Kafka new producer properties</a>.
+                You can set properties in <a href="http://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>.
                 You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others.
+                Do not set the <code>value.serializer</code> property.
               </td>
             </tr>
           </table>
@@ -1307,7 +1412,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> to log asynchronously.
           </p>
           <p>
-            This appender requires the <a href="http://kafka.apache.org/">Kafka client library</a>.
+            This appender requires the <a href="http://kafka.apache.org/">Kafka client library</a>. Note that you need to use a version of
+            the Kafka client library matching the Kafka server used.
           </p>
           <p>
             <em>Note:</em>Make sure to not let <code>org.apache.kafka</code> log to a Kafka appender on DEBUG level,
@@ -1418,7 +1524,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
             <td>layout</td>
             <td>Layout</td>
-            <td>The Layout to use to format the LogEvent</td>
+            <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
           </tr>
           <tr>
             <td>name</td>
@@ -1746,9 +1853,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
 			<a name="RandomAccessFileAppender" />
 			<subsection name="RandomAccessFileAppender">
-			<p><i>As of beta-9, the name of this appender has been changed from FastFile to
-			  RandomAccessFile. Configurations using the <code>FastFile</code> element
-			  no longer work and should be modified to use the <code>RandomAccessFile</code> element.</i></p>
 				<p>
 					The RandomAccessFileAppender is similar to the standard
 					<a href="#FileAppender">FileAppender</a>
@@ -1759,7 +1863,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					<tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
 					FileAppender with "bufferedIO=true" in our
-					<a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+					<a href="../performance.html#whichAppender">measurements</a>.
 					Similar to the FileAppender,
 					RandomAccessFileAppender uses a RandomAccessFileManager to actually perform the
 					file I/O. While RandomAccessFileAppender
@@ -1830,7 +1934,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
 						<td>layout</td>
 						<td>Layout</td>
-						<td>The Layout to use to format the LogEvent</td>
+						<td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
 					</tr>
           <tr>
 						<td>name</td>
@@ -2103,6 +2208,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>When bufferedIO is true, this is the buffer size, the default is 8192 bytes.</td>
             </tr>
             <tr>
+              <td>createOnDemand</td>
+              <td>boolean</td>
+              <td>The appender creates the file on-demand. The appender only creates the file when a log event
+                passes all filters and is routed to this appender. Defaults to false.</td>
+            </tr>
+            <tr>
               <td>filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
@@ -2117,12 +2228,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>filePattern</td>
               <td>String</td>
-              <td>The pattern of the file name of the archived log file. The format of the pattern should is
+              <td>The pattern of the file name of the archived log file. The format of the pattern is
                 dependent on the RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
                 a date/time pattern compatible with
                 <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
                 and/or a %i which represents an integer counter. The pattern also supports interpolation at
-                runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a> can
+                runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a>) can
                 be included in the pattern.</td>
             </tr>
             <tr>
@@ -2141,7 +2252,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+                of "%m%n" will be used.</td>
             </tr>
 
             <tr>
@@ -2213,9 +2325,25 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               </table>
             <h5>OnStartup Triggering Policy</h5>
               <p>
-                The <code>OnStartupTriggeringPolicy</code> policy takes no parameters and causes a rollover if the log
-                file is older than the current JVM's start time.
+                The <code>OnStartupTriggeringPolicy</code> policy causes a rollover if the log file is older than the
+                current JVM's start time and the minimum file size is met or exceeded.
               </p>
+                <table>
+                  <caption align="top">OnStartupTriggeringPolicy Parameters</caption>
+                  <tr>
+                    <th>Parameter Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td>minSize</td>
+                    <td>long</td>
+                    <td>
+                      The minimum size the file must have to roll over. A size of zero will cause a roll over no matter
+                      what the file size is. The default value is 1, which will prevent rolling over an empty file.
+                    </td>
+                  </tr>
+                </table>
               <p>
                 <em>Google App Engine note:</em><br />
                 When running in Google App Engine, the OnStartup policy causes a rollover if the log file is older
@@ -2898,9 +3026,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
-			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to
-			  RollingRandomAccessFile. Configurations using the <code>FastRollingFile</code> element
-			  no longer work and should be modified to use the <code>RollingRandomAccessFile</code> element.</i></p>
 				<p>
 					The RollingRandomAccessFileAppender is similar to the standard
 					<a href="#RollingFileAppender">RollingFileAppender</a>
@@ -2909,7 +3034,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					instead of a <tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
 					RollingFileAppender with "bufferedIO=true"
-					in our <a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+					in our <a href="../performance.html#whichAppender">measurements</a>.
 
 					The RollingRandomAccessFileAppender writes to the File named in the
 					fileName parameter and rolls the file over according the
@@ -3014,7 +3139,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
 						<td>layout</td>
 						<td>Layout</td>
-						<td>The Layout to use to format the LogEvent</td>
+						<td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
 					</tr>
 
           <tr>
@@ -3156,7 +3282,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
              Appender may be an appender previously configured and may be referenced by its name or the
              Appender can be dynamically created as needed. The RoutingAppender should be configured after any
              Appenders it references to allow it to shut down properly.
-          </p>
+           </p>
+           <p>
+             You can also configure a RoutingAppender with scripts: you can run a script when the appender starts
+             and when a route is chosen for an log event.
+           </p>
           <table>
             <caption align="top">RoutingAppender Parameters</caption>
             <tr>
@@ -3165,7 +3295,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <th>Description</th>
             </tr>
             <tr>
-              <td>filter</td>
+              <td>Filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
               may be used by using a CompositeFilter.</td>
@@ -3176,14 +3306,48 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The name of the Appender.</td>
             </tr>
             <tr>
-              <td>rewritePolicy</td>
+              <td>RewritePolicy</td>
               <td>RewritePolicy</td>
               <td>The RewritePolicy that will manipulate the LogEvent.</td>
             </tr>
             <tr>
-              <td>routes</td>
+              <td>Routes</td>
               <td>Routes</td>
               <td>Contains one or more Route declarations to identify the criteria for choosing Appenders.</td>
+            </tr>
+            <tr>
+              <td>Script</td>
+              <td>Script</td>
+              <td>
+                <p>
+                  This Script runs when Log4j starts the RoutingAppender and returns a String Route key to
+                  determine the default Route.
+                </p>
+                <p>
+                  This script is passed the following variables:
+                </p>
+                <table>
+                  <caption align="top">RoutingAppender Script Parameters</caption>
+                  <tr>
+                    <th>Parameter Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td>configuration</td>
+                    <td>Configuration</td>
+                    <td>The active Configuration.</td>
+                  </tr>
+                  <tr>
+                    <td>staticVariables</td>
+                    <td>Map</td>
+                    <td>
+                      A Map shared between all script invocations for this appender instance. This is
+                      the same map passed to the Routes Script.
+                    </td>
+                  </tr>
+                </table>
+              </td>
             </tr>
             <tr>
               <td>ignoreExceptions</td>
@@ -3194,13 +3358,49 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
           </table>
+          <p>
+            In this example, the script causes the "ServiceWindows" route to be the default route on Windows and
+            "ServiceOther" on all other operating systems. Note that the List Appender is one of our test appenders,
+            any appender can be used, it is only used as a shorthand.
+          </p>
+<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="RoutingTest">
+  <Appenders>
+    <Routing name="Routing">
+      <Script name="RoutingInit" language="JavaScript"><![CDATA[
+        importPackage(java.lang);
+        System.getProperty("os.name").search("Windows") > -1 ? "ServiceWindows" : "ServiceOther";]]]]><![CDATA[>
+      </Script>
+      <Routes>
+        <Route key="ServiceOther">
+          <List name="List1" />
+        </Route>
+        <Route key="ServiceWindows">
+          <List name="List2" />
+        </Route>
+      </Routes>
+    </Routing>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Routing" />
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           <h4>Routes</h4>
             <p>
-              The Routes element accepts a single, required attribute named "pattern". The pattern is evaluated
+              The Routes element accepts a single attribute named "pattern". The pattern is evaluated
               against all the registered Lookups and the result is used to select a Route. Each Route may be
               configured with a key. If the key matches the result of evaluating the pattern then that Route
               will be selected. If no key is specified on a Route then that Route is the default. Only one Route
               can be configured as the default.
+            </p>
+            <p>
+              The Routes element may contain a Script child element. If specified, the Script is run for each
+              log event and returns the String Route key to use.
+            </p>
+            <p>
+              You must specify either the pattern attribute or the Script element, but not both.
             </p>
             <p>
               Each Route must reference an Appender. If the Route contains a ref attribute then the
@@ -3208,6 +3408,82 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               Appender definition then an Appender will be created within the context of the RoutingAppender and
               will be reused each time a matching Appender name is referenced through a Route.
             </p>
+            <p>
+              This script is passed the following variables:
+            </p>
+            <table>
+              <caption align="top">RoutingAppender Routes Script Parameters</caption>
+              <tr>
+                <th>Parameter Name</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td>configuration</td>
+                <td>Configuration</td>
+                <td>The active Configuration.</td>
+              </tr>
+              <tr>
+                <td>staticVariables</td>
+                <td>Map</td>
+                <td>
+                  A Map shared between all script invocations for this appender instance. This is
+                  the same map passed to the Routes Script.
+                </td>
+              </tr>
+              <tr>
+                <td>logEvent</td>
+                <td>LogEvent</td>
+                <td>The log event.</td>
+              </tr>
+            </table>
+            <p>
+              In this example, the script runs for each log event and picks a route based on the presence of a
+              Marker named "AUDIT".
+            </p>
+<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="RoutingTest">
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT" />
+    <Flume name="AuditLogger" compress="true">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+    <Routing name="Routing">
+      <Routes>
+        <Script name="RoutingInit" language="JavaScript"><![CDATA[
+          if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("AUDIT")) {
+                return "AUDIT";
+            } else if (logEvent.getContextMap().containsKey("UserId")) {
+                return logEvent.getContextMap().get("UserId");
+            }
+            return "STDOUT";]]]]><![CDATA[>
+        </Script>
+        <Route>
+          <RollingFile
+              name="Rolling-${mdc:UserId}"
+              fileName="${mdc:UserId}.log"
+              filePattern="${mdc:UserId}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route ref="AuditLogger" key="AUDIT"/>
+        <Route ref="STDOUT" key="STDOUT"/>
+      </Routes>
+      <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>
+    </Routing>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Routing" />
+    </Root>
+  </Loggers>
+</Configuration>
+]]></pre>
           <h4>Purge Policy</h4>
           <p>The RoutingAppender can be configured with a PurgePolicy whose purpose is to stop and remove dormant
             Appenders that have been dynamically created by the RoutingAppender. Log4j currently provides the
@@ -3311,7 +3587,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent. The default is SerializedLayout.</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied <a href="layouts.html#HTMLLayout">HTML layout</a> will be used.</td>
             </tr>
             <tr>
               <td>name</td>
@@ -3381,6 +3657,40 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </Loggers>
 </Configuration>]]></pre>
         </subsection>
+        <a name="ScriptAppenderSelector"/>
+        <subsection name="ScriptAppenderSelector">
+          <p>
+            When the configuration is built, the <code>ScriptAppenderSelector</code> appender calls a <code>Script</code>
+            to compute an appender name. Log4j then creates one of the appender named listed under
+            <code>AppenderSet</code> using the name of the <code>ScriptAppenderSelector</code>. After configuration, Log4j
+            ignores the <code>ScriptAppenderSelector</code>. Log4j only builds the one selected appender from the
+            configuration tree, and ignores other <code>AppenderSet</code> child nodes.
+          </p>
+          <p>
+            In the following example, the script returns the name "List2". The appender name is recorded under
+            the name of the <code>ScriptAppenderSelector</code>, not the name of the selected appender, in this example,
+            "SelectIt".
+          </p>
+<pre class="prettyprint linenums"><![CDATA[<Configuration status="WARN" name="ScriptAppenderSelectorExample">
+  <Appenders>
+    <ScriptAppenderSelector name="SelectIt">
+      <Script language="JavaScript"><![CDATA[
+        importPackage(java.lang);
+        System.getProperty("os.name").search("Windows") > -1 ? "MyCustomWindowsAppender" : "MySyslogAppender";]]]]><![CDATA[>
+      </Script>
+      <AppenderSet>
+        <MyCustomWindowsAppender name="MyAppender" ... />
+        <SyslogAppender name="MySyslog" ... />
+      </AppenderSet>
+    </ScriptAppenderSelector>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="SelectIt" />
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+        </subsection>
         <a name="SocketAppender"/>
         <subsection name="SocketAppender">
           <p>
@@ -3440,6 +3750,17 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>When set to true - the default, each write will be followed by a flush.
                 This will guarantee the data is written
                 to disk but could impact performance.</td>
+            </tr>
+            <tr>
+              <td>bufferedIO</td>
+              <td>boolean</td>
+              <td>When true - the default, events are written to a buffer and the data will be written to
+                the socket when the buffer is full or, if immediateFlush is set, when the record is written.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>When bufferedIO is true, this is the buffer size, the default is 8192 bytes.</td>
             </tr>
             <tr>
               <td>layout</td>
@@ -3774,9 +4095,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>Layout</td>
               <td>layout</td>
-              <td>The Layout of the Appender. If you do not specify a layout, the appender uses the default
-              pattern appender returned by
-              <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html#createDefaultLayout()">PatternLayout.createDefaultLayout()</a>.</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+                of "%m%n" will be used.</td>
             </tr>
             <tr>
               <td>Filters</td>

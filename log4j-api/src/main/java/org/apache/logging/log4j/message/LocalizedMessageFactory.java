@@ -19,8 +19,14 @@ package org.apache.logging.log4j.message;
 import java.util.ResourceBundle;
 
 /**
- * Creates {@link org.apache.logging.log4j.message.LocalizedMessage} instances for
- * {@link #newMessage(String, Object...)}.
+ * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
+ * extension.)
+ * 
+ * <h4>Note to implementors</h4>
+ * <p>
+ * This class does <em>not</em> implement any {@link MessageFactory2} methods and lets the superclass funnel those calls
+ * through {@link #newMessage(String, Object...)}.
+ * </p>
  */
 public class LocalizedMessageFactory extends AbstractMessageFactory {
     private static final long serialVersionUID = -1996295808703146741L;

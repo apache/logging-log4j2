@@ -26,7 +26,11 @@ import org.junit.Ignore;
  * Requires that "mvn package" has been previously run, otherwise test fails its JUnit {@link Assume}.
  * </p>
  * <p>
- * For example, on Windows: "mvn clean package -DskipTests & mvn test"
+ * For example, on Windows: {@code mvn clean package -DskipTests & mvn test}
+ * </p>
+ * <p>
+ * To only test this class: {@code mvn -pl log4j-core -DskipTests clean package & mvn -pl log4j-core 
+ * -Dtest=EquinoxLoadCoreBundleTest test}
  * </p>
  */
 @Ignore

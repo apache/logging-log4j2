@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.db;
 
 import java.io.Flushable;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
@@ -41,7 +42,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param bufferSize The size of the log event buffer.
      */
     protected AbstractDatabaseManager(final String name, final int bufferSize) {
-        super(name);
+        super(null, name);
         this.bufferSize = bufferSize;
         this.buffer = new ArrayList<>(bufferSize + 1);
     }
@@ -64,7 +65,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
                 this.startupInternal();
                 this.running = true;
             } catch (final Exception e) {
-                logError("could not perform database startup operations", e);
+                logError("Could not perform database startup operations", e);
             }
         }
     }
@@ -74,25 +75,30 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * method will never be called twice on the same instance, and it will only be called <em>after</em>
      * {@link #startupInternal()}. It is safe to throw any exceptions from this method. This method does not
      * necessarily disconnect from the database for the same reasons outlined in {@link #startupInternal()}.
+     * @return true if all resources were closed normally, false otherwise.
      */
-    protected abstract void shutdownInternal() throws Exception;
+    protected abstract boolean shutdownInternal() throws Exception;
 
     /**
-     * This method is called from the {@link #release()} method when the appender is stopped or the appender's manager
+     * This method is called from the {@link #close()} method when the appender is stopped or the appender's manager
      * is replaced. If it has not already been called, it calls {@link #shutdownInternal()} and catches any exceptions
      * it might throw.
+     * @return true if all resources were closed normally, false otherwise.
      */
-    public final synchronized void shutdown() {
+    public final synchronized boolean shutdown() {
+        boolean closed = true;
         this.flush();
         if (this.isRunning()) {
             try {
-                this.shutdownInternal();
+                closed &= this.shutdownInternal();
             } catch (final Exception e) {
-                logWarn("caught exception while performing database shutdown operations", e);
+                logWarn("Caught exception while performing database shutdown operations", e);
+                closed = false;
             } finally {
                 this.running = false;
             }
         }
+        return closed;
     }
 
     /**
@@ -125,8 +131,9 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * connection pool). With buffering enabled, this is called when flushing the buffer completes, after the last call
      * to {@link #writeInternal}. With buffering disabled, this is called immediately after every invocation of
      * {@link #writeInternal}.
+     * @return true if all resources were closed normally, false otherwise.
      */
-    protected abstract void commitAndClose();
+    protected abstract boolean commitAndClose();
 
     /**
      * This method is called automatically when the buffer size reaches its maximum or at the beginning of a call to
@@ -170,8 +177,8 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     }
 
     @Override
-    public final void releaseSub() {
-        this.shutdown();
+    public final boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        return this.shutdown();
     }
 
     @Override

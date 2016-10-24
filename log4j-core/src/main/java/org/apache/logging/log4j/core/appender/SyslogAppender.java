@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -36,12 +37,13 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * The Syslog Appender.
  */
-@Plugin(name = "Syslog", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Syslog", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class SyslogAppender extends SocketAppender {
 
     protected static final String RFC5424 = "RFC5424";
@@ -89,7 +91,6 @@ public class SyslogAppender extends SocketAppender {
      * @param exceptionPattern The converter pattern to use for formatting exceptions.
      * @param loggerFields The logger fields
      * @param advertise Whether to advertise
-     * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @return A SyslogAppender.
      */
     @PluginFactory
@@ -125,10 +126,10 @@ public class SyslogAppender extends SocketAppender {
             @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginElement("LoggerFields") final LoggerFields[] loggerFields, @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
+            @PluginElement("LoggerFields") final LoggerFields[] loggerFields, 
+            @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
         // @formatter:on
 
-        // TODO: add Protocol to TypeConverters
         final Protocol protocol = EnglishEnums.valueOf(Protocol.class, protocolStr);
         final boolean useTlsMessageFormat = sslConfig != null || protocol == Protocol.SSL;
         final Layout<? extends Serializable> layout = RFC5424.equalsIgnoreCase(format) ?
@@ -142,7 +143,7 @@ public class SyslogAppender extends SocketAppender {
             return null;
         }
         final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, connectTimeoutMillis,
-                sslConfig, reconnectionDelayMillis, immediateFail, layout);
+                sslConfig, reconnectionDelayMillis, immediateFail, layout, Constants.ENCODER_BYTE_BUFFER_SIZE);
 
         return new SyslogAppender(name, layout, filter, ignoreExceptions, immediateFlush, manager,
                 advertise ? config.getAdvertiser() : null);

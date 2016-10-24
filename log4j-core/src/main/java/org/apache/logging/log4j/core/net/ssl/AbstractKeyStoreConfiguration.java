@@ -73,4 +73,42 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
         return this.keyStore;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((keyStore == null) ? 0 : keyStore.hashCode());
+        result = prime * result + ((keyStoreType == null) ? 0 : keyStoreType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AbstractKeyStoreConfiguration other = (AbstractKeyStoreConfiguration) obj;
+        if (keyStore == null) {
+            if (other.keyStore != null) {
+                return false;
+            }
+        } else if (!keyStore.equals(other.keyStore)) {
+            return false;
+        }
+        if (keyStoreType == null) {
+            if (other.keyStoreType != null) {
+                return false;
+            }
+        } else if (!keyStoreType.equals(other.keyStoreType)) {
+            return false;
+        }
+        return true;
+    }
+
 }

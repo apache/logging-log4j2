@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+    <properties>
+        <title>Log4j 2 Guide</title>
+        <author email="rgoers@apache.org">Ralph Goers</author>
+        <author email="ggregory@apache.org">Gary Gregory</author>
+        <author email="sdeboy@apache.org">Scott Deboy</author>
+    </properties>
+
+    <body>
+        <section name="Apache Log4j 2">
+
+          <p>
+            Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j
+            1.x, and provides many of the improvements available in Logback while fixing some inherent problems in
+            Logback's architecture.
+          </p>
+
+          <p>Some of the features and improvements in Log4j 2 are:</p>
+
+          <dl>
+            <dt>API Separation</dt>
+            <dd>
+              The API for Log4j is separate from the implementation making it clear for application developers
+              which classes and methods they can use while ensuring forward compatibility. This allows the
+              Log4j team to improve the implementation safely and in a compatible manner.
+            </dd>
+            <dt>Improved Performance</dt>
+            <dd>
+              Log4j 2 contains next-generation Asynchronous Loggers based
+              on the LMAX Disruptor library. In multi-threaded scenarios
+              Asynchronous Loggers have 18 times higher throughput and
+              orders of magnitude lower latency than Log4j 1.x and Logback.
+              See <a href="manual/async.html#Performance">Asynchronous Logging Performance</a>
+              for details.
+              Otherwise, Log4j 2 significantly outperforms Log4j 1.x, Logback and java.util.logging,
+              especially in multi-threaded applications.
+              See <a href="performance.html">Performance</a> for more information.
+            </dd>
+            <dt>Support for multiple APIs</dt>
+            <dd>
+              While the Log4j 2 API will provide the best performance, Log4j 2 provides support for the
+              Log4j 1.2, SLF4J, Commons Logging and java.util.logging (JUL) APIs.
+            </dd>
+            <dt>Avoid lock-in</dt>
+            <dd>
+              Applications coded to the Log4j 2 API always have the option to use any SLF4J-compliant
+              library as their logger implementation with the log4j-to-slf4j adapter.
+            </dd>
+            <dt>Automatic Reloading of Configurations</dt>
+            <dd>
+              Like Logback, Log4j 2 can automatically reload its configuration upon modification. Unlike Logback,
+              it will do so without losing log events while reconfiguration is taking place.
+            </dd>
+            <dt>Advanced Filtering</dt>
+            <dd>
+              Like Logback, Log4j 2 supports filtering based on context data, markers, regular expressions,
+              and other components in the Log event. Filtering can be specified to apply to all events
+              before being passed to Loggers or as they pass through Appenders. In addition, filters can also
+              be associated with Loggers. Unlike Logback, you can use a common Filter class in any of these
+              circumstances.
+            </dd>
+            <dt>Plugin Architecture</dt>
+            <dd>
+              Log4j uses the plugin pattern to configure components. As such, you do not need to write code
+              to create and configure an Appender, Layout, Pattern Converter, and so on. Log4j automatically
+              recognizes plugins and uses them when a configuration references them.
+            </dd>
+            <dt>Property Support</dt>
+            <dd>
+              You can reference properties in a configuration, Log4j will directly replace them, or Log4j will
+              pass them to an underlying component that will dynamically resolve them. Properties come from values
+              defined in the configuration file, system properties, environment variables, the ThreadContext
+              Map, and data present in the event. Users can further customize the property providers by
+              adding their own <a href="manual/lookups.html">Lookup</a> Plugin.
+            </dd>
+            <dt>Java 8 Lambda Support</dt>
+            <dd>
+              Previously, if a log message was expensive to construct, you would often explicitly check if the
+              requested log level is enabled before constructing the message.
+              Client code running on Java 8 can benefit from Log4j's <a href="manual/api.html#LambdaSupport">lambda
+              support</a>. Since Log4j will not evaluate a lambda
+              expression if the requested log level is not enabled, the same effect can be achieved with less code.
+            </dd>
+            <dt>Custom Log Levels</dt>
+            <dd>
+              In Log4j 2, <a href="manual/customloglevels.html">custom log levels</a> can easily be defined in code
+              or in configuration. No subclassing is required.
+            </dd>
+            <dt>Garbage-free</dt>
+            <dd>
+              During steady state logging, Log4j 2 is <a href="manual/garbagefree.html">garbage-free</a>
+              in stand-alone applications, and low garbage in web applications.
+              This reduces pressure on the garbage collector and can give better response time performance.
+            </dd>
+          </dl>
+
+          <subsection name="Documentation">
+            <p>
+              The Log4j 2 User's Guide is available on this <a href="manual/index.html">site</a> or as a downloadable
+              <a href="log4j-users-guide.pdf">PDF</a>.
+            </p>
+          </subsection>
+
+          <subsection name="Requirements">
+             <p>
+               Log4j 2.4 and greater requires Java 7, versions 2.0-alpha1 to 2.3 required Java 6.
+               Some features require optional dependencies; the documentation for these features specifies the
+               dependencies.
+            </p>
+          </subsection>
+
+          <subsection name="News">
+            <p>
+              Log4j ${Log4jReleaseVersion} is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter
+              is available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for
+              Apache Commons Logging and SLF4J.
+            </p>
+            <p>
+              Log4j ${Log4jReleaseVersion} is the latest release of Log4j and contains several bug fixes that were
+              found after the release of Log4j 2.6. The list of fixes can be found in the latest
+              <a href="changes-report.html#a2.6.1">changes report</a>.
+            </p>
+            <p>
+              Note that subsequent to the release of Log4j 2.6 a minor source incompatibility with prior releass was
+              found due to the addition of new methods to the Logger interface. If you have code that does:</p>
+            <pre>
+              logger.error(null, "This is the log message", throwable);
+            </pre>
+            <p>
+              or similar with any log level you will get a compiler error saying the reference is ambiguous.  To correct this either do:</p>
+            <pre>
+              logger.error("This is the log message", throwable);
+            </pre>
+            <p>or</p>
+            <pre>
+              logger.error((Marker) null, "This is the log message", throwable);
+            </pre>
+            <p>Log4j ${Log4jReleaseVersion} maintains binary compatibility with previous releases.</p>
+
+          </subsection>
+        </section>
+    </body>
+</document>
+

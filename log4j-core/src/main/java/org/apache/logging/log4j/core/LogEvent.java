@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * Provides contextual information about a logged message. A LogEvent must be {@link java.io.Serializable} so that it
@@ -38,6 +39,12 @@ import org.apache.logging.log4j.message.Message;
  * call, then it is provided via {@link #getThrown()}. When this class is serialized, the attached Throwable will
  * be wrapped into a {@link org.apache.logging.log4j.core.impl.ThrowableProxy} so that it may be safely serialized
  * and deserialized properly without causing problems if the exception class is not available on the other end.
+ * <p>
+ * Since version 2.7, {@link #getContextMap()} is deprecated in favor of {@link #getContextData()}, which
+ * can carry both {@code ThreadContext} data as well as other context data supplied by the
+ * {@linkplain org.apache.logging.log4j.core.impl.ContextDataInjectorFactory configured}
+ * {@link ContextDataInjector}.
+ * </p>
  */
 public interface LogEvent extends Serializable {
 
@@ -45,8 +52,26 @@ public interface LogEvent extends Serializable {
      * Gets the context map (also know as Mapped Diagnostic Context or MDC).
      *
      * @return The context map, never {@code null}.
+     * @deprecated use {@link #getContextData()} instead
      */
+    @Deprecated
     Map<String, String> getContextMap();
+
+    /**
+     * Returns the {@code ReadOnlyStringMap} object holding context data key-value pairs.
+     * <p>
+     * Context data (also known as Mapped Diagnostic Context or MDC) is data that is set by the application to be
+     * included in all subsequent log events. The default source for context data is the {@link ThreadContext} (and
+     * <a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#PropertySubstitution">properties</a>
+     * configured on the Logger that logged the event), but users can configure a custom {@link ContextDataInjector}
+     * to inject key-value pairs from any arbitrary source.
+     *
+     * @return the {@code ReadOnlyStringMap} object holding context data key-value pairs
+     * @see ContextDataInjector
+     * @see ThreadContext
+     * @since 2.7
+     */
+    ReadOnlyStringMap getContextData();
 
     /**
      * Gets the context stack (also known as Nested Diagnostic Context or NDC).

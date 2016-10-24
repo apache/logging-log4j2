@@ -17,10 +17,11 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 /**
  * File rename action.
@@ -67,7 +68,7 @@ public class FileRenameAction extends AbstractAction {
 
     /**
      * Gets the destination.
-     * 
+     *
      * @return the destination.
      */
     public File getDestination() {
@@ -76,7 +77,7 @@ public class FileRenameAction extends AbstractAction {
 
     /**
      * Gets the source.
-     * 
+     *
      * @return the source.
      */
     public File getSource() {
@@ -85,7 +86,7 @@ public class FileRenameAction extends AbstractAction {
 
     /**
      * Whether to rename empty files. If true, rename empty files, otherwise delete empty files.
-     * 
+     *
      * @return Whether to rename empty files.
      */
     public boolean isRenameEmptyFiles() {
@@ -101,9 +102,9 @@ public class FileRenameAction extends AbstractAction {
      * @return true if successfully renamed.
      */
     public static boolean execute(final File source, final File destination, final boolean renameEmptyFiles) {
-        if (renameEmptyFiles || source.length() > 0) {
+        if (renameEmptyFiles || (source.length() > 0)) {
             final File parent = destination.getParentFile();
-            if (parent != null && !parent.exists()) {
+            if ((parent != null) && !parent.exists()) {
                 // LOG4J2-679: ignore mkdirs() result: in multithreaded scenarios,
                 // if one thread succeeds the other thread returns false
                 // even though directories have been created. Check if dir exists instead.
@@ -114,51 +115,61 @@ public class FileRenameAction extends AbstractAction {
                 }
             }
             try {
-                if (!source.renameTo(destination)) {
-                    try {
-                        copyFile(source, destination);
-                        return source.delete();
-                    } catch (final IOException iex) {
-                        LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
-                                destination.getAbsolutePath(), iex.getMessage());
-                    }
-                }
-                return true;
-            } catch (final Exception ex) {
                 try {
-                    copyFile(source, destination);
-                    return source.delete();
-                } catch (final IOException iex) {
-                    LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
-                            destination.getAbsolutePath(), iex.getMessage());
+                    Files.move(Paths.get(source.getAbsolutePath()), Paths.get(destination.getAbsolutePath()),
+                            StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+                    LOGGER.trace("Renamed file {} to {} with Files.move", source.getAbsolutePath(),
+                            destination.getAbsolutePath());
+                    return true;
+                } catch (final IOException exMove) {
+                    LOGGER.error("Unable to move file {} to {}: {} {}", source.getAbsolutePath(),
+                            destination.getAbsolutePath(), exMove.getClass().getName(), exMove.getMessage());
+                    final boolean result = source.renameTo(destination);
+                    if (!result) {
+                        try {
+                            Files.copy(Paths.get(source.getAbsolutePath()), Paths.get(destination.getAbsolutePath()),
+                                    StandardCopyOption.REPLACE_EXISTING);
+                            try {
+                                Files.delete(Paths.get(source.getAbsolutePath()));
+                                LOGGER.trace("Renamed file {} to {} using copy and delete",
+                                        source.getAbsolutePath(), destination.getAbsolutePath());
+                            } catch (final IOException exDelete) {
+                                LOGGER.error("Unable to delete file {}: {} {}", source.getAbsolutePath(),
+                                        exDelete.getClass().getName(), exDelete.getMessage());
+                                try {
+                                    new PrintWriter(source.getAbsolutePath()).close();
+                                    LOGGER.trace("Renamed file {} to {} with copy and truncation",
+                                            source.getAbsolutePath(), destination.getAbsolutePath());
+                                } catch (final IOException exOwerwrite) {
+                                    LOGGER.error("Unable to overwrite file {}: {} {}",
+                                            source.getAbsolutePath(), exOwerwrite.getClass().getName(),
+                                            exOwerwrite.getMessage());
+                                }
+                            }
+                        } catch (final IOException exCopy) {
+                            LOGGER.error("Unable to copy file {} to {}: {} {}", source.getAbsolutePath(),
+                                    destination.getAbsolutePath(), exCopy.getClass().getName(), exCopy.getMessage());
+                        }
+                    } else {
+                        LOGGER.trace("Renamed file {} to {} with source.renameTo",
+                                source.getAbsolutePath(), destination.getAbsolutePath());
+                    }
+                    return result;
                 }
+            } catch (final RuntimeException ex) {
+                LOGGER.error("Unable to rename file {} to {}: {} {}", source.getAbsolutePath(),
+                        destination.getAbsolutePath(), ex.getClass().getName(), ex.getMessage());
             }
         } else {
             try {
                 source.delete();
-            } catch (final Exception ex) {
-                LOGGER.error("Unable to delete empty file " + source.getAbsolutePath());
+            } catch (final Exception exDelete) {
+                LOGGER.error("Unable to delete empty file {}: {} {}", source.getAbsolutePath(),
+                        exDelete.getClass().getName(), exDelete.getMessage());
             }
         }
 
         return false;
-    }
-
-    private static void copyFile(final File source, final File destination) throws IOException {
-        if (!destination.exists()) {
-            destination.createNewFile();
-        }
-
-        // LOG4J2-1173: Files.copy(source.toPath(), destination.toPath()) throws IOException
-        // when copying to a directory mapped to a remote Linux host
-
-        try (FileInputStream srcStream = new FileInputStream(source);
-                FileOutputStream destStream = new FileOutputStream(destination);
-                FileChannel srcChannel = srcStream.getChannel();
-                FileChannel destChannel = destStream.getChannel();) {
-
-            destChannel.transferFrom(srcChannel, 0, srcChannel.size());
-        }
     }
 
     @Override

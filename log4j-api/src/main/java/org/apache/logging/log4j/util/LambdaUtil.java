@@ -84,7 +84,7 @@ public final class LambdaUtil {
      * @return the Message resulting from evaluating the lambda expression or the Message created by the factory for
      * supplied values that are not of type Message
      */
-    public static Message getMessage(Supplier<?> supplier, MessageFactory messageFactory) {
+    public static Message getMessage(final Supplier<?> supplier, final MessageFactory messageFactory) {
         if (supplier == null) {
             return null;
         }

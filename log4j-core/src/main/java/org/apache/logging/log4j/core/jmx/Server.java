@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.NotCompliantMBeanException;
@@ -36,11 +37,11 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
-import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -59,7 +60,7 @@ public final class Server {
     public static final String DOMAIN = "org.apache.logging.log4j2";
     private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
     private static final String PROPERTY_ASYNC_NOTIF = "log4j2.jmx.notify.async";
-    private static final String THREAD_NAME_PREFIX = "log4j2.jmx.notif";
+    private static final String THREAD_NAME_PREFIX = "jmx.notif";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     static final Executor executor = isJmxDisabled() ? null : createExecutor();
 
@@ -76,7 +77,8 @@ public final class Server {
     private static ExecutorService createExecutor() {
         final boolean defaultAsync = !Constants.IS_WEB_APP;
         final boolean async = PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_ASYNC_NOTIF, defaultAsync);
-        return async ? Executors.newFixedThreadPool(1, new DaemonThreadFactory(THREAD_NAME_PREFIX)) : null;
+        return async ? Executors.newFixedThreadPool(1, Log4jThreadFactory.createDaemonThreadFactory(THREAD_NAME_PREFIX))
+                : null;
     }
 
     /**
@@ -131,7 +133,7 @@ public final class Server {
     public static void reregisterMBeansAfterReconfigure() {
         // avoid creating Platform MBean Server if JMX disabled
         if (isJmxDisabled()) {
-            LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
+            LOGGER.debug("JMX disabled for Log4j2. Not registering MBeans.");
             return;
         }
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -140,7 +142,7 @@ public final class Server {
 
     public static void reregisterMBeansAfterReconfigure(final MBeanServer mbs) {
         if (isJmxDisabled()) {
-            LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
+            LOGGER.debug("JMX disabled for Log4j2. Not registering MBeans.");
             return;
         }
 
@@ -192,6 +194,10 @@ public final class Server {
      * Unregister all log4j MBeans from the platform MBean server.
      */
     public static void unregisterMBeans() {
+        if (isJmxDisabled()) {
+            LOGGER.debug("JMX disabled for Log4j2. Not unregistering MBeans.");
+            return;
+        }
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         unregisterMBeans(mbs);
     }
@@ -233,6 +239,10 @@ public final class Server {
      * @param loggerContextName name of the logger context to unregister
      */
     public static void unregisterLoggerContext(final String loggerContextName) {
+        if (isJmxDisabled()) {
+            LOGGER.debug("JMX disabled for Log4j2. Not unregistering MBeans.");
+            return;
+        }
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         unregisterLoggerContext(loggerContextName, mbs);
     }
@@ -245,8 +255,7 @@ public final class Server {
      * @param mbs the MBean Server to unregister the instrumented objects from
      */
     public static void unregisterLoggerContext(final String contextName, final MBeanServer mbs) {
-        final String pattern = LoggerContextAdminMBean.PATTERN;
-        final String search = String.format(pattern, escape(contextName), "*");
+        final String search = String.format(LoggerContextAdminMBean.PATTERN, escape(contextName), "*");
         unregisterAllMatching(search, mbs); // unregister context mbean
 
         // now unregister all MBeans associated with this logger context
@@ -275,14 +284,12 @@ public final class Server {
     }
 
     private static void unregisterStatusLogger(final String contextName, final MBeanServer mbs) {
-        final String pattern = StatusLoggerAdminMBean.PATTERN;
-        final String search = String.format(pattern, escape(contextName), "*");
+        final String search = String.format(StatusLoggerAdminMBean.PATTERN, escape(contextName), "*");
         unregisterAllMatching(search, mbs);
     }
 
     private static void unregisterContextSelector(final String contextName, final MBeanServer mbs) {
-        final String pattern = ContextSelectorAdminMBean.PATTERN;
-        final String search = String.format(pattern, escape(contextName), "*");
+        final String search = String.format(ContextSelectorAdminMBean.PATTERN, escape(contextName), "*");
         unregisterAllMatching(search, mbs);
     }
 
@@ -334,6 +341,8 @@ public final class Server {
             for (final ObjectName objectName : found) {
                 mbs.unregisterMBean(objectName);
             }
+        } catch (final InstanceNotFoundException ex) {
+            LOGGER.debug("Could not unregister MBeans for " + search + ". Ignoring " + ex);
         } catch (final Exception ex) {
             LOGGER.error("Could not unregister MBeans for " + search, ex);
         }

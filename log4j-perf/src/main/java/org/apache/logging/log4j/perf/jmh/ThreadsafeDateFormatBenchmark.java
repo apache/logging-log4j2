@@ -124,8 +124,8 @@ public class ThreadsafeDateFormatBenchmark {
         public String format(final long timestamp) {
             if (timestamp != this.timestamp) {
                 this.timestamp = timestamp;
-                char[] buffer = reusableBuffer.get();
-                int len = customFormat.format(timestamp, buffer, 0);
+                final char[] buffer = reusableBuffer.get();
+                final int len = customFormat.format(timestamp, buffer, 0);
                 formatted = new String(buffer, 0, len);
             }
             return formatted;
@@ -208,9 +208,8 @@ public class ThreadsafeDateFormatBenchmark {
             final CachedTimeFastFormat newTime = new CachedTimeFastFormat(timestamp);
             if (cachedTimeFastFmt.compareAndSet(current, newTime)) {
                 return newTime.formatted;
-            } else {
-                return cachedTimeFastFmt.get().formatted;
             }
+            return cachedTimeFastFmt.get().formatted;
 
         }
         return current.formatted;
@@ -226,9 +225,8 @@ public class ThreadsafeDateFormatBenchmark {
             final CachedTimeFixedFmt newTime = new CachedTimeFixedFmt(timestamp);
             if (cachedTimeFixedFmt.compareAndSet(current, newTime)) {
                 return newTime.formatted;
-            } else {
-                return cachedTimeFixedFmt.get().formatted;
             }
+            return cachedTimeFixedFmt.get().formatted;
 
         }
         return current.formatted;

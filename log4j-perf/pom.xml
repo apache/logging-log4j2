@@ -20,7 +20,7 @@
   <parent>
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
-    <version>2.6-SNAPSHOT</version>
+    <version>2.7.1-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -89,6 +89,14 @@
     <dependency>
       <groupId>com.lmax</groupId>
       <artifactId>disruptor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.conversantmedia</groupId>
+      <artifactId>disruptor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
     </dependency>
     <!-- Embedded JDBC drivers for database appender tests -->
     <dependency>

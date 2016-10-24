@@ -168,7 +168,7 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
      * .config.Configuration)
      */
     @Override
-    public void beforeStopConfiguration(Configuration configuration) {
+    public void beforeStopConfiguration(final Configuration configuration) {
         // no action
     }
 

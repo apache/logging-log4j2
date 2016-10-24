@@ -19,14 +19,22 @@ package org.apache.logging.log4j.message;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Specialized {@link ParameterizedMessageFactory} that creates {@link SimpleMessage} objects that do not retain a
- * reference to the parameter object.
+ * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
+ * extension.)
+ * <p>
+ * Creates {@link SimpleMessage} objects that do not retain a reference to the parameter object.
+ * </p>
  * <p>
  * Intended for use by the {@link StatusLogger}: this logger retains a queue of recently logged messages in memory,
  * causing memory leaks in web applications. (LOG4J2-1176)
  * </p>
  * <p>
  * This class is immutable.
+ * </p>
+ * <h4>Note to implementors</h4>
+ * <p>
+ * This class does <em>not</em> implement any {@link MessageFactory2} methods and lets the superclass funnel those calls
+ * through {@link #newMessage(String, Object...)}.
  * </p>
  */
 public final class ParameterizedNoReferenceMessageFactory extends AbstractMessageFactory {

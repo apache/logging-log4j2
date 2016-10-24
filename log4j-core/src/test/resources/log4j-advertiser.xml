@@ -32,11 +32,11 @@
       </PatternLayout>
     </File>
     <Socket name="Socket1" host="localhost" port="5560" protocol="TCP" ignoreExceptions="false"
-              reconnectionDelay="250" advertise="true">
+              reconnectionDelayMillis="250" advertise="true">
       <PatternLayout pattern="%msg%n"/>
     </Socket>
     <Socket name="Socket2" host="localhost" port="5565" protocol="UDP" ignoreExceptions="false"
-          reconnectionDelay="250">
+          reconnectionDelayMillis="250">
       <PatternLayout pattern="%msg%n"/>
     </Socket>
   </Appenders>

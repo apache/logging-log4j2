@@ -56,8 +56,7 @@ public class BurstFilterTest {
      */
     @Test
     public void test() throws Exception {
-        // exceed the burst limit and make sure no more than 100 errors get logged
-        final long start = System.nanoTime();
+        System.nanoTime();
         for (int i = 0; i < 110; i++) {
             if (i % 10 == 0) {
                 Thread.sleep(200);

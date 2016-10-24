@@ -54,9 +54,9 @@ public abstract class AbstractSocketServerTest {
     private static final String MESSAGE = "This is test message";
 
     private static final String MESSAGE_2 = "This is test message 2";
-    
+
     private static final String MESSAGE_WITH_SPECIAL_CHARS = "{This}\n[is]\"n\"a\"\r\ntrue:\n\ttest,\nmessage";
-    
+
     static final int PORT_NUM = AvailablePortFinder.getNextAvailable();
 
     static final int PORT = PORT_NUM;
@@ -78,7 +78,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createJsonLayout() {
-        return JsonLayout.createLayout(null, true, true, false, false, false, null, null, null);
+        return JsonLayout.createLayout(null, true, true, false, false, false, false, null, null, null, true);
     }
 
     protected abstract Layout<? extends Serializable> createLayout();
@@ -88,7 +88,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createXmlLayout() {
-        return XmlLayout.createLayout(true, true, false, false, null);
+        return XmlLayout.createLayout(true, true, false, false, null, true);
     }
 
     @After
@@ -145,13 +145,13 @@ public abstract class AbstractSocketServerTest {
             testServer(m1, m2);
         }
     }
-    
-    
+
+
     @Test
     public void testMessagesWithSpecialChars() throws Exception {
         testServer(MESSAGE_WITH_SPECIAL_CHARS);
     }
-    
+
 
     private void testServer(final int size) throws Exception {
         final String[] messages = new String[size];
@@ -206,8 +206,20 @@ public abstract class AbstractSocketServerTest {
 
     protected SocketAppender createSocketAppender(final Filter socketFilter,
             final Layout<? extends Serializable> socketLayout) {
-        return SocketAppender.createAppender("localhost", this.port, this.protocol, null, 0, -1, true,
-                "Test", true, false, socketLayout, socketFilter, false, null);
+        // @formatter:off
+        return SocketAppender.newBuilder()
+                .withProtocol(this.protocol)
+                .withHost("localhost")
+                .withPort(this.port)
+                .withReconnectDelayMillis(-1)
+                .withName("test")
+                .withImmediateFlush(true)
+                .withImmediateFail(false)
+                .withIgnoreExceptions(false)
+                .withLayout(socketLayout)
+                .withFilter(socketFilter)
+                .build();
+        // @formatter:on        
     }
 
 }

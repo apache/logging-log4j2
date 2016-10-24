@@ -40,6 +40,7 @@
         <item name="Implementation" href="/log4j-core/apidocs/index.html" />
         <item name="JSP Tag Library" href="/log4j-taglib/apidocs/index.html" />
         <item name="JSP Tag Library (TLD Doc)" href="/log4j-taglib/tlddoc/index.html" />
+        <item name="Scala API (Scaladoc)" href="/log4j-api-scala_2.11/scaladocs/index.html#org.apache.logging.log4j.scala.package" />
       </item>
       <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
       <item name="Articles" href="/articles.html"/>
@@ -69,6 +70,7 @@
         <item name="Event Logging" href="/manual/eventlogging.html"/>
         <item name="Messages" href="/manual/messages.html"/>
         <item name="ThreadContext" href="/manual/thread-context.html"/>
+        <item name="Scala API" href="/manual/scala-api.html"/>
       </item>
 
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
@@ -124,8 +126,7 @@
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
-        <item name="JMS Queue" href="/manual/appenders.html#JMSQueueAppender"/>
-        <item name="JMS Topic" href="/manual/appenders.html#JMSTopicAppender"/>
+        <item name="JMS" href="/manual/appenders.html#JMSAppender"/>
         <item name="JPA" href="/manual/appenders.html#JPAAppender"/>
         <item name="Kafka" href="/manual/appenders.html#KafkaAppender"/>
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
@@ -137,6 +138,7 @@
         <item name="Rolling Random Access File" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
         <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
+        <item name="ScriptSelector" href="/manual/appenders.html#ScriptSelector"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
         <item name="ZeroMQ/JeroMQ" href="/manual/appenders.html#JeroMQAppender"/>
@@ -183,6 +185,7 @@
         <item name="Configuration" href="/manual/garbagefree.html#Config"/>
         <item name="Supported Appenders" href="/manual/garbagefree.html#Appenders"/>
         <item name="Supported Layouts" href="/manual/garbagefree.html#Layouts"/>
+        <item name="Supported Filters" href="/manual/garbagefree.html#Filters"/>
         <item name="API Changes" href="/manual/garbagefree.html#api"/>
         <item name="Impact on Application Code" href="/manual/garbagefree.html#codeImpact"/>
         <item name="Performance" href="/manual/garbagefree.html#Performance"/>
@@ -197,11 +200,15 @@
         <item name="ContextSelector" href="/manual/extending.html#ContextSelector"/>
         <item name="ConfigurationFactory" href="/manual/extending.html#ConfigurationFactory"/>
         <item name="LoggerConfig" href="/manual/extending.html#LoggerConfig"/>
+        <item name="LogEventFactory" href="/manual/extending.html#LogEventFactory"/>
+        <item name="MessageFactory" href="/manual/extending.html#MessageFactory"/>
         <item name="Lookups" href="/manual/extending.html#Lookups"/>
         <item name="Filters" href="/manual/extending.html#Filters"/>
         <item name="Appenders" href="/manual/extending.html#Appenders"/>
         <item name="Layouts" href="/manual/extending.html#Layouts"/>
         <item name="PatternConverters" href="/manual/extending.html#PatternConverters"/>
+        <item name="Plugin Builders" href="/manual/extending.html#Plugin_Builders"/>
+        <item name="Custom ContextDataInjector" href="/manual/extending.html#Custom_ContextDataInjector"/>
         <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
       </item>
 
@@ -210,7 +217,8 @@
         <item name="Converters" href="/manual/plugins.html#Converters"/>
         <item name="Key Providers" href="/manual/plugins.html#KeyProviders"/>
         <item name="Lookups" href="/manual/plugins.html#Lookups"/>
-        <item name="Preloading" href="/manual/plugins.html#Plugin_Preloading"/>
+        <item name="Type Converters" href="/manual/plugins.html#TypeConverters"/>
+        <item name="Developer Notes" href="/manual/plugins.html#DeveloperNotes"/>
       </item>
 
       <item name="Programmatic Log4j Configuration" href="/manual/customconfig.html" collapse="true">
@@ -234,6 +242,11 @@
 
     </menu>
 
+    <menu name="Legacy" inherit="top" img="icon-tags">
+      <item name="Log4j 1.2" href="http://logging.apache.org/log4j/1.2/"/>
+      <item name="Log4j 2.3" href="http://logging.apache.org/log4j/log4j-2.3/"/>
+    </menu>
+
     <menu name="Components" inherit="top" img="icon-cog">
       <item name="API" href="log4j-api/index.html"/>
       <item name="Implementation" href="log4j-core/index.html"/>
@@ -241,6 +254,8 @@
       <item name="Log4j 1.2 API" href="log4j-1.2-api/index.html"/>
       <item name="SLF4J Binding" href="log4j-slf4j-impl/index.html"/>
       <item name="JUL Adapter" href="log4j-jul/index.html"/>
+      <item name="Scala 2.10 API" href="log4j-api-scala_2.10/index.html"/>
+      <item name="Scala 2.11 API" href="log4j-api-scala_2.11/index.html"/>
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j/index.html"/>
       <item name="Apache Flume Appender" href="log4j-flume-ng/index.html"/>
       <item name="Log4j Tag Library" href="log4j-taglib/index.html"/>

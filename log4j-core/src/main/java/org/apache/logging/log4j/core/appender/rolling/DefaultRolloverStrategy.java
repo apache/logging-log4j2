@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
@@ -40,7 +39,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * When rolling over, <code>DefaultRolloverStrategy</code> renames files according to an algorithm as described below.
@@ -76,7 +74,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 @Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
-public class DefaultRolloverStrategy implements RolloverStrategy {
+public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
     /**
      * Enumerates over supported file extensions.
@@ -131,8 +129,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
         };
 
-        static FileExtensions lookup(String fileExtension) {
-            for (FileExtensions ext : values()) {
+        static FileExtensions lookup(final String fileExtension) {
+            for (final FileExtensions ext : values()) {
                 if (ext.isExtensionFor(fileExtension)) {
                     return ext;
                 }
@@ -162,26 +160,21 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             return extension.length();
         }
 
-        File source(String fileName) {
+        File source(final String fileName) {
             return new File(fileName);
         }
 
-        File target(String fileName) {
+        File target(final String fileName) {
             return new File(fileName);
         }
-    };
-
-    /**
-     * Allow subclasses access to the status logger without creating another instance.
-     */
-    protected static final Logger LOGGER = StatusLogger.getLogger();
+    }
 
     private static final int MIN_WINDOW_SIZE = 1;
     private static final int DEFAULT_WINDOW_SIZE = 7;
 
     /**
-     * Create the DefaultRolloverStrategy.
-     * 
+     * Creates the DefaultRolloverStrategy.
+     *
      * @param max The maximum number of files to keep.
      * @param min The minimum number of files to keep.
      * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a smaller
@@ -243,7 +236,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     /**
      * Constructs a new instance.
-     * 
+     *
      * @param minIndex The minimum index.
      * @param maxIndex The maximum index.
      * @param customActions custom actions to perform asynchronously after rollover
@@ -307,7 +300,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     }
 
     /**
-     * Purge and rename old log files in preparation for rollover. The oldest file will have the smallest index, the
+     * Purges and renames old log files in preparation for rollover. The oldest file will have the smallest index, the
      * newest the highest.
      *
      * @param lowIndex low index
@@ -414,7 +407,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     }
 
     /**
-     * Purge and rename old log files in preparation for rollover. The newest file will have the smallest index, the
+     * Purges and renames old log files in preparation for rollover. The newest file will have the smallest index, the
      * oldest will have the highest.
      *
      * @param lowIndex low index
@@ -509,8 +502,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     }
 
     /**
-     * Perform the rollover.
-     * 
+     * Performs the rollover.
+     *
      * @param manager The RollingFileManager name for current active log file.
      * @return A RolloverDescription.
      * @throws SecurityException if an error occurs.
@@ -537,7 +530,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         final String compressedName = renameTo;
         Action compressAction = null;
 
-        for (FileExtensions ext : FileExtensions.values()) { // LOG4J2-1077 support other compression formats
+        for (final FileExtensions ext : FileExtensions.values()) { // LOG4J2-1077 support other compression formats
             if (ext.isExtensionFor(renameTo)) {
                 renameTo = renameTo.substring(0, renameTo.length() - ext.length()); // LOG4J2-1135 omit extension!
                 compressAction = ext.createCompressAction(renameTo, compressedName, true, compressionLevel);
@@ -545,14 +538,15 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
         }
 
-        final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo), false);
+        final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo),
+                manager.isRenameEmptyFiles());
 
         final Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
         return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction);
     }
 
     private int suffixLength(final String lowFilename) {
-        for (FileExtensions extension : FileExtensions.values()) {
+        for (final FileExtensions extension : FileExtensions.values()) {
             if (extension.isExtensionFor(lowFilename)) {
                 return extension.length();
             }

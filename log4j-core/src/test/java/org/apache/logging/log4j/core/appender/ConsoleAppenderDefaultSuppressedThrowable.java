@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.config.Configurator;
  * </p>
  * 
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderNoAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderNoAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
  * </pre>
  */
 public class ConsoleAppenderDefaultSuppressedThrowable {
@@ -45,23 +45,20 @@ public class ConsoleAppenderDefaultSuppressedThrowable {
 		test(args, config);
 	}
 
-	static void test(final String[] args, final String config) {
-		// System.out.println(System.getProperty("java.class.path"));
-		final LoggerContext ctx = Configurator.initialize(ConsoleAppenderDefaultSuppressedThrowable.class.getName(),
-				config);
-		try {
-			final IOException ioEx = new IOException("test suppressed");
-			ioEx.addSuppressed(new IOException("test suppressed 1", new IOException("test 1")));
-			final IOException ioEx2 = new IOException("test 2");
-			ioEx2.addSuppressed(new IOException("test 3"));
-			ioEx.addSuppressed(new IOException("test suppressed 2", ioEx2));
-			final IOException e = new IOException("test", ioEx);
-			LOG.error("Error message {}, suppressed?", "Hi", e);
-			System.out.println("printStackTrace");
-			e.printStackTrace();
-		} finally {
-			Configurator.shutdown(ctx);
-		}
-	}
+    static void test(final String[] args, final String config) {
+        // System.out.println(System.getProperty("java.class.path"));
+        try (final LoggerContext ctx = Configurator
+                .initialize(ConsoleAppenderDefaultSuppressedThrowable.class.getName(), config)) {
+            final IOException ioEx = new IOException("test suppressed");
+            ioEx.addSuppressed(new IOException("test suppressed 1", new IOException("test 1")));
+            final IOException ioEx2 = new IOException("test 2");
+            ioEx2.addSuppressed(new IOException("test 3"));
+            ioEx.addSuppressed(new IOException("test suppressed 2", ioEx2));
+            final IOException e = new IOException("test", ioEx);
+            LOG.error("Error message {}, suppressed?", "Hi", e);
+            System.out.println("printStackTrace");
+            e.printStackTrace();
+        }
+    }
 
 }

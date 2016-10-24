@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -81,12 +82,12 @@ public class AsyncLoggerContext extends LoggerContext {
      * @see org.apache.logging.log4j.core.LoggerContext#start(org.apache.logging.log4j.core.config.Configuration)
      */
     @Override
-    public void start(Configuration config) {
+    public void start(final Configuration config) {
         maybeStartHelper(config);
         super.start(config);
     }
 
-    private void maybeStartHelper(Configuration config) {
+    private void maybeStartHelper(final Configuration config) {
         // If no log4j configuration was found, there are no loggers
         // and there is no point in starting the disruptor (which takes up
         // significant memory and starts a thread).
@@ -98,9 +99,12 @@ public class AsyncLoggerContext extends LoggerContext {
     }
 
     @Override
-    public void stop() {
-        loggerDisruptor.stop(); // first stop Disruptor
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        // first stop Disruptor
+        loggerDisruptor.stop(timeout, timeUnit); 
+        super.stop(timeout, timeUnit);
+        return true;
     }
 
     /**

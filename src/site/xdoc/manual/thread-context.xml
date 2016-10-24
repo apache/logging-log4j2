@@ -167,6 +167,22 @@ try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.put("id"
               Use <code>%x</code> to include the full contents of the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Stack.html">Stack</a>.
             </li>
           </ul>
+          <h4>Non thread-local context data </h4>
+          <p>
+            The ThreadContext allows us to tag logging statements so we can link log entries that were related
+            in some way. The limitation is that this only works for logging done on the same application thread
+            (or child threads when configured).
+          </p>
+          <p>
+            Some applications have a thread model that delegates work to other threads, and
+            in such models, tagging attributes that are put into a thread-local map in one thread are not visible
+            in the other threads and logging done in the other threads will not show these attributes.
+          </p>
+          <p>
+            Log4j 2.7 adds a flexible mechanism to tag logging statements with context data coming from
+            other sources than the ThreadContext.
+            See the manual page on <a href="extending.html#Custom_ContextDataInjector">extending Log4j</a> for details.
+          </p>
         </subsection>
       </section>
     </body>

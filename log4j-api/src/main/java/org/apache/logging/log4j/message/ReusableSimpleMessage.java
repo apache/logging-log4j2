@@ -93,12 +93,12 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence {
     }
 
     @Override
-    public char charAt(int index) {
+    public char charAt(final int index) {
         return charSequence.charAt(index);
     }
 
     @Override
-    public CharSequence subSequence(int start, int end) {
+    public CharSequence subSequence(final int start, final int end) {
         return charSequence.subSequence(start, end);
     }
 }

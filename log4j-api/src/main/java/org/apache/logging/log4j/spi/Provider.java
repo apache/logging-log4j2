@@ -88,7 +88,7 @@ public class Provider {
         if (className == null) {
             return null;
         }
-        ClassLoader loader = classLoader.get();
+        final ClassLoader loader = classLoader.get();
         if (loader == null) {
             return null;
         }
@@ -121,7 +121,7 @@ public class Provider {
         if (threadContextMap == null) {
             return null;
         }
-        ClassLoader loader = classLoader.get();
+        final ClassLoader loader = classLoader.get();
         if (loader == null) {
             return null;
         }
@@ -148,7 +148,7 @@ public class Provider {
     @Override
     public String toString() {
         String result = "Provider[";
-        if (priority != DEFAULT_PRIORITY) {
+        if (!DEFAULT_PRIORITY.equals(priority)) {
             result += "priority=" + priority + ", ";
         }
         if (threadContextMap != null) {

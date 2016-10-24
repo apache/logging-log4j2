@@ -30,8 +30,8 @@ public class CustomPropertiesTest {
 
     @Test
     public void testProperties() throws Exception {
-        Logger logger = LogManager.getLogger("TestProperties");
-        Map<String, String> loggerProperties = new ConcurrentHashMap<>();
+        final Logger logger = LogManager.getLogger("TestProperties");
+        final Map<String, String> loggerProperties = new ConcurrentHashMap<>();
         CustomLookup.setLoggerProperties("TestProperties", loggerProperties);
         loggerProperties.put("key1", "CustomPropertiesTest");
         loggerProperties.put("key2", "TestValue");
@@ -40,8 +40,8 @@ public class CustomPropertiesTest {
 
     @Test
     public void mapMessageProperties() throws Exception {
-        Logger logger = LogManager.getLogger("MapProperties");
-        Map<String, String> loggerProperties = new ConcurrentHashMap<>();
+        final Logger logger = LogManager.getLogger("MapProperties");
+        final Map<String, String> loggerProperties = new ConcurrentHashMap<>();
         loggerProperties.put("key1", "CustomPropertiesTest");
         loggerProperties.put("key2", "TestValue");
         logger.debug(new CustomMapMessage("This is a test", loggerProperties));

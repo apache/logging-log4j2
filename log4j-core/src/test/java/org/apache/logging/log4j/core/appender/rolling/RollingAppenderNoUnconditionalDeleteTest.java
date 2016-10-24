@@ -54,18 +54,18 @@ public class RollingAppenderNoUnconditionalDeleteTest {
     }
 
     @Rule
-    public LoggerContextRule init;
+    public LoggerContextRule loggerContextRule;
 
     public RollingAppenderNoUnconditionalDeleteTest(final String configFile, final String dir) {
         this.directory = new File(dir);
-        this.init = new LoggerContextRule(configFile);
+        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(configFile);
         deleteDir();
         deleteDirParent();
     }
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger();
+        this.logger = this.loggerContextRule.getLogger();
     }
 
     @Test
@@ -81,8 +81,8 @@ public class RollingAppenderNoUnconditionalDeleteTest {
         assertTrue("Dir " + directory + " should contain files", directory.listFiles().length > 0);
 
         int total = 0;
-        for (File file : directory.listFiles()) {
-            List<String> lines = Files.readAllLines(file.toPath(), Charset.defaultCharset());
+        for (final File file : directory.listFiles()) {
+            final List<String> lines = Files.readAllLines(file.toPath(), Charset.defaultCharset());
             total += lines.size();
         }
         assertEquals("rolled over lines", LINECOUNT - 1, total);
@@ -96,7 +96,7 @@ public class RollingAppenderNoUnconditionalDeleteTest {
         deleteDir(directory.getParentFile());
     }
 
-    private void deleteDir(File dir) {
+    private void deleteDir(final File dir) {
         if (dir.exists()) {
             final File[] files = dir.listFiles();
             for (final File file : files) {

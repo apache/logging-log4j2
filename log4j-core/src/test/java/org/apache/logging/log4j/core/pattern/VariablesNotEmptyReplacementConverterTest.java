@@ -61,7 +61,7 @@ public class VariablesNotEmptyReplacementConverterTest {
         testReplacement("%logger", "[" + VariablesNotEmptyReplacementConverterTest.class.getName() + "]");
     }
 
-    private void testReplacement(String tag, String expectedValue) {
+    private void testReplacement(final String tag, final String expectedValue) {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(VariablesNotEmptyReplacementConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //

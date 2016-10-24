@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * <em>Consider this class private.</em>
@@ -29,6 +31,13 @@ public final class Strings {
      * The empty string.
      */
     public static final String EMPTY = "";
+    
+    /**
+     * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
+     * read.
+     */
+    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
+            "\n");
 
     private Strings() {
         // empty
@@ -166,4 +175,65 @@ public final class Strings {
         final String ts = str == null ? null : str.trim();
         return isEmpty(ts) ? null : ts;
     }
+
+    /**
+     * <p>Joins the elements of the provided {@code Iterable} into
+     * a single String containing the provided elements.</p>
+     *
+     * <p>No delimiter is added before or after the list. Null objects or empty
+     * strings within the iteration are represented by empty strings.</p>
+     *
+     * @param iterable  the {@code Iterable} providing the values to join together, may be null
+     * @param separator  the separator character to use
+     * @return the joined String, {@code null} if null iterator input
+     */
+    public static String join(final Iterable<?> iterable, final char separator) {
+        if (iterable == null) {
+            return null;
+        }
+        return join(iterable.iterator(), separator);
+    }
+
+    /**
+     * <p>Joins the elements of the provided {@code Iterator} into
+     * a single String containing the provided elements.</p>
+     *
+     * <p>No delimiter is added before or after the list. Null objects or empty
+     * strings within the iteration are represented by empty strings.</p>
+     *
+     * @param iterator  the {@code Iterator} of values to join together, may be null
+     * @param separator  the separator character to use
+     * @return the joined String, {@code null} if null iterator input
+     */
+    public static String join(final Iterator<?> iterator, final char separator) {
+
+        // handle null, zero and one elements before building a buffer
+        if (iterator == null) {
+            return null;
+        }
+        if (!iterator.hasNext()) {
+            return EMPTY;
+        }
+        final Object first = iterator.next();
+        if (!iterator.hasNext()) {
+            return Objects.toString(first);
+        }
+
+        // two or more elements
+        final StringBuilder buf = new StringBuilder(256); // Java default is 16, probably too small
+        if (first != null) {
+            buf.append(first);
+        }
+
+        while (iterator.hasNext()) {
+            buf.append(separator);
+            final Object obj = iterator.next();
+            if (obj != null) {
+                buf.append(obj);
+            }
+        }
+
+        return buf.toString();
+    }
+
 }

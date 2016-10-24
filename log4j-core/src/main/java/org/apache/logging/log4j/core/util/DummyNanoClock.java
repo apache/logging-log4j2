@@ -31,7 +31,7 @@ public final class DummyNanoClock implements NanoClock {
      * Constructs a new DummyNanoClock with the specified value to return.
      * @param fixedNanoTime the value to return from {@link #nanoTime()}.
      */
-    public DummyNanoClock(long fixedNanoTime) {
+    public DummyNanoClock(final long fixedNanoTime) {
         this.fixedNanoTime = fixedNanoTime;
     }
 

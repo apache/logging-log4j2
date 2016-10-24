@@ -112,7 +112,7 @@ public class MessageFormatMessage implements Message {
 
     protected String formatMessage(final String msgPattern, final Object... args) {
         try {
-            MessageFormat temp = new MessageFormat(msgPattern, locale);
+            final MessageFormat temp = new MessageFormat(msgPattern, locale);
             return temp.format(args);
         } catch (final IllegalFormatException ife) {
             LOGGER.error("Unable to format msg: " + msgPattern, ife);

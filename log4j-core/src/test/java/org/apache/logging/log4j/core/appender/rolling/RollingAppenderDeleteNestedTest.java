@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +37,7 @@ import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -45,25 +46,20 @@ public class RollingAppenderDeleteNestedTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-nested.xml";
     private static final String DIR = "target/rolling-with-delete-nested/test";
 
-    private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            deleteDir();
-        }
-    }).around(ctx);
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     @Test
     public void testAppender() throws Exception {
-        Path p1 = writeTextTo(DIR + "/my-1.log"); // glob="test-*.log"
-        Path p2 = writeTextTo(DIR + "/my-2.log");
-        Path p3 = writeTextTo(DIR + "/my-3.log");
-        Path p4 = writeTextTo(DIR + "/my-4.log");
-        Path p5 = writeTextTo(DIR + "/my-5.log");
+        final Path p1 = writeTextTo(DIR + "/my-1.log"); // glob="test-*.log"
+        final Path p2 = writeTextTo(DIR + "/my-2.log");
+        final Path p3 = writeTextTo(DIR + "/my-3.log");
+        final Path p4 = writeTextTo(DIR + "/my-4.log");
+        final Path p5 = writeTextTo(DIR + "/my-5.log");
 
-        final Logger logger = ctx.getLogger();
+        final Logger logger = loggerContextRule.getLogger();
         for (int i = 0; i < 10; ++i) {
             updateLastModified(p1, p2, p3, p4, p5); // make my-*.log files most recent
 
@@ -77,28 +73,28 @@ public class RollingAppenderDeleteNestedTest {
         assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
 
         final File[] files = dir.listFiles();
-        for (File file : files) {
+        for (final File file : files) {
             System.out.println(file + " (" + file.length() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
         
-        List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
+        final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
         assertEquals(Arrays.toString(files), expected.size() + 3, files.length);
-        for (File file : files) {
+        for (final File file : files) {
             if (!expected.contains(file.getName()) && !file.getName().startsWith("test-")) {
                 fail("unexpected file" + file);
             }
         }
     }
 
-    private void updateLastModified(Path... paths) throws IOException {
-        for (Path path : paths) {
+    private void updateLastModified(final Path... paths) throws IOException {
+        for (final Path path : paths) {
             Files.setLastModifiedTime(path, FileTime.fromMillis(System.currentTimeMillis() + 2000));
         }
     }
 
-    private Path writeTextTo(String location) throws IOException {
-        Path path = Paths.get(location);
+    private Path writeTextTo(final String location) throws IOException {
+        final Path path = Paths.get(location);
         Files.createDirectories(path.getParent());
         try (BufferedWriter buffy = Files.newBufferedWriter(path, Charset.defaultCharset())) {
             buffy.write("some text");
@@ -106,16 +102,5 @@ public class RollingAppenderDeleteNestedTest {
             buffy.flush();
         }
         return path;
-    }
-
-    private static void deleteDir() {
-        final File dir = new File(DIR);
-        if (dir.exists()) {
-            final File[] files = dir.listFiles();
-            for (final File file : files) {
-                file.delete();
-            }
-            dir.delete();
-        }
     }
 }

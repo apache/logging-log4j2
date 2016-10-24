@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -124,9 +125,12 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         LOGGER.trace("AsyncLoggerConfig[{}] stopping...", displayName());
-        super.stop();
+        setStopped();
+        return true;
     }
 
     /**

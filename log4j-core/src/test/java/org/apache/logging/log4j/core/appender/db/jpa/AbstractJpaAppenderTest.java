@@ -62,24 +62,14 @@ public abstract class AbstractJpaAppenderTest {
             final Appender appender = context.getConfiguration().getAppender("databaseAppender");
             assertNotNull("The appender should not be null.", appender);
             assertTrue("The appender should be a JpaAppender.", appender instanceof JpaAppender);
-            ((JpaAppender) appender).getManager().release();
+            ((JpaAppender) appender).getManager().close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             context.reconfigure();
             StatusLogger.getLogger().reset();
 
-            Statement statement = null;
-            try {
-                statement = this.connection.createStatement();
+            try (Statement statement = this.connection.createStatement();) {
                 statement.execute("SHUTDOWN");
-            } finally {
-                try {
-                    if (statement != null) {
-                        statement.close();
-                    }
-                } catch (final SQLException ignore) {
-                    /* */
-                }
             }
 
             this.connection.close();

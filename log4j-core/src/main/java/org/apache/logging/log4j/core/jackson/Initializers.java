@@ -39,16 +39,38 @@ class Initializers {
      */
     static class SetupContextInitializer {
 
-        void setupModule(final SetupContext context) {
+        void setupModule(final SetupContext context, final boolean includeStacktrace) {
             // JRE classes: we cannot edit those with Jackson annotations
             context.setMixInAnnotations(StackTraceElement.class, StackTraceElementMixIn.class);
             // Log4j API classes: we do not want to edit those with Jackson annotations because the API module should not depend on Jackson.
             context.setMixInAnnotations(Marker.class, MarkerMixIn.class);
             context.setMixInAnnotations(Level.class, LevelMixIn.class);
-            context.setMixInAnnotations(LogEvent.class, LogEventMixIn.class);
+            context.setMixInAnnotations(LogEvent.class, LogEventWithContextListMixIn.class);
             // Log4j Core classes: we do not want to bring in Jackson at runtime if we do not have to.
             context.setMixInAnnotations(ExtendedStackTraceElement.class, ExtendedStackTraceElementMixIn.class);
-            context.setMixInAnnotations(ThrowableProxy.class, ThrowableProxyMixIn.class);
+            context.setMixInAnnotations(ThrowableProxy.class,
+                    includeStacktrace ? ThrowableProxyMixIn.class : ThrowableProxyWithoutStacktraceMixIn.class);
+        }
+    }
+
+    /**
+     * Used to set up {@link SetupContext} from different {@link SimpleModule}s.
+     * Differs from SetupContextInitializer by installing {@code LogEventJsonMixIn} for LogEvents,
+     * not {@code LogEventMixIn}, so it handles ThreadContext serialization differently.
+     */
+    static class SetupContextJsonInitializer {
+
+        void setupModule(final SetupContext context, final boolean includeStacktrace) {
+            // JRE classes: we cannot edit those with Jackson annotations
+            context.setMixInAnnotations(StackTraceElement.class, StackTraceElementMixIn.class);
+            // Log4j API classes: we do not want to edit those with Jackson annotations because the API module should not depend on Jackson.
+            context.setMixInAnnotations(Marker.class, MarkerMixIn.class);
+            context.setMixInAnnotations(Level.class, LevelMixIn.class);
+            context.setMixInAnnotations(LogEvent.class, LogEventJsonMixIn.class); // different ThreadContext handling
+            // Log4j Core classes: we do not want to bring in Jackson at runtime if we do not have to.
+            context.setMixInAnnotations(ExtendedStackTraceElement.class, ExtendedStackTraceElementMixIn.class);
+            context.setMixInAnnotations(ThrowableProxy.class,
+                    includeStacktrace ? ThrowableProxyMixIn.class : ThrowableProxyWithoutStacktraceMixIn.class);
         }
     }
 

@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -51,19 +50,19 @@ public class CsvParameterLayoutAllAsyncTest {
 
     @Test
     public void testLayoutDefaultNormal() throws Exception {
-        Logger root = (Logger) LogManager.getRootLogger();
+        final Logger root = (Logger) LogManager.getRootLogger();
         CsvParameterLayoutTest.testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), false);
     }
 
     @Test
     public void testLayoutDefaultObjectArrayMessage() throws Exception {
-        Logger root = (Logger) LogManager.getRootLogger();
+        final Logger root = (Logger) LogManager.getRootLogger();
         CsvParameterLayoutTest.testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), true);
     }
 
     @Test
     public void testLayoutTab() throws Exception {
-        Logger root = (Logger) LogManager.getRootLogger();
+        final Logger root = (Logger) LogManager.getRootLogger();
         CsvParameterLayoutTest.testLayoutNormalApi(root, CsvParameterLayout.createLayout(CSVFormat.TDF), true);
     }
 }

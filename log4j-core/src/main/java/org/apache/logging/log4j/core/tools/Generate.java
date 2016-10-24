@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Generates source code for custom or extended logger wrappers.
  * <p>
@@ -1094,7 +1096,8 @@ public final class Generate {
             sb.append(String.format(phase2, ""));
         }
 
-        sb.append(String.format("}%n", "")); // yes, does not use args to apply %n
+        sb.append('}');
+        sb.append(Strings.LINE_SEPARATOR);
         return sb.toString();
     }
 

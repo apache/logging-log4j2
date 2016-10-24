@@ -19,6 +19,7 @@ package org.apache.logging.log4j;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 
@@ -1747,11 +1748,17 @@ public interface Logger {
     Level getLevel();
 
     /**
-     * Gets the message factory used to convert message Objects and Strings into actual log Messages.
+     * Gets the message factory used to convert message Objects and Strings/CharSequences into actual log Messages.
      *
-     * @return the message factory.
+     * Since version 2.6, Log4j internally uses message factories that implement the {@link MessageFactory2} interface.
+     * From version 2.6.2, the return type of this method was changed from {@link MessageFactory} to
+     * {@code <MF extends MessageFactory> MF}. The returned factory will always implement {@link MessageFactory2},
+     * but the return type of this method could not be changed to {@link MessageFactory2} without breaking binary
+     * compatibility.
+     *
+     * @return the message factory, as an instance of {@link MessageFactory2}
      */
-    MessageFactory getMessageFactory();
+    <MF extends MessageFactory> MF getMessageFactory();
 
     /**
      * Gets the logger name.
@@ -2304,29 +2311,28 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#DEBUG DEBUG} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level DEBUG, {@code false} otherwise.
      */
     boolean isDebugEnabled(Marker marker);
 
     /**
-     * Checks whether this Logger is enabled for the the given Level.
+     * Checks whether this Logger is enabled for the given Level.
      * <p>
      * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
      * </p>
      *
-     * @param level the level to check
+     * @param level the Level to check
      * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
      */
     boolean isEnabled(Level level);
 
     /**
-     * Checks whether this logger is enabled at the specified level and an optional Marker.
+     * Checks whether this Logger is enabled for the given Level and Marker.
      *
-     * @param level The Level to check.
-     * @param marker The marker data specific to this log statement.
-     * @return boolean - {@code true} if this Logger is enabled for level {@link Level#WARN WARN}, {@code false}
-     *         otherwise.
+     * @param level The Level to check
+     * @param marker The Marker to check
+     * @return boolean - {@code true} if this Logger is enabled for level and marker, {@code false} otherwise.
      */
     boolean isEnabled(Level level, Marker marker);
 
@@ -2341,7 +2347,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level {@link Level#ERROR ERROR}, {@code false}
      *         otherwise.
      */
@@ -2358,7 +2364,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#FATAL FATAL} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level {@link Level#FATAL FATAL}, {@code false}
      *         otherwise.
      */
@@ -2374,7 +2380,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#INFO INFO} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level INFO, {@code false} otherwise.
      */
     boolean isInfoEnabled(Marker marker);
@@ -2389,7 +2395,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#TRACE TRACE} level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level TRACE, {@code false} otherwise.
      */
     boolean isTraceEnabled(Marker marker);
@@ -2405,7 +2411,7 @@ public interface Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#WARN WARN} Level.
      *
-     * @param marker The marker data specific to this log statement.
+     * @param marker The Marker to check
      * @return boolean - {@code true} if this Logger is enabled for level {@link Level#WARN WARN}, {@code false}
      *         otherwise.
      */
@@ -2707,6 +2713,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2716,6 +2723,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2726,6 +2734,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2737,6 +2746,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2749,6 +2759,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2762,6 +2773,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2776,6 +2788,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2792,6 +2805,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2809,6 +2823,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2827,6 +2842,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -2846,6 +2862,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      */
@@ -2854,6 +2871,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
@@ -2863,6 +2881,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
@@ -2873,6 +2892,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
@@ -2884,6 +2904,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
@@ -2896,6 +2917,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
@@ -2909,6 +2931,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
@@ -2923,6 +2946,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
@@ -2938,6 +2962,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
@@ -2955,6 +2980,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the specified level.
      *
+     * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
@@ -3579,7 +3605,7 @@ public interface Logger {
      * public int doSomething(String foo, int bar) {
      *     Message m = LOGGER.traceEntry("doSomething(foo={}, bar={})", foo, bar);
      *     // do something
-     *     return traceExit(value, m);
+     *     return traceExit(m, value);
      * }
      * </pre>
      *
@@ -3634,11 +3660,18 @@ public interface Logger {
      *     // do something
      * }
      * </pre>
+     * <p>
+     * Avoid passing a {@code ReusableMessage} to this method (therefore, also avoid passing messages created by
+     * calling {@code logger.getMessageFactory().newMessage("some message")}): Log4j will replace such messages with
+     * an immutable message to prevent situations where the reused message instance is modified by subsequent calls to
+     * the logger before the returned {@code EntryMessage} is fully processed.
+     * </p>
      *
-     * @param message The message.
+     * @param message The message. Avoid specifying a ReusableMessage, use immutable messages instead.
      * @return the built message
      *
      * @since 2.6
+     * @see org.apache.logging.log4j.message.ReusableMessage
      */
     EntryMessage traceEntry(Message message);
 
@@ -3691,7 +3724,6 @@ public interface Logger {
      * }
      * </pre>
      * @param message The Message containing the formatted result.
-     * @param result The result being returned from the method call.
      *
      * @since 2.6
      */

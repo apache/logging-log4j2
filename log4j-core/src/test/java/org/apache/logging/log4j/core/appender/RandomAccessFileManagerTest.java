@@ -46,9 +46,9 @@ public class RandomAccessFileManagerTest {
     public void testWrite_multiplesOfBufferSize() throws IOException {
         final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
-            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
-                    RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
+            final OutputStream os = NullOutputStream.getInstance();
+            final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
+                    os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
             final byte[] data = new byte[size];
@@ -67,9 +67,9 @@ public class RandomAccessFileManagerTest {
     public void testWrite_dataExceedingBufferSize() throws IOException {
         final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
-            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
-                    RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
+            final OutputStream os = NullOutputStream.getInstance();
+            final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
+                    os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             final byte[] data = new byte[size];
@@ -85,12 +85,12 @@ public class RandomAccessFileManagerTest {
     public void testConfigurableBufferSize() throws IOException {
         final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             final int bufferSize = 4 * 1024;
             assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
-            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
-                    bufferSize, null, null, true);
+            final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
+                    os, bufferSize, null, null, true);
 
             // check the resulting buffer size is what was requested
             assertEquals(bufferSize, manager.getBufferSize());
@@ -100,10 +100,10 @@ public class RandomAccessFileManagerTest {
     public void testWrite_dataExceedingMinBufferSize() throws IOException {
         final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             final int bufferSize = 1;
-            final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
-                    bufferSize, null, null, true);
+            final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
+                    os, bufferSize, null, null, true);
 
             final int size = bufferSize * 3 + 1;
             final byte[] data = new byte[size];
@@ -131,7 +131,7 @@ public class RandomAccessFileManagerTest {
         assertEquals("all flushed to disk", bytes.length, file.length());
 
         final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-                file.getAbsolutePath(), isAppend, true, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null);
+                file.getAbsolutePath(), isAppend, true, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, null);
         manager.write(bytes, 0, bytes.length, true);
         final int expected = bytes.length * 2;
         assertEquals("appended, not overwritten", expected, file.length());

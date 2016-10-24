@@ -30,6 +30,9 @@ public class CloseShieldOutputStream extends OutputStream {
         this.delegate = delegate;
     }
 
+    /**
+     * Does nothing.
+     */
     @Override
     public void close() {
         // do not close delegate

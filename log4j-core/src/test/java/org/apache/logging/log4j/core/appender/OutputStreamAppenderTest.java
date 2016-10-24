@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -92,9 +91,17 @@ public class OutputStreamAppenderTest {
     public void testUpdatePatternWithFileAppender() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
-        final Layout<?> layout = PatternLayout.createDefaultLayout();
-        final Appender appender = FileAppender.createAppender("target/" + getClass().getName() + ".log", "false",
-                "false", "File", "true", "false", "false", "4000", layout, null, "false", null, config);
+        // @formatter:off
+        final Appender appender = FileAppender.newBuilder()
+            .withFileName("target/" + getClass().getName() + ".log")
+            .withAppend(false)
+            .withName("File")
+            .withIgnoreExceptions(false)
+            .withBufferedIo(false)
+            .withBufferSize(4000)
+            .withConfiguration(config)
+            .build();
+        // @formatter:on
         appender.start();
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);

@@ -16,16 +16,18 @@
  */
 package org.apache.logging.log4j.nosql.appender;
 
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.*;
+
+@RunWith(MockitoJUnitRunner.class)
 public class NoSqlAppenderTest {
+
+    @Mock
+    private NoSqlProvider<?> provider;
 
     @Test
     public void testNoProvider() {
@@ -36,11 +38,6 @@ public class NoSqlAppenderTest {
 
     @Test
     public void testProvider() {
-        @SuppressWarnings("unchecked")
-        final NoSqlProvider<?> provider = createStrictMock(NoSqlProvider.class);
-
-        replay(provider);
-
         final NoSqlAppender appender = NoSqlAppender.createAppender("myName01", null, null, null, provider);
 
         assertNotNull("The appender should not be null.", appender);
@@ -49,17 +46,10 @@ public class NoSqlAppenderTest {
                 appender.toString());
 
         appender.stop();
-
-        verify(provider);
     }
 
     @Test
     public void testProviderBuffer() {
-        @SuppressWarnings("unchecked")
-        final NoSqlProvider<?> provider = createStrictMock(NoSqlProvider.class);
-
-        replay(provider);
-
         final NoSqlAppender appender = NoSqlAppender.createAppender("anotherName02", null, null, "25", provider);
 
         assertNotNull("The appender should not be null.", appender);
@@ -68,7 +58,5 @@ public class NoSqlAppenderTest {
                         + " } }", appender.toString());
 
         appender.stop();
-
-        verify(provider);
     }
 }

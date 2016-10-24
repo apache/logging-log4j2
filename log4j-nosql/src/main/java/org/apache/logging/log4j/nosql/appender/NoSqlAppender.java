@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.nosql.appender;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
@@ -48,7 +49,7 @@ import org.apache.logging.log4j.core.util.Booleans;
  * @see NoSqlConnection
  * @see NoSqlProvider
  */
-@Plugin(name = "NoSql", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "NoSql", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseManager<?>> {
     private final String description;
 

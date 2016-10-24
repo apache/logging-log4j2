@@ -317,6 +317,9 @@ java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.too
               for the built-in levels <em>as well as</em> the specified custom levels. The tool prints the
               generated source code to the console.
               By appending " &gt; <em>filename</em>" the output can be redirected to a file.
+            </p><p>
+              NOTE: Under the bash shell on Unix/Mac/Linux the ${dollar} character needs to be escaped, so the class name should
+               be between single quotes 'org.apache.logging.log4j.core.tools.Generate${dollar}ExtendedLogger’.
             </p>
           </subsection>
           <subsection name="Generating Custom Loggers">
@@ -331,6 +334,9 @@ java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.too
               methods for the specified custom levels, <em>not</em> for the built-in levels.
               The tool prints the generated source code to the console.
               By appending " &gt; <em>filename</em>" the output can be redirected to a file.
+            </p><p>
+              NOTE: Under the bash shell on Unix/Mac/Linux the ${dollar} character needs to be escaped, so the class name should
+               be between single quotes 'org.apache.logging.log4j.core.tools.Generate${dollar}CustomLogger’.
             </p>
           </subsection>
       </section>

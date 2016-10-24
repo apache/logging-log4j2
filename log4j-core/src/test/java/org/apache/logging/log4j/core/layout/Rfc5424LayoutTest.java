@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -37,13 +38,14 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class Rfc5424LayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
-    Logger root = ctx.getLogger("");
+    Logger root = ctx.getRootLogger();
 
 
     private static final String line1 = "ATM - - [RequestContext@3692 loginId=\"JohnDoe\"] starting mdc pattern test";
@@ -59,9 +61,11 @@ public class Rfc5424LayoutTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+
     @BeforeClass
     public static void setupClass() {
-        ThreadContext.clearAll();
         StatusLogger.getLogger().setLevel(Level.OFF);
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
@@ -71,7 +75,6 @@ public class Rfc5424LayoutTest {
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
-        ThreadContext.clearAll();
     }
 
     /**
@@ -146,8 +149,6 @@ public class Rfc5424LayoutTest {
             assertTrue("No messages expected, found " + list.size(), list.isEmpty());
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clearMap();
-
             appender.stop();
         }
     }
@@ -208,8 +209,6 @@ public class Rfc5424LayoutTest {
             assertTrue("No messages expected, found " + list.size(), list.isEmpty());
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clearMap();
-
             appender.stop();
         }
     }
@@ -248,8 +247,6 @@ public class Rfc5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clearMap();
-
             appender.stop();
         }
     }
@@ -290,8 +287,6 @@ public class Rfc5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clearMap();
-
             appender.stop();
         }
     }
@@ -339,8 +334,6 @@ public class Rfc5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clearMap();
-
             appender.stop();
         }
     }
@@ -349,7 +342,7 @@ public class Rfc5424LayoutTest {
     public void testDiscardEmptyLoggerFields() {
         final String mdcId = "RequestContext";
 
-        final List<String> expectedToContain = Arrays.asList(
+        Arrays.asList(
                 "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"  +
                         "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"
         );
@@ -387,8 +380,6 @@ public class Rfc5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clearMap();
-
             appender.stop();
         }
     }
@@ -421,8 +412,6 @@ public class Rfc5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clearMap();
-
             appender.stop();
         }
     }

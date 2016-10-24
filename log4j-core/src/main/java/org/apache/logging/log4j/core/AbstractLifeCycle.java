@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -24,7 +27,10 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Wraps a {@link LifeCycle.State}.
  * </p>
  */
-public class AbstractLifeCycle implements LifeCycle {
+public class AbstractLifeCycle implements LifeCycle2 {
+
+    public static final int DEFAULT_STOP_TIMEOUT = 0;
+    public static final TimeUnit DEFAULT_STOP_TIMEUNIT = TimeUnit.MILLISECONDS;
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -118,7 +124,24 @@ public class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public void stop() {
+        stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEUNIT);
+    }
+
+    protected boolean stop(final Future<?> future) {
+        boolean stopped = true;
+        if (future != null) {
+            if (future.isCancelled() || future.isDone()) {
+                return true;
+            }
+            stopped = future.cancel(true);
+        }
+        return stopped;
+    }
+
+    @Override
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.state = LifeCycle.State.STOPPED;
+        return true;
     }
 
 }

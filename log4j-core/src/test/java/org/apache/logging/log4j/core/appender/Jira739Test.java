@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.Configurator;
  * </p>
  * 
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiMessagesMain log4j-core/target/test-classes/log4j2-console.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiMessagesMain log4j-core/target/test-classes/log4j2-console.xml
  * </pre>
  */
 public class Jira739Test {
@@ -37,16 +37,13 @@ public class Jira739Test {
     private static final Logger LOG = LogManager.getLogger(Jira739Test.class);
 
     public static void main(final String[] args) {
-        final LoggerContext ctx = Configurator.initialize(Jira739Test.class.getName(),
-                "target/test-classes/LOG4J2-739.xml");
-        try {
+        try (final LoggerContext ctx = Configurator.initialize(Jira739Test.class.getName(),
+                "target/test-classes/LOG4J2-739.xml")) {
             for (int i = 0; i < 10; i++) {
                 LOG.trace("Entering Log4j Example " + i + " times");
                 LOG.error("Ohh!Failed!");
                 LOG.trace("Exiting Log4j Example." + i + " times");
             }
-        } finally {
-            Configurator.shutdown(ctx);
         }
     }
 

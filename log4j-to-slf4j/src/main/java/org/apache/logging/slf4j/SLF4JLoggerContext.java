@@ -62,12 +62,12 @@ public class SLF4JLoggerContext implements LoggerContext {
     }
 
     @Override
-    public boolean hasLogger(String name, MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         return loggerRegistry.hasLogger(name, messageFactory);
     }
 
     @Override
-    public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
+    public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 }

@@ -22,7 +22,7 @@ package org.apache.logging.log4j.core.util;
  */
 public class Log4jThread extends Thread {
 
-    private static final String PREFIX = "Log4j2-";
+    static final String PREFIX = "Log4j2-";
 
     private static int threadInitNumber;
 

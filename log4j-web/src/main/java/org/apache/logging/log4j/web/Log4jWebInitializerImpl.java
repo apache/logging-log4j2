@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
@@ -214,7 +215,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     }
 
     @Override
-    public synchronized void stop() {
+    public synchronized boolean stop(final long timeout, final TimeUnit timeUnit) {
         if (!this.isStarted() && !this.isStopped()) {
             throw new IllegalStateException("Cannot stop this Log4jWebInitializer because it has not started.");
         }
@@ -228,12 +229,13 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                 if (this.namedContextSelector != null) {
                     this.namedContextSelector.removeContext(this.name);
                 }
-                this.loggerContext.stop();
+                this.loggerContext.stop(timeout, timeUnit);
                 this.loggerContext.setExternalContext(null);
                 this.loggerContext = null;
             }
             this.setStopped();
         }
+        return super.stop(timeout, timeUnit);
     }
 
     @Override

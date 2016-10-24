@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
@@ -53,8 +54,8 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component scriptsComponent;
     private String contentType = "text";
 
-    public BuiltConfiguration(final ConfigurationSource source, final Component rootComponent) {
-        super(source);
+    public BuiltConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
+        super(loggerContext, source);
         statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
@@ -123,12 +124,12 @@ public class BuiltConfiguration extends AbstractConfiguration {
         byte[] buffer = null;
         try {
             if (configSource != null) {
-                InputStream is = configSource.getInputStream();
+                final InputStream is = configSource.getInputStream();
                 if (is != null) {
                     buffer = toByteArray(is);
                 }
             }
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOGGER.warn("Unable to read configuration source " + configSource.toString());
         }
         super.createAdvertiser(advertiserString, configSource, buffer, contentType);
@@ -146,6 +147,10 @@ public class BuiltConfiguration extends AbstractConfiguration {
         isShutdownHookEnabled = !"disable".equalsIgnoreCase(flag);
     }
 
+    public void setShutdownTimeoutMillis(long shutdownTimeoutMillis) {
+        this.shutdownTimeoutMillis = shutdownTimeoutMillis;
+    }
+
     public void setMonitorInterval(final int intervalSeconds) {
         if (this instanceof Reconfigurable && intervalSeconds > 0) {
             final ConfigurationSource configSource = getConfigurationSource();
@@ -154,7 +159,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 if (intervalSeconds > 0) {
                     getWatchManager().setIntervalSeconds(intervalSeconds);
                     if (configFile != null) {
-                        FileWatcher watcher = new ConfiguratonFileWatcher((Reconfigurable) this, listeners);
+                        final FileWatcher watcher = new ConfiguratonFileWatcher((Reconfigurable) this, listeners);
                         getWatchManager().watchFile(configFile, watcher);
                     }
                 }
@@ -162,6 +167,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
         }
     }
 
+    @Override
     public PluginManager getPluginManager() {
         return pluginManager;
     }

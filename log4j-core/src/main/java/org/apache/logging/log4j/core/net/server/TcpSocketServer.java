@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
@@ -34,18 +35,39 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.message.EntryMessage;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.validators.PositiveInteger;
+
 /**
- * Listens for events over a socket connection.
+ * Listens for Log4j events on a TCP server socket and passes them on to Log4j.
  * 
  * @param <T>
  *        The kind of input stream read
+ * @see #main(String[])
  */
 public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer<T> {
+
+    protected static class CommandLineArguments extends AbstractSocketServer.CommandLineArguments {
+        
+        @Parameter(names = { "--backlog",
+                "-b" }, validateWith = PositiveInteger.class, description = "Server socket backlog.")
+        // Same default as ServerSocket
+        private int backlog = 50;
+
+        int getBacklog() {
+            return backlog;
+        }
+
+        void setBacklog(final int backlog) {
+            this.backlog = backlog;
+        }        
+
+    }
 
     /**
      * Thread that processes the events.
      */
-    private class SocketHandler extends Thread {
+    private class SocketHandler extends Log4jThread {
 
         private final T inputStream;
 
@@ -90,42 +112,6 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
         }
     }
 
-    private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<>();
-
-    private final ServerSocket serverSocket;
-
-    /**
-     * Constructor.
-     * 
-     * @param port
-     *        to listen.
-     * @param logEventInput
-     *        the log even input
-     * @throws IOException
-     *         if an I/O error occurs when opening the socket.
-     */
-    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
-        this(port, logEventInput, new ServerSocket(port));
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param port
-     *        to listen.
-     * @param logEventInput
-     *        the log even input
-     * @param serverSocket
-     *        the socket server
-     * @throws IOException
-     *         if an I/O error occurs when opening the socket.
-     */
-    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput, final ServerSocket serverSocket)
-            throws IOException {
-        super(port, logEventInput);
-        this.serverSocket = serverSocket;
-    }
-
     /**
      * Creates a socket server that reads JSON log events.
      * 
@@ -157,6 +143,24 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
     }
 
     /**
+     * Creates a socket server that reads serialized log events.
+     * 
+     * @param port the port to listen
+     * @param localBindAddress The server socket's local bin address
+     * @return a new a socket server
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     * @since 2.7
+     */
+    public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port, final int backlog,
+            InetAddress localBindAddress) throws IOException {
+        LOGGER.entry(port);
+        final TcpSocketServer<ObjectInputStream> socketServer = new TcpSocketServer<>(port, backlog, localBindAddress,
+                new ObjectInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
+    }
+
+    /**
      * Creates a socket server that reads XML log events.
      * 
      * @param port
@@ -172,7 +176,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
     }
 
     /**
-     * Main startup for the server.
+     * Main startup for the server. Run with "--help" for to print command line help on the console.
      * 
      * @param args
      *        The command line arguments.
@@ -180,38 +184,89 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an error occurs.
      */
     public static void main(final String[] args) throws Exception {
-        if (args.length < 1 || args.length > 2) {
-            System.err.println("Incorrect number of arguments");
-            printUsage();
+        final CommandLineArguments cla = parseCommandLine(args, TcpSocketServer.class, new CommandLineArguments());
+        if (cla.isHelp()) {
             return;
         }
-        final int port = Integer.parseInt(args[0]);
-        if (port <= 0 || port >= MAX_PORT) {
-            System.err.println("Invalid port number");
-            printUsage();
-            return;
+        if (cla.getConfigLocation() != null) {
+            ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(cla.getConfigLocation()));
         }
-        if (args.length == 2 && args[1].length() > 0) {
-            ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
-        }
-        final TcpSocketServer<ObjectInputStream> socketServer = TcpSocketServer.createSerializedSocketServer(port);
+        final TcpSocketServer<ObjectInputStream> socketServer = TcpSocketServer
+                .createSerializedSocketServer(cla.getPort(), cla.getBacklog(), cla.getLocalBindAddress());
         final Thread serverThread = new Log4jThread(socketServer);
         serverThread.start();
-        final Charset enc = Charset.defaultCharset();
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));
-        while (true) {
-            final String line = reader.readLine();
-            if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop")
-                    || line.equalsIgnoreCase("Exit")) {
-                socketServer.shutdown();
-                serverThread.join();
-                break;
+        if (cla.isInteractive()) {
+            final Charset enc = Charset.defaultCharset();
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));
+            while (true) {
+                final String line = reader.readLine();
+                if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop")
+                        || line.equalsIgnoreCase("Exit")) {
+                    socketServer.shutdown();
+                    serverThread.join();
+                    break;
+                }
             }
         }
     }
 
-    private static void printUsage() {
-        System.out.println("Usage: ServerSocket port configFilePath");
+    private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<>();
+
+    private final ServerSocket serverSocket;
+
+    /**
+     * Constructor.
+     * 
+     * @param port
+     *        The server socket port.
+     * @param backlog
+     *        The server socket backlog.
+     * @param localBindAddress TODO
+     * @param logEventInput
+     *        the log even input
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     * @since 2.7
+     */
+    @SuppressWarnings("resource")
+    public TcpSocketServer(final int port, final int backlog, InetAddress localBindAddress, final LogEventBridge<T> logEventInput) throws IOException {
+        this(port, logEventInput, new ServerSocket(port, backlog, localBindAddress));
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param port
+     *        to listen.
+     * @param logEventInput
+     *        the log even input
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     */
+    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
+        this(port, logEventInput, extracted(port));
+    }
+
+    private static ServerSocket extracted(final int port) throws IOException {
+        return new ServerSocket(port);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param port
+     *        to listen.
+     * @param logEventInput
+     *        the log even input
+     * @param serverSocket
+     *        the socket server
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     */
+    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput, final ServerSocket serverSocket)
+            throws IOException {
+        super(port, logEventInput);
+        this.serverSocket = serverSocket;
     }
 
     /**
@@ -226,8 +281,9 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
             }
             try {
                 // Accept incoming connections.
-                logger.debug("Socket accept()...");
+                logger.debug("Listening for a connection {}...", serverSocket);
                 final Socket clientSocket = serverSocket.accept();
+                logger.debug("Acepted connection on {}...", serverSocket);
                 logger.debug("Socket accepted: {}", clientSocket);
                 clientSocket.setSoLinger(true, 0);
 
@@ -244,7 +300,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                     logger.traceExit(entry);
                     return;
                 }
-                logger.error("Exception encountered on accept. Ignoring. Stack Trace :", e);
+                logger.error("Exception encountered on accept. Ignoring. Stack trace :", e);
             }
         }
         for (final Map.Entry<Long, SocketHandler> handlerEntry : handlers.entrySet()) {

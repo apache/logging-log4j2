@@ -24,24 +24,29 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
  */
 @Plugin(name = "ThreadContextMapFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PluginAliases("ContextMapFilter")
 public class ThreadContextMapFilter extends MapFilter {
 
+    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
     private final String key;
     private final String value;
 
@@ -90,26 +95,30 @@ public class ThreadContextMapFilter extends MapFilter {
     private Result filter() {
         boolean match = false;
         if (useMap) {
+            ReadOnlyStringMap currentContextData = null;
             for (final Map.Entry<String, List<String>> entry : getMap().entrySet()) {
-                final String toMatch = ThreadContext.get(entry.getKey());
-                if (toMatch != null) {
-                    match = entry.getValue().contains(toMatch);
-                } else {
-                    match = false;
+                if (currentContextData == null) {
+                    currentContextData = currentContextData();
                 }
+                final String toMatch = currentContextData.getValue(entry.getKey());
+                match = toMatch != null && entry.getValue().contains(toMatch);
                 if ((!isAnd() && match) || (isAnd() && !match)) {
                     break;
                 }
             }
         } else {
-            match = value.equals(ThreadContext.get(key));
+            match = value.equals(currentContextData().getValue(key));
         }
         return match ? onMatch : onMismatch;
     }
 
+    private ReadOnlyStringMap currentContextData() {
+        return injector.rawContextData();
+    }
+
     @Override
     public Result filter(final LogEvent event) {
-        return super.filter(event.getContextMap()) ? onMatch : onMismatch;
+        return super.filter(event.getContextData()) ? onMatch : onMismatch;
     }
 
     @PluginFactory

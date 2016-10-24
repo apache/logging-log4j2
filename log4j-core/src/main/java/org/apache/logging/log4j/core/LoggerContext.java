@@ -24,6 +24,11 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,13 +36,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
-import org.apache.logging.log4j.core.config.ConfigurationSource; // SUPPRESS CHECKSTYLE
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
+import org.apache.logging.log4j.core.util.ExecutorServices;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -45,16 +52,17 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
-import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
+import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
  * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
  * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
-public class LoggerContext extends AbstractLifeCycle implements org.apache.logging.log4j.spi.LoggerContext, Terminable,
-        ConfigurationListener {
+public class LoggerContext extends AbstractLifeCycle
+        implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener {
 
     /**
      * Property name of the property change event fired if the configuration is changed.
@@ -71,6 +79,8 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * reference is updated.
      */
     private volatile Configuration configuration = new DefaultConfiguration();
+    private ExecutorService executorService;
+    private ExecutorService executorServiceDeamons;
     private Object externalContext;
     private String contextName;
     private volatile URI configLocation;
@@ -205,6 +215,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     @Override
     public void start() {
         LOGGER.debug("Starting LoggerContext[name={}, {}]...", getName(), this);
+        if (PropertiesUtil.getProperties().getBooleanProperty("log4j.LoggerContext.stacktrace.on.start", false)) {
+            LOGGER.debug("Stack trace to locate invoker",
+                    new Exception("Not a real error, showing stack trace to locate invoker"));
+        }
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
@@ -251,13 +265,15 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             if (factory instanceof ShutdownCallbackRegistry) {
                 LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Shutdown hook enabled. Registering a new one.");
                 try {
+                    final long shutdownTimeoutMillis = this.configuration.getShutdownTimeoutMillis();
                     this.shutdownCallback = ((ShutdownCallbackRegistry) factory).addShutdownCallback(new Runnable() {
                         @Override
                         public void run() {
+                            @SuppressWarnings("resource")
                             final LoggerContext context = LoggerContext.this;
                             LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping LoggerContext[name={}, {}]",
                                     context.getName(), context);
-                            context.stop();
+                            context.stop(shutdownTimeoutMillis, TimeUnit.MILLISECONDS);
                         }
 
                         @Override
@@ -277,24 +293,51 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     @Override
-    public void terminate() {
+    public void close() {
         stop();
     }
 
     @Override
-    public void stop() {
+    public void terminate() {
+        stop();
+    }
+
+    /**
+     * Blocks until all Log4j tasks have completed execution after a shutdown request and all appenders have shut down,
+     * or the timeout occurs, or the current thread is interrupted, whichever happens first.
+     * <p>
+     * Not all appenders will honor this, it is a hint and not an absolute guarantee that the this method not block longer.
+     * Setting timeout too low increase the risk of losing outstanding log events not yet written to the final
+     * destination.
+     * <p>
+     * Log4j can start threads to perform certain actions like file rollovers, calling this method with a positive timeout will
+     * block until the rollover thread is done.
+     *
+     * @param timeout the maximum time to wait, or 0 which mean that each apppender uses its default timeout, and don't wait for background
+    tasks
+     * @param timeUnit
+     *            the time unit of the timeout argument
+     * @return {@code true} if the logger context terminated and {@code false} if the timeout elapsed before
+     *         termination.
+     * @since 2.7
+     */
+    @Override
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
         configLock.lock();
+        final boolean shutdownEs;
+        final boolean shutdownEsd;
         try {
             if (this.isStopped()) {
-                return;
+                return true;
             }
 
             this.setStopping();
             try {
                 Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
-            } catch (final Exception ex) {
-                LOGGER.error("Unable to unregister MBeans", ex);
+            } catch (final LinkageError | Exception e) {
+                // LOG4J2-1506 Hello Android, GAE
+                LOGGER.error("Unable to unregister MBeans", e);
             }
             if (shutdownCallback != null) {
                 shutdownCallback.cancel();
@@ -303,14 +346,23 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             final Configuration prev = configuration;
             configuration = NULL_CONFIGURATION;
             updateLoggers();
-            prev.stop();
+            if (prev instanceof LifeCycle2) {
+                ((LifeCycle2) prev).stop(timeout, timeUnit);
+            } else {
+                prev.stop();
+            }
             externalContext = null;
             LogManager.getFactory().removeContext(this);
-            this.setStopped();
+            final String source = "LoggerContext \'" + getName() + "\'";
+            shutdownEs = ExecutorServices.shutdown(executorService, timeout, timeUnit, source);
+            // Do not wait for daemon threads
+            shutdownEsd = ExecutorServices.shutdown(executorServiceDeamons, 0, timeUnit, source);
         } finally {
             configLock.unlock();
+            this.setStopped();
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}]...", getName(), this);
+        return shutdownEs && shutdownEsd;
     }
 
     /**
@@ -424,7 +476,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @return True if the Logger exists, false otherwise.
      */
     @Override
-    public boolean hasLogger(final String name, MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         return loggerRegistry.hasLogger(name, messageFactory);
     }
 
@@ -435,7 +487,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @return True if the Logger exists, false otherwise.
      */
     @Override
-    public boolean hasLogger(final String name, Class<? extends MessageFactory> messageFactoryClass) {
+    public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 
@@ -474,11 +526,18 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @return The previous Configuration.
      */
     private Configuration setConfiguration(final Configuration config) {
-        Objects.requireNonNull(config, "No Configuration was provided");
+        if (config == null) {
+            LOGGER.error("No configuration found for context '{}'.", contextName);
+            // No change, return the current configuration.
+            return this.configuration;
+        }
         configLock.lock();
         try {
             final Configuration prev = this.configuration;
             config.addListener(this);
+            executorService = Executors.newCachedThreadPool(Log4jThreadFactory.createThreadFactory(contextName));
+            executorServiceDeamons = Executors.newCachedThreadPool(Log4jThreadFactory.createDaemonThreadFactory(contextName));
+
             final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
 
             try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
@@ -500,9 +559,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
             try {
                 Server.reregisterMBeansAfterReconfigure();
-            } catch (final Throwable t) {
+            } catch (final LinkageError | Exception e) {
                 // LOG4J2-716: Android has no java.lang.management
-                LOGGER.error("Could not reconfigure JMX", t);
+                LOGGER.error("Could not reconfigure JMX", e);
             }
             // AsyncLoggers update their nanoClock when the configuration changes
             Log4jLogEvent.setNanoClock(configuration.getNanoClock());
@@ -557,15 +616,19 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
         LOGGER.debug("Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
                 contextName, configURI, this, cl);
-        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(contextName, configURI, cl);
-        setConfiguration(instance);
-        /*
-         * instance.start(); Configuration old = setConfiguration(instance); updateLoggers(); if (old != null) {
-         * old.stop(); }
-         */
-        final String location = configuration == null ? "?" : String.valueOf(configuration.getConfigurationSource());
-        LOGGER.debug("Reconfiguration complete for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
-                contextName, location, this, cl);
+        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(this, contextName, configURI, cl);
+        if (instance == null) {
+            LOGGER.error("Reconfiguration failed: No configuration found for '{}' at '{}' in '{}'", contextName, configURI, cl);
+        } else {
+            setConfiguration(instance);
+            /*
+             * instance.start(); Configuration old = setConfiguration(instance); updateLoggers(); if (old != null) {
+             * old.stop(); }
+             */
+            final String location = configuration == null ? "?" : String.valueOf(configuration.getConfigurationSource());
+            LOGGER.debug("Reconfiguration complete for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
+                    contextName, location, this, cl);
+        }
     }
 
     /**
@@ -617,6 +680,54 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     // LOG4J2-151: changed visibility from private to protected
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new Logger(ctx, name, messageFactory);
+    }
+
+    /**
+     * Gets the executor service to submit normal tasks.
+     *
+     * @return the ExecutorService to submit normal tasks.
+     */
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    /**
+     * Gets the executor service to submit daemon tasks.
+     *
+     * @return the ExecutorService to submit normal daemon tasks.
+     */
+    public ExecutorService getExecutorServiceDeamons() {
+        return executorServiceDeamons;
+    }
+
+    /**
+     * Submits a Runnable task for normal execution and returns a Future representing that task. The Future's
+     * {@code get} method will return {@code null} upon <em>successful</em> completion.
+     *
+     * @param task the task to submit
+     * @return a Future representing pending completion of the task
+     * @throws RejectedExecutionException if the task cannot be
+     *         scheduled for execution
+     * @throws NullPointerException if the task is null
+     */
+    public Future<?> submit(final Runnable task) {
+        return executorService.submit(task);
+    }
+
+    /**
+     * Submits a Runnable task for daemon execution and returns a Future representing that task. The Future's
+     * {@code get} method will return {@code null} upon <em>successful</em> completion.
+     *
+     * @param task
+     *            the task to submit
+     * @return a Future representing pending completion of the task
+     * @throws RejectedExecutionException
+     *             if the task cannot be scheduled for execution
+     * @throws NullPointerException
+     *             if the task is null
+     */
+    public Future<?> submitDaemon(final Runnable task) {
+        return executorServiceDeamons.submit(task);
     }
 
 }

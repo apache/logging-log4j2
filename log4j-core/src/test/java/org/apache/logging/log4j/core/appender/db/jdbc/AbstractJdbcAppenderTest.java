@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -34,15 +33,16 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.easymock.IAnswer;
 import org.h2.util.IOUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
-
-import static org.easymock.EasyMock.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 public abstract class AbstractJdbcAppenderTest {
     private final String databaseType;
@@ -77,24 +77,14 @@ public abstract class AbstractJdbcAppenderTest {
             final Appender appender = context.getConfiguration().getAppender("databaseAppender");
             assertNotNull("The appender should not be null.", appender);
             assertTrue("The appender should be a JdbcAppender.", appender instanceof JdbcAppender);
-            ((JdbcAppender) appender).getManager().release();
+            ((JdbcAppender) appender).getManager().close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             context.reconfigure();
             StatusLogger.getLogger().reset();
 
-            Statement statement = null;
-            try {
-                statement = this.connection.createStatement();
+            try (Statement statement = this.connection.createStatement()) {
                 statement.execute("SHUTDOWN");
-            } finally {
-                try {
-                    if (statement != null) {
-                        statement.close();
-                    }
-                } catch (final SQLException ignore) {
-                    /* */
-                }
             }
 
             this.connection.close();
@@ -103,15 +93,13 @@ public abstract class AbstractJdbcAppenderTest {
 
     @Test
     public void testDataSourceConfig() throws Exception {
-        final DataSource dataSource = createStrictMock(DataSource.class);
-
-        expect(dataSource.getConnection()).andAnswer(new IAnswer<Connection>() {
+        final DataSource dataSource = mock(DataSource.class);
+        given(dataSource.getConnection()).willAnswer(new Answer<Connection>() {
             @Override
-            public Connection answer() throws Throwable {
+            public Connection answer(final InvocationOnMock invocation) throws Throwable {
                 return newConnection();
             }
-        }).atLeastOnce();
-        replay(dataSource);
+        });
 
         MockContextFactory.setAsInitial();
 
@@ -157,8 +145,6 @@ public abstract class AbstractJdbcAppenderTest {
                     IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
             assertFalse("There should not be two rows.", resultSet.next());
-
-            verify(dataSource);
         } finally {
             MockContextFactory.revertSetAsInitial();
         }

@@ -55,7 +55,7 @@ public class DatePatternConverterTest {
         return Arrays.asList(new Object[][]{{Boolean.TRUE}, {Boolean.FALSE}});
     }
 
-    public DatePatternConverterTest(Boolean threadLocalEnabled) throws Exception {
+    public DatePatternConverterTest(final Boolean threadLocalEnabled) throws Exception {
         // Setting the system property does not work: the Constant field has already been initialized...
         //System.setProperty("log4j2.enable.threadlocals", threadLocalEnabled.toString());
 
@@ -187,6 +187,28 @@ public class DatePatternConverterTest {
         converter.format(date(2001, 1, 1), sb);
 
         final String expected = "2001-02-01T14:15:16,123";
+        assertEquals(expected, sb.toString());
+    }
+
+    @Test
+    public void testFormatDateStringBuilderIso8601WithPeriod() {
+        final String[] pattern = {FixedDateFormat.FixedFormat.ISO8601_PERIOD.name()};
+        final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(date(2001, 1, 1), sb);
+
+        final String expected = "2001-02-01T14:15:16.123";
+        assertEquals(expected, sb.toString());
+    }
+
+    @Test
+    public void testFormatDateStringBuilderIso8601BasicWithPeriod() {
+        final String[] pattern = {FixedDateFormat.FixedFormat.ISO8601_BASIC_PERIOD.name()};
+        final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(date(2001, 1, 1), sb);
+
+        final String expected = "20010201T141516.123";
         assertEquals(expected, sb.toString());
     }
 

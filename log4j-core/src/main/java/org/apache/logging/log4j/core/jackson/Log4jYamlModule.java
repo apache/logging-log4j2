@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.jackson;
 
 import org.apache.logging.log4j.core.jackson.Initializers.SetupContextInitializer;
+import org.apache.logging.log4j.core.jackson.Initializers.SetupContextJsonInitializer;
 import org.apache.logging.log4j.core.jackson.Initializers.SimpleModuleInitializer;
 
 import com.fasterxml.jackson.core.Version;
@@ -30,9 +31,13 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 final class Log4jYamlModule extends SimpleModule {
 
     private static final long serialVersionUID = 1L;
+    private final boolean encodeThreadContextAsList;
+    private final boolean includeStacktrace;
 
-    Log4jYamlModule() {
+    Log4jYamlModule(final boolean encodeThreadContextAsList, final boolean includeStacktrace) {
         super(Log4jYamlModule.class.getName(), new Version(2, 0, 0, null, null, null));
+        this.encodeThreadContextAsList = encodeThreadContextAsList;
+        this.includeStacktrace = includeStacktrace;
         // MUST init here.
         // Calling this from setupModule is too late!
         //noinspection ThisEscapedInObjectConstruction
@@ -43,6 +48,10 @@ final class Log4jYamlModule extends SimpleModule {
     public void setupModule(final SetupContext context) {
         // Calling super is a MUST!
         super.setupModule(context);
-        new SetupContextInitializer().setupModule(context);
+        if (encodeThreadContextAsList) {
+            new SetupContextInitializer().setupModule(context, includeStacktrace);
+        } else {
+            new SetupContextJsonInitializer().setupModule(context, includeStacktrace);
+        }
     }
 }

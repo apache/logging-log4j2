@@ -29,25 +29,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-
-import org.apache.flume.Event;
-import org.apache.flume.event.SimpleEvent;
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.Log4jThread;
-import org.apache.logging.log4j.core.util.SecretKeyProvider;
-import org.apache.logging.log4j.util.Strings;
 
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.CursorConfig;
@@ -61,6 +46,19 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.StatsConfig;
 import com.sleepycat.je.Transaction;
+import org.apache.flume.Event;
+import org.apache.flume.event.SimpleEvent;
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.util.ExecutorServices;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.core.util.SecretKeyProvider;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Manager that persists data to Berkeley DB before passing it on to Flume.
@@ -74,11 +72,9 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
-    private static final int SHUTDOWN_WAIT = 60;
+    private static final long SHUTDOWN_WAIT_MILLIS = 60000;
 
-    private static final int MILLIS_PER_SECOND = 1000;
-
-    private static final int LOCK_TIMEOUT_SLEEP_MILLIS = 500;
+    private static final long LOCK_TIMEOUT_SLEEP_MILLIS = 500;
 
     private static BDBManagerFactory factory = new BDBManagerFactory();
 
@@ -126,7 +122,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             lockTimeoutRetryCount);
         this.worker.start();
         this.secretKey = secretKey;
-        this.threadPool = Executors.newCachedThreadPool(new DaemonThreadFactory());
+        this.threadPool = Executors.newCachedThreadPool(Log4jThreadFactory.createDaemonThreadFactory("Flume"));
         this.lockTimeoutRetryCount = lockTimeoutRetryCount;
     }
 
@@ -217,20 +213,18 @@ public class FlumePersistentManager extends FlumeAvroManager {
     }
 
     @Override
-    protected void releaseSub() {
+    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+    	boolean closed = true;
         LOGGER.debug("Shutting down FlumePersistentManager");
         worker.shutdown();
-        try {
-            worker.join(SHUTDOWN_WAIT * MILLIS_PER_SECOND);
+        final long requestedTimeoutMillis = timeUnit.toMillis(timeout);
+        final long shutdownWaitMillis = requestedTimeoutMillis > 0 ? requestedTimeoutMillis : SHUTDOWN_WAIT_MILLIS;
+		try {
+            worker.join(shutdownWaitMillis);
         } catch (final InterruptedException ie) {
             // Ignore the exception and shutdown.
         }
-        threadPool.shutdown();
-        try {
-            threadPool.awaitTermination(SHUTDOWN_WAIT, TimeUnit.SECONDS);
-        } catch (final InterruptedException e) {
-            logWarn("PersistentManager Thread pool failed to shut down", e);
-        }
+        ExecutorServices.shutdown(threadPool, shutdownWaitMillis, TimeUnit.MILLISECONDS, toString());
         try {
             worker.join();
         } catch (final InterruptedException ex) {
@@ -240,15 +234,17 @@ public class FlumePersistentManager extends FlumeAvroManager {
             LOGGER.debug("FlumePersistenceManager dataset status: {}", database.getStats(new StatsConfig()));
             database.close();
         } catch (final Exception ex) {
-            logWarn("failed to close database", ex);
+            logWarn("Failed to close database", ex);
+            closed = false;
         }
         try {
             environment.cleanLog();
             environment.close();
         } catch (final Exception ex) {
-            logWarn("failed to close environment", ex);
+            logWarn("Failed to close environment", ex);
+            closed = false;
         }
-        super.releaseSub();
+        return closed && super.releaseSub(timeout, timeUnit);
     }
 
     private void doSend(final SimpleEvent event) {
@@ -477,7 +473,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
     /**
      * Thread that sends data to Flume and pulls it from Berkeley DB.
      */
-    private static class WriterThread extends Thread  {
+    private static class WriterThread extends Log4jThread  {
         private volatile boolean shutdown = false;
         private final Database database;
         private final Environment environment;
@@ -491,6 +487,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         public WriterThread(final Database database, final Environment environment,
                             final FlumePersistentManager manager, final Gate gate, final int batchsize,
                             final SecretKey secretKey, final AtomicLong dbCount, final int lockTimeoutRetryCount) {
+            super("FlumePersistentManager-Writer");
             this.database = database;
             this.environment = environment;
             this.manager = manager;
@@ -823,33 +820,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
             }
         }
 
-    }
-
-    /**
-     * Factory that creates Daemon threads that can be properly shut down.
-     */
-    private static class DaemonThreadFactory implements ThreadFactory {
-        private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
-        private final ThreadGroup group;
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private final String namePrefix;
-
-        public DaemonThreadFactory() {
-            final SecurityManager securityManager = System.getSecurityManager();
-            group = securityManager != null ? securityManager.getThreadGroup() :
-                Thread.currentThread().getThreadGroup();
-            namePrefix = "DaemonPool-" + POOL_NUMBER.getAndIncrement() + "-thread-";
-        }
-
-        @Override
-        public Thread newThread(final Runnable r) {
-            final Thread thread = new Log4jThread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-            thread.setDaemon(true);
-            if (thread.getPriority() != Thread.NORM_PRIORITY) {
-                thread.setPriority(Thread.NORM_PRIORITY);
-            }
-            return thread;
-        }
     }
 
     /**

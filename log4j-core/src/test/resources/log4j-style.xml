@@ -20,7 +20,7 @@
   <Appenders>
     <List name="List">
        <PatternLayout>
-         <Pattern>%d %highlight{%p} %style{%logger}{bright,cyan} %C{1.} %msg%n</Pattern>
+         <Pattern>%d %highlight{%p} %style{%logger}{bright,cyan}%style{}{bright,cyan} %C{1.} %msg%n</Pattern>
       </PatternLayout>
     </List>
   </Appenders>

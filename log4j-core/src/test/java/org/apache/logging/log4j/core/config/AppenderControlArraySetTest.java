@@ -63,7 +63,7 @@ public class AppenderControlArraySetTest {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls = new AppenderControl[] {createControl("A"), createControl("B"),
                 createControl("B"), createControl("B"), createControl("A")};
-        for (AppenderControl ctl : controls) {
+        for (final AppenderControl ctl : controls) {
             set.add(ctl);
         }
         assertEquals(2, set.get().length);
@@ -118,7 +118,7 @@ public class AppenderControlArraySetTest {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls = new AppenderControl[] {createControl("A"), createControl("B"),
                 createControl("C"), createControl("D")};
-        for (AppenderControl ctl : controls) {
+        for (final AppenderControl ctl : controls) {
             set.add(ctl);
         }
         assertEquals(controls.length, set.get().length);
@@ -135,11 +135,11 @@ public class AppenderControlArraySetTest {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls = new AppenderControl[] {createControl("A"), createControl("B"),
                 createControl("C"), createControl("D")};
-        for (AppenderControl ctl : controls) {
+        for (final AppenderControl ctl : controls) {
             set.add(ctl);
         }
         final Map<String, Appender> expected = new HashMap<>();
-        for (AppenderControl ctl : controls) {
+        for (final AppenderControl ctl : controls) {
             expected.put(ctl.getAppenderName(), ctl.getAppender());
         }
         assertEquals(expected, set.asMap());
@@ -162,7 +162,7 @@ public class AppenderControlArraySetTest {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls = new AppenderControl[] {createControl("A"), createControl("B"),
                 createControl("C")};
-        for (AppenderControl ctl : controls) {
+        for (final AppenderControl ctl : controls) {
             set.add(ctl);
         }
         assertEquals(3, set.get().length);
@@ -182,7 +182,7 @@ public class AppenderControlArraySetTest {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls = new AppenderControl[] {createControl("A"), createControl("B"),
                 createControl("C")};
-        for (AppenderControl ctl : controls) {
+        for (final AppenderControl ctl : controls) {
             set.add(ctl);
         }
         assertEquals(3, set.get().length);

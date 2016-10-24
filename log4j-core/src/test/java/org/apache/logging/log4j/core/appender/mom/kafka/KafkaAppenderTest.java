@@ -49,15 +49,15 @@ public class KafkaAppenderTest {
         public void close() {
             try {
                 Thread.sleep(3000);
-            } catch (InterruptedException ignore) {
+            } catch (final InterruptedException ignore) {
             }
         }
 
         @Override
-        public void close(long timeout, TimeUnit timeUnit) {
+        public void close(final long timeout, final TimeUnit timeUnit) {
             try {
                 Thread.sleep(timeUnit.toMillis(timeout));
-            } catch (InterruptedException ignore) {
+            } catch (final InterruptedException ignore) {
             }
         }
     };
@@ -121,7 +121,7 @@ public class KafkaAppenderTest {
     @Test
     public void testAppendWithSerializedLayout() throws Exception {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithSerializedLayout");
-        LogEvent logEvent = createLogEvent();
+        final LogEvent logEvent = createLogEvent();
         appender.append(logEvent);
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
         assertEquals(1, history.size());
@@ -132,8 +132,8 @@ public class KafkaAppenderTest {
         assertEquals(LOG_MESSAGE, deserializeLogEvent(item.value()).getMessage().getFormattedMessage());
     }
 
-    private LogEvent deserializeLogEvent(byte[] data) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(data);
+    private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
+        final ByteArrayInputStream bis = new ByteArrayInputStream(data);
         try (ObjectInput ois = new ObjectInputStream(bis)) {
             return (LogEvent) ois.readObject();
         }
