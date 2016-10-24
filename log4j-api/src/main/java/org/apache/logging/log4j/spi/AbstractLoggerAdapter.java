@@ -124,6 +124,11 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
 
     @Override
     public void close() {
-        registry.clear();
+        lock.writeLock ().lock ();
+        try {
+            registry.clear();
+        } finally {
+            lock.writeLock ().unlock ();
+        }
     }
 }
