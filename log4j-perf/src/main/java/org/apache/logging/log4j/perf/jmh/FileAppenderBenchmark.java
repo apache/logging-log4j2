@@ -35,8 +35,8 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.slf4j.LoggerFactory;
 
 /**
- * Benchmarks Log4j 2, Log4j 1, Logback and JUL using the DEBUG level which is enabled for this test. The configuration
- * for each uses a FileAppender
+ * Benchmarks Log4j 2, Log4j 1, Logback, JUL and tinylog using the DEBUG level which is enabled for this test.
+ * The configuration for each uses a FileAppender
  */
 // HOW TO RUN THIS TEST
 // java -jar log4j-perf/target/benchmarks.jar ".*FileAppenderBenchmark.*" -f 1 -wi 10 -i 20
@@ -59,6 +59,7 @@ public class FileAppenderBenchmark {
         System.setProperty("log4j.configurationFile", "log4j2-perf.xml");
         System.setProperty("log4j.configuration", "log4j12-perf.xml");
         System.setProperty("logback.configurationFile", "logback-perf.xml");
+        System.setProperty("tinylog.configuration", "tinylog-perf.properties");
 
         deleteLogFiles();
 
@@ -79,6 +80,7 @@ public class FileAppenderBenchmark {
         System.clearProperty("log4j.configurationFile");
         System.clearProperty("log4j.configuration");
         System.clearProperty("logback.configurationFile");
+        System.clearProperty("tinylog.configuration");
 
         deleteLogFiles();
     }
@@ -94,6 +96,8 @@ public class FileAppenderBenchmark {
         log4j2File.delete();
         final File julFile = new File("target/testJulLog.log");
         julFile.delete();
+        final File tinylogFile = new File("target/testTinylogLog.log");
+        tinylogFile.delete();
     }
 
     @BenchmarkMode(Mode.Throughput)
@@ -124,12 +128,19 @@ public class FileAppenderBenchmark {
     public void log4j1File() {
         log4j1Logger.debug(MESSAGE);
     }
-
+    
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
     public void julFile() {
         // must specify sourceClass or JUL will look it up by walking the stack trace!
         julLogger.logp(Level.INFO, getClass().getName(), "julFile", MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void tinylogFile() {
+    	org.pmw.tinylog.Logger.debug(MESSAGE);
     }
 }

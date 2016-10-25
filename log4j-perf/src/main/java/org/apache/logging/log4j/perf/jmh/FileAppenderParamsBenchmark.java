@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 import static org.apache.logging.log4j.util.Unbox.*;
 
 /**
- * Benchmarks Log4j 2, Log4j 1, Logback and JUL using the DEBUG level which is enabled for this test. The configuration
- * for each uses a FileAppender
+ * Benchmarks Log4j 2, Log4j 1, Logback, JUL and tinylog using the DEBUG level which is enabled for this test.
+ * The configuration for each uses a FileAppender
  */
 // HOW TO RUN THIS TEST
 // java -jar target/benchmarks.jar ".*FileAppenderParamsBenchmark.*" -f 1 -i 10 -wi 20 -bm sample -tu ns
@@ -57,6 +57,7 @@ public class FileAppenderParamsBenchmark {
         System.setProperty("log4j.configurationFile", "log4j2-perf.xml");
         System.setProperty("log4j.configuration", "log4j12-perf.xml");
         System.setProperty("logback.configurationFile", "logback-perf.xml");
+        System.setProperty("tinylog.configuration", "tinylog-perf.properties");
 
         deleteLogFiles();
 
@@ -78,6 +79,7 @@ public class FileAppenderParamsBenchmark {
         System.clearProperty("log4j.configurationFile");
         System.clearProperty("log4j.configuration");
         System.clearProperty("logback.configurationFile");
+        System.clearProperty("tinylog.configuration");
 
         deleteLogFiles();
     }
@@ -93,6 +95,8 @@ public class FileAppenderParamsBenchmark {
         log4j2File.delete();
         final File julFile = new File("target/testJulLog.log");
         julFile.delete();
+        final File tinylogFile = new File("target/testTinylogLog.log");
+        tinylogFile.delete();
     }
 
     @BenchmarkMode(Mode.Throughput)
@@ -166,5 +170,19 @@ public class FileAppenderParamsBenchmark {
         // must specify sourceClass or JUL will look it up by walking the stack trace!
         julLogger.logp(Level.INFO, getClass().getName(), "param3JulFile", "Val1={}, val2={}, val3={}",
                 new Object[]{++j, ++k, ++m});
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void param1TinylogFile() {
+        org.pmw.tinylog.Logger.debug("This is a debug [{}] message", ++j);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void param3TinylogFile() {
+        org.pmw.tinylog.Logger.debug("Val1={}, val2={}, val3={}", (++j), (++k), (++m));
     }
 }

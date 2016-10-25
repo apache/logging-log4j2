@@ -27,10 +27,10 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.slf4j.LoggerFactory;
 
 /**
- * Benchmarks Log4j 2, Log4j 1, and Logback using the DEBUG level which is disabled for this test. One of the primary
- * performance concerns of logging frameworks is adding minimal overhead when logging is disabled. Some users disable
- * all logging in production, while others disable finer logging levels in production. This benchmark demonstrates the
- * overhead in calling {@code logger.isDebugEnabled()} and {@code logger.debug()}.
+ * Benchmarks Log4j 2, Log4j 1, Logback and tinylog using the DEBUG level which is disabled for this test. One of the
+ * primary performance concerns of logging frameworks is adding minimal overhead when logging is disabled. Some users
+ * disable all logging in production, while others disable finer logging levels in production. This benchmark demonstrates
+ * the overhead in calling {@code logger.isDebugEnabled()} and {@code logger.debug()}.
  */
 // HOW TO RUN THIS TEST
 // java -jar target/benchmarks.jar ".*DebugDisabledBenchmark.*" -f 1 -i 5 -wi 5 -bm sample -tu ns
@@ -46,6 +46,7 @@ public class DebugDisabledBenchmark {
         System.setProperty("log4j.configurationFile", "log4j2-perf2.xml");
         System.setProperty("log4j.configuration", "log4j12-perf2.xml");
         System.setProperty("logback.configurationFile", "logback-perf2.xml");
+        System.setProperty("tinylog.configuration", "tinylog-perf2.properties");
 
         log4jLogger = LogManager.getLogger(DebugDisabledBenchmark.class);
         slf4jLogger = LoggerFactory.getLogger(DebugDisabledBenchmark.class);
@@ -58,6 +59,7 @@ public class DebugDisabledBenchmark {
         System.clearProperty("log4j.configurationFile");
         System.clearProperty("log4j.configuration");
         System.clearProperty("logback.configurationFile");
+        System.clearProperty("tinylog.configuration");
     }
 
     @Benchmark
@@ -96,6 +98,11 @@ public class DebugDisabledBenchmark {
     }
 
     @Benchmark
+    public void tinylogDebugStringConcatenation() {
+        org.pmw.tinylog.Logger.debug("This is a debug [" + j + "] message");
+    }
+    
+    @Benchmark
     public void log4jDebugParameterizedString() {
         log4jLogger.debug("This is a debug [{}] message", j);
     }
@@ -103,5 +110,10 @@ public class DebugDisabledBenchmark {
     @Benchmark
     public void slf4jDebugParameterizedString() {
         slf4jLogger.debug("This is a debug [{}] message", j);
+    }
+
+    @Benchmark
+    public void tinylogDebugParameterizedString() {
+    	org.pmw.tinylog.Logger.debug("This is a debug [{}] message", j);
     }
 }
