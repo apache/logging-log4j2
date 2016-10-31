@@ -48,6 +48,9 @@
       <action issue="LOG4J2-1646" dev="mattsicker" type="update">
         Migrate to Mockito 2.x in unit tests.
       </action>
+      <action issue="LOG4J2-1655" dev="ggregory" type="update">
+        Updated Jackson from 2.8.3 to 2.8.4.
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">
