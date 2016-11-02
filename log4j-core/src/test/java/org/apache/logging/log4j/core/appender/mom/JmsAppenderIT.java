@@ -48,22 +48,27 @@ import static org.junit.Assert.*;
  */
 public class JmsAppenderIT {
 
+    private static final String KEY_SERIALIZABLE_PACKAGES = "org.apache.activemq.SERIALIZABLE_PACKAGES";
+
     private static JmsManager jmsManager;
 
     private JmsAppender appender;
 
     @BeforeClass
     public static void setUpClass() {
+        System.setProperty(KEY_SERIALIZABLE_PACKAGES,
+                "org.apache.logging.log4j.core.impl,org.apache.logging.log4j.util,org.apache.logging.log4j");
         final Properties additional = new Properties();
         additional.setProperty("queue.TestQueue", "TestQueue");
         final JndiManager jndiManager = JndiManager.getJndiManager(ActiveMQInitialContextFactory.class.getName(),
-            "vm://localhost?broker.persistent=false", null, null, null, additional);
+                "vm://localhost?broker.persistent=false", null, null, null, additional);
         jmsManager = JmsManager.getJmsManager("JmsManager", jndiManager, "ConnectionFactory", "TestQueue", null, null);
     }
 
     @AfterClass
     public static void tearDownClass() {
         jmsManager.close();
+        System.getProperties().remove(KEY_SERIALIZABLE_PACKAGES);
     }
 
     @Before
