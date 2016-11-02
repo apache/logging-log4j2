@@ -128,6 +128,9 @@ public class JmsAppender extends AbstractAppender {
 
         @PluginBuilderAttribute
         private boolean ignoreExceptions = true;
+        
+        // Programmatic access only for now.
+        private JmsManager jmsManager;
 
         private Builder() {
         }
@@ -192,6 +195,11 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
+        public Builder setJmsManager(final JmsManager jmsManager) {
+            this.jmsManager = jmsManager;
+            return this;
+        }
+
         public Builder setIgnoreExceptions(final boolean ignoreExceptions) {
             this.ignoreExceptions = ignoreExceptions;
             return this;
@@ -199,17 +207,21 @@ public class JmsAppender extends AbstractAppender {
 
         @Override
         public JmsAppender build() {
+            JmsManager actualJmsManager = jmsManager;
+            if (actualJmsManager == null) {
             final JndiManager jndiManager = JndiManager.getJndiManager(factoryName, providerUrl, urlPkgPrefixes,
                 securityPrincipalName, securityCredentials, null);
-            final JmsManager jmsManager = JmsManager.getJmsManager(name, jndiManager, factoryBindingName,
+            actualJmsManager = JmsManager.getJmsManager(name, jndiManager, factoryBindingName,
                 destinationBindingName, username, password);
+            }
             try {
-                return new JmsAppender(name, filter, layout, ignoreExceptions, jmsManager);
+                return new JmsAppender(name, filter, layout, ignoreExceptions, actualJmsManager);
             } catch (final JMSException e) {
                 LOGGER.error("Error creating JmsAppender [{}].", name, e);
                 return null;
             }
         }
+
     }
 
 }

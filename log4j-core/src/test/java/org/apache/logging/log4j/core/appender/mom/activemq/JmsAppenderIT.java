@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.appender.mom;
+package org.apache.logging.log4j.core.appender.mom.activemq;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +32,8 @@ import javax.jms.ObjectMessage;
 import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.mom.JmsAppender;
+import org.apache.logging.log4j.core.appender.mom.JmsManager;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JndiManager;
@@ -61,7 +63,7 @@ public class JmsAppenderIT {
         final Properties additional = new Properties();
         additional.setProperty("queue.TestQueue", "TestQueue");
         final JndiManager jndiManager = JndiManager.getJndiManager(ActiveMQInitialContextFactory.class.getName(),
-                "vm://localhost?broker.persistent=false", null, null, null, additional);
+            "vm://localhost?broker.persistent=false", null, null, null, additional);
         jmsManager = JmsManager.getJmsManager("JmsManager", jndiManager, "ConnectionFactory", "TestQueue", null, null);
     }
 
@@ -73,7 +75,14 @@ public class JmsAppenderIT {
 
     @Before
     public void setUp() throws Exception {
-        appender = new JmsAppender("JmsAppender", null, SerializedLayout.createLayout(), true, jmsManager);
+        // @formatter:off
+        appender = JmsAppender.newBuilder().
+            setName("JmsAppender").
+            setLayout(SerializedLayout.createLayout()).
+            setIgnoreExceptions(true).
+            setJmsManager(jmsManager).
+            build();
+        // @formatter:off
         appender.start();
     }
 
