@@ -21,10 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -98,11 +97,13 @@ public class ThreadContextDataInjector {
 
         @Override
         public ReadOnlyStringMap rawContextData() {
-            final ThreadContextMap map = ThreadContextAccess.getThreadContextMap();
+            final ReadOnlyThreadContextMap map = ThreadContext.getThreadContextMap();
             if (map instanceof ReadOnlyStringMap) {
                 return (ReadOnlyStringMap) map;
             }
-            return map.isEmpty() ? ContextDataFactory.emptyFrozenContextData() : new JdkMapAdapterStringMap(map.getImmutableMapOrNull());
+            // note: default ThreadContextMap is null
+            final Map<String, String> copy = ThreadContext.getImmutableContext();
+            return copy.isEmpty() ? ContextDataFactory.emptyFrozenContextData() : new JdkMapAdapterStringMap(copy);
         }
     }
 
@@ -128,14 +129,14 @@ public class ThreadContextDataInjector {
             // and such modifications should not be reflected in the log event.
             copyProperties(props, reusable);
 
-            final ReadOnlyStringMap immutableCopy = ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
+            final ReadOnlyStringMap immutableCopy = ThreadContext.getThreadContextMap().getReadOnlyContextData();
             reusable.putAll(immutableCopy);
             return reusable;
         }
 
         @Override
         public ReadOnlyStringMap rawContextData() {
-            return ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
+            return ThreadContext.getThreadContextMap().getReadOnlyContextData();
         }
     }
 
@@ -161,7 +162,7 @@ public class ThreadContextDataInjector {
         public StringMap injectContextData(final List<Property> props, final StringMap ignore) {
             // If there are no configuration properties we want to just return the ThreadContext's StringMap:
             // it is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
-            final StringMap immutableCopy = ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
+            final StringMap immutableCopy = ThreadContext.getThreadContextMap().getReadOnlyContextData();
             if (props == null || props.isEmpty()) {
                 return immutableCopy; // this will replace the LogEvent's context data with the returned instance
             }
@@ -177,7 +178,7 @@ public class ThreadContextDataInjector {
 
         @Override
         public ReadOnlyStringMap rawContextData() {
-            return ThreadContextAccess.getThreadContextMap2().getReadOnlyContextData();
+            return ThreadContext.getThreadContextMap().getReadOnlyContextData();
         }
     }
 
