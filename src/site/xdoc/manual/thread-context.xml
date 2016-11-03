@@ -167,10 +167,10 @@ try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.put("id"
               Use <code>%x</code> to include the full contents of the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Stack.html">Stack</a>.
             </li>
           </ul>
-          <h4>Non thread-local context data </h4>
+          <h4>Custom context data injectors for non thread-local context data</h4>
           <p>
-            The ThreadContext allows us to tag logging statements so we can link log entries that were related
-            in some way. The limitation is that this only works for logging done on the same application thread
+            With the ThreadContext logging statements can be tagged so log entries that were related in some way
+            can be linked via these tags. The limitation is that this only works for logging done on the same application thread
             (or child threads when configured).
           </p>
           <p>

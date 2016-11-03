@@ -533,6 +533,19 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
           javadoc for detail.
         </p>
         </subsection>
+        <subsection name="Custom ThreadContextMap implementations">
+          <p>
+            A garbage-free StringMap-based context map can be installed by setting system property log4j2.garbagefree.threadContextMap
+            to true. (Log4j must be <a href="garbagefree.html#Config">enabled</a> to use ThreadLocals.)
+          </p><p>
+            Any custom <tt>ThreadContextMap</tt> implementation can be installed by setting system property
+            log4j2.threadContextMap to the fully qualified class name of the class implementing the
+            ThreadContextMap interface. By also implementing the <tt>ReadOnlyThreadContextMap</tt> interface, your custom
+            ThreadContextMap implementation will be accessible to applications via the
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()">ThreadContext::getThreadContextMap</a>
+            method.
+          </p>
+        </subsection>
           <subsection name="Custom Plugins">
             <p>See the <a href="plugins.html">Plugins</a> section of the manual.</p>
 <!-- TODO: some documentation here! -->
