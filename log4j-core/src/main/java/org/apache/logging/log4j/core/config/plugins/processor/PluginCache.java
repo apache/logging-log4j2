@@ -91,7 +91,7 @@ public class PluginCache {
      * Loads and merges all the Log4j plugin cache files specified. Usually, this is obtained via a ClassLoader.
      *
      * @param resources URLs to all the desired plugin cache files to load.
-     * @throws IOException
+     * @throws IOException if an I/O exception occurs.
      */
     public void loadCacheFiles(final Enumeration<URL> resources) throws IOException {
         categories.clear();
