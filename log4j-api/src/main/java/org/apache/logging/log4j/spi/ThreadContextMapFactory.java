@@ -18,6 +18,7 @@ package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -25,8 +26,22 @@ import org.apache.logging.log4j.util.ProviderUtil;
 
 /**
  * Creates the ThreadContextMap instance used by the ThreadContext.
+ * <p>
+ * If {@link Constants#ENABLE_THREADLOCALS Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
+ * be installed by setting system property {@code log4j2.garbagefree.threadContextMap} to {@code true}.
+ * </p><p>
+ * Furthermore, any custom {@code ThreadContextMap} can be installed by setting system property
+ * {@code log4j2.threadContextMap} to the fully qualified class name of the class implementing the
+ * {@code ThreadContextMap} interface. (Also implement the {@code ReadOnlyThreadContextMap} interface if your custom
+ * {@code ThreadContextMap} implementation should be accessible to applications via the
+ * {@link ThreadContext#getThreadContextMap()} method.)
+ * </p><p>
+ * Instead of system properties, the above can also be specified in a properties file named
+ * {@code log4j2.component.properties} in the classpath.
+ * </p>
  *
  * @see ThreadContextMap
+ * @see ReadOnlyThreadContextMap
  * @see org.apache.logging.log4j.ThreadContext
  * @since 2.7
  */
