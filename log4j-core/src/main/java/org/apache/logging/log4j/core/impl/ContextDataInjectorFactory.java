@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.ThreadContextAccess;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.spi.CopyOnWrite;
-import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextMap2;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * Factory for ContextDataInjectors. Returns a new {@code ContextDataInjector} instance based on the value of system
@@ -80,13 +80,15 @@ public class ContextDataInjectorFactory {
     }
 
     private static ContextDataInjector createDefaultInjector() {
-        final ThreadContextMap threadContextMap = ThreadContextAccess.getThreadContextMap();
-        if (threadContextMap instanceof CopyOnWrite && threadContextMap instanceof ThreadContextMap2) {
+        final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
+
+        // note: map may be null (if legacy custom ThreadContextMap was installed by user)
+        if (threadContextMap instanceof DefaultThreadContextMap || threadContextMap == null) {
+            return new ThreadContextDataInjector.ForDefaultThreadContextMap(); // for non StringMap-based context maps
+        }
+        if (threadContextMap instanceof CopyOnWrite) {
             return new ThreadContextDataInjector.ForCopyOnWriteThreadContextMap();
         }
-        if (threadContextMap instanceof ThreadContextMap2) {
-            return new ThreadContextDataInjector.ForGarbageFreeThreadContextMap();
-        }
-        return new ThreadContextDataInjector.ForDefaultThreadContextMap();
+        return new ThreadContextDataInjector.ForGarbageFreeThreadContextMap();
     }
 }
