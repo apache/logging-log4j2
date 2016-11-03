@@ -55,7 +55,7 @@ public final class ThreadContextMapFactory {
                 LOGGER.error("Unable to create configured ThreadContextMap {}", threadContextMapName, ex);
             }
         }
-        if (result == null && ProviderUtil.hasProviders()) {
+        if (result == null && ProviderUtil.hasProviders() && LogManager.getFactory() != null) { //LOG4J2-1658
             final String factoryClassName = LogManager.getFactory().getClass().getName();
             for (final Provider provider : ProviderUtil.getProviders()) {
                 if (factoryClassName.equals(provider.getClassName())) {
