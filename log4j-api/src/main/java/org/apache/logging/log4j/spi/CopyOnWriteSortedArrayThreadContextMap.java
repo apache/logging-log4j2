@@ -34,7 +34,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  *
  * @since 2.7
  */
-class CopyOnWriteSortedArrayThreadContextMap implements ThreadContextMap2, CopyOnWrite {
+class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ThreadContextMap2, CopyOnWrite {
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
