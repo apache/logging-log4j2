@@ -63,7 +63,7 @@ public class PluginCache {
      * Stores the plugin cache to a given OutputStream.
      *
      * @param os destination to save cache to.
-     * @throws IOException
+     * @throws IOException if an I/O exception occurs.
      */
     // NOTE: if this file format is to be changed, the filename should change and this format should still be readable
     public void writeCache(final OutputStream os) throws IOException {
