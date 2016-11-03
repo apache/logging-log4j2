@@ -18,8 +18,14 @@ package org.apache.logging.log4j.spi;
 
 import java.util.Map;
 
+import org.apache.logging.log4j.ThreadContext;
+
 /**
  * Service provider interface to implement custom MDC behavior for {@link org.apache.logging.log4j.ThreadContext}.
+ * <p>
+ * Since 2.8, {@code ThreadContextMap} implementations that implement the {@link ReadOnlyThreadContextMap} interface
+ * are accessible to applications via the {@link ThreadContext#getThreadContextMap()} method.
+ * </p>
  */
 public interface ThreadContextMap {
 
