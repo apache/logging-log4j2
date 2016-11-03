@@ -24,7 +24,6 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextAccess;
 import org.apache.logging.log4j.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -32,6 +31,7 @@ import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.util.Unbox;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -150,8 +150,7 @@ public abstract class AbstractAsyncThreadContextTestBase {
             } else {
                 ThreadContext.remove("count");
             }
-            final String contextmap = ThreadContextAccess.getThreadContextMap().getClass().getSimpleName();
-            log.info("{} {} {} i={}", contextImpl, contextmap, loggerContextName, Unbox.box(i));
+            log.info("{} {} {} i={}", contextImpl, contextMap(), loggerContextName, Unbox.box(i));
         }
         ThreadContext.pop();
         CoreLoggerContexts.stopLoggerContext(false, files[0]); // stop async thread
@@ -163,6 +162,11 @@ public abstract class AbstractAsyncThreadContextTestBase {
             }
         }
         LogManager.shutdown();
+    }
+
+    private static String contextMap() {
+        final ReadOnlyThreadContextMap impl = ThreadContext.getThreadContextMap();
+        return impl == null ? ContextImpl.WEBAPP.implClassSimpleName() : impl.getClass().getSimpleName();
     }
 
     private void checkResult(final File file, final String loggerContextName) throws IOException {
