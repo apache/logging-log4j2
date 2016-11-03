@@ -30,6 +30,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.spi.NoOpThreadContextMap;
+import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap2;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
@@ -195,6 +196,8 @@ public final class ThreadContext {
     private static boolean useStack;
     private static ThreadContextMap contextMap;
     private static ThreadContextStack contextStack;
+    private static ReadOnlyThreadContextMap readOnlyContextMap;
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     static {
@@ -220,6 +223,9 @@ public final class ThreadContext {
             contextMap = new NoOpThreadContextMap();
         } else {
             contextMap = ThreadContextMapFactory.createThreadContextMap();
+        }
+        if (contextMap instanceof ReadOnlyThreadContextMap) {
+            readOnlyContextMap = (ReadOnlyThreadContextMap) contextMap;
         }
     }
 
@@ -327,15 +333,23 @@ public final class ThreadContext {
     }
 
     /**
-     * Returns the internal data structure used to store thread context key-value pairs.
-     * <p><em>
-     * This data structure is not intended to be used directly by applications. This method is package protected for
-     * internal log4j2 usage.
-     * </em></p>
-     * @return the internal data structure used to store thread context key-value pairs
+     * Returns a read-only view of the internal data structure used to store thread context key-value pairs,
+     * or {@code null} if the internal data structure does not implement the
+     * {@code ReadOnlyThreadContextMap} interface.
+     * <p>
+     * The {@link DefaultThreadContextMap} implementation does not implement {@code ReadOnlyThreadContextMap}, so by
+     * default this method returns {@code null}.
+     * </p>
+     *
+     * @return the internal data structure used to store thread context key-value pairs or {@code null}
+     * @see ThreadContextMapFactory
+     * @see DefaultThreadContextMap
+     * @see org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap
+     * @see org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap
+     * @since 2.8
      */
-    static ThreadContextMap getThreadContextMap() {
-        return contextMap;
+    public static ReadOnlyThreadContextMap getThreadContextMap() {
+        return readOnlyContextMap;
     }
 
     /**
