@@ -79,4 +79,10 @@ public class PluginEntry implements Serializable {
     public void setCategory(final String category) {
         this.category = category;
     }
+
+    @Override
+    public String toString() {
+        return "PluginEntry [key=" + key + ", className=" + className + ", name=" + name + ", printable=" + printable
+                + ", defer=" + defer + ", category=" + category + "]";
+    }
 }
