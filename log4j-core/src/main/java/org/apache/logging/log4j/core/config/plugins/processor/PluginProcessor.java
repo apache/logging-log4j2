@@ -105,9 +105,9 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void writeCacheFile(final Element... elements) throws IOException {
-        final FileObject fo = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY,
+        final FileObject fileObject = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY,
                 PLUGIN_CACHE_FILE, elements);
-        try (final OutputStream out = fo.openOutputStream()) {
+        try (final OutputStream out = fileObject.openOutputStream()) {
             pluginCache.writeCache(out);
         }
     }
