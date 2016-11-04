@@ -55,6 +55,13 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <args>
+            <arg>-feature</arg>
+            <arg>-unchecked</arg>
+            <arg>-deprecation</arg>
+          </args>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
