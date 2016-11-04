@@ -67,11 +67,11 @@ import org.osgi.framework.wiring.BundleWiring;
  * </p>
  *
  * <pre>
- * ResolverUtil&lt;ActionBean&gt; resolver = new ResolverUtil&lt;ActionBean&gt;();
- * resolver.findImplementation(ActionBean.class, pkg1, pkg2);
+ * ResolverUtil resolver = new ResolverUtil();
+ * resolver.findInPackage(new CustomTest(), pkg1);
  * resolver.find(new CustomTest(), pkg1);
- * resolver.find(new CustomTest(), pkg2);
- * Collection&lt;ActionBean&gt; beans = resolver.getClasses();
+ * resolver.find(new CustomTest(), pkg1, pkg2);
+ * Set&lt;Class&lt;?&gt;&gt; beans = resolver.getClasses();
  * </pre>
  *
  * <p>
