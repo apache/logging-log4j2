@@ -236,8 +236,9 @@ public class ResolverUtil {
             urlPath = urlPath.substring(5);
         }
         // If it was in a JAR, grab the path to the jar
-        if (urlPath.indexOf('!') > 0) {
-            urlPath = urlPath.substring(0, urlPath.indexOf('!'));
+        final int bangIndex = urlPath.indexOf('!');
+        if (bangIndex > 0) {
+            urlPath = urlPath.substring(0, bangIndex);
         }
 
         // LOG4J2-445
