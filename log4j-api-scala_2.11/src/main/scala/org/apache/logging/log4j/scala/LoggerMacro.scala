@@ -346,7 +346,7 @@ private object LoggerMacro {
   def traceEntryParams(c: LoggerContext)(params: c.Expr[AnyRef]*): c.Expr[EntryMessage] = {
     import c.universe._
     val isEnabled = Apply(
-      Select(Select(c.prefix.tree, newTermName("delegate")), newTermName("isEnabled")),
+      Select(Select(c.prefix.tree, TermName("delegate")), TermName("isEnabled")),
       List(
         reify(Level.TRACE).tree,
         reify(AbstractLogger.ENTRY_MARKER).tree,
@@ -356,7 +356,7 @@ private object LoggerMacro {
     )
 
     val log = Apply(
-      Select(Select(c.prefix.tree, newTermName("delegate")), newTermName("traceEntry")),
+      Select(Select(c.prefix.tree, TermName("delegate")), TermName("traceEntry")),
       reify(null: String).tree :: (params map (_.tree)).toList
     )
     c.Expr[EntryMessage](If(isEnabled, log, reify(null).tree))
