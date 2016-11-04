@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -28,10 +29,72 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  *
  */
 public class PluginCache {
+    
+    public enum Format {
+        DAT {
+            @Override
+            public void writeCache(PluginCache pluginCache, OutputStream os) throws IOException {
+                try (final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(os))) {
+                    // See PluginManager.readFromCacheFiles for the corresponding decoder. Format may not be changed
+                    // without breaking existing Log4j2Plugins.dat files.
+                    out.writeInt(pluginCache.categories.size());
+                    for (final Map.Entry<String, Map<String, PluginEntry>> category : pluginCache.categories
+                            .entrySet()) {
+                        out.writeUTF(category.getKey());
+                        final Map<String, PluginEntry> m = category.getValue();
+                        out.writeInt(m.size());
+                        for (final Map.Entry<String, PluginEntry> entry : m.entrySet()) {
+                            final PluginEntry plugin = entry.getValue();
+                            out.writeUTF(plugin.getKey());
+                            out.writeUTF(plugin.getClassName());
+                            out.writeUTF(plugin.getName());
+                            out.writeBoolean(plugin.isPrintable());
+                            out.writeBoolean(plugin.isDefer());
+                        }
+                    }
+                }
+            }
+        },
+        
+        XML {
+            @Override
+            public void writeCache(PluginCache pluginCache, final OutputStream os) {
+                try (final XMLEncoder out = new XMLEncoder(os)) {
+                    out.writeObject(pluginCache.categories);
+                }
+            }
+        };
+
+        public abstract void writeCache(PluginCache pluginCache, final OutputStream os) throws IOException;
+
+        /**
+         * Parses a comma-separated list of {@code Format}s.
+         * 
+         * @param formatsStr
+         *            input
+         * @param defaultFormats
+         *            The default Formats if the input is null or empty.
+         * @return a non-null array
+         */
+        public static Format[] parse(String formatsStr, Format... defaultFormats) {
+            if (Strings.isBlank(formatsStr)) {
+                return defaultFormats;
+            }
+            final String[] split = formatsStr.split("\\s*,\\s*");
+            Format[] formats = new Format[split.length];
+            for (int i = 0; i < formats.length; i++) {
+                formats[i] = Format.valueOf(split[i]);
+            }
+            return formats;
+        }
+    }
+    
     private final Map<String, Map<String, PluginEntry>> categories =
         new LinkedHashMap<>();
 
@@ -64,26 +127,28 @@ public class PluginCache {
      *
      * @param os destination to save cache to.
      * @throws IOException if an I/O exception occurs.
+     * @deprecated Use {@link #writeCache(OutputStream, String)} or {@link Format#writeCache(PluginCache, OutputStream)}.
      */
+    @Deprecated
     // NOTE: if this file format is to be changed, the filename should change and this format should still be readable
     public void writeCache(final OutputStream os) throws IOException {
-        try (final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(os))) {
-            // See PluginManager.readFromCacheFiles for the corresponding decoder. Format may not be changed
-            // without breaking existing Log4j2Plugins.dat files.
-            out.writeInt(categories.size());
-            for (final Map.Entry<String, Map<String, PluginEntry>> category : categories.entrySet()) {
-                out.writeUTF(category.getKey());
-                final Map<String, PluginEntry> m = category.getValue();
-                out.writeInt(m.size());
-                for (final Map.Entry<String, PluginEntry> entry : m.entrySet()) {
-                    final PluginEntry plugin = entry.getValue();
-                    out.writeUTF(plugin.getKey());
-                    out.writeUTF(plugin.getClassName());
-                    out.writeUTF(plugin.getName());
-                    out.writeBoolean(plugin.isPrintable());
-                    out.writeBoolean(plugin.isDefer());
-                }
-            }
+        Format.DAT.writeCache(this, os);
+    }
+
+    /**
+     * Stores the plugin cache to a given OutputStream.
+     *
+     * @param os destination to save cache to.
+     * @throws IOException if an I/O exception occurs.
+     */
+    // NOTE: if this file format is to be changed, the filename should change and this format should still be readable
+    public void writeCache(final OutputStream os, String formatsStr) throws IOException {
+        if (Strings.isBlank(formatsStr)) {
+            Format.DAT.writeCache(this, os);
+            return;
+        }
+        for (String formatStr : formatsStr.split("\\s*,\\s*")) {
+            Format.valueOf(formatStr).writeCache(this, os);
         }
     }
 

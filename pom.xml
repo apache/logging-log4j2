@@ -889,6 +889,9 @@
               <phase>process-classes</phase>
               <configuration>
                 <proc>only</proc>
+                <compilerArguments>
+                  <ApluginCacheFileFormats>DAT,XML</ApluginCacheFileFormats>
+                </compilerArguments>
               </configuration>
             </execution>
           </executions>          

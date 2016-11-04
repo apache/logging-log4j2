@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -40,6 +41,7 @@ import javax.tools.StandardLocation;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginCache.Format;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -51,11 +53,17 @@ public class PluginProcessor extends AbstractProcessor {
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
 
     /**
+     * The location of the plugin cache data file base name.
+     */
+    public static final String PLUGIN_CACHE_FILE_BASE =
+            "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins";
+
+    /**
      * The location of the plugin cache data file. This file is written to by this processor, and read from by
      * {@link org.apache.logging.log4j.core.config.plugins.util.PluginManager}.
      */
     public static final String PLUGIN_CACHE_FILE =
-            "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
+            PLUGIN_CACHE_FILE_BASE + ".dat";
 
     private final PluginCache pluginCache = new PluginCache();
 
@@ -105,10 +113,16 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void writeCacheFile(final Element... elements) throws IOException {
-        final FileObject fileObject = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY,
-                PLUGIN_CACHE_FILE, elements);
-        try (final OutputStream out = fileObject.openOutputStream()) {
-            pluginCache.writeCache(out);
+        final String pluginCacheFileFormats = processingEnv.getOptions().get("pluginCacheFileFormats");
+        System.err.println("pluginCacheFileFormats = " + pluginCacheFileFormats);
+        final Format[] formats = PluginCache.Format.parse(pluginCacheFileFormats, PluginCache.Format.DAT);
+        for (final Format format : formats) {
+            final String fileName = PLUGIN_CACHE_FILE_BASE + "." + format.toString().toLowerCase(Locale.ROOT);
+            final FileObject fileObject = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT,
+                    Strings.EMPTY, fileName, elements);
+            try (final OutputStream out = fileObject.openOutputStream()) {
+                format.writeCache(pluginCache, out);
+            }
         }
     }
 
