@@ -98,7 +98,6 @@ public class PluginCache {
         },
 
         PROPERTIES_XML {
-
             @Override
             public String getExtension() {
                 return ".properties.xml";
