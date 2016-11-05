@@ -152,6 +152,7 @@ public class SortedArrayStringMapTest {
         if (!new File(location).exists()) {
             location = File.separator + location;
         }
+        location = location.replace("%20", " "); // undo URL encoding
         return location.isEmpty() ? "." : location;
     }
 
