@@ -108,7 +108,7 @@ public class SortedArrayStringMapTest {
                 DeserializerHelper.class.getName(), file.getPath()).inheritIO().start();
         int exitValue = process.waitFor();
 
-//        file.delete();
+        file.delete();
         assertEquals("no error", 0, exitValue);
     }
 

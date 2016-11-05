@@ -34,8 +34,8 @@ public class DeserializerHelper {
             final Object result = in.readObject();
             System.out.println(result);
         } catch (Throwable t) {
-            System.err.println("Could not deserialize: ");
-            t.printStackTrace();
+            System.err.println("Could not deserialize.");
+            throw t; // cause non-zero exit code
         } finally {
             try {
                 in.close();
