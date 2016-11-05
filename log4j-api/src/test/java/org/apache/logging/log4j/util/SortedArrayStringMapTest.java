@@ -115,8 +115,8 @@ public class SortedArrayStringMapTest {
         if (exitValue != 0) {
             final StringBuilder sb = new StringBuilder();
             sb.append("DeserializerHelper exited with error code ").append(exitValue);
-            sb.append(". Classpath=").append(classpath);
-            sb.append(". Process output: ");
+            sb.append(". Classpath='").append(classpath);
+            sb.append("'. Process output: ");
             int c = -1;
             while ((c = in.read()) != -1) {
                 sb.append((char) c);
