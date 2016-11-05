@@ -890,7 +890,7 @@
               <configuration>
                 <proc>only</proc>
                 <compilerArguments>
-                  <ApluginCacheFileFormats>DAT,XML</ApluginCacheFileFormats>
+                  <ApluginCacheFileFormats>DAT,XML,PROPERTIES,PROPERTIES_XML</ApluginCacheFileFormats>
                 </compilerArguments>
               </configuration>
             </execution>
