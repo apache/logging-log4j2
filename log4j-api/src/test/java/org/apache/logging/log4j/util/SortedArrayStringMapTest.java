@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
@@ -105,11 +107,21 @@ public class SortedArrayStringMapTest {
         }
         final Process process = new ProcessBuilder("java", "-cp",
                 createClassPath(SortedArrayStringMap.class, DeserializerHelper.class),
-                DeserializerHelper.class.getName(), file.getPath()).inheritIO().start();
+                DeserializerHelper.class.getName(), file.getPath()).start();
+        final BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         int exitValue = process.waitFor();
 
         file.delete();
-        assertEquals("no error", 0, exitValue);
+        if (exitValue != 0) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("DeserializerHelper exited with error code ").append(exitValue);
+            sb.append(". Process output: ");
+            int c = -1;
+            while ((c = in.read()) != -1) {
+                sb.append((char) c);
+            }
+            fail(sb.toString());
+        }
     }
 
     private String createClassPath(Class<?>... classes) {
