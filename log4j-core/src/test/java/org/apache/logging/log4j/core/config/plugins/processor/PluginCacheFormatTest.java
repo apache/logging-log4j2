@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import java.io.IOException;
+
 import org.apache.logging.log4j.core.config.plugins.processor.PluginCache.Format;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,5 +28,15 @@ public class PluginCacheFormatTest {
     @Test
     public void testParseFormats() {
         Assert.assertArrayEquals(new Format[] { Format.DAT, Format.XML }, Format.parse("DAT,XML", Format.DAT));
+    }
+
+    @Test
+    public void testPropertiesXml() throws IOException {
+        Format.PROPERTIES_XML.writeCache(PluginProcessorTest.loadCacheFiles(), System.out);
+    }
+
+    @Test
+    public void testProperties() throws IOException {
+        Format.PROPERTIES.writeCache(PluginProcessorTest.loadCacheFiles(), System.out);
     }
 }
