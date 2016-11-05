@@ -149,6 +149,9 @@ public class SortedArrayStringMapTest {
         if (location.endsWith(resource)) {
             location = location.substring(0, location.length() - resource.length());
         }
+        if (!new File(location).exists()) {
+            location = File.separator + location;
+        }
         return location.isEmpty() ? "." : location;
     }
 
