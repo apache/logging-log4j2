@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.util;/*
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,13 +14,17 @@ package org.apache.logging.log4j.util;/*
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,6 +72,71 @@ public class SortedArrayStringMapTest {
         final byte[] binary = serialize(original);
         final SortedArrayStringMap copy = deserialize(binary);
         assertEquals(original, copy);
+    }
+
+    @Test
+    public void testSerializationOfNonSerializableValue() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "avalue");
+        original.putValue("B", "Bvalue");
+        original.putValue("unserializable", new Object());
+
+        final byte[] binary = serialize(original);
+        final SortedArrayStringMap copy = deserialize(binary);
+
+        final SortedArrayStringMap expected = new SortedArrayStringMap();
+        expected.putValue("a", "avalue");
+        expected.putValue("B", "Bvalue");
+        expected.putValue("unserializable", null);
+        assertEquals(expected, copy);
+    }
+
+    @Test
+    public void testDeserializationOfUnknownClass() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "avalue");
+        original.putValue("serializableButNotInClasspathOfDeserializer", new org.junit.runner.Result());
+        original.putValue("zz", "last");
+
+        final File file = new File("target/SortedArrayStringMap.ser");
+        try (FileOutputStream fout = new FileOutputStream(file, false)) {
+            fout.write(serialize(original));
+            fout.flush();
+        }
+        final Process process = new ProcessBuilder("java", "-cp",
+                createClassPath(SortedArrayStringMap.class, DeserializerHelper.class),
+                DeserializerHelper.class.getName(), file.getPath()).inheritIO().start();
+        int exitValue = process.waitFor();
+
+//        file.delete();
+        assertEquals("no error", 0, exitValue);
+    }
+
+    private String createClassPath(Class<?>... classes) {
+        final StringBuilder result = new StringBuilder();
+        for (final Class<?> cls : classes) {
+            if (result.length() > 0) {
+                result.append(File.pathSeparator);
+            }
+            result.append(createClassPath(cls));
+        }
+        return result.toString();
+    }
+
+    private String createClassPath(Class<?> cls) {
+        final String resource = "/" + cls.getName().replace('.', '/') + ".class";
+        final URL url = cls.getResource(resource);
+        String location = url.toString();
+        if (location.startsWith("jar:")) {
+            location = location.substring("jar:".length(), location.indexOf('!'));
+        }
+        if (location.startsWith("file:/")) {
+            location = location.substring("file:/".length());
+        }
+        if (location.endsWith(resource)) {
+            location = location.substring(0, location.length() - resource.length());
+        }
+        return location.isEmpty() ? "." : location;
     }
 
     private byte[] serialize(final SortedArrayStringMap data) throws IOException {

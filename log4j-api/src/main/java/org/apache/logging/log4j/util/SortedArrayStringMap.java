@@ -18,11 +18,14 @@ package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
+import java.rmi.MarshalledObject;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em>
@@ -468,11 +471,15 @@ public class SortedArrayStringMap implements StringMap {
         if (size > 0) {
             for (int i = 0; i < size; i++) {
                 s.writeObject(keys[i]);
-                s.writeObject(values[i]);
+                try {
+                    s.writeObject(new MarshalledObject<>(values[i]));
+                } catch (final Exception e) {
+                    handleSerializationException(e, i, keys[i]);
+                    s.writeObject(null);
+                }
             }
         }
     }
-
 
     /**
      * Calculate the next power of 2, greater than or equal to x.
@@ -521,8 +528,18 @@ public class SortedArrayStringMap implements StringMap {
         // Read the keys and values, and put the mappings in the arrays
         for (int i = 0; i < mappings; i++) {
             keys[i] = (String) s.readObject();
-            values[i] = s.readObject();
+            try {
+                final MarshalledObject<Object> marshalledObject = (MarshalledObject<Object>) s.readObject();
+                values[i] = marshalledObject == null ? null : marshalledObject.get();
+            } catch (final Exception | LinkageError error) {
+                handleSerializationException(error, i, keys[i]);
+                values[i] = null;
+            }
         }
         size = mappings;
+    }
+
+    private void handleSerializationException(final Throwable t, final int i, final String key) {
+        StatusLogger.getLogger().warn("Ignoring {} for key[{}] ('{}')", String.valueOf(t), i, keys[i]);
     }
 }
