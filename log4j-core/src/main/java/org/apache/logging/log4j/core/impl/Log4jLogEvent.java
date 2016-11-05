@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.rmi.MarshalledObject;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -845,7 +847,12 @@ public class Log4jLogEvent implements LogEvent {
         private final Marker marker;
         private final Level level;
         private final String loggerName;
-        private final Message message;
+        // transient since 2.8
+        private final transient Message message;
+        /** since 2.8 */
+        private MarshalledObject<Message> marshalledMessage;
+        /** since 2.8 */
+        private String messageString;
         private final long timeMillis;
         private final transient Throwable thrown;
         private final ThrowableProxy thrownProxy;
@@ -891,10 +898,10 @@ public class Log4jLogEvent implements LogEvent {
             this.level = event.getLevel();
             this.loggerName = event.getLoggerName();
 
-            final Message msg = event.getMessage();
-            this.message = msg instanceof ReusableMessage
-                    ? memento((ReusableMessage) msg)
-                    : msg;
+            final Message temp = event.getMessage();
+            message = temp instanceof ReusableMessage
+                    ? memento((ReusableMessage) temp)
+                    : temp;
             this.timeMillis = event.getTimeMillis();
             this.thrown = event.getThrown();
             this.thrownProxy = event.getThrownProxy();
@@ -919,17 +926,41 @@ public class Log4jLogEvent implements LogEvent {
             return result;
         }
 
+        private static MarshalledObject<Message> marshall(final Message msg) {
+            try {
+                return new MarshalledObject<>(msg);
+            } catch (final Exception ex) {
+                return null;
+            }
+        }
+
+        private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
+            this.messageString = message.getFormattedMessage();
+            this.marshalledMessage = marshall(message);
+            s.defaultWriteObject();
+        }
+
         /**
          * Returns a Log4jLogEvent using the data in the proxy.
          * @return Log4jLogEvent.
          */
         protected Object readResolve() {
-            final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown,
+            final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message(), thrown,
                     thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, timeMillis,
                     nanoTime);
             result.setEndOfBatch(isEndOfBatch);
             result.setIncludeLocation(isLocationRequired);
             return result;
+        }
+
+        private Message message() {
+            if (marshalledMessage != null) {
+                try {
+                    return marshalledMessage.get();
+                } catch (final Exception ex) {
+                }
+            }
+            return new SimpleMessage(messageString);
         }
     }
 
