@@ -31,12 +31,17 @@ public class PluginCacheFormatTest {
     }
 
     @Test
+    public void testProperties() throws IOException {
+        Format.PROPERTIES.writeCache(PluginProcessorTest.loadCacheFiles(), System.out);
+    }
+
+    @Test
     public void testPropertiesXml() throws IOException {
         Format.PROPERTIES_XML.writeCache(PluginProcessorTest.loadCacheFiles(), System.out);
     }
 
     @Test
-    public void testProperties() throws IOException {
-        Format.PROPERTIES.writeCache(PluginProcessorTest.loadCacheFiles(), System.out);
+    public void testXml() throws IOException {
+        Format.XML.writeCache(PluginProcessorTest.loadCacheFiles(), System.out);
     }
 }
