@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
@@ -39,9 +40,14 @@ public class PluginProcessorTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        loadCacheFiles();
+    }
+
+    static PluginCache loadCacheFiles() throws IOException {
         final Enumeration<URL> resources =
             PluginProcessor.class.getClassLoader().getResources(PluginProcessor.PLUGIN_CACHE_FILE);
         pluginCache.loadCacheFiles(resources);
+        return pluginCache;
     }
 
     @Test
