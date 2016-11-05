@@ -105,8 +105,8 @@ public class SortedArrayStringMapTest {
             fout.write(serialize(original));
             fout.flush();
         }
-        final Process process = new ProcessBuilder("java", "-cp",
-                createClassPath(SortedArrayStringMap.class, DeserializerHelper.class),
+        final String classpath = createClassPath(SortedArrayStringMap.class, DeserializerHelper.class);
+        final Process process = new ProcessBuilder("java", "-cp", classpath,
                 DeserializerHelper.class.getName(), file.getPath()).start();
         final BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         int exitValue = process.waitFor();
@@ -115,6 +115,7 @@ public class SortedArrayStringMapTest {
         if (exitValue != 0) {
             final StringBuilder sb = new StringBuilder();
             sb.append("DeserializerHelper exited with error code ").append(exitValue);
+            sb.append(". Classpath=").append(classpath);
             sb.append(". Process output: ");
             int c = -1;
             while ((c = in.read()) != -1) {
