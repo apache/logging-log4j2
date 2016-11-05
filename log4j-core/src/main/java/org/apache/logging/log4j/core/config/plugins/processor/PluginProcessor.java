@@ -117,7 +117,7 @@ public class PluginProcessor extends AbstractProcessor {
         System.err.println("pluginCacheFileFormats = " + pluginCacheFileFormats);
         final Format[] formats = PluginCache.Format.parse(pluginCacheFileFormats, PluginCache.Format.DAT);
         for (final Format format : formats) {
-            final String fileName = PLUGIN_CACHE_FILE_BASE + "." + format.getExtension();
+            final String fileName = PLUGIN_CACHE_FILE_BASE + format.getExtension();
             final FileObject fileObject = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT,
                     Strings.EMPTY, fileName, elements);
             try (final OutputStream out = fileObject.openOutputStream()) {
