@@ -27,6 +27,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -125,7 +127,7 @@ public class SortedArrayStringMapTest {
         }
     }
 
-    private String createClassPath(Class<?>... classes) {
+    private String createClassPath(Class<?>... classes) throws Exception {
         final StringBuilder result = new StringBuilder();
         for (final Class<?> cls : classes) {
             if (result.length() > 0) {
@@ -136,7 +138,7 @@ public class SortedArrayStringMapTest {
         return result.toString();
     }
 
-    private String createClassPath(Class<?> cls) {
+    private String createClassPath(Class<?> cls) throws Exception {
         final String resource = "/" + cls.getName().replace('.', '/') + ".class";
         final URL url = cls.getResource(resource);
         String location = url.toString();
@@ -152,7 +154,7 @@ public class SortedArrayStringMapTest {
         if (!new File(location).exists()) {
             location = File.separator + location;
         }
-        location = location.replace("%20", " "); // undo URL encoding
+        location = URLDecoder.decode(location, Charset.defaultCharset().name()); // replace %20 with ' ' etc
         return location.isEmpty() ? "." : location;
     }
 
