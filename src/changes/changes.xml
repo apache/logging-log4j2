@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.8" date="2016-MM-DD" description="GA Release 2.8">
+      <action issue="LOG4J2-1668" dev="rpopma" type="fix">
+        (GC) Avoid allocating temporary objects in MarkerPatternConverter.
+      </action>
       <action issue="LOG4J2-1667" dev="rpopma" type="fix">
         (GC) Avoid allocating temporary objects in SequenceNumberPatternConverter.
       </action>

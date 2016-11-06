@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.Constants;
@@ -54,7 +55,11 @@ public class GcFreeLoggingTestUtil {
         assertFalse("Constants.IS_WEB_APP", Constants.IS_WEB_APP);
 
         final MyCharSeq myCharSeq = new MyCharSeq();
-        MarkerManager.getMarker("test"); // initial creation, value is cached
+        final Marker test = MarkerManager.getMarker("test"); // initial creation, value is cached
+        final Marker testParent = MarkerManager.getMarker("testParent");
+        final Marker testGrandParent = MarkerManager.getMarker("testGrandParent");
+        testParent.addParents(testGrandParent);
+        test.addParents(testParent);
 
         // initialize LoggerContext etc.
         // This is not steady-state logging and will allocate objects.
