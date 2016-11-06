@@ -108,7 +108,7 @@ public class PluginCache {
 
             @Override
             public void writeCache(final PluginCache pluginCache, final OutputStream os) throws IOException {
-                toProperties(pluginCache).store(os, "Log4j2 plugin cache file");
+                toProperties(pluginCache).store(os, COMMENT);
             }
 
         },
@@ -127,7 +127,7 @@ public class PluginCache {
 
             @Override
             public void writeCache(final PluginCache pluginCache, final OutputStream os) throws IOException {
-                toProperties(pluginCache).storeToXML(os, "Log4j2 plugin cache file");
+                toProperties(pluginCache).storeToXML(os, COMMENT);
             }
         },
 
@@ -148,6 +148,8 @@ public class PluginCache {
                 }
             }
         };
+
+        private static final String COMMENT = "Log4j2 plugin cache file";
 
         /**
          * Parses a comma-separated list of {@code Format}s.
