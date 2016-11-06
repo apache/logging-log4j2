@@ -34,7 +34,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  *
  * @since 2.7
  */
-class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ThreadContextMap2, CopyOnWrite {
+class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ObjectThreadContextMap, CopyOnWrite {
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
@@ -107,6 +107,11 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public void put(final String key, final String value) {
+        putValue(key, value);
+    }
+
+    @Override
+    public void putValue(final String key, final Object value) {
         StringMap map = localMap.get();
         map = map == null ? createStringMap() : createStringMap(map);
         map.putValue(key, value);
@@ -130,8 +135,13 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public String get(final String key) {
+        return (String) getValue(key);
+    }
+
+    @Override
+    public Object getValue(final String key) {
         final StringMap map = localMap.get();
-        return map == null ? null : (String) map.getValue(key);
+        return map == null ? null : map.getValue(key);
     }
 
     @Override

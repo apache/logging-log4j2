@@ -34,7 +34,7 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
  * </p>
  * @since 2.7
  */
-class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ThreadContextMap2  {
+class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ObjectThreadContextMap  {
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
@@ -115,6 +115,11 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     @Override
+    public void putValue(final String key, final Object value) {
+        getThreadLocalMap().putValue(key, value);
+    }
+
+    @Override
     public void putAll(final Map<String, String> values) {
         if (values == null || values.isEmpty()) {
             return;
@@ -127,8 +132,13 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public String get(final String key) {
+        return (String) getValue(key);
+    }
+
+    @Override
+    public Object getValue(final String key) {
         final StringMap map = localMap.get();
-        return map == null ? null : (String) map.getValue(key);
+        return map == null ? null : map.getValue(key);
     }
 
     @Override
