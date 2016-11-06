@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.8" date="2016-MM-DD" description="GA Release 2.8">
+      <action issue="LOG4J2-1673" dev="rpopma" type="fix">
+        (GC) Avoid allocating temporary objects in MarkerFilter.
+      </action>
       <action issue="LOG4J2-1672" dev="rpopma" type="fix">
         (GC) Avoid allocating temporary objects in LevelRangeFilter.
       </action>

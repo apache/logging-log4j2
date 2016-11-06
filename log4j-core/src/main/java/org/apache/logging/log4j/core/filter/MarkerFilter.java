@@ -69,6 +69,75 @@ public final class MarkerFilter extends AbstractFilter {
     }
 
     @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        return filter(marker);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        return filter(marker);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        return filter(marker);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        return filter(marker);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return filter(marker);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return filter(marker);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return filter(marker);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return filter(marker);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return filter(marker);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return filter(marker);
+    }
+
+    @Override
     public String toString() {
         return name;
     }
