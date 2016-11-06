@@ -61,12 +61,9 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
     }
 
     private final List<PatternFormatter> formatters;
-
+    private final List<PatternFormatter> substitutionFormatters;
     private final String substitution;
-
     private final String testString;
-
-    private final PatternParser parser;
 
     /**
      * Construct the converter.
@@ -82,7 +79,9 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
         this.testString = testString;
         this.substitution = substitution;
         this.formatters = formatters;
-        this.parser = parser;
+
+        // check if substitution needs to be parsed
+        substitutionFormatters = substitution.contains("%") ? parser.parse(substitution) : null;
     }
 
     /**
@@ -90,32 +89,43 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : formatters) {
-            formatter.format(event, buf);
+        final int initialSize = toAppendTo.length();
+        for (int i = 0; i < formatters.size(); i++) {
+            final PatternFormatter formatter = formatters.get(i);
+            formatter.format(event, toAppendTo);
         }
-        final String string = buf.toString();
-        toAppendTo.append(testString.equals(string) ? parseSubstitution(event) : string);
+        if (equals(testString, toAppendTo, initialSize, toAppendTo.length() - initialSize)) {
+            toAppendTo.setLength(initialSize);
+            parseSubstitution(event, toAppendTo);
+        }
+    }
+
+    private static boolean equals(String str, StringBuilder buff, int from, int len) {
+        if (str.length() == len) {
+            for (int i = 0; i < len; i++) {
+                if (str.charAt(i) != buff.charAt(i + from)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
-     * Returns the parsed substitution text.
+     * Adds the parsed substitution text to the specified buffer.
      *
      * @param event the current log event
-     * @return the parsed substitution text
+     * @param substitutionBuffer the StringBuilder to append the parsed substitution text to
      */
-    String parseSubstitution(final LogEvent event) {
-        final StringBuilder substitutionBuffer = new StringBuilder();
-        // check if substitution needs to be parsed
-        if (substitution.contains("%")) {
-            // parse substitution pattern
-            final List<PatternFormatter> substitutionFormatters = parser.parse(substitution);
-            for (final PatternFormatter formatter : substitutionFormatters) {
+    void parseSubstitution(final LogEvent event, final StringBuilder substitutionBuffer) {
+        if (substitutionFormatters != null) {
+            for (int i = 0; i < substitutionFormatters.size(); i++) {
+                final PatternFormatter formatter = substitutionFormatters.get(i);
                 formatter.format(event, substitutionBuffer);
             }
         } else {
             substitutionBuffer.append(substitution);
         }
-        return substitutionBuffer.toString();
     }
 }

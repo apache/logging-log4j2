@@ -102,7 +102,10 @@ public class EqualsReplacementConverterTest {
         final LoggerContext ctx = LoggerContext.getContext();
         final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(ctx.getConfiguration(),
             new String[]{"[%marker]", "[]", substitution});
-        final String actual = converter.parseSubstitution(event);
+
+        final StringBuilder sb = new StringBuilder();
+        converter.parseSubstitution(event, sb);
+        final String actual = sb.toString();
         assertEquals(expected, actual);
     }
 }

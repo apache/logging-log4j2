@@ -6,7 +6,7 @@
     </Console>
     <File name="File" fileName="target/gcfreefile.log" bufferedIO="false">
       <PatternLayout>
-        <Pattern>%d{DEFAULT}{UTC} %r %sn %markerSimpleName %maxLen{%marker}{10} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
+        <Pattern>%d{DEFAULT}{UTC} %r %sn %markerSimpleName %maxLen{%marker}{10} %equals{%markerSimpleName}{test}{substitute} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
       </PatternLayout>
     </File>
     <RollingFile name="RollingFile" fileName="target/gcfreeRollingFile.log"
