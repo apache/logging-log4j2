@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * This filter returns the onMatch result if the level in the LogEvent is the same or more specific
@@ -36,6 +37,7 @@ import org.apache.logging.log4j.message.Message;
  * The default Level is ERROR.
  */
 @Plugin(name = "ThresholdFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PerformanceSensitive("allocation")
 public final class ThresholdFilter extends AbstractFilter {
 
     private final Level level;

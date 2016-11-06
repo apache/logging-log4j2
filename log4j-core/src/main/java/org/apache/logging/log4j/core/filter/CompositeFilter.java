@@ -35,11 +35,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.ObjectArrayIterator;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Composes and invokes one or more filters.
  */
 @Plugin(name = "filters", category = Node.CATEGORY, printObject = true)
+@PerformanceSensitive("allocation")
 public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 
     private static final Filter[] EMPTY_FILTERS = new Filter[0];

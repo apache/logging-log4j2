@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * This filter returns the {@code onMatch} result if the level in the {@code LogEvent} is in the range of the configured
@@ -38,6 +39,7 @@ import org.apache.logging.log4j.message.Message;
  * </p>
  */
 @Plugin(name = "LevelRangeFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PerformanceSensitive("allocation")
 public final class LevelRangeFilter extends AbstractFilter {
 
     /**

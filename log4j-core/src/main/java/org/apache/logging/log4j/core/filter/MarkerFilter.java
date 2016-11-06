@@ -26,12 +26,14 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * This filter returns the onMatch result if the marker in the LogEvent is the same as or has the
  * configured marker as a parent.
  */
 @Plugin(name = "MarkerFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PerformanceSensitive("allocation")
 public final class MarkerFilter extends AbstractFilter {
 
     private final String name;
