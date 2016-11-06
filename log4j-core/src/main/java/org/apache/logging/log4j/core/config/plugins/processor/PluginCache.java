@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -38,9 +39,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
 
+import org.apache.logging.log4j.core.util.SortedProperties;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -48,22 +48,33 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class PluginCache {
 
-    static class SortedProperties extends Properties {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public synchronized Enumeration<Object> keys() {
-            return Collections.enumeration(new TreeSet<>(super.keySet()));
-        }
-
-        @Override
-        public Set<String> stringPropertyNames() {
-            return new TreeSet<>(super.stringPropertyNames());
-        }
-    }
-
     public enum Format {
+
         DAT {
+            @Override
+            public void loadCacheFiles(final PluginCache pluginCache, final URL url) throws IOException {
+                try (final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()))) {
+                    final int count = in.readInt();
+                    for (int i = 0; i < count; i++) {
+                        final String category = in.readUTF();
+                        final Map<String, PluginEntry> m = pluginCache.getCategory(category);
+                        final int entries = in.readInt();
+                        for (int j = 0; j < entries; j++) {
+                            final PluginEntry entry = new PluginEntry();
+                            entry.setKey(in.readUTF());
+                            entry.setClassName(in.readUTF());
+                            entry.setName(in.readUTF());
+                            entry.setPrintable(in.readBoolean());
+                            entry.setDefer(in.readBoolean());
+                            entry.setCategory(category);
+                            if (!m.containsKey(entry.getKey())) {
+                                m.put(entry.getKey(), entry);
+                            }
+                        }
+                    }
+                }
+            }
+
             @Override
             public void writeCache(final PluginCache pluginCache, final OutputStream os) throws IOException {
                 try (final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(os))) {
@@ -88,28 +99,13 @@ public class PluginCache {
             }
         },
 
-        XML {
-            @Override
-            public void writeCache(final PluginCache pluginCache, final OutputStream os) {
-                try (final XMLEncoder out = new XMLEncoder(os)) {
-                    out.writeObject(pluginCache.categories);
-                }
-            }
-        },
-
-        PROPERTIES_XML {
-            @Override
-            public String getExtension() {
-                return ".properties.xml";
-            }
-
-            @Override
-            public void writeCache(final PluginCache pluginCache, final OutputStream os) throws IOException {
-                toProperties(pluginCache).storeToXML(os, "Log4j2 plugin cache file");
-            }
-        },
-
         PROPERTIES {
+            @Override
+            public void loadCacheFiles(final PluginCache pluginCache, final URL url) throws IOException {
+                // TODO Auto-generated method stub
+
+            }
+
             @Override
             public void writeCache(final PluginCache pluginCache, final OutputStream os) throws IOException {
                 final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -130,13 +126,43 @@ public class PluginCache {
                 }
             }
 
+        },
+
+        PROPERTIES_XML {
+            @Override
+            public String getExtension() {
+                return ".properties.xml";
+            }
+
+            @Override
+            public void loadCacheFiles(final PluginCache pluginCache, final URL url) throws IOException {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void writeCache(final PluginCache pluginCache, final OutputStream os) throws IOException {
+                toProperties(pluginCache).storeToXML(os, "Log4j2 plugin cache file");
+            }
+        },
+
+        XML {
+            @Override
+            public void loadCacheFiles(final PluginCache pluginCache, final URL url) throws IOException {
+                try (final XMLDecoder out = new XMLDecoder(url.openStream())) {
+                    @SuppressWarnings("unchecked")
+                    final Map<String, Map<String, PluginEntry>> object = (Map<String, Map<String, PluginEntry>>) out.readObject();
+                    pluginCache.getAllCategories().putAll(object);
+                }
+            }
+
+            @Override
+            public void writeCache(final PluginCache pluginCache, final OutputStream os) {
+                try (final XMLEncoder out = new XMLEncoder(os)) {
+                    out.writeObject(pluginCache.categories);
+                }
+            }
         };
-
-        public String getExtension() {
-            return "." + toString().toLowerCase(Locale.ROOT);
-        }
-
-        public abstract void writeCache(PluginCache pluginCache, final OutputStream os) throws IOException;
 
         /**
          * Parses a comma-separated list of {@code Format}s.
@@ -174,6 +200,15 @@ public class PluginCache {
             }
             return prop;
         }
+
+        public String getExtension() {
+            return "." + toString().toLowerCase(Locale.ROOT);
+        }
+
+        public abstract void loadCacheFiles(PluginCache pluginCache, URL url) throws IOException;
+
+        public abstract void writeCache(PluginCache pluginCache, OutputStream os) throws IOException;
+
     }
 
     private final Map<String, Map<String, PluginEntry>> categories = new LinkedHashMap<>();
@@ -201,6 +236,44 @@ public class PluginCache {
             categories.put(key, new LinkedHashMap<String, PluginEntry>());
         }
         return categories.get(key);
+    }
+
+    public void loadCacheFiles(final ClassLoader classLoader) throws IOException {
+        categories.clear();
+        for (final Format format : Format.values()) {
+            final Enumeration<URL> resources = classLoader
+                    .getResources(PluginProcessor.PLUGIN_CACHE_FILE_BASE + format.getExtension());
+            while (resources.hasMoreElements()) {
+                final URL url = resources.nextElement();
+                format.loadCacheFiles(this, url);
+            }
+        }
+    }
+
+    /**
+     * Loads and merges all the Log4j plugin cache files specified. Usually, this is obtained via a ClassLoader.
+     *
+     * @param resources
+     *            URLs to all the desired plugin cache files to load.
+     * @throws IOException
+     *             if an I/O exception occurs.
+     * @deprecated Use {@link #loadCacheFiles(ClassLoader)}.
+     */
+    @Deprecated
+    public void loadCacheFiles(final Enumeration<URL> resources) throws IOException {
+        categories.clear();
+        while (resources.hasMoreElements()) {
+            Format.DAT.loadCacheFiles(this, resources.nextElement());
+        }
+    }
+
+    /**
+     * Gets the number of plugin categories registered.
+     *
+     * @return number of plugin categories in cache.
+     */
+    public int size() {
+        return categories.size();
     }
 
     /**
@@ -236,49 +309,5 @@ public class PluginCache {
         for (final String formatStr : formatsStr.split("\\s*,\\s*")) {
             Format.valueOf(formatStr).writeCache(this, os);
         }
-    }
-
-    /**
-     * Loads and merges all the Log4j plugin cache files specified. Usually, this is obtained via a ClassLoader.
-     *
-     * @param resources
-     *            URLs to all the desired plugin cache files to load.
-     * @throws IOException
-     *             if an I/O exception occurs.
-     */
-    public void loadCacheFiles(final Enumeration<URL> resources) throws IOException {
-        categories.clear();
-        while (resources.hasMoreElements()) {
-            final URL url = resources.nextElement();
-            try (final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()))) {
-                final int count = in.readInt();
-                for (int i = 0; i < count; i++) {
-                    final String category = in.readUTF();
-                    final Map<String, PluginEntry> m = getCategory(category);
-                    final int entries = in.readInt();
-                    for (int j = 0; j < entries; j++) {
-                        final PluginEntry entry = new PluginEntry();
-                        entry.setKey(in.readUTF());
-                        entry.setClassName(in.readUTF());
-                        entry.setName(in.readUTF());
-                        entry.setPrintable(in.readBoolean());
-                        entry.setDefer(in.readBoolean());
-                        entry.setCategory(category);
-                        if (!m.containsKey(entry.getKey())) {
-                            m.put(entry.getKey(), entry);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Gets the number of plugin categories registered.
-     *
-     * @return number of plugin categories in cache.
-     */
-    public int size() {
-        return categories.size();
     }
 }

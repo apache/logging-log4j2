@@ -164,6 +164,7 @@ public class PluginRegistry {
                 LOGGER.info("Plugin preloads not available from class loader {}", loader);
             } else {
                 cache.loadCacheFiles(resources);
+                cache.loadCacheFiles(loader);
             }
         } catch (final IOException ioe) {
             LOGGER.warn("Unable to preload plugins", ioe);
