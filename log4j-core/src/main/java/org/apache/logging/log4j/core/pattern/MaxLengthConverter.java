@@ -84,20 +84,19 @@ public final class MaxLengthConverter extends LogEventPatternConverter {
 
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : formatters) {
-            formatter.format(event, buf);
-            if (buf.length() > maxLength) {        // stop early
+        final int initialLength = toAppendTo.length();
+        for (int i = 0; i < formatters.size(); i++) {
+            final PatternFormatter formatter = formatters.get(i);
+            formatter.format(event, toAppendTo);
+            if (toAppendTo.length() > initialLength + maxLength) {        // stop early
                 break;
             }
         }
-        if (buf.length() > maxLength) {
-            buf.setLength(maxLength);
+        if (toAppendTo.length() > initialLength + maxLength) {
+            toAppendTo.setLength(initialLength + maxLength);
             if (maxLength > 20) {        // only append ellipses if length is not very short
-                buf.append("...");
+                toAppendTo.append("...");
             }
         }
-        toAppendTo.append(buf);
     }
-
 }
