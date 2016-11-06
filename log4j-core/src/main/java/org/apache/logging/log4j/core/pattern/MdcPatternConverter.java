@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -32,6 +33,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  */
 @Plugin(name = "MdcPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "X", "mdc", "MDC" })
+@PerformanceSensitive("allocation")
 public final class MdcPatternConverter extends LogEventPatternConverter {
 
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();

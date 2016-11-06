@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
@@ -33,6 +34,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  */
 @Plugin(name = "MessagePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "m", "msg", "message" })
+@PerformanceSensitive("allocation")
 public final class MessagePatternConverter extends LogEventPatternConverter {
 
     private static final String NOLOOKUPS = "nolookups";
@@ -44,7 +46,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
 
     /**
      * Private constructor.
-     * 
+     *
      * @param options
      *            options, may be null.
      */

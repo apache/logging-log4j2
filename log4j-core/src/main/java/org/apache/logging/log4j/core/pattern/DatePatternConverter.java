@@ -28,12 +28,14 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Converts and formats the event's date in a StringBuilder.
  */
 @Plugin(name = "DatePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"d", "date"})
+@PerformanceSensitive("allocation")
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
 
     private abstract static class Formatter {

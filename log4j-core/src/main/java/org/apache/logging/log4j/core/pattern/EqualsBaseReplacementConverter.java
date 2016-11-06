@@ -19,10 +19,12 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Equals pattern converter.
  */
+@PerformanceSensitive("allocation")
 public abstract class EqualsBaseReplacementConverter extends LogEventPatternConverter {
     private final List<PatternFormatter> formatters;
     private final List<PatternFormatter> substitutionFormatters;

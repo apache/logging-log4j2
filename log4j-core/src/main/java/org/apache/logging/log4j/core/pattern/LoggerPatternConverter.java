@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 
 /**
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  */
 @Plugin(name = "LoggerPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "c", "logger" })
+@PerformanceSensitive("allocation")
 public final class LoggerPatternConverter extends NamePatternConverter {
     /**
      * Singleton.

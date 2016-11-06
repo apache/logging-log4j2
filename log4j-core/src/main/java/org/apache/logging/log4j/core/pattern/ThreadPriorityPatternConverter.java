@@ -18,14 +18,16 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Formats the event thread priority.
- * 
+ *
  * @since 2.6
  */
 @Plugin(name = "ThreadPriorityPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "tp", "threadPriority" })
+@PerformanceSensitive("allocation")
 public final class ThreadPriorityPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.

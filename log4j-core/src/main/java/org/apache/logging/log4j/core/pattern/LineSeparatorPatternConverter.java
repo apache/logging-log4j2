@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Plugin(name = "LineSeparatorPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "n" })
+@PerformanceSensitive("allocation")
 public final class LineSeparatorPatternConverter extends LogEventPatternConverter {
 
     /**

@@ -21,12 +21,14 @@ import java.util.List;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Equals ignore case pattern converter.
  */
 @Plugin(name = "equalsIgnoreCase", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "equalsIgnoreCase" })
+@PerformanceSensitive("allocation")
 public final class EqualsIgnoreCaseReplacementConverter extends EqualsBaseReplacementConverter {
 
     /**

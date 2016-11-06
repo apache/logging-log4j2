@@ -21,12 +21,14 @@ import java.util.List;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Equals pattern converter.
  */
 @Plugin(name = "equals", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "equals" })
+@PerformanceSensitive("allocation")
 public final class EqualsReplacementConverter extends EqualsBaseReplacementConverter {
 
     /**
