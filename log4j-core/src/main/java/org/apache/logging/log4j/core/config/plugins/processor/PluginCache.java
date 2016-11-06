@@ -108,22 +108,7 @@ public class PluginCache {
 
             @Override
             public void writeCache(final PluginCache pluginCache, final OutputStream os) throws IOException {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                toProperties(pluginCache).store(baos, "Log4j2 plugin cache file");
-                final String str = baos.toString("UTF-8");
-                // sort
-                final BufferedReader r = new BufferedReader(new StringReader(str));
-                String line;
-                final List<String> list = new ArrayList<>();
-                while ((line = r.readLine()) != null) {
-                    list.add(line);
-                }
-                Collections.sort(list);
-                // write sorted
-                final PrintStream ps = new PrintStream(os);
-                for (final String string : list) {
-                    ps.println(string);
-                }
+                toProperties(pluginCache).store(os, "Log4j2 plugin cache file");
             }
 
         },
