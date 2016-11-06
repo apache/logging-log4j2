@@ -21,26 +21,20 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.StringReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.logging.log4j.core.util.SortedProperties;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -102,8 +96,8 @@ public class PluginCache {
         PROPERTIES {
             @Override
             public void loadCacheFiles(final PluginCache pluginCache, final URL url) throws IOException {
-                // TODO Auto-generated method stub
-
+                Properties props = PropertiesUtil.toProperties(url);
+                
             }
 
             @Override
@@ -121,7 +115,7 @@ public class PluginCache {
 
             @Override
             public void loadCacheFiles(final PluginCache pluginCache, final URL url) throws IOException {
-                // TODO Auto-generated method stub
+                Properties props = PropertiesUtil.toProperties(url);
 
             }
 
@@ -136,7 +130,8 @@ public class PluginCache {
             public void loadCacheFiles(final PluginCache pluginCache, final URL url) throws IOException {
                 try (final XMLDecoder out = new XMLDecoder(url.openStream())) {
                     @SuppressWarnings("unchecked")
-                    final Map<String, Map<String, PluginEntry>> object = (Map<String, Map<String, PluginEntry>>) out.readObject();
+                    final Map<String, Map<String, PluginEntry>> object = (Map<String, Map<String, PluginEntry>>) out
+                            .readObject();
                     pluginCache.getAllCategories().putAll(object);
                 }
             }

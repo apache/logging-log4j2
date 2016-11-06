@@ -22,6 +22,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -297,6 +298,25 @@ public final class PropertiesUtil {
             parts.get(prefix).setProperty(key.substring(key.indexOf('.') + 1), properties.getProperty(key));
         }
         return parts;
+    }
+
+    /**
+     * Loads a properties file (XML with a ".xml" extension or normal ".properties" file) from the given URL.
+     * 
+     * @param url the URL to load
+     * @return a new Properties object
+     * @throws IOException if an I/O exception occurs.
+     */
+    public static Properties toProperties(final URL url) throws IOException {
+        final Properties loadProps = new Properties();
+        try (final InputStream stream = url.openStream()) {
+            if (url.toString().toLowerCase(Locale.ROOT).endsWith(".xml")) {
+                loadProps.loadFromXML(stream);
+            } else {
+                loadProps.load(stream);
+            }
+        }
+        return loadProps;
     }
 
     /**
