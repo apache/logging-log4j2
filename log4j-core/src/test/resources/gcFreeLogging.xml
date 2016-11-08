@@ -10,6 +10,10 @@
       <KeyValuePair key="eventId" value="Logout"/>
     </MapFilter>
     <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+    <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+      <KeyValuePair key="User1" value="DEBUG"/>
+      <KeyValuePair key="User2" value="WARN"/>
+    </ContextMapFilter>
   </Filters>
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">

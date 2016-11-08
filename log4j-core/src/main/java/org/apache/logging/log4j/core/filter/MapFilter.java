@@ -213,11 +213,11 @@ public class MapFilter extends AbstractFilter {
     }
 
     /**
-     * Returns the StringMap with {@code List<String>} values that this MapFilter was constructed with.
-     * @return the StringMap with {@code List<String>} values to match against
+     * Returns the SortedArrayStringMap with {@code List<String>} values that this MapFilter was constructed with.
+     * @return the SortedArrayStringMap with {@code List<String>} values to match against
      * @since 2.8
      */
-    protected StringMap getStringMap() {
+    protected SortedArrayStringMap getStringMap() {
         return map;
     }
 

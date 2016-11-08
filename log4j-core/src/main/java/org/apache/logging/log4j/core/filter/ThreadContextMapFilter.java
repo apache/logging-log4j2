@@ -37,13 +37,16 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
  */
 @Plugin(name = "ThreadContextMapFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 @PluginAliases("ContextMapFilter")
+@PerformanceSensitive("allocation")
 public class ThreadContextMapFilter extends MapFilter {
 
     private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
@@ -96,12 +99,13 @@ public class ThreadContextMapFilter extends MapFilter {
         boolean match = false;
         if (useMap) {
             ReadOnlyStringMap currentContextData = null;
-            for (final Map.Entry<String, List<String>> entry : getMap().entrySet()) {
+            final SortedArrayStringMap map = getStringMap();
+            for (int i = 0; i < map.size(); i++) {
                 if (currentContextData == null) {
                     currentContextData = currentContextData();
                 }
-                final String toMatch = currentContextData.getValue(entry.getKey());
-                match = toMatch != null && entry.getValue().contains(toMatch);
+                final String toMatch = currentContextData.getValue(map.getKeyAt(i));
+                match = toMatch != null && ((List<String>) map.getValueAt(i)).contains(toMatch);
                 if ((!isAnd() && match) || (isAnd() && !match)) {
                     break;
                 }
@@ -119,6 +123,75 @@ public class ThreadContextMapFilter extends MapFilter {
     @Override
     public Result filter(final LogEvent event) {
         return super.filter(event.getContextData()) ? onMatch : onMismatch;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return filter();
     }
 
     @PluginFactory
