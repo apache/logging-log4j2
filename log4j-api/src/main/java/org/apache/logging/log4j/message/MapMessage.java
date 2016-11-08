@@ -103,6 +103,17 @@ public class MapMessage implements MultiformatMessage {
     }
 
     /**
+     * Returns the value of the specified key in the message data, or {@code null} if the message data does not contain
+     * the specified key.
+     *
+     * @param key the key whose value to look up in the message data
+     * @return the value of the specified key in the message data, or {@code null}
+     */
+    public String getDataValue(String key) {
+        return data.get(key);
+    }
+
+    /**
      * Clear the data.
      */
     public void clear() {
