@@ -295,7 +295,7 @@ public class StructuredDataMessage extends MapMessage implements StringBuilderFo
         }
         StructuredDataId sdId = getId();
         if (sdId != null) {
-            sdId = sdId.makeId(structuredDataId); // TODO can we avoid allocating this object?
+            sdId = sdId.makeId(structuredDataId); // returns sdId if structuredDataId is null
         } else {
             sdId = structuredDataId;
         }
