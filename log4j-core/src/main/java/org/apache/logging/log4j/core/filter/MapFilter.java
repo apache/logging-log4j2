@@ -39,7 +39,6 @@ import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.apache.logging.log4j.util.StringMap;
 
 /**
  * A Filter that operates on a Map.
@@ -67,7 +66,7 @@ public class MapFilter extends AbstractFilter {
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
                          final Throwable t) {
         if (msg instanceof MapMessage) {
-            return filter(((MapMessage) msg).getData()) ? onMatch : onMismatch;
+            return filter((MapMessage) msg) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
     }
@@ -76,9 +75,22 @@ public class MapFilter extends AbstractFilter {
     public Result filter(final LogEvent event) {
         final Message msg = event.getMessage();
         if (msg instanceof MapMessage) {
-            return filter(((MapMessage) msg).getData()) ? onMatch : onMismatch;
+            return filter((MapMessage) msg) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
+    }
+
+    protected boolean filter(final MapMessage mapMessage) {
+        boolean match = false;
+        for (int i = 0; i < map.size(); i++) {
+            final String toMatch = mapMessage.getDataValue(map.getKeyAt(i));
+            match = toMatch != null && ((List<String>) map.getValueAt(i)).contains(toMatch);
+
+            if ((!isAnd && match) || (isAnd && !match)) {
+                break;
+            }
+        }
+        return match;
     }
 
     protected boolean filter(final Map<String, String> data) {
