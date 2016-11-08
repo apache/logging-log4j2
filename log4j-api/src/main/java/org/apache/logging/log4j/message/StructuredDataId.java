@@ -18,12 +18,13 @@ package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  * The StructuredData identifier.
  */
-public class StructuredDataId implements Serializable {
+public class StructuredDataId implements Serializable, StringBuilderFormattable {
 
     /**
      * RFC 5424 Time Quality.
@@ -109,7 +110,7 @@ public class StructuredDataId implements Serializable {
 
     /**
      * Creates an id using another id to supply default values.
-     * 
+     *
      * @param id The original StructuredDataId.
      * @return the new StructuredDataId.
      */
@@ -122,7 +123,7 @@ public class StructuredDataId implements Serializable {
 
     /**
      * Creates an id based on the current id.
-     * 
+     *
      * @param defaultId The default id to use if this StructuredDataId doesn't have a name.
      * @param anEnterpriseNumber The enterprise number.
      * @return a StructuredDataId.
@@ -149,7 +150,7 @@ public class StructuredDataId implements Serializable {
 
     /**
      * Returns a list of required keys.
-     * 
+     *
      * @return a List of required keys or null if none have been provided.
      */
     public String[] getRequired() {
@@ -158,7 +159,7 @@ public class StructuredDataId implements Serializable {
 
     /**
      * Returns a list of optional keys.
-     * 
+     *
      * @return a List of optional keys or null if none have been provided.
      */
     public String[] getOptional() {
@@ -167,7 +168,7 @@ public class StructuredDataId implements Serializable {
 
     /**
      * Returns the StructuredDataId name.
-     * 
+     *
      * @return the StructuredDataId name.
      */
     public String getName() {
@@ -176,7 +177,7 @@ public class StructuredDataId implements Serializable {
 
     /**
      * Returns the enterprise number.
-     * 
+     *
      * @return the enterprise number.
      */
     public int getEnterpriseNumber() {
@@ -185,7 +186,7 @@ public class StructuredDataId implements Serializable {
 
     /**
      * Indicates if the id is reserved.
-     * 
+     *
      * @return true if the id uses the reserved enterprise number, false otherwise.
      */
     public boolean isReserved() {
@@ -194,6 +195,17 @@ public class StructuredDataId implements Serializable {
 
     @Override
     public String toString() {
-        return isReserved() ? name : name + AT_SIGN + enterpriseNumber;
+        final StringBuilder sb = new StringBuilder(name.length() + 10);
+        formatTo(sb);
+        return sb.toString();
+    }
+
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        if (isReserved()) {
+            buffer.append(name);
+        } else {
+            buffer.append(name).append(AT_SIGN).append(enterpriseNumber);
+        }
     }
 }
