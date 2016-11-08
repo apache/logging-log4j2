@@ -36,7 +36,7 @@ import org.apache.logging.log4j.message.Message;
 
 /**
  * The <code>BurstFilter</code> is a logging filter that regulates logging traffic.
- * 
+ *
  * <p>
  * Use this filter when you want to control the maximum burst of log statements that can be sent to an appender. The
  * filter is configured in the log4j configuration file. For example, the following configuration limits the number of
@@ -81,7 +81,7 @@ public final class BurstFilter extends AbstractFilter {
     static LogDelay createLogDelay(final long expireTime) {
         return new LogDelay(expireTime);
     }
-    
+
     private BurstFilter(final Level level, final float rate, final long maxBurst, final Result onMatch,
                         final Result onMismatch) {
         super(onMatch, onMismatch);
@@ -113,6 +113,75 @@ public final class BurstFilter extends AbstractFilter {
     @Override
     public Result filter(final LogEvent event) {
         return filter(event.getLevel());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return filter(level);
     }
 
     /**
@@ -166,7 +235,7 @@ public final class BurstFilter extends AbstractFilter {
 
     /**
      * Delay object to represent each log event that has occurred within the timespan.
-     * 
+     *
      * Consider this class private, package visibility for testing.
      */
     private static class LogDelay implements Delayed {
