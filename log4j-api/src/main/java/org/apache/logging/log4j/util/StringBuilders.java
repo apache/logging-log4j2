@@ -18,6 +18,8 @@ package org.apache.logging.log4j.util;
 
 import java.util.Map.Entry;
 
+import static java.lang.Character.toLowerCase;
+
 /**
  * <em>Consider this class private.</em>
  */
@@ -90,5 +92,55 @@ public final class StringBuilders {
         } else {
             stringBuilder.append(obj);
         }
+    }
+
+    /**
+     * Returns true if the specified section of the left CharSequence equals the specified section of the right
+     * CharSequence.
+     *
+     * @param left the left CharSequence
+     * @param leftOffset start index in the left CharSequence
+     * @param leftLength length of the section in the left CharSequence
+     * @param right the right CharSequence to compare a section of
+     * @param rightOffset start index in the right CharSequence
+     * @param rightLength length of the section in the right CharSequence
+     * @return true if equal, false otherwise
+     */
+    public static boolean equals(final CharSequence left, final int leftOffset, final int leftLength,
+                                    final CharSequence right, final int rightOffset, final int rightLength) {
+        if (leftLength == rightLength) {
+            for (int i = 0; i < rightLength; i++) {
+                if (left.charAt(i + leftOffset) != right.charAt(i + rightOffset)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the specified section of the left CharSequence equals, ignoring case, the specified section of
+     * the right CharSequence.
+     *
+     * @param left the left CharSequence
+     * @param leftOffset start index in the left CharSequence
+     * @param leftLength length of the section in the left CharSequence
+     * @param right the right CharSequence to compare a section of
+     * @param rightOffset start index in the right CharSequence
+     * @param rightLength length of the section in the right CharSequence
+     * @return true if equal ignoring case, false otherwise
+     */
+    public static boolean equalsIgnoreCase(final CharSequence left, final int leftOffset, final int leftLength,
+                                              final CharSequence right, final int rightOffset, final int rightLength) {
+        if (leftLength == rightLength) {
+            for (int i = 0; i < rightLength; i++) {
+                if (toLowerCase(left.charAt(i + leftOffset)) != toLowerCase(right.charAt(i + rightOffset))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

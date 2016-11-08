@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Equals pattern converter.
@@ -74,15 +75,8 @@ public final class EqualsReplacementConverter extends EqualsBaseReplacementConve
         super("equals", "equals", formatters, testString, substitution, parser);
     }
 
+    @Override
     protected boolean equals(String str, StringBuilder buff, int from, int len) {
-        if (str.length() == len) {
-            for (int i = 0; i < len; i++) {
-                if (str.charAt(i) != buff.charAt(i + from)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
+        return StringBuilders.equals(str, 0, str.length(), buff, from, len);
     }
 }
