@@ -341,7 +341,7 @@ public class SortedArrayStringMap implements StringMap {
         }
     }
 
-    String getKeyAt(final int index) {
+    public String getKeyAt(final int index) {
         if (index < 0 || index >= size) {
             return null;
         }
@@ -349,7 +349,7 @@ public class SortedArrayStringMap implements StringMap {
     }
 
     @SuppressWarnings("unchecked")
-    <V> V getValueAt(final int index) {
+    public <V> V getValueAt(final int index) {
         if (index < 0 || index >= size) {
             return null;
         }
