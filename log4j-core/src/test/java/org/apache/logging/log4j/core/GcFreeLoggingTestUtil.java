@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.util.Strings;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
@@ -103,6 +104,7 @@ public class GcFreeLoggingTestUtil {
             }
         };
         Thread.sleep(500);
+        final MapMessage mapMessage = new MapMessage().with("eventId", "Login");
         AllocationRecorder.addSampler(sampler);
 
         // now do some steady-state logging
@@ -118,6 +120,7 @@ public class GcFreeLoggingTestUtil {
             logger.error("Test parameterized message {}", "param");
             logger.error("Test parameterized message {}{}", "param", "param2");
             logger.error("Test parameterized message {}{}{}", "param", "param2", "abc");
+            //logger.error(mapMessage); // TODO LOG4J2-1683
             ThreadContext.remove("aKey");
             ThreadContext.put("aKey", "value1");
         }

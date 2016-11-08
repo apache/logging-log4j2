@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
+  <Filters>
+    <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
+        onMatch="ACCEPT" onMismatch="NEUTRAL">
+      <KeyValuePair key="User1" value="DEBUG"/>
+    </DynamicThresholdFilter>
+    <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+      <KeyValuePair key="eventId" value="Login"/>
+      <KeyValuePair key="eventId" value="Logout"/>
+    </MapFilter>
+    <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+  </Filters>
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%p %c{1.} [%t] %X{aKey} %X %m%ex%n" />
