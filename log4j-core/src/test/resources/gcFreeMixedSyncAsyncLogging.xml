@@ -14,6 +14,10 @@
       <KeyValuePair key="User1" value="DEBUG"/>
       <KeyValuePair key="User2" value="WARN"/>
     </ContextMapFilter>
+    <StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+      <KeyValuePair key="id" value="Login"/>
+      <KeyValuePair key="id" value="Logout"/>
+    </StructuredDataFilter>
   </Filters>
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
