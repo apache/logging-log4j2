@@ -28,6 +28,12 @@ import org.apache.logging.log4j.message.Message;
  * Users should extend this class to implement filters. Filters can be either context wide or attached to
  * an appender. A filter may choose to support being called only from the context or only from an appender in
  * which case it will only implement the required method(s). The rest will default to return {@link Result#NEUTRAL}.
+ * <p>
+ * Garbage-free note: the methods with unrolled varargs by default delegate to the
+ * {@link #filter(Logger, Level, Marker, String, Object...) filter method with vararg parameters}.
+ * Subclasses that want to be garbage-free should override these methods to implement the appropriate filtering
+ * without creating a vararg array.
+ * </p>
  */
 public abstract class AbstractFilter extends AbstractLifeCycle implements Filter {
 
@@ -142,6 +148,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param msg The message, if present.
      * @param p0 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
@@ -158,6 +165,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param p0 the message parameters
      * @param p1 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
@@ -175,6 +183,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param p1 the message parameters
      * @param p2 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
@@ -193,6 +202,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param p2 the message parameters
      * @param p3 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
@@ -212,6 +222,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param p3 the message parameters
      * @param p4 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
@@ -233,6 +244,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param p4 the message parameters
      * @param p5 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
@@ -255,6 +267,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param p5 the message parameters
      * @param p6 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
@@ -278,6 +291,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param p6 the message parameters
      * @param p7 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
@@ -303,6 +317,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param p7 the message parameters
      * @param p8 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
@@ -329,6 +344,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @param p8 the message parameters
      * @param p9 the message parameters
      * @return The Result of filtering.
+     * @since 2.7
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
