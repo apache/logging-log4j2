@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
@@ -52,6 +53,8 @@ public final class SyslogLayout extends AbstractStringLayout {
     private final boolean includeNewLine;
     private final String escapeNewLine;
 
+    private final Layout<String> layout;
+
     /**
      * Date format used if header = true.
      */
@@ -61,11 +64,13 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     private final String localHostname = NetUtils.getLocalHostname();
 
-    protected SyslogLayout(final Facility facility, final boolean includeNL, final String escapeNL, final Charset charset) {
+    protected SyslogLayout(final Facility facility, final boolean includeNL, final String escapeNL,
+                           final Charset charset, final Layout<String> layout) {
         super(charset);
         this.facility = facility;
         this.includeNewLine = includeNL;
         this.escapeNewLine = escapeNL == null ? null : Matcher.quoteReplacement(escapeNL);
+        this.layout = layout;
     }
 
     /**
@@ -76,6 +81,14 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
+
+        String message =
+            (layout == null) ? event.getMessage().getFormattedMessage() : layout.toSerializable(event);
+
+        if (null != escapeNewLine) {
+            message = NEWLINE_PATTERN.matcher(message).replaceAll(escapeNewLine);
+        }
+
         final StringBuilder buf = getStringBuilder();
 
         buf.append('<');
@@ -86,10 +99,6 @@ public final class SyslogLayout extends AbstractStringLayout {
         buf.append(localHostname);
         buf.append(Chars.SPACE);
 
-        String message = event.getMessage().getFormattedMessage();
-        if (null != escapeNewLine) {
-            message = NEWLINE_PATTERN.matcher(message).replaceAll(escapeNewLine);
-        }
         buf.append(message);
 
         if (includeNewLine) {
@@ -135,6 +144,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * @param includeNewLine If true a newline will be appended to the result.
      * @param escapeNL Pattern to use for replacing newlines.
      * @param charset The character set.
+     * @param layout the message layout (if any)
      * @return A SyslogLayout.
      */
     @PluginFactory
@@ -142,7 +152,8 @@ public final class SyslogLayout extends AbstractStringLayout {
             @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
             @PluginAttribute(value = "newLine", defaultBoolean = false) final boolean includeNewLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset) {
-        return new SyslogLayout(facility, includeNewLine, escapeNL, charset);
+            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
+            @PluginElement("Layout") final Layout<String> layout) {
+        return new SyslogLayout(facility, includeNewLine, escapeNL, charset, layout);
     }
 }
