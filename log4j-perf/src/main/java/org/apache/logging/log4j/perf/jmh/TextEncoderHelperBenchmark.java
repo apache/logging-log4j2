@@ -61,7 +61,7 @@ public class TextEncoderHelperBenchmark {
 
     final static LogEvent EVENT = createLogEvent();
     private static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
-    private final PatternLayout PATTERN_M_C_D = PatternLayout.createLayout("%d %c %m%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
+    private final PatternLayout PATTERN_M_C_D = PatternLayout.createLayout("%d %c %m%n", null, null, null, CHARSET_DEFAULT, false, true, true, null, null);
     private final Destination destination = new Destination();
 
     class Destination implements ByteBufferDestination {

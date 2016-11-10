@@ -52,12 +52,13 @@ public class MarkerPatternSelector implements PatternSelector {
 
 
     public MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
-                                 final Configuration config) {
+                                 final boolean alwaysWriteExceptions, final boolean disableAnsi,
+                                 final boolean noConsoleNoAnsi, final Configuration config) {
         final PatternParser parser = PatternLayout.createPatternParser(config);
         for (final PatternMatch property : properties) {
             try {
-                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, noConsoleNoAnsi);
+                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions,
+                        disableAnsi, noConsoleNoAnsi);
                 formatterMap.put(property.getKey(), list.toArray(new PatternFormatter[list.size()]));
                 patternMap.put(property.getKey(), property.getPattern());
             } catch (final RuntimeException ex) {
@@ -65,7 +66,8 @@ public class MarkerPatternSelector implements PatternSelector {
             }
         }
         try {
-            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi);
+            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi,
+                    noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
             this.defaultPattern = defaultPattern;
         } catch (final RuntimeException ex) {
@@ -92,6 +94,7 @@ public class MarkerPatternSelector implements PatternSelector {
     public static MarkerPatternSelector createSelector(@PluginElement("PatternMatch") final PatternMatch[] properties,
                                                        @PluginAttribute("defaultPattern") String defaultPattern,
                                                        @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
+                                                       @PluginAttribute(value = "disableAnsi", defaultBoolean = false) final boolean disableAnsi,
                                                        @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
                                                        @PluginConfiguration final Configuration config) {
         if (defaultPattern == null) {
@@ -102,7 +105,7 @@ public class MarkerPatternSelector implements PatternSelector {
             return null;
         }
         return new MarkerPatternSelector(properties, defaultPattern, alwaysWriteExceptions,
-                noConsoleNoAnsi, config);
+                disableAnsi, noConsoleNoAnsi, config);
     }
 
     @Override

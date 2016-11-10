@@ -141,7 +141,7 @@ public class SmtpManager extends AbstractManager {
         sb.append(filterName);
 
         final String name = "SMTP:" + NameUtil.md5(sb.toString());
-        final Serializer subjectSerializer = PatternLayout.createSerializer(config, null, subject, null, null, false, false);
+        final Serializer subjectSerializer = PatternLayout.createSerializer(config, null, subject, null, null, false, false, false);
 
         return getManager(name, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
             protocol, host, port, username, password, isDebug, numElements));

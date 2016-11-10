@@ -56,8 +56,8 @@ public class ScriptPatternSelector implements PatternSelector {
 
 
     public ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
-                                 final Configuration config) {
+                                 final boolean alwaysWriteExceptions, final boolean disablAnsi,
+                                 final boolean noConsoleNoAnsi, final Configuration config) {
         this.script = script;
         this.configuration = config;
         if (!(script instanceof ScriptRef)) {
@@ -66,7 +66,7 @@ public class ScriptPatternSelector implements PatternSelector {
         final PatternParser parser = PatternLayout.createPatternParser(config);
         for (final PatternMatch property : properties) {
             try {
-                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, noConsoleNoAnsi);
+                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, disablAnsi, noConsoleNoAnsi);
                 formatterMap.put(property.getKey(), list.toArray(new PatternFormatter[list.size()]));
                 patternMap.put(property.getKey(), property.getPattern());
             } catch (final RuntimeException ex) {
@@ -74,7 +74,7 @@ public class ScriptPatternSelector implements PatternSelector {
             }
         }
         try {
-            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi);
+            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disablAnsi, noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
             this.defaultPattern = defaultPattern;
         } catch (final RuntimeException ex) {
@@ -103,6 +103,7 @@ public class ScriptPatternSelector implements PatternSelector {
                                                        @PluginElement("PatternMatch") final PatternMatch[] properties,
                                                        @PluginAttribute("defaultPattern") String defaultPattern,
                                                        @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
+                                                       @PluginAttribute(value = "disableAnsi", defaultBoolean = false) final boolean disableAnsi,
                                                        @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
                                                        @PluginConfiguration final Configuration config) {
         if (script == null) {
@@ -122,7 +123,7 @@ public class ScriptPatternSelector implements PatternSelector {
             LOGGER.warn("No marker patterns were provided");
             return null;
         }
-        return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, config);
+        return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, config);
     }
 
     @Override

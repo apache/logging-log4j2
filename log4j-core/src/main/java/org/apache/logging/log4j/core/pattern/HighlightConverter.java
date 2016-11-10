@@ -66,6 +66,14 @@ import org.apache.logging.log4j.util.Strings;
  * You can use whitespace around the comma and equal sign. The names in values MUST come from the
  * {@linkplain AnsiEscape} enum, case is normalized to upper-case internally.
  * </p>
+ *
+ * <p>
+ * To disable ANSI output unconditionally, specify an additional option <code>disableAnsi=true</code>, or to
+ * disable ANSI output if no console is detected, specify option <code>noConsoleNoAnsi=true</code> e.g..
+ * </p>
+ * <pre>
+  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=DEFAULT, noConsoleNoAnsi=true}
+  * </pre>
  */
 @Plugin(name = "highlight", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "highlight" })
@@ -137,7 +145,9 @@ public final class HighlightConverter extends LogEventPatternConverter implement
             return DEFAULT_STYLES;
         }
         // Feels like a hack. Should String[] options change to a Map<String,String>?
-        final String string = options[1].replaceAll(PatternParser.NO_CONSOLE_NO_ANSI + "=(true|false)", Strings.EMPTY);
+        final String string = options[1]
+                .replaceAll(PatternParser.DISABLE_ANSI + "=(true|false)", Strings.EMPTY)
+                .replaceAll(PatternParser.NO_CONSOLE_NO_ANSI + "=(true|false)", Strings.EMPTY);
         //
         final Map<String, String> styles = AnsiEscape.createMap(string, new String[] {STYLE_KEY});
         final Map<Level, String> levelStyles = new HashMap<>(DEFAULT_STYLES);
@@ -184,8 +194,9 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         }
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
+        final boolean disableAnsi = Arrays.toString(options).contains(PatternParser.DISABLE_ANSI + "=true");
         final boolean noConsoleNoAnsi = Arrays.toString(options).contains(PatternParser.NO_CONSOLE_NO_ANSI + "=true");
-        final boolean hideAnsi = noConsoleNoAnsi && System.console() == null;
+        final boolean hideAnsi = disableAnsi || (noConsoleNoAnsi && System.console() == null);
         return new HighlightConverter(formatters, createLevelStyleMap(options), hideAnsi);
     }
 

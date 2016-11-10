@@ -28,6 +28,11 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
+ *
+ * <p>
+ * To disable ANSI output unconditionally, specify an additional option <code>disableAnsi=true</code>, or to
+ * disable ANSI output if no console is detected, specify option <code>noConsoleNoAnsi=true</code>.
+ * </p>
  */
 @Plugin(name = "style", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "style" })
@@ -86,8 +91,9 @@ public final class StyleConverter extends LogEventPatternConverter implements An
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
         final String style = AnsiEscape.createSequence(options[1].split(Patterns.COMMA_SEPARATOR));
+        final boolean disableAnsi = Arrays.toString(options).contains(PatternParser.DISABLE_ANSI + "=true");
         final boolean noConsoleNoAnsi = Arrays.toString(options).contains(PatternParser.NO_CONSOLE_NO_ANSI + "=true");
-        final boolean hideAnsi = noConsoleNoAnsi && System.console() == null;
+        final boolean hideAnsi = disableAnsi || (noConsoleNoAnsi && System.console() == null);
         return new StyleConverter(formatters, style, hideAnsi);
     }
 

@@ -93,6 +93,8 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param charset The character set.
      * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
      *                         exceptions will be written even if the pattern does not specify so).
+     * @param disableAnsi
+     *            If {@code "true"}, do not output ANSI escape codes
      * @param noConsoleNoAnsi
      *            If {@code "true"} (default) and {@link System#console()} is null, do not output ANSI escape codes
      * @param headerPattern header conversion pattern.
@@ -100,21 +102,22 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String eventPattern,
             final PatternSelector patternSelector, final Charset charset, final boolean alwaysWriteExceptions,
-            final boolean noConsoleNoAnsi, final String headerPattern, final String footerPattern) {
+          final boolean disableAnsi, final boolean noConsoleNoAnsi, final String headerPattern,
+          final String footerPattern) {
         super(config, charset,
                 createSerializer(config, replace, headerPattern, null, patternSelector, alwaysWriteExceptions,
-                        noConsoleNoAnsi),
+                        disableAnsi, noConsoleNoAnsi),
                 createSerializer(config, replace, footerPattern, null, patternSelector, alwaysWriteExceptions,
-                        noConsoleNoAnsi));
+                        disableAnsi, noConsoleNoAnsi));
         this.conversionPattern = eventPattern;
         this.patternSelector = patternSelector;
         this.eventSerializer = createSerializer(config, replace, eventPattern, DEFAULT_CONVERSION_PATTERN,
-                patternSelector, alwaysWriteExceptions, noConsoleNoAnsi);
+                patternSelector, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
     }
 
     public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
             final String pattern, final String defaultPattern, final PatternSelector patternSelector,
-            final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
+            final boolean alwaysWriteExceptions, boolean disableAnsi, final boolean noConsoleNoAnsi) {
         if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
             return null;
         }
@@ -122,7 +125,7 @@ public final class PatternLayout extends AbstractStringLayout {
             try {
                 final PatternParser parser = createPatternParser(configuration);
                 final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
-                        alwaysWriteExceptions, noConsoleNoAnsi);
+                        alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
                 final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
                 return new PatternSerializer(formatters, replace);
             } catch (final RuntimeException ex) {
@@ -233,6 +236,8 @@ public final class PatternLayout extends AbstractStringLayout {
      *        The character set. The platform default is used if not specified.
      * @param alwaysWriteExceptions
      *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
+     * @param disableAnsi
+     *        If {@code "true"} (default is false), do not output ANSI escape codes
      * @param noConsoleNoAnsi
      *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
      * @param headerPattern
@@ -250,6 +255,7 @@ public final class PatternLayout extends AbstractStringLayout {
             // LOG4J2-783 use platform default by default, so do not specify defaultString for charset
             @PluginAttribute(value = "charset") final Charset charset,
             @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
+            @PluginAttribute(value = "disableAnsi", defaultBoolean = false) final boolean disableAnsi,
             @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String headerPattern,
             @PluginAttribute("footer") final String footerPattern) {
@@ -260,6 +266,7 @@ public final class PatternLayout extends AbstractStringLayout {
             .withRegexReplacement(replace)
             .withCharset(charset)
             .withAlwaysWriteExceptions(alwaysWriteExceptions)
+            .withDisableAnsi(disableAnsi)
             .withNoConsoleNoAnsi(noConsoleNoAnsi)
             .withHeader(headerPattern)
             .withFooter(footerPattern)
@@ -424,6 +431,9 @@ public final class PatternLayout extends AbstractStringLayout {
         private boolean alwaysWriteExceptions = true;
 
         @PluginBuilderAttribute
+        private boolean disableAnsi;
+
+        @PluginBuilderAttribute
         private boolean noConsoleNoAnsi;
 
         @PluginBuilderAttribute
@@ -470,6 +480,11 @@ public final class PatternLayout extends AbstractStringLayout {
             return this;
         }
 
+        public Builder withDisableAnsi(final boolean disableAnsi) {
+            this.disableAnsi = disableAnsi;
+            return this;
+        }
+
         public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
@@ -492,7 +507,7 @@ public final class PatternLayout extends AbstractStringLayout {
                 configuration = new DefaultConfiguration();
             }
             return new PatternLayout(configuration, regexReplacement, pattern, patternSelector, charset,
-                alwaysWriteExceptions, noConsoleNoAnsi, header, footer);
+                alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, header, footer);
         }
     }
 }
