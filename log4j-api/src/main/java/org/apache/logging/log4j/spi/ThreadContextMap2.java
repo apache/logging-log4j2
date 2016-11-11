@@ -24,6 +24,8 @@ import org.apache.logging.log4j.util.StringMap;
  * Extension service provider interface to implement additional custom MDC behavior for
  * {@link org.apache.logging.log4j.ThreadContext}.
  *
+ * Consider implementing {@link ThreadContextMap3} instead.
+ *
  * @see ThreadContextMap
  * @since 2.7
  */

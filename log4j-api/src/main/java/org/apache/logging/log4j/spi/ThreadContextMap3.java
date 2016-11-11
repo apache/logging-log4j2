@@ -17,28 +17,23 @@
 package org.apache.logging.log4j.spi;
 
 /**
- * Extension service provider interface to allow putting Object values in the
+ * Extension service provider interface to implement additional custom MDC behavior for
  * {@link org.apache.logging.log4j.ThreadContext}.
  *
- * @see ThreadContextMap3
+ * @see ThreadContextMap
  * @since 2.8
  */
-public interface ObjectThreadContextMap extends ThreadContextMap3 {
+public interface ThreadContextMap3 extends ThreadContextMap2 {
 
     /**
-     * Returns the Object value for the specified key, or {@code null} if the specified key does not exist in this
-     * collection.
+     * Removes all given context map keys from the current thread's context map.
      *
-     * @param key the key whose value to return
-     * @return the value for the specified key or {@code null}
-     */
-    <V> V getValue(String key);
+     * <p>If the current thread does not have a context map it is
+     * created as a side effect.</p>
 
-    /**
-     * Puts the specified key-value pair into the collection.
-     *
-     * @param key the key to add or remove. Keys may be {@code null}.
-     * @param value the value to add. Values may be {@code null}.
+     * @param keys The keys.
+     * @since 2.8
      */
-    <V> void putValue(String key, V value);
+    void removeAll(final Iterable<String> keys);
+
 }
