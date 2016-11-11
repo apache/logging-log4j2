@@ -62,8 +62,8 @@ public class CloseableThreadContext {
     }
 
     /**
-     * Populates the Thread Context Map with the supplied key/value pairs. Any existing keys in the
-     * {@link ThreadContext} will be replaced with the supplied values, and restored back to their original values when
+     * Populates the Thread Context Map with the supplied key/value pair. Any existing key in the
+     * {@link ThreadContext} will be replaced with the supplied value, and restored back to their original value when
      * the instance is closed.
      *
      * @param key   The  key to be added
@@ -72,6 +72,31 @@ public class CloseableThreadContext {
      */
     public static CloseableThreadContext.Instance put(final String key, final String value) {
         return new CloseableThreadContext.Instance().put(key, value);
+    }
+
+    /**
+     * Populates the Thread Context Stack with the supplied stack. The information will be popped off when
+     * the instance is closed.
+     *
+     * @param values The stack of values to be added
+     * @return a new instance that will back out the changes when closed.
+     * @since 2.7.1
+     */
+    public static CloseableThreadContext.Instance pushAll(final ThreadContext.ContextStack stack) {
+        return new CloseableThreadContext.Instance().pushAll(stack);
+    }
+
+    /**
+     * Populates the Thread Context Map with the supplied key/value pairs. Any existing keys in the
+     * {@link ThreadContext} will be replaced with the supplied values, and restored back to their original value when
+     * the instance is closed.
+     *
+     * @param values The map of key/value pairs to be added
+     * @return a new instance that will back out the changes when closed.
+     * @since 2.7.1
+     */
+    public static CloseableThreadContext.Instance putAll(final Map<String, String> values) {
+        return new CloseableThreadContext.Instance().putAll(values);
     }
 
     public static class Instance implements AutoCloseable {
@@ -110,13 +135,13 @@ public class CloseableThreadContext {
         }
 
         /**
-         * Populates the Thread Context Map with the supplied key/value pairs. Any existing keys in the
-         * {@link ThreadContext} will be replaced with the supplied values, and restored back to their original values when
+         * Populates the Thread Context Map with the supplied key/value pair. Any existing key in the
+         * {@link ThreadContext} will be replaced with the supplied value, and restored back to their original value when
          * the instance is closed.
          *
          * @param key   The  key to be added
          * @param value The value to be added
-         * @return the instance that will back out the changes when closed.
+         * @return a new instance that will back out the changes when closed.
          */
         public Instance put(final String key, final String value) {
             // If there are no existing values, a null will be stored as an old value
@@ -124,6 +149,37 @@ public class CloseableThreadContext {
                 originalValues.put(key, ThreadContext.get(key));
             }
             ThreadContext.put(key, value);
+            return this;
+        }
+
+        /**
+         * Populates the Thread Context Map with the supplied key/value pairs. Any existing keys in the
+         * {@link ThreadContext} will be replaced with the supplied values, and restored back to their original value when
+         * the instance is closed.
+         *
+         * @param values The map of key/value pairs to be added
+         * @return a new instance that will back out the changes when closed.
+         * @since 2.7.1
+         */
+        public Instance putAll(final Map<String, String> values) {
+            for (final Map.Entry<String, String> entry : values.entrySet()) {
+                put(entry.getKey(), entry.getValue());
+            }
+            return this;
+        }
+
+        /**
+         * Populates the Thread Context Stack with the supplied stack. The information will be popped off when
+         * the instance is closed.
+         *
+         * @param values The stack of values to be added
+         * @return a new instance that will back out the changes when closed.
+         * @since 2.7.1
+         */
+        public Instance pushAll(final ThreadContext.ContextStack stack) {
+            for (final String message : stack.asList()) {
+                push(message);
+            }
             return this;
         }
 
