@@ -306,9 +306,9 @@ public final class PatternParser {
      * @param formattingInfos
      *            list to receive field specifiers corresponding to pattern converters.
      * @param disableAnsi
-     *            if all ansi color codes should be disabled.
+     *            do not output ANSI escape codes
      * @param noConsoleNoAnsi
-     *            TODO
+     *            do not do not output ANSI escape codes if {@link System#console()}
      * @param convertBackslashes if {@code true}, backslash characters are treated as escape characters and character
      *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
      */
@@ -479,7 +479,10 @@ public final class PatternParser {
      *            map of stock pattern converters keyed by format specifier.
      * @param options
      *            converter options.
-     * @param noConsoleNoAnsi TODO
+     * @param disableAnsi
+     *            do not output ANSI escape codes
+     * @param noConsoleNoAnsi
+     *            do not do not output ANSI escape codes if {@link System#console()}
      * @return converter or null.
      */
     private PatternConverter createConverter(final String converterId, final StringBuilder currentLiteral,
@@ -585,10 +588,10 @@ public final class PatternParser {
      *            list to receive parsed pattern converter.
      * @param formattingInfos
      *            list to receive corresponding field specifier.
-     * @param noConsoleNoAnsi
-     *            TODO
      * @param disableAnsi
-     *            if all ansi color codes should be disabled.
+     *            do not output ANSI escape codes
+     * @param noConsoleNoAnsi
+     *            do not do not output ANSI escape codes if {@link System#console()}
      * @param convertBackslashes if {@code true}, backslash characters are treated as escape characters and character
      *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
      * @return position after format specifier sequence.
