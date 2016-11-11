@@ -150,6 +150,16 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     @Override
+    public void removeAll(Iterable<String> keys) {
+        final StringMap map = localMap.get();
+        if (map != null) {
+            for (final String key : keys) {
+                map.remove(key);
+            }
+        }
+    }
+
+    @Override
     public void clear() {
         final StringMap map = localMap.get();
         if (map != null) {

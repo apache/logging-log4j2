@@ -33,6 +33,7 @@ import org.apache.logging.log4j.spi.NoOpThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap2;
+import org.apache.logging.log4j.spi.ThreadContextMap3;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -286,6 +287,25 @@ public final class ThreadContext {
      */
     public static void remove(final String key) {
         contextMap.remove(key);
+    }
+
+    /**
+     * Removes the context values identified by the <code>keys</code> parameter.
+     *
+     * @param keys The keys to remove.
+     *
+     * @since 2.8
+     */
+    public static void removeAll(final Iterable<String> keys) {
+        if (contextMap instanceof ThreadContextMap3) {
+            ((ThreadContextMap3) contextMap).removeAll(keys);
+        } else if (contextMap instanceof DefaultThreadContextMap) {
+            ((DefaultThreadContextMap) contextMap).removeAll(keys);
+        } else {
+            for (final String key : keys) {
+                contextMap.remove(key);
+            }
+        }
     }
 
     /**
