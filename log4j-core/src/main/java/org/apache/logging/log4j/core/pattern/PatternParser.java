@@ -164,6 +164,11 @@ public final class PatternParser {
     }
 
     public List<PatternFormatter> parse(final String pattern, final boolean alwaysWriteExceptions,
+                                        final boolean noConsoleNoAnsi) {
+        return parse(pattern, alwaysWriteExceptions, false, noConsoleNoAnsi);
+    }
+
+    public List<PatternFormatter> parse(final String pattern, final boolean alwaysWriteExceptions,
            boolean disableAnsi, final boolean noConsoleNoAnsi) {
         final List<PatternFormatter> list = new ArrayList<>();
         final List<PatternConverter> converters = new ArrayList<>();
@@ -294,6 +299,26 @@ public final class PatternParser {
         }
 
         return i;
+    }
+
+    /**
+     * Parse a format specifier.
+     *
+     * @param pattern
+     *            pattern to parse.
+     * @param patternConverters
+     *            list to receive pattern converters.
+     * @param formattingInfos
+     *            list to receive field specifiers corresponding to pattern converters.
+     * @param noConsoleNoAnsi
+     *            do not do not output ANSI escape codes if {@link System#console()}
+     * @param convertBackslashes if {@code true}, backslash characters are treated as escape characters and character
+     *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
+     */
+    public void parse(final String pattern, final List<PatternConverter> patternConverters,
+                      final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi,
+                      final boolean convertBackslashes) {
+        parse(pattern, patternConverters, formattingInfos, false, noConsoleNoAnsi, convertBackslashes);
     }
 
     /**

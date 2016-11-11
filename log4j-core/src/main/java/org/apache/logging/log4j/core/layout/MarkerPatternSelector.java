@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,10 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
@@ -50,8 +50,17 @@ public class MarkerPatternSelector implements PatternSelector {
 
     private static Logger LOGGER = StatusLogger.getLogger();
 
-
+    /**
+     * @deprecated Use PluginFactory instead
+     */
+    @Deprecated
     public MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
+                                 final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
+                                 final Configuration config) {
+        this(properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
+    }
+
+    private MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean disableAnsi,
                                  final boolean noConsoleNoAnsi, final Configuration config) {
         final PatternParser parser = PatternLayout.createPatternParser(config);
@@ -89,6 +98,15 @@ public class MarkerPatternSelector implements PatternSelector {
         return defaultFormatters;
     }
 
+
+    @PluginFactory
+    public static MarkerPatternSelector createSelector(@PluginElement("PatternMatch") final PatternMatch[] properties,
+                                                       @PluginAttribute("defaultPattern") String defaultPattern,
+                                                       @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
+                                                       @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
+                                                       @PluginConfiguration final Configuration config) {
+        return createSelector(properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
+    }
 
     @PluginFactory
     public static MarkerPatternSelector createSelector(@PluginElement("PatternMatch") final PatternMatch[] properties,

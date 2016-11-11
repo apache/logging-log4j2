@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.script.SimpleBindings;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -30,11 +35,6 @@ import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.script.SimpleBindings;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
@@ -55,7 +55,17 @@ public class ScriptPatternSelector implements PatternSelector {
     private final Configuration configuration;
 
 
+    /**
+     * @deprecated Use PluginFactory instead
+     */
+    @Deprecated
     public ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
+                                 final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
+                                 final Configuration config) {
+        this(script, properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
+    }
+
+    private ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean disablAnsi,
                                  final boolean noConsoleNoAnsi, final Configuration config) {
         this.script = script;
@@ -97,6 +107,16 @@ public class ScriptPatternSelector implements PatternSelector {
         return patternFormatter == null ? defaultFormatters : patternFormatter;
     }
 
+
+    @PluginFactory
+    public static ScriptPatternSelector createSelector(@PluginElement("Script") final AbstractScript script,
+                                                       @PluginElement("PatternMatch") final PatternMatch[] properties,
+                                                       @PluginAttribute("defaultPattern") String defaultPattern,
+                                                       @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
+                                                       @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
+                                                       @PluginConfiguration final Configuration config) {
+        return createSelector(script, properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
+    }
 
     @PluginFactory
     public static ScriptPatternSelector createSelector(@PluginElement("Script") final AbstractScript script,
