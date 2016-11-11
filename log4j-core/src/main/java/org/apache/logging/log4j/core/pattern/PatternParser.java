@@ -313,8 +313,8 @@ public final class PatternParser {
      *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
      */
     public void parse(final String pattern, final List<PatternConverter> patternConverters,
-            final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi,
-            final boolean disableAnsi, final boolean convertBackslashes) {
+            final List<FormattingInfo> formattingInfos, final boolean disableAnsi,
+            final boolean noConsoleNoAnsi, final boolean convertBackslashes) {
         Objects.requireNonNull(pattern, "pattern");
 
         final StringBuilder currentLiteral = new StringBuilder(BUF_SIZE);
@@ -387,7 +387,7 @@ public final class PatternParser {
                         state = ParserState.MIN_STATE;
                     } else {
                         i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
-                                patternConverters, formattingInfos, noConsoleNoAnsi, disableAnsi, convertBackslashes);
+                                patternConverters, formattingInfos, disableAnsi, noConsoleNoAnsi, convertBackslashes);
 
                         // Next pattern is assumed to be a literal.
                         state = ParserState.LITERAL_STATE;
@@ -409,7 +409,7 @@ public final class PatternParser {
                     state = ParserState.DOT_STATE;
                 } else {
                     i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
-                            patternConverters, formattingInfos, noConsoleNoAnsi, disableAnsi, convertBackslashes);
+                            patternConverters, formattingInfos, disableAnsi, noConsoleNoAnsi, convertBackslashes);
                     state = ParserState.LITERAL_STATE;
                     formattingInfo = FormattingInfo.getDefault();
                     currentLiteral.setLength(0);
@@ -450,7 +450,7 @@ public final class PatternParser {
                             formattingInfo.getMaxLength() * DECIMAL + c - '0', formattingInfo.isLeftTruncate());
                 } else {
                     i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
-                            patternConverters, formattingInfos, noConsoleNoAnsi, disableAnsi, convertBackslashes);
+                            patternConverters, formattingInfos, disableAnsi, noConsoleNoAnsi, convertBackslashes);
                     state = ParserState.LITERAL_STATE;
                     formattingInfo = FormattingInfo.getDefault();
                     currentLiteral.setLength(0);
@@ -486,8 +486,8 @@ public final class PatternParser {
      * @return converter or null.
      */
     private PatternConverter createConverter(final String converterId, final StringBuilder currentLiteral,
-            final Map<String, Class<PatternConverter>> rules, final List<String> options, final boolean noConsoleNoAnsi,
-            final boolean disableAnsi) {
+            final Map<String, Class<PatternConverter>> rules, final List<String> options, final boolean disableAnsi,
+            final boolean noConsoleNoAnsi) {
         String converterName = converterId;
         Class<PatternConverter> converterClass = null;
 
@@ -599,7 +599,7 @@ public final class PatternParser {
     private int finalizeConverter(final char c, final String pattern, final int start,
             final StringBuilder currentLiteral, final FormattingInfo formattingInfo,
             final Map<String, Class<PatternConverter>> rules, final List<PatternConverter> patternConverters,
-            final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi, final boolean disableAnsi,
+            final List<FormattingInfo> formattingInfos, final boolean disableAnsi, final boolean noConsoleNoAnsi,
             final boolean convertBackslashes) {
         int i = start;
         final StringBuilder convBuf = new StringBuilder();
@@ -610,8 +610,8 @@ public final class PatternParser {
         final List<String> options = new ArrayList<>();
         i = extractOptions(pattern, i, options);
 
-        final PatternConverter pc = createConverter(converterId, currentLiteral, rules, options, noConsoleNoAnsi,
-                disableAnsi);
+        final PatternConverter pc = createConverter(converterId, currentLiteral, rules, options, disableAnsi,
+            noConsoleNoAnsi);
 
         if (pc == null) {
             StringBuilder msg;
