@@ -35,6 +35,7 @@ import java.nio.charset.StandardCharsets;
  * <p>
  * Since 2.4.1, this class has custom logic to convert ISO-8859-1 or US-ASCII Strings to byte[] arrays to improve
  * performance: all characters are simply cast to bytes.
+ * </p>
  */
 /*
  * Implementation note: prefer String.getBytes(String) to String.getBytes(Charset) for performance reasons. See
