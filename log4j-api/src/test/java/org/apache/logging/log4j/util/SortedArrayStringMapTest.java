@@ -111,7 +111,7 @@ public class SortedArrayStringMapTest {
         final Process process = new ProcessBuilder("java", "-cp", classpath,
                 DeserializerHelper.class.getName(), file.getPath()).start();
         final BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        int exitValue = process.waitFor();
+        final int exitValue = process.waitFor();
 
         file.delete();
         if (exitValue != 0) {

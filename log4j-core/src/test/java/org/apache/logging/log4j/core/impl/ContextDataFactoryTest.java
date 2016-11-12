@@ -39,8 +39,8 @@ public class ContextDataFactoryTest {
 
     @Test
     public void intArgSetsCapacityIfNoPropertySpecified() throws Exception {
-        SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
-        Field thresholdField = SortedArrayStringMap.class.getDeclaredField("threshold");
+        final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
+        final Field thresholdField = SortedArrayStringMap.class.getDeclaredField("threshold");
         thresholdField.setAccessible(true);
         assertEquals(2, thresholdField.getInt(actual));
     }

@@ -392,7 +392,7 @@ public class StrSubstitutor implements ConfigurationAware {
     }
 
     private static Map<String, String> toTypeSafeMap(final Properties properties) {
-        Map<String, String> map = new HashMap<>(properties.size());
+        final Map<String, String> map = new HashMap<>(properties.size());
         for (final String name : properties.stringPropertyNames()) {
             map.put(name, properties.getProperty(name));
         }

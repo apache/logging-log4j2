@@ -97,7 +97,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        KeyStoreConfiguration other = (KeyStoreConfiguration) obj;
+        final KeyStoreConfiguration other = (KeyStoreConfiguration) obj;
         if (keyManagerFactoryAlgorithm == null) {
             if (other.keyManagerFactoryAlgorithm != null) {
                 return false;

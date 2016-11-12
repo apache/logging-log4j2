@@ -126,7 +126,7 @@ public class Log4j1ConfigurationParser {
     }
 
     private void buildProperties() {
-        for (Map.Entry<Object, Object> entry : new TreeMap<>(properties).entrySet()) {
+        for (final Map.Entry<Object, Object> entry : new TreeMap<>(properties).entrySet()) {
             final String key = entry.getKey().toString();
             if (!key.startsWith("log4j.") && !key.equals(ROOTCATEGORY) && !key.equals(ROOTLOGGER)) {
                 builder.addProperty(key, Objects.toString(entry.getValue(), Strings.EMPTY));
@@ -403,7 +403,7 @@ public class Log4j1ConfigurationParser {
                                 // Add Appenders to this logger
                                 final String[] sortedAppenderNames = Arrays.copyOfRange(split, 1, split.length);
                                 Arrays.sort(sortedAppenderNames);
-                                for (String appenderName : sortedAppenderNames) {
+                                for (final String appenderName : sortedAppenderNames) {
                                     newLogger.add(builder.newAppenderRef(appenderName));
                                 }
                             }

@@ -148,7 +148,7 @@ public abstract class AbstractLoadBundleTest {
         try {
             core.start();
         }
-        catch (BundleException ex) {
+        catch (final BundleException ex) {
             final Throwable t = ex.getCause();
             if (t != null)
             {
@@ -156,7 +156,7 @@ public abstract class AbstractLoadBundleTest {
                 if (t2 != null)
                 {
                     final String cause = t2.toString();
-                    boolean result = cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger") // Equinox
+                    final boolean result = cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger") // Equinox
                                   || cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger not found by org.apache.logging.log4j.core [2]"); // Felix
                     Assert.assertFalse("org.apache.logging.log4j package is not properly imported in org.apache.logging.log4j.core bundle, check that the package is exported from api and is not split between api and core", result);
                 }

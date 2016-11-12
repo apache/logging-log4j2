@@ -33,13 +33,13 @@ public class DeserializerHelper {
             in = new ObjectInputStream(new FileInputStream(file));
             final Object result = in.readObject();
             System.out.println(result);
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             System.err.println("Could not deserialize.");
             throw t; // cause non-zero exit code
         } finally {
             try {
                 in.close();
-            } catch (Throwable t) {
+            } catch (final Throwable t) {
                 System.err.println("Error while closing: " + t);
             }
         }

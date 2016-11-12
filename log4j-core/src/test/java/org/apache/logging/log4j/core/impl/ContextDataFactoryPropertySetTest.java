@@ -42,7 +42,7 @@ public class ContextDataFactoryPropertySetTest {
     @Test
     public void intArgSetsCapacityIfPropertySpecified() throws Exception {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
-        FactoryTestStringMap actual = (FactoryTestStringMap) ContextDataFactory.createContextData(2);
+        final FactoryTestStringMap actual = (FactoryTestStringMap) ContextDataFactory.createContextData(2);
         assertEquals(2, actual.initialCapacity);
         System.clearProperty("log4j2.ContextData");
     }

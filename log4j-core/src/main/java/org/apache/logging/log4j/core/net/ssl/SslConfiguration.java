@@ -244,7 +244,7 @@ public class SslConfiguration {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        SslConfiguration other = (SslConfiguration) obj;
+        final SslConfiguration other = (SslConfiguration) obj;
         if (keyStoreConfig == null) {
             if (other.keyStoreConfig != null) {
                 return false;

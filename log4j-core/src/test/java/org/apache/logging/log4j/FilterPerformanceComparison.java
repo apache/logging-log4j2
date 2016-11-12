@@ -85,7 +85,7 @@ public class FilterPerformanceComparison {
 
     private static void putContextData(final Map<String, String> contextData) {
         ThreadContext.putAll(contextData);
-        for (Map.Entry<String, String> entry : contextData.entrySet()) {
+        for (final Map.Entry<String, String> entry : contextData.entrySet()) {
             MDC.put(entry.getKey(), entry.getValue());
         }
     }

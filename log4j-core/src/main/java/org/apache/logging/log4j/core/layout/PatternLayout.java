@@ -133,7 +133,7 @@ public final class PatternLayout extends AbstractStringLayout {
     public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
             final String pattern, final String defaultPattern, final PatternSelector patternSelector,
             final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
-        SerializerBuilder builder = newSerializerBuilder();
+        final SerializerBuilder builder = newSerializerBuilder();
         builder.withAlwaysWriteExceptions(alwaysWriteExceptions);
         builder.withConfiguration(configuration);
         builder.withDefaultPattern(defaultPattern);

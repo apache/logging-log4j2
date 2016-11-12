@@ -27,7 +27,7 @@ public class InetAddressConverter implements IStringConverter<InetAddress> {
     public InetAddress convert(final String host) {
         try {
             return InetAddress.getByName(host);
-        } catch (UnknownHostException e) {
+        } catch (final UnknownHostException e) {
             throw new IllegalArgumentException(host, e);
         }
     }

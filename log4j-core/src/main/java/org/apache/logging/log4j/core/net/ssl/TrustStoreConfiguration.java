@@ -92,7 +92,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        TrustStoreConfiguration other = (TrustStoreConfiguration) obj;
+        final TrustStoreConfiguration other = (TrustStoreConfiguration) obj;
         if (trustManagerFactoryAlgorithm == null) {
             if (other.trustManagerFactoryAlgorithm != null) {
                 return false;

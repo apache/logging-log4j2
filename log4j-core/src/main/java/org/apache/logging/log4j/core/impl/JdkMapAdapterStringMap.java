@@ -190,7 +190,7 @@ class JdkMapAdapterStringMap implements StringMap {
         if (!(object instanceof JdkMapAdapterStringMap)) {
             return false;
         }
-        JdkMapAdapterStringMap other = (JdkMapAdapterStringMap) object;
+        final JdkMapAdapterStringMap other = (JdkMapAdapterStringMap) object;
         return map.equals(other.map) && immutable == other.immutable;
     }
 

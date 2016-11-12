@@ -98,7 +98,7 @@ public class MDCContextMap implements ThreadContextMap3 {
             return EMPTY_CONTEXT_DATA;
         }
         final StringMap result = new SortedArrayStringMap();
-        for (Entry<String, String> entry : copy.entrySet()) {
+        for (final Entry<String, String> entry : copy.entrySet()) {
             result.putValue(entry.getKey(), entry.getValue());
         }
         return result;
