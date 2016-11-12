@@ -270,7 +270,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
      *            DefaultRolloverStrategy.
      * @param layout The layout to use (defaults to the default PatternLayout).
      * @param filter The Filter or null.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
      * @param advertise "true" if the appender configuration should be
      *            advertised, "false" otherwise.
@@ -292,14 +292,14 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             final RolloverStrategy strategy,
             final Layout<? extends Serializable> layout,
             final Filter filter,
-            final String ignore,
+            final String ignoreExceptions,
             final String advertise,
             final String advertiseURI,
             final Configuration configuration) {
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
+        final boolean isIgnoreExceptions = Booleans.parseBoolean(ignoreExceptions, true);
+        final boolean isImmediateFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final int bufferSize = Integers.parseInt(bufferSizeStr, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
@@ -312,8 +312,8 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
            .withFileName(fileName)
            .withFilePattern(filePattern)
            .withFilter(filter)
-           .withIgnoreExceptions(ignoreExceptions)
-           .withImmediateFlush(isFlush)
+           .withIgnoreExceptions(isIgnoreExceptions)
+           .withImmediateFlush(isImmediateFlush)
            .withLayout(layout)
            .withName(name)
            .withPolicy(policy)
