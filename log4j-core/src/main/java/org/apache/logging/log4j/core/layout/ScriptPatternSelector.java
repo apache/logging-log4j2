@@ -65,7 +65,7 @@ public class ScriptPatternSelector implements PatternSelector {
         private boolean noConsoleNoAnsi;
         
         @PluginConfiguration 
-        private Configuration config;
+        private Configuration configuration;
 
         private Builder() {
             // nothing
@@ -78,7 +78,7 @@ public class ScriptPatternSelector implements PatternSelector {
                 return null;
             }
             if (script instanceof ScriptRef) {
-                if (config.getScriptManager().getScript(script.getName()) == null) {
+                if (configuration.getScriptManager().getScript(script.getName()) == null) {
                     LOGGER.error("No script with name {} has been declared.", script.getName());
                     return null;
                 }
@@ -90,7 +90,7 @@ public class ScriptPatternSelector implements PatternSelector {
                 LOGGER.warn("No marker patterns were provided");
                 return null;
             }
-            return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, config);
+            return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, configuration);
         }
 
         public Builder withScript(final AbstractScript script) {
@@ -119,7 +119,7 @@ public class ScriptPatternSelector implements PatternSelector {
         }
 
         public Builder withConfiguration(final Configuration config) {
-            this.config = config;
+            this.configuration = config;
             return this;
         }
     }
