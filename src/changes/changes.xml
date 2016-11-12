@@ -114,6 +114,9 @@
       <action issue="LOG4J2-1681" dev="rpopma" type="add">
         Changed visibility of indexed getter methods in SortedArrayStringMap from package-protected to public.
       </action>
+      <action issue="LOG4J2-1695" dev="ggregory" type="add">
+        Add a Builder to ScriptPatternSelector and deprecate ScriptPatternSelector.createSelector().
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">

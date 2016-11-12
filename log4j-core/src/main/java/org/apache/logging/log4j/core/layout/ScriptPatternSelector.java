@@ -22,9 +22,12 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.PatternLayout.Builder;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.script.AbstractScript;
@@ -42,6 +45,86 @@ import java.util.Map;
 @Plugin(name = "ScriptPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 public class ScriptPatternSelector implements PatternSelector {
 
+    /**
+     * Custom PatternLayout builder. Use the {@link PatternLayout#newBuilder() builder factory method} to create this.
+     */
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
+
+        @PluginElement("Script") 
+        private AbstractScript script;
+        
+        @PluginElement("PatternMatch") 
+        private PatternMatch[] properties;
+        
+        @PluginBuilderAttribute("defaultPattern") 
+        private String defaultPattern;
+        
+        @PluginBuilderAttribute("alwaysWriteExceptions") 
+        private boolean alwaysWriteExceptions = true;
+        
+        @PluginBuilderAttribute("noConsoleNoAnsi") 
+        private boolean noConsoleNoAnsi;
+        
+        @PluginConfiguration 
+        private Configuration config;
+
+        private Builder() {
+            // nothing
+        }
+
+        @Override
+        public ScriptPatternSelector build() {
+            if (script == null) {
+                LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
+                return null;
+            }
+            if (script instanceof ScriptRef) {
+                if (config.getScriptManager().getScript(script.getName()) == null) {
+                    LOGGER.error("No script with name {} has been declared.", script.getName());
+                    return null;
+                }
+            }
+            if (defaultPattern == null) {
+                defaultPattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
+            }
+            if (properties == null || properties.length == 0) {
+                LOGGER.warn("No marker patterns were provided");
+                return null;
+            }
+            return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, config);
+        }
+
+        public Builder withScript(AbstractScript script) {
+            this.script = script;
+            return this;
+        }
+
+        public Builder withProperties(PatternMatch[] properties) {
+            this.properties = properties;
+            return this;
+        }
+
+        public Builder withDefaultPattern(String defaultPattern) {
+            this.defaultPattern = defaultPattern;
+            return this;
+        }
+
+        public Builder withAlwaysWriteExceptions(boolean alwaysWriteExceptions) {
+            this.alwaysWriteExceptions = alwaysWriteExceptions;
+            return this;
+        }
+
+        public Builder withNoConsoleNoAnsi(boolean noConsoleNoAnsi) {
+            this.noConsoleNoAnsi = noConsoleNoAnsi;
+            return this;
+        }
+
+        public Builder withConfiguration(Configuration config) {
+            this.config = config;
+            return this;
+        }
+    }
+    
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
 
     private final Map<String, String> patternMap = new HashMap<>();
@@ -98,31 +181,44 @@ public class ScriptPatternSelector implements PatternSelector {
     }
 
 
-    @PluginFactory
-    public static ScriptPatternSelector createSelector(@PluginElement("Script") final AbstractScript script,
-                                                       @PluginElement("PatternMatch") final PatternMatch[] properties,
-                                                       @PluginAttribute("defaultPattern") String defaultPattern,
-                                                       @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
-                                                       @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
-                                                       @PluginConfiguration final Configuration config) {
-        if (script == null) {
-            LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
-            return null;
-        }
-        if (script instanceof ScriptRef) {
-            if (config.getScriptManager().getScript(script.getName()) == null) {
-                LOGGER.error("No script with name {} has been declared.", script.getName());
-                return null;
-            }
-        }
-        if (defaultPattern == null) {
-            defaultPattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
-        }
-        if (properties == null || properties.length == 0) {
-            LOGGER.warn("No marker patterns were provided");
-            return null;
-        }
-        return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, config);
+    /**
+     * Creates a builder for a custom ScriptPatternSelector.
+     *
+     * @return a ScriptPatternSelector builder.
+     */
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * Deprecated, use {@link #newBuilder()} instead.
+     * 
+     * @param script
+     * @param properties
+     * @param defaultPattern
+     * @param alwaysWriteExceptions
+     * @param noConsoleNoAnsi
+     * @param configuration
+     * @return a new ScriptPatternSelector
+     * @deprecated Use {@link #newBuilder()} instead.
+     */
+    @Deprecated
+    public static ScriptPatternSelector createSelector(
+            @PluginElement("Script") final AbstractScript script,
+            @PluginElement("PatternMatch") final PatternMatch[] properties,
+            @PluginAttribute("defaultPattern") String defaultPattern,
+            @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
+            @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
+            @PluginConfiguration final Configuration configuration) {
+        final Builder builder = newBuilder();
+        builder.withScript(script);
+        builder.withProperties(properties);
+        builder.withDefaultPattern(defaultPattern);
+        builder.withAlwaysWriteExceptions(alwaysWriteExceptions);
+        builder.withNoConsoleNoAnsi(noConsoleNoAnsi);
+        builder.withConfiguration(configuration);
+        return builder.build();
     }
 
     @Override
