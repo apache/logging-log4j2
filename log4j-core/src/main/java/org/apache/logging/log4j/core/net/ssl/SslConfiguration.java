@@ -29,6 +29,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  *  SSL Configuration
  */
-@Plugin(name = "Ssl", category = "Core", printObject = true)
+@Plugin(name = "Ssl", category = Core.CATEGORY_NAME, printObject = true)
 public class SslConfiguration {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final KeyStoreConfiguration keyStoreConfig;

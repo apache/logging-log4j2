@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.CronScheduledFuture;
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.core.util.CronExpression;
 /**
  * Rolls a file over based on a cron schedule.
  */
-@Plugin(name = "CronTriggeringPolicy", category = "Core", printObject = true)
+@Plugin(name = "CronTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
 @Scheduled
 public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
 

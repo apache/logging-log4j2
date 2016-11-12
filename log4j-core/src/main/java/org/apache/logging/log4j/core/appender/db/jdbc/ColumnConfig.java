@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -30,7 +31,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * A configuration element used to configure which event properties are logged to which columns in the database table.
  */
-@Plugin(name = "Column", category = "Core", printObject = true)
+@Plugin(name = "Column", category = Core.CATEGORY_NAME, printObject = true)
 public final class ColumnConfig {
     private static final Logger LOGGER = StatusLogger.getLogger();
 

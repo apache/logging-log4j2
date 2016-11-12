@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 /**
  * Rollover or scheduled action for deleting old log files that are accepted by the specified PathFilters.
  */
-@Plugin(name = "Delete", category = "Core", printObject = true)
+@Plugin(name = "Delete", category = Core.CATEGORY_NAME, printObject = true)
 public class DeleteAction extends AbstractPathAction {
 
     private final PathSorter pathSorter;

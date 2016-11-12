@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Writer;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -30,7 +31,7 @@ import org.apache.logging.log4j.core.util.CloseShieldWriter;
 /**
  * Appends log events to a {@link Writer}.
  */
-@Plugin(name = "Writer", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(name = "Writer", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class WriterAppender extends AbstractWriterAppender<WriterManager> {
 
     /**

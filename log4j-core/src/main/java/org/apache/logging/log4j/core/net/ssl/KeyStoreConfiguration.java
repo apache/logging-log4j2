@@ -22,6 +22,7 @@ import java.security.UnrecoverableKeyException;
 
 import javax.net.ssl.KeyManagerFactory;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -29,7 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Configuration of the KeyStore
  */
-@Plugin(name = "KeyStore", category = "Core", printObject = true)
+@Plugin(name = "KeyStore", category = Core.CATEGORY_NAME, printObject = true)
 public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     private final String keyManagerFactoryAlgorithm;

@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
@@ -73,7 +74,7 @@ import org.apache.logging.log4j.core.util.Integers;
  * are discouraged.
  * </p>
  */
-@Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
+@Plugin(name = "DefaultRolloverStrategy", category = Core.CATEGORY_NAME, printObject = true)
 public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
     /**

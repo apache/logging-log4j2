@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.db.jpa;
 import java.lang.reflect.Constructor;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.util.Strings;
  *
  * @see AbstractLogEventWrapperEntity
  */
-@Plugin(name = "JPA", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(name = "JPA", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManager> {
 
     private final String description;

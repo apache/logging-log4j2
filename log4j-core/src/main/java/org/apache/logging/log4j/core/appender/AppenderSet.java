@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -33,7 +34,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * A deferred plugin for appenders.
  */
-@Plugin(name = "AppenderSet", category = "Core", printObject = true, deferChildren = true)
+@Plugin(name = "AppenderSet", category = Core.CATEGORY_NAME, printObject = true, deferChildren = true)
 public class AppenderSet {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<AppenderSet> {

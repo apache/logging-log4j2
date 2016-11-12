@@ -47,7 +47,7 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
  *
  * @see org.apache.logging.log4j.junit.LoggerContextRule#getListAppender(String) ILC.getListAppender
  */
-@Plugin(name = "List", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(name = "List", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class ListAppender extends AbstractAppender {
 
     // Use CopyOnWriteArrayList?

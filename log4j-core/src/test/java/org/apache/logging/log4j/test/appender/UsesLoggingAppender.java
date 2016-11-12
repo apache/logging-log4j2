@@ -31,7 +31,7 @@ import org.apache.logging.log4j.test.SomethingThatUsesLogging;
 /**
  *
  */
-@Plugin(name = "UsesLoggingAppender", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(name = "UsesLoggingAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class UsesLoggingAppender extends AbstractAppender {
 
     private final SomethingThatUsesLogging thing;

@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -41,7 +42,7 @@ import org.apache.logging.log4j.core.util.Integers;
  *
  * @since 2.1
  */
-@Plugin(name = "MemoryMappedFile", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(name = "MemoryMappedFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender<MemoryMappedFileManager> {
 
     private static final int BIT_POSITION_1GB = 30; // 2^30 ~= 1GB

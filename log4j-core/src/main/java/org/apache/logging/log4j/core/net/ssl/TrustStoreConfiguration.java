@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.TrustManagerFactory;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -28,7 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Configuration of the TrustStore
  */
-@Plugin(name = "TrustStore", category = "Core", printObject = true)
+@Plugin(name = "TrustStore", category = Core.CATEGORY_NAME, printObject = true)
 public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     private final String trustManagerFactoryAlgorithm;

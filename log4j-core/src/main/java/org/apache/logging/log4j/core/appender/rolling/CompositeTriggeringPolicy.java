@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,7 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Triggering policy that wraps other triggering policies.
  */
-@Plugin(name = "Policies", category = "Core", printObject = true)
+@Plugin(name = "Policies", category = Core.CATEGORY_NAME, printObject = true)
 public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private final TriggeringPolicy[] triggeringPolicies;

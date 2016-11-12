@@ -23,6 +23,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Policy is purging appenders that were not in use specified time in minutes
  */
-@Plugin(name = "IdlePurgePolicy", category = "Core", printObject = true)
+@Plugin(name = "IdlePurgePolicy", category = Core.CATEGORY_NAME, printObject = true)
 @Scheduled
 public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, Runnable {
 

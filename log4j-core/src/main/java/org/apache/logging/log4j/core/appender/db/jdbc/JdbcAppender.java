@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.core.util.Booleans;
  * @see ColumnConfig
  * @see ConnectionSource
  */
-@Plugin(name = "JDBC", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(name = "JDBC", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseManager> {
 
     private final String description;

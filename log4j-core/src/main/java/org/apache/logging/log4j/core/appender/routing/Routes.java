@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.script.Bindings;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Contains the individual Route elements.
  */
-@Plugin(name = "Routes", category = "Core", printObject = true)
+@Plugin(name = "Routes", category = Core.CATEGORY_NAME, printObject = true)
 public final class Routes {
 
     private static final String LOG_EVENT_KEY = "logEvent";

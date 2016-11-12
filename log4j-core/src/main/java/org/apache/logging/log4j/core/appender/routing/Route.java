@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -27,7 +28,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * A Route to an appender.
  */
-@Plugin(name = "Route", category = "Core", printObject = true, deferChildren = true)
+@Plugin(name = "Route", category = Core.CATEGORY_NAME, printObject = true, deferChildren = true)
 public final class Route {
     private static final Logger LOGGER = StatusLogger.getLogger();
 

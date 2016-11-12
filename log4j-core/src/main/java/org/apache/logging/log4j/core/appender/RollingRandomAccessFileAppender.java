@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -45,7 +46,7 @@ import org.apache.logging.log4j.core.util.Integers;
  * An appender that writes to random access files and can roll over at
  * intervals.
  */
-@Plugin(name = "RollingRandomAccessFile", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(name = "RollingRandomAccessFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
 
     private final String fileName;

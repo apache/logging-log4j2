@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
@@ -536,7 +537,7 @@ public class LoggerConfig extends AbstractFilterable {
     /**
      * The root Logger.
      */
-    @Plugin(name = ROOT, category = "Core", printObject = true)
+    @Plugin(name = ROOT, category = Core.CATEGORY_NAME, printObject = true)
     public static class RootLogger extends LoggerConfig {
 
         @PluginFactory

@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -27,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Wrapper {@code PathCondition} that accepts objects that are rejected by the wrapped component filter.
  */
-@Plugin(name = "IfNot", category = "Core", printObject = true)
+@Plugin(name = "IfNot", category = Core.CATEGORY_NAME, printObject = true)
 public final class IfNot implements PathCondition {
 
     private final PathCondition negate;

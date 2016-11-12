@@ -23,6 +23,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * will be removed prior to advertisement.
  *
  */
-@Plugin(name = "multicastdns", category = "Core", elementType = "advertiser", printObject = false)
+@Plugin(name = "multicastdns", category = Core.CATEGORY_NAME, elementType = "advertiser", printObject = false)
 public class MulticastDnsAdvertiser implements Advertiser {
     /**
      * Status logger.
