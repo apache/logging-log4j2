@@ -258,12 +258,12 @@ public final class HtmlLayout extends AbstractStringLayout {
         }
     }
 
-    private StringBuilder appendLs(StringBuilder sbuilder, String s) {
+    private StringBuilder appendLs(final StringBuilder sbuilder, final String s) {
         sbuilder.append(s).append(Strings.LINE_SEPARATOR);
         return sbuilder;
     }
     
-    private StringBuilder append(StringBuilder sbuilder, String s) {
+    private StringBuilder append(final StringBuilder sbuilder, final String s) {
         sbuilder.append(s);
         return sbuilder;
     }

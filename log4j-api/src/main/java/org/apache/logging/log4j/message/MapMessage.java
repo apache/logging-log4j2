@@ -109,7 +109,7 @@ public class MapMessage implements MultiformatMessage {
      * @param key the key whose value to look up in the message data
      * @return the value of the specified key in the message data, or {@code null}
      */
-    public String getDataValue(String key) {
+    public String getDataValue(final String key) {
         return data.get(key);
     }
 

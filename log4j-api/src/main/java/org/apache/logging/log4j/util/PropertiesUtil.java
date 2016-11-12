@@ -141,7 +141,7 @@ public final class PropertiesUtil {
      * @param defaultValue the default value to use if the property is undefined
      * @return the Charset value of the property or {@code defaultValue} if undefined.
      */
-    public Charset getCharsetProperty(String name, Charset defaultValue) {
+    public Charset getCharsetProperty(final String name, final Charset defaultValue) {
         final String prop = getStringProperty(name);
         return prop == null ? defaultValue : Charset.forName(name);
     }

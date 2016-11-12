@@ -134,7 +134,7 @@ public class Log4j1ConfigurationParser {
         }
     }
 
-    private void warn(String string) {
+    private void warn(final String string) {
         System.err.println(string);
     }
 
@@ -280,7 +280,7 @@ public class Log4j1ConfigurationParser {
         }
     }
 
-    private void buildNullAppender(String appenderName) {
+    private void buildNullAppender(final String appenderName) {
         final AppenderComponentBuilder appenderBuilder = builder.newAppender(appenderName, NullAppender.PLUGIN_NAME);
         builder.add(appenderBuilder);
     }
@@ -425,7 +425,7 @@ public class Log4j1ConfigurationParser {
         return strSubstitutorProperties.replace(sysValue);
     }
 
-    private String getProperty(final String key, String defaultValue) {
+    private String getProperty(final String key, final String defaultValue) {
         final String value = getProperty(key);
         return value == null ? defaultValue : value;
     }

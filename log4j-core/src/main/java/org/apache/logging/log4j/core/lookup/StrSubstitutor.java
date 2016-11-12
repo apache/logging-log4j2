@@ -257,7 +257,7 @@ public class StrSubstitutor implements ConfigurationAware {
      *
      * @param properties  the map with the variables' values, may be null
      */
-    public StrSubstitutor(Properties properties) {
+    public StrSubstitutor(final Properties properties) {
         this(toTypeSafeMap(properties));
     }
     
@@ -391,7 +391,7 @@ public class StrSubstitutor implements ConfigurationAware {
         return StrSubstitutor.replace(source, valueMap);
     }
 
-    private static Map<String, String> toTypeSafeMap(Properties properties) {
+    private static Map<String, String> toTypeSafeMap(final Properties properties) {
         Map<String, String> map = new HashMap<>(properties.size());
         for (final String name : properties.stringPropertyNames()) {
             map.put(name, properties.getProperty(name));

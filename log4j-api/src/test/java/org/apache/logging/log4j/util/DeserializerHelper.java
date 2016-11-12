@@ -26,7 +26,7 @@ import java.io.ObjectInputStream;
  * @see SortedArrayStringMapTest#testDeserializationOfUnknownClass()
  */
 public class DeserializerHelper {
-    public static void main(String... args) throws Exception {
+    public static void main(final String... args) throws Exception {
         final File file = new File(args[0]);
         ObjectInputStream in = null;
         try {

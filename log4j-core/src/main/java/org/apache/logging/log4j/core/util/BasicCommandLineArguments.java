@@ -40,7 +40,7 @@ public class BasicCommandLineArguments {
         return help;
     }
 
-    public void setHelp(boolean help) {
+    public void setHelp(final boolean help) {
         this.help = help;
     }
 

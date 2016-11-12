@@ -153,7 +153,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * @since 2.7
      */
     public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port, final int backlog,
-            InetAddress localBindAddress) throws IOException {
+            final InetAddress localBindAddress) throws IOException {
         LOGGER.entry(port);
         final TcpSocketServer<ObjectInputStream> socketServer = new TcpSocketServer<>(port, backlog, localBindAddress,
                 new ObjectInputStreamLogEventBridge());
@@ -229,7 +229,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * @since 2.7
      */
     @SuppressWarnings("resource")
-    public TcpSocketServer(final int port, final int backlog, InetAddress localBindAddress, final LogEventBridge<T> logEventInput) throws IOException {
+    public TcpSocketServer(final int port, final int backlog, final InetAddress localBindAddress, final LogEventBridge<T> logEventInput) throws IOException {
         this(port, logEventInput, new ServerSocket(port, backlog, localBindAddress));
     }
 

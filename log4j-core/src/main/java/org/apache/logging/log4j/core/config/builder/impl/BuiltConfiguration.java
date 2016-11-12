@@ -147,7 +147,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
         isShutdownHookEnabled = !"disable".equalsIgnoreCase(flag);
     }
 
-    public void setShutdownTimeoutMillis(long shutdownTimeoutMillis) {
+    public void setShutdownTimeoutMillis(final long shutdownTimeoutMillis) {
         this.shutdownTimeoutMillis = shutdownTimeoutMillis;
     }
 

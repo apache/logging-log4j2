@@ -123,7 +123,7 @@ public final class Log4j1ConfigurationConverter {
                 Log4j1ConfigurationConverter.class, new CommandLineArguments())).run();
     }
 
-    public static Log4j1ConfigurationConverter run(CommandLineArguments cla) {
+    public static Log4j1ConfigurationConverter run(final CommandLineArguments cla) {
         final Log4j1ConfigurationConverter log4j1ConfigurationConverter = new Log4j1ConfigurationConverter(cla);
         log4j1ConfigurationConverter.run();
         return log4j1ConfigurationConverter;

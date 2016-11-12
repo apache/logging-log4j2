@@ -40,8 +40,8 @@ public class LoggerAdapterTest {
 
         private final CountDownLatch startSignal;
 
-        public RunnableThreadTest(int index, TestLoggerAdapter adapter, LoggerContext context,
-                CountDownLatch startSignal, CountDownLatch doneSignal) {
+        public RunnableThreadTest(final int index, final TestLoggerAdapter adapter, final LoggerContext context,
+                final CountDownLatch startSignal, final CountDownLatch doneSignal) {
             this.adapter = adapter;
             this.context = context;
             this.startSignal = startSignal;
@@ -82,7 +82,7 @@ public class LoggerAdapterTest {
         }
 
         @Override
-        protected Logger newLogger(String name, LoggerContext context) {
+        protected Logger newLogger(final String name, final LoggerContext context) {
             return null;
         }
     }

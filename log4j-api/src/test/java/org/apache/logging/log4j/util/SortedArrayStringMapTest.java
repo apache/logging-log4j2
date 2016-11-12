@@ -127,7 +127,7 @@ public class SortedArrayStringMapTest {
         }
     }
 
-    private String createClassPath(Class<?>... classes) throws Exception {
+    private String createClassPath(final Class<?>... classes) throws Exception {
         final StringBuilder result = new StringBuilder();
         for (final Class<?> cls : classes) {
             if (result.length() > 0) {
@@ -138,7 +138,7 @@ public class SortedArrayStringMapTest {
         return result.toString();
     }
 
-    private String createClassPath(Class<?> cls) throws Exception {
+    private String createClassPath(final Class<?> cls) throws Exception {
         final String resource = "/" + cls.getName().replace('.', '/') + ".class";
         final URL url = cls.getResource(resource);
         String location = url.toString();

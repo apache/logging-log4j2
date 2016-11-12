@@ -78,7 +78,7 @@ public final class EqualsIgnoreCaseReplacementConverter extends EqualsBaseReplac
     }
 
     @Override
-    protected boolean equals(String str, StringBuilder buff, int from, int len) {
+    protected boolean equals(final String str, final StringBuilder buff, final int from, final int len) {
         return StringBuilders.equalsIgnoreCase(str, 0, str.length(), buff, from, len);
     }
 }

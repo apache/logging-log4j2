@@ -81,7 +81,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         
         public abstract Charset getDefaultCharset();
         
-        protected Charset getCharset(String property) {
+        protected Charset getCharset(final String property) {
             return new PropertiesUtil(PropertiesUtil.getSystemProperties()).getCharsetProperty(property);
         }
 

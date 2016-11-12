@@ -386,7 +386,7 @@ public final class PatternLayout extends AbstractStringLayout {
             return this;
         }
 
-        public SerializerBuilder withNoConsoleNoAnsi(boolean noConsoleNoAnsi) {
+        public SerializerBuilder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }

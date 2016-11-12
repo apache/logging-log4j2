@@ -99,7 +99,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
             return localBindAddress;
         }
 
-        void setLocalBindAddress(InetAddress localBindAddress) {
+        void setLocalBindAddress(final InetAddress localBindAddress) {
             this.localBindAddress = localBindAddress;
         }
     }

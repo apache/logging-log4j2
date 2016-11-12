@@ -58,7 +58,7 @@ public class MDCContextMap implements ThreadContextMap3 {
 
 
     @Override
-    public void removeAll(Iterable<String> keys) {
+    public void removeAll(final Iterable<String> keys) {
         for (final String key : keys) {
             MDC.remove(key);
         }

@@ -42,7 +42,7 @@ public class NullAppender extends AbstractAppender {
     }
 
     @Override
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         // Do nothing
     }
 

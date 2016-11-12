@@ -89,27 +89,27 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
                     immediateFlush, advertise ? configuration.getAdvertiser() : null);
         }
 
-        public B withFileName(String fileName) {
+        public B withFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
-        public B withAppend(boolean append) {
+        public B withAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
-        public B withAdvertise(boolean advertise) {
+        public B withAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
-        public B withAdvertiseURI(String advertiseURI) {
+        public B withAdvertiseURI(final String advertiseURI) {
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
 
-        public B withConfiguration(Configuration configuration) {
+        public B withConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return asBuilder();
         }

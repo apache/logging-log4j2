@@ -83,7 +83,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }

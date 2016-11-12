@@ -88,7 +88,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return layout;
         }
         
-        public Layout<? extends Serializable> getOrCreateLayout(Charset charset) {
+        public Layout<? extends Serializable> getOrCreateLayout(final Charset charset) {
             if (layout == null) {
                 return PatternLayout.newBuilder().withCharset(charset).build();
             }

@@ -76,7 +76,7 @@ public class ServletAppender extends AbstractAppender {
         /**
          * Logs with {@link ServletContext#log(String, Throwable)} if true and with {@link ServletContext#log(String)} if false.
          */
-        public void setLogThrowables(boolean logThrowables) {
+        public void setLogThrowables(final boolean logThrowables) {
             this.logThrowables = logThrowables;
         }
 
@@ -118,7 +118,7 @@ public class ServletAppender extends AbstractAppender {
      * @deprecated Use {@link #newBuilder()}.
      */
     @Deprecated
-    public static ServletAppender createAppender(Layout<? extends Serializable> layout, final Filter filter,
+    public static ServletAppender createAppender(final Layout<? extends Serializable> layout, final Filter filter,
             final String name, final boolean ignoreExceptions) {
         // @formatter:off
     	return newBuilder()

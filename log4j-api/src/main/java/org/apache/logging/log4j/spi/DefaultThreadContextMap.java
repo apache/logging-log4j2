@@ -109,7 +109,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
     }
 
-    public void removeAll(Iterable<String> keys) {
+    public void removeAll(final Iterable<String> keys) {
         final Map<String, String> map = localMap.get();
         if (map != null) {
             final Map<String, String> copy = new HashMap<>(map);
