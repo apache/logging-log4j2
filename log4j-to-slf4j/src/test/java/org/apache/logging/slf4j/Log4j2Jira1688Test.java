@@ -33,7 +33,7 @@ public class Log4j2Jira1688Test {
     public void testLog4j2() {
 
         // Argument-array creation
-        final int limit = 33;
+        final int limit = 37;
         final Object[] args = createArray(limit);
         final Object[] originalArgs = Arrays.copyOf(args, args.length);
 
