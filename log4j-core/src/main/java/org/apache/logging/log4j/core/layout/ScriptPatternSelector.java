@@ -204,12 +204,12 @@ public class ScriptPatternSelector implements PatternSelector {
      */
     @Deprecated
     public static ScriptPatternSelector createSelector(
-            @PluginElement("Script") final AbstractScript script,
-            @PluginElement("PatternMatch") final PatternMatch[] properties,
-            @PluginAttribute("defaultPattern") String defaultPattern,
-            @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
-            @PluginAttribute(value = "noConsoleNoAnsi") final boolean noConsoleNoAnsi,
-            @PluginConfiguration final Configuration configuration) {
+            final AbstractScript script,
+            final PatternMatch[] properties,
+            final String defaultPattern,
+            final boolean alwaysWriteExceptions,
+            final boolean noConsoleNoAnsi,
+            final Configuration configuration) {
         final Builder builder = newBuilder();
         builder.withScript(script);
         builder.withProperties(properties);
