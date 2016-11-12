@@ -42,7 +42,7 @@ import org.apache.logging.log4j.core.util.Integers;
 public final class RandomAccessFileAppender extends AbstractOutputStreamAppender<RandomAccessFileManager> {
 
     /**
-     * Builds FileAppender instances.
+     * Builds RandomAccessFileAppender instances.
      * 
      * @param <B>
      *            This builder class
