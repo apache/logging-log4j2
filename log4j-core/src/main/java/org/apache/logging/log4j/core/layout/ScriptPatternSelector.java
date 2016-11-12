@@ -45,7 +45,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class ScriptPatternSelector implements PatternSelector {
 
     /**
-     * Custom ScriptPatternSelector builder. Use the {@link ScriptPatternSelector#newBuilder() builder factory method} to create this.
+     * Custom ScriptPatternSelector builder. Use the {@link ScriptPatternSelector.#newBuilder() builder factory method} to create this.
      */
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
 
