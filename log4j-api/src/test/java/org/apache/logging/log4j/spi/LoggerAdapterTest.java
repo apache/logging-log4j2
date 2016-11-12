@@ -32,13 +32,13 @@ import static org.junit.Assert.assertSame;
 public class LoggerAdapterTest {
 
     private class RunnableThreadTest implements Runnable {
-        private AbstractLoggerAdapter<Logger> adapter;
-        private LoggerContext context;
-        private CountDownLatch doneSignal;
-        private int index;
+        private final AbstractLoggerAdapter<Logger> adapter;
+        private final LoggerContext context;
+        private final CountDownLatch doneSignal;
+        private final int index;
         private Map<String, Logger> resultMap;
 
-        private CountDownLatch startSignal;
+        private final CountDownLatch startSignal;
 
         public RunnableThreadTest(int index, TestLoggerAdapter adapter, LoggerContext context,
                 CountDownLatch startSignal, CountDownLatch doneSignal) {

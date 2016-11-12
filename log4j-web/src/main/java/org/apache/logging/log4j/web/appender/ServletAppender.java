@@ -88,7 +88,7 @@ public class ServletAppender extends AbstractAppender {
     }
 
     private final ServletContext servletContext;
-    private boolean logThrowables;
+    private final boolean logThrowables;
     
     private ServletAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables) {
