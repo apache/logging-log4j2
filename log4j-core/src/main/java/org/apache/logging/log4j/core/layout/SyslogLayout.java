@@ -140,7 +140,7 @@ public final class SyslogLayout extends AbstractStringLayout {
     @PluginFactory
     public static SyslogLayout createLayout(
             @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
-            @PluginAttribute(value = "newLine", defaultBoolean = false) final boolean includeNewLine,
+            @PluginAttribute(value = "newLine") final boolean includeNewLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset) {
         return new SyslogLayout(facility, includeNewLine, escapeNL, charset);

@@ -199,9 +199,9 @@ public class DeleteAction extends AbstractPathAction {
     public static DeleteAction createDeleteAction(
             // @formatter:off
             @PluginAttribute("basePath") final String basePath, //
-            @PluginAttribute(value = "followLinks", defaultBoolean = false) final boolean followLinks,
+            @PluginAttribute(value = "followLinks") final boolean followLinks,
             @PluginAttribute(value = "maxDepth", defaultInt = 1) final int maxDepth,
-            @PluginAttribute(value = "testMode", defaultBoolean = false) final boolean testMode,
+            @PluginAttribute(value = "testMode") final boolean testMode,
             @PluginElement("PathSorter") final PathSorter sorterParameter,
             @PluginElement("PathConditions") final PathCondition[] pathConditions,
             @PluginElement("ScriptCondition") final ScriptCondition scriptCondition,

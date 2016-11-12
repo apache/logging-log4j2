@@ -208,7 +208,7 @@ public class ScriptPatternSelector implements PatternSelector {
             @PluginElement("PatternMatch") final PatternMatch[] properties,
             @PluginAttribute("defaultPattern") String defaultPattern,
             @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
-            @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
+            @PluginAttribute(value = "noConsoleNoAnsi") final boolean noConsoleNoAnsi,
             @PluginConfiguration final Configuration configuration) {
         final Builder builder = newBuilder();
         builder.withScript(script);

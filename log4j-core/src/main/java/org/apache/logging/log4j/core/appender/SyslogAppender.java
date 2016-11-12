@@ -114,7 +114,7 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute("mdcId") final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
             @PluginAttribute("eventPrefix") final String eventPrefix,
-            @PluginAttribute(value = "newLine", defaultBoolean = false) final boolean newLine,
+            @PluginAttribute(value = "newLine") final boolean newLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
             @PluginAttribute("appName") final String appName,
             @PluginAttribute("messageId") final String msgId,
@@ -127,7 +127,7 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields, 
-            @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
+            @PluginAttribute(value = "advertise") final boolean advertise) {
         // @formatter:on
 
         final Protocol protocol = EnglishEnums.valueOf(Protocol.class, protocolStr);

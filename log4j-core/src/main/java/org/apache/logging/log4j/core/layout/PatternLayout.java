@@ -250,7 +250,7 @@ public final class PatternLayout extends AbstractStringLayout {
             // LOG4J2-783 use platform default by default, so do not specify defaultString for charset
             @PluginAttribute(value = "charset") final Charset charset,
             @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
-            @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
+            @PluginAttribute(value = "noConsoleNoAnsi") final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String headerPattern,
             @PluginAttribute("footer") final String footerPattern) {
         return newBuilder()

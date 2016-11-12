@@ -906,12 +906,12 @@ public final class JsonLayout extends AbstractJacksonLayout {
     public static JsonLayout createLayout(
             // @formatter:off
             @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
-            @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
-            @PluginAttribute(value = "propertiesAsList", defaultBoolean = false) final boolean propertiesAsList,
-            @PluginAttribute(value = "complete", defaultBoolean = false) final boolean complete,
-            @PluginAttribute(value = "compact", defaultBoolean = false) final boolean compact,
-            @PluginAttribute(value = "eventEol", defaultBoolean = false) final boolean eventEol,
+            @PluginAttribute(value = "locationInfo") final boolean locationInfo,
+            @PluginAttribute(value = "properties") final boolean properties,
+            @PluginAttribute(value = "propertiesAsList") final boolean propertiesAsList,
+            @PluginAttribute(value = "complete") final boolean complete,
+            @PluginAttribute(value = "compact") final boolean compact,
+            @PluginAttribute(value = "eventEol") final boolean eventEol,
             @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
             @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,

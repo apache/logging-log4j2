@@ -794,8 +794,8 @@ public final class YamlLayout extends AbstractJacksonLayout {
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
             @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
-            @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
+            @PluginAttribute(value = "locationInfo") final boolean locationInfo,
+            @PluginAttribute(value = "properties") final boolean properties,
             @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
             @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
