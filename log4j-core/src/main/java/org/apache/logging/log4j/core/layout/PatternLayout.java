@@ -112,24 +112,36 @@ public final class PatternLayout extends AbstractStringLayout {
                 patternSelector, alwaysWriteExceptions, noConsoleNoAnsi);
     }
 
+    public static SerializerBuilder newSerializerBuilder() {
+        return new SerializerBuilder();
+    }
+
+    /**
+     * Deprecated, use {@link #newSerializerBuilder()} instead.
+     * 
+     * @param configuration
+     * @param replace
+     * @param pattern
+     * @param defaultPattern
+     * @param patternSelector
+     * @param alwaysWriteExceptions
+     * @param noConsoleNoAnsi
+     * @return a new Serializer.
+     * @deprecated Use {@link #newSerializerBuilder()} instead.
+     */
+    @Deprecated
     public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
             final String pattern, final String defaultPattern, final PatternSelector patternSelector,
             final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
-        if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
-            return null;
-        }
-        if (patternSelector == null) {
-            try {
-                final PatternParser parser = createPatternParser(configuration);
-                final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
-                        alwaysWriteExceptions, noConsoleNoAnsi);
-                final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
-                return new PatternSerializer(formatters, replace);
-            } catch (final RuntimeException ex) {
-                throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
-            }
-        }
-        return new PatternSelectorSerializer(patternSelector, replace);
+        SerializerBuilder builder = newSerializerBuilder();
+        builder.withAlwaysWriteExceptions(alwaysWriteExceptions);
+        builder.withConfiguration(configuration);
+        builder.withDefaultPattern(defaultPattern);
+        builder.withNoConsoleNoAnsi(noConsoleNoAnsi);
+        builder.withPattern(pattern);
+        builder.withPatternSelector(patternSelector);
+        builder.withReplace(replace);
+        return builder.build();
     }
 
     /**
@@ -315,8 +327,74 @@ public final class PatternLayout extends AbstractStringLayout {
         }
     }
 
-    private static class PatternSelectorSerializer implements Serializer, Serializer2 {
+    public static class SerializerBuilder implements org.apache.logging.log4j.core.util.Builder<Serializer> {
 
+        private Configuration configuration;
+        private RegexReplacement replace;
+        private String pattern;
+        private String defaultPattern;
+        private PatternSelector patternSelector;
+        private boolean alwaysWriteExceptions;
+        private boolean noConsoleNoAnsi;
+        
+        @Override
+        public Serializer build() {
+            if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
+                return null;
+            }
+            if (patternSelector == null) {
+                try {
+                    final PatternParser parser = createPatternParser(configuration);
+                    final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
+                            alwaysWriteExceptions, noConsoleNoAnsi);
+                    final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
+                    return new PatternSerializer(formatters, replace);
+                } catch (final RuntimeException ex) {
+                    throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
+                }
+            }
+            return new PatternSelectorSerializer(patternSelector, replace);
+        }
+
+        public SerializerBuilder withConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        public SerializerBuilder withReplace(final RegexReplacement replace) {
+            this.replace = replace;
+            return this;
+        }
+
+        public SerializerBuilder withPattern(final String pattern) {
+            this.pattern = pattern;
+            return this;
+        }
+
+        public SerializerBuilder withDefaultPattern(final String defaultPattern) {
+            this.defaultPattern = defaultPattern;
+            return this;
+        }
+
+        public SerializerBuilder withPatternSelector(final PatternSelector patternSelector) {
+            this.patternSelector = patternSelector;
+            return this;
+        }
+
+        public SerializerBuilder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
+            this.alwaysWriteExceptions = alwaysWriteExceptions;
+            return this;
+        }
+
+        public SerializerBuilder withNoConsoleNoAnsi(boolean noConsoleNoAnsi) {
+            this.noConsoleNoAnsi = noConsoleNoAnsi;
+            return this;
+        }
+        
+    }
+
+    private static class PatternSelectorSerializer implements Serializer, Serializer2 {
+        
         private final PatternSelector patternSelector;
         private final RegexReplacement replace;
 

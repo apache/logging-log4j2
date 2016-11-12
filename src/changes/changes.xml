@@ -120,6 +120,9 @@
       <action issue="LOG4J2-1696" dev="ggregory" type="add">
         Add a Builder to MarkerPatternSelector and deprecate MarkerPatternSelector.createSelector().
       </action>
+      <action issue="LOG4J2-1697" dev="ggregory" type="add">
+        Add a SerializerBuilder to PatternLayout and deprecate PatternLayout.createSerializer().
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">

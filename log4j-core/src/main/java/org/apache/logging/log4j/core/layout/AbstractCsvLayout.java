@@ -67,8 +67,9 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
 
     protected AbstractCsvLayout(final Configuration config, final Charset charset, final CSVFormat csvFormat,
             final String header, final String footer) {
-        super(config, charset, PatternLayout.createSerializer(config, null, header, null, null, false, false),
-                PatternLayout.createSerializer(config, null, footer, null, null, false, false));
+        super(config, charset, 
+                PatternLayout.newSerializerBuilder().withConfiguration(config).withPattern(header).build(),
+                PatternLayout.newSerializerBuilder().withConfiguration(config).withPattern(footer).build());
         this.format = csvFormat;
     }
 
