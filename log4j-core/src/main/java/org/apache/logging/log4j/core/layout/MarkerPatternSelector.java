@@ -75,27 +75,27 @@ public class MarkerPatternSelector implements PatternSelector {
                     configuration);
         }
 
-        public Builder withProperties(PatternMatch[] properties) {
+        public Builder withProperties(final PatternMatch[] properties) {
             this.properties = properties;
             return this;
         }
 
-        public Builder withDefaultPattern(String defaultPattern) {
+        public Builder withDefaultPattern(final String defaultPattern) {
             this.defaultPattern = defaultPattern;
             return this;
         }
 
-        public Builder withAlwaysWriteExceptions(boolean alwaysWriteExceptions) {
+        public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
             this.alwaysWriteExceptions = alwaysWriteExceptions;
             return this;
         }
 
-        public Builder withNoConsoleNoAnsi(boolean noConsoleNoAnsi) {
+        public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }
 
-        public Builder withConfiguration(Configuration configuration) {
+        public Builder withConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }

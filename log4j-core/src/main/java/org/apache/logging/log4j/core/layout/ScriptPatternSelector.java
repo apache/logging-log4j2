@@ -93,32 +93,32 @@ public class ScriptPatternSelector implements PatternSelector {
             return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, config);
         }
 
-        public Builder withScript(AbstractScript script) {
+        public Builder withScript(final AbstractScript script) {
             this.script = script;
             return this;
         }
 
-        public Builder withProperties(PatternMatch[] properties) {
+        public Builder withProperties(final PatternMatch[] properties) {
             this.properties = properties;
             return this;
         }
 
-        public Builder withDefaultPattern(String defaultPattern) {
+        public Builder withDefaultPattern(final String defaultPattern) {
             this.defaultPattern = defaultPattern;
             return this;
         }
 
-        public Builder withAlwaysWriteExceptions(boolean alwaysWriteExceptions) {
+        public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
             this.alwaysWriteExceptions = alwaysWriteExceptions;
             return this;
         }
 
-        public Builder withNoConsoleNoAnsi(boolean noConsoleNoAnsi) {
+        public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }
 
-        public Builder withConfiguration(Configuration config) {
+        public Builder withConfiguration(final Configuration config) {
             this.config = config;
             return this;
         }
