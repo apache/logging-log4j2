@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -23,16 +27,14 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.ScriptPatternSelector.Builder;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
@@ -40,6 +42,66 @@ import java.util.Map;
 @Plugin(name = "MarkerPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 public class MarkerPatternSelector implements PatternSelector {
 
+    /**
+     * Custom MarkerPatternSelector builder. Use the {@link MarkerPatternSelector#newBuilder() builder factory method} to create this.
+     */
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<MarkerPatternSelector> {
+
+        @PluginElement("PatternMatch")
+        private PatternMatch[] properties;
+        
+        @PluginBuilderAttribute("defaultPattern")
+        private String defaultPattern;
+        
+        @PluginBuilderAttribute(value = "alwaysWriteExceptions") 
+        private boolean alwaysWriteExceptions = true;
+        
+        @PluginBuilderAttribute(value = "noConsoleNoAnsi") 
+        private boolean noConsoleNoAnsi;
+        
+        @PluginConfiguration 
+        private Configuration configuration;
+
+        @Override
+        public MarkerPatternSelector build() {
+            if (defaultPattern == null) {
+                defaultPattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
+            }
+            if (properties == null || properties.length == 0) {
+                LOGGER.warn("No marker patterns were provided with PatternMatch");
+                return null;
+            }
+            return new MarkerPatternSelector(properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi,
+                    configuration);
+        }
+
+        public Builder withProperties(PatternMatch[] properties) {
+            this.properties = properties;
+            return this;
+        }
+
+        public Builder withDefaultPattern(String defaultPattern) {
+            this.defaultPattern = defaultPattern;
+            return this;
+        }
+
+        public Builder withAlwaysWriteExceptions(boolean alwaysWriteExceptions) {
+            this.alwaysWriteExceptions = alwaysWriteExceptions;
+            return this;
+        }
+
+        public Builder withNoConsoleNoAnsi(boolean noConsoleNoAnsi) {
+            this.noConsoleNoAnsi = noConsoleNoAnsi;
+            return this;
+        }
+
+        public Builder withConfiguration(Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+    }
+    
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
 
     private final Map<String, String> patternMap = new HashMap<>();
@@ -87,22 +149,40 @@ public class MarkerPatternSelector implements PatternSelector {
         return defaultFormatters;
     }
 
+    /**
+     * Creates a builder for a custom ScriptPatternSelector.
+     *
+     * @return a ScriptPatternSelector builder.
+     */
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
 
-    @PluginFactory
-    public static MarkerPatternSelector createSelector(@PluginElement("PatternMatch") final PatternMatch[] properties,
-                                                       @PluginAttribute("defaultPattern") String defaultPattern,
-                                                       @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
-                                                       @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
-                                                       @PluginConfiguration final Configuration config) {
-        if (defaultPattern == null) {
-            defaultPattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
-        }
-        if (properties == null || properties.length == 0) {
-            LOGGER.warn("No marker patterns were provided with PatternMatch");
-            return null;
-        }
-        return new MarkerPatternSelector(properties, defaultPattern, alwaysWriteExceptions,
-                noConsoleNoAnsi, config);
+    /**
+     * Deprecated, use {@link #newBuilder()} instead.
+     * @param properties
+     * @param defaultPattern
+     * @param alwaysWriteExceptions
+     * @param noConsoleNoAnsi
+     * @param configuration
+     * @return a new MarkerPatternSelector.
+     * @deprecated Use {@link #newBuilder()} instead.
+     */
+    @Deprecated
+    public static MarkerPatternSelector createSelector(
+            final PatternMatch[] properties,
+            final String defaultPattern,
+            final boolean alwaysWriteExceptions,
+            final boolean noConsoleNoAnsi,
+            final Configuration configuration) {
+        final Builder builder = newBuilder();
+        builder.withProperties(properties);
+        builder.withDefaultPattern(defaultPattern);
+        builder.withAlwaysWriteExceptions(alwaysWriteExceptions);
+        builder.withNoConsoleNoAnsi(noConsoleNoAnsi);
+        builder.withConfiguration(configuration);
+        return builder.build();
     }
 
     @Override
