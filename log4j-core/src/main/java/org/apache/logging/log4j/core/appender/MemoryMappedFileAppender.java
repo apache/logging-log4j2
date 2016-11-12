@@ -137,7 +137,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      */
     @PluginFactory
     public static MemoryMappedFileAppender createAppender(
-// @formatter:off
+        // @formatter:off
             @PluginAttribute("fileName") final String fileName, //
             @PluginAttribute("append") final String append, //
             @PluginAttribute("name") final String name, //
