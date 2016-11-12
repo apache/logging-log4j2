@@ -244,6 +244,10 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             .build();
     }
     
+    /**
+     * Creates a builder for a RandomAccessFileAppender.
+     * @return a builder for a RandomAccessFileAppender.
+     */
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
