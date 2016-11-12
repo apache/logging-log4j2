@@ -34,9 +34,10 @@ import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
@@ -49,6 +50,126 @@ import org.apache.logging.log4j.core.util.Integers;
 @Plugin(name = "RollingRandomAccessFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
 
+    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<RollingRandomAccessFileAppender> {
+
+        public Builder() {
+            super();
+            withBufferSize(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+            withIgnoreExceptions(true);
+            withImmediateFlush(true);
+        }
+
+        @PluginBuilderAttribute("fileName")
+        private String fileName;
+
+        @PluginBuilderAttribute("filePattern")
+        private String filePattern;
+
+        @PluginBuilderAttribute("append")
+        private boolean append = true;
+
+        @PluginElement("Policy")
+        private TriggeringPolicy policy;
+
+        @PluginElement("Strategy")
+        private RolloverStrategy strategy;
+
+        @PluginBuilderAttribute("advertise")
+        private boolean advertise;
+
+        @PluginBuilderAttribute("advertiseURI")
+        private String advertiseURI;
+
+        @PluginConfiguration
+        private Configuration configuration;
+
+        @Override
+        public RollingRandomAccessFileAppender build() {
+            final String name = getName();
+            if (name == null) {
+                LOGGER.error("No name provided for FileAppender");
+                return null;
+            }
+
+            if (fileName == null) {
+                LOGGER.error("No filename was provided for FileAppender with name " + name);
+                return null;
+            }
+
+            if (filePattern == null) {
+                LOGGER.error("No filename pattern provided for FileAppender with name " + name);
+                return null;
+            }
+
+            if (policy == null) {
+                LOGGER.error("A TriggeringPolicy must be provided");
+                return null;
+            }
+
+            if (strategy == null) {
+                strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
+                        String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, configuration);
+            }
+
+            final Layout<? extends Serializable> layout = getOrCreateLayout();
+
+            final boolean immediateFlush = isImmediateFlush();
+            final int bufferSize = getBufferSize();
+            final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager
+                    .getRollingRandomAccessFileManager(fileName, filePattern, append, immediateFlush, bufferSize, policy,
+                            strategy, advertiseURI, layout, configuration);
+            if (manager == null) {
+                return null;
+            }
+
+            manager.initialize();
+
+            return new RollingRandomAccessFileAppender(name, layout,getFilter(), manager, fileName, filePattern,
+                    isIgnoreExceptions(), immediateFlush, bufferSize, advertise ? configuration.getAdvertiser() : null);
+        }
+
+        public B withFileName(final String fileName) {
+            this.fileName = fileName;
+            return asBuilder();
+        }
+
+        public B withFilePattern(final String filePattern) {
+            this.filePattern = filePattern;
+            return asBuilder();
+        }
+
+        public B withAppend(final boolean append) {
+            this.append = append;
+            return asBuilder();
+        }
+
+        public B withPolicy(final TriggeringPolicy policy) {
+            this.policy = policy;
+            return asBuilder();
+        }
+
+        public B withStrategy(final RolloverStrategy strategy) {
+            this.strategy = strategy;
+            return asBuilder();
+        }
+
+        public B withAdvertise(final boolean advertise) {
+            this.advertise = advertise;
+            return asBuilder();
+        }
+
+        public B withAdvertiseURI(final String advertiseURI) {
+            this.advertiseURI = advertiseURI;
+            return asBuilder();
+        }
+
+        public B withConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return asBuilder();
+        }
+    }
+    
     private final String fileName;
     private final String filePattern;
     private final Object advertisement;
@@ -155,25 +276,26 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
      *            advertised, "false" otherwise.
      * @param advertiseURI The advertised URI which can be used to retrieve the
      *            file contents.
-     * @param config The Configuration.
+     * @param configuration The Configuration.
      * @return A RollingRandomAccessFileAppender.
+     * @deprecated Use {@link #newBuilder()}.
      */
-    @PluginFactory
+    @Deprecated
     public static RollingRandomAccessFileAppender createAppender(
-            @PluginAttribute("fileName") final String fileName,
-            @PluginAttribute("filePattern") final String filePattern,
-            @PluginAttribute("append") final String append,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("immediateFlush") final String immediateFlush,
-            @PluginAttribute("bufferSize") final String bufferSizeStr,
-            @PluginElement("Policy") final TriggeringPolicy policy,
-            @PluginElement("Strategy") RolloverStrategy strategy,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("ignoreExceptions") final String ignore,
-            @PluginAttribute("advertise") final String advertise,
-            @PluginAttribute("advertiseURI") final String advertiseURI,
-            @PluginConfiguration final Configuration config) {
+            final String fileName,
+            final String filePattern,
+            final String append,
+            final String name,
+            final String immediateFlush,
+            final String bufferSizeStr,
+            final TriggeringPolicy policy,
+            RolloverStrategy strategy,
+            Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String ignore,
+            final String advertise,
+            final String advertiseURI,
+            final Configuration configuration) {
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
@@ -181,45 +303,27 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final int bufferSize = Integers.parseInt(bufferSizeStr, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
-        if (name == null) {
-            LOGGER.error("No name provided for FileAppender");
-            return null;
-        }
-
-        if (fileName == null) {
-            LOGGER.error("No filename was provided for FileAppender with name " + name);
-            return null;
-        }
-
-        if (filePattern == null) {
-            LOGGER.error("No filename pattern provided for FileAppender with name " + name);
-            return null;
-        }
-
-        if (policy == null) {
-            LOGGER.error("A TriggeringPolicy must be provided");
-            return null;
-        }
-
-        if (strategy == null) {
-            strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
-                    String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, config);
-        }
-
-        if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
-        }
-
-        final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
-                fileName, filePattern, isAppend, isFlush, bufferSize, policy, strategy, advertiseURI, layout, config);
-        if (manager == null) {
-            return null;
-        }
-
-        manager.initialize();
-
-        return new RollingRandomAccessFileAppender(name, layout, filter, manager,
-                fileName, filePattern, ignoreExceptions, isFlush, bufferSize,
-                isAdvertise ? config.getAdvertiser() : null);
+        return newBuilder()
+           .withAdvertise(isAdvertise)
+           .withAdvertiseURI(advertiseURI)
+           .withAppend(isAppend)
+           .withBufferSize(bufferSize)
+           .withConfiguration(configuration)
+           .withFileName(fileName)
+           .withFilePattern(filePattern)
+           .withFilter(filter)
+           .withIgnoreExceptions(ignoreExceptions)
+           .withImmediateFlush(isFlush)
+           .withLayout(layout)
+           .withName(name)
+           .withPolicy(policy)
+           .withStrategy(strategy)
+           .build();
     }
+    
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
+
 }

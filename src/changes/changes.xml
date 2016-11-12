@@ -135,6 +135,9 @@
       <action issue="LOG4J2-1703" dev="ggregory" type="add">
         Add a Builder to MemoryMappedFileAppender and deprecate MemoryMappedFileAppender.createAppender().
       </action>      
+      <action issue="LOG4J2-1704" dev="ggregory" type="add">
+        Add a Builder to RollingRandomAccessFileAppender and deprecate RollingRandomAccessFileAppender.createAppender().
+      </action>      
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">
