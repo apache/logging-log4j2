@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.net.Advertiser;
 
