@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.script.SimpleBindings;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -26,18 +32,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.layout.PatternLayout.Builder;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.script.SimpleBindings;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
@@ -46,7 +45,7 @@ import java.util.Map;
 public class ScriptPatternSelector implements PatternSelector {
 
     /**
-     * Custom PatternLayout builder. Use the {@link PatternLayout#newBuilder() builder factory method} to create this.
+     * Custom ScriptPatternSelector builder. Use the {@link ScriptPatternSelector#newBuilder() builder factory method} to create this.
      */
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
 
