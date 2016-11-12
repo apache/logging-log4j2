@@ -193,7 +193,7 @@
     <jackson2Version>2.8.4</jackson2Version>
     <springVersion>3.2.13.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion>
-    <disruptorVersion>3.3.5</disruptorVersion>
+    <disruptorVersion>3.3.6</disruptorVersion>
     <conversantDisruptorVersion>1.2.8-JDK7</conversantDisruptorVersion>
     <compiler.plugin.version>3.6.0</compiler.plugin.version>
     <pmd.plugin.version>3.7</pmd.plugin.version>
