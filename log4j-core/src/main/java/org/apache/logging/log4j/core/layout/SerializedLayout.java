@@ -112,6 +112,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
         @Override
         protected void writeStreamHeader() {
+            // do nothing
         }
     }
 }
