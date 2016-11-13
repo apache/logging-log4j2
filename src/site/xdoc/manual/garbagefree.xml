@@ -158,6 +158,29 @@
             during steady-state logging. Instead of AsyncAppender, use <a href="async.html">Async Loggers</a>
             to log asynchronously in a garbage-free manner.
           </p>
+
+        <a name="Filters" />
+        <h4>Supported Filters</h4>
+        <p>
+          The following <a href="filters.html">filters</a> are garbage-free during steady-state logging:
+        </p>
+        <ul>
+          <li>CompositeFilter (adding and removing element filters creates temporary objects for thread safety)</li>
+          <li>DynamicThresholdFilter</li>
+          <li>LevelRangeFilter (garbage free since 2.8)</li>
+          <li>MapFilter (garbage free since 2.8, but logging a MapMessage still allocates)</li>
+          <li>MarkerFilter (garbage free since 2.8)</li>
+          <li>StructuredDataFilter (garbage free since 2.8)</li>
+          <li>ThreadContextMapFilter (garbage free since 2.8)</li>
+          <li>ThresholdFilter (garbage free since 2.8)</li>
+        </ul>
+        <p>Currently the other filter implementations allocate temporary objects during steady state logging.
+          We expect to be able to make the following filters garbage-free in a subsequent release:
+          TimeFilter.</p>
+        <p>
+          Other filters like BurstFilter, RegexFilter and ScriptFilter are not trivial to make garbage free,
+          and there is currently no plan to change them.
+        </p>
         <a name="Layouts" />
           <h4>Supported Layouts</h4>
 
@@ -305,23 +328,6 @@
             </ul>
 
           </td></tr></table>
-
-        <a name="Filters" />
-        <h4>Supported Filters</h4>
-        <p>
-          The following <a href="filters.html">filters</a> are garbage-free during steady-state logging:
-        </p>
-        <ul>
-          <li>CompositeFilter (adding and removing element filters creates temporary objects for thread safety)</li>
-          <li>DynamicThresholdFilter</li>
-        </ul>
-        <p>Currently the other filter implementations allocate temporary objects during steady state logging.
-          We expect to be able to make the following filters garbage-free in a subsequent release:
-          LevelRangeFilter, MapFilter, MarkerFilter, ThreadContextMapFilter and ThresholdFilter.</p>
-        <p>
-          Other filters like BurstFilter, RegexFilter and ScriptFilter are not trivial to make garbage free,
-          and there is currently no plan to change them.
-        </p>
         <a name="api" />
           <h4>API Changes</h4>
           <p>
