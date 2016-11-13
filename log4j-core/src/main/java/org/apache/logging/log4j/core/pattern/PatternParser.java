@@ -41,6 +41,7 @@ import org.apache.logging.log4j.util.Strings;
  * PatternConverters}.
  */
 public final class PatternParser {
+    static final String DISABLE_ANSI = "disableAnsi";
     static final String NO_CONSOLE_NO_ANSI = "noConsoleNoAnsi";
 
     /**
@@ -159,16 +160,21 @@ public final class PatternParser {
     }
 
     public List<PatternFormatter> parse(final String pattern) {
-        return parse(pattern, false, false);
+        return parse(pattern, false, false, false);
     }
 
     public List<PatternFormatter> parse(final String pattern, final boolean alwaysWriteExceptions,
-            final boolean noConsoleNoAnsi) {
+                                        final boolean noConsoleNoAnsi) {
+        return parse(pattern, alwaysWriteExceptions, false, noConsoleNoAnsi);
+    }
+
+    public List<PatternFormatter> parse(final String pattern, final boolean alwaysWriteExceptions,
+           boolean disableAnsi, final boolean noConsoleNoAnsi) {
         final List<PatternFormatter> list = new ArrayList<>();
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
 
-        parse(pattern, converters, fields, noConsoleNoAnsi, true);
+        parse(pattern, converters, fields, disableAnsi, noConsoleNoAnsi, true);
 
         final Iterator<FormattingInfo> fieldIter = fields.iterator();
         boolean handlesThrowable = false;
@@ -305,13 +311,35 @@ public final class PatternParser {
      * @param formattingInfos
      *            list to receive field specifiers corresponding to pattern converters.
      * @param noConsoleNoAnsi
-     *            TODO
+     *            do not do not output ANSI escape codes if {@link System#console()}
      * @param convertBackslashes if {@code true}, backslash characters are treated as escape characters and character
      *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
      */
     public void parse(final String pattern, final List<PatternConverter> patternConverters,
-            final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi,
-            final boolean convertBackslashes) {
+                      final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi,
+                      final boolean convertBackslashes) {
+        parse(pattern, patternConverters, formattingInfos, false, noConsoleNoAnsi, convertBackslashes);
+    }
+
+    /**
+     * Parse a format specifier.
+     *
+     * @param pattern
+     *            pattern to parse.
+     * @param patternConverters
+     *            list to receive pattern converters.
+     * @param formattingInfos
+     *            list to receive field specifiers corresponding to pattern converters.
+     * @param disableAnsi
+     *            do not output ANSI escape codes
+     * @param noConsoleNoAnsi
+     *            do not do not output ANSI escape codes if {@link System#console()}
+     * @param convertBackslashes if {@code true}, backslash characters are treated as escape characters and character
+     *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
+     */
+    public void parse(final String pattern, final List<PatternConverter> patternConverters,
+            final List<FormattingInfo> formattingInfos, final boolean disableAnsi,
+            final boolean noConsoleNoAnsi, final boolean convertBackslashes) {
         Objects.requireNonNull(pattern, "pattern");
 
         final StringBuilder currentLiteral = new StringBuilder(BUF_SIZE);
@@ -384,7 +412,7 @@ public final class PatternParser {
                         state = ParserState.MIN_STATE;
                     } else {
                         i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
-                                patternConverters, formattingInfos, noConsoleNoAnsi, convertBackslashes);
+                                patternConverters, formattingInfos, disableAnsi, noConsoleNoAnsi, convertBackslashes);
 
                         // Next pattern is assumed to be a literal.
                         state = ParserState.LITERAL_STATE;
@@ -406,7 +434,7 @@ public final class PatternParser {
                     state = ParserState.DOT_STATE;
                 } else {
                     i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
-                            patternConverters, formattingInfos, noConsoleNoAnsi, convertBackslashes);
+                            patternConverters, formattingInfos, disableAnsi, noConsoleNoAnsi, convertBackslashes);
                     state = ParserState.LITERAL_STATE;
                     formattingInfo = FormattingInfo.getDefault();
                     currentLiteral.setLength(0);
@@ -447,7 +475,7 @@ public final class PatternParser {
                             formattingInfo.getMaxLength() * DECIMAL + c - '0', formattingInfo.isLeftTruncate());
                 } else {
                     i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
-                            patternConverters, formattingInfos, noConsoleNoAnsi, convertBackslashes);
+                            patternConverters, formattingInfos, disableAnsi, noConsoleNoAnsi, convertBackslashes);
                     state = ParserState.LITERAL_STATE;
                     formattingInfo = FormattingInfo.getDefault();
                     currentLiteral.setLength(0);
@@ -476,11 +504,15 @@ public final class PatternParser {
      *            map of stock pattern converters keyed by format specifier.
      * @param options
      *            converter options.
-     * @param noConsoleNoAnsi TODO
+     * @param disableAnsi
+     *            do not output ANSI escape codes
+     * @param noConsoleNoAnsi
+     *            do not do not output ANSI escape codes if {@link System#console()}
      * @return converter or null.
      */
     private PatternConverter createConverter(final String converterId, final StringBuilder currentLiteral,
-            final Map<String, Class<PatternConverter>> rules, final List<String> options, final boolean noConsoleNoAnsi) {
+            final Map<String, Class<PatternConverter>> rules, final List<String> options, final boolean disableAnsi,
+            final boolean noConsoleNoAnsi) {
         String converterName = converterId;
         Class<PatternConverter> converterClass = null;
 
@@ -499,6 +531,7 @@ public final class PatternParser {
         }
 
         if (AnsiConverter.class.isAssignableFrom(converterClass)) {
+            options.add(DISABLE_ANSI + '=' + disableAnsi);
             options.add(NO_CONSOLE_NO_ANSI + '=' + noConsoleNoAnsi);
         }
         // Work around the regression bug in Class.getDeclaredMethods() in Oracle Java in version > 1.6.0_17:
@@ -580,8 +613,10 @@ public final class PatternParser {
      *            list to receive parsed pattern converter.
      * @param formattingInfos
      *            list to receive corresponding field specifier.
+     * @param disableAnsi
+     *            do not output ANSI escape codes
      * @param noConsoleNoAnsi
-     *            TODO
+     *            do not do not output ANSI escape codes if {@link System#console()}
      * @param convertBackslashes if {@code true}, backslash characters are treated as escape characters and character
      *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
      * @return position after format specifier sequence.
@@ -589,7 +624,8 @@ public final class PatternParser {
     private int finalizeConverter(final char c, final String pattern, final int start,
             final StringBuilder currentLiteral, final FormattingInfo formattingInfo,
             final Map<String, Class<PatternConverter>> rules, final List<PatternConverter> patternConverters,
-            final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi, final boolean convertBackslashes) {
+            final List<FormattingInfo> formattingInfos, final boolean disableAnsi, final boolean noConsoleNoAnsi,
+            final boolean convertBackslashes) {
         int i = start;
         final StringBuilder convBuf = new StringBuilder();
         i = extractConverter(c, pattern, i, convBuf, currentLiteral);
@@ -599,7 +635,8 @@ public final class PatternParser {
         final List<String> options = new ArrayList<>();
         i = extractOptions(pattern, i, options);
 
-        final PatternConverter pc = createConverter(converterId, currentLiteral, rules, options, noConsoleNoAnsi);
+        final PatternConverter pc = createConverter(converterId, currentLiteral, rules, options, disableAnsi,
+            noConsoleNoAnsi);
 
         if (pc == null) {
             StringBuilder msg;

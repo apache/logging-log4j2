@@ -56,10 +56,13 @@ public class MarkerPatternSelector implements PatternSelector {
         @PluginBuilderAttribute(value = "alwaysWriteExceptions") 
         private boolean alwaysWriteExceptions = true;
         
-        @PluginBuilderAttribute(value = "noConsoleNoAnsi") 
-        private boolean noConsoleNoAnsi;
+        @PluginBuilderAttribute(value = "disableAnsi")
+        private boolean disableAnsi;
         
-        @PluginConfiguration 
+        @PluginBuilderAttribute(value = "noConsoleNoAnsi")
+        private boolean noConsoleNoAnsi;
+
+        @PluginConfiguration
         private Configuration configuration;
 
         @Override
@@ -71,8 +74,8 @@ public class MarkerPatternSelector implements PatternSelector {
                 LOGGER.warn("No marker patterns were provided with PatternMatch");
                 return null;
             }
-            return new MarkerPatternSelector(properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi,
-                    configuration);
+            return new MarkerPatternSelector(properties, defaultPattern, alwaysWriteExceptions, disableAnsi,
+                    noConsoleNoAnsi, configuration);
         }
 
         public Builder withProperties(final PatternMatch[] properties) {
@@ -87,6 +90,11 @@ public class MarkerPatternSelector implements PatternSelector {
 
         public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
             this.alwaysWriteExceptions = alwaysWriteExceptions;
+            return this;
+        }
+
+        public Builder withDisableAnsi(final boolean disableAnsi) {
+            this.disableAnsi = disableAnsi;
             return this;
         }
 
@@ -113,13 +121,24 @@ public class MarkerPatternSelector implements PatternSelector {
     private static Logger LOGGER = StatusLogger.getLogger();
 
 
+    /**
+     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
+     */
+    @Deprecated
     public MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
                                  final Configuration config) {
+        this(properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
+    }
+
+    private MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
+                                 final boolean alwaysWriteExceptions, final boolean disableAnsi,
+                                 final boolean noConsoleNoAnsi, final Configuration config) {
         final PatternParser parser = PatternLayout.createPatternParser(config);
         for (final PatternMatch property : properties) {
             try {
-                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, noConsoleNoAnsi);
+                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions,
+                        disableAnsi, noConsoleNoAnsi);
                 formatterMap.put(property.getKey(), list.toArray(new PatternFormatter[list.size()]));
                 patternMap.put(property.getKey(), property.getPattern());
             } catch (final RuntimeException ex) {
@@ -127,7 +146,8 @@ public class MarkerPatternSelector implements PatternSelector {
             }
         }
         try {
-            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi);
+            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi,
+                    noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
             this.defaultPattern = defaultPattern;
         } catch (final RuntimeException ex) {
