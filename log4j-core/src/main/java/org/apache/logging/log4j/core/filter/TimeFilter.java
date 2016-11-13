@@ -30,6 +30,8 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -39,6 +41,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @Plugin(name = "TimeFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 @PerformanceSensitive("allocation")
 public final class TimeFilter extends AbstractFilter {
+    private static final Clock CLOCK = ClockFactory.getClock();
 
     /**
      * Length of hour in milliseconds.
@@ -120,7 +123,7 @@ public final class TimeFilter extends AbstractFilter {
     }
 
     private Result filter() {
-        return Result.NEUTRAL;
+        return filter(CLOCK.currentTimeMillis());
     }
 
     @Override

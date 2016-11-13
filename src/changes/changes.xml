@@ -30,6 +30,9 @@
       <action issue="LOG4J2-1685" dev="mikes" type="fix" due-to="Raman Gupta">
         Option 'disableAnsi' in PatternLayout to unconditionally disable ANSI escape codes.
       </action>
+      <action issue="LOG4J2-1706" dev="rpopma" type="fix">
+        Make TimeFilter usable as global filter and as logger filter.
+      </action>
       <action issue="LOG4J2-1680" dev="rpopma" type="fix">
         (GC) Avoid allocating temporary objects in TimeFilter.
       </action>
