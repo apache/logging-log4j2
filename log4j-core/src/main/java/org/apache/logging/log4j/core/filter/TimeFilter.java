@@ -31,11 +31,13 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Filters events that fall within a specified time period in each day.
  */
 @Plugin(name = "TimeFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PerformanceSensitive("allocation")
 public final class TimeFilter extends AbstractFilter {
 
     /**
