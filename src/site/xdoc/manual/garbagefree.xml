@@ -173,10 +173,8 @@
           <li>StructuredDataFilter (garbage free since 2.8)</li>
           <li>ThreadContextMapFilter (garbage free since 2.8)</li>
           <li>ThresholdFilter (garbage free since 2.8)</li>
+          <li>TimeFilter (garbage free since 2.8)</li>
         </ul>
-        <p>Currently the other filter implementations allocate temporary objects during steady state logging.
-          We expect to be able to make the following filters garbage-free in a subsequent release:
-          TimeFilter.</p>
         <p>
           Other filters like BurstFilter, RegexFilter and ScriptFilter are not trivial to make garbage free,
           and there is currently no plan to change them.
