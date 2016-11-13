@@ -259,20 +259,30 @@
               </td>
             </tr>
             <tr>
-              <td>%highlight{pattern}{style}</td>
-              <td>Adds ANSI colors (unless nested pattern is not garbage free)</td>
+              <td>%equals{pattern}{test}{substitution},
+                %equalsIgnoreCase{pattern}{test}{substitution}</td>
+              <td>Replaces occurrences of 'test', a string, with its replacement 'substitution'
+                in the string resulting from evaluation of the pattern - garbage-free since 2.8</td>
             </tr>
             <tr>
-              <td>style{pattern}{ANSI style}</td>
-              <td>Style the message (unless nested pattern is not garbage free)</td>
+              <td>%highlight{pattern}{style}</td>
+              <td>Adds ANSI colors (unless nested pattern is not garbage free) - since 2.7</td>
             </tr>
             <tr>
               <td>%m, %msg, %message</td>
               <td>Log message (unless message text contains '${')</td>
             </tr>
             <tr>
+              <td>%marker</td>
+              <td>The full name of the marker (including parents) - since 2.8</td>
+            </tr>
+            <tr>
               <td>%markerSimpleName</td>
               <td>The simple name of the marker (not including parents)</td>
+            </tr>
+            <tr>
+              <td>%maxLen, %maxLength</td>
+              <td>Truncates another pattern to some max number of characters - since 2.8</td>
             </tr>
             <tr>
               <td>%n</td>
@@ -287,6 +297,20 @@
               <td>The level of the logging event</td>
             </tr>
             <tr>
+              <td>%r,
+                %relative</td>
+              <td>The number of milliseconds elapsed since the JVM was started until the creation of the logging event
+                  - since 2.8</td>
+            </tr>
+            <tr>
+              <td>%sn, %sequenceNumber</td>
+              <td>A sequence number that will be incremented in every event - since 2.8</td>
+            </tr>
+            <tr>
+              <td>%style{pattern}{ANSI style}</td>
+              <td>Style the message (unless nested pattern is not garbage free) - since 2.7</td>
+            </tr>
+            <tr>
               <td>%T, %tid, %threadId</td>
               <td>The ID of the thread that generated the logging event</td>
             </tr>
@@ -297,6 +321,13 @@
             <tr>
               <td>%tp</td>
               <td>The priority of the thread that generated the logging event</td>
+            </tr>
+            <tr>
+              <td>%X{key[,key2...]},
+                %mdc{key[,key2...]},
+                %MDC{key[,key2...]}</td>
+              <td>Outputs the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
+                associated with the thread that generated the logging event - since 2.8</td>
             </tr>
             <tr>
               <td>literal text</td>
