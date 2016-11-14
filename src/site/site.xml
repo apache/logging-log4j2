@@ -138,7 +138,7 @@
         <item name="Rolling Random Access File" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
         <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
-        <item name="ScriptSelector" href="/manual/appenders.html#ScriptSelector"/>
+        <item name="ScriptAppenderSelector" href="/manual/appenders.html#ScriptAppenderSelector"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
         <item name="ZeroMQ/JeroMQ" href="/manual/appenders.html#JeroMQAppender"/>
