@@ -89,27 +89,27 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
                     immediateFlush, advertise ? configuration.getAdvertiser() : null);
         }
 
-        public B withFileName(final String fileName) {
+        public B setFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
-        public B withAppend(final boolean append) {
+        public B setAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
-        public B withAdvertise(final boolean advertise) {
+        public B setAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
-        public B withAdvertiseURI(final String advertiseURI) {
+        public B setAdvertiseURI(final String advertiseURI) {
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
 
-        public B withConfiguration(final Configuration configuration) {
+        public B setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return asBuilder();
         }
@@ -230,12 +230,12 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         final int bufferSize = Integers.parseInt(bufferSizeStr, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
         return newBuilder()
-            .withAdvertise(isAdvertise)
-            .withAdvertiseURI(advertiseURI)
-            .withAppend(isAppend)
+            .setAdvertise(isAdvertise)
+            .setAdvertiseURI(advertiseURI)
+            .setAppend(isAppend)
             .withBufferSize(bufferSize)
-            .withConfiguration(configuration)
-            .withFileName(fileName)
+            .setConfiguration(configuration)
+            .setFileName(fileName)
             .withFilter(filter)
             .withIgnoreExceptions(ignoreExceptions)
             .withImmediateFlush(isFlush)
