@@ -21,18 +21,27 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Filters events that fall within a specified time period in each day.
  */
 @Plugin(name = "TimeFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PerformanceSensitive("allocation")
 public final class TimeFilter extends AbstractFilter {
+    private static final Clock CLOCK = ClockFactory.getClock();
 
     /**
      * Length of hour in milliseconds.
@@ -62,6 +71,9 @@ public final class TimeFilter extends AbstractFilter {
      */
     private final TimeZone timezone;
 
+    private long midnightToday;
+    private long midnightTomorrow;
+
 
     private TimeFilter(final long start, final long end, final TimeZone tz, final Result onMatch,
                        final Result onMismatch) {
@@ -69,21 +81,131 @@ public final class TimeFilter extends AbstractFilter {
         this.start = start;
         this.end = end;
         timezone = tz;
+        initMidnight(start);
+    }
+
+    /**
+     * Initializes the midnight boundaries to midnight in the specified time zone.
+     * @param now a time in milliseconds since the epoch, used to pinpoint the current date
+     */
+    void initMidnight(final long now) {
+        final Calendar calendar = Calendar.getInstance(timezone);
+        calendar.setTimeInMillis(now);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        midnightToday = calendar.getTimeInMillis();
+
+        calendar.add(Calendar.DATE, 1);
+        midnightTomorrow = calendar.getTimeInMillis();
+    }
+
+    /**
+     * Package-protected for tests.
+     *
+     * @param currentTimeMillis the time to compare with the boundaries. May re-initialize the cached midnight
+     *          boundary values.
+     * @return the action to perform
+     */
+    Result filter(final long currentTimeMillis) {
+        if (currentTimeMillis >= midnightTomorrow || currentTimeMillis < midnightToday) {
+            initMidnight(currentTimeMillis);
+        }
+        return currentTimeMillis >= midnightToday + start && currentTimeMillis <= midnightToday + end //
+                ? onMatch // within window
+                : onMismatch;
     }
 
     @Override
     public Result filter(final LogEvent event) {
-        final Calendar calendar = Calendar.getInstance(timezone);
-        calendar.setTimeInMillis(event.getTimeMillis());
-        //
-        //   get apparent number of milliseconds since midnight
-        //      (ignores extra or missing hour on daylight time changes).
-        //
-        final long apparentOffset = calendar.get(Calendar.HOUR_OF_DAY) * HOUR_MS +
-            calendar.get(Calendar.MINUTE) * MINUTE_MS +
-            calendar.get(Calendar.SECOND) * SECOND_MS +
-            calendar.get(Calendar.MILLISECOND);
-        return apparentOffset >= start && apparentOffset < end ? onMatch : onMismatch;
+        return filter(event.getTimeMillis());
+    }
+
+    private Result filter() {
+        return filter(CLOCK.currentTimeMillis());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+            final Throwable t) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
+            final Throwable t) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object... params) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
+        return filter();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
+        return filter();
     }
 
     @Override

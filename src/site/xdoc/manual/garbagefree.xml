@@ -158,6 +158,27 @@
             during steady-state logging. Instead of AsyncAppender, use <a href="async.html">Async Loggers</a>
             to log asynchronously in a garbage-free manner.
           </p>
+
+        <a name="Filters" />
+        <h4>Supported Filters</h4>
+        <p>
+          The following <a href="filters.html">filters</a> are garbage-free during steady-state logging:
+        </p>
+        <ul>
+          <li>CompositeFilter (adding and removing element filters creates temporary objects for thread safety)</li>
+          <li>DynamicThresholdFilter</li>
+          <li>LevelRangeFilter (garbage free since 2.8)</li>
+          <li>MapFilter (garbage free since 2.8, but logging a MapMessage still allocates)</li>
+          <li>MarkerFilter (garbage free since 2.8)</li>
+          <li>StructuredDataFilter (garbage free since 2.8)</li>
+          <li>ThreadContextMapFilter (garbage free since 2.8)</li>
+          <li>ThresholdFilter (garbage free since 2.8)</li>
+          <li>TimeFilter (garbage free since 2.8)</li>
+        </ul>
+        <p>
+          Other filters like BurstFilter, RegexFilter and ScriptFilter are not trivial to make garbage free,
+          and there is currently no plan to change them.
+        </p>
         <a name="Layouts" />
           <h4>Supported Layouts</h4>
 
@@ -236,20 +257,30 @@
               </td>
             </tr>
             <tr>
-              <td>%highlight{pattern}{style}</td>
-              <td>Adds ANSI colors (unless nested pattern is not garbage free)</td>
+              <td>%equals{pattern}{test}{substitution},
+                %equalsIgnoreCase{pattern}{test}{substitution}</td>
+              <td>Replaces occurrences of 'test', a string, with its replacement 'substitution'
+                in the string resulting from evaluation of the pattern - garbage-free since 2.8</td>
             </tr>
             <tr>
-              <td>style{pattern}{ANSI style}</td>
-              <td>Style the message (unless nested pattern is not garbage free)</td>
+              <td>%highlight{pattern}{style}</td>
+              <td>Adds ANSI colors (unless nested pattern is not garbage free) - since 2.7</td>
             </tr>
             <tr>
               <td>%m, %msg, %message</td>
               <td>Log message (unless message text contains '${')</td>
             </tr>
             <tr>
+              <td>%marker</td>
+              <td>The full name of the marker (including parents) - since 2.8</td>
+            </tr>
+            <tr>
               <td>%markerSimpleName</td>
               <td>The simple name of the marker (not including parents)</td>
+            </tr>
+            <tr>
+              <td>%maxLen, %maxLength</td>
+              <td>Truncates another pattern to some max number of characters - since 2.8</td>
             </tr>
             <tr>
               <td>%n</td>
@@ -264,6 +295,20 @@
               <td>The level of the logging event</td>
             </tr>
             <tr>
+              <td>%r,
+                %relative</td>
+              <td>The number of milliseconds elapsed since the JVM was started until the creation of the logging event
+                  - since 2.8</td>
+            </tr>
+            <tr>
+              <td>%sn, %sequenceNumber</td>
+              <td>A sequence number that will be incremented in every event - since 2.8</td>
+            </tr>
+            <tr>
+              <td>%style{pattern}{ANSI style}</td>
+              <td>Style the message (unless nested pattern is not garbage free) - since 2.7</td>
+            </tr>
+            <tr>
               <td>%T, %tid, %threadId</td>
               <td>The ID of the thread that generated the logging event</td>
             </tr>
@@ -274,6 +319,13 @@
             <tr>
               <td>%tp</td>
               <td>The priority of the thread that generated the logging event</td>
+            </tr>
+            <tr>
+              <td>%X{key[,key2...]},
+                %mdc{key[,key2...]},
+                %MDC{key[,key2...]}</td>
+              <td>Outputs the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
+                associated with the thread that generated the logging event - since 2.8</td>
             </tr>
             <tr>
               <td>literal text</td>
@@ -305,23 +357,6 @@
             </ul>
 
           </td></tr></table>
-
-        <a name="Filters" />
-        <h4>Supported Filters</h4>
-        <p>
-          The following <a href="filters.html">filters</a> are garbage-free during steady-state logging:
-        </p>
-        <ul>
-          <li>CompositeFilter (adding and removing element filters creates temporary objects for thread safety)</li>
-          <li>DynamicThresholdFilter</li>
-        </ul>
-        <p>Currently the other filter implementations allocate temporary objects during steady state logging.
-          We expect to be able to make the following filters garbage-free in a subsequent release:
-          LevelRangeFilter, MapFilter, MarkerFilter, ThreadContextMapFilter and ThresholdFilter.</p>
-        <p>
-          Other filters like BurstFilter, RegexFilter and ScriptFilter are not trivial to make garbage free,
-          and there is currently no plan to change them.
-        </p>
         <a name="api" />
           <h4>API Changes</h4>
           <p>
