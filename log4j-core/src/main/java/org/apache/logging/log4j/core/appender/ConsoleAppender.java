@@ -180,7 +180,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
     /**
      * Builds ConsoleAppender instances.
-     * @param <B> This builder class
+     * @param <B> The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<ConsoleAppender> {
