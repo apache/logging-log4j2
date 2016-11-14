@@ -43,7 +43,7 @@ public class DatagramOutputStream extends OutputStream {
     private static final int SHIFT_3 = 24;
 
     private DatagramSocket ds;
-    private final InetAddress address;
+    private final InetAddress inetAddress;
     private final int port;
 
     private byte[] data;
@@ -61,7 +61,7 @@ public class DatagramOutputStream extends OutputStream {
         this.header = header;
         this.footer = footer;
         try {
-            address = InetAddress.getByName(host);
+            inetAddress = InetAddress.getByName(host);
         } catch (final UnknownHostException ex) {
             final String msg = "Could not find host " + host;
             LOGGER.error(msg, ex);
@@ -95,11 +95,11 @@ public class DatagramOutputStream extends OutputStream {
     @Override
     public synchronized void flush() throws IOException {
         try {
-            if (this.data != null && this.ds != null && this.address != null) {
+            if (this.data != null && this.ds != null && this.inetAddress != null) {
                 if (footer != null) {
                     copy(footer, 0, footer.length);
                 }
-                final DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
+                final DatagramPacket packet = new DatagramPacket(data, data.length, inetAddress, port);
                 ds.send(packet);
             }
         } finally {
