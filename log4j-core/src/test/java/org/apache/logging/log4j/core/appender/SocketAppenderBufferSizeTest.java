@@ -60,17 +60,17 @@ public class SocketAppenderBufferSizeTest {
     }
 
     @Test
-    public void testTcpAppenderDefaultBufferSize() throws Exception {
+    public void testTcpAppenderDefaultEncoderBufferSize() throws Exception {
         SocketAppenderTest.testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
     @Test
-    public void testTcpAppenderLargeBufferSize() throws Exception {
+    public void testTcpAppenderLargeEncoderBufferSize() throws Exception {
         SocketAppenderTest.testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE * 100);
     }
 
     @Test
-    public void testTcpAppenderSmallestBufferSize() throws Exception {
+    public void testTcpAppenderSmallestEncoderBufferSize() throws Exception {
         SocketAppenderTest.testTcpAppender(tcpServer, logger, 1);
     }
 
