@@ -200,7 +200,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             this.sslConfiguration = sslConfiguration;
             return asBuilder();
         }
-}
+    }
     
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
