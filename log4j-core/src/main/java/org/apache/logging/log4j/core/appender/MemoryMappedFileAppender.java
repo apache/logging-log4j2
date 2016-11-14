@@ -68,7 +68,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
         private String advertiseURI;
 
         @PluginConfiguration
-        private Configuration config;
+        private Configuration configuration;
 
         @Override
         public MemoryMappedFileAppender build() {
@@ -92,7 +92,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             }
 
             return new MemoryMappedFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(), false,
-                    advertise ? config.getAdvertiser() : null);
+                    advertise ? configuration.getAdvertiser() : null);
         }
 
         public B setFileName(String fileName) {
@@ -120,8 +120,8 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             return asBuilder();
         }
 
-        public B setConfig(Configuration config) {
-            this.config = config;
+        public B setConfiguration(Configuration configuration) {
+            this.configuration = configuration;
             return asBuilder();
         }
     }
@@ -244,7 +244,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             .setAdvertise(isAdvertise)
             .setAdvertiseURI(advertiseURI)
             .setAppend(isAppend)
-            .setConfig(config)
+            .setConfiguration(config)
             .setFileName(fileName)
             .withFilter(filter)
             .withIgnoreExceptions(ignoreExceptions)
