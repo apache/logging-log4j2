@@ -130,6 +130,26 @@ try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.put("id"
 .
 .
 }</pre>
+
+            If you're using a thread pool, then you can initialise a CloseableThreadContext by using the
+            <tt>putAll(final Map&lt;String, String&gt; values)</tt> and/or
+            <tt>pushAll(List&lt;String&gt; messages)</tt> methods;
+            <pre class="prettyprint linenums">
+for( final Session session : sessions ) {
+    try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.put("loginId", session.getAttribute("loginId"))) {
+        logger.debug("Starting background thread for user");
+        final Map&lt;String, String&gt; values = ThreadContext.getImmutableContext();
+        final List&lt;String&gt; messages = ThreadContext.getImmutableStack().asList();
+        executor.submit(new Runnable() {
+        public void run() {
+            try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.putAll(values).pushAll(messages)) {
+                logger.debug("Processing for user started");
+                .
+                logger.debug("Processing for user completed");
+            }
+        });
+    }
+}</pre>
 		  <h4>Implementation details</h4>
           <p>The Stack and the Map are managed per thread and are based on
             <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a>
