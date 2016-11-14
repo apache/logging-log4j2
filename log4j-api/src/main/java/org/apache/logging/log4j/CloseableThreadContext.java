@@ -18,6 +18,7 @@ package org.apache.logging.log4j;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,12 +79,12 @@ public class CloseableThreadContext {
      * Populates the Thread Context Stack with the supplied stack. The information will be popped off when
      * the instance is closed.
      *
-     * @param values The stack of values to be added
+     * @param messages The list of messages to be added
      * @return a new instance that will back out the changes when closed.
-     * @since 2.7.1
+     * @since 2.8
      */
-    public static CloseableThreadContext.Instance pushAll(final ThreadContext.ContextStack stack) {
-        return new CloseableThreadContext.Instance().pushAll(stack);
+    public static CloseableThreadContext.Instance pushAll(final List<String> messages) {
+        return new CloseableThreadContext.Instance().pushAll(messages);
     }
 
     /**
@@ -93,7 +94,7 @@ public class CloseableThreadContext {
      *
      * @param values The map of key/value pairs to be added
      * @return a new instance that will back out the changes when closed.
-     * @since 2.7.1
+     * @since 2.8
      */
     public static CloseableThreadContext.Instance putAll(final Map<String, String> values) {
         return new CloseableThreadContext.Instance().putAll(values);
@@ -159,11 +160,15 @@ public class CloseableThreadContext {
          *
          * @param values The map of key/value pairs to be added
          * @return a new instance that will back out the changes when closed.
-         * @since 2.7.1
+         * @since 2.8
          */
         public Instance putAll(final Map<String, String> values) {
-            for (final Map.Entry<String, String> entry : values.entrySet()) {
-                put(entry.getKey(), entry.getValue());
+            final Map<String, String> currentValues = ThreadContext.getContext();
+            ThreadContext.putAll(values);
+            for (final String key : values.keySet()) {
+                if (!originalValues.containsKey(key)) {
+                    originalValues.put(key, currentValues.get(key));
+                }
             }
             return this;
         }
@@ -172,12 +177,12 @@ public class CloseableThreadContext {
          * Populates the Thread Context Stack with the supplied stack. The information will be popped off when
          * the instance is closed.
          *
-         * @param values The stack of values to be added
+         * @param messages The list of messages to be added
          * @return a new instance that will back out the changes when closed.
-         * @since 2.7.1
+         * @since 2.8
          */
-        public Instance pushAll(final ThreadContext.ContextStack stack) {
-            for (final String message : stack.asList()) {
+        public Instance pushAll(final List<String> messages) {
+            for (final String message : messages) {
                 push(message);
             }
             return this;

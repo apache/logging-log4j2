@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-
 import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests {@link CloseableThreadContext}.
@@ -209,10 +209,10 @@ public class CloseableThreadContextTest {
     public void pushAllWillPushAllValues() throws Exception {
 
         ThreadContext.push(key);
-        final ThreadContext.ContextStack stack = ThreadContext.getImmutableStack();
+        final List<String> messages = ThreadContext.getImmutableStack().asList();
         ThreadContext.pop();
 
-        try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.pushAll(stack)) {
+        try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.pushAll(messages)) {
             assertThat(ThreadContext.peek(), is(key));
         }
         assertThat(ThreadContext.peek(), is(""));
