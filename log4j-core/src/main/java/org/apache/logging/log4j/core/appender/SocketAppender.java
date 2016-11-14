@@ -39,11 +39,11 @@ import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.DatagramSocketManager;
 import org.apache.logging.log4j.core.net.Protocol;
+import org.apache.logging.log4j.core.net.SocketOptions;
 import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
-import org.apache.logging.log4j.core.util.Constants;
 
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
@@ -88,6 +88,9 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         @PluginAliases({ "reconnectDelay, delayMillis" })
         private int reconnectDelayMillis;
         
+        @PluginElement("SocketOptions")
+        private SocketOptions socketOptions;
+        
         @PluginElement("SslConfiguration")
         @PluginAliases({ "SslConfig" })
         private SslConfiguration sslConfiguration;
@@ -114,7 +117,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             }
 
             final AbstractSocketManager manager = SocketAppender.createSocketManager(name, actualProtocol, host, port,
-                    connectTimeoutMillis, sslConfiguration, reconnectDelayMillis, immediateFail, layout, getBufferSize());
+                    connectTimeoutMillis, sslConfiguration, reconnectDelayMillis, immediateFail, layout, getBufferSize(), socketOptions);
 
             return new SocketAppender(name, layout, getFilter(), manager, isIgnoreExceptions(),
                     !bufferedIo || immediateFlush, advertise ? configuration.getAdvertiser() : null);
@@ -185,6 +188,11 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
         public B withReconnectDelayMillis(final int reconnectDelayMillis) {
             this.reconnectDelayMillis = reconnectDelayMillis;
+            return asBuilder();
+        }
+
+        public B withSocketOptions(final SocketOptions socketOptions) {
+            this.socketOptions = socketOptions;
             return asBuilder();
         }
 
@@ -373,10 +381,25 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *
      * @throws IllegalArgumentException
      *             if the protocol cannot be handled.
+     * @deprecated Use {@link #createSocketManager(String, Protocol, String, int, int, SslConfiguration, int, boolean, Layout, int, SocketOptions)}.
      */
+    @Deprecated
     protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
             final int port, final int connectTimeoutMillis, final SslConfiguration sslConfig, final int reconnectDelayMillis,
             final boolean immediateFail, final Layout<? extends Serializable> layout, final int bufferSize) {
+        return createSocketManager(name, protocol, host, port, connectTimeoutMillis, sslConfig, reconnectDelayMillis, immediateFail, layout, bufferSize, null);
+    }
+
+    /**
+     * Creates an AbstractSocketManager for TCP, UDP, and SSL.
+     *
+     * @throws IllegalArgumentException
+     *             if the protocol cannot be handled.
+     */
+    protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
+            final int port, final int connectTimeoutMillis, final SslConfiguration sslConfig,
+            final int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
+            final int bufferSize, final SocketOptions socketOptions) {
         if (protocol == Protocol.TCP && sslConfig != null) {
             // Upgrade TCP to SSL if an SSL config is specified.
             protocol = Protocol.SSL;
@@ -386,13 +409,13 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         }
         switch (protocol) {
         case TCP:
-            return TcpSocketManager.getSocketManager(host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail,
-                    layout, bufferSize);
+            return TcpSocketManager.getSocketManager(host, port, connectTimeoutMillis, reconnectDelayMillis,
+                    immediateFail, layout, bufferSize, socketOptions);
         case UDP:
             return DatagramSocketManager.getSocketManager(host, port, layout, bufferSize);
         case SSL:
             return SslSocketManager.getSocketManager(sslConfig, host, port, connectTimeoutMillis, reconnectDelayMillis,
-                    immediateFail, layout, bufferSize);
+                    immediateFail, layout, bufferSize, socketOptions);
         default:
             throw new IllegalArgumentException(protocol.toString());
         }

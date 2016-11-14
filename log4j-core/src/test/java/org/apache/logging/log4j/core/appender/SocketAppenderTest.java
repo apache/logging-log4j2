@@ -332,8 +332,13 @@ public class SocketAppenderTest {
         private volatile int count = 0;
         private final BlockingQueue<LogEvent> queue;
 
+        @SuppressWarnings("resource")
         public TcpSocketTestServer(final int port) throws IOException {
-            this.serverSocket = new ServerSocket(port);
+            this(new ServerSocket(port));
+        }
+
+        public TcpSocketTestServer(ServerSocket serverSocket) {
+            this.serverSocket = serverSocket;
             this.queue = new ArrayBlockingQueue<>(10);
         }
 
