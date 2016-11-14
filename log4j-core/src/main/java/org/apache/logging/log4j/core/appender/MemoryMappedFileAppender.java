@@ -95,32 +95,32 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
                     advertise ? config.getAdvertiser() : null);
         }
 
-        public B withFileName(String fileName) {
+        public B setFileName(String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
-        public B withAppend(boolean append) {
+        public B setAppend(boolean append) {
             this.append = append;
             return asBuilder();
         }
 
-        public B withRegionLength(int regionLength) {
+        public B setRegionLength(int regionLength) {
             this.regionLength = regionLength;
             return asBuilder();
         }
 
-        public B withAdvertise(boolean advertise) {
+        public B setAdvertise(boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
-        public B withAdvertiseURI(String advertiseURI) {
+        public B setAdvertiseURI(String advertiseURI) {
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
 
-        public B withConfig(Configuration config) {
+        public B setConfig(Configuration config) {
             this.config = config;
             return asBuilder();
         }
@@ -241,17 +241,17 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
         // @formatter:off
         return newBuilder()
-            .withAdvertise(isAdvertise)
-            .withAdvertiseURI(advertiseURI)
-            .withAppend(isAppend)
-            .withConfig(config)
-            .withFileName(fileName)
+            .setAdvertise(isAdvertise)
+            .setAdvertiseURI(advertiseURI)
+            .setAppend(isAppend)
+            .setConfig(config)
+            .setFileName(fileName)
             .withFilter(filter)
             .withIgnoreExceptions(ignoreExceptions)
             .withImmediateFlush(isImmediateFlush)
             .withLayout(layout)
             .withName(name)
-            .withRegionLength(regionLength)
+            .setRegionLength(regionLength)
             .build();
         // @formatter:on
     }
