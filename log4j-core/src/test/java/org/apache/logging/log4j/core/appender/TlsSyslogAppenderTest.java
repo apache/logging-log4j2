@@ -37,7 +37,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
 
     private SSLServerSocketFactory serverSocketFactory;
     private TlsSyslogMessageFormat messageFormat;
-    private SslConfiguration sslConfig;
+    private SslConfiguration sslConfiguration;
 
     public TlsSyslogAppenderTest() throws StoreConfigurationException {
         initServerSocketFactory();
@@ -82,8 +82,8 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     private void initServerSocketFactory() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD, null, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, null, null);
-        sslConfig = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
-        serverSocketFactory = sslConfig.getSslServerSocketFactory();
+        sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
+        serverSocketFactory = sslConfiguration.getSslServerSocketFactory();
     }
 
     private SyslogAppender createAppender() {
@@ -95,7 +95,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
             format = "RFC5424";
         }
 
-        return SyslogAppender.createAppender("localhost", PORTNUM, "SSL", sslConfig, 0, -1, true, "Test", true,
+        return SyslogAppender.createAppender("localhost", PORTNUM, "SSL", sslConfiguration, 0, -1, true, "Test", true,
             false, Facility.LOCAL0, "Audit", 18060, true, "RequestContext", null, null, includeNewLine, null,
             "TestApp", "Test", null, "ipAddress,loginId", null, format, null, null, null, null, null, false);
     }
