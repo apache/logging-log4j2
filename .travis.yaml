@@ -18,5 +18,5 @@ jdk:
   - oraclejdk7
 
 after_success:
-  - mvn clean test
+  - mvn clean cobertura:cobertura coveralls:report
   
