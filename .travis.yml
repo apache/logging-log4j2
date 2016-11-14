@@ -16,7 +16,5 @@ sudo: false
 jdk:
   - oraclejdk7
 
-# Package jars during the build so that the OSGi tests can use them.
-script:
-  - mvn clean package -DskipTests
+after_success:
   - mvn test jacoco:report coveralls:report -pl !log4j-bom
