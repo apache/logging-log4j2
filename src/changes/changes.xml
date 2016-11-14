@@ -150,6 +150,9 @@
       <action issue="LOG4J2-1704" dev="ggregory" type="add">
         Add a Builder to RollingRandomAccessFileAppender and deprecate RollingRandomAccessFileAppender.createAppender().
       </action>
+      <action issue="LOG4J2-1709" dev="ggregory" type="add">
+        Add a Builder to SyslogAppender and deprecate SyslogAppender.createAppender().
+      </action>
       <action issue="LOG4J2-1707" dev="ggregory" type="add">
         Allow TCP Socket Appender to set socket options.
       </action>
