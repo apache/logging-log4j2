@@ -3,6 +3,9 @@
 Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x,
 and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
 
+[![Build Status](https://travis-ci.org/apache/logging-log4j2.svg?branch=master)](https://travis-ci.org/apache/logging-log4j2)
+[![Coverage Status](https://coveralls.io/repos/github/apache/logging-log4j2/badge.svg?branch=master)](https://coveralls.io/github/apache/logging-log4j2?branch=master)
+
 ## Documentation
 
 The Log4j 2 User's Guide is available [here](http://logging.apache.org/log4j/2.x/manual/index.html) or as a downloadable
