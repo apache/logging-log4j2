@@ -97,37 +97,37 @@ public class ScriptPatternSelector implements PatternSelector {
                     noConsoleNoAnsi, configuration);
         }
 
-        public Builder withScript(final AbstractScript script) {
+        public Builder setScript(final AbstractScript script) {
             this.script = script;
             return this;
         }
 
-        public Builder withProperties(final PatternMatch[] properties) {
+        public Builder setProperties(final PatternMatch[] properties) {
             this.properties = properties;
             return this;
         }
 
-        public Builder withDefaultPattern(final String defaultPattern) {
+        public Builder setDefaultPattern(final String defaultPattern) {
             this.defaultPattern = defaultPattern;
             return this;
         }
 
-        public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
+        public Builder setAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
             this.alwaysWriteExceptions = alwaysWriteExceptions;
             return this;
         }
 
-        public Builder withDisableAnsi(final boolean disableAnsi) {
+        public Builder setDisableAnsi(final boolean disableAnsi) {
             this.disableAnsi = disableAnsi;
             return this;
         }
 
-        public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
+        public Builder setNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }
 
-        public Builder withConfiguration(final Configuration config) {
+        public Builder setConfiguration(final Configuration config) {
             this.configuration = config;
             return this;
         }
@@ -224,12 +224,12 @@ public class ScriptPatternSelector implements PatternSelector {
             final boolean noConsoleNoAnsi,
             final Configuration configuration) {
         final Builder builder = newBuilder();
-        builder.withScript(script);
-        builder.withProperties(properties);
-        builder.withDefaultPattern(defaultPattern);
-        builder.withAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.withNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.withConfiguration(configuration);
+        builder.setScript(script);
+        builder.setProperties(properties);
+        builder.setDefaultPattern(defaultPattern);
+        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
+        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
+        builder.setConfiguration(configuration);
         return builder.build();
     }
 
