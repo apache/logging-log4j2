@@ -276,15 +276,14 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             final int reconnectDelayMillis,
             final boolean immediateFail,
             final String name,
-            boolean immediateFlush,
+            final boolean immediateFlush,
             final boolean ignoreExceptions,
-            Layout<? extends Serializable> layout,
+            final Layout<? extends Serializable> layout,
             final Filter filter,
             final boolean advertise,
             final Configuration configuration) {
             // @formatter:on
 
-        if (true) {
         // @formatter:off
         return newBuilder()
             .withAdvertise(advertise)
@@ -302,27 +301,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             .withSslConfiguration(sslConfig)
             .build();
         // @formatter:on
-        }
-        if (layout == null) {
-            layout = SerializedLayout.createLayout();
-        }
-
-        if (name == null) {
-            LOGGER.error("No name provided for SocketAppender");
-            return null;
-        }
-
-        final Protocol actualProtocol = protocol != null ? protocol : Protocol.TCP;
-        if (actualProtocol == Protocol.UDP) {
-            immediateFlush = true;
-        }
-
-        final AbstractSocketManager manager = createSocketManager(name, actualProtocol, host, port,
-                connectTimeoutMillis, sslConfig, reconnectDelayMillis, immediateFail, layout, Constants.ENCODER_BYTE_BUFFER_SIZE);
-
-        return new SocketAppender(name, layout, filter, manager, ignoreExceptions, immediateFlush,
-                advertise ? configuration.getAdvertiser() : null);
     }
+    
     /**
      * Creates a socket appender.
      *
