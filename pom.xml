@@ -208,6 +208,7 @@
     <rat.plugin.version>0.12</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.7</cobertura.plugin.version>
+    <jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.5</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
@@ -1072,7 +1073,19 @@
           </execution>
         </executions>
       </plugin> -->
-
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.plugin.version}</version>
+        <executions>
+          <execution>
+              <id>prepare-agent</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+          </execution>
+        </executions>
+      </plugin>      
       <!-- We need to disable the standard ASF configuration to be able to publish our own notice and license files -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
