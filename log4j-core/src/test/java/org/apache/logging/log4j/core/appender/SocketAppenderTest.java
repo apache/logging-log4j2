@@ -337,7 +337,7 @@ public class SocketAppenderTest {
             this(new ServerSocket(port));
         }
 
-        public TcpSocketTestServer(ServerSocket serverSocket) {
+        public TcpSocketTestServer(final ServerSocket serverSocket) {
             this.serverSocket = serverSocket;
             this.queue = new ArrayBlockingQueue<>(10);
         }

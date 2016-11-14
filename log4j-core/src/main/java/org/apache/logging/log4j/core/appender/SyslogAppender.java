@@ -199,92 +199,92 @@ public class SyslogAppender extends SocketAppender {
             return loggerFields;
         }
 
-        public Builder setFacility(Facility facility) {
+        public Builder setFacility(final Facility facility) {
             this.facility = facility;
             return this;
         }
 
-        public Builder setId(String id) {
+        public Builder setId(final String id) {
             this.id = id;
             return this;
         }
 
-        public Builder setEnterpriseNumber(int enterpriseNumber) {
+        public Builder setEnterpriseNumber(final int enterpriseNumber) {
             this.enterpriseNumber = enterpriseNumber;
             return this;
         }
 
-        public Builder setIncludeMdc(boolean includeMdc) {
+        public Builder setIncludeMdc(final boolean includeMdc) {
             this.includeMdc = includeMdc;
             return this;
         }
 
-        public Builder setMdcId(String mdcId) {
+        public Builder setMdcId(final String mdcId) {
             this.mdcId = mdcId;
             return this;
         }
 
-        public Builder setMdcPrefix(String mdcPrefix) {
+        public Builder setMdcPrefix(final String mdcPrefix) {
             this.mdcPrefix = mdcPrefix;
             return this;
         }
 
-        public Builder setEventPrefix(String eventPrefix) {
+        public Builder setEventPrefix(final String eventPrefix) {
             this.eventPrefix = eventPrefix;
             return this;
         }
 
-        public Builder setNewLine(boolean newLine) {
+        public Builder setNewLine(final boolean newLine) {
             this.newLine = newLine;
             return this;
         }
 
-        public Builder setEscapeNL(String escapeNL) {
+        public Builder setEscapeNL(final String escapeNL) {
             this.escapeNL = escapeNL;
             return this;
         }
 
-        public Builder setAppName(String appName) {
+        public Builder setAppName(final String appName) {
             this.appName = appName;
             return this;
         }
 
-        public Builder setMsgId(String msgId) {
+        public Builder setMsgId(final String msgId) {
             this.msgId = msgId;
             return this;
         }
 
-        public Builder setExcludes(String excludes) {
+        public Builder setExcludes(final String excludes) {
             this.excludes = excludes;
             return this;
         }
 
-        public Builder setIncludes(String includes) {
+        public Builder setIncludes(final String includes) {
             this.includes = includes;
             return this;
         }
 
-        public Builder setRequired(String required) {
+        public Builder setRequired(final String required) {
             this.required = required;
             return this;
         }
 
-        public Builder setFormat(String format) {
+        public Builder setFormat(final String format) {
             this.format = format;
             return this;
         }
 
-        public Builder setCharsetName(Charset charset) {
+        public Builder setCharsetName(final Charset charset) {
             this.charsetName = charset;
             return this;
         }
 
-        public Builder setExceptionPattern(String exceptionPattern) {
+        public Builder setExceptionPattern(final String exceptionPattern) {
             this.exceptionPattern = exceptionPattern;
             return this;
         }
 
-        public Builder setLoggerFields(LoggerFields[] loggerFields) {
+        public Builder setLoggerFields(final LoggerFields[] loggerFields) {
             this.loggerFields = loggerFields;
             return this;
         }

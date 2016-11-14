@@ -169,7 +169,7 @@ public final class PatternParser {
     }
 
     public List<PatternFormatter> parse(final String pattern, final boolean alwaysWriteExceptions,
-           boolean disableAnsi, final boolean noConsoleNoAnsi) {
+           final boolean disableAnsi, final boolean noConsoleNoAnsi) {
         final List<PatternFormatter> list = new ArrayList<>();
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();

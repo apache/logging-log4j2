@@ -164,8 +164,8 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @deprecated Use {@link #getSocketManager(String, int, int, int, boolean, Layout, int, SocketOptions)}.
      */
     @Deprecated
-    public static TcpSocketManager getSocketManager(final String host, int port, final int connectTimeoutMillis,
-            int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
+    public static TcpSocketManager getSocketManager(final String host, final int port, final int connectTimeoutMillis,
+            final int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
             final int bufferSize) {
         return getSocketManager(host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout,
                 bufferSize, null);

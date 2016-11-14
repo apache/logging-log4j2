@@ -95,32 +95,32 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
                     advertise ? configuration.getAdvertiser() : null);
         }
 
-        public B setFileName(String fileName) {
+        public B setFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
-        public B setAppend(boolean append) {
+        public B setAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
-        public B setRegionLength(int regionLength) {
+        public B setRegionLength(final int regionLength) {
             this.regionLength = regionLength;
             return asBuilder();
         }
 
-        public B setAdvertise(boolean advertise) {
+        public B setAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
-        public B setAdvertiseURI(String advertiseURI) {
+        public B setAdvertiseURI(final String advertiseURI) {
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
 
-        public B setConfiguration(Configuration configuration) {
+        public B setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return asBuilder();
         }

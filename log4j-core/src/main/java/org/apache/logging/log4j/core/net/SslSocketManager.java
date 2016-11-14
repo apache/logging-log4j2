@@ -119,8 +119,8 @@ public class SslSocketManager extends TcpSocketManager {
      * @deprecated Use {@link SslSocketManager#getSocketManager(SslConfiguration, String, int, int, int, boolean, Layout, int, SocketOptions)}.
      */
     @Deprecated
-    public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, int port,
-            final int connectTimeoutMillis, int reconnectDelayMillis, final boolean immediateFail,
+    public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, final int port,
+            final int connectTimeoutMillis, final int reconnectDelayMillis, final boolean immediateFail,
             final Layout<? extends Serializable> layout, final int bufferSize) {
         return getSocketManager(sslConfig, host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, null);
     }
