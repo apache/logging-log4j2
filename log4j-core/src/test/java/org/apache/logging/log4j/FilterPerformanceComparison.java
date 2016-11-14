@@ -162,6 +162,7 @@ public class FilterPerformanceComparison {
 
     private enum Target {
         LOGBACK {
+            @Override
             long timedLoop(final Logger logger, final org.slf4j.Logger logbacklogger, final int loop) {
                 final Integer j = Integer.valueOf(2);
                 final long start = System.nanoTime();
@@ -173,6 +174,7 @@ public class FilterPerformanceComparison {
         },
 
         LOG4J2 {
+            @Override
             long timedLoop(final Logger logger, final org.slf4j.Logger logbacklogger, final int loop) {
                 final Integer j = Integer.valueOf(2);
                 final long start = System.nanoTime();
