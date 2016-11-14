@@ -17,8 +17,13 @@
 package org.apache.logging.log4j.util;
 
 /**
- * An extension of {@code StringMap} that views all key-value pairs as a sequence ordered by key, and allows
+ * An extension of {@code StringMap} that imposes a total ordering on its keys.
+ * The map is ordered according to the natural ordering of its keys. This order is reflected when
+ * {@link #forEach(BiConsumer) consuming} the key-value pairs with a {@link BiConsumer} or a {@link TriConsumer}.
+ * <p>
+ * This interface views all key-value pairs as a sequence ordered by key, and allows
  * keys and values to be accessed by their index in the sequence.
+ * </p>
  *
  * @see IndexedReadOnlyStringMap
  * @see StringMap

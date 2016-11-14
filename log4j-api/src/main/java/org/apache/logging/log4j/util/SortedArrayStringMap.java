@@ -175,7 +175,8 @@ public class SortedArrayStringMap implements IndexedStringMap {
         return size == 0;
     }
 
-    int indexOfKey(final String key) {
+    @Override
+    public int indexOfKey(final String key) {
         if (keys == EMPTY) {
             return -1;
         }
@@ -341,6 +342,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
+    @Override
     public String getKeyAt(final int index) {
         if (index < 0 || index >= size) {
             return null;
@@ -349,6 +351,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <V> V getValueAt(final int index) {
         if (index < 0 || index >= size) {
             return null;
