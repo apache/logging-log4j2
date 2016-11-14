@@ -936,6 +936,19 @@
           <artifactId>coveralls-maven-plugin</artifactId>
           <version>4.3.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.plugin.version}</version>
+          <executions>
+            <execution>
+                <id>prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -1073,19 +1086,6 @@
           </execution>
         </executions>
       </plugin> -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.plugin.version}</version>
-        <executions>
-          <execution>
-              <id>prepare-agent</id>
-              <goals>
-                <goal>prepare-agent</goal>
-              </goals>
-          </execution>
-        </executions>
-      </plugin>      
       <!-- We need to disable the standard ASF configuration to be able to publish our own notice and license files -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1152,10 +1152,6 @@
             <exclude>felix-cache/**</exclude>
           </excludes>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
