@@ -36,6 +36,8 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -47,8 +49,7 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 @PerformanceSensitive("allocation")
 public class MapFilter extends AbstractFilter {
 
-    //private final Map<String, List<String>> map;
-    private final SortedArrayStringMap map;
+    private final IndexedStringMap map;
     private final boolean isAnd;
 
     protected MapFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch, final Result onMismatch) {
@@ -225,11 +226,11 @@ public class MapFilter extends AbstractFilter {
     }
 
     /**
-     * Returns the SortedArrayStringMap with {@code List<String>} values that this MapFilter was constructed with.
-     * @return the SortedArrayStringMap with {@code List<String>} values to match against
+     * Returns the IndexedStringMap with {@code List<String>} values that this MapFilter was constructed with.
+     * @return the IndexedStringMap with {@code List<String>} values to match against
      * @since 2.8
      */
-    protected SortedArrayStringMap getStringMap() {
+    protected IndexedReadOnlyStringMap getStringMap() {
         return map;
     }
 

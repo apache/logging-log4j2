@@ -34,8 +34,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -73,7 +73,7 @@ public final class StructuredDataFilter extends MapFilter {
 
     protected Result filter(final StructuredDataMessage message) {
         boolean match = false;
-        final SortedArrayStringMap map = getStringMap();
+        final IndexedReadOnlyStringMap map = getStringMap();
         for (int i = 0; i < map.size(); i++) {
             final StringBuilder toMatch = getValue(message, map.getKeyAt(i));
             if (toMatch != null) {

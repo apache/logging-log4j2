@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -33,13 +34,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.SortedArrayStringMap;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
@@ -99,7 +99,7 @@ public class ThreadContextMapFilter extends MapFilter {
         boolean match = false;
         if (useMap) {
             ReadOnlyStringMap currentContextData = null;
-            final SortedArrayStringMap map = getStringMap();
+            final IndexedReadOnlyStringMap map = getStringMap();
             for (int i = 0; i < map.size(); i++) {
                 if (currentContextData == null) {
                     currentContextData = currentContextData();

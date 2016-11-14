@@ -50,7 +50,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.7
  */
-public class SortedArrayStringMap implements StringMap {
+public class SortedArrayStringMap implements IndexedStringMap {
 
     /**
      * The default initial capacity.
