@@ -40,7 +40,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     /**
      * Subclasses can extend this abstract Builder. 
      * 
-     * @param <B> This builder class.
+     * @param <B> The type to build.
      */
     public abstract static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B> {
 
