@@ -93,7 +93,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     /**
-     * Obtain a TcpSocketManager.
+     * Obtains a TcpSocketManager.
      * @param host The host to connect to.
      * @param port The port on the host.
      * @param connectTimeoutMillis the connect timeout in milliseconds
