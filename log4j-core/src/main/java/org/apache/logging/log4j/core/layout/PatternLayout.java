@@ -106,34 +106,34 @@ public final class PatternLayout extends AbstractStringLayout {
             final String footerPattern) {
         super(config, charset,
                 newSerializerBuilder()
-                        .withConfiguration(config)
-                        .withReplace(replace)
-                        .withPatternSelector(patternSelector)
-                        .withAlwaysWriteExceptions(alwaysWriteExceptions)
-                        .withDisableAnsi(disableAnsi)
-                        .withNoConsoleNoAnsi(noConsoleNoAnsi)
-                        .withPattern(headerPattern)
+                        .setConfiguration(config)
+                        .setReplace(replace)
+                        .setPatternSelector(patternSelector)
+                        .setAlwaysWriteExceptions(alwaysWriteExceptions)
+                        .setDisableAnsi(disableAnsi)
+                        .setNoConsoleNoAnsi(noConsoleNoAnsi)
+                        .setPattern(headerPattern)
                         .build(),
                 newSerializerBuilder()
-                        .withConfiguration(config)
-                        .withReplace(replace)
-                        .withPatternSelector(patternSelector)
-                        .withAlwaysWriteExceptions(alwaysWriteExceptions)
-                        .withDisableAnsi(disableAnsi)
-                        .withNoConsoleNoAnsi(noConsoleNoAnsi)
-                        .withPattern(footerPattern)
+                        .setConfiguration(config)
+                        .setReplace(replace)
+                        .setPatternSelector(patternSelector)
+                        .setAlwaysWriteExceptions(alwaysWriteExceptions)
+                        .setDisableAnsi(disableAnsi)
+                        .setNoConsoleNoAnsi(noConsoleNoAnsi)
+                        .setPattern(footerPattern)
                         .build());
         this.conversionPattern = eventPattern;
         this.patternSelector = patternSelector;
         this.eventSerializer = newSerializerBuilder()
-                .withConfiguration(config)
-                .withReplace(replace)
-                .withPatternSelector(patternSelector)
-                .withAlwaysWriteExceptions(alwaysWriteExceptions)
-                .withDisableAnsi(disableAnsi)
-                .withNoConsoleNoAnsi(noConsoleNoAnsi)
-                .withPattern(eventPattern)
-                .withDefaultPattern(DEFAULT_CONVERSION_PATTERN)
+                .setConfiguration(config)
+                .setReplace(replace)
+                .setPatternSelector(patternSelector)
+                .setAlwaysWriteExceptions(alwaysWriteExceptions)
+                .setDisableAnsi(disableAnsi)
+                .setNoConsoleNoAnsi(noConsoleNoAnsi)
+                .setPattern(eventPattern)
+                .setDefaultPattern(DEFAULT_CONVERSION_PATTERN)
                 .build();
     }
 
@@ -159,13 +159,13 @@ public final class PatternLayout extends AbstractStringLayout {
             final String pattern, final String defaultPattern, final PatternSelector patternSelector,
             final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
         final SerializerBuilder builder = newSerializerBuilder();
-        builder.withAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.withConfiguration(configuration);
-        builder.withDefaultPattern(defaultPattern);
-        builder.withNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.withPattern(pattern);
-        builder.withPatternSelector(patternSelector);
-        builder.withReplace(replace);
+        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
+        builder.setConfiguration(configuration);
+        builder.setDefaultPattern(defaultPattern);
+        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
+        builder.setPattern(pattern);
+        builder.setPatternSelector(patternSelector);
+        builder.setReplace(replace);
         return builder.build();
     }
 
@@ -384,42 +384,42 @@ public final class PatternLayout extends AbstractStringLayout {
             return new PatternSelectorSerializer(patternSelector, replace);
         }
 
-        public SerializerBuilder withConfiguration(final Configuration configuration) {
+        public SerializerBuilder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        public SerializerBuilder withReplace(final RegexReplacement replace) {
+        public SerializerBuilder setReplace(final RegexReplacement replace) {
             this.replace = replace;
             return this;
         }
 
-        public SerializerBuilder withPattern(final String pattern) {
+        public SerializerBuilder setPattern(final String pattern) {
             this.pattern = pattern;
             return this;
         }
 
-        public SerializerBuilder withDefaultPattern(final String defaultPattern) {
+        public SerializerBuilder setDefaultPattern(final String defaultPattern) {
             this.defaultPattern = defaultPattern;
             return this;
         }
 
-        public SerializerBuilder withPatternSelector(final PatternSelector patternSelector) {
+        public SerializerBuilder setPatternSelector(final PatternSelector patternSelector) {
             this.patternSelector = patternSelector;
             return this;
         }
 
-        public SerializerBuilder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
+        public SerializerBuilder setAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
             this.alwaysWriteExceptions = alwaysWriteExceptions;
             return this;
         }
 
-        public SerializerBuilder withDisableAnsi(final boolean disableAnsi) {
+        public SerializerBuilder setDisableAnsi(final boolean disableAnsi) {
             this.disableAnsi = disableAnsi;
             return this;
         }
 
-        public SerializerBuilder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
+        public SerializerBuilder setNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }

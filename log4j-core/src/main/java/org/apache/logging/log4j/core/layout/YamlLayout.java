@@ -713,8 +713,8 @@ public final class YamlLayout extends AbstractJacksonLayout {
             final String footerPattern, final Charset charset, final boolean includeStacktrace) {
         super(config, new JacksonFactory.YAML(includeStacktrace).newWriter(locationInfo, properties, compact), charset, compact,
                 complete, eventEol,
-                PatternLayout.newSerializerBuilder().withConfiguration(config).withPattern(headerPattern).withDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().withConfiguration(config).withPattern(footerPattern).withDefaultPattern(DEFAULT_FOOTER).build());
+                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
+                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
     }
 
     /**

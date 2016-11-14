@@ -814,8 +814,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
         super(config, new JacksonFactory.JSON(encodeThreadContextAsList, includeStacktrace).newWriter(
                     locationInfo, properties, compact),
                 charset, compact, complete, eventEol,
-                PatternLayout.newSerializerBuilder().withConfiguration(config).withPattern(headerPattern).withDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().withConfiguration(config).withPattern(footerPattern).withDefaultPattern(DEFAULT_FOOTER).build());
+                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
+                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
     }
 
     /**
