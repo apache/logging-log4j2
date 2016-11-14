@@ -57,7 +57,7 @@ public class SyslogAppender extends SocketAppender {
     }
 
     /**
-     * Create a SyslogAppender.
+     * Creates a SyslogAppender.
      * @param host The name of the host to connect to.
      * @param port The port to connect to on the target host.
      * @param protocolStr The Protocol to use.
