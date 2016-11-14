@@ -42,7 +42,7 @@ public class SocketAppenderSocketOptionsTest {
         System.setProperty("SocketAppenderSocketOptionsTest.port", Integer.toString(PORT));
         try {
             tcpSocketTestServer = new TcpSocketTestServer(PORT);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(e);
         }
         tcpSocketTestServer.start();
