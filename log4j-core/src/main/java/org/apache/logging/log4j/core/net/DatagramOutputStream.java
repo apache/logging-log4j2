@@ -42,7 +42,7 @@ public class DatagramOutputStream extends OutputStream {
     private static final int SHIFT_2 = 16;
     private static final int SHIFT_3 = 24;
 
-    private DatagramSocket ds;
+    private DatagramSocket datagramSocket;
     private final InetAddress inetAddress;
     private final int port;
 
@@ -69,7 +69,7 @@ public class DatagramOutputStream extends OutputStream {
         }
 
         try {
-            ds = new DatagramSocket();
+            datagramSocket = new DatagramSocket();
         } catch (final SocketException ex) {
             final String msg = "Could not instantiate DatagramSocket to " + host;
             LOGGER.error(msg, ex);
@@ -95,12 +95,12 @@ public class DatagramOutputStream extends OutputStream {
     @Override
     public synchronized void flush() throws IOException {
         try {
-            if (this.data != null && this.ds != null && this.inetAddress != null) {
+            if (this.data != null && this.datagramSocket != null && this.inetAddress != null) {
                 if (footer != null) {
                     copy(footer, 0, footer.length);
                 }
                 final DatagramPacket packet = new DatagramPacket(data, data.length, inetAddress, port);
-                ds.send(packet);
+                datagramSocket.send(packet);
             }
         } finally {
             data = null;
@@ -112,12 +112,12 @@ public class DatagramOutputStream extends OutputStream {
 
     @Override
     public synchronized void close() throws IOException {
-        if (ds != null) {
+        if (datagramSocket != null) {
             if (data != null) {
                 flush();
             }
-            ds.close();
-            ds = null;
+            datagramSocket.close();
+            datagramSocket = null;
         }
     }
 
