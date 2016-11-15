@@ -17,4 +17,4 @@ jdk:
   - oraclejdk7
 
 after_success:
-  - mvn --show-version -pl !log4j-bom test jacoco:report coveralls:report
+  - mvn --show-version -pl !log4j-bom jacoco:prepare-agent test jacoco:report coveralls:report

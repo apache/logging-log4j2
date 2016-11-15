@@ -947,6 +947,13 @@
                   <goal>prepare-agent</goal>
                 </goals>
             </execution>
+            <execution>
+              <id>default-report</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>          
           </executions>
         </plugin>
       </plugins>
@@ -1013,7 +1020,7 @@
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
-          <argLine>-Xms256m -Xmx1024m</argLine>
+          <argLine>@{argLine} -Xms256m -Xmx1024m</argLine>
           <forkCount>2C</forkCount>
           <reuseForks>true</reuseForks>
           <excludes>
