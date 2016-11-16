@@ -42,12 +42,7 @@
       <AppenderRef ref="List">
         <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
           <Script name="GroovyFilter" language="groovy"><![CDATA[
-            if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
-                return true;
-            } else if (logEvent.getContextMap().containsKey("UserId")) {
-                return true;
-            }
-            return false;
+            logEvent.marker?.isInstanceOf('FLOW') || logEvent.contextMap.containsKey('UserId')
             ]]>
           </Script>
         </ScriptFilter>
