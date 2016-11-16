@@ -81,6 +81,7 @@
         <item name="Configuration Syntax" href="/manual/configuration.html#ConfigurationSyntax" />
         <item name="XML Syntax" href="/manual/configuration.html#XML"/>
         <item name="JSON Syntax" href="/manual/configuration.html#JSON"/>
+        <item name="YAML Syntax" href="/manual/configuration.html#YAML"/>
         <item name="Properties Syntax" href="/manual/configuration.html#Properties"/>
         <item name="Configuring Loggers" href="/manual/configuration.html#Loggers"/>
         <item name="Configuring Appenders" href="/manual/configuration.html#Appenders"/>

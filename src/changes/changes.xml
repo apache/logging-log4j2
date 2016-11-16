@@ -129,6 +129,9 @@
       <action issue="LOG4J2-1700" dev="ggregory" type="update">
         Update Jansi from 1.13 to 1.14.
       </action>
+      <action issue="LOG4J2-1379" dev="mattsicker" type="add">
+        Add documentation regarding YAML configuration format.
+      </action>
       <action issue="LOG4J2-1681" dev="rpopma" type="add">
         Changed visibility of indexed getter methods in SortedArrayStringMap from package-protected to public.
       </action>

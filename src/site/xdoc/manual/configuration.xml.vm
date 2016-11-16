@@ -695,6 +695,72 @@ public class Bar {
   <version>${jackson2Version}</version>
 </dependency>
 ]]></pre>
+          <a name="YAML"/>
+          <h4>Configuration with YAML</h4>
+          <p>
+            Log4j also supports using YAML for configuration files. The structure follows the same pattern as both the
+            XML and YAML configuration formats. For example:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+Configuration:
+  status: warn
+  name: YAMLConfigTest
+  properties:
+    property:
+      name: filename
+      value: target/test-yaml.log
+  thresholdFilter:
+    level: debug
+  appenders:
+    Console:
+      name: STDOUT
+      PatternLayout:
+        Pattern: "%m%n"
+    File:
+      name: File
+      fileName: ${dollar}{filename}
+      bufferedIO: false
+      PatternLayout:
+        Pattern: "%d %p %C{1.} [%t] %m%n"
+    List:
+      name: List
+      Filters:
+        ThresholdFilter:
+          level: error
+
+  Loggers:
+    logger:
+      -
+        name: org.apache.logging.log4j.test1
+        level: debug
+        additivity: false
+        ThreadContextMapFilter:
+          KeyValuePair:
+            key: test
+            value: 123
+        AppenderRef:
+          ref: STDOUT
+      -
+        name: org.apache.logging.log4j.test2
+        level: debug
+        additivity: false
+        AppenderRef:
+          ref: File
+    Root:
+      level: error
+      AppenderRef:
+        ref: STDOUT
+          ]]></pre>
+          <p>
+            In order to use YAML configuration files, the Jackson YAML data format must be included:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-yaml</artifactId>
+    <version>${jackson2Version}</version>
+</dependency>
+          ]]></pre>
         <a name="Loggers"/>
           <h4>Configuring loggers</h4>
           <p>
