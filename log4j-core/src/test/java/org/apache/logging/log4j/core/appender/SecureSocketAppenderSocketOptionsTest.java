@@ -110,7 +110,7 @@ public class SecureSocketAppenderSocketOptionsTest {
         Assert.assertEquals(false, socket.getReuseAddress());
         Assert.assertEquals(false, socket.getTcpNoDelay());
         Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(), socket.getTrafficClass());
-        //Assert.assertEquals(10000, socket.getReceiveBufferSize());
+        // Assert.assertEquals(10000, socket.getReceiveBufferSize());
         // This settings changes while we are running, so we cannot assert it.
         // Assert.assertEquals(8000, socket.getSendBufferSize());
         Assert.assertEquals(12345, socket.getSoLinger());
