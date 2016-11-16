@@ -227,6 +227,7 @@
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <mockitoVersion>2.2.7</mockitoVersion>
+    <argLine>-Xms256m -Xmx1024m</argLine>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -1026,7 +1027,6 @@
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
-          <argLine>@{argLine} -Xms256m -Xmx1024m</argLine>
           <forkCount>2C</forkCount>
           <reuseForks>true</reuseForks>
           <excludes>
