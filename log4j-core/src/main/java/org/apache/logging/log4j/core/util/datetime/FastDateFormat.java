@@ -607,4 +607,9 @@ public class FastDateFormat extends Format implements DatePrinter, DateParser, S
         return printer.applyRules(calendar, buf);
     }
 
+    @Override
+    public boolean parse(String source, ParsePosition pos, Calendar calendar) {
+        return parser.parse(source, pos, calendar);
+    }
+
 }

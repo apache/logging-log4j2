@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.util.datetime;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -50,17 +51,32 @@ public interface DateParser {
      */
     Date parse(String source, ParsePosition pos);
 
+    /**
+     * Parses a formatted date string according to the format.  Updates the Calendar with parsed fields.
+     * Upon success, the ParsePosition index is updated to indicate how much of the source text was consumed.
+     * Not all source text needs to be consumed.  Upon parse failure, ParsePosition error index is updated to
+     * the offset of the source text which does not match the supplied format.
+     *
+     * @param source The text to parse.
+     * @param pos On input, the position in the source to start parsing, on output, updated position.
+     * @param calendar The calendar into which to set parsed fields.
+     * @return true, if source has been parsed (pos parsePosition is updated); otherwise false (and pos errorIndex is updated)
+     * @throws IllegalArgumentException when Calendar has been set to be not lenient, and a parsed field is
+     * out of range.
+     */
+    boolean parse(String source, ParsePosition pos, Calendar calendar);
+
     // Accessors
     // -----------------------------------------------------------------------
     /**
-     * Get the pattern used by this parser.
+     * Gets the pattern used by this parser.
      * 
      * @return the pattern, {@link java.text.SimpleDateFormat} compatible
      */
     String getPattern();
 
     /**
-     * Get the time zone used by this parser.
+     * Gets the time zone used by this parser.
      * 
      * <p>
      * The default {@link TimeZone} used to create a {@link Date} when the {@link TimeZone} is not specified by the
@@ -72,7 +88,7 @@ public interface DateParser {
     TimeZone getTimeZone();
 
     /**
-     * Get the locale used by this parser.
+     * Gets the locale used by this parser.
      * 
      * @return the locale
      */
@@ -89,7 +105,7 @@ public interface DateParser {
     Object parseObject(String source) throws ParseException;
 
     /**
-     * Parse a date/time string according to the given parse position.
+     * Parses a date/time string according to the given parse position.
      * 
      * @param source A <code>String</code> whose beginning should be parsed.
      * @param pos the parse position
@@ -97,4 +113,5 @@ public interface DateParser {
      * @see java.text.DateFormat#parseObject(String, ParsePosition)
      */
     Object parseObject(String source, ParsePosition pos);
+
 }

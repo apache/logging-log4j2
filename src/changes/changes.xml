@@ -99,6 +99,9 @@
       <action issue="LOG4J2-1623" dev="mikes" type="fix">
         Configurable JVM shutdown hook timeout.
       </action>
+      <action issue="LOG4J2-1712" dev="ggregory" type="fix">
+        Pick up bug fixes from Apache Commons Lang's org.apache.commons.lang3.time package.
+      </action>
       <action issue="LOG4J2-1636" dev="ggregory" type="fix" due-to="Eldar Gabdullin">
         Console Appender does not pick up Oracle Java 8's sun.stdout.encoding and sun.stderr.encoding.
       </action>
