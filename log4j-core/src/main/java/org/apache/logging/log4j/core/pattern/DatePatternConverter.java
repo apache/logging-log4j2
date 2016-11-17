@@ -257,8 +257,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private void formatWithoutAllocation(final long timestampMillis, final StringBuilder output) {
-        final Formatter formatter = getThreadLocalFormatter();
-        formatter.formatToBuffer(timestampMillis, output);
+        getThreadLocalFormatter().formatToBuffer(timestampMillis, output);
     }
 
     private Formatter getThreadLocalFormatter() {
