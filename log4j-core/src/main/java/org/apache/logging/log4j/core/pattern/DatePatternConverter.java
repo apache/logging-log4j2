@@ -76,7 +76,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
         @Override
         public String toPattern() {
-            return fastDateFormat.toPattern();
+            return fastDateFormat.getPattern();
         }
     }
 

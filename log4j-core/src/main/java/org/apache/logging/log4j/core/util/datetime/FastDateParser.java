@@ -66,8 +66,12 @@ import java.util.regex.Pattern;
  *
  * <p>Timing tests indicate this class is as about as fast as SimpleDateFormat
  * in single thread applications and about 25% faster in multi-thread applications.</p>
- *
- * @since 3.2
+ * 
+ * <p>
+ * Copied and modified from <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>.
+ * </p>
+ * 
+ * @since Apache Commons Lang 3.2
  * @see FastDatePrinter
  */
 public class FastDateParser implements DateParser, Serializable {

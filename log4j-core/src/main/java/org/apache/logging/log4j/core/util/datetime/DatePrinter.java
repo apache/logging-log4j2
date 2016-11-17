@@ -23,7 +23,19 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Copied from Commons Lang 3.
+ * DatePrinter is the "missing" interface for the format methods of 
+ * {@link java.text.DateFormat}. You can obtain an object implementing this
+ * interface by using one of the FastDateFormat factory methods.
+ * <p>
+ * Warning: Since binary compatible methods may be added to this interface in any
+ * release, developers are not expected to implement this interface.
+ * </p>
+ * 
+ * <p>
+ * Copied and modified from <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>.
+ * </p>
+ * 
+ * @since Apache Commons Lang 3.2
  */
 public interface DatePrinter {
 
@@ -56,36 +68,43 @@ public interface DatePrinter {
     String format(Calendar calendar);
 
     /**
-     * <p>Formats a milliseond {@code long} value into the
-     * supplied {@code StringBuilder}.</p>
+     * <p>Formats a millisecond {@code long} value into the
+     * supplied {@code Appendable}.</p>
      *
      * @param millis  the millisecond value to format
      * @param buf  the buffer to format into
+     * @param <B> the Appendable class type, usually StringBuilder or StringBuffer.
      * @return the specified string buffer
+     * @since 3.5
      */
-    StringBuilder format(long millis, StringBuilder buf);
+    <B extends Appendable> B format(long millis, B buf);
 
     /**
      * <p>Formats a {@code Date} object into the
-     * supplied {@code StringBuilder} using a {@code GregorianCalendar}.</p>
+     * supplied {@code Appendable} using a {@code GregorianCalendar}.</p>
      *
      * @param date  the date to format
      * @param buf  the buffer to format into
+     * @param <B> the Appendable class type, usually StringBuilder or StringBuffer.
      * @return the specified string buffer
+     * @since 3.5
      */
-    StringBuilder format(Date date, StringBuilder buf);
+    <B extends Appendable> B format(Date date, B buf);
 
     /**
-     * <p>Formats a {@code Calendar} object into the supplied {@code StringBuilder}.</p>
+     * <p>Formats a {@code Calendar} object into the supplied {@code Appendable}.</p>
      * The TimeZone set on the Calendar is only used to adjust the time offset.
      * The TimeZone specified during the construction of the Parser will determine the TimeZone
      * used in the formatted string.
      *
      * @param calendar  the calendar to format
      * @param buf  the buffer to format into
+     * @param <B> the Appendable class type, usually StringBuilder or StringBuffer.
      * @return the specified string buffer
+     * @since 3.5
      */
-    StringBuilder format(Calendar calendar, StringBuilder buf);
+    <B extends Appendable> B format(Calendar calendar, B buf);
+
 
     // Accessors
     //-----------------------------------------------------------------------
@@ -115,13 +134,12 @@ public interface DatePrinter {
     /**
      * <p>Formats a {@code Date}, {@code Calendar} or
      * {@code Long} (milliseconds) object.</p>
-     * 
-     * See {@link java.text.DateFormat#format(Object, StringBuffer, FieldPosition)}
-     * 
+     *
      * @param obj  the object to format
      * @param toAppendTo  the buffer to append to
      * @param pos  the position - ignored
      * @return the buffer passed in
+     * @see java.text.DateFormat#format(Object, StringBuffer, FieldPosition)
      */
     StringBuilder format(Object obj, StringBuilder toAppendTo, FieldPosition pos);
 }
