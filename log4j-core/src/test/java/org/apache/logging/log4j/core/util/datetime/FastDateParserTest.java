@@ -673,6 +673,7 @@ public class FastDateParserTest {
             fdp.parse("2015");
             Assert.fail("expected parse exception");
         } catch (final ParseException pe) {
+            // expected parse exception
         }
 
         // Wed Apr 29 00:00:00 KST 2015
