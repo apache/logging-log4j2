@@ -308,9 +308,9 @@ public class FastDateParser implements DateParser, Serializable {
     }
 
     /**
-     * <p>Return a hashcode compatible with equals.</p>
+     * <p>Return a hash code compatible with equals.</p>
      *
-     * @return a hashcode compatible with equals
+     * @return a hash code compatible with equals
      */
     @Override
     public int hashCode() {
