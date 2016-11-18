@@ -37,6 +37,15 @@ public class AbstractLifeCycle implements LifeCycle2 {
      */
     protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
+    /**
+     * Gets the status logger.
+     * 
+     * @return the status logger.
+     */
+    protected static org.apache.logging.log4j.Logger getLogger() {
+        return LOGGER;
+    }
+
     private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
 
     protected boolean equalsImpl(final Object obj) {
