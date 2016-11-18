@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -26,12 +32,6 @@ import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -88,7 +88,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testDebug() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.DEBUG);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -143,7 +143,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testError() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.ERROR);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -198,7 +198,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testFatal() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.FATAL);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -253,7 +253,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testInfo() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.INFO);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -308,7 +308,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testLogDebug() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.DEBUG);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -363,7 +363,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testLogError() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.ERROR);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -418,7 +418,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testLogFatal() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.FATAL);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -473,7 +473,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testLogInfo() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.INFO);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -528,7 +528,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testLogTrace() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.TRACE);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -583,7 +583,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testLogWarn() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.WARN);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -638,7 +638,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testTrace() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.TRACE);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -693,7 +693,7 @@ public class AbstractLoggerTest {
 
     @Test
     public void testWarn() {
-        CountingLogger logger = new CountingLogger();
+        final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.WARN);
 
         logger.setCurrentEvent(EVENTS[0]);
@@ -914,11 +914,11 @@ public class AbstractLoggerTest {
             super("CountingLogger", new MessageFactory2Adapter(ParameterizedMessageFactory.INSTANCE));
         }
 
-        void setCurrentLevel(Level currentLevel) {
+        void setCurrentLevel(final Level currentLevel) {
             this.currentLevel = currentLevel;
         }
 
-        void setCurrentEvent(LogEvent currentEvent) {
+        void setCurrentEvent(final LogEvent currentEvent) {
             this.currentEvent = currentEvent;
         }
 
@@ -1137,93 +1137,93 @@ public class AbstractLoggerTest {
         private static final long serialVersionUID = -7218195998038685039L;
         private final boolean expectingThrowables;
 
-        ThrowableExpectingLogger(boolean expectingThrowables) {
+        ThrowableExpectingLogger(final boolean expectingThrowables) {
             super("ThrowableExpectingLogger", new MessageFactory2Adapter(ParameterizedMessageFactory.INSTANCE));
             this.expectingThrowables = expectingThrowables;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, Message message, Throwable t) {
+        public boolean isEnabled(final Level level, final Marker marker, final Message message, final Throwable t) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, CharSequence message, Throwable t) {
+        public boolean isEnabled(final Level level, final Marker marker, final CharSequence message, final Throwable t) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, Object message, Throwable t) {
+        public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Throwable t) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object... params) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object... params) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6, final Object p7) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
             return true;
         }
 
         @Override
-        public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
+        public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
             if(expectingThrowables) {
                 assertNotNull("Expected a Throwable but received null!", t);
             } else {
@@ -1238,9 +1238,13 @@ public class AbstractLoggerTest {
     }
 
     private static class ThrowableMessage implements Message {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
         private final Throwable throwable;
 
-        public ThrowableMessage(Throwable throwable) {
+        public ThrowableMessage(final Throwable throwable) {
             this.throwable = throwable;
         }
 
