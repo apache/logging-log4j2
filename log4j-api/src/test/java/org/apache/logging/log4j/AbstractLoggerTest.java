@@ -23,9 +23,13 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.MessageFactory2Adapter;
+import org.apache.logging.log4j.util.MessageSupplier;
+import org.apache.logging.log4j.util.Supplier;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -742,6 +746,162 @@ public class AbstractLoggerTest {
         assertEquals("log(Object) invocations", 5, logger.getObjectCount());
     }
 
+    @Test
+    public void testMessageWithThrowable() {
+        final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(true);
+        final ThrowableMessage message = new ThrowableMessage(t);
+
+        logger.debug(message);
+        logger.error(message);
+        logger.fatal(message);
+        logger.info(message);
+        logger.trace(message);
+        logger.warn(message);
+        logger.log(Level.INFO, message);
+
+        logger.debug(MARKER, message);
+        logger.error(MARKER, message);
+        logger.fatal(MARKER, message);
+        logger.info(MARKER, message);
+        logger.trace(MARKER, message);
+        logger.warn(MARKER, message);
+        logger.log(Level.INFO, MARKER, message);
+    }
+
+    @Test
+    public void testMessageWithoutThrowable() {
+        final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
+        final ThrowableMessage message = new ThrowableMessage(null);
+
+        logger.debug(message);
+        logger.error(message);
+        logger.fatal(message);
+        logger.info(message);
+        logger.trace(message);
+        logger.warn(message);
+        logger.log(Level.INFO, message);
+
+        logger.debug(MARKER, message);
+        logger.error(MARKER, message);
+        logger.fatal(MARKER, message);
+        logger.info(MARKER, message);
+        logger.trace(MARKER, message);
+        logger.warn(MARKER, message);
+        logger.log(Level.INFO, MARKER, message);
+    }
+
+    @Test
+    public void testMessageSupplierWithThrowable() {
+        final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(true);
+        final ThrowableMessage message = new ThrowableMessage(t);
+        final MessageSupplier supplier = new MessageSupplier() {
+            @Override
+            public Message get() {
+                return message;
+            }
+        };
+
+        logger.debug(supplier);
+        logger.error(supplier);
+        logger.fatal(supplier);
+        logger.info(supplier);
+        logger.trace(supplier);
+        logger.warn(supplier);
+        logger.log(Level.INFO, supplier);
+
+        logger.debug(MARKER, supplier);
+        logger.error(MARKER, supplier);
+        logger.fatal(MARKER, supplier);
+        logger.info(MARKER, supplier);
+        logger.trace(MARKER, supplier);
+        logger.warn(MARKER, supplier);
+        logger.log(Level.INFO, MARKER, supplier);
+    }
+
+    @Test
+    public void testMessageSupplierWithoutThrowable() {
+        final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
+        final ThrowableMessage message = new ThrowableMessage(null);
+        final MessageSupplier supplier = new MessageSupplier() {
+            @Override
+            public Message get() {
+                return message;
+            }
+        };
+
+        logger.debug(supplier);
+        logger.error(supplier);
+        logger.fatal(supplier);
+        logger.info(supplier);
+        logger.trace(supplier);
+        logger.warn(supplier);
+        logger.log(Level.INFO, supplier);
+
+        logger.debug(MARKER, supplier);
+        logger.error(MARKER, supplier);
+        logger.fatal(MARKER, supplier);
+        logger.info(MARKER, supplier);
+        logger.trace(MARKER, supplier);
+        logger.warn(MARKER, supplier);
+        logger.log(Level.INFO, MARKER, supplier);
+    }
+
+    @Test
+    public void testSupplierWithThrowable() {
+        final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(true);
+        final ThrowableMessage message = new ThrowableMessage(t);
+        final Supplier<Message> supplier = new Supplier<Message>() {
+            @Override
+            public Message get() {
+                return message;
+            }
+        };
+
+        logger.debug(supplier);
+        logger.error(supplier);
+        logger.fatal(supplier);
+        logger.info(supplier);
+        logger.trace(supplier);
+        logger.warn(supplier);
+        logger.log(Level.INFO, supplier);
+
+        logger.debug(MARKER, supplier);
+        logger.error(MARKER, supplier);
+        logger.fatal(MARKER, supplier);
+        logger.info(MARKER, supplier);
+        logger.trace(MARKER, supplier);
+        logger.warn(MARKER, supplier);
+        logger.log(Level.INFO, MARKER, supplier);
+    }
+
+    @Test
+    public void testSupplierWithoutThrowable() {
+        final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
+        final ThrowableMessage message = new ThrowableMessage(null);
+        final Supplier<Message> supplier = new Supplier<Message>() {
+            @Override
+            public Message get() {
+                return message;
+            }
+        };
+
+        logger.debug(supplier);
+        logger.error(supplier);
+        logger.fatal(supplier);
+        logger.info(supplier);
+        logger.trace(supplier);
+        logger.warn(supplier);
+        logger.log(Level.INFO, supplier);
+
+        logger.debug(MARKER, supplier);
+        logger.error(MARKER, supplier);
+        logger.fatal(MARKER, supplier);
+        logger.info(MARKER, supplier);
+        logger.trace(MARKER, supplier);
+        logger.warn(MARKER, supplier);
+        logger.log(Level.INFO, MARKER, supplier);
+    }
+
     private static class CountingLogger extends AbstractLogger {
         private static final long serialVersionUID = -3171452617952475480L;
 
@@ -970,6 +1130,138 @@ public class AbstractLoggerTest {
             this.markerName = markerName;
             this.data = data;
             this.t = t;
+        }
+    }
+
+    private static class ThrowableExpectingLogger extends AbstractLogger {
+        private static final long serialVersionUID = -7218195998038685039L;
+        private final boolean expectingThrowables;
+
+        ThrowableExpectingLogger(boolean expectingThrowables) {
+            super("ThrowableExpectingLogger", new MessageFactory2Adapter(ParameterizedMessageFactory.INSTANCE));
+            this.expectingThrowables = expectingThrowables;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, Message message, Throwable t) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, CharSequence message, Throwable t) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, Object message, Throwable t) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Throwable t) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object... params) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+            return true;
+        }
+
+        @Override
+        public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
+            if(expectingThrowables) {
+                assertNotNull("Expected a Throwable but received null!", t);
+            } else {
+                assertNull("Expected null but received a Throwable! "+t, t);
+            }
+        }
+
+        @Override
+        public Level getLevel() {
+            return Level.INFO;
+        }
+    }
+
+    private static class ThrowableMessage implements Message {
+        private final Throwable throwable;
+
+        public ThrowableMessage(Throwable throwable) {
+            this.throwable = throwable;
+        }
+
+        @Override
+        public String getFormattedMessage() {
+            return null;
+        }
+
+        @Override
+        public String getFormat() {
+            return null;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            return new Object[0];
+        }
+
+        @Override
+        public Throwable getThrowable() {
+            return throwable;
         }
     }
 }

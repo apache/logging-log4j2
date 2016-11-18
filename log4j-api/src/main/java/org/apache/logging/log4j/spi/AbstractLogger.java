@@ -243,7 +243,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void debug(final Marker marker, final Message msg) {
-        logIfEnabled(FQCN, Level.DEBUG, marker, msg, null);
+        logIfEnabled(FQCN, Level.DEBUG, marker, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -278,7 +278,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void debug(final Message msg) {
-        logIfEnabled(FQCN, Level.DEBUG, null, msg, null);
+        logIfEnabled(FQCN, Level.DEBUG, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -645,7 +645,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void error(final Marker marker, final Message msg) {
-        logIfEnabled(FQCN, Level.ERROR, marker, msg, null);
+        logIfEnabled(FQCN, Level.ERROR, marker, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -690,7 +690,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void error(final Message msg) {
-        logIfEnabled(FQCN, Level.ERROR, null, msg, null);
+        logIfEnabled(FQCN, Level.ERROR, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -952,7 +952,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void fatal(final Marker marker, final Message msg) {
-        logIfEnabled(FQCN, Level.FATAL, marker, msg, null);
+        logIfEnabled(FQCN, Level.FATAL, marker, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -997,7 +997,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void fatal(final Message msg) {
-        logIfEnabled(FQCN, Level.FATAL, null, msg, null);
+        logIfEnabled(FQCN, Level.FATAL, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -1219,7 +1219,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void info(final Marker marker, final Message msg) {
-        logIfEnabled(FQCN, Level.INFO, marker, msg, null);
+        logIfEnabled(FQCN, Level.INFO, marker, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -1264,7 +1264,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void info(final Message msg) {
-        logIfEnabled(FQCN, Level.INFO, null, msg, null);
+        logIfEnabled(FQCN, Level.INFO, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -1547,7 +1547,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void log(final Level level, final Marker marker, final Message msg) {
-        logIfEnabled(FQCN, level, marker, msg, (Throwable) null);
+        logIfEnabled(FQCN, level, marker, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -1596,7 +1596,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void log(final Level level, final Message msg) {
-        logIfEnabled(FQCN, level, null, msg, null);
+        logIfEnabled(FQCN, level, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -1974,13 +1974,13 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected void logMessage(final String fqcn, final Level level, final Marker marker,
             final MessageSupplier msgSupplier, final Throwable t) {
         final Message message = LambdaUtil.get(msgSupplier);
-        logMessageSafely(fqcn, level, marker, message, t);
+        logMessageSafely(fqcn, level, marker, message, (t == null && message != null) ? message.getThrowable() : t);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final Supplier<?> msgSupplier,
             final Throwable t) {
         final Message message = LambdaUtil.getMessage(msgSupplier, messageFactory);
-        logMessageSafely(fqcn, level, marker, message, t);
+        logMessageSafely(fqcn, level, marker, message, (t == null && message != null) ? message.getThrowable() : t);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
@@ -2127,7 +2127,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void trace(final Marker marker, final Message msg) {
-        logIfEnabled(FQCN, Level.TRACE, marker, msg, null);
+        logIfEnabled(FQCN, Level.TRACE, marker, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -2172,7 +2172,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void trace(final Message msg) {
-        logIfEnabled(FQCN, Level.TRACE, null, msg, null);
+        logIfEnabled(FQCN, Level.TRACE, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -2448,7 +2448,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void warn(final Marker marker, final Message msg) {
-        logIfEnabled(FQCN, Level.WARN, marker, msg, null);
+        logIfEnabled(FQCN, Level.WARN, marker, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
@@ -2493,7 +2493,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void warn(final Message msg) {
-        logIfEnabled(FQCN, Level.WARN, null, msg, null);
+        logIfEnabled(FQCN, Level.WARN, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
