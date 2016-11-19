@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
@@ -370,13 +371,16 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
      * {@inheritDoc}
      */
     @Override
+    @PerformanceSensitive("allocation")
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : formatters) {
-            formatter.format(event, buf);
+        final int start = toAppendTo.length();
+        for (int i = 0; i < formatters.size(); i++) {
+            final PatternFormatter formatter = formatters.get(i);
+            formatter.format(event, toAppendTo);
         }
-        if (buf.length() > 0) {
-            toAppendTo.append(style).append(buf.toString()).append(AnsiEscape.getDefaultStyle());
+        if (toAppendTo.length() > start) {
+            toAppendTo.insert(start, style);
+            toAppendTo.append(AnsiEscape.getDefaultStyle());
         }
     }
 }

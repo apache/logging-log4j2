@@ -39,6 +39,9 @@
       <action issue="LOG4J2-1706" dev="rpopma" type="fix">
         Make TimeFilter usable as global filter and as logger filter.
       </action>
+      <action issue="LOG4J2-1714" dev="rpopma" type="fix">
+        (GC) Avoid allocating temporary objects in AbstractStyleNameConverter.
+      </action>
       <action issue="LOG4J2-1680" dev="rpopma" type="fix">
         (GC) Avoid allocating temporary objects in TimeFilter.
       </action>
