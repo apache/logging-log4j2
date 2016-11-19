@@ -22,11 +22,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * TODO
  */
-public class MutableThreadContextStack implements ThreadContextStack {
+public class MutableThreadContextStack implements ThreadContextStack, StringBuilderFormattable {
 
     private static final long serialVersionUID = 50505011L;
 
@@ -197,6 +198,18 @@ public class MutableThreadContextStack implements ThreadContextStack {
     }
 
     @Override
+    public void formatTo(final StringBuilder buffer) {
+        buffer.append('[');
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) {
+                buffer.append(',').append(' ');
+            }
+            buffer.append(list.get(i));
+        }
+        buffer.append(']');
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -238,7 +251,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
     public void freeze() {
         frozen = true;
     }
-    
+
     /**
      * Returns whether this context stack is frozen.
      * @return whether this context stack is frozen.

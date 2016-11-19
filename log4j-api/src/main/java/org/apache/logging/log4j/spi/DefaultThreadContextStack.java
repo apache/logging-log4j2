@@ -22,13 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  * A copy-on-write thread-safe variant of {@code org.apache.logging.log4j.spi.ThreadContextStack} in which all mutative
  * operations (add, pop, and so on) are implemented by making a fresh copy of the underlying list.
  */
-public class DefaultThreadContextStack implements ThreadContextStack {
+public class DefaultThreadContextStack implements ThreadContextStack, StringBuilderFormattable {
 
     private static final long serialVersionUID = 5050501L;
 
@@ -281,6 +283,16 @@ public class DefaultThreadContextStack implements ThreadContextStack {
     }
 
     @Override
+    public void formatTo(final StringBuilder buffer) {
+        final MutableThreadContextStack values = STACK.get();
+        if (values == null) {
+            buffer.append("[]");
+        } else {
+            StringBuilders.appendValue(buffer, values);
+        }
+    }
+
+    @Override
     public void trim(final int depth) {
         if (depth < 0) {
             throw new IllegalArgumentException("Maximum stack depth cannot be negative");
@@ -297,7 +309,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.ThreadContext.ContextStack#getImmutableStackOrNull()
      */
     @Override
