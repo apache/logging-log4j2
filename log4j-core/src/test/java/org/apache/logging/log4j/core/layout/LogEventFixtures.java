@@ -81,6 +81,7 @@ class LogEventFixtures {
         return expected;
     }
 
+    @SuppressWarnings("deprecation")
     static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
             final boolean includeContext, final boolean includeStacktrace) {
         assertEquals(expected.getClass(), actual.getClass());

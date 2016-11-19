@@ -33,9 +33,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * A Comma-Separated Value (CSV) layout to log events.
- * 
+ *
  * Depends on Apache Commons CSV 1.2.
- * 
+ *
  * @since 2.4
  */
 @Plugin(name = "CsvLogEventLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
@@ -61,7 +61,7 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
             @PluginAttribute("nullString") final String nullString,
             @PluginAttribute("recordSeparator") final String recordSeparator,
             @PluginAttribute(value = "charset", defaultString = DEFAULT_CHARSET) final Charset charset,
-            @PluginAttribute("header") final String header, 
+            @PluginAttribute("header") final String header,
             @PluginAttribute("footer") final String footer)
             // @formatter:on
     {
@@ -69,7 +69,7 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
         final CSVFormat csvFormat = createFormat(format, delimiter, escape, quote, quoteMode, nullString, recordSeparator);
         return new CsvLogEventLayout(config, charset, csvFormat, header, footer);
     }
-   
+
     protected CsvLogEventLayout(final Configuration config, final Charset charset, final CSVFormat csvFormat, final String header, final String footer) {
         super(config, charset, csvFormat, header, footer);
     }
@@ -91,7 +91,7 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
             format.print(event.getMarker(), buffer, false);
             format.print(event.getThrownProxy(), buffer, false);
             format.print(event.getSource(), buffer, false);
-            format.print(event.getContextMap(), buffer, false);
+            format.print(event.getContextData(), buffer, false);
             format.print(event.getContextStack(), buffer, false);
             format.println(buffer);
             return buffer.toString();

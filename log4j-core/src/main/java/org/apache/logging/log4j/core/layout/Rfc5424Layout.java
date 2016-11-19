@@ -246,7 +246,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * <li>Key: "structured" Value: "true"</li>
      * <li>Key: "format" Value: "RFC5424"</li>
      * </ul>
-     * 
+     *
      * @return Map of content format keys supporting Rfc5424Layout
      */
     @Override
@@ -361,7 +361,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         final Map<String, StructuredDataElement> sdElements = new HashMap<>();
-        final Map<String, String> contextMap = event.getContextMap();
+        final Map<String, String> contextMap = event.getContextData().toMap();
 
         if (mdcRequired != null) {
             checkRequired(contextMap);

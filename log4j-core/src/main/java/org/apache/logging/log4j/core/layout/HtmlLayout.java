@@ -61,7 +61,7 @@ public final class HtmlLayout extends AbstractStringLayout {
     private static final String DEFAULT_CONTENT_TYPE = "text/html";
 
     private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
-    
+
     // Print no location info by default
     private final boolean locationInfo;
     private final String title;
@@ -196,11 +196,11 @@ public final class HtmlLayout extends AbstractStringLayout {
             sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
         }
 
-        if (event.getContextMap() != null && !event.getContextMap().isEmpty()) {
+        if (event.getContextData() != null && !event.getContextData().isEmpty()) {
             sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
             sbuf.append(";\" colspan=\"6\" ");
             sbuf.append("title=\"Mapped Diagnostic Context\">");
-            sbuf.append("MDC: ").append(Transform.escapeHtmlTags(event.getContextMap().toString()));
+            sbuf.append("MDC: ").append(Transform.escapeHtmlTags(event.getContextData().toMap().toString()));
             sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
         }
 
@@ -262,12 +262,12 @@ public final class HtmlLayout extends AbstractStringLayout {
         sbuilder.append(s).append(Strings.LINE_SEPARATOR);
         return sbuilder;
     }
-    
+
     private StringBuilder append(final StringBuilder sbuilder, final String s) {
         sbuilder.append(s);
         return sbuilder;
     }
-    
+
     /**
      * Returns appropriate HTML headers.
      * @return The header as a byte array.
