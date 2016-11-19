@@ -39,6 +39,9 @@
       <action issue="LOG4J2-1706" dev="rpopma" type="fix">
         Make TimeFilter usable as global filter and as logger filter.
       </action>
+      <action issue="LOG4J2-1683" dev="rpopma" type="fix">
+        (GC) Avoid allocating temporary objects in MapMessage.
+      </action>
       <action issue="LOG4J2-1715" dev="rpopma" type="fix">
         (GC) Avoid allocating temporary objects in NdcPatternConverter. (Note that use of the ThreadContext stack is not garbage-free.)
       </action>

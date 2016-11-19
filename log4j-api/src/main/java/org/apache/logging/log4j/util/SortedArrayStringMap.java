@@ -110,6 +110,13 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
+    public SortedArrayStringMap(final Map<String, ?> map) {
+        resize(ceilingNextPowerOfTwo(map.size()));
+        for (final Map.Entry<String, ?> entry : map.entrySet()) {
+            putValue(entry.getKey(), entry.getValue());
+        }
+    }
+
     private void assertNotFrozen() {
         if (immutable) {
             throw new UnsupportedOperationException(FROZEN);
