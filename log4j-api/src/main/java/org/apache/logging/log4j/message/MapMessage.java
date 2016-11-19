@@ -57,6 +57,10 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
                     : JAVA.name().equalsIgnoreCase(format) ? JAVA //
                     : null;
         }
+
+        public static String[] names() {
+            return new String[] {XML.name(), JSON.name(), JAVA.name()};
+        }
     }
 
     private static final long serialVersionUID = -5031471831131487120L;
@@ -80,12 +84,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
 
     @Override
     public String[] getFormats() {
-        final String[] formats = new String[MapFormat.values().length];
-        int i = 0;
-        for (final MapFormat format : MapFormat.values()) {
-            formats[i++] = format.name();
-        }
-        return formats;
+        return MapFormat.names();
     }
 
     /**
