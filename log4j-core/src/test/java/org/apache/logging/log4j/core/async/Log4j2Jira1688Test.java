@@ -16,7 +16,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,12 +25,10 @@ import org.junit.runners.BlockJUnit4ClassRunner;
  * Tests LOG4J2-1688 Multiple loggings of arguments are setting these arguments to null.
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-public class Log4j2Jira1688AsyncTest {
+public class Log4j2Jira1688Test {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "log4j-list.xml");
     }

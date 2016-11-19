@@ -82,14 +82,16 @@ public class ReusableParameterizedMessage implements ReusableMessage {
             // Therefore we want to avoid returning arrays with less than 10 elements.
             // If the vararg array is less than 10 params we just copy its content into the specified array
             // and return it. This helps the caller to retain a reusable array of at least 10 elements.
+            // NOTE: LOG4J2-1688 unearthed the use case that an application array (not a varargs array) is passed
+            // as the argument array. This array should not be modified, so it cannot be passed to the caller
+            // who will at some point null out the elements in the array).
             if (argCount <= emptyReplacement.length) {
-                // copy params into the specified replacement array and return that
-                System.arraycopy(varargs, 0, emptyReplacement, 0, argCount);
                 result = emptyReplacement;
             } else {
-                result = varargs;
-                varargs = emptyReplacement;
+                result = new Object[argCount]; // LOG4J2-1688
             }
+            // copy params into the specified replacement array and return that
+            System.arraycopy(varargs, 0, result, 0, argCount);
         }
         return result;
     }
