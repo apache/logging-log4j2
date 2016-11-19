@@ -22,6 +22,7 @@ import java.util.TreeMap;
 
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.IndexedStringMap;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -35,6 +36,7 @@ import org.apache.logging.log4j.util.Strings;
  * logged, because it is undefined whether the logged message string will contain the old values or the modified
  * values.
  */
+@PerformanceSensitive("allocation")
 public class MapMessage implements MultiformatMessage, StringBuilderFormattable {
 
     /**
@@ -47,7 +49,14 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         /** The map should be formatted as JSON. */
         JSON,
         /** The map should be formatted the same as documented by java.util.AbstractMap.toString(). */
-        JAVA
+        JAVA;
+
+        public static MapFormat lookupIgnoreCase(final String format) {
+            return XML.name().equalsIgnoreCase(format) ? XML //
+                    : JSON.name().equalsIgnoreCase(format) ? JSON //
+                    : JAVA.name().equalsIgnoreCase(format) ? JAVA //
+                    : null;
+        }
     }
 
     private static final long serialVersionUID = -5031471831131487120L;
@@ -256,11 +265,10 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         if (formats == null || formats.length == 0) {
             return asString();
         }
-        for (final String format : formats) {
-            for (final MapFormat mapFormat : MapFormat.values()) {
-                if (mapFormat.name().equalsIgnoreCase(format)) {
-                    return format(mapFormat, new StringBuilder()).toString();
-                }
+        for (int i = 0; i < formats.length; i++) {
+            final MapFormat mapFormat = MapFormat.lookupIgnoreCase(formats[i]);
+            if (mapFormat != null) {
+                return format(mapFormat, new StringBuilder()).toString();
             }
         }
         return asString();
