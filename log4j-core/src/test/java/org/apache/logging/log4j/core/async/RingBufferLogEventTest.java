@@ -138,6 +138,7 @@ public class RingBufferLogEventTest {
         assertEquals(currentTimeMillis, other.getTimeMillis());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testCreateMementoReturnsCopy() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
@@ -164,6 +165,7 @@ public class RingBufferLogEventTest {
         assertEquals(evt.getMessage(), actual.getMessage());
         assertEquals(evt.getThrown(), actual.getThrown());
         assertEquals(evt.getContextMap(), actual.getContextMap());
+        assertEquals(evt.getContextData(), actual.getContextData());
         assertEquals(evt.getContextStack(), actual.getContextStack());
         assertEquals(evt.getThreadName(), actual.getThreadName());
         assertEquals(evt.getTimeMillis(), actual.getTimeMillis());

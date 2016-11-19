@@ -244,6 +244,7 @@ public class MutableLogEventTest {
         assertEquals(evt.getLevel(), evt2.getLevel());
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
+        assertEquals(evt.getContextData(), evt2.getContextData());
         assertEquals(evt.getContextMap(), evt2.getContextMap());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());

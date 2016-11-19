@@ -232,6 +232,7 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      * @see ContextMapAttributeConverter
      * @see org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter
      */
+    @SuppressWarnings("deprecation")
     @Override
     @Convert(converter = ContextMapAttributeConverter.class)
     public Map<String, String> getContextMap() {

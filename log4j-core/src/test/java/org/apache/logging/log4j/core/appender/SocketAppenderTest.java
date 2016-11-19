@@ -156,7 +156,7 @@ public class SocketAppenderTest {
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
         assertTrue("Message not delivered via TCP", tcpTestServer.getCount() > 0);
-        assertEquals(expectedUuidStr, event.getContextMap().get(tcKey));
+        assertEquals(expectedUuidStr, event.getContextData().getValue(tcKey));
         event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("Throwing an exception"));
@@ -270,7 +270,7 @@ public class SocketAppenderTest {
     }
 
     public static class UdpSocketTestServer extends Thread {
-        
+
         private final DatagramSocket sock;
         private boolean shutdown = false;
         private Thread thread;
@@ -345,7 +345,7 @@ public class SocketAppenderTest {
         public int getLocalPort() {
             return serverSocket.getLocalPort();
         }
-        
+
         public void reset() {
             queue.clear();
             count = 0;
