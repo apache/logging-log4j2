@@ -101,7 +101,7 @@ public final class StructuredDataFilter extends MapFilter {
             data.formatTo(sb);
             return sb;
         } else {
-            return appendOrNull(data.getDataValue(key), sb);
+            return appendOrNull(data.get(key), sb);
         }
     }
 
