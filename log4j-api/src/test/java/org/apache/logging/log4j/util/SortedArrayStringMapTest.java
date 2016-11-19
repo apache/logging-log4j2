@@ -54,7 +54,7 @@ public class SortedArrayStringMapTest {
 
     @Test
     public void testConstructorIgnoresNull() throws Exception {
-        assertEquals(0, new SortedArrayStringMap(null).size());
+        assertEquals(0, new SortedArrayStringMap((SortedArrayStringMap) null).size());
     }
 
     @Test
