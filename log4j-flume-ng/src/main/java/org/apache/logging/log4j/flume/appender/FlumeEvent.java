@@ -89,7 +89,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         if (eventPrefix == null) {
             eventPrefix = DEFAULT_EVENT_PREFIX;
         }
-        final Map<String, String> mdc = event.getContextMap();
+        final Map<String, String> mdc = event.getContextData().toMap();
         if (includes != null) {
             final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {

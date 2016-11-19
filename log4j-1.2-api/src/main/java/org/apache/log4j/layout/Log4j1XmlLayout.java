@@ -16,6 +16,9 @@
  */
 package org.apache.log4j.layout;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
@@ -25,12 +28,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Transform;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Port of XMLLayout in Log4j 1.x. Provided for compatibility with existing Log4j 1 configurations.
@@ -136,22 +136,21 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         }
 
         if (properties) {
-            final Map<String, String> contextMap = event.getContextMap();
+            final ReadOnlyStringMap contextMap = event.getContextData();
             if (!contextMap.isEmpty()) {
                 buf.append("<log4j:properties>\r\n");
-                final Object[] keys = contextMap.keySet().toArray();
-                Arrays.sort(keys);
-                for (final Object key1 : keys) {
-                    final String key = key1.toString();
-                    final String val = contextMap.get(key);
-                    if (val != null) {
-                        buf.append("<log4j:data name=\"");
-                        buf.append(Transform.escapeHtmlTags(key));
-                        buf.append("\" value=\"");
-                        buf.append(Transform.escapeHtmlTags(val));
-                        buf.append("\"/>\r\n");
+                contextMap.forEach(new BiConsumer<String, String>() {
+                    @Override
+                    public void accept(final String key, final String val) {
+                        if (val != null) {
+                            buf.append("<log4j:data name=\"");
+                            buf.append(Transform.escapeHtmlTags(key));
+                            buf.append("\" value=\"");
+                            buf.append(Transform.escapeHtmlTags(val));
+                            buf.append("\"/>\r\n");
+                        }
                     }
-                }
+                });
                 buf.append("</log4j:properties>\r\n");
             }
         }

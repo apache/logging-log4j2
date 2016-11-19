@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.nosql.appender;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,6 +23,8 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for all NoSQL databases.
@@ -119,14 +119,17 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
             entity.set("thrown", originalExceptionEntity);
         }
 
-        final Map<String, String> contextMap = event.getContextMap();
+        final ReadOnlyStringMap contextMap = event.getContextData();
         if (contextMap == null) {
             entity.set("contextMap", (Object) null);
         } else {
             final NoSqlObject<W> contextMapEntity = this.connection.createObject();
-            for (final Map.Entry<String, String> entry : contextMap.entrySet()) {
-                contextMapEntity.set(entry.getKey(), entry.getValue());
-            }
+            contextMap.forEach(new BiConsumer<String, String>() {
+                @Override
+                public void accept(final String key, final String val) {
+                    contextMapEntity.set(key, val);
+                }
+            });
             entity.set("contextMap", contextMapEntity);
         }
 
