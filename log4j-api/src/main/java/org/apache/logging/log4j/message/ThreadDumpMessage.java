@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Captures information about all running Threads.
  */
-public class ThreadDumpMessage implements Message, StringBuilderFormattable {
+public class ThreadDumpMessage implements Message, StringBuilderFormattable, AsynchronouslyFormattable {
 
     private static final long serialVersionUID = -1103400781608841088L;
 
