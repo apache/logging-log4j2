@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.util.Strings;
  * values.
  */
 @PerformanceSensitive("allocation")
-public class MapMessage implements MultiformatMessage, StringBuilderFormattable {
+public class MapMessage implements MultiformatMessage, StringBuilderFormattable, AsynchronouslyFormattable {
 
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
@@ -119,6 +120,14 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
             result.put(data.getKeyAt(i), (String) data.getValueAt(i));
         }
         return Collections.unmodifiableMap(result);
+    }
+
+    /**
+     * Returns a read-only view of the message data.
+     * @return the read-only message data.
+     */
+    public IndexedReadOnlyStringMap getIndexedReadOnlyStringMap() {
+        return data;
     }
 
     /**
