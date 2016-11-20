@@ -168,7 +168,7 @@
           <li>CompositeFilter (adding and removing element filters creates temporary objects for thread safety)</li>
           <li>DynamicThresholdFilter</li>
           <li>LevelRangeFilter (garbage free since 2.8)</li>
-          <li>MapFilter (garbage free since 2.8, but logging a MapMessage still allocates)</li>
+          <li>MapFilter (garbage free since 2.8)</li>
           <li>MarkerFilter (garbage free since 2.8)</li>
           <li>StructuredDataFilter (garbage free since 2.8)</li>
           <li>ThreadContextMapFilter (garbage free since 2.8)</li>
@@ -271,8 +271,7 @@
               </td>
               <td>Outputs the entries in a
                 <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
-                if one is present in the event  - since 2.8.
-                (Note that constructing a <tt>MapMessage</tt> is not garbage free.)</td>
+                if one is present in the event  - since 2.8.</td>
             </tr>
             <tr>
               <td>%m, %msg, %message</td>
