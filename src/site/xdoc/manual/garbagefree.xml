@@ -267,6 +267,14 @@
               <td>Adds ANSI colors (unless nested pattern is not garbage free) - since 2.7</td>
             </tr>
             <tr>
+              <td>K{key}, map{key}, MAP{key}
+              </td>
+              <td>Outputs the entries in a
+                <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
+                if one is present in the event  - since 2.8.
+                (Note that constructing a <tt>MapMessage</tt> is not garbage free.)</td>
+            </tr>
+            <tr>
               <td>%m, %msg, %message</td>
               <td>Log message (unless message text contains '${')</td>
             </tr>
