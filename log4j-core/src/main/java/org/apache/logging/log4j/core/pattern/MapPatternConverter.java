@@ -74,15 +74,14 @@ public final class MapPatternConverter extends LogEventPatternConverter {
                 toAppendTo.append("{}");
                 return;
             }
-            final StringBuilder sb = toAppendTo.append("{");
+            toAppendTo.append("{");
             for (int i = 0; i < sortedMap.size(); i++) {
-                if (sb.length() > 1) {
-                    sb.append(", ");
+                if (i > 0) {
+                    toAppendTo.append(", ");
                 }
-                sb.append(sortedMap.getKeyAt(i)).append('=').append(sortedMap.getValueAt(i));
+                toAppendTo.append(sortedMap.getKeyAt(i)).append('=').append(sortedMap.getValueAt(i));
             }
-            sb.append('}');
-            toAppendTo.append(sb);
+            toAppendTo.append('}');
         } else {
             // otherwise they just want a single key output
             final String val = sortedMap.getValue(key);

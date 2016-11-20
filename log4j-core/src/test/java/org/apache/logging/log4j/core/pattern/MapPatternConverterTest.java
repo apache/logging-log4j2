@@ -51,6 +51,8 @@ public class MapPatternConverterTest {
         assertTrue("Missing or incorrect verb", str.contains(expected));
         expected = "object=Log4j";
         assertTrue("Missing or incorrect object", str.contains(expected));
+
+        assertEquals("{object=Log4j, subject=I, verb=love}", str);
     }
 
     @Test
