@@ -50,7 +50,15 @@ public interface Message extends Serializable {
      * appropriate way to format the data encapsulated in the Message. Messages that provide
      * more than one way of formatting the Message will implement MultiformatMessage.
      * <p>
-     * This method will not be called for Messages that implement the
+     * When configured to log asynchronously, this method is called before the Message is queued, unless this
+     * message implements either {@link ReusableMessage} or {@link AsynchronouslyFormattable}.
+     * This gives the Message implementation class a chance to create a formatted message String with the current value
+     * of any mutable objects.
+     * The intention is that the Message implementation caches this formatted message and returns it on subsequent
+     * calls. (See <a href="https://issues.apache.org/jira/browse/LOG4J2-763">LOG4J2-763</a>.)
+     * </p>
+     * <p>
+     * When logging synchronously, this method will not be called for Messages that implement the
      * {@link StringBuilderFormattable} interface: instead, the
      * {@link StringBuilderFormattable#formatTo(StringBuilder) formatTo(StringBuilder)} method will be called so the
      * Message can format its contents without creating intermediate String objects.

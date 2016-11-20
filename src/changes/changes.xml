@@ -150,6 +150,9 @@
       <action issue="LOG4J2-1379" dev="mattsicker" type="add">
         Add documentation regarding YAML configuration format.
       </action>
+      <action issue="LOG4J2-1718" dev="rpopma" type="add">
+        Introduce marker interface AsynchronouslyFormattable.
+      </action>
       <action issue="LOG4J2-1681" dev="rpopma" type="add">
         Introduce interfaces IndexedStringMap and IndexedReadOnlyStringMap, supporting garbage-free iteration over sorted map.
       </action>

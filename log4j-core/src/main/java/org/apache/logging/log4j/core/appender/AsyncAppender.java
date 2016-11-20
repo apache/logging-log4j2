@@ -49,6 +49,8 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.message.AsynchronouslyFormattable;
+import org.apache.logging.log4j.message.Message;
 
 /**
  * Appends to one or more Appenders asynchronously. You can configure an AsyncAppender with one or more Appenders and an
@@ -154,7 +156,7 @@ public final class AsyncAppender extends AbstractAppender {
         if (!isStarted()) {
             throw new IllegalStateException("AsyncAppender " + getName() + " is not active");
         }
-        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+        if (!canFormatMessageInBackground(logEvent.getMessage())) {
             logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
         final Log4jLogEvent memento = Log4jLogEvent.createMemento(logEvent, includeLocation);
@@ -168,6 +170,11 @@ public final class AsyncAppender extends AbstractAppender {
                 logToErrorAppenderIfNecessary(false, memento);
             }
         }
+    }
+
+    private boolean canFormatMessageInBackground(final Message message) {
+        return Constants.FORMAT_MESSAGES_IN_BACKGROUND // LOG4J2-898: user wants to format all msgs in background
+                || message instanceof AsynchronouslyFormattable; // LOG4J2-1718
     }
 
     private boolean transfer(final LogEvent memento) {

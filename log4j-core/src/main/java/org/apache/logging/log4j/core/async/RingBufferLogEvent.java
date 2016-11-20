@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
@@ -123,11 +124,16 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
             }
         } else {
             // if the Message instance is reused, there is no point in freezing its message here
-            if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg != null) { // LOG4J2-898: user may choose
+            if (!canFormatMessageInBackground(msg) && msg != null) {
                 msg.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
             }
             this.message = msg;
         }
+    }
+
+    private boolean canFormatMessageInBackground(final Message message) {
+        return Constants.FORMAT_MESSAGES_IN_BACKGROUND // LOG4J2-898: user wants to format all msgs in background
+                || message instanceof AsynchronouslyFormattable; // LOG4J2-1718
     }
 
     private StringBuilder getMessageTextForWriting() {
