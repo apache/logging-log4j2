@@ -69,7 +69,11 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-        buffer.append(charSequence);
+        if (message != null) {
+            buffer.append(message);
+        } else {
+            buffer.append(charSequence);
+        }
     }
 
     /**

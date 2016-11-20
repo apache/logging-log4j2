@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.8" date="2016-MM-DD" description="GA Release 2.8">
+      <action issue="LOG4J2-1719" dev="rpopma" type="fix">
+        Fixed race condition in ObjectMessage and SimpleMessage, ensuring that the log message contains the value the object has during the logging call.
+      </action>
       <action issue="LOG4J2-1688" dev="rpopma" type="fix">
         Fixed bug where elements of a log message parameter array were nulled out in garbage-free mode.
       </action>

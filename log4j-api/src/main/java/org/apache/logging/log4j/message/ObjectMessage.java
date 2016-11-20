@@ -59,7 +59,11 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-        StringBuilders.appendValue(buffer, obj);
+        if (objectString != null) { //
+            buffer.append(objectString);
+        } else {
+            StringBuilders.appendValue(buffer, obj);
+        }
     }
 
     /**
