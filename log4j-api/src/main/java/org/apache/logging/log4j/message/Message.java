@@ -40,6 +40,9 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  *
  * @see StringBuilderFormattable
  */
+/*
+ * Implementation note: this interface extends Serializable since LogEvents must be serializable.
+ */
 public interface Message extends Serializable {
 
     /**
