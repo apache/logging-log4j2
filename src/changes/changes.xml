@@ -151,7 +151,7 @@
         Add documentation regarding YAML configuration format.
       </action>
       <action issue="LOG4J2-1681" dev="rpopma" type="add">
-        Changed visibility of indexed getter methods in SortedArrayStringMap from package-protected to public.
+        Introduce interfaces IndexedStringMap and IndexedReadOnlyStringMap, supporting garbage-free iteration over sorted map.
       </action>
       <action issue="LOG4J2-1695" dev="ggregory" type="add">
         Add a Builder to ScriptPatternSelector and deprecate ScriptPatternSelector.createSelector().
