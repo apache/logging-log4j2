@@ -30,17 +30,13 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * {@link StringBuilderFormattable#formatTo(StringBuilder) formatTo(StringBuilder)} instead of
  * {@link Message#getFormattedMessage()} if the Message implements StringBuilderFormattable.
  * </p>
- *<p>
+ * <p>
  * Note: Message objects should not be considered to be thread safe nor should they be assumed to be
  * safely reusable even on the same thread. The logging system may provide information to the Message
  * objects and the Messages might be queued for asynchronous delivery. Thus, any modifications to a
  * Message object by an application should by avoided after the Message has been passed as a parameter on
  * a Logger method.
  * </p>
- * TODO Interfaces should rarely extend Serializable according to Effective Java 2nd Ed pg 291.
- * (RG) That section also says "If a class or interface exists primarily to participate in a framework that
- * requires all participants to implement Serializable, then it makes perfect sense for the class or
- * interface to implement or extend Serializable". Such is the case here as the LogEvent must be Serializable.
  *
  * @see StringBuilderFormattable
  */
