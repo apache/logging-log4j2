@@ -70,6 +70,7 @@ public class GcFreeLoggingTestUtil {
         logger.fatal(test, "This message is logged to the console");
         logger.error("Sample error message");
         logger.error("Test parameterized message {}", "param");
+        logger.error(new MapMessage().with("eventId", "Login")); // initialize GelfLayout's messageStringBuilder
         for (int i = 0; i < 256; i++) {
             logger.debug("ensure all ringbuffer slots have been used once"); // allocate MutableLogEvent.messageText
         }
@@ -120,7 +121,7 @@ public class GcFreeLoggingTestUtil {
             logger.error("Test parameterized message {}", "param");
             logger.error("Test parameterized message {}{}", "param", "param2");
             logger.error("Test parameterized message {}{}{}", "param", "param2", "abc");
-            //logger.error(mapMessage); // TODO LOG4J2-1683
+            logger.error(mapMessage); // LOG4J2-1683
             ThreadContext.remove("aKey");
             ThreadContext.put("aKey", "value1");
         }

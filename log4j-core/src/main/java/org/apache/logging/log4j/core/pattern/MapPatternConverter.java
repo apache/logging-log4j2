@@ -23,6 +23,9 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Able to handle the contents of the LogEvent's MapMessage and either
@@ -69,28 +72,26 @@ public final class MapPatternConverter extends LogEventPatternConverter {
         } else {
             return;
         }
-        final Map<String, String> map = msg.getData();
+        final IndexedReadOnlyStringMap sortedMap = msg.getIndexedReadOnlyStringMap();
         // if there is no additional options, we output every single
         // Key/Value pair for the Map in a similar format to Hashtable.toString()
         if (key == null) {
-            if (map.isEmpty()) {
+            if (sortedMap.isEmpty()) {
                 toAppendTo.append("{}");
                 return;
             }
-            final StringBuilder sb = new StringBuilder("{");
-            final Set<String> keys = new TreeSet<>(map.keySet());
-            for (final String eventKey : keys) {
+            final StringBuilder sb = toAppendTo.append("{");
+            for (int i = 0; i < sortedMap.size(); i++) {
                 if (sb.length() > 1) {
                     sb.append(", ");
                 }
-                sb.append(eventKey).append('=').append(map.get(eventKey));
-
+                sb.append(sortedMap.getKeyAt(i)).append('=').append(sortedMap.getValueAt(i));
             }
             sb.append('}');
             toAppendTo.append(sb);
         } else {
             // otherwise they just want a single key output
-            final String val = map.get(key);
+            final String val = sortedMap.getValue(key);
 
             if (val != null) {
                 toAppendTo.append(val);
