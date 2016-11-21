@@ -76,10 +76,6 @@
           <td><a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a></td>
         </tr>
         <tr>
-          <td>GELF Layout</td>
-          <td><a href="https://github.com/FasterXML/jackson">Jackson core</a></td>
-        </tr>
-        <tr>
           <td>JSON Layout</td>
           <td><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></td>
         </tr>
