@@ -225,8 +225,8 @@ public class StructuredDataMessage extends MapMessage implements StringBuilderFo
         if (key.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Structured data keys are limited to 32 characters. key: " + key);
         }
-        final char[] chars = key.toCharArray();
-        for (final char c : chars) {
+        for (int i = 0; i < key.length(); i++) {
+            final char c = key.charAt(i);
             if (c < '!' || c > '~' || c == '=' || c == ']' || c == '"') {
                 throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters" +
                         "and may not contain a space, =, ], or \"");
@@ -336,7 +336,8 @@ public class StructuredDataMessage extends MapMessage implements StringBuilderFo
     @Override
     public String getFormattedMessage(final String[] formats) {
         if (formats != null && formats.length > 0) {
-            for (final String format : formats) {
+            for (int i = 0; i < formats.length; i++) {
+                final String format = formats[i];
                 if (Format.XML.name().equalsIgnoreCase(format)) {
                     return asXml();
                 } else if (Format.FULL.name().equalsIgnoreCase(format)) {
