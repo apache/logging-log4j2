@@ -124,7 +124,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
             }
         } else {
             // if the Message instance is reused, there is no point in freezing its message here
-            if (!canFormatMessageInBackground(msg) && msg != null) {
+            if (msg != null && !canFormatMessageInBackground(msg)) {
                 msg.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
             }
             this.message = msg;
@@ -133,7 +133,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     private boolean canFormatMessageInBackground(final Message message) {
         return Constants.FORMAT_MESSAGES_IN_BACKGROUND // LOG4J2-898: user wants to format all msgs in background
-                || message instanceof AsynchronouslyFormattable; // LOG4J2-1718
+                || message.getClass().isAnnotationPresent(AsynchronouslyFormattable.class); // LOG4J2-1718
     }
 
     private StringBuilder getMessageTextForWriting() {

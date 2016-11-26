@@ -51,7 +51,7 @@ public interface Message extends Serializable {
      * more than one way of formatting the Message will implement MultiformatMessage.
      * <p>
      * When configured to log asynchronously, this method is called before the Message is queued, unless this
-     * message implements either {@link ReusableMessage} or {@link AsynchronouslyFormattable}.
+     * message implements {@link ReusableMessage} or is annotated with {@link AsynchronouslyFormattable}.
      * This gives the Message implementation class a chance to create a formatted message String with the current value
      * of any mutable objects.
      * The intention is that the Message implementation caches this formatted message and returns it on subsequent

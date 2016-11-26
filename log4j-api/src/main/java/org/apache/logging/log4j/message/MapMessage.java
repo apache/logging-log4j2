@@ -38,7 +38,8 @@ import org.apache.logging.log4j.util.Strings;
  * values.
  */
 @PerformanceSensitive("allocation")
-public class MapMessage implements MultiformatMessage, StringBuilderFormattable, AsynchronouslyFormattable {
+@AsynchronouslyFormattable
+public class MapMessage implements MultiformatMessage, StringBuilderFormattable {
 
     /**
      * When set as the format specifier causes the Map to be formatted as XML.

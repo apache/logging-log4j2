@@ -254,7 +254,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
     private boolean canFormatMessageInBackground(final Message message) {
         return Constants.FORMAT_MESSAGES_IN_BACKGROUND // LOG4J2-898: user wants to format all msgs in background
-                || message instanceof AsynchronouslyFormattable; // LOG4J2-1718
+                || message.getClass().isAnnotationPresent(AsynchronouslyFormattable.class); // LOG4J2-1718
     }
 
     /*

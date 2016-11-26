@@ -16,8 +16,14 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * Marker interface that signals to asynchronous logging components that messages of this type can safely be passed to
+ * Annotation that signals to asynchronous logging components that messages of this type can safely be passed to
  * a background thread without calling {@link Message#getFormattedMessage()} first.
  * <p>
  * Generally, logging mutable objects asynchronously always has the risk that the object is modified between the time
@@ -32,7 +38,7 @@ package org.apache.logging.log4j.message;
  * {@code Message} instance itself. This ensures that the formatted message will not change
  * when the mutable object is modified.
  * </li>
- * <li>If the Message implements {@link AsynchronouslyFormattable}, it can be passed to another thread as is.</li>
+ * <li>If the Message is annotated with {@link AsynchronouslyFormattable}, it can be passed to another thread as is.</li>
  * <li>Otherwise, asynchronous logging components in the Log4j implementation will call
  * {@link Message#getFormattedMessage()} before passing the Message object to another thread.
  * This gives the Message implementation class a chance to create a formatted message String with the current value
@@ -47,5 +53,8 @@ package org.apache.logging.log4j.message;
  * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-763">LOG4J2-763</a>
  * @since 2.8
  */
-public interface AsynchronouslyFormattable {
+@Documented // This annotation is part of the public API of annotated elements.
+@Target(ElementType.TYPE) // Only applies to types.
+@Retention(RetentionPolicy.RUNTIME) //Needs to be reflectively discoverable runtime.
+public @interface AsynchronouslyFormattable {
 }
