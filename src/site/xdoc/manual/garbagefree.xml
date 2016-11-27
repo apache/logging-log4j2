@@ -271,22 +271,22 @@
             </tr>
             <tr>
               <td>%highlight{pattern}{style}</td>
-              <td>Adds ANSI colors (unless nested pattern is not garbage free) - since 2.7</td>
+              <td>Adds ANSI colors - garbage-free since 2.7 (unless nested pattern is not garbage free)</td>
             </tr>
             <tr>
               <td>K{key}, map{key}, MAP{key}
               </td>
               <td>Outputs the entries in a
                 <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
-                if one is present in the event  - since 2.8.</td>
+                if one is present in the event  - garbage-free since 2.8.</td>
             </tr>
             <tr>
               <td>%m, %msg, %message</td>
-              <td>Log message (unless message text contains '${')</td>
+              <td>Log message (garbage-free unless message text contains '${')</td>
             </tr>
             <tr>
               <td>%marker</td>
-              <td>The full name of the marker (including parents) - since 2.8</td>
+              <td>The full name of the marker (including parents) - garbage-free since 2.8</td>
             </tr>
             <tr>
               <td>%markerSimpleName</td>
@@ -294,7 +294,7 @@
             </tr>
             <tr>
               <td>%maxLen, %maxLength</td>
-              <td>Truncates another pattern to some max number of characters - since 2.8</td>
+              <td>Truncates another pattern to some max number of characters - garbage-free since 2.8</td>
             </tr>
             <tr>
               <td>%n</td>
@@ -310,7 +310,7 @@
                 %variablesNotEmpty{pattern}
               </td>
               <td>Outputs the result of evaluating the pattern if and only if
-                all variables in the pattern are not empty - since 2.8</td>
+                all variables in the pattern are not empty - garbage-free since 2.8</td>
             </tr>
             <tr>
               <td>%p, %level</td>
@@ -320,15 +320,15 @@
               <td>%r,
                 %relative</td>
               <td>The number of milliseconds elapsed since the JVM was started until the creation of the logging event
-                  - since 2.8</td>
+                  - garbage-free since 2.8</td>
             </tr>
             <tr>
               <td>%sn, %sequenceNumber</td>
-              <td>A sequence number that will be incremented in every event - since 2.8</td>
+              <td>A sequence number that will be incremented in every event - garbage-free since 2.8</td>
             </tr>
             <tr>
               <td>%style{pattern}{ANSI style}</td>
-              <td>Style the message (unless nested pattern is not garbage free) - since 2.7</td>
+              <td>Style the message - garbage-free since 2.7 (unless nested pattern is not garbage free)</td>
             </tr>
             <tr>
               <td>%T, %tid, %threadId</td>
@@ -347,11 +347,11 @@
                 %mdc{key[,key2...]},
                 %MDC{key[,key2...]}</td>
               <td>Outputs the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
-                associated with the thread that generated the logging event - since 2.8</td>
+                associated with the thread that generated the logging event - garbage-free since 2.8</td>
             </tr>
             <tr>
               <td>literal text</td>
-              <td>unless literal contains '${' (variable substitution)</td>
+              <td>Garbage-free unless literal contains '${' (variable substitution)</td>
             </tr>
           </table>
           <p>
