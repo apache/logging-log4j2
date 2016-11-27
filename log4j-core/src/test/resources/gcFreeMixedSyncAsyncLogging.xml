@@ -27,7 +27,7 @@
     <File name="File" fileName="target/gcfreefileMixed.log" bufferedIO="false">
       <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
       <PatternLayout>
-        <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss,SSS}{UTC} %r %sn %markerSimpleName %MAP %maxLen{%marker}{10} %equals{%markerSimpleName}{test}{substitute} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
+        <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss,SSS}{UTC} %r %enc{'/} %sn %markerSimpleName %MAP %maxLen{%marker}{10} %equals{%markerSimpleName}{test}{substitute} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
       </PatternLayout>
     </File>
     <RollingFile name="RollingFile" fileName="target/gcfreeRollingFileMixed.log"

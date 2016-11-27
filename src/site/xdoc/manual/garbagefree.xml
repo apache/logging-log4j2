@@ -257,6 +257,13 @@
               </td>
             </tr>
             <tr>
+              <td>%enc{pattern},
+                %encode{pattern}</td>
+              <td>Encodes special characters such as '\n' and HTML characters to help prevent
+                log forging and some XSS attacks that could occur when displaying logs in
+                a web browser - garbage-free since 2.8</td>
+            </tr>
+            <tr>
               <td>%equals{pattern}{test}{substitution},
                 %equalsIgnoreCase{pattern}{test}{substitution}</td>
               <td>Replaces occurrences of 'test', a string, with its replacement 'substitution'
