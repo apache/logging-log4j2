@@ -22,12 +22,14 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Returns the event's rendered message in a StringBuilder.
  */
 @Plugin(name = "encode", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "enc", "encode" })
+@PerformanceSensitive("allocation")
 public final class EncodingPatternConverter extends LogEventPatternConverter {
 
     private final List<PatternFormatter> formatters;
