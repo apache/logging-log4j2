@@ -56,6 +56,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * Date format used if header = true.
      */
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH);
+    
     /**
      * Host name used to identify messages from this appender.
      */
@@ -130,7 +131,7 @@ public final class SyslogLayout extends AbstractStringLayout {
     }
 
     /**
-     * Create a SyslogLayout.
+     * Creates a SyslogLayout.
      * @param facility The Facility is used to try to classify the message.
      * @param includeNewLine If true a newline will be appended to the result.
      * @param escapeNL Pattern to use for replacing newlines.
