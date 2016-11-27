@@ -305,6 +305,14 @@
               <td>System.nanoTime() when the event was logged</td>
             </tr>
             <tr>
+              <td>notEmpty{pattern},
+                varsNotEmpty{pattern},
+                variablesNotEmpty{pattern}
+              </td>
+              <td>Outputs the result of evaluating the pattern if and only if
+                all variables in the pattern are not empty - since 2.8</td>
+            </tr>
+            <tr>
               <td>%p, %level</td>
               <td>The level of the logging event</td>
             </tr>
