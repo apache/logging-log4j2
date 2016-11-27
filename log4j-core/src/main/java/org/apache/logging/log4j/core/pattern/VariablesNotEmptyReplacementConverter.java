@@ -33,7 +33,7 @@ public final class VariablesNotEmptyReplacementConverter extends LogEventPattern
     private final List<PatternFormatter> formatters;
 
     /**
-     * Construct the converter.
+     * Constructs the converter.
      * 
      * @param formatters
      *            The PatternFormatters to generate the text to manipulate.
