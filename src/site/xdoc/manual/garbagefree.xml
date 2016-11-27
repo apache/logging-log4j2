@@ -379,7 +379,7 @@
             </ul>
             Also, the pattern converters for formatting Throwables are not garbage-free:
             <ul>
-              <li>%ex|%exception|%throwable - The Throwable trace bound to the LoggingEvent</li>
+              <li>%ex, %exception, %throwable - The Throwable trace bound to the LoggingEvent</li>
               <li>%rEx, %rException %rThrowable - Same as %ex but with wrapping exceptions</li>
               <li>%xEx, %xException, %xThrowable - Same as %ex but with class packaging information</li>
               <li>%u, %uuid - Creates a new random or time-based UUID while formatting</li>
