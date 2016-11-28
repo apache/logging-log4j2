@@ -54,7 +54,12 @@
       </subsection>
       <a name="English"/>
       <subsection name="English">
-      <ul>
+      <ul>      
+        <li>
+          <a href="https://garygregory.wordpress.com/2016/11/27/loading-a-log4j-configuration-for-a-specific-ejb/">
+            Loading a Log4j Configuration for a specific EJB</a>
+          (November 27, 2016)
+        </li>
         <li>
           <a href="http://javaevangelist.blogspot.jp/2016/06/log4j2-javautillogging-jul-adapter.html">Log4j2
             java.util.logging (JUL) Adapter Example</a>
