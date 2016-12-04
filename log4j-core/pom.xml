@@ -234,6 +234,12 @@
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-broker</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-jms_1.1_spec</artifactId>
+        </exclusion>
+      </exclusions>    
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>

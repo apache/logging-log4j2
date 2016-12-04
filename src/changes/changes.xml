@@ -138,6 +138,9 @@
       <action issue="LOG4J2-1676" dev="ggregory" type="fix" due-to="Joern Huxhorn">
         Some LogEvents may not carry a Throwable (Use Message.getThrowable() in log(Message) methods.)
       </action>
+      <action issue="LOG4J2-1723" dev="ggregory" type="fix" due-to="Ludovic HOCHET">
+        Unwanted transitive dependency on geronimo-jms_1.1_spec causes OSGi tests to fail.
+      </action>
       <action issue="LOG4J2-1644" dev="ggregory" type="update" due-to="Tim Gokcen, Pavel Sivolobtchik">
         Inefficient locking in AbstractLoggerAdapter.
       </action>
