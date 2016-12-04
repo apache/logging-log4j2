@@ -141,6 +141,9 @@
       <action issue="LOG4J2-1723" dev="ggregory" type="fix" due-to="Ludovic HOCHET">
         Unwanted transitive dependency on geronimo-jms_1.1_spec causes OSGi tests to fail.
       </action>
+      <action issue="LOG4J2-1664" dev="ggregory" type="fix" due-to="Ludovic HOCHET">
+        Improve OSGi unit tests.
+      </action>
       <action issue="LOG4J2-1644" dev="ggregory" type="update" due-to="Tim Gokcen, Pavel Sivolobtchik">
         Inefficient locking in AbstractLoggerAdapter.
       </action>
