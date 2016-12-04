@@ -224,7 +224,7 @@
       <artifactId>org.eclipse.persistence.jpa</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- JNDI and JMS tests -->
+    <!-- JPA, JNDI and JMS tests -->
     <dependency>
       <groupId>org.mockejb</groupId>
       <artifactId>mockejb</artifactId>
