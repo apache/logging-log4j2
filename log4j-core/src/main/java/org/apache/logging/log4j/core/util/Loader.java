@@ -228,6 +228,19 @@ public final class Loader {
     }
 
     /**
+     * Loads a named Class using a given ClassLoader.
+     *
+     * @param className The class name.
+     * @param loader The class loader.
+     * @return The class, or null if loader is null.
+     * @throws ClassNotFoundException if the class could not be found.
+     */
+    public static Class<?> loadClass(final String className, final ClassLoader loader)
+            throws ClassNotFoundException {
+        return loader != null ? loader.loadClass(className) : null;
+    }    
+    
+    /**
      * Load a Class in the {@code java.*} namespace by name. Useful for peculiar scenarios typically involving
      * Google App Engine.
      *

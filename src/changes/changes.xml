@@ -144,6 +144,9 @@
       <action issue="LOG4J2-1664" dev="ggregory" type="fix" due-to="Ludovic HOCHET">
         Improve OSGi unit tests.
       </action>
+      <action issue="LOG4J2-1687" dev="ggregory" type="fix" due-to="Robert Christiansen">
+        NPE in ThrowableProxy when resolving stack in Java EE/OSGi environment.
+      </action>
       <action issue="LOG4J2-1644" dev="ggregory" type="update" due-to="Tim Gokcen, Pavel Sivolobtchik">
         Inefficient locking in AbstractLoggerAdapter.
       </action>
