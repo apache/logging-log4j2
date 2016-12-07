@@ -42,7 +42,9 @@ mvn site:stage-deploy -DstagingSiteURL=file:///$HOME/log4j
 
 To test, run:
 
-mvn test
+mvn clean install
+
+(You must run install instead of test in order for the OSGI tests to work.)
 
 Then, to test OSGi, you must first create the jars:
 
