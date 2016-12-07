@@ -19,11 +19,13 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.CronScheduledFuture;
 import org.apache.logging.log4j.core.config.Scheduled;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -49,8 +51,8 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private CronTriggeringPolicy(final CronExpression schedule, final boolean checkOnStartup,
             final Configuration configuration) {
-        this.cronExpression = schedule;
-        this.configuration = configuration;
+        this.cronExpression = Objects.requireNonNull(schedule, "schedule");
+        this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.checkOnStartup = checkOnStartup;
     }
 
@@ -70,7 +72,12 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
                 rollover();
             }
         }
-        future = configuration.getScheduler().scheduleWithCron(cronExpression, new CronTrigger());
+        final ConfigurationScheduler scheduler = configuration.getScheduler();
+        if (!scheduler.isStarted()) {
+            scheduler.incrementScheduledItems();
+            scheduler.start();
+        }
+        future = scheduler.scheduleWithCron(cronExpression, new CronTrigger());
     }
 
     /**
@@ -131,7 +138,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     private void rollover() {
         manager.getPatternProcessor().setPrevFileTime(nextRollDate.getTime());
         manager.rollover();
-        final Date fireDate = future.getFireTime();
+        final Date fireDate = future != null ? future.getFireTime() : new Date();
         final Calendar cal = Calendar.getInstance();
         cal.setTime(fireDate);
         cal.add(Calendar.SECOND, -1);

@@ -150,6 +150,9 @@
       <action issue="LOG4J2-1642" dev="ggregory" type="fix" due-to="Johno Crawford">
         DefaultShutdownCallbackRegistry can throw a NoClassDefFoundError.
       </action>
+      <action issue="LOG4J2-1474" dev="ggregory" type="fix" due-to="yin mingjun, Neon">
+        CronTriggeringPolicy raise exception and fail to rollover log file when evaluateOnStartup is true.
+      </action>
       <action issue="LOG4J2-1644" dev="ggregory" type="update" due-to="Tim Gokcen, Pavel Sivolobtchik">
         Inefficient locking in AbstractLoggerAdapter.
       </action>
