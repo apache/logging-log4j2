@@ -36,7 +36,6 @@ import org.apache.logging.log4j.spi.ThreadContextMap2;
 import org.apache.logging.log4j.spi.ThreadContextMap3;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -198,8 +197,6 @@ public final class ThreadContext {
     private static ThreadContextMap contextMap;
     private static ThreadContextStack contextStack;
     private static ReadOnlyThreadContextMap readOnlyContextMap;
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     static {
         init();
