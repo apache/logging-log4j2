@@ -190,8 +190,8 @@ public class SslSocketManager extends TcpSocketManager {
                 LOGGER.catching(Level.DEBUG, e);
                 return null;
             }
-            return new SslSocketManager(name, os, socket, data.sslConfiguration, inetAddress, data.host, data.port, 0,
-                    data.delayMillis, data.immediateFail, data.layout, data.bufferSize, data.socketOptions);
+            return new SslSocketManager(name, os, socket, data.sslConfiguration, inetAddress, data.host, data.port,
+                    data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout, data.bufferSize, data.socketOptions);
         }
 
         private InetAddress resolveAddress(final String hostName) throws TlsSocketManagerFactoryException {
@@ -218,11 +218,12 @@ public class SslSocketManager extends TcpSocketManager {
             SSLSocket socket;
 
             socketFactory = createSslSocketFactory(data.sslConfiguration);
-            socket = (SSLSocket) socketFactory.createSocket(data.host, data.port);
+            socket = (SSLSocket) socketFactory.createSocket();
             final SocketOptions socketOptions = data.socketOptions;
             if (socketOptions != null) {
                 socketOptions.apply(socket);
             }
+            socket.connect(new InetSocketAddress(data.host, data.port), data.connectTimeoutMillis);
             return socket;
         }
     }
