@@ -171,6 +171,7 @@ public class SslSocketManager extends TcpSocketManager {
             private static final long serialVersionUID = 1L;
         }
 
+        @SuppressWarnings("resource")
         @Override
         public SslSocketManager createManager(final String name, final SslFactoryData data) {
             InetAddress inetAddress = null;
