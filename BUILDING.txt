@@ -43,15 +43,3 @@ mvn site:stage-deploy -DstagingSiteURL=file:///$HOME/log4j
 To test, run:
 
 mvn clean install
-
-(You must run install instead of test in order for the OSGI tests to work.)
-
-Then, to test OSGi, you must first create the jars:
-
-mvn install -DskipTests
-mvn package -DskipTests
-
-Next, you can run the tests as usual, which will pick up the jar files to use as OSGi bundles from the various target 
-directories:
-
-mvn test

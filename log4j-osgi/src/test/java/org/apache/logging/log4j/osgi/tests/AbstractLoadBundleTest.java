@@ -27,7 +27,6 @@ import org.apache.logging.log4j.osgi.tests.junit.BundleTestInfo;
 import org.apache.logging.log4j.osgi.tests.junit.OsgiRule;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -82,6 +81,12 @@ public abstract class AbstractLoadBundleTest {
         return bundleContext.installBundle(dumyPath.toUri().toString());
     }
 
+    private Bundle get12ApiBundle() throws BundleException {
+        final Path apiPath = here.resolveSibling("log4j-1.2-api").resolve("target").resolve("log4j-1.2-api-" + bundleTestInfo.getVersion() + ".jar");
+        return bundleContext.installBundle(apiPath.toUri().toString());
+    }
+
+    
     protected abstract FrameworkFactory getFactory();
     
     private void log(final Bundle dummy) throws ReflectiveOperationException {
@@ -134,6 +139,56 @@ public abstract class AbstractLoadBundleTest {
         core.stop();
         api.stop();
     }
+    
+    private void uninstall(final Bundle api, final Bundle core, final Bundle dummy) throws BundleException {
+        dummy.uninstall();
+        core.uninstall();
+        api.uninstall();
+    }
+
+    /**
+     * Tests starting, then stopping, then restarting, then stopping, and finally uninstalling the API and Core bundles
+     */
+    @Test
+    public void testApiCoreStartStopStartStop() throws BundleException, ReflectiveOperationException {
+
+        final Bundle api = getApiBundle();
+        final Bundle core = getCoreBundle();
+        
+        Assert.assertEquals("api is not in INSTALLED state", Bundle.INSTALLED, api.getState());
+        Assert.assertEquals("core is not in INSTALLED state", Bundle.INSTALLED, core.getState());
+
+        api.start();
+        core.start();
+        
+        Assert.assertEquals("api is not in ACTIVE state", Bundle.ACTIVE, api.getState());        
+        Assert.assertEquals("core is not in ACTIVE state", Bundle.ACTIVE, core.getState());        
+        
+        core.stop();
+        api.stop();
+        
+        Assert.assertEquals("api is not in RESOLVED state", Bundle.RESOLVED, api.getState());
+        Assert.assertEquals("core is not in RESOLVED state", Bundle.RESOLVED, core.getState());
+        
+        api.start();
+        core.start();
+        
+        Assert.assertEquals("api is not in ACTIVE state", Bundle.ACTIVE, api.getState());        
+        Assert.assertEquals("core is not in ACTIVE state", Bundle.ACTIVE, core.getState());        
+        
+        core.stop();
+        api.stop();
+        
+        Assert.assertEquals("api is not in RESOLVED state", Bundle.RESOLVED, api.getState());
+        Assert.assertEquals("core is not in RESOLVED state", Bundle.RESOLVED, core.getState());
+        
+        core.uninstall();
+        api.uninstall();
+        
+        Assert.assertEquals("api is not in UNINSTALLED state", Bundle.UNINSTALLED, api.getState());
+        Assert.assertEquals("core is not in UNINSTALLED state", Bundle.UNINSTALLED, core.getState());
+    }
+
     /**
      * Tests LOG4J2-1637.
      */
@@ -235,9 +290,32 @@ public abstract class AbstractLoadBundleTest {
         uninstall(api, core, dummy);
     }
 
-    private void uninstall(final Bundle api, final Bundle core, final Bundle dummy) throws BundleException {
-        dummy.uninstall();
-        core.uninstall();
-        api.uninstall();
+
+    /**
+     * Tests the loading of the 1.2 Compatibitility API bundle, its classes should be loadable from the Core bundle, 
+     * and the class loader should be the same between a class from core and a class from compat
+     */
+    @Test
+    public void testLog4J12Fragement() throws BundleException, ReflectiveOperationException {
+
+        final Bundle api = getApiBundle();
+        final Bundle core = getCoreBundle();
+        final Bundle compat = get12ApiBundle();
+
+        api.start();
+        core.start();
+        
+        final Class<?> coreClassFromCore = core.loadClass("org.apache.logging.log4j.core.Core");
+        final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
+        final Class<?> levelClassFromAPI = core.loadClass("org.apache.logging.log4j.Level");
+
+        Assert.assertEquals("expected 1.2 API Level to have the same class loader as Core", levelClassFrom12API.getClassLoader(), coreClassFromCore.getClassLoader());
+        Assert.assertNotEquals("expected 1.2 API Level NOT to have the same class loader as API Level", levelClassFrom12API.getClassLoader(), levelClassFromAPI.getClassLoader());
+
+        core.stop();
+        api.stop();
+        
+        uninstall(api, core, compat);
     }
+
 }
