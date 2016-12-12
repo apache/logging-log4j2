@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -185,6 +186,7 @@ public class SslSocketManager extends TcpSocketManager {
                 os = new ByteArrayOutputStream();
             } catch (final TlsSocketManagerFactoryException e) {
                 LOGGER.catching(Level.DEBUG, e);
+                Closer.closeSilently(socket);
                 return null;
             }
             return new SslSocketManager(name, os, socket, data.sslConfiguration, inetAddress, data.host, data.port,
