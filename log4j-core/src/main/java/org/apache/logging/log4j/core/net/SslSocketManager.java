@@ -175,23 +175,21 @@ public class SslSocketManager extends TcpSocketManager {
             InetAddress inetAddress = null;
             OutputStream os = null;
             Socket socket = null;
-
             try {
                 inetAddress = resolveAddress(data.host);
                 socket = createSocket(data);
                 os = socket.getOutputStream();
                 checkDelay(data.delayMillis, os);
-            }
-            catch (final IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("SslSocketManager ({})", name, e);
                 os = new ByteArrayOutputStream();
-            }
-            catch (final TlsSocketManagerFactoryException e) {
+            } catch (final TlsSocketManagerFactoryException e) {
                 LOGGER.catching(Level.DEBUG, e);
                 return null;
             }
             return new SslSocketManager(name, os, socket, data.sslConfiguration, inetAddress, data.host, data.port,
-                    data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout, data.bufferSize, data.socketOptions);
+                    data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout, data.bufferSize,
+                    data.socketOptions);
         }
 
         private InetAddress resolveAddress(final String hostName) throws TlsSocketManagerFactoryException {
