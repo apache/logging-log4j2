@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager.TcpSocketManagerFactory;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.Strings;
@@ -385,6 +386,8 @@ public class TcpSocketManager extends AbstractSocketManager {
      * Factory to create a TcpSocketManager.
      */
     protected static class TcpSocketManagerFactory implements ManagerFactory<TcpSocketManager, FactoryData> {
+        
+        @SuppressWarnings("resource")
         @Override
         public TcpSocketManager createManager(final String name, final FactoryData data) {
 
@@ -396,9 +399,10 @@ public class TcpSocketManager extends AbstractSocketManager {
                 LOGGER.error("Could not find address of " + data.host, ex, ex);
                 return null;
             }
+            Socket socket = null;
             try {
                 // LOG4J2-1042
-                final Socket socket = createSocket(data);
+                socket = createSocket(data);
                 os = socket.getOutputStream();
                 return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
                         data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
@@ -408,6 +412,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 os = NullOutputStream.getInstance();
             }
             if (data.reconnectDelayMillis == 0) {
+                Closer.closeSilently(socket);
                 return null;
             }
             return new TcpSocketManager(name, os, null, inetAddress, data.host, data.port, data.connectTimeoutMillis,

@@ -159,6 +159,9 @@
       <action issue="LOG4J2-1734" dev="ggregory" type="fix">
         SslSocketManagerFactory might leak Sockets when certain startup errors occur.
       </action>
+      <action issue="LOG4J2-1736" dev="ggregory" type="fix">
+        TcpSocketManagerFactory might leak Sockets when certain startup errors occur.
+      </action>
       <action issue="LOG4J2-1644" dev="ggregory" type="update" due-to="Tim Gokcen, Pavel Sivolobtchik">
         Inefficient locking in AbstractLoggerAdapter.
       </action>
