@@ -18,14 +18,13 @@
 package org.apache.logging.log4j.core.net;
 
 /**
- * Enumerates the RFC 1349 TOS field.
+ * Enumerates the <a href="https://tools.ietf.org/html/rfc1349">RFC 1349</a> TOS field.
  * 
  * <ul>
- * <li>1000 -- minimize delay</li>
- * <li>0100 -- maximize throughput</li>
- * <li>0010 -- maximize reliability</li>
- * <li>0001 -- minimize monetary cost</li>
- * <li>0000 -- normal service</li>
+ * <li><code>IPTOS_LOWCOST (0x02)</code></li>
+ * <li><code>IPTOS_RELIABILITY (0x04)</code></li>
+ * <li><code>IPTOS_THROUGHPUT (0x08)</code></li>
+ * <li><code>IPTOS_LOWDELAY (0x10)</code></li>
  * <ul>
  */
 public enum Rfc1349TrafficClass {
