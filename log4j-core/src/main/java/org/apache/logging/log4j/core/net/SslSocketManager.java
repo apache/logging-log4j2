@@ -221,9 +221,14 @@ public class SslSocketManager extends TcpSocketManager {
             socket = (SSLSocket) socketFactory.createSocket();
             final SocketOptions socketOptions = data.socketOptions;
             if (socketOptions != null) {
+                // Not sure which options must be applied before or after the connect() call.
                 socketOptions.apply(socket);
             }
             socket.connect(new InetSocketAddress(data.host, data.port), data.connectTimeoutMillis);
+            if (socketOptions != null) {
+                // Not sure which options must be applied before or after the connect() call.
+                socketOptions.apply(socket);
+            }
             return socket;
         }
     }
