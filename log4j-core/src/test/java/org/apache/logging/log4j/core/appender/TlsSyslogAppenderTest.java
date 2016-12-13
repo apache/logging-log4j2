@@ -74,8 +74,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     @Test
     public void sendStructuredMessagesOverTls() throws IOException, InterruptedException {
         final int numberOfMessages = 100;
-        initTlsTestEnvironment(100, TlsSyslogMessageFormat.SYSLOG);
-
+        initTlsTestEnvironment(numberOfMessages, TlsSyslogMessageFormat.SYSLOG);
         sendAndCheckStructuredMessages(numberOfMessages);
     }
 
