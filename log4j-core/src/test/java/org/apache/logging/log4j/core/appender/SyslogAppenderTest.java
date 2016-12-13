@@ -19,8 +19,9 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.net.SocketException;
 
-import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
+import org.apache.logging.log4j.util.EnglishEnums;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -107,8 +108,22 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     }
 
     private SyslogAppender createAppender(final String protocol, final String format) {
-        return SyslogAppender.createAppender("localhost", PORTNUM, protocol, null, 0, -1, true, "Test", true,
-            false, Facility.LOCAL0, "Audit", 18060, true, "RequestContext", null, null, includeNewLine, null,
-            "TestApp", "Test", null, "ipAddress,loginId", null, format, null, null, null, null, null, false);
+        final boolean newLine = includeNewLine;
+        // @formatter:off
+        return SyslogAppender.newSyslogAppenderBuilder()
+                .withPort(PORTNUM)
+                .withProtocol(EnglishEnums.valueOf(Protocol.class, protocol))
+                .withReconnectDelayMillis(-1)
+                .withName("TestApp")
+                .withIgnoreExceptions(false)
+                .setId("Audit")
+                .setEnterpriseNumber(18060)
+                .setMdcId("RequestContext")
+                .setNewLine(newLine)
+                .setAppName("TestApp")
+                .setMsgId("Test")
+                .setFormat(format)
+                .build();
+        // @formatter:on
     }
 }
