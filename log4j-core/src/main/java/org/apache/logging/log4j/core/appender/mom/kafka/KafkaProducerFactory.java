@@ -21,6 +21,9 @@ import java.util.Properties;
 
 import org.apache.kafka.clients.producer.Producer;
 
+/**
+ * Creates <a href="https://kafka.apache.org/">Apache Kafka</a> {@link Producer} instances.
+ */
 public interface KafkaProducerFactory {
 
     Producer<byte[], byte[]> newKafkaProducer(Properties config);
