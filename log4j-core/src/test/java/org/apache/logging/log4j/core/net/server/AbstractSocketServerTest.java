@@ -78,7 +78,19 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createJsonLayout() {
-        return JsonLayout.createLayout(null, true, true, false, false, false, false, null, null, null, true);
+        // @formatter: off
+        return JsonLayout.newBuilder()
+            .setLocationInfo(true)
+            .setProperties(true)
+            .setPropertiesAsList(false)
+            .setComplete(false)
+            .setCompact(false)
+            .setEventEol(false)
+            .setIncludeStacktrace(true)
+            .build();
+        // @formatter: on
+            
+        //return JsonLayout.createLayout(null, true, true, false, false, false, false, null, null, null, true);
     }
 
     protected abstract Layout<? extends Serializable> createLayout();

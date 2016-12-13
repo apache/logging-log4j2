@@ -234,6 +234,9 @@
       <action issue="LOG4J2-1737" dev="ggregory" type="add">
         Add a Builder to SyslogLayout and deprecate SyslogLayout.createLayout(Facility, boolean, String, Charset).
       </action>
+      <action issue="LOG4J2-1738" dev="ggregory" type="add">
+        Add a Builder to JsonLayout and deprecate org.apache.logging.log4j.core.layout.JsonLayout.createLayout(Configuration, boolean, boolean, boolean, boolean, boolean, boolean, String, String, Charset, boolean).
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">

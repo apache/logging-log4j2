@@ -30,8 +30,11 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.SyslogLayout.Builder;
 
 /**
  * Appends a series of JSON events as strings serialized as bytes.
@@ -807,6 +810,85 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/json";
 
+    public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<JsonLayout> {
+
+        @PluginBuilderAttribute
+        private boolean locationInfo;
+        
+        @PluginBuilderAttribute
+        private boolean properties;
+        
+        @PluginBuilderAttribute
+        private boolean propertiesAsList;
+        
+        @PluginBuilderAttribute
+        private boolean includeStacktrace = true;
+
+        public Builder() {
+            super();
+            setCharset(StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public JsonLayout build() {
+            final boolean encodeThreadContextAsList = properties && propertiesAsList;
+            final String headerPattern = toStringOrNull(getHeader());
+            final String footerPattern = toStringOrNull(getFooter());
+            return new JsonLayout(getConfiguration(), locationInfo, properties, encodeThreadContextAsList, isComplete(),
+                    isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(), includeStacktrace);
+        }
+
+        private String toStringOrNull(final byte[] header) {
+            return header == null ? null : new String(header, Charset.defaultCharset());
+        }
+
+        public boolean isLocationInfo() {
+            return locationInfo;
+        }
+
+        public boolean isProperties() {
+            return properties;
+        }
+
+        public boolean isPropertiesAsList() {
+            return propertiesAsList;
+        }
+
+        /**
+         * If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
+         * @return If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
+         */
+        public boolean isIncludeStacktrace() {
+            return includeStacktrace;
+        }
+
+        public B setLocationInfo(boolean locationInfo) {
+            this.locationInfo = locationInfo;
+            return asBuilder();
+        }
+
+        public B setProperties(boolean properties) {
+            this.properties = properties;
+            return asBuilder();
+        }
+
+        public B setPropertiesAsList(boolean propertiesAsList) {
+            this.propertiesAsList = propertiesAsList;
+            return asBuilder();
+        }
+
+        /**
+         * If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
+         * @param includeStacktrace If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
+         * @return this builder
+         */
+        public B setIncludeStacktrace(boolean includeStacktrace) {
+            this.includeStacktrace = includeStacktrace;
+            return asBuilder();
+        }
+    }
+
     protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean encodeThreadContextAsList,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
@@ -902,7 +984,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      *            If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
      * @return A JSON Layout.
      */
-    @PluginFactory
+    @Deprecated
     public static JsonLayout createLayout(
             // @formatter:off
             @PluginConfiguration final Configuration config,
@@ -921,6 +1003,11 @@ public final class JsonLayout extends AbstractJacksonLayout {
         final boolean encodeThreadContextAsList = properties && propertiesAsList;
         return new JsonLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
                 headerPattern, footerPattern, charset, includeStacktrace);
+    }
+
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     /**
