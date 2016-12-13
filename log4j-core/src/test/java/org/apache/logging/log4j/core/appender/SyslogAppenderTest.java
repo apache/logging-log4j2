@@ -103,7 +103,7 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     protected void initAppender(final String transportFormat, final String messageFormat) {
         appender = createAppender(transportFormat, messageFormat);
         appender.start();
-       initRootLogger(appender);
+        initRootLogger(appender);
     }
 
     private SyslogAppender createAppender(final String protocol, final String format) {
