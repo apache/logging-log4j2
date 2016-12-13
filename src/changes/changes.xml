@@ -189,6 +189,9 @@
       <action issue="LOG4J2-1700" dev="ggregory" type="update">
         Update Jansi from 1.13 to 1.14.
       </action>
+      <action issue="LOG4J2-969" dev="ggregory" type="add">
+        Refactor SyslogAppender so that Layout is a Plugin element.
+      </action>
       <action issue="LOG4J2-1660" dev="rpopma" type="add">
         Added public method ThreadContext::getThreadContextMap; removed class ThreadContextAccess.
       </action>

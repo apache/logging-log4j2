@@ -3935,6 +3935,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 Defaults to true.</td>
             </tr>
             <tr>
+              <td>Layout</td>
+              <td>Layout</td>
+              <td>A custom layout which overrides the <code>format</code> setting.</td>
+            </tr>
+            <tr>
               <td>loggerFields</td>
               <td>List of KeyValuePairs</td>
               <td>Allows arbitrary PatternLayout patterns to be included as specified ThreadContext fields; no default

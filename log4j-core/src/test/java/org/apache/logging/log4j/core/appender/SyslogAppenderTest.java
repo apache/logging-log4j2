@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.net.SocketException;
 
+import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.util.EnglishEnums;
@@ -52,16 +53,16 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     public void testTCPAppender() throws Exception {
         initTCPTestEnvironment(null);
 
-        sendAndCheckLegacyBSDMessage("This is a test message");
-        sendAndCheckLegacyBSDMessage("This is a test message 2");
+        sendAndCheckLegacyBsdMessage("This is a test message");
+        sendAndCheckLegacyBsdMessage("This is a test message 2");
     }
 
     @Test
     public void testDefaultAppender() throws Exception {
         initTCPTestEnvironment(null);
 
-        sendAndCheckLegacyBSDMessage("This is a test message");
-        sendAndCheckLegacyBSDMessage("This is a test message 2");
+        sendAndCheckLegacyBsdMessage("This is a test message");
+        sendAndCheckLegacyBsdMessage("This is a test message 2");
     }
 
     @Test
@@ -75,7 +76,7 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     public void testUDPAppender() throws Exception {
         initUDPTestEnvironment("bsd");
 
-        sendAndCheckLegacyBSDMessage("This is a test message");
+        sendAndCheckLegacyBsdMessage("This is a test message");
         root.removeAppender(appender);
         appender.stop();
     }
@@ -103,12 +104,16 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
 
     protected void initAppender(final String transportFormat, final String messageFormat) {
         appender = createAppender(transportFormat, messageFormat);
+        validate(appender);
         appender.start();
         initRootLogger(appender);
     }
 
-    private SyslogAppender createAppender(final String protocol, final String format) {
-        final boolean newLine = includeNewLine;
+    protected SyslogAppender createAppender(final String protocol, final String format) {
+        return newSyslogAppenderBuilder(protocol, format, includeNewLine).build();
+    }
+
+    protected Builder newSyslogAppenderBuilder(final String protocol, final String format, final boolean newLine) {
         // @formatter:off
         return SyslogAppender.newSyslogAppenderBuilder()
                 .withPort(PORTNUM)
@@ -122,8 +127,7 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
                 .setNewLine(newLine)
                 .setAppName("TestApp")
                 .setMsgId("Test")
-                .setFormat(format)
-                .build();
+                .setFormat(format);
         // @formatter:on
     }
 }

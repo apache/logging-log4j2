@@ -52,16 +52,15 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
         final char[] msg = new char[2 * 1024 * 2014 + prefix.length()];
         Arrays.fill(msg, 'a');
         System.arraycopy(prefix.toCharArray(), 0, msg, 0, prefix.length());
-        sendAndCheckLegacyBSDMessage(new String(msg));
+        sendAndCheckLegacyBsdMessage(new String(msg));
     }
 
     @Test
     public void sendLegacyBsdMessagesOverTls() throws IOException, InterruptedException {
         final int numberOfMessages = 100;
-        initTlsTestEnvironment(100, TlsSyslogMessageFormat.LEGACY_BSD);
-
-        final List<String> sentMessages = TlsSyslogTestUtil.generateMessages(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
-        sendAndCheckLegacyBSDMessages(sentMessages);
+        initTlsTestEnvironment(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
+        final List<String> generatedMessages = TlsSyslogTestUtil.generateMessages(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
+        sendAndCheckLegacyBsdMessages(generatedMessages);
     }
 
     @Test
@@ -110,6 +109,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
 
     protected void initAppender() {
         appender = createAppender();
+        validate(appender);
         appender.start();
         initRootLogger(appender);
     }

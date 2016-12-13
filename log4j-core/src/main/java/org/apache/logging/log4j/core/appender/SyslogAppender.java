@@ -103,18 +103,21 @@ public class SyslogAppender extends SocketAppender {
         @PluginElement("LoggerFields")
         private LoggerFields[] loggerFields;
 
+        @SuppressWarnings("resource")
         @Override
         public SyslogAppender build() {
             final Protocol protocol = getProtocol();
             final SslConfiguration sslConfiguration = getSslConfiguration();
             final boolean useTlsMessageFormat = sslConfiguration != null || protocol == Protocol.SSL;
             final Configuration configuration = getConfiguration();
-            final Layout<? extends Serializable> layout = RFC5424.equalsIgnoreCase(format)
-                    ? Rfc5424Layout.createLayout(facility, id, enterpriseNumber, includeMdc, mdcId, mdcPrefix,
-                            eventPrefix, newLine, escapeNL, appName, msgId, excludes, includes, required,
-                            exceptionPattern, useTlsMessageFormat, loggerFields, configuration)
-                    :
-                    // @formatter:off
+            Layout<? extends Serializable> layout = getLayout();
+            if (layout == null) {
+                layout = RFC5424.equalsIgnoreCase(format)
+                        ? Rfc5424Layout.createLayout(facility, id, enterpriseNumber, includeMdc, mdcId, mdcPrefix,
+                                eventPrefix, newLine, escapeNL, appName, msgId, excludes, includes, required,
+                                exceptionPattern, useTlsMessageFormat, loggerFields, configuration)
+                        :
+                        // @formatter:off
                         SyslogLayout.newBuilder()
                             .setFacility(facility)
                             .setIncludeNewLine(newLine)
@@ -122,7 +125,7 @@ public class SyslogAppender extends SocketAppender {
                             .setCharset(charsetName)
                             .build();
                         // @formatter:off
-
+            }
             final String name = getName();
             if (name == null) {
                 LOGGER.error("No name provided for SyslogAppender");

@@ -719,4 +719,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this.fields;
         }
     }
+
+    public Facility getFacility() {
+        return facility;
+    }
 }

@@ -199,6 +199,7 @@ public final class SyslogLayout extends AbstractStringLayout {
 
     /**
      * Creates a SyslogLayout.
+     * 
      * @param facility The Facility is used to try to classify the message.
      * @param includeNewLine If true a newline will be appended to the result.
      * @param escapeNL Pattern to use for replacing newlines.
@@ -213,5 +214,14 @@ public final class SyslogLayout extends AbstractStringLayout {
             @PluginAttribute("newLineEscape") final String escapeNL,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset) {
         return new SyslogLayout(facility, includeNewLine, escapeNL, charset);
+    }
+
+    /**
+     * Gets the facility.
+     * 
+     * @return the facility
+     */
+    public Facility getFacility() {
+        return facility;
     }
 }
