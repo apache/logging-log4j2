@@ -199,10 +199,10 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final Map<String, FieldFormatter> sdIdMap = new HashMap<>(loggerFields.length);
 
         if (loggerFields != null) {
-            for (final LoggerFields lField : loggerFields) {
-                final StructuredDataId key = lField.getSdId() == null ? mdcSdId : lField.getSdId();
+            for (final LoggerFields loggerField : loggerFields) {
+                final StructuredDataId key = loggerField.getSdId() == null ? mdcSdId : loggerField.getSdId();
                 final Map<String, List<PatternFormatter>> sdParams = new HashMap<>();
-                final Map<String, String> fields = lField.getMap();
+                final Map<String, String> fields = loggerField.getMap();
                 if (!fields.isEmpty()) {
                     final PatternParser fieldParser = createPatternParser(config, null);
 
@@ -211,7 +211,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                         sdParams.put(entry.getKey(), formatters);
                     }
                     final FieldFormatter fieldFormatter = new FieldFormatter(sdParams,
-                            lField.getDiscardIfAllFieldsAreEmpty());
+                            loggerField.getDiscardIfAllFieldsAreEmpty());
                     sdIdMap.put(key.toString(), fieldFormatter);
                 }
             }
