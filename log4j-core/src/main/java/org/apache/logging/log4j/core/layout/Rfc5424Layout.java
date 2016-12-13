@@ -196,7 +196,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private Map<String, FieldFormatter> createFieldFormatters(final LoggerFields[] loggerFields,
             final Configuration config) {
-        final Map<String, FieldFormatter> sdIdMap = new HashMap<>();
+        final Map<String, FieldFormatter> sdIdMap = new HashMap<>(loggerFields.length);
 
         if (loggerFields != null) {
             for (final LoggerFields lField : loggerFields) {
