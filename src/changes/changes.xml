@@ -228,6 +228,9 @@
       <action issue="LOG4J2-1708" dev="ggregory" type="add">
         Allow Secure Socket Appender to set socket options.
       </action>
+      <action issue="LOG4J2-1737" dev="ggregory" type="add">
+        Add a Builder to SyslogLayout and deprecate SyslogLayout.createLayout(Facility, boolean, String, Charset).
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">

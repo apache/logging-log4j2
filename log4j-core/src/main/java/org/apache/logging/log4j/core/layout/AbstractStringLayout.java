@@ -16,19 +16,21 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Abstract base class for Layouts that result in a String.
@@ -43,6 +45,46 @@ import java.nio.charset.StandardCharsets;
  */
 public abstract class AbstractStringLayout extends AbstractLayout<String> implements StringLayout {
 
+    public abstract static class Builder<B extends Builder<B>> extends AbstractLayout.Builder<B> {
+        
+        @PluginBuilderAttribute(value = "charset")
+        private Charset charset;
+
+        @PluginElement("footerSerializer")
+        private Serializer footerSerializer;
+
+        @PluginElement("headerSerializer")
+        private Serializer headerSerializer;
+
+        public Charset getCharset() {
+            return charset;
+        }
+
+        public Serializer getFooterSerializer() {
+            return footerSerializer;
+        }
+
+        public Serializer getHeaderSerializer() {
+            return headerSerializer;
+        }
+
+        public B setCharset(Charset charset) {
+            this.charset = charset;
+            return asBuilder();
+        }
+
+        public B setFooterSerializer(Serializer footerSerializer) {
+            this.footerSerializer = footerSerializer;
+            return asBuilder();
+        }
+
+        public B setHeaderSerializer(Serializer headerSerializer) {
+            this.headerSerializer = headerSerializer;
+            return asBuilder();
+        }
+        
+    }
+    
     public interface Serializer {
         String toSerializable(final LogEvent event);
     }
