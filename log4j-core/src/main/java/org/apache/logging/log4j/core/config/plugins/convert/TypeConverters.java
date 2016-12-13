@@ -94,7 +94,7 @@ public final class TypeConverters {
      * <ul>
      * <li>0x0123456789ABCDEF</li>
      * <li>Base64:ABase64String</li>
-     * <li>String</li>
+     * <li>String using {@link Charset#defaultCharset()} [TODO Should this be UTF-8 instead?]</li>
      * </ul>
      */
     @Plugin(name = "ByteArray", category = CATEGORY)
