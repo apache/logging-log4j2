@@ -197,7 +197,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private Map<String, FieldFormatter> createFieldFormatters(final LoggerFields[] loggerFields,
             final Configuration config) {
         final Map<String, FieldFormatter> sdIdMap = new HashMap<>(loggerFields == null ? 0 : loggerFields.length);
-
         if (loggerFields != null) {
             for (final LoggerFields loggerField : loggerFields) {
                 final StructuredDataId key = loggerField.getSdId() == null ? mdcSdId : loggerField.getSdId();
