@@ -674,7 +674,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         public StructuredDataElement format(final LogEvent event) {
-            final Map<String, String> map = new HashMap<>();
+            final Map<String, String> map = new HashMap<>(delegateMap.size());
 
             for (final Map.Entry<String, List<PatternFormatter>> entry : delegateMap.entrySet()) {
                 final StringBuilder buffer = new StringBuilder();
