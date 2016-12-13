@@ -26,6 +26,14 @@ import org.apache.kafka.clients.producer.Producer;
  */
 public interface KafkaProducerFactory {
 
+    /**
+     * Creates a new Kafka Producer from the given configuration properties.
+     * 
+     * @param config
+     *            <a href="https://kafka.apache.org/documentation.html#producerconfigs">Kafka Producer configuration
+     *            properties.</a>
+     * @return a new Kafka {@link Producer}.
+     */
     Producer<byte[], byte[]> newKafkaProducer(Properties config);
 
 }
