@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Represents a key/value pair in the configuration.
@@ -54,7 +57,7 @@ public final class Property {
      * @return the value of the property.
      */
     public String getValue() {
-        return value == null ? "" : value; // LOG4J2-1313 null would be same as Property not existing
+        return Objects.toString(value, Strings.EMPTY); // LOG4J2-1313 null would be same as Property not existing
     }
 
     /**
