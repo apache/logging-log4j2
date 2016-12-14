@@ -126,7 +126,7 @@ public class ConsoleAppenderTest {
 
     private void testFollowSystemPrintStream(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
         final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true)
-                .withIgnoreExceptions(false).build();
+                .withIgnoreExceptions(false).withName("test").build();
         Assert.assertEquals(target, app.getTarget());
         app.start();
         try {

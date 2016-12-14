@@ -39,7 +39,7 @@ public class ConsoleAppenderBuilderTest {
      */
     @Test
     public void testDefaultLayoutDefaultCharset() {
-        final ConsoleAppender appender = ConsoleAppender.newBuilder().build();
+        final ConsoleAppender appender = ConsoleAppender.newBuilder().withName("test").build();
         final PatternLayout layout = (PatternLayout) appender.getLayout();
         final String charsetName = System.getProperty("sun.stdout.encoding");
         final String expectedName = charsetName != null ? charsetName : Charset.defaultCharset().name();
