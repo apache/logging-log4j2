@@ -99,7 +99,7 @@ public class OutputStreamAppenderTest {
             .withIgnoreExceptions(false)
             .withBufferedIo(false)
             .withBufferSize(4000)
-            .withConfiguration(config)
+            .setConfiguration(config)
             .build();
         // @formatter:on
         appender.start();

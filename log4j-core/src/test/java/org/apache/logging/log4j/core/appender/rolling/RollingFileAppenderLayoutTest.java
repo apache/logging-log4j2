@@ -28,7 +28,7 @@ public class RollingFileAppenderLayoutTest {
         // @formatter:off
         Assert.assertNotNull(RollingFileAppender.newBuilder()
                 .withName(RollingFileAppenderLayoutTest.class.getName())
-                .withConfiguration(new DefaultConfiguration())
+                .setConfiguration(new DefaultConfiguration())
                 .withFileName("log.txt")
                 .withFilePattern("FilePattern")
                 .withPolicy(OnStartupTriggeringPolicy.createPolicy(1))

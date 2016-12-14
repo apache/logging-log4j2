@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
@@ -67,9 +66,6 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
         @PluginBuilderAttribute("advertiseURI")
         private String advertiseURI;
 
-        @PluginConfiguration
-        private Configuration configuration;
-
         @Override
         public MemoryMappedFileAppender build() {
             final String name = getName();
@@ -92,7 +88,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             }
 
             return new MemoryMappedFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(), false,
-                    advertise ? configuration.getAdvertiser() : null);
+                    advertise ? getConfiguration().getAdvertiser() : null);
         }
 
         public B setFileName(final String fileName) {
@@ -120,10 +116,6 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             return asBuilder();
         }
 
-        public B setConfiguration(final Configuration configuration) {
-            this.configuration = configuration;
-            return asBuilder();
-        }
     }
     
     private static final int BIT_POSITION_1GB = 30; // 2^30 ~= 1GB

@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
@@ -62,9 +61,6 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         @PluginBuilderAttribute("advertiseURI")
         private String advertiseURI;
 
-        @PluginConfiguration
-        private Configuration configuration;
-
         @Override
         public RandomAccessFileAppender build() {
             final String name = getName();
@@ -86,7 +82,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             }
 
             return new RandomAccessFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(),
-                    immediateFlush, advertise ? configuration.getAdvertiser() : null);
+                    immediateFlush, advertise ? getConfiguration().getAdvertiser() : null);
         }
 
         public B setFileName(final String fileName) {
@@ -109,10 +105,6 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             return asBuilder();
         }
 
-        public B setConfiguration(final Configuration configuration) {
-            this.configuration = configuration;
-            return asBuilder();
-        }
     }
     
     private final String fileName;

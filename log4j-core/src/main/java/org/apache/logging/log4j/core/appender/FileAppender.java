@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
@@ -71,9 +70,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         @PluginBuilderAttribute
         private boolean createOnDemand;
 
-        @PluginConfiguration
-        private Configuration configuration;
-
         @Override
         public FileAppender build() {
             boolean bufferedIo = isBufferedIo();
@@ -88,21 +84,17 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             final Layout<? extends Serializable> layout = getOrCreateLayout();
 
             final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
-                    advertiseUri, layout, bufferSize, configuration);
+                    advertiseUri, layout, bufferSize, getConfiguration());
             if (manager == null) {
                 return null;
             }
 
             return new FileAppender(getName(), layout, getFilter(), manager, fileName, isIgnoreExceptions(),
-                    !bufferedIo || isImmediateFlush(), advertise ? configuration.getAdvertiser() : null);
+                    !bufferedIo || isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null);
         }
 
         public String getAdvertiseUri() {
             return advertiseUri;
-        }
-
-        public Configuration getConfiguration() {
-            return configuration;
         }
 
         public String getFileName() {
@@ -137,11 +129,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
         public B withAppend(final boolean append) {
             this.append = append;
-            return asBuilder();
-        }
-
-        public B withConfiguration(final Configuration config) {
-            this.configuration = config;
             return asBuilder();
         }
 
@@ -208,7 +195,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             .withAppend(Booleans.parseBoolean(append, true))
             .withBufferedIo(Booleans.parseBoolean(bufferedIo, true))
             .withBufferSize(Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE))
-            .withConfiguration(config)
+            .setConfiguration(config)
             .withFileName(fileName)
             .withFilter(filter)
             .withIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))

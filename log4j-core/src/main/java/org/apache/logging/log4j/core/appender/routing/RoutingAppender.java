@@ -37,7 +37,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
@@ -66,9 +65,6 @@ public final class RoutingAppender extends AbstractAppender {
         @PluginElement("Routes")
         private Routes routes;
 
-        @PluginConfiguration
-        private Configuration configuration;
-
         @PluginElement("RewritePolicy")
         private RewritePolicy rewritePolicy;
 
@@ -87,15 +83,11 @@ public final class RoutingAppender extends AbstractAppender {
                 return null;
             }
             return new RoutingAppender(name, getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
-                    configuration, purgePolicy, defaultRouteScript);
+                    getConfiguration(), purgePolicy, defaultRouteScript);
         }
 
         public Routes getRoutes() {
             return routes;
-        }
-
-        public Configuration getConfiguration() {
-            return configuration;
         }
 
         public AbstractScript getDefaultRouteScript() {
@@ -112,11 +104,6 @@ public final class RoutingAppender extends AbstractAppender {
 
         public B withRoutes(@SuppressWarnings("hiding") final Routes routes) {
             this.routes = routes;
-            return asBuilder();
-        }
-
-        public B withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
-            this.configuration = configuration;
             return asBuilder();
         }
 

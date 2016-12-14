@@ -44,7 +44,7 @@ public class RollingFileAppenderAccessTest {
                     .withFilePattern("FilePattern")
                     .withName("Name")
                     .withPolicy(OnStartupTriggeringPolicy.createPolicy(1))
-                    .withConfiguration(config)
+                    .setConfiguration(config)
                     .build();
             // @formatter:on
             final RollingFileManager manager = appender.getManager();

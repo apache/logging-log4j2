@@ -398,7 +398,7 @@ public class SyslogAppender extends SocketAppender {
                 .withImmediateFlush(immediateFlush)
                 .withIgnoreExceptions(ignoreExceptions)
                 .withFilter(filter)
-                .withConfiguration(configuration)
+                .setConfiguration(configuration)
                 .withAdvertise(advertise)
                 .setFacility(facility)
                 .setId(id)

@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
@@ -67,9 +66,6 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
         @PluginBuilderAttribute
         private boolean advertise;
-
-        @PluginConfiguration
-        private Configuration configuration;
 
         @PluginBuilderAttribute
         private int connectTimeoutMillis;
@@ -130,11 +126,6 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             return asBuilder();
         }
 
-        public B withConfiguration(final Configuration configuration) {
-            this.configuration = configuration;
-            return asBuilder();
-        }
-
         public B withConnectTimeoutMillis(final int connectTimeoutMillis) {
             this.connectTimeoutMillis = connectTimeoutMillis;
             return asBuilder();
@@ -181,10 +172,6 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
         public SocketOptions getSocketOptions() {
             return socketOptions;
-        }
-
-        public Configuration getConfiguration() {
-            return configuration;
         }
 
     }
@@ -322,7 +309,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         // @formatter:off
         return newBuilder()
             .withAdvertise(advertise)
-            .withConfiguration(configuration)
+            .setConfiguration(configuration)
             .withConnectTimeoutMillis(connectTimeoutMillis)
             .withFilter(filter)
             .withHost(host)
