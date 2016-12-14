@@ -20,11 +20,13 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
@@ -43,10 +45,12 @@ public class KafkaManager extends AbstractManager {
     private final int timeoutMillis;
 
     private final String topic;
+    private final boolean syncSend;
 
-    public KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final Property[] properties) {
+    public KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final boolean syncSend, final Property[] properties) {
         super(loggerContext, name);
         this.topic = Objects.requireNonNull(topic, "topic");
+        this.syncSend = syncSend;
         config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("batch.size", "0");
@@ -87,7 +91,10 @@ public class KafkaManager extends AbstractManager {
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
-            producer.send(new ProducerRecord<byte[], byte[]>(topic, msg)).get(timeoutMillis, TimeUnit.MILLISECONDS);
+            Future<RecordMetadata> response = producer.send(new ProducerRecord<byte[], byte[]>(topic, msg));
+            if (syncSend) {
+                response.get(timeoutMillis, TimeUnit.MILLISECONDS);
+            }
         }
     }
 
