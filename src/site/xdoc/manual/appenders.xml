@@ -1386,6 +1386,14 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
+              <td>syncSend</td>
+              <td>boolean</td>
+              <td>The default is <code>true</code>, causing sends to block until the record has been acknowledged by the
+                Kafka server. When set to <code>false</code> sends return immediately, allowing for lower latency and significantly
+                higher throughput.
+              </td>
+            </tr>
+            <tr>
               <td>properties</td>
               <td>Property[]</td>
               <td>
@@ -1407,9 +1415,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Kafka>
   </Appenders>]]></pre>
           <p>
-            This appender is synchronous and will block until the record has been acknowledged by the Kafka server, timeout for this
-            can be set with the <code>timeout.ms</code> property (defaults to 30 seconds). Wrap with
-            <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> to log asynchronously.
+            This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server, timeout
+            for this can be set with the <code>timeout.ms</code> property (defaults to 30 seconds). Wrap with
+            <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> and/or set syncSend to
+            <code>false</code> to log asynchronously.
           </p>
           <p>
             This appender requires the <a href="http://kafka.apache.org/">Kafka client library</a>. Note that you need to use a version of
