@@ -56,13 +56,16 @@ public final class KafkaAppender extends AbstractAppender {
         @PluginAttribute("topic") 
         private String topic;
         
+        @PluginAttribute(value = "syncSend", defaultBoolean = true)
+        private boolean syncSend;
+
         @PluginElement("Properties") 
         private Property[] properties;
 
         @SuppressWarnings("resource")
         @Override
         public KafkaAppender build() {
-            final KafkaManager kafkaManager = new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic, properties);
+            final KafkaManager kafkaManager = new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic, syncSend, properties);
             return new KafkaAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), kafkaManager);
         }
 
@@ -76,6 +79,11 @@ public final class KafkaAppender extends AbstractAppender {
 
         public B setTopic(String topic) {
             this.topic = topic;
+            return asBuilder();
+        }
+
+        public B setSyncSend(boolean syncSend) {
+            this.syncSend = syncSend;
             return asBuilder();
         }
 
@@ -94,7 +102,7 @@ public final class KafkaAppender extends AbstractAppender {
             @Required(message = "No topic provided for KafkaAppender") @PluginAttribute("topic") final String topic,
             @PluginElement("Properties") final Property[] properties,
             @PluginConfiguration final Configuration configuration) {
-        final KafkaManager kafkaManager = new KafkaManager(configuration.getLoggerContext(), name, topic, properties);
+        final KafkaManager kafkaManager = new KafkaManager(configuration.getLoggerContext(), name, topic, true, properties);
         return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager);
     }
 

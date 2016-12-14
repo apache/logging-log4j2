@@ -240,6 +240,9 @@
       <action issue="LOG4J2-1739" dev="ggregory" type="add">
         Add Builder to KafkaAppender and deprecate KafkaAppender.createAppender(Layout, Filter, String, boolean, String, Property[], Configuration).
       </action>
+      <action issue="LOG4J2-1733" dev="ggregory" type="add" due-to="Vincent Tieleman">
+        Add SyncSend attribute to KafkaAppender (as in KafkaLog4jAppender).
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">
