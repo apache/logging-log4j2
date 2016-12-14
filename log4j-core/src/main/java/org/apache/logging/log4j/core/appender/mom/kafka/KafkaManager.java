@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +46,7 @@ public class KafkaManager extends AbstractManager {
 
     public KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final Property[] properties) {
         super(loggerContext, name);
-        this.topic = topic;
+        this.topic = Objects.requireNonNull(topic, "topic");
         config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("batch.size", "0");

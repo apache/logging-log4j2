@@ -237,6 +237,9 @@
       <action issue="LOG4J2-1738" dev="ggregory" type="add">
         Add a Builder to JsonLayout and deprecate org.apache.logging.log4j.core.layout.JsonLayout.createLayout(Configuration, boolean, boolean, boolean, boolean, boolean, boolean, String, String, Charset, boolean).
       </action>
+      <action issue="LOG4J2-1739" dev="ggregory" type="add">
+        Add Builder to KafkaAppender and deprecate KafkaAppender.createAppender(Layout, Filter, String, boolean, String, Property[], Configuration).
+      </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
       <action issue="LOG4J2-1618" dev="rpopma" type="fix" due-to="Raman Gupta">
