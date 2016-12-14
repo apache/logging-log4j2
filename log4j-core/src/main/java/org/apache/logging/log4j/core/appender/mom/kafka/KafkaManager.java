@@ -19,11 +19,13 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
@@ -31,6 +33,7 @@ import org.apache.logging.log4j.core.config.Property;
 public class KafkaManager extends AbstractManager {
 
     public static final String DEFAULT_TIMEOUT_MILLIS = "30000";
+    public static final String DEFAULT_SYNC_SEND = "true";
 
     /**
      * package-private access for testing.
@@ -40,6 +43,7 @@ public class KafkaManager extends AbstractManager {
     private final Properties config = new Properties();
     private Producer<byte[], byte[]> producer;
     private final int timeoutMillis;
+    private final boolean syncSend;
 
     private final String topic;
 
@@ -53,6 +57,7 @@ public class KafkaManager extends AbstractManager {
             config.setProperty(property.getName(), property.getValue());
         }
         this.timeoutMillis = Integer.parseInt(config.getProperty("timeout.ms", DEFAULT_TIMEOUT_MILLIS));
+        this.syncSend = Boolean.parseBoolean(config.getProperty("sync.send", DEFAULT_SYNC_SEND));
     }
 
     @Override
@@ -86,7 +91,10 @@ public class KafkaManager extends AbstractManager {
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
-            producer.send(new ProducerRecord<byte[], byte[]>(topic, msg)).get(timeoutMillis, TimeUnit.MILLISECONDS);
+            Future<RecordMetadata> response = producer.send(new ProducerRecord<byte[], byte[]>(topic, msg));
+            if (syncSend) {
+                response.get(timeoutMillis, TimeUnit.MILLISECONDS);
+            }
         }
     }
 
