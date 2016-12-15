@@ -26,6 +26,10 @@ import org.junit.Test;
 
 public class CronTriggeringPolicyTest {
 
+    private static final String FILE_PATTERN = "testcmd.log.%d{yyyy-MM-dd}";
+    private static final String FILE_NAME = "testcmd.log";
+    private static final String CRON_EXPRESSION = "0 0 0 * * ?";
+    
     private NullConfiguration configuration;
 
     @Before
@@ -34,7 +38,7 @@ public class CronTriggeringPolicyTest {
     }
 
     private CronTriggeringPolicy createPolicy() {
-        return CronTriggeringPolicy.createPolicy(configuration, Boolean.TRUE.toString(), "0 0 0 * * ?");
+        return CronTriggeringPolicy.createPolicy(configuration, Boolean.TRUE.toString(), CRON_EXPRESSION);
     }
 
     private DefaultRolloverStrategy createStrategy() {
@@ -45,8 +49,8 @@ public class CronTriggeringPolicyTest {
         // @formatter:off
         final RollingFileAppender raf = RollingFileAppender.newBuilder()
             .withName("test")
-            .withFileName("testcmd.log")
-            .withFilePattern("testcmd.log.%d{yyyy-MM-dd}")
+            .withFileName(FILE_NAME)
+            .withFilePattern(FILE_PATTERN)
             .withPolicy(createPolicy())
             .withStrategy(createStrategy())
             .setConfiguration(configuration)
@@ -78,8 +82,8 @@ public class CronTriggeringPolicyTest {
         final CronTriggeringPolicy triggerPolicy = createPolicy();
         final DefaultRolloverStrategy rolloverStrategy = createStrategy();
 
-        try (RollingFileManager fileManager = RollingFileManager.getFileManager("testcmd.log",
-                "testcmd.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
+        try (RollingFileManager fileManager = RollingFileManager.getFileManager(FILE_NAME,
+                FILE_PATTERN, true, true, triggerPolicy, rolloverStrategy, null,
                 PatternLayout.createDefaultLayout(), 0, true, false, configuration)) {
             // trigger rollover
             fileManager.initialize();
