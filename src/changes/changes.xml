@@ -28,7 +28,7 @@
         SslSocketManager now respects connectTimeoutMillis.
       </action>
       <action issue="LOG4J2-1682" dev="ggregory" type="fix" due-to="Markus Waidhofer">
-        Logger using LocalizedMessageFactory prints key instead of messsage.
+        Logger using LocalizedMessageFactory prints key instead of message.
       </action>
       <action issue="LOG4J2-1720" dev="mikes" type="fix">
         Make GelfLayout independent of Jackson.
