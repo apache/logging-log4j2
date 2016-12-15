@@ -18,34 +18,30 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class CronTriggeringPolicyTest {
 
-    private static final NullConfiguration NULL_CONFIGURATION = new NullConfiguration();
+    private NullConfiguration configuration;
+
+    @Before
+    public void before() {
+        configuration = new NullConfiguration();
+    }
 
     private CronTriggeringPolicy createPolicy() {
-        return CronTriggeringPolicy.createPolicy(NULL_CONFIGURATION, Boolean.TRUE.toString(), "0 0 0 * * ?");
+        return CronTriggeringPolicy.createPolicy(configuration, Boolean.TRUE.toString(), "0 0 0 * * ?");
     }
 
     private DefaultRolloverStrategy createStrategy() {
-        return DefaultRolloverStrategy.createStrategy("7", "1", "max", null, null, false, NULL_CONFIGURATION);
+        return DefaultRolloverStrategy.createStrategy("7", "1", "max", null, null, false, configuration);
     }
 
-    /**
-     * Tests LOG4J2-1474 CronTriggeringPolicy raise exception and fail to rollover log file when evaluateOnStartup is
-     * true.
-     */
-    @Test
-    public void testBuilder() {
-        testBuilder(NULL_CONFIGURATION);
-    }
-
-    public void testBuilder(final Configuration configuration) {
+    private void testBuilder() {
         // @formatter:off
         final RollingFileAppender raf = RollingFileAppender.newBuilder()
             .withName("test")
@@ -64,9 +60,8 @@ public class CronTriggeringPolicyTest {
      * true.
      */
     @Test
-    public void testBuilderSequence() {
-        testBuilder(NULL_CONFIGURATION);
-        testBuilder(NULL_CONFIGURATION);
+    public void testBuilderOnce() {
+        testBuilder();
     }
 
     /**
@@ -74,16 +69,36 @@ public class CronTriggeringPolicyTest {
      * true.
      */
     @Test
-    public void testFactoryMethod() {
+    public void testBuilderSequence() {
+        testBuilder();
+        testBuilder();
+    }
+
+    private void testFactoryMethod() {
         final CronTriggeringPolicy triggerPolicy = createPolicy();
         final DefaultRolloverStrategy rolloverStrategy = createStrategy();
 
         try (RollingFileManager fileManager = RollingFileManager.getFileManager("testcmd.log",
                 "testcmd.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
-                PatternLayout.createDefaultLayout(), 0, true, false, null)) {
+                PatternLayout.createDefaultLayout(), 0, true, false, configuration)) {
             // trigger rollover
             fileManager.initialize();
             fileManager.rollover();
         }
+    }
+
+    /**
+     * Tests LOG4J2-1474 CronTriggeringPolicy raise exception and fail to rollover log file when evaluateOnStartup is
+     * true.
+     */
+    @Test
+    public void testFactoryMethodOnce() {
+        testFactoryMethod();
+    }
+
+    @Test
+    public void testFactoryMethodSequence() {
+        testFactoryMethod();
+        testFactoryMethod();
     }
 }
