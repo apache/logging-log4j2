@@ -42,7 +42,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     public void start() {
         super.start();
         if (scheduledItems > 0) {
-            LOGGER.debug("{} starting {} threads", scheduledItems, SIMPLE_NAME);
+            LOGGER.debug("{} starting {} threads", SIMPLE_NAME, scheduledItems);
             scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
             executorService = new ScheduledThreadPoolExecutor(scheduledItems,
                     Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
