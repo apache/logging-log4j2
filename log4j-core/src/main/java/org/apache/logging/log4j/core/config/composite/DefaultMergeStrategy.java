@@ -176,6 +176,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
                                         final Node childNode = new Node(loggerNode, sourceLoggerChild.getName(),
                                                 sourceLoggerChild.getType());
                                         childNode.getAttributes().putAll(sourceLoggerChild.getAttributes());
+                                        childNode.getChildren().addAll(sourceLoggerChild.getChildren());
                                         if (childNode.getName().equalsIgnoreCase("AppenderRef")) {
                                             for (final Node targetChild : targetNode.getChildren()) {
                                                 if (isSameReference(targetChild, childNode)) {
