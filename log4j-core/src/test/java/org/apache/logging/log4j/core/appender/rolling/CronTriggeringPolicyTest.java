@@ -22,10 +22,8 @@ import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.junit.CleanFiles;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 public class CronTriggeringPolicyTest {
@@ -34,8 +32,9 @@ public class CronTriggeringPolicyTest {
     
     private NullConfiguration configuration;
 
-//    @Rule
-//    public CleanFiles files = new CleanFiles("testcmd1.log");
+     // TODO Need a CleanRegexFiles("testcmd.\\.log\\..*");
+     //@Rule
+     //public CleanFiles cleanFiles = new CleanFiles("testcmd1.log", "testcmd2.log", "testcmd3.log");
 
     @Before
     public void before() {
