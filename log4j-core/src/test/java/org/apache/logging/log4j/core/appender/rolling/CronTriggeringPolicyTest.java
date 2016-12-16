@@ -18,19 +18,24 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.junit.CleanFiles;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class CronTriggeringPolicyTest {
 
-    private static final String FILE_PATTERN = "testcmd.log.%d{yyyy-MM-dd}";
-    private static final String FILE_NAME = "testcmd.log";
     private static final String CRON_EXPRESSION = "0 0 0 * * ?";
     
     private NullConfiguration configuration;
+
+//    @Rule
+//    public CleanFiles files = new CleanFiles("testcmd1.log");
 
     @Before
     public void before() {
@@ -48,9 +53,9 @@ public class CronTriggeringPolicyTest {
     private void testBuilder() {
         // @formatter:off
         final RollingFileAppender raf = RollingFileAppender.newBuilder()
-            .withName("test")
-            .withFileName(FILE_NAME)
-            .withFilePattern(FILE_PATTERN)
+            .withName("test1")
+            .withFileName("testcmd1.log")
+            .withFilePattern("testcmd1.log.%d{yyyy-MM-dd}")
             .withPolicy(createPolicy())
             .withStrategy(createStrategy())
             .setConfiguration(configuration)
@@ -69,6 +74,33 @@ public class CronTriggeringPolicyTest {
     }
 
     /**
+     * Tests LOG4J2-1740 Add CronTriggeringPolicy programmatically leads to NPE
+     */
+    @Test
+    public void testLoggerContextAndBuilder() {
+        Configurator.initialize(configuration);
+        testBuilder();
+    }
+
+    /**
+     * Tests LOG4J2-1740 Add CronTriggeringPolicy programmatically leads to NPE
+     */
+    @Test
+    public void testRollingRandomAccessFileAppender() {
+        // @formatter:off
+        RollingRandomAccessFileAppender.newBuilder()
+            .withName("test2")
+            .withFileName("testcmd2.log")
+            .withFilePattern("testcmd2.log.%d{yyyy-MM-dd}")
+            .withPolicy(createPolicy())
+            .withStrategy(createStrategy())
+            .setConfiguration(configuration)
+            .build();
+        // @formatter:on
+    }
+
+    
+    /**
      * Tests LOG4J2-1474 CronTriggeringPolicy raise exception and fail to rollover log file when evaluateOnStartup is
      * true.
      */
@@ -82,8 +114,8 @@ public class CronTriggeringPolicyTest {
         final CronTriggeringPolicy triggerPolicy = createPolicy();
         final DefaultRolloverStrategy rolloverStrategy = createStrategy();
 
-        try (RollingFileManager fileManager = RollingFileManager.getFileManager(FILE_NAME,
-                FILE_PATTERN, true, true, triggerPolicy, rolloverStrategy, null,
+        try (RollingFileManager fileManager = RollingFileManager.getFileManager("testcmd3.log",
+                "testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
                 PatternLayout.createDefaultLayout(), 0, true, false, configuration)) {
             // trigger rollover
             fileManager.initialize();

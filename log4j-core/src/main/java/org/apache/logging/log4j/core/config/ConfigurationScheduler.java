@@ -41,6 +41,10 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     @Override
     public void start() {
         super.start();
+        initScheduledExecutorService();
+    }
+
+    public void initScheduledExecutorService() {
         if (scheduledItems > 0) {
             LOGGER.debug("{} starting {} threads", SIMPLE_NAME, scheduledItems);
             scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
@@ -66,7 +70,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * Increment the number of threads in the pool.
      */
     public void incrementScheduledItems() {
-        if (!isStarted()) {
+        if (executorService == null) {
             ++scheduledItems;
         } else {
             LOGGER.error("{} attempted to increment scheduled items after start", SIMPLE_NAME);
