@@ -164,10 +164,10 @@
       </action>
       <action issue="LOG4J2-1740" dev="ggregory" type="fix">
         Add CronTriggeringPolicy programmatically leads to NPE.
-      </action>     
+      </action>
       <action issue="LOG4J2-1743" dev="ggregory" type="fix" due-to="Toby Shepheard">
         CompositeConfiguration does not add filters to appenderRefs.
-      </action>     
+      </action>
       <action issue="LOG4J2-1644" dev="ggregory" type="update" due-to="Tim Gokcen, Pavel Sivolobtchik">
         Inefficient locking in AbstractLoggerAdapter.
       </action>
@@ -194,6 +194,9 @@
       </action>
       <action issue="LOG4J2-1700" dev="ggregory" type="update">
         Update Jansi from 1.13 to 1.14.
+      </action>
+      <action issue="LOG4J2-1302" dev="rpopma" type="update">
+        The log4j-slf4j-impl module now declares a runtime dependency on log4j-core. While not technically required, this makes the log4j-slf4j-impl module behave similarly to slf4j-log4j12, and facilitates migration to Log4j 2.
       </action>
       <action issue="LOG4J2-969" dev="ggregory" type="add">
         Refactor SyslogAppender so that Layout is a Plugin element.
