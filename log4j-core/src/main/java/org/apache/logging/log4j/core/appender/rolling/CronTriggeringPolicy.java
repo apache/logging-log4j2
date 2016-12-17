@@ -79,7 +79,6 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         } else if (scheduler.isStarted()) {
             // make sure we have a thread pool
             scheduler.incrementScheduledItems();
-            scheduler.initScheduledExecutorService();
         }
         future = scheduler.scheduleWithCron(cronExpression, new CronTrigger());
     }

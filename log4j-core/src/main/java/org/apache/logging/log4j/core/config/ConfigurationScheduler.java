@@ -41,39 +41,31 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     @Override
     public void start() {
         super.start();
-        initScheduledExecutorService();
-    }
-
-    public void initScheduledExecutorService() {
-        if (scheduledItems > 0) {
-            LOGGER.debug("{} starting {} threads", SIMPLE_NAME, scheduledItems);
-            scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
-            executorService = new ScheduledThreadPoolExecutor(scheduledItems,
-                    Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
-        } else {
-            LOGGER.debug("{}: No scheduled items", SIMPLE_NAME);
-        }
     }
 
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        if (executorService != null) {
-            LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, executorService);
-            executorService.shutdown();
+        if (isExecutorServiceSet()) {
+            LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, getExecutorService());
+            getExecutorService().shutdown();
         }
         setStopped();
         return true;
+    }
+
+    private boolean isExecutorServiceSet() {
+        return executorService != null;
     }
 
     /**
      * Increment the number of threads in the pool.
      */
     public void incrementScheduledItems() {
-        if (executorService == null) {
-            ++scheduledItems;
-        } else {
+        if (isExecutorServiceSet()) {
             LOGGER.error("{} attempted to increment scheduled items after start", SIMPLE_NAME);
+        } else {
+            ++scheduledItems;
         }
     }
 
@@ -96,7 +88,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      *
      */
     public <V> ScheduledFuture<V> schedule(final Callable<V> callable, final long delay, final TimeUnit unit) {
-        return executorService.schedule(callable, delay, unit);
+        return getExecutorService().schedule(callable, delay, unit);
     }
 
     /**
@@ -108,7 +100,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * upon completion.
      */
     public ScheduledFuture<?> schedule(final Runnable command, final long delay, final TimeUnit unit) {
-        return executorService.schedule(command, delay, unit);
+        return getExecutorService().schedule(command, delay, unit);
     }
 
 
@@ -140,7 +132,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * exception upon cancellation
      */
     public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
-        return executorService.scheduleAtFixedRate(command, initialDelay, period, unit);
+        return getExecutorService().scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
     /**
@@ -154,11 +146,25 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * exception upon cancellation
      */
     public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay, final TimeUnit unit) {
-        return executorService.scheduleWithFixedDelay(command, initialDelay, delay, unit);
+        return getExecutorService().scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
     public long nextFireInterval(final Date fireDate) {
         return fireDate.getTime() - new Date().getTime();
+    }
+
+    private ScheduledExecutorService getExecutorService() {
+        if (executorService == null) {
+            if (scheduledItems > 0) {
+                LOGGER.debug("{} starting {} threads", SIMPLE_NAME, scheduledItems);
+                scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
+                this.executorService = new ScheduledThreadPoolExecutor(scheduledItems,
+                        Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
+            } else {
+                LOGGER.debug("{}: No scheduled items", SIMPLE_NAME);
+            }
+        }
+        return executorService;
     }
 
     public class CronRunnable implements Runnable {
