@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -23,6 +24,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.filter.RegexFilter;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Assert;
@@ -155,6 +157,33 @@ public class CompositeConfigurationTest {
             }
         };
         runTest(lcr, test);
+    }
+
+    @Test
+    public void testAppenderRefFilterMerge() {
+        final LoggerContextRule lcr = new LoggerContextRule(
+                "classpath:log4j-comp-logger-ref.xml,log4j-comp-logger-ref.json");
+        final Statement test = new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
+
+                List<AppenderRef> appenderRefList = config.getLogger("cat1").getAppenderRefs();
+                AppenderRef appenderRef = getAppenderRef(appenderRefList, "STDOUT");
+                assertTrue("Expected cat1 STDOUT appenderRef to have a regex filter",
+                        appenderRef.getFilter() != null && appenderRef.getFilter() instanceof RegexFilter);
+            }
+        };
+        runTest(lcr, test);
+    }
+
+    private AppenderRef getAppenderRef(List<AppenderRef> appenderRefList, String refName) {
+        for (AppenderRef ref : appenderRefList) {
+            if (ref.getRef().equalsIgnoreCase(refName)) {
+                return ref;
+            }
+        }
+        return null;
     }
 /*
     @Test

@@ -165,6 +165,9 @@
       <action issue="LOG4J2-1740" dev="ggregory" type="fix">
         Add CronTriggeringPolicy programmatically leads to NPE.
       </action>     
+      <action issue="LOG4J2-1743" dev="ggregory" type="fix" due-to="Toby Shepheard">
+        CompositeConfiguration does not add filters to appenderRefs.
+      </action>     
       <action issue="LOG4J2-1644" dev="ggregory" type="update" due-to="Tim Gokcen, Pavel Sivolobtchik">
         Inefficient locking in AbstractLoggerAdapter.
       </action>
