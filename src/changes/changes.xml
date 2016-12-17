@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.8" date="2016-MM-DD" description="GA Release 2.8">
+      <action issue="LOG4J2-1744" dev="rpopma" type="fix">
+        The custom logger Generate tool no longer requires the log4j-api module on the classpath.
+      </action>
       <action issue="LOG4J2-1731" dev="rpopma" type="fix" due-to="Chris Ribble">
         SslSocketManager now respects connectTimeoutMillis.
       </action>
