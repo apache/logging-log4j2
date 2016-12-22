@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.util.Strings;
-
 /**
  * Generates source code for custom or extended logger wrappers.
  * <p>
@@ -1097,7 +1095,7 @@ public final class Generate {
         }
 
         sb.append('}');
-        sb.append(Strings.LINE_SEPARATOR);
+        sb.append(System.getProperty("line.separator"));
         return sb.toString();
     }
 
