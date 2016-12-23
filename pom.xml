@@ -741,7 +741,7 @@
       <dependency>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-core</artifactId>
-        <version>3.5.1</version>
+        <version>3.5.3</version>
       </dependency>
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
