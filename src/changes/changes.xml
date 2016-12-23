@@ -198,6 +198,9 @@
       <action issue="LOG4J2-1700" dev="ggregory" type="update">
         Update Jansi from 1.13 to 1.14.
       </action>
+      <action issue="LOG4J2-1750" dev="ggregory" type="update">
+        Update Kafka from 0.10.0.1 to 0.10.1.1.
+      </action>
       <action issue="LOG4J2-1302" dev="rpopma" type="update">
         The log4j-slf4j-impl module now declares a runtime dependency on log4j-core. While not technically required, this makes the log4j-slf4j-impl module behave similarly to slf4j-log4j12, and facilitates migration to Log4j 2.
       </action>
