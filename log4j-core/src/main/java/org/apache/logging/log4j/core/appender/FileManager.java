@@ -148,7 +148,7 @@ public class FileManager extends OutputStreamManager {
      * @param bytes the array containing data
      * @param offset from where to write
      * @param length how many bytes to write
-     * @since 2.6
+     * @since 2.8
      */
     protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
         if (isLocking) {
