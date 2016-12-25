@@ -59,7 +59,7 @@ public class FileManager extends OutputStreamManager {
 
     /**
      * @deprecated
-     * @since 2.6 
+     * @since 2.6
      */
     @Deprecated
     protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
@@ -73,8 +73,8 @@ public class FileManager extends OutputStreamManager {
         this.bufferSize = buffer.capacity();
     }
 
-    /** 
-     * @since 2.7 
+    /**
+     * @since 2.7
      */
     protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
@@ -115,7 +115,7 @@ public class FileManager extends OutputStreamManager {
     protected OutputStream createOutputStream() throws FileNotFoundException {
         return new FileOutputStream(getFileName(), isAppend);
     }
-    
+
     @Override
     protected synchronized void write(final byte[] bytes, final int offset, final int length,
             final boolean immediateFlush) {
@@ -139,6 +139,38 @@ public class FileManager extends OutputStreamManager {
             }
         } else {
             super.write(bytes, offset, length, immediateFlush);
+        }
+    }
+
+    /**
+     * Overrides {@link OutputStreamManager#writeToDestination(byte[], int, int)} to add support for file locking.
+     *
+     * @param bytes the array containing data
+     * @param offset from where to write
+     * @param length how many bytes to write
+     * @since 2.6
+     */
+    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
+        if (isLocking) {
+            try {
+                @SuppressWarnings("resource")
+                final FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
+                /*
+                 * Lock the whole file. This could be optimized to only lock from the current file position. Note that
+                 * locking may be advisory on some systems and mandatory on others, so locking just from the current
+                 * position would allow reading on systems where locking is mandatory. Also, Java 6 will throw an
+                 * exception if the region of the file is already locked by another FileChannel in the same JVM.
+                 * Hopefully, that will be avoided since every file should have a single file manager - unless two
+                 * different files strings are configured that somehow map to the same file.
+                 */
+                try (final FileLock lock = channel.lock(0, Long.MAX_VALUE, false)) {
+                    super.writeToDestination(bytes, offset, length);
+                }
+            } catch (final IOException ex) {
+                throw new AppenderLoggingException("Unable to obtain lock on " + getName(), ex);
+            }
+        } else {
+            super.writeToDestination(bytes, offset, length);
         }
     }
 
