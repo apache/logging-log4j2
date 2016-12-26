@@ -30,6 +30,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -64,7 +67,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class LoggerContext extends AbstractLifeCycle
         implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener {
-    
+
     static {
         try {
             // LOG4J2-1642 preload ExecutorServices as it is used in shutdown hook
@@ -73,7 +76,7 @@ public class LoggerContext extends AbstractLifeCycle
             LOGGER.error("Failed to preload ExecutorServices class.", e);
         }
     }
-    
+
     /**
      * Property name of the property change event fired if the configuration is changed.
      */
@@ -545,7 +548,8 @@ public class LoggerContext extends AbstractLifeCycle
         try {
             final Configuration prev = this.configuration;
             config.addListener(this);
-            executorService = Executors.newCachedThreadPool(Log4jThreadFactory.createThreadFactory(contextName));
+            executorService = createNonDaemonThreadPool(Log4jThreadFactory.createThreadFactory(contextName));
+            // Daemon threads do not prevent the application from shutting down so the default keep-alive time is fine.
             executorServiceDeamons = Executors.newCachedThreadPool(Log4jThreadFactory.createDaemonThreadFactory(contextName));
 
             final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
@@ -580,6 +584,30 @@ public class LoggerContext extends AbstractLifeCycle
         } finally {
             configLock.unlock();
         }
+    }
+
+    /**
+     * Returns an {@code ExecutorService} whose keep-alive time is one second by default, unless another
+     * value is specified for system property {@code log4j.nondaemon.threads.keepAliveSeconds}.
+     * <p>
+     * LOG4J2-1748: ThreadPool for non-daemon threads should use a short keep-alive time to prevent
+     * applications from being able to shut down promptly after a rollover.
+     * </p>
+     *
+     * @param threadFactory thread factory to use
+     * @return a new cached thread pool
+     */
+    private ExecutorService createNonDaemonThreadPool(final ThreadFactory threadFactory) {
+        final String PROP = "log4j.nondaemon.threads.keepAliveSeconds";
+        final int keepAliveTimeSeconds = PropertiesUtil.getProperties().getIntegerProperty(PROP, 1);
+        return createThreadPool(threadFactory, keepAliveTimeSeconds);
+    }
+
+    private ExecutorService createThreadPool(final ThreadFactory threadFactory, final int keepAliveTimeSeconds) {
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                keepAliveTimeSeconds, TimeUnit.SECONDS,
+                new SynchronousQueue<Runnable>(),
+                threadFactory);
     }
 
     private void firePropertyChangeEvent(final PropertyChangeEvent event) {

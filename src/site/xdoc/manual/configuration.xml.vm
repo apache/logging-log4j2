@@ -2100,6 +2100,12 @@ public class AwesomeTest {
     <td>Prints a stacktrace to the <a href="#StatusMessages">status logger</a> at DEBUG level
     when the LoggerContext is started. For debug purposes.</td>
   </tr>
+  <tr>
+    <td><a name="log4j.nondaemon.threads.keepAliveSeconds" />log4j.nondaemon.threads.keepAliveSeconds</td>
+    <td>1</td>
+    <td>Keep-alive time (in seconds) for non-daemon threads. Used to construct the thread pool for
+    non-daemon threads, which are used for compressing files during rollover, for example.</td>
+  </tr>
 </table>
 
         </subsection>
