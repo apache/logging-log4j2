@@ -105,6 +105,28 @@ dependencies {
   </dependencies>
 </dependencyManagement>
 ]]></pre>
+        <p>
+          To use this with Gradle, an additional <a href="https://github.com/spring-gradle-plugins/dependency-management-plugin">Gradle plugin</a>
+          is required for dependency management functionality.
+        </p>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+plugins {
+  id 'io.spring.dependency-management' version '1.0.0.RC1'
+}
+
+dependencyManagement {
+  imports {
+    mavenBom 'org.apache.logging.log4j:log4j-bom:${Log4jReleaseVersion}'
+  }
+}
+
+dependencies {
+  compile 'org.apache.logging.log4j:log4j-api'
+  compile 'org.apache.logging.log4j:log4j-core'
+  // etc.
+}
+]]></pre>
       </subsection>
       <subsection name="Optional Components">
         <p>
