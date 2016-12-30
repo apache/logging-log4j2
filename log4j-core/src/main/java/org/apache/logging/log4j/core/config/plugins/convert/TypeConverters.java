@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.config.plugins.convert;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,7 +29,6 @@ import java.nio.charset.Charset;
 import java.security.Provider;
 import java.security.Security;
 import java.util.regex.Pattern;
-
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
@@ -229,6 +229,17 @@ public final class TypeConverters {
         @Override
         public Float convert(final String s) {
             return Float.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into an {@link InetAddress}.
+     */
+    @Plugin(name = "InetAddress", category = CATEGORY)
+    public static class InetAddressConverter implements TypeConverter<InetAddress> {
+        @Override
+        public InetAddress convert(final String s) throws Exception {
+            return InetAddress.getByName(s);
         }
     }
 
