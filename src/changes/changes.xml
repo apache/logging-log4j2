@@ -177,6 +177,9 @@
       <action issue="LOG4J2-1743" dev="ggregory" type="fix" due-to="Toby Shepheard">
         CompositeConfiguration does not add filters to appenderRefs.
       </action>
+      <action issue="LOG4J2-1756" dev="ggregory" type="fix" due-to="shubhankar1100">
+        Adds xmlns in schema and some other tags.
+      </action>
       <action issue="LOG4J2-1644" dev="ggregory" type="update" due-to="Tim Gokcen, Pavel Sivolobtchik">
         Inefficient locking in AbstractLoggerAdapter.
       </action>
