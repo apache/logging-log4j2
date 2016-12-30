@@ -47,6 +47,10 @@ public class ValidHostValidator implements ConstraintValidator<ValidHost> {
             LOGGER.error(annotation.message());
             return false;
         }
+        if (value instanceof InetAddress) {
+            // InetAddress factory methods all have built in validation
+            return true;
+        }
         try {
             InetAddress.getByName(value.toString());
             return true;
