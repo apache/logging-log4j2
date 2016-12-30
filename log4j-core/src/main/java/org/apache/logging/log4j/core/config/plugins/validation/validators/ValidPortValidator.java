@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -39,6 +40,9 @@ public class ValidPortValidator implements ConstraintValidator<ValidPort> {
 
     @Override
     public boolean isValid(final String name, final Object value) {
+        if (value instanceof CharSequence) {
+            return isValid(name, TypeConverters.convert(value.toString(), Integer.class, -1));
+        }
         if (!Integer.class.isInstance(value)) {
             LOGGER.error(annotation.message());
             return false;
