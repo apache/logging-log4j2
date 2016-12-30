@@ -359,8 +359,9 @@ public final class TypeConverters {
      * @throws IllegalArgumentException
      *         if no TypeConverter exists for the given class
      */
-    public static Object convert(final String s, final Class<?> clazz, final Object defaultValue) {
-        final TypeConverter<?> converter = TypeConverterRegistry.getInstance().findCompatibleConverter(clazz);
+    public static <T> T convert(final String s, final Class<? extends T> clazz, final Object defaultValue) {
+        @SuppressWarnings("unchecked")
+        final TypeConverter<T> converter = (TypeConverter<T>) TypeConverterRegistry.getInstance().findCompatibleConverter(clazz);
         if (s == null) {
             // don't debug print here, resulting output is hard to understand
             // LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
@@ -375,12 +376,13 @@ public final class TypeConverters {
         }
     }
 
-    private static Object parseDefaultValue(final TypeConverter<?> converter, final Object defaultValue) {
+    @SuppressWarnings("unchecked")
+    private static <T> T parseDefaultValue(final TypeConverter<T> converter, final Object defaultValue) {
         if (defaultValue == null) {
             return null;
         }
         if (!(defaultValue instanceof String)) {
-            return defaultValue;
+            return (T) defaultValue;
         }
         try {
             return converter.convert((String) defaultValue);
