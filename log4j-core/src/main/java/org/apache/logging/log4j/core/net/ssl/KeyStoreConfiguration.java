@@ -64,7 +64,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
     public static KeyStoreConfiguration createKeyStoreConfiguration(
             // @formatter:off
             @PluginAttribute("location") final String location,
-            @PluginAttribute("password") final String password,
+            @PluginAttribute(value = "password", sensitive = true) final String password,
             @PluginAttribute("type") final String keyStoreType, 
             @PluginAttribute("keyManagerFactoryAlgorithm") final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
             // @formatter:on

@@ -59,7 +59,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
     public static TrustStoreConfiguration createKeyStoreConfiguration(
             // @formatter:off
             @PluginAttribute("location") final String location,
-            @PluginAttribute("password") final String password,
+            @PluginAttribute(value = "password", sensitive = true) final String password,
             @PluginAttribute("type") final String keyStoreType, 
             @PluginAttribute("trustManagerFactoryAlgorithm") final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
             // @formatter:on
