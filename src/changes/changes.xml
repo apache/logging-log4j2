@@ -569,6 +569,9 @@
       <action issue="LOG4J2-1551" dev="ggregory" type="update">
         Updated JMS test from ActiveMQ 5.13.4 to 5.14.0.
       </action>
+      <action issue="LOG4J2-1757" dev="ggregory" type="update">
+        Update Apache Commons Compress from 1.12 to 1.13.
+      </action>
       <action issue="LOG4J2-1543" dev="ggregory" type="update">
         Removed deprecated Core API org.apache.logging.log4j.core.util.Constants.UTF_8.
       </action>
