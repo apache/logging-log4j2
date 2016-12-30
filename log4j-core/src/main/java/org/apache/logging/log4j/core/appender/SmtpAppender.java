@@ -31,6 +31,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.net.SmtpManager;
@@ -110,7 +112,7 @@ public final class SmtpAppender extends AbstractAppender {
     @PluginFactory
     public static SmtpAppender createAppender(
             @PluginConfiguration final Configuration config,
-            @PluginAttribute("name") final String name,
+            @PluginAttribute("name") @Required final String name,
             @PluginAttribute("to") final String to,
             @PluginAttribute("cc") final String cc,
             @PluginAttribute("bcc") final String bcc,
@@ -119,9 +121,9 @@ public final class SmtpAppender extends AbstractAppender {
             @PluginAttribute("subject") final String subject,
             @PluginAttribute("smtpProtocol") final String smtpProtocol,
             @PluginAttribute("smtpHost") final String smtpHost,
-            @PluginAttribute("smtpPort") final String smtpPortStr,
+            @PluginAttribute(value = "smtpPort", defaultString = "0") @ValidPort final String smtpPortStr,
             @PluginAttribute("smtpUsername") final String smtpUsername,
-            @PluginAttribute("smtpPassword") final String smtpPassword,
+            @PluginAttribute(value = "smtpPassword", sensitive = true) final String smtpPassword,
             @PluginAttribute("smtpDebug") final String smtpDebug,
             @PluginAttribute("bufferSize") final String bufferSizeStr,
             @PluginElement("Layout") Layout<? extends Serializable> layout,

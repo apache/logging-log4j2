@@ -21,31 +21,33 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.nosql.appender.NoSqlProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
-
 /**
  * The MongoDB implementation of {@link NoSqlProvider}.
  */
 @Plugin(name = "MongoDb", category = "Core", printObject = true)
 public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
-    
+
     private static final WriteConcern DEFAULT_WRITE_CONCERN = WriteConcern.ACKNOWLEDGED;
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final int DEFAULT_PORT = 27017;
 
     private final String collectionName;
     private final DB database;
@@ -98,8 +100,8 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             @PluginAttribute("writeConcernConstant") final String writeConcernConstant,
             @PluginAttribute("writeConcernConstantClass") final String writeConcernConstantClassName,
             @PluginAttribute("databaseName") final String databaseName,
-            @PluginAttribute("server") final String server,
-            @PluginAttribute("port") final String port,
+            @PluginAttribute(value = "server", defaultString = "localhost") @ValidHost final String server,
+            @PluginAttribute(value = "port", defaultString = "" + DEFAULT_PORT) @ValidPort final String port,
             @PluginAttribute("userName") final String userName,
             @PluginAttribute(value = "password", sensitive = true) final String password,
             @PluginAttribute("factoryClassName") final String factoryClassName,
@@ -163,18 +165,9 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                 credentials.add(MongoCredential.createCredential(userName, databaseName, password.toCharArray()));
             }
             try {
-                if (Strings.isNotEmpty(server)) {
-                    final int portInt = AbstractAppender.parseInt(port, 0);
-                    description += ", server=" + server;
-                    if (portInt > 0) {
-                        description += ", port=" + portInt;
-                        database = new MongoClient(new ServerAddress(server, portInt), credentials).getDB(databaseName);
-                    } else {
-                        database = new MongoClient(new ServerAddress(server), credentials).getDB(databaseName);
-                    }
-                } else {
-                    database = new MongoClient(new ServerAddress(), credentials).getDB(databaseName);
-                }
+                final int portInt = TypeConverters.convert(port, int.class, DEFAULT_PORT);
+                description += ", server=" + server + ", port=" + portInt;
+                database = new MongoClient(new ServerAddress(server, portInt), credentials).getDB(databaseName);
             } catch (final Exception e) {
                 LOGGER.error(
                         "Failed to obtain a database instance from the MongoClient at server [{}] and " + "port [{}].",

@@ -34,6 +34,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
@@ -71,12 +73,14 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         private int connectTimeoutMillis;
 
         @PluginBuilderAttribute
+        @ValidHost
         private String host = "localhost";
 
         @PluginBuilderAttribute
         private boolean immediateFail = true;
 
         @PluginBuilderAttribute
+        @ValidPort
         private int port;
 
         @PluginBuilderAttribute

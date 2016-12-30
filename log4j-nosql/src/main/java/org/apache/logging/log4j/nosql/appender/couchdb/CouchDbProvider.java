@@ -19,10 +19,12 @@ package org.apache.logging.log4j.nosql.appender.couchdb;
 import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.nosql.appender.NoSqlProvider;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -83,8 +85,8 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
     public static CouchDbProvider createNoSqlProvider(
             @PluginAttribute("databaseName") final String databaseName,
             @PluginAttribute("protocol") String protocol,
-            @PluginAttribute("server") String server,
-            @PluginAttribute("port") final String port,
+            @PluginAttribute(value = "server", defaultString = "localhost") @ValidHost String server,
+            @PluginAttribute(value = "port", defaultString = "0") @ValidPort final String port,
             @PluginAttribute("username") final String username,
             @PluginAttribute(value = "password", sensitive = true) final String password,
             @PluginAttribute("factoryClassName") final String factoryClassName,
@@ -139,12 +141,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
                 LOGGER.warn("No protocol specified, using default port [http].");
             }
 
-            final int portInt = AbstractAppender.parseInt(port, protocol.equals("https") ? HTTPS : HTTP);
-
-            if (Strings.isEmpty(server)) {
-                server = "localhost";
-                LOGGER.warn("No server specified, using default server localhost.");
-            }
+            final int portInt = TypeConverters.convert(port, int.class, protocol.equals("https") ? HTTPS : HTTP);
 
             if (Strings.isEmpty(username) || Strings.isEmpty(password)) {
                 LOGGER.error("You must provide a username and password for the CouchDB provider.");
