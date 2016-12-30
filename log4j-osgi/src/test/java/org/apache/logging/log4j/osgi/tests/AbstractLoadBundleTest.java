@@ -98,9 +98,9 @@ public abstract class AbstractLoadBundleTest {
         final Class<?> loggerClass = dummy.loadClass("org.apache.logging.log4j.configuration.CustomConfiguration");
 
         final Object logger = getLoggerMethod.invoke(null, loggerClass);
-        final Method infoMethod = logger.getClass().getMethod("error", Object.class);
+        final Method errorMethod = logger.getClass().getMethod("error", Object.class);
 
-        infoMethod.invoke(logger, "Test OK");
+        errorMethod.invoke(logger, "Test OK");
     }
 
     private PrintStream setupStream(final Bundle api, final PrintStream newStream) throws ReflectiveOperationException {
