@@ -31,6 +31,7 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -184,6 +185,8 @@ public class TypeConvertersTest {
                 { "127.0.0.1", InetAddress.getByName("127.0.0.1"), null, InetAddress.class },
                 // JRE Path
                 { "/path/to/file", Paths.get("/path", "to", "file"), null, Path.class },
+                // JRE UUID
+                { "8fd389fb-9154-4096-b52e-435bde4a1835", UUID.fromString("8fd389fb-9154-4096-b52e-435bde4a1835"), null, UUID.class },
             }
         );
     }

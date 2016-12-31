@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Provider;
 import java.security.Security;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.xml.bind.DatatypeConverter;
 
@@ -353,6 +354,18 @@ public final class TypeConverters {
         @Override
         public URL convert(final String s) throws MalformedURLException {
             return new URL(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link UUID}.
+     * @since 2.8
+     */
+    @Plugin(name = "UUID", category = CATEGORY)
+    public static class UuidConverter implements TypeConverter<UUID> {
+        @Override
+        public UUID convert(final String s) throws Exception {
+            return UUID.fromString(s);
         }
     }
 
