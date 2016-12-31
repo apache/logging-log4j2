@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.util;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * Prefixes thread names with {@code "Log4j2-"}.
  */
@@ -24,10 +26,10 @@ public class Log4jThread extends Thread {
 
     static final String PREFIX = "Log4j2-";
 
-    private static int threadInitNumber;
+    private static final AtomicLong threadInitNumber = new AtomicLong();
 
-    private static synchronized int nextThreadNum() {
-        return threadInitNumber++;
+    private static long nextThreadNum() {
+        return threadInitNumber.getAndIncrement();
     }
 
     private static String toThreadName(final Object name) {
