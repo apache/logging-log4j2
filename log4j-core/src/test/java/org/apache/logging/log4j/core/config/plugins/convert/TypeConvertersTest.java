@@ -20,10 +20,13 @@ package org.apache.logging.log4j.core.config.plugins.convert;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Arrays;
@@ -176,7 +179,11 @@ public class TypeConvertersTest {
                 { Security.getProviders()[0].getName(), Security.getProviders()[0], null, Provider.class },
                 { "\n", null, null, Provider.class },
                 // Duration
-                { "P7DT10H", Duration.parse("P7DT10H"), null, Duration.class }, 
+                { "P7DT10H", Duration.parse("P7DT10H"), null, Duration.class },
+                // JRE InetAddress
+                { "127.0.0.1", InetAddress.getByName("127.0.0.1"), null, InetAddress.class },
+                // JRE Path
+                { "/path/to/file", Paths.get("/path", "to", "file"), null, Path.class },
             }
         );
     }

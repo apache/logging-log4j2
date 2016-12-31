@@ -26,6 +26,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Provider;
 import java.security.Security;
 import java.util.regex.Pattern;
@@ -273,6 +275,18 @@ public final class TypeConverters {
         @Override
         public Long convert(final String s) {
             return Long.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Path}.
+     * @since 2.8
+     */
+    @Plugin(name = "Path", category = CATEGORY)
+    public static class PathConverter implements TypeConverter<Path> {
+        @Override
+        public Path convert(final String s) throws Exception {
+            return Paths.get(s);
         }
     }
 
