@@ -54,7 +54,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         private Layout<? extends Serializable> layout;
 
         @PluginBuilderAttribute
-        @Required
+        @Required(message = "No appender name provided")
         private String name;
 
         @PluginConfiguration
