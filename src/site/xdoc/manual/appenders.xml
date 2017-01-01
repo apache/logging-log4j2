@@ -24,6 +24,7 @@
         <author email="rgoers@apache.org">Ralph Goers</author>
         <author email="ggrgeory@apache.org">Gary Gregory</author>
         <author email="nickwilliams@apache.org">Nick Williams</author>
+        <author email="mattsicker@apache.org">Matt SIcker</author>
     </properties>
 
     <body>
@@ -48,6 +49,10 @@
         </p>
         <p>
           Appenders always have a name so that they can be referenced from Loggers.
+        </p>
+        <p>
+          In the tables below, the "Type" column corresponds to the Java type expected. For non-JDK classes, these
+          should usually be in <a href="../log4j-core/apidocs/index.html">Log4j Core</a> unless otherwise noted.
         </p>
         <a name="AsyncAppender"/>
         <subsection name="AsyncAppender">
@@ -231,6 +236,158 @@
               </td>
             </tr>
           </table>
+        </subsection>
+        <a name="CassandraAppender"/>
+        <subsection name="CassandraAppender">
+          <p>
+            The CassandraAppender writes its output to an <a href="https://cassandra.apache.org/">Apache Cassandra</a>
+            database. A keyspace and table must be configured ahead of time, and the columns of that table are mapped
+            in a configuration file. Each column can specify either a <a href="layouts.html">StringLayout</a> (e.g., a
+            <a href="layouts.html#PatternLayout">PatternLayout</a>) along with an optional conversion type, or only
+            a conversion type for <code>org.apache.logging.log4j.spi.ThreadContextMap</code> or
+            <code>org.apache.logging.log4j.spi.ThreadContextStack</code> to store the <a href="thread-context.html">MDC or NDC</a>
+            in a map or list column respectively.
+          </p>
+          <table>
+            <caption align="top">CassandraAppender Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>batched</td>
+              <td>boolean</td>
+              <td>Whether or not to use batch statements to write log messages to Cassandra. By default, this is <code>false</code>.</td>
+            </tr>
+            <tr>
+              <td>batchType</td>
+              <td><a href="http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/BatchStatement.Type.html">BatchStatement.Type</a></td>
+              <td>The batch type to use when using batched writes. By default, this is <code>LOGGED</code>.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>The number of log messages to buffer or batch before writing. By default, no buffering is done.</td>
+            </tr>
+            <tr>
+              <td>clusterName</td>
+              <td>String</td>
+              <td>The name of the Cassandra cluster to connect to.</td>
+            </tr>
+            <tr>
+              <td>columns</td>
+              <td>ColumnMapping[]</td>
+              <td>A list of column mapping configurations. Each column must specify a column name. Each column can
+                have a conversion type specified by its fully qualified class name. By default, the conversion type is
+                <code>String</code>. If the configured type is assignment-compatible with
+                <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/spi/ThreadContextMap.html">ThreadContextMap</a>
+                or
+                <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/spi/ThreadContextStack.html">ThreadContextStack</a>,
+                then that column will be populated with the MDC or NDC respectively. Otherwise, the layout or pattern
+                specified will be converted into the configured type and stored in that column.
+              </td>
+            </tr>
+            <tr>
+              <td>contactPoints</td>
+              <td>SocketAddress[]</td>
+              <td>A list of hosts and ports of Cassandra nodes to connect to. These must be valid hostnames or IP
+                addresses. By default, if a port is not specified for a host or it is set to 0, then the default
+                Cassandra port of 9042 will be used. By default, <code>localhost:9042</code> will be used.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter may be used
+                by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>ignoreExceptions</td>
+              <td>boolean</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
+            </tr>
+            <tr>
+              <td>keyspace</td>
+              <td>String</td>
+              <td>The name of the keyspace containing the table that log messages will be written to.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>The password to use (along with the username) to connect to Cassandra.</td>
+            </tr>
+            <tr>
+              <td>table</td>
+              <td>String</td>
+              <td>The name of the table to write log messages to.</td>
+            </tr>
+            <tr>
+              <td>useClockForTimestampGenerator</td>
+              <td>boolean</td>
+              <td>Whether or not to use the configured <code>org.apache.logging.log4j.core.util.Clock</code> as a
+                <a class="javadoc" href="http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/TimestampGenerator.html">TimestampGenerator</a>.
+                By default, this is <code>false</code>.</td>
+            </tr>
+            <tr>
+              <td>username</td>
+              <td>String</td>
+              <td>The username to use to connect to Cassandra. By default, no username or password is used.</td>
+            </tr>
+            <tr>
+              <td>useTls</td>
+              <td>boolean</td>
+              <td>Whether or not to use TLS/SSL to connect to Cassandra. This is <code>false</code> by default.</td>
+            </tr>
+          </table>
+          <p>
+            Here is an example CassandraAppender configuration:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<Configuration name="CassandraAppenderTest">
+  <Appenders>
+    <Cassandra name="Cassandra" clusterName="Test Cluster" keyspace="test" table="logs" bufferSize="10" batched="true">
+      <SocketAddress host="localhost" port="9042"/>
+      <ColumnMapping name="id" pattern="%uuid{TIME}" type="java.util.UUID"/>
+      <ColumnMapping name="message" pattern="%message"/>
+      <ColumnMapping name="level" pattern="%level"/>
+      <ColumnMapping name="marker" pattern="%marker"/>
+      <ColumnMapping name="logger" pattern="%logger"/>
+      <ColumnMapping name="timestamp" pattern="%date{UNIX_MILLIS}" type="java.lang.Long"/>
+      <ColumnMapping name="mdc" type="org.apache.logging.log4j.spi.ThreadContextMap"/>
+      <ColumnMapping name="ndc" type="org.apache.logging.log4j.spi.ThreadContextStack"/>
+    </Cassandra>
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.nosql.appender.cassandra" level="DEBUG">
+      <AppenderRef ref="Cassandra"/>
+    </Logger>
+    <Root level="ERROR"/>
+  </Loggers>
+</Configuration>
+]]></pre>
+          <p>
+            This example configuration uses the following table schema:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+CREATE TABLE logs (
+    id timeuuid PRIMARY KEY,
+    message text,
+    level text,
+    marker text,
+    logger text,
+    timestamp timestamp,
+    mdc map<text,text>,
+    ndc list<text>
+);
+]]></pre>
         </subsection>
         <a name="ConsoleAppender"/>
         <subsection name="ConsoleAppender">

@@ -122,6 +122,7 @@
 
       <item name="Appenders" href="/manual/appenders.html" collapse="true">
         <item name="Async" href="/manual/appenders.html#AsyncAppender"/>
+        <item name="Cassandra" href="/manual/appenders.html#CassandraAppender"/>
         <item name="Console" href="/manual/appenders.html#ConsoleAppender"/>
         <item name="Failover" href="/manual/appenders.html#FailoverAppender"/>
         <item name="File" href="/manual/appenders.html#FileAppender"/>
