@@ -26,7 +26,7 @@
 
   <artifactId>log4j-nosql</artifactId>
   <name>Apache Log4j NoSQL</name>
-  <description>The Apache Log4j NoSQL appenders to databases such as MongoDB and CouchDB</description>
+  <description>The Apache Log4j NoSQL appenders to databases such as MongoDB, Apache CouchDB, and Apache Cassandra</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>NoSQL Documentation</docLabel>
@@ -48,6 +48,11 @@
       <artifactId>lightcouch</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>com.datastax.cassandra</groupId>
+      <artifactId>cassandra-driver-core</artifactId>
+      <optional>true</optional>
+    </dependency>
     <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
@@ -67,6 +72,28 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <type>test-jar</type>
+    </dependency>
+    <!-- Cassandra appender integration testing -->
+    <dependency>
+      <groupId>org.apache.cassandra</groupId>
+      <artifactId>cassandra-all</artifactId>
+      <version>2.2.8</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
