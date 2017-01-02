@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -48,7 +49,14 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         setStopping();
         if (isExecutorServiceSet()) {
             LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, getExecutorService());
-            getExecutorService().shutdown();
+            List<Runnable> tasks = executorService.shutdownNow();
+            if (tasks != null && tasks.size() > 0) {
+                try {
+                    executorService.awaitTermination(timeout, timeUnit);
+                } catch (InterruptedException ie) {
+                    LOGGER.warn("ConfigurationScheduler stopped before all tasks were completed.");
+                }
+            }
         }
         setStopped();
         return true;
