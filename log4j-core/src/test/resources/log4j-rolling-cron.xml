@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="RollingCronTest" monitorInterval="1">
+<Configuration status="WARN" name="RollingCronTest" monitorInterval="1">
   <Properties>
     <Property name="filename">target/rolling-cron/rollingtest.log</Property>
   </Properties>

@@ -54,7 +54,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         return true;
     }
 
-    private boolean isExecutorServiceSet() {
+    public boolean isExecutorServiceSet() {
         return executorService != null;
     }
 
@@ -111,7 +111,18 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing the next time the command will run.
      */
     public CronScheduledFuture<?> scheduleWithCron(final CronExpression cronExpression, final Runnable command) {
-        final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
+        return scheduleWithCron(cronExpression, new Date(), command);
+    }
+
+    /**
+     * Creates and executes an action that first based on a cron expression.
+     * @param cronExpression the cron expression describing the schedule.
+     * @param startDate The time to use as the time to begin the cron expression. Defaults to the current date and time.
+     * @param command The Runnable to run,
+     * @return a ScheduledFuture representing the next time the command will run.
+     */
+    public CronScheduledFuture<?> scheduleWithCron(final CronExpression cronExpression, final Date startDate, final Runnable command) {
+        final Date fireDate = cronExpression.getNextValidTimeAfter(startDate == null ? new Date() : startDate);
         final CronRunnable runnable = new CronRunnable(command, cronExpression);
         final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
         final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future, fireDate);

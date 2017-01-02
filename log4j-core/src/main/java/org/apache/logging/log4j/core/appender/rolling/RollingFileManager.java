@@ -54,6 +54,7 @@ public class RollingFileManager extends FileManager {
     private volatile TriggeringPolicy triggeringPolicy;
     private volatile RolloverStrategy rolloverStrategy;
     private volatile boolean renameEmptyFiles = false;
+    private volatile boolean initialized = false;
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, TriggeringPolicy.class, "triggeringPolicy");
@@ -101,7 +102,13 @@ public class RollingFileManager extends FileManager {
     }
 
     public void initialize() {
-        triggeringPolicy.initialize(this);
+        if (!initialized) {
+            initialized = true;
+            triggeringPolicy.initialize(this);
+            if (triggeringPolicy instanceof LifeCycle) {
+                ((LifeCycle) triggeringPolicy).start();
+            }
+        }
     }
 
     /**
@@ -214,7 +221,14 @@ public class RollingFileManager extends FileManager {
 
     public void setTriggeringPolicy(final TriggeringPolicy triggeringPolicy) {
         triggeringPolicy.initialize(this);
+        TriggeringPolicy policy = this.triggeringPolicy;
         triggeringPolicyUpdater.compareAndSet(this, this.triggeringPolicy, triggeringPolicy);
+        if (triggeringPolicy instanceof  LifeCycle) {
+            ((LifeCycle) triggeringPolicy).start();
+        }
+        if (policy instanceof LifeCycle) {
+            ((LifeCycle) policy).stop();
+        }
     }
 
     public void setRolloverStrategy(final RolloverStrategy rolloverStrategy) {

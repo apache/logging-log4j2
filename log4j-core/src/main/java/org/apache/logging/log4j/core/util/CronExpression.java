@@ -1162,7 +1162,6 @@ public final class CronExpression {
         boolean gotOne = false;
         // loop until we've computed the next time, or we've past the endTime
         while (!gotOne) {
-
             //if (endTime != null && cl.getTime().after(endTime)) return null;
             if (cl.get(Calendar.YEAR) > 2999) { // prevent endless loop...
                 return null;
@@ -1565,13 +1564,34 @@ public final class CronExpression {
         }
     }
 
-    /**
-     * NOT YET IMPLEMENTED: Returns the time before the given time
-     * that the <code>CronExpression</code> matches.
-     */
-    public Date getTimeBefore(final Date endTime) {
-        // FUTURE_TODO: implement QUARTZ-423
-        return null;
+    protected Date getTimeBefore(Date targetDate) {
+        Calendar cl = Calendar.getInstance(getTimeZone());
+
+        // to match this
+        Date now = new Date();
+        Date nextFireTime = getTimeAfter(now);
+        Date secondTime = getTimeAfter(nextFireTime);
+        long interval = secondTime.getTime() - nextFireTime.getTime();
+        Date prevCheckDate = new Date(now.getTime() - interval);
+        Date prevFireTime = getTimeAfter(prevCheckDate);
+        return prevFireTime;
+    }
+
+    public Date getPrevFireTime(Date targetDate) {
+        return getTimeBefore(targetDate);
+    }
+
+    private int findIncrement(String[] expression) {
+        //        * * * * * * *
+        //        [0]SEC  [1]MIN [2]HOUR    [3]DAYOFMONTH  [4]MONTH   [5]DAYOFWEEK   [6]YEAR
+        for (int i = 0; i < expression.length; i++) {
+            if (expression[i].equals("*")) {
+                return i;
+            }
+        }
+
+        // we default to year TODO: optimize
+        return YEAR;
     }
 
     /**

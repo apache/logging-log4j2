@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
@@ -46,7 +47,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     private final CronExpression cronExpression;
     private final Configuration configuration;
     private final boolean checkOnStartup;
-    private volatile Date nextRollDate;
+    private volatile Date lastRollDate;
     private CronScheduledFuture<?> future;
 
     private CronTriggeringPolicy(final CronExpression schedule, final boolean checkOnStartup,
@@ -65,22 +66,24 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     @Override
     public void initialize(final RollingFileManager aManager) {
         this.manager = aManager;
-        final Date nextDate = new Date(this.manager.getFileTime());
-        nextRollDate = cronExpression.getNextValidTimeAfter(nextDate);
-        if (checkOnStartup) {
-            if (nextRollDate.getTime() < System.currentTimeMillis()) {
-                rollover();
-            }
+        final Date now = new Date();
+        final Date lastRollForFile = cronExpression.getPrevFireTime(new Date(this.manager.getFileTime()));
+        final Date lastRegularRoll = cronExpression.getPrevFireTime(new Date());
+        if (checkOnStartup && lastRollForFile.before(lastRegularRoll)) {
+            lastRollDate = lastRollForFile;
+            rollover();
         }
+
         final ConfigurationScheduler scheduler = configuration.getScheduler();
-        if (!scheduler.isStarted()) {
-            scheduler.incrementScheduledItems();
-            scheduler.start();
-        } else if (scheduler.isStarted()) {
+        if (!scheduler.isExecutorServiceSet()) {
             // make sure we have a thread pool
             scheduler.incrementScheduledItems();
         }
-        future = scheduler.scheduleWithCron(cronExpression, new CronTrigger());
+        if (!scheduler.isStarted()) {
+            scheduler.start();
+        }
+        lastRollDate = lastRegularRoll;
+        future = scheduler.scheduleWithCron(cronExpression, now, new CronTrigger());
     }
 
     /**
@@ -139,13 +142,11 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     private void rollover() {
-        manager.getPatternProcessor().setPrevFileTime(nextRollDate.getTime());
+        manager.getPatternProcessor().setPrevFileTime(lastRollDate.getTime());
         manager.rollover();
-        final Date fireDate = future != null ? future.getFireTime() : new Date();
-        final Calendar cal = Calendar.getInstance();
-        cal.setTime(fireDate);
-        cal.add(Calendar.SECOND, -1);
-        nextRollDate = cal.getTime();
+        if (future != null) {
+            lastRollDate = future.getFireTime();
+        }
     }
 
     @Override

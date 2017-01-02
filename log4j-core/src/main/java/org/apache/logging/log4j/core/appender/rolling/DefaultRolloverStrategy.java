@@ -538,9 +538,13 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 break;
             }
         }
+        if (currentFileName.equals(renameTo)) {
+            LOGGER.warn("Attempt to rename file {} to itself will be ignored", currentFileName);
+            return new RolloverDescriptionImpl(currentFileName, false, null, null);
+        }
 
         final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo),
-                manager.isRenameEmptyFiles());
+                    manager.isRenameEmptyFiles());
 
         final Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
         return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction);
