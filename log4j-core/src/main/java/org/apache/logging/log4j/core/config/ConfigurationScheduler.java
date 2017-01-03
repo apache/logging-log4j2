@@ -49,13 +49,17 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         setStopping();
         if (isExecutorServiceSet()) {
             LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, getExecutorService());
-            List<Runnable> tasks = executorService.shutdownNow();
-            if (tasks != null && tasks.size() > 0) {
+            executorService.shutdown();
+            try {
+                executorService.awaitTermination(timeout, timeUnit);
+            } catch (InterruptedException ie) {
+                executorService.shutdownNow();
                 try {
                     executorService.awaitTermination(timeout, timeUnit);
-                } catch (InterruptedException ie) {
-                    LOGGER.warn("ConfigurationScheduler stopped before all tasks were completed.");
+                } catch (InterruptedException inner) {
+                    LOGGER.warn("ConfigurationScheduler stopped but some scheduled services may not have completed.");
                 }
+
             }
         }
         setStopped();

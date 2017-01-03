@@ -1568,17 +1568,57 @@ public final class CronExpression {
         Calendar cl = Calendar.getInstance(getTimeZone());
 
         // to match this
-        Date now = new Date();
-        Date nextFireTime = getTimeAfter(now);
-        Date secondTime = getTimeAfter(nextFireTime);
-        long interval = secondTime.getTime() - nextFireTime.getTime();
-        Date prevCheckDate = new Date(now.getTime() - interval);
-        Date prevFireTime = getTimeAfter(prevCheckDate);
+        Date start = targetDate;
+        long minIncrement = findMinIncrement();
+        Date prevFireTime;
+        do {
+            Date prevCheckDate = new Date(start.getTime() - minIncrement);
+            prevFireTime = getTimeAfter(prevCheckDate);
+            start = prevCheckDate;
+        } while (prevFireTime.after(targetDate));
         return prevFireTime;
     }
 
     public Date getPrevFireTime(Date targetDate) {
         return getTimeBefore(targetDate);
+    }
+
+    private long findMinIncrement() {
+        if (seconds.size() != 1) {
+            return minInSet(seconds) * 1000;
+        } else if (seconds.first() == ALL_SPEC_INT) {
+            return 1000;
+        }
+        if (minutes.size() != 1) {
+            return minInSet(minutes) * 60000;
+        } else if (minutes.first() == ALL_SPEC_INT) {
+            return 60000;
+        }
+        if (hours.size() != 1) {
+            return minInSet(hours) * 3600000;
+        } else if (hours.first() == ALL_SPEC_INT) {
+            return 3600000;
+        }
+        return 86400000;
+    }
+
+    private int minInSet(TreeSet<Integer> set) {
+        int previous = 0;
+        int min = Integer.MAX_VALUE;
+        boolean first = true;
+        for (int value : set) {
+            if (first) {
+                previous = value;
+                first = false;
+                continue;
+            } else {
+                int diff = value - previous;
+                if (diff < min) {
+                    min = diff;
+                }
+            }
+        }
+        return min;
     }
 
     private int findIncrement(String[] expression) {
