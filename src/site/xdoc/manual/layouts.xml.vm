@@ -225,7 +225,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>compressionThreshold</td>
               <td>int</td>
-              <td>compress if data is larger than this number of bytes (optional, defaults to 1024)</td>
+              <td>Compress if data is larger than this number of bytes (optional, defaults to 1024)</td>
             </tr>
             <tr>
               <td>includeStacktrace</td>

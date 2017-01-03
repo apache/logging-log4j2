@@ -83,9 +83,15 @@ public class GelfLayoutTest {
             root.removeAppender(appender);
         }
         // set up appenders
-        final GelfLayout layout = GelfLayout.createLayout(HOSTNAME, new KeyValuePair[] {
+        final GelfLayout layout = GelfLayout.newBuilder()
+            .setHost(HOSTNAME)
+            .setAdditionalFields(new KeyValuePair[] {
                 new KeyValuePair(KEY1, VALUE1),
-                new KeyValuePair(KEY2, VALUE2), }, compressionType, 1024, includeStacktrace);
+                new KeyValuePair(KEY2, VALUE2), })
+            .setCompressionType(compressionType)
+            .setCompressionThreshold(1024)
+            .setIncludeStacktrace(includeStacktrace)
+            .build();
         final ListAppender eventAppender = new ListAppender("Events", null, null, true, false);
         final ListAppender rawAppender = new ListAppender("Raw", null, layout, true, true);
         final ListAppender formattedAppender = new ListAppender("Formatted", null, layout, true, false);
