@@ -25,7 +25,9 @@
   <body>
     <section name="Articles and Tutorials">
       <p>
-        A collection of articles and tutorials about Log4j 2.
+        A collection of external articles and tutorials about Log4j 2.
+        The <a href="manual/index.html">Log4j 2 manual</a> is the ultimate guide for
+        up-to-date and detailed information on how to configure and use Log4j 2.
       </p>
       <a name="Chinese" />
       <subsection name="Chinese">
