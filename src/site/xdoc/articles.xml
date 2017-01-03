@@ -18,14 +18,14 @@
 
 <document>
   <properties>
-    <title>Articles</title>
+    <title>Articles and Tutorials</title>
     <author email="ggregory@apache.org">Gary Gregory</author>
   </properties>
 
   <body>
-    <section name="Articles">
+    <section name="Articles and Tutorials">
       <p>
-        A collection of articles about Log4j 2.
+        A collection of articles and tutorials about Log4j 2.
       </p>
       <a name="Chinese" />
       <subsection name="Chinese">
@@ -54,7 +54,7 @@
       </subsection>
       <a name="English"/>
       <subsection name="English">
-      <ul>      
+      <ul>
         <li>
           <a href="https://garygregory.wordpress.com/2016/11/27/loading-a-log4j-configuration-for-a-specific-ejb/">
             Loading a Log4j Configuration for a specific EJB</a>
