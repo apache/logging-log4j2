@@ -53,8 +53,8 @@ public class CronTriggeringPolicyTest {
         // @formatter:off
         final RollingFileAppender raf = RollingFileAppender.newBuilder()
             .withName("test1")
-            .withFileName("testcmd1.log")
-            .withFilePattern("testcmd1.log.%d{yyyy-MM-dd}")
+            .withFileName("target/testcmd1.log")
+            .withFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
             .withPolicy(createPolicy())
             .withStrategy(createStrategy())
             .setConfiguration(configuration)
@@ -89,8 +89,8 @@ public class CronTriggeringPolicyTest {
         // @formatter:off
         RollingRandomAccessFileAppender.newBuilder()
             .withName("test2")
-            .withFileName("testcmd2.log")
-            .withFilePattern("testcmd2.log.%d{yyyy-MM-dd}")
+            .withFileName("target/testcmd2.log")
+            .withFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
             .withPolicy(createPolicy())
             .withStrategy(createStrategy())
             .setConfiguration(configuration)
@@ -113,8 +113,8 @@ public class CronTriggeringPolicyTest {
         final CronTriggeringPolicy triggerPolicy = createPolicy();
         final DefaultRolloverStrategy rolloverStrategy = createStrategy();
 
-        try (RollingFileManager fileManager = RollingFileManager.getFileManager("testcmd3.log",
-                "testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
+        try (RollingFileManager fileManager = RollingFileManager.getFileManager("target/testcmd3.log",
+                "target/testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
                 PatternLayout.createDefaultLayout(), 0, true, false, configuration)) {
             // trigger rollover
             fileManager.initialize();
