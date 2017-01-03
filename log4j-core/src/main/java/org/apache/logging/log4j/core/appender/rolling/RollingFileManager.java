@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.util.Constants;
 public class RollingFileManager extends FileManager {
 
     private static RollingFileManagerFactory factory = new RollingFileManagerFactory();
+    private static final int MAX_TRIES = 3;
 
     protected long size;
     private long initialTime;
@@ -222,13 +223,19 @@ public class RollingFileManager extends FileManager {
     public void setTriggeringPolicy(final TriggeringPolicy triggeringPolicy) {
         triggeringPolicy.initialize(this);
         TriggeringPolicy policy = this.triggeringPolicy;
-        triggeringPolicyUpdater.compareAndSet(this, this.triggeringPolicy, triggeringPolicy);
-        if (triggeringPolicy instanceof  LifeCycle) {
-            ((LifeCycle) triggeringPolicy).start();
-        }
-        if (policy instanceof LifeCycle) {
-            ((LifeCycle) policy).stop();
-        }
+        int count = 0;
+        boolean policyUpdated = false;
+        do {
+            ++count;
+        } while (!(policyUpdated = triggeringPolicyUpdater.compareAndSet(this, this.triggeringPolicy, triggeringPolicy))
+                && count < MAX_TRIES);
+        if (policyUpdated)
+            if (triggeringPolicy instanceof LifeCycle) {
+                ((LifeCycle) triggeringPolicy).start();
+            }
+            if (policy instanceof LifeCycle) {
+                ((LifeCycle) policy).stop();
+            }
     }
 
     public void setRolloverStrategy(final RolloverStrategy rolloverStrategy) {
