@@ -222,6 +222,9 @@
       <action issue="LOG4J2-1302" dev="rpopma" type="update">
         The log4j-slf4j-impl module now declares a runtime dependency on log4j-core. While not technically required, this makes the log4j-slf4j-impl module behave similarly to slf4j-log4j12, and facilitates migration to Log4j 2.
       </action>
+      <action issue="LOG4J2-1763" dev="mattsicker" type="add">
+        Use MethodHandle instead of Method in ReflectionUtil.
+      </action>
       <action issue="LOG4J2-1730" dev="mattsicker" type="add">
         Add Apache Cassandra appender.
       </action>
