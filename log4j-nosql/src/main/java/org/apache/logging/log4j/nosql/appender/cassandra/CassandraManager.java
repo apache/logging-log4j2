@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.net.SocketAddress;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -92,7 +93,8 @@ public class CassandraManager extends AbstractDatabaseManager {
     protected void writeInternal(final LogEvent event) {
         for (int i = 0; i < columnMappings.size(); i++) {
             final ColumnMapping columnMapping = columnMappings.get(i);
-            if (ThreadContextMap.class.isAssignableFrom(columnMapping.getType())) {
+            if (ThreadContextMap.class.isAssignableFrom(columnMapping.getType())
+                || ReadOnlyStringMap.class.isAssignableFrom(columnMapping.getType())) {
                 values[i] = event.getContextData().toMap();
             } else if (ThreadContextStack.class.isAssignableFrom(columnMapping.getType())) {
                 values[i] = event.getContextStack().asList();

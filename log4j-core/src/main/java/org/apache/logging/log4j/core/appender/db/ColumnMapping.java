@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * A configuration element for specifying a database column name mapping.
@@ -46,8 +47,9 @@ public class ColumnMapping {
      */
     private final StringLayout layout;
     /**
-     * Class to convert value to before storing in database. If the type is a {@link ThreadContextMap}, then the
-     * MDC will be used. If the type is a {@link ThreadContextStack}, then the NDC will be used.
+     * Class to convert value to before storing in database. If the type is compatible with {@link ThreadContextMap} or
+     * {@link ReadOnlyStringMap}, then the MDC will be used. If the type is compatible with {@link ThreadContextStack},
+     * then the NDC will be used.
      */
     private final Class<?> type;
 
@@ -127,6 +129,7 @@ public class ColumnMapping {
                     .build();
             }
             if (!(layout != null
+                || ReadOnlyStringMap.class.isAssignableFrom(type)
                 || ThreadContextMap.class.isAssignableFrom(type)
                 || ThreadContextStack.class.isAssignableFrom(type))) {
                 throw new IllegalStateException(
