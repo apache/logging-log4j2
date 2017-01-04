@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.net.server;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
@@ -44,10 +45,10 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * Abstract socket server for TCP and UDP implementations.
- * 
+ *
  * @param <T>
  *            The kind of input stream read
- * 
+ *
  *            TODO Make a LifeCycle
  */
 public abstract class AbstractSocketServer<T extends InputStream> extends LogEventListener implements Runnable {
@@ -158,7 +159,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
     /**
      * Creates a new socket server.
-     * 
+     *
      * @param port
      *            listen to this port
      * @param logEventInput
@@ -179,13 +180,30 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
     /**
      * Start this server in a new thread.
-     * 
+     *
      * @return the new thread that running this server.
      */
     public Thread startNewThread() {
         final Thread thread = new Log4jThread(this);
         thread.start();
         return thread;
+    }
+
+    public abstract void shutdown() throws Exception;
+
+    public void awaitTermination(final Thread serverThread) throws Exception {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        while (true) {
+            final String line = reader.readLine();
+            if (line == null
+                || line.equalsIgnoreCase("quit")
+                || line.equalsIgnoreCase("stop")
+                || line.equalsIgnoreCase("exit")) {
+                this.shutdown();
+                serverThread.join();
+                break;
+            }
+        }
     }
 
 }

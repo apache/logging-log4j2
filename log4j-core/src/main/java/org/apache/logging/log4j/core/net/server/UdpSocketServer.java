@@ -16,12 +16,10 @@
  */
 package org.apache.logging.log4j.core.net.server;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
 import java.net.DatagramPacket;
@@ -29,7 +27,6 @@ import java.net.DatagramSocket;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.BasicCommandLineArguments;
-import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
  * Listens for Log4j events on a datagram socket and passes them on to Log4j. 
@@ -97,19 +94,9 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
         }
         final UdpSocketServer<ObjectInputStream> socketServer = UdpSocketServer
                 .createSerializedSocketServer(cla.getPort());
-        final Thread serverThread = new Log4jThread(socketServer);
-        serverThread.start();
+        final Thread serverThread = socketServer.startNewThread();
         if (cla.isInteractive()) {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            while (true) {
-                final String line = reader.readLine();
-                if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop")
-                        || line.equalsIgnoreCase("Exit")) {
-                    socketServer.shutdown();
-                    serverThread.join();
-                    break;
-                }
-            }
+            socketServer.awaitTermination(serverThread);
         }
     }
 
@@ -173,6 +160,7 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
     /**
      * Shutdown the server.
      */
+    @Override
     public void shutdown() {
         this.setActive(false);
         Thread.currentThread().interrupt();

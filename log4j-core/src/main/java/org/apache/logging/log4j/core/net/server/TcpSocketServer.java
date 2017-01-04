@@ -16,28 +16,24 @@
  */
 package org.apache.logging.log4j.core.net.server;
 
-import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.validators.PositiveInteger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.BasicCommandLineArguments;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.message.EntryMessage;
-
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.validators.PositiveInteger;
 
 /**
  * Listens for Log4j events on a TCP server socket and passes them on to Log4j.
@@ -194,20 +190,9 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
         }
         final TcpSocketServer<ObjectInputStream> socketServer = TcpSocketServer
                 .createSerializedSocketServer(cla.getPort(), cla.getBacklog(), cla.getLocalBindAddress());
-        final Thread serverThread = new Log4jThread(socketServer);
-        serverThread.start();
+        final Thread serverThread = socketServer.startNewThread();
         if (cla.isInteractive()) {
-            final Charset enc = Charset.defaultCharset();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));
-            while (true) {
-                final String line = reader.readLine();
-                if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop")
-                        || line.equalsIgnoreCase("Exit")) {
-                    socketServer.shutdown();
-                    serverThread.join();
-                    break;
-                }
-            }
+            socketServer.awaitTermination(serverThread);
         }
     }
 
@@ -321,6 +306,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * 
      * @throws IOException if the server socket could not be closed
      */
+    @Override
     public void shutdown() throws IOException {
         final EntryMessage entry = logger.traceEntry();
         setActive(false);
