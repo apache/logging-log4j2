@@ -1,0 +1,12 @@
+.project
+.idea
+**/*.iml
+**/target
+target/
+.settings
+.classpath
+.cache-main
+.cache-tests
+velocity.log
+felix-cache/
+bin/
