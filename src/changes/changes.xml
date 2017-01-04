@@ -225,9 +225,6 @@
       <action issue="LOG4J2-1764" dev="mattsicker" type="add">
         Use MethodHandle in ContextDataFactory cached constructor.
       </action>
-      <action issue="LOG4J2-1763" dev="mattsicker" type="add">
-        Use MethodHandle instead of Method in ReflectionUtil.
-      </action>
       <action issue="LOG4J2-1730" dev="mattsicker" type="add">
         Add Apache Cassandra appender.
       </action>
