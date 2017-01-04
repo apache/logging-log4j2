@@ -32,6 +32,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.validators.PositiveInteger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.BasicCommandLineArguments;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.message.EntryMessage;
 
@@ -91,11 +92,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                     logger.error("IOException encountered while reading from socket", e);
                 }
                 if (!closed) {
-                    try {
-                        inputStream.close();
-                    } catch (final Exception ignored) {
-                        // Ignore the exception;
-                    }
+                    Closer.closeSilently(inputStream);
                 }
             } finally {
                 handlers.remove(Long.valueOf(getId()));
