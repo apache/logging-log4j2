@@ -69,7 +69,8 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         final Date now = new Date();
         final Date lastRollForFile = cronExpression.getPrevFireTime(new Date(this.manager.getFileTime()));
         final Date lastRegularRoll = cronExpression.getPrevFireTime(new Date());
-        if (checkOnStartup && lastRollForFile.before(lastRegularRoll)) {
+        if (checkOnStartup && lastRollForFile != null && lastRegularRoll != null &&
+                lastRollForFile.before(lastRegularRoll)) {
             lastRollDate = lastRollForFile;
             rollover();
         }

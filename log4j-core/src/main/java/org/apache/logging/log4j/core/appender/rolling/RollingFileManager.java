@@ -229,13 +229,18 @@ public class RollingFileManager extends FileManager {
             ++count;
         } while (!(policyUpdated = triggeringPolicyUpdater.compareAndSet(this, this.triggeringPolicy, triggeringPolicy))
                 && count < MAX_TRIES);
-        if (policyUpdated)
+        if (policyUpdated) {
             if (triggeringPolicy instanceof LifeCycle) {
                 ((LifeCycle) triggeringPolicy).start();
             }
             if (policy instanceof LifeCycle) {
                 ((LifeCycle) policy).stop();
             }
+        } else {
+            if (triggeringPolicy instanceof LifeCycle) {
+                ((LifeCycle) triggeringPolicy).stop();
+            }
+        }
     }
 
     public void setRolloverStrategy(final RolloverStrategy rolloverStrategy) {

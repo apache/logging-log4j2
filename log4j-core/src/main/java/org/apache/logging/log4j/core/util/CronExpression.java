@@ -252,6 +252,11 @@ public final class CronExpression {
     protected transient boolean expressionParsed = false;
 
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
+    public static final Calendar MIN_CAL = Calendar.getInstance();
+    static {
+        MIN_CAL.set(1970, 0, 1);
+    }
+    public static final Date MIN_DATE = MIN_CAL.getTime();
 
     /**
      * Constructs a new <CODE>CronExpression</CODE> based on the specified
@@ -1574,8 +1579,11 @@ public final class CronExpression {
         do {
             Date prevCheckDate = new Date(start.getTime() - minIncrement);
             prevFireTime = getTimeAfter(prevCheckDate);
+            if (prevFireTime == null || prevFireTime.before(MIN_DATE)) {
+                return null;
+            }
             start = prevCheckDate;
-        } while (prevFireTime.after(targetDate));
+        } while (prevFireTime.compareTo(targetDate) >= 0);
         return prevFireTime;
     }
 
@@ -1619,19 +1627,6 @@ public final class CronExpression {
             }
         }
         return min;
-    }
-
-    private int findIncrement(String[] expression) {
-        //        * * * * * * *
-        //        [0]SEC  [1]MIN [2]HOUR    [3]DAYOFMONTH  [4]MONTH   [5]DAYOFWEEK   [6]YEAR
-        for (int i = 0; i < expression.length; i++) {
-            if (expression[i].equals("*")) {
-                return i;
-            }
-        }
-
-        // we default to year TODO: optimize
-        return YEAR;
     }
 
     /**
