@@ -123,16 +123,14 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
                     file = new File(path);
                     final FileInputStream is = new FileInputStream(file);
                     source = new ConfigurationSource(is, file);
-                } catch (final FileNotFoundException ex) {
+                } catch (final FileNotFoundException ignored) {
                     // Ignore this error
                 }
                 if (source == null) {
                     try {
                         final URL url = new URL(path);
                         source = new ConfigurationSource(url.openStream(), url);
-                    } catch (final MalformedURLException mue) {
-                        // Ignore this error
-                    } catch (final IOException ioe) {
+                    } catch (final IOException ignored) {
                         // Ignore this error
                     }
                 }
@@ -141,7 +139,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
                     if (source != null) {
                         return new XmlConfiguration(loggerContext, source);
                     }
-                } catch (final Exception ex) {
+                } catch (final Exception ignored) {
                     // Ignore this error.
                 }
                 System.err.println("Unable to process configuration at " + path + ", using default.");

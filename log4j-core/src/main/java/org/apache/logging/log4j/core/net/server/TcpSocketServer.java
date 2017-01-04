@@ -97,7 +97,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                 if (!closed) {
                     try {
                         inputStream.close();
-                    } catch (final Exception ex) {
+                    } catch (final Exception ignored) {
                         // Ignore the exception;
                     }
                 }
@@ -309,7 +309,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
             handler.shutdown();
             try {
                 handler.join();
-            } catch (final InterruptedException ie) {
+            } catch (final InterruptedException ignored) {
                 // Ignore the exception
             }
         }
