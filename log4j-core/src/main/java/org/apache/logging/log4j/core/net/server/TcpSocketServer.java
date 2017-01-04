@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.util.BasicCommandLineArguments;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.message.EntryMessage;
 
@@ -184,7 +185,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an error occurs.
      */
     public static void main(final String[] args) throws Exception {
-        final CommandLineArguments cla = parseCommandLine(args, TcpSocketServer.class, new CommandLineArguments());
+        final CommandLineArguments cla = BasicCommandLineArguments.parseCommandLine(args, TcpSocketServer.class, new CommandLineArguments());
         if (cla.isHelp()) {
             return;
         }

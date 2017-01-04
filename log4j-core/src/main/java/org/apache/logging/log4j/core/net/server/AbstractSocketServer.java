@@ -27,6 +27,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.validators.PositiveInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEventListener;
@@ -39,10 +41,6 @@ import org.apache.logging.log4j.core.util.BasicCommandLineArguments;
 import org.apache.logging.log4j.core.util.InetAddressConverter;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.util.Strings;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.validators.PositiveInteger;
 
 /**
  * Abstract socket server for TCP and UDP implementations.
@@ -153,18 +151,6 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
     }
 
     protected static final int MAX_PORT = 65534;
-
-    static <T extends CommandLineArguments> T parseCommandLine(final String[] mainArgs, final Class<?> clazz,
-            final T args) {
-        final JCommander jCommander = new JCommander(args);
-        jCommander.setProgramName(clazz.getName());
-        jCommander.setCaseSensitiveOptions(false);
-        jCommander.parse(mainArgs);
-        if (args.isHelp()) {
-            jCommander.usage();
-        }
-        return args;
-    }
 
     private volatile boolean active = true;
 
