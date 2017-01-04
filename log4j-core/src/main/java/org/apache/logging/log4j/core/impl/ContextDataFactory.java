@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.lang.reflect.Constructor;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
@@ -43,57 +45,68 @@ import org.apache.logging.log4j.util.StringMap;
  * @since 2.7
  */
 public class ContextDataFactory {
+    private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
     private static final String CLASS_NAME = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData");
-    private static final Class<?> CACHED_CLASS = createCachedClass(CLASS_NAME);
-    private static final Constructor<?> CACHED_CONSTRUCTOR = createCachedConstructor(CACHED_CLASS);
+    private static final Class<? extends StringMap> CACHED_CLASS = createCachedClass(CLASS_NAME);
+    private static final MethodHandle DEFAULT_CONSTRUCTOR = createDefaultConstructor(CACHED_CLASS);
+    private static final MethodHandle INITIAL_CAPACITY_CONSTRUCTOR = createInitialCapacityConstructor(CACHED_CLASS);
 
     private static final StringMap EMPTY_STRING_MAP = createContextData(1);
     static {
         EMPTY_STRING_MAP.freeze();
     }
 
-    private static Class<?> createCachedClass(final String className) {
+    private static Class<? extends StringMap> createCachedClass(final String className) {
         if (className == null) {
             return null;
         }
         try {
-            return LoaderUtil.loadClass(className);
+            return LoaderUtil.loadClass(className).asSubclass(StringMap.class);
         } catch (final Exception any) {
             return null;
         }
     }
 
-    private static Constructor<?> createCachedConstructor(final Class<?> cachedClass) {
+    private static MethodHandle createDefaultConstructor(final Class<? extends StringMap> cachedClass) {
         if (cachedClass == null) {
             return null;
         }
         try {
-            return cachedClass.getDeclaredConstructor(int.class);
-        } catch (final Exception any) {
+            return LOOKUP.findConstructor(cachedClass, MethodType.methodType(void.class));
+        } catch (final NoSuchMethodException | IllegalAccessException ignored) {
             return null;
         }
     }
 
-    @SuppressWarnings("unchecked")
+    private static MethodHandle createInitialCapacityConstructor(final Class<? extends StringMap> cachedClass) {
+        if (cachedClass == null) {
+            return null;
+        }
+        try {
+            return LOOKUP.findConstructor(cachedClass, MethodType.methodType(void.class, int.class));
+        } catch (final NoSuchMethodException | IllegalAccessException ignored) {
+            return null;
+        }
+    }
+
     public static StringMap createContextData() {
-        if (CACHED_CLASS == null) {
+        if (DEFAULT_CONSTRUCTOR == null) {
             return new SortedArrayStringMap();
         }
         try {
-            return (StringMap) CACHED_CLASS.newInstance();
-        } catch (final Exception any) {
+            return (StringMap) DEFAULT_CONSTRUCTOR.invoke();
+        } catch (final Throwable ignored) {
             return new SortedArrayStringMap();
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static StringMap createContextData(final int initialCapacity) {
-        if (CACHED_CONSTRUCTOR == null) {
+        if (INITIAL_CAPACITY_CONSTRUCTOR == null) {
             return new SortedArrayStringMap(initialCapacity);
         }
         try {
-            return (StringMap) CACHED_CONSTRUCTOR.newInstance(initialCapacity);
-        } catch (final Exception any) {
+            return (StringMap) INITIAL_CAPACITY_CONSTRUCTOR.invoke(initialCapacity);
+        } catch (final Throwable ignored) {
             return new SortedArrayStringMap(initialCapacity);
         }
     }
