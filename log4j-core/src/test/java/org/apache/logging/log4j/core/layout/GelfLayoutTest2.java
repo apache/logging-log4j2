@@ -21,6 +21,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -42,6 +43,7 @@ public class GelfLayoutTest2 {
         assertEquals("Message", json.get("short_message").asText());
         assertEquals("myhost", json.get("host").asText());
         assertEquals("FOO", json.get("_foo").asText());
+        assertEquals(new JavaLookup().getRuntime(), json.get("_runtime").asText());
     }
 
 }

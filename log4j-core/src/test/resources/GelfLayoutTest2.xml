@@ -21,6 +21,7 @@
     <List name="list">
       <GelfLayout host="myhost">
         <KeyValuePair key="foo" value="FOO"/>
+        <KeyValuePair key="runtime" value="$${java:runtime}"/>
       </GelfLayout>
     </List>
   </Appenders>

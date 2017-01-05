@@ -215,7 +215,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>host</td>
               <td>String</td>
-              <td>The value of the <code>host</code> property (mandatory).</td>
+              <td>The value of the <code>host</code> property (optional, defaults to local host name).</td>
             </tr>
             <tr>
               <td>compressionType</td>
@@ -233,6 +233,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>Whether to include full stacktrace of logged Throwables (optional, default to true).
                   If set to false, only the class name and message of the #javadoc('java/lang', 'Throwable')
                   will be included.</td>
+            </tr>
+            <tr>
+              <td>includeThreadContext</td>
+              <td>boolean</td>
+              <td>Whether to include thread context as additional fields (optional, default to true).</td>
             </tr>
             <caption align="top">GELF Layout Parameters</caption>
           </table>
