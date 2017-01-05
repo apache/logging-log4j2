@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.8" date="2017-MM-DD" description="GA Release 2.8">
+      <action issue="LOG4J2-1762" dev="mikes" type="fix">
+        Add Builder to GelfLayout.
+      </action>
       <action issue="LOG4J2-1649" dev="rgoers" type="fix" due-to="Georg Friedrich">
         Insure the ConfigurationScheduler shuts down without blocking.
       </action>
