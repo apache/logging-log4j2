@@ -231,6 +231,9 @@
       <action issue="LOG4J2-1302" dev="rpopma" type="update">
         The log4j-slf4j-impl module now declares a runtime dependency on log4j-core. While not technically required, this makes the log4j-slf4j-impl module behave similarly to slf4j-log4j12, and facilitates migration to Log4j 2.
       </action>
+      <action issue="LOG4J2-1773" dev="mattsicker" type="add">
+        Add StatusLoggerRule to allow unit tests to set a status level.
+      </action>
       <action issue="LOG4J2-424" dev="mattsicker" type="add">
         Add non-string data type support to JdbcAppender via new ColumnMapping plugin.
       </action>
