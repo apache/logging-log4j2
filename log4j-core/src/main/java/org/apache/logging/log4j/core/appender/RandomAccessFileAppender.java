@@ -202,7 +202,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
      * @deprecated Use {@link #newBuilder()}.
      */
     @Deprecated
-    public static RandomAccessFileAppender createAppender(
+    public static <B extends Builder<B>> RandomAccessFileAppender createAppender(
             final String fileName,
             final String append,
             final String name,
@@ -221,7 +221,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final int bufferSize = Integers.parseInt(bufferSizeStr, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
-        return newBuilder()
+        return RandomAccessFileAppender.<B>newBuilder()
             .setAdvertise(isAdvertise)
             .setAdvertiseURI(advertiseURI)
             .setAppend(isAppend)

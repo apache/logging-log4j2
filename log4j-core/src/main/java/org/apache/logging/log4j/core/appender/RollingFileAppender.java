@@ -317,7 +317,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
      * @deprecated Use {@link #newBuilder()}.
      */
     @Deprecated
-    public static RollingFileAppender createAppender(
+    public static <B extends Builder<B>> RollingFileAppender createAppender(
             // @formatter:off
             final String fileName,
             final String filePattern,
@@ -337,7 +337,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             // @formatter:on
         final int bufferSize = Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE);
         // @formatter:off
-        return newBuilder()
+        return RollingFileAppender.<B>newBuilder()
                 .withAdvertise(Boolean.parseBoolean(advertise))
                 .withAdvertiseUri(advertiseUri)
                 .withAppend(Booleans.parseBoolean(append, true))

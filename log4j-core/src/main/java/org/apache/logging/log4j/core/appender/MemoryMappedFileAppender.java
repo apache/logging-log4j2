@@ -210,7 +210,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      * @deprecated Use {@link #newBuilder()}.
      */
     @Deprecated
-    public static MemoryMappedFileAppender createAppender(
+    public static <B extends Builder<B>> MemoryMappedFileAppender createAppender(
             // @formatter:off
             final String fileName, //
             final String append, //
@@ -232,7 +232,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
         final int regionLength = Integers.parseInt(regionLengthStr, MemoryMappedFileManager.DEFAULT_REGION_LENGTH);
 
         // @formatter:off
-        return newBuilder()
+        return MemoryMappedFileAppender.<B>newBuilder()
             .setAdvertise(isAdvertise)
             .setAdvertiseURI(advertiseURI)
             .setAppend(isAppend)

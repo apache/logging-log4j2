@@ -174,7 +174,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
      * @deprecated Use {@link #newBuilder()}
      */
     @Deprecated
-    public static FileAppender createAppender(
+    public static <B extends Builder<B>> FileAppender createAppender(
             // @formatter:off
             final String fileName,
             final String append,
@@ -189,7 +189,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             final String advertise,
             final String advertiseUri,
             final Configuration config) {
-        return newBuilder()
+        return FileAppender.<B>newBuilder()
             .withAdvertise(Boolean.parseBoolean(advertise))
             .withAdvertiseUri(advertiseUri)
             .withAppend(Booleans.parseBoolean(append, true))

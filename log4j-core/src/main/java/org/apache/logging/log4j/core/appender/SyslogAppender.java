@@ -46,7 +46,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
 @Plugin(name = "Syslog", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class SyslogAppender extends SocketAppender {
 
-    public static class Builder extends AbstractBuilder<Builder>
+    public static class Builder<B extends Builder<B>> extends AbstractBuilder<B>
             implements org.apache.logging.log4j.core.util.Builder<SocketAppender> {
 
         @PluginBuilderAttribute(value = "facility")
@@ -103,7 +103,7 @@ public class SyslogAppender extends SocketAppender {
         @PluginElement("LoggerFields")
         private LoggerFields[] loggerFields;
 
-        @SuppressWarnings("resource")
+        @SuppressWarnings({"resource", "unchecked"})
         @Override
         public SyslogAppender build() {
             final Protocol protocol = getProtocol();
@@ -210,94 +210,94 @@ public class SyslogAppender extends SocketAppender {
             return loggerFields;
         }
 
-        public Builder setFacility(final Facility facility) {
+        public B setFacility(final Facility facility) {
             this.facility = facility;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setId(final String id) {
+        public B setId(final String id) {
             this.id = id;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setEnterpriseNumber(final int enterpriseNumber) {
+        public B setEnterpriseNumber(final int enterpriseNumber) {
             this.enterpriseNumber = enterpriseNumber;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setIncludeMdc(final boolean includeMdc) {
+        public B setIncludeMdc(final boolean includeMdc) {
             this.includeMdc = includeMdc;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setMdcId(final String mdcId) {
+        public B setMdcId(final String mdcId) {
             this.mdcId = mdcId;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setMdcPrefix(final String mdcPrefix) {
+        public B setMdcPrefix(final String mdcPrefix) {
             this.mdcPrefix = mdcPrefix;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setEventPrefix(final String eventPrefix) {
+        public B setEventPrefix(final String eventPrefix) {
             this.eventPrefix = eventPrefix;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setNewLine(final boolean newLine) {
+        public B setNewLine(final boolean newLine) {
             this.newLine = newLine;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setEscapeNL(final String escapeNL) {
+        public B setEscapeNL(final String escapeNL) {
             this.escapeNL = escapeNL;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setAppName(final String appName) {
+        public B setAppName(final String appName) {
             this.appName = appName;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setMsgId(final String msgId) {
+        public B setMsgId(final String msgId) {
             this.msgId = msgId;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setExcludes(final String excludes) {
+        public B setExcludes(final String excludes) {
             this.excludes = excludes;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setIncludes(final String includes) {
+        public B setIncludes(final String includes) {
             this.includes = includes;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setRequired(final String required) {
+        public B setRequired(final String required) {
             this.required = required;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setFormat(final String format) {
+        public B setFormat(final String format) {
             this.format = format;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setCharsetName(final Charset charset) {
+        public B setCharsetName(final Charset charset) {
             this.charsetName = charset;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setExceptionPattern(final String exceptionPattern) {
+        public B setExceptionPattern(final String exceptionPattern) {
             this.exceptionPattern = exceptionPattern;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setLoggerFields(final LoggerFields[] loggerFields) {
+        public B setLoggerFields(final LoggerFields[] loggerFields) {
             this.loggerFields = loggerFields;
-            return this;
+            return asBuilder();
         }
     }
     
@@ -350,7 +350,7 @@ public class SyslogAppender extends SocketAppender {
      * @deprecated Use {@link #newSyslogAppenderBuilder()}.
      */
     @Deprecated
-    public static SyslogAppender createAppender(
+    public static <B extends Builder<B>> SyslogAppender createAppender(
             // @formatter:off
             final String host,
             final int port,
@@ -386,7 +386,7 @@ public class SyslogAppender extends SocketAppender {
         // @formatter:on
 
         // @formatter:off
-        return newSyslogAppenderBuilder()
+        return SyslogAppender.<B>newSyslogAppenderBuilder()
                 .withHost(host)
                 .withPort(port)
                 .withProtocol(EnglishEnums.valueOf(Protocol.class, protocolStr))
@@ -423,8 +423,8 @@ public class SyslogAppender extends SocketAppender {
     
     // Calling this method newBuilder() does not compile
     @PluginBuilderFactory
-    public static Builder newSyslogAppenderBuilder() {
-        return new Builder();
+    public static <B extends Builder<B>> B newSyslogAppenderBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
 }
