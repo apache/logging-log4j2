@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.appender.db.ColumnMapping;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -31,6 +32,8 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * A configuration element used to configure which event properties are logged to which columns in the database table.
+ *
+ * @see ColumnMapping
  */
 @Plugin(name = "Column", category = Core.CATEGORY_NAME, printObject = true)
 public final class ColumnConfig {
@@ -106,7 +109,7 @@ public final class ColumnConfig {
             .setConfiguration(config)
             .setName(name)
             .setPattern(pattern)
-            .setLiteralValue(literalValue)
+            .setLiteral(literalValue)
             .setEventTimestamp(isEventTimestamp)
             .setUnicode(isUnicode)
             .setClob(isClob)
@@ -131,7 +134,7 @@ public final class ColumnConfig {
         private String pattern;
 
         @PluginBuilderAttribute
-        private String literalValue;
+        private String literal;
 
         @PluginBuilderAttribute
         private boolean isEventTimestamp;
@@ -160,7 +163,7 @@ public final class ColumnConfig {
 
         /**
          * The {@link PatternLayout} pattern to insert in this column. Mutually exclusive with
-         * {@code literalValue!=null} and {@code eventTimestamp=true}
+         * {@code literal!=null} and {@code eventTimestamp=true}
          */
         public Builder setPattern(final String pattern) {
             this.pattern = pattern;
@@ -171,14 +174,14 @@ public final class ColumnConfig {
          * The literal value to insert into the column as-is without any quoting or escaping. Mutually exclusive with
          * {@code pattern!=null} and {@code eventTimestamp=true}.
          */
-        public Builder setLiteralValue(final String literalValue) {
-            this.literalValue = literalValue;
+        public Builder setLiteral(final String literal) {
+            this.literal = literal;
             return this;
         }
 
         /**
          * If {@code "true"}, indicates that this column is a date-time column in which the event timestamp should be
-         * inserted. Mutually exclusive with {@code pattern!=null} and {@code literalValue!=null}.
+         * inserted. Mutually exclusive with {@code pattern!=null} and {@code literal!=null}.
          */
         public Builder setEventTimestamp(final boolean eventTimestamp) {
             isEventTimestamp = eventTimestamp;
@@ -209,7 +212,7 @@ public final class ColumnConfig {
             }
 
             final boolean isPattern = Strings.isNotEmpty(pattern);
-            final boolean isLiteralValue = Strings.isNotEmpty(literalValue);
+            final boolean isLiteralValue = Strings.isNotEmpty(literal);
 
             if ((isPattern && isLiteralValue) || (isPattern && isEventTimestamp) || (isLiteralValue && isEventTimestamp)) {
                 LOGGER.error("The pattern, literal, and isEventTimestamp attributes are mutually exclusive.");
@@ -221,7 +224,7 @@ public final class ColumnConfig {
             }
 
             if (isLiteralValue) {
-                return new ColumnConfig(name, null, literalValue, false, false, false);
+                return new ColumnConfig(name, null, literal, false, false, false);
             }
 
             if (isPattern) {

@@ -35,7 +35,7 @@ public class ColumnConfigTest {
         final ColumnConfig config = ColumnConfig.newBuilder()
             .setName("col")
             .setPattern("%l")
-            .setLiteralValue("literal")
+            .setLiteral("literal")
             .build();
 
         assertNull("The result should be null.", config);
@@ -56,7 +56,7 @@ public class ColumnConfigTest {
     public void testLiteralAndDateNoConfig() {
         final ColumnConfig config = ColumnConfig.newBuilder()
             .setName("col")
-            .setLiteralValue("literal")
+            .setLiteral("literal")
             .setEventTimestamp(true)
             .build();
 
@@ -85,7 +85,7 @@ public class ColumnConfigTest {
         final ColumnConfig config = ColumnConfig.newBuilder()
             .setName("col")
             .setPattern(Strings.EMPTY)
-            .setLiteralValue(Strings.EMPTY)
+            .setLiteral(Strings.EMPTY)
             .setEventTimestamp(false)
             .build();
 
@@ -148,7 +148,7 @@ public class ColumnConfigTest {
         final ColumnConfig config = ColumnConfig.newBuilder()
             .setName("col2")
             .setPattern("%X{id} %level")
-            .setLiteralValue(Strings.EMPTY)
+            .setLiteral(Strings.EMPTY)
             .setEventTimestamp(false)
             .setUnicode(false)
             .setClob(true)
@@ -169,7 +169,7 @@ public class ColumnConfigTest {
         final ColumnConfig config = ColumnConfig.newBuilder()
             .setName("col3")
             .setPattern("%X{id} %level")
-            .setLiteralValue(Strings.EMPTY)
+            .setLiteral(Strings.EMPTY)
             .setEventTimestamp(false)
             .setUnicode(true)
             .setClob(false)
@@ -189,7 +189,7 @@ public class ColumnConfigTest {
     public void testLiteralColumn01() {
         final ColumnConfig config = ColumnConfig.newBuilder()
             .setName("col")
-            .setLiteralValue("literalValue01")
+            .setLiteral("literalValue01")
             .build();
 
         assertNotNull("The result should not be null.", config);
@@ -206,7 +206,7 @@ public class ColumnConfigTest {
     public void testLiteralColumn02() {
         final ColumnConfig config = ColumnConfig.newBuilder()
             .setName("col2")
-            .setLiteralValue("USER1.MY_SEQUENCE.NEXT")
+            .setLiteral("USER1.MY_SEQUENCE.NEXT")
             .setUnicode(true)
             .setClob(true)
             .build();
