@@ -17,20 +17,30 @@
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.io.StringReader;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
-import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.appender.db.ColumnMapping;
+import org.apache.logging.log4j.core.config.plugins.convert.DateTypeConverter;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
@@ -39,7 +49,9 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
     private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
 
-    private final List<Column> columns;
+    // NOTE: prepared statements are prepared in this order: column mappings, then column configs
+    private final List<ColumnMapping> columnMappings;
+    private final List<ColumnConfig> columnConfigs;
     private final ConnectionSource connectionSource;
     private final String sqlStatement;
 
@@ -48,11 +60,13 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private boolean isBatchSupported;
 
     private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
-                                final String sqlStatement, final List<Column> columns) {
+                                final String sqlStatement, final List<ColumnConfig> columnConfigs,
+                                final List<ColumnMapping> columnMappings) {
         super(name, bufferSize);
         this.connectionSource = connectionSource;
         this.sqlStatement = sqlStatement;
-        this.columns = columns;
+        this.columnConfigs = columnConfigs;
+        this.columnMappings = columnMappings;
     }
 
     @Override
@@ -95,24 +109,43 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
 
             int i = 1;
-            for (final Column column : this.columns) {
-                if (column.isEventTimestamp) {
-                    this.statement.setTimestamp(i++, new Timestamp(event.getTimeMillis()));
+            for (final ColumnMapping mapping : this.columnMappings) {
+                if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
+                    || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
+                    this.statement.setObject(i++, event.getContextData().toMap());
+                } else if (ThreadContextStack.class.isAssignableFrom(mapping.getType())) {
+                    this.statement.setObject(i++, event.getContextStack().asList());
+                } else if (Date.class.isAssignableFrom(mapping.getType())) {
+                    this.statement.setObject(i++,
+                        DateTypeConverter.fromMillis(event.getTimeMillis(), mapping.getType().asSubclass(Date.class)));
+                } else if (Clob.class.isAssignableFrom(mapping.getType())) {
+                    this.statement.setClob(i++, new StringReader(mapping.getLayout().toSerializable(event)));
+                } else if (NClob.class.isAssignableFrom(mapping.getType())) {
+                    this.statement.setNClob(i++, new StringReader(mapping.getLayout().toSerializable(event)));
                 } else {
-                    if (column.isClob) {
-                        reader = new StringReader(column.layout.toSerializable(event));
-                        if (column.isUnicode) {
-                            this.statement.setNClob(i++, reader);
-                        } else {
-                            this.statement.setClob(i++, reader);
-                        }
+                    final Object value = TypeConverters.convert(mapping.getLayout().toSerializable(event),
+                        mapping.getType(), null);
+                    if (value == null) {
+                        this.statement.setNull(i++, Types.NULL);
                     } else {
-                        if (column.isUnicode) {
-                            this.statement.setNString(i++, column.layout.toSerializable(event));
-                        } else {
-                            this.statement.setString(i++, column.layout.toSerializable(event));
-                        }
+                        this.statement.setObject(i++, value);
                     }
+                }
+            }
+            for (final ColumnConfig column : this.columnConfigs) {
+                if (column.isEventTimestamp()) {
+                    this.statement.setTimestamp(i++, new Timestamp(event.getTimeMillis()));
+                } else if (column.isClob()) {
+                    reader = new StringReader(column.getLayout().toSerializable(event));
+                    if (column.isUnicode()) {
+                        this.statement.setNClob(i++, reader);
+                    } else {
+                        this.statement.setClob(i++, reader);
+                    }
+                } else if (column.isUnicode()) {
+                    this.statement.setNString(i++, column.getLayout().toSerializable(event));
+                } else {
+                    this.statement.setString(i++, column.getLayout().toSerializable(event));
                 }
             }
 
@@ -173,15 +206,38 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * @param tableName The name of the database table to insert log events into.
      * @param columnConfigs Configuration information about the log table columns.
      * @return a new or existing JDBC manager as applicable.
+     * @deprecated use {@link #getManager(String, int, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
      */
+    @Deprecated
     public static JdbcDatabaseManager getJDBCDatabaseManager(final String name, final int bufferSize,
                                                              final ConnectionSource connectionSource,
                                                              final String tableName,
                                                              final ColumnConfig[] columnConfigs) {
 
-        return AbstractDatabaseManager.getManager(
-                name, new FactoryData(bufferSize, connectionSource, tableName, columnConfigs), getFactory()
-        );
+        return getManager(name,
+            new FactoryData(bufferSize, connectionSource, tableName, columnConfigs, new ColumnMapping[0]),
+            getFactory());
+    }
+
+    /**
+     * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
+     *
+     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize The size of the log event buffer.
+     * @param connectionSource The source for connections to the database.
+     * @param tableName The name of the database table to insert log events into.
+     * @param columnConfigs Configuration information about the log table columns.
+     * @param columnMappings column mapping configuration (including type conversion).
+     * @return a new or existing JDBC manager as applicable.
+     */
+    public static JdbcDatabaseManager getManager(final String name,
+                                                 final int bufferSize,
+                                                 final ConnectionSource connectionSource,
+                                                 final String tableName,
+                                                 final ColumnConfig[] columnConfigs,
+                                                 final ColumnMapping[] columnMappings) {
+        return getManager(name, new FactoryData(bufferSize, connectionSource, tableName, columnConfigs, columnMappings),
+            getFactory());
     }
 
     private static JdbcDatabaseManagerFactory getFactory() {
@@ -192,16 +248,18 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * Encapsulates data that {@link JdbcDatabaseManagerFactory} uses to create managers.
      */
     private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
-        private final ColumnConfig[] columnConfigs;
         private final ConnectionSource connectionSource;
         private final String tableName;
+        private final ColumnConfig[] columnConfigs;
+        private final ColumnMapping[] columnMappings;
 
         protected FactoryData(final int bufferSize, final ConnectionSource connectionSource, final String tableName,
-                              final ColumnConfig[] columnConfigs) {
+                              final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings) {
             super(bufferSize);
             this.connectionSource = connectionSource;
             this.tableName = tableName;
             this.columnConfigs = columnConfigs;
+            this.columnMappings = columnMappings;
         }
     }
 
@@ -211,50 +269,45 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private static final class JdbcDatabaseManagerFactory implements ManagerFactory<JdbcDatabaseManager, FactoryData> {
         @Override
         public JdbcDatabaseManager createManager(final String name, final FactoryData data) {
-            final StringBuilder columnPart = new StringBuilder();
-            final StringBuilder valuePart = new StringBuilder();
-            final List<Column> columns = new ArrayList<>();
-            int i = 0;
-            for (final ColumnConfig config : data.columnConfigs) {
-                if (i++ > 0) {
-                    columnPart.append(',');
-                    valuePart.append(',');
-                }
-
-                columnPart.append(config.getColumnName());
-
-                if (config.getLiteralValue() != null) {
-                    valuePart.append(config.getLiteralValue());
-                } else {
-                    columns.add(new Column(
-                            config.getLayout(), config.isEventTimestamp(), config.isUnicode(), config.isClob()
-                    ));
-                    valuePart.append('?');
-                }
+            final StringBuilder sb = new StringBuilder("INSERT INTO ").append(data.tableName).append(" (");
+            // so this gets a little more complicated now that there are two ways to configure column mappings, but
+            // both mappings follow the same exact pattern for the prepared statement
+            for (final ColumnMapping mapping : data.columnMappings) {
+                sb.append(mapping.getName()).append(',');
             }
+            for (final ColumnConfig config : data.columnConfigs) {
+                sb.append(config.getColumnName()).append(',');
+            }
+            // at least one of those arrays is guaranteed to be non-empty
+            sb.setCharAt(sb.length() - 1, ')');
+            sb.append(" VALUES (");
+            final List<ColumnMapping> columnMappings = new ArrayList<>(data.columnMappings.length);
+            for (final ColumnMapping mapping : data.columnMappings) {
+                if (Strings.isNotEmpty(mapping.getLiteralValue())) {
+                    sb.append(mapping.getLiteralValue());
+                } else {
+                    sb.append('?');
+                    columnMappings.add(mapping);
+                }
+                sb.append(',');
+            }
+            final List<ColumnConfig> columnConfigs = new ArrayList<>(data.columnConfigs.length);
+            for (final ColumnConfig config : data.columnConfigs) {
+                if (Strings.isNotEmpty(config.getLiteralValue())) {
+                    sb.append(config.getLiteralValue());
+                } else {
+                    sb.append('?');
+                    columnConfigs.add(config);
+                }
+                sb.append(',');
+            }
+            // at least one of those arrays is guaranteed to be non-empty
+            sb.setCharAt(sb.length() - 1, ')');
+            final String sqlStatement = sb.toString();
 
-            final String sqlStatement = "INSERT INTO " + data.tableName + " (" + columnPart + ") VALUES (" +
-                    valuePart + ')';
-
-            return new JdbcDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement, columns);
+            return new JdbcDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement,
+                columnConfigs, columnMappings);
         }
     }
 
-    /**
-     * Encapsulates information about a database column and how to persist data to it.
-     */
-    private static final class Column {
-        private final PatternLayout layout;
-        private final boolean isEventTimestamp;
-        private final boolean isUnicode;
-        private final boolean isClob;
-
-        private Column(final PatternLayout layout, final boolean isEventDate, final boolean isUnicode,
-                       final boolean isClob) {
-            this.layout = layout;
-            this.isEventTimestamp = isEventDate;
-            this.isUnicode = isUnicode;
-            this.isClob = isClob;
-        }
-    }
 }

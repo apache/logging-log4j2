@@ -27,6 +27,7 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -163,6 +164,7 @@ public abstract class AbstractJdbcAppenderTest {
 
         final long millis = System.currentTimeMillis();
 
+        ThreadContext.put("some_int", "42");
         final Logger logger = LogManager.getLogger(this.getClass().getName() + ".testFactoryMethodConfig");
         logger.debug("Factory logged message 01.");
         logger.error("Error from factory 02.", exception);
@@ -173,6 +175,8 @@ public abstract class AbstractJdbcAppenderTest {
         assertTrue("There should be at least one row.", resultSet.next());
 
         long date = resultSet.getTimestamp("eventDate").getTime();
+        long anotherDate = resultSet.getTimestamp("anotherDate").getTime();
+        assertEquals(date, anotherDate);
         assertTrue("The date should be later than pre-logging (1).", date >= millis);
         assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
         assertEquals("The literal column is not correct (1).", "Some Other Literal Value",
@@ -187,6 +191,8 @@ public abstract class AbstractJdbcAppenderTest {
         assertTrue("There should be two rows.", resultSet.next());
 
         date = resultSet.getTimestamp("eventDate").getTime();
+        anotherDate = resultSet.getTimestamp("anotherDate").getTime();
+        assertEquals(date, anotherDate);
         assertTrue("The date should be later than pre-logging (2).", date >= millis);
         assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
         assertEquals("The literal column is not correct (2).", "Some Other Literal Value",

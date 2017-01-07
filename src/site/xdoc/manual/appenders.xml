@@ -955,7 +955,12 @@ CREATE TABLE logs (
           <p>The JDBCAppender writes log events to a relational database table using standard JDBC. It can be configured
             to obtain JDBC connections using a JNDI <code>DataSource</code> or a custom factory method. Whichever
             approach you take, it <strong><em>must</em></strong> be backed by a connection pool. Otherwise, logging
-            performance will suffer greatly.</p>
+            performance will suffer greatly. If batch statements are supported by the configured JDBC driver and a
+            <code>bufferSize</code> is configured to be a positive number, then log events will be batched. Note that as
+            of Log4j 2.8, there are two ways to configure log event to column mappings: the original <code>ColumnConfig</code>
+            style that only allows strings and timestamps, and the new <code>ColumnMapping</code> plugin that uses Log4j's
+            built-in type conversion to allow for more data types (this is the same plugin as in the
+            <a href="#CassandraAppender">Cassandra Appender</a>).</p>
           <table>
             <caption align="top">JDBCAppender Parameters</caption>
             <tr>
@@ -1001,8 +1006,30 @@ CREATE TABLE logs (
             <tr>
               <td>columnConfigs</td>
               <td>ColumnConfig[]</td>
-              <td><em>Required.</em> Information about the columns that log event data should be inserted into and how
+              <td><em>Required (and/or columnMappings).</em> Information about the columns that log event data should be inserted into and how
                 to insert that data. This is represented with multiple <code>&lt;Column&gt;</code> elements.</td>
+            </tr>
+            <tr>
+              <td>columnMappings</td>
+              <td>ColumnMapping[]</td>
+              <td><em>Required (and/or columnConfigs).</em> A list of column mapping configurations. Each column must
+                specify a column name. Each column can have a conversion type specified by its fully qualified class
+                name. By default, the conversion type is <code>String</code>. If the configured type is
+                assignment-compatible with
+                <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/util/ReadOnlyStringMap.html">ReadOnlyStringMap</a>
+                /
+                <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/spi/ThreadContextMap.html">ThreadContextMap</a>
+                or
+                <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/spi/ThreadContextStack.html">ThreadContextStack</a>,
+                then that column will be populated with the MDC or NDC respectively (this is database-specific how they
+                handle inserting a <code>Map</code> or <code>List</code> value). If the configured type is
+                assignment-compatible with <code>java.util.Date</code>, then the log timestamp will be converted to
+                that configured date type. If the configured type is assignment-compatible with <code>java.sql.Clob</code>
+                or <code>java.sql.NClob</code>, then the formatted event will be set as a Clob or NClob respectively
+                (similar to the traditional ColumnConfig plugin). If a <code>literal</code> attribute is given, then its
+                value will be used as is in the <code>INSERT</code> query without any escaping. Otherwise, the layout or
+                pattern specified will be converted into the configured type and stored in that column.
+              </td>
             </tr>
           </table>
           <p>When configuring the JDBCAppender, you must specify a <code>ConnectionSource</code> implementation from

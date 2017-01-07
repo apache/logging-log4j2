@@ -30,6 +30,7 @@
       <Column name="logger" pattern="%logger" />
       <Column name="message" pattern="%message" isUnicode="false" />
       <Column name="exception" pattern="%ex{full}" isClob="true" />
+      <ColumnMapping name="anotherDate" type="java.sql.Timestamp"/>
     </Jdbc>
   </Appenders>
 
