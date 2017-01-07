@@ -17,7 +17,8 @@
 package org.apache.logging.log4j.nosql.appender.cassandra;
 
 import java.net.InetSocketAddress;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.datastax.driver.core.BatchStatement;
@@ -29,6 +30,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
+import org.apache.logging.log4j.core.config.plugins.convert.DateTypeConverter;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.net.SocketAddress;
 import org.apache.logging.log4j.spi.ThreadContextMap;
@@ -40,11 +42,6 @@ import org.apache.logging.log4j.util.Strings;
  * Manager for a Cassandra appender instance.
  */
 public class CassandraManager extends AbstractDatabaseManager {
-
-    static {
-        // pre-register custom type codecs
-        TypeCodecs.registerCustomCodecs();
-    }
 
     private static final int DEFAULT_PORT = 9042;
 
@@ -98,6 +95,8 @@ public class CassandraManager extends AbstractDatabaseManager {
                 values[i] = event.getContextData().toMap();
             } else if (ThreadContextStack.class.isAssignableFrom(columnMapping.getType())) {
                 values[i] = event.getContextStack().asList();
+            } else if (Date.class.isAssignableFrom(columnMapping.getType())) {
+                values[i] = DateTypeConverter.fromMillis(event.getTimeMillis(), columnMapping.getType().asSubclass(Date.class));
             } else {
                 values[i] = TypeConverters.convert(columnMapping.getLayout().toSerializable(event),
                     columnMapping.getType(), null);
@@ -156,14 +155,21 @@ public class CassandraManager extends AbstractDatabaseManager {
             }
             sb.setCharAt(sb.length() - 1, ')');
             sb.append(" VALUES (");
-            for (int i = 0; i < data.columns.length; i++) {
-                sb.append("?,");
+            final List<ColumnMapping> columnMappings = new ArrayList<>(data.columns.length);
+            for (final ColumnMapping column : data.columns) {
+                if (Strings.isNotEmpty(column.getLiteralValue())) {
+                    sb.append(column.getLiteralValue());
+                } else {
+                    sb.append('?');
+                    columnMappings.add(column);
+                }
+                sb.append(',');
             }
             sb.setCharAt(sb.length() - 1, ')');
             final String insertQueryTemplate = sb.toString();
             LOGGER.debug("Using CQL for appender {}: {}", name, insertQueryTemplate);
             return new CassandraManager(name, data.getBufferSize(), cluster, data.keyspace, insertQueryTemplate,
-                Arrays.asList(data.columns), data.batched ? new BatchStatement(data.batchType) : null);
+                columnMappings, data.batched ? new BatchStatement(data.batchType) : null);
         }
     }
 

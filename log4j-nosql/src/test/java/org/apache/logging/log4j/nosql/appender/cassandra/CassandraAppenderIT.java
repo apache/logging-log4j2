@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.nosql.appender.cassandra;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.datastax.driver.core.Row;
@@ -30,7 +32,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Integration test for CassandraAppender.
@@ -39,6 +41,7 @@ public class CassandraAppenderIT {
 
     private static final String DDL = "CREATE TABLE logs (" +
         "id timeuuid PRIMARY KEY," +
+        "timeid timeuuid," +
         "message text," +
         "level text," +
         "marker text," +
@@ -69,6 +72,9 @@ public class CassandraAppenderIT {
         int i = 0;
         try (final Session session = CASSANDRA.connect()) {
             for (final Row row : session.execute("SELECT * FROM logs")) {
+                assertNotNull(row.get("id", UUID.class));
+                assertNotNull(row.get("timeid", UUID.class));
+                assertNotNull(row.get("timestamp", Date.class));
                 assertEquals("Test log message", row.getString("message"));
                 assertEquals("MARKER", row.getString("marker"));
                 assertEquals("INFO", row.getString("level"));

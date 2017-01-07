@@ -21,11 +21,12 @@
     <Cassandra name="Cassandra" clusterName="Test Cluster" keyspace="test" table="logs" bufferSize="10" batched="true">
       <SocketAddress host="localhost" port="9042"/>
       <ColumnMapping name="id" pattern="%uuid{TIME}" type="java.util.UUID"/>
+      <ColumnMapping name="timeid" literal="now()"/>
       <ColumnMapping name="message" pattern="%message"/>
       <ColumnMapping name="level" pattern="%level"/>
       <ColumnMapping name="marker" pattern="%marker"/>
       <ColumnMapping name="logger" pattern="%logger"/>
-      <ColumnMapping name="timestamp" pattern="%date{UNIX_MILLIS}" type="java.lang.Long"/>
+      <ColumnMapping name="timestamp" type="java.util.Date"/>
       <ColumnMapping name="mdc" type="org.apache.logging.log4j.spi.ThreadContextMap"/>
       <ColumnMapping name="ndc" type="org.apache.logging.log4j.spi.ThreadContextStack"/>
     </Cassandra>

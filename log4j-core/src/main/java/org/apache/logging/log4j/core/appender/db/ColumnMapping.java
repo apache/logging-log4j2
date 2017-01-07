@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
+import java.util.Date;
+
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -28,6 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
@@ -38,24 +42,17 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 @Plugin(name = "ColumnMapping", category = Core.CATEGORY_NAME, printObject = true)
 public class ColumnMapping {
 
-    /**
-     * Column name.
-     */
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     private final String name;
-    /**
-     * Layout of value to write to database (before type conversion). Not applicable if {@link #type} is a collection.
-     */
     private final StringLayout layout;
-    /**
-     * Class to convert value to before storing in database. If the type is compatible with {@link ThreadContextMap} or
-     * {@link ReadOnlyStringMap}, then the MDC will be used. If the type is compatible with {@link ThreadContextStack},
-     * then the NDC will be used.
-     */
+    private final String literalValue;
     private final Class<?> type;
 
-    private ColumnMapping(final String name, final StringLayout layout, final Class<?> type) {
+    private ColumnMapping(final String name, final StringLayout layout, final String literalValue, final Class<?> type) {
         this.name = name;
         this.layout = layout;
+        this.literalValue = literalValue;
         this.type = type;
     }
 
@@ -65,6 +62,10 @@ public class ColumnMapping {
 
     public StringLayout getLayout() {
         return layout;
+    }
+
+    public String getLiteralValue() {
+        return literalValue;
     }
 
     public Class<?> getType() {
@@ -89,27 +90,55 @@ public class ColumnMapping {
         private String pattern;
 
         @PluginBuilderAttribute
+        private String literal;
+
+        @PluginBuilderAttribute
         @Required(message = "No conversion type provided")
         private Class<?> type = String.class;
 
         @PluginConfiguration
         private Configuration configuration;
 
+        /**
+         * Column name.
+         */
         public Builder setName(final String name) {
             this.name = name;
             return this;
         }
 
+        /**
+         * Layout of value to write to database (before type conversion). Not applicable if {@link #setType(Class)} is
+         * a {@link ReadOnlyStringMap}, {@link ThreadContextMap}, or {@link ThreadContextStack}.
+         */
         public Builder setLayout(final StringLayout layout) {
             this.layout = layout;
             return this;
         }
 
+        /**
+         * Pattern to use as a {@link PatternLayout}. Convenient shorthand for {@link #setLayout(StringLayout)} with a
+         * PatternLayout.
+         */
         public Builder setPattern(final String pattern) {
             this.pattern = pattern;
             return this;
         }
 
+        /**
+         * Literal value to use for populating a column. This is generally useful for functions, stored procedures,
+         * etc. No escaping will be done on this value.
+         */
+        public Builder setLiteral(final String literal) {
+            this.literal = literal;
+            return this;
+        }
+
+        /**
+         * Class to convert value to before storing in database. If the type is compatible with {@link ThreadContextMap} or
+         * {@link ReadOnlyStringMap}, then the MDC will be used. If the type is compatible with {@link ThreadContextStack},
+         * then the NDC will be used. If the type is compatible with {@link Date}, then the event timestamp will be used.
+         */
         public Builder setType(final Class<?> type) {
             this.type = type;
             return this;
@@ -129,13 +158,16 @@ public class ColumnMapping {
                     .build();
             }
             if (!(layout != null
+                || literal != null
+                || Date.class.isAssignableFrom(type)
                 || ReadOnlyStringMap.class.isAssignableFrom(type)
                 || ThreadContextMap.class.isAssignableFrom(type)
                 || ThreadContextStack.class.isAssignableFrom(type))) {
-                throw new IllegalStateException(
-                    "No layout specified and type (" + type + ") is not compatible with ThreadContextMap or ThreadContextStack");
+                LOGGER.error("No layout or literal value specified and type ({}) is not compatible with " +
+                    "ThreadContextMap, ThreadContextStack, or java.util.Date", type);
+                return null;
             }
-            return new ColumnMapping(name, layout, type);
+            return new ColumnMapping(name, layout, literal, type);
         }
     }
 }
