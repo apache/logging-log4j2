@@ -49,7 +49,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
 
         @PluginBuilderAttribute
         private byte[] footer;
-        
+
         @PluginBuilderAttribute
         private byte[] header;
 
@@ -222,15 +222,17 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      */
     public static void writeTo(final byte[] data, int offset, int length, final ByteBufferDestination destination) {
         int chunk = 0;
-        ByteBuffer buffer = destination.getByteBuffer();
-        do {
-            if (length > buffer.remaining()) {
-                buffer = destination.drain(buffer);
-            }
-            chunk = Math.min(length, buffer.remaining());
-            buffer.put(data, offset, chunk);
-            offset += chunk;
-            length -= chunk;
-        } while (length > 0);
+        synchronized (destination) {
+            ByteBuffer buffer = destination.getByteBuffer();
+            do {
+                if (length > buffer.remaining()) {
+                    buffer = destination.drain(buffer);
+                }
+                chunk = Math.min(length, buffer.remaining());
+                buffer.put(data, offset, chunk);
+                offset += chunk;
+                length -= chunk;
+            } while (length > 0);
+        }
     }
 }
