@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.junit;
 
+import java.util.Collections;
+import java.util.Map;
 import javax.naming.Context;
 
 import org.junit.rules.TestRule;
@@ -30,12 +32,14 @@ import org.springframework.mock.jndi.SimpleNamingContextBuilder;
  */
 public class JndiRule implements TestRule {
 
-    private final String name;
-    private final Object value;
+    private final Map<String, Object> initialBindings;
 
     public JndiRule(final String name, final Object value) {
-        this.name = name;
-        this.value = value;
+        this.initialBindings = Collections.singletonMap(name, value);
+    }
+
+    public JndiRule(final Map<String, Object> initialBindings) {
+        this.initialBindings = initialBindings;
     }
 
     @Override
@@ -43,7 +47,10 @@ public class JndiRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                SimpleNamingContextBuilder.emptyActivatedContextBuilder().bind(name, value);
+                final SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
+                for (final Map.Entry<String, Object> entry : initialBindings.entrySet()) {
+                    builder.bind(entry.getKey(), entry.getValue());
+                }
                 base.evaluate();
             }
         };

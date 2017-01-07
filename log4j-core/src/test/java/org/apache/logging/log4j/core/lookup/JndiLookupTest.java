@@ -18,14 +18,12 @@ package org.apache.logging.log4j.core.lookup;
 
 import java.util.Arrays;
 import java.util.Collection;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
+import org.apache.logging.log4j.junit.JndiRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockejb.jndi.MockContextFactory;
 
 import static org.junit.Assert.*;
 
@@ -41,24 +39,15 @@ public class JndiLookupTest {
     private static final String TEST_STRINGS_NAME = "string-collection";
     private static final Collection<String> TEST_STRINGS_COLLECTION = Arrays.asList("one", "two", "three");
 
-    private Context context;
+    @Rule
+    public JndiRule jndiRule = new JndiRule(createBindings());
 
-    @Before
-    public void before() throws NamingException {
-        MockContextFactory.setAsInitial();
-        context = new InitialContext();
-        context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
-        context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_INTEGRAL_NAME, TEST_INTEGRAL_VALUE);
-        context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_STRINGS_NAME, TEST_STRINGS_COLLECTION);
-    }
-
-    @After
-    public void after() {
-        try {
-            context.close();
-        } catch (final NamingException ignored) {
-        }
-        MockContextFactory.revertSetAsInitial();
+    private Map<String, Object> createBindings() {
+        final Map<String, Object> map = new HashMap<>();
+        map.put(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
+        map.put(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_INTEGRAL_NAME, TEST_INTEGRAL_VALUE);
+        map.put(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_STRINGS_NAME, TEST_STRINGS_COLLECTION);
+        return map;
     }
 
     @Test
