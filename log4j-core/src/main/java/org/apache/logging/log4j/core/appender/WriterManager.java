@@ -122,9 +122,7 @@ public class WriterManager extends AbstractManager {
     /**
      * Some output streams synchronize writes while others do not. Synchronizing here insures that
      * log events won't be intertwined.
-     * @param bytes The serialized Log event.
-     * @param offset The offset into the byte array.
-     * @param length The number of bytes to write.
+     * @param str the string to write
      * @throws AppenderLoggingException if an error occurs.
      */
     protected synchronized void write(final String str)  {
