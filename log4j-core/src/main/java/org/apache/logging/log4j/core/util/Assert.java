@@ -16,11 +16,57 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.util.Map;
+
 /**
  * Utility class providing common validation logic.
  */
 public final class Assert {
     private Assert() {
+    }
+
+    /**
+     * Checks if an object has empty semantics. The following scenarios are considered empty:
+     * <ul>
+     * <li>{@code null}</li>
+     * <li>empty {@link CharSequence}</li>
+     * <li>empty array</li>
+     * <li>empty {@link Iterable}</li>
+     * <li>empty {@link Map}</li>
+     * </ul>
+     *
+     * @param o value to check for emptiness
+     * @return true if the value is empty, false otherwise
+     * @since 2.8
+     */
+    public static boolean isEmpty(final Object o) {
+        if (o == null) {
+            return true;
+        }
+        if (o instanceof CharSequence) {
+            return ((CharSequence) o).length() == 0;
+        }
+        if (o.getClass().isArray()) {
+            return ((Object[]) o).length == 0;
+        }
+        if (o instanceof Iterable) {
+            return !((Iterable<?>) o).iterator().hasNext();
+        }
+        if (o instanceof Map) {
+            return ((Map<?, ?>) o).isEmpty();
+        }
+        return false;
+    }
+
+    /**
+     * Opposite of {@link #isEmpty(Object)}.
+     *
+     * @param o value to check for non-emptiness
+     * @return true if the value is non-empty, false otherwise
+     * @since 2.8
+     */
+    public static boolean isNonEmpty(final Object o) {
+        return !isEmpty(o);
     }
 
     public static int valueIsAtLeast(final int value, final int minValue) {

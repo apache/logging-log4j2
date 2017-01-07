@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -49,28 +50,7 @@ public class RequiredValidator implements ConstraintValidator<Required> {
 
     @Override
     public boolean isValid(final String name, final Object value) {
-        if (value == null) {
-            return err(name);
-        }
-        if (value instanceof CharSequence) {
-            final CharSequence sequence = (CharSequence) value;
-            return sequence.length() != 0 || err(name);
-        }
-        final Class<?> clazz = value.getClass();
-        if (clazz.isArray()) {
-            final Object[] array = (Object[]) value;
-            return array.length != 0 || err(name);
-        }
-        if (Collection.class.isAssignableFrom(clazz)) {
-            final Collection<?> collection = (Collection<?>) value;
-            return collection.size() != 0 || err(name);
-        }
-        if (Map.class.isAssignableFrom(clazz)) {
-            final Map<?, ?> map = (Map<?, ?>) value;
-            return map.size() != 0 || err(name);
-        }
-        // LOGGER.debug("Encountered type [{}] which can only be checked for null.", clazz.getName());
-        return true;
+        return Assert.isNonEmpty(value) || err(name);
     }
 
     private boolean err(final String name) {
