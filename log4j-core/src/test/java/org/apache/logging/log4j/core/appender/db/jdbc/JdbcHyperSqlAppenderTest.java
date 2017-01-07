@@ -50,7 +50,7 @@ public class JdbcHyperSqlAppenderTest extends AbstractJdbcAppenderTest {
     protected String toCreateTableSqlString(final String tableName) {
         return "CREATE TABLE " + tableName + " ( " +
                     "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), " +
-                    "logger VARCHAR(255), message VARCHAR(1024), exception CLOB" +
+                    "logger VARCHAR(255), message VARCHAR(1024), exception CLOB, anotherDate TIMESTAMP" +
                 " )";
     }
 }

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.sql.PreparedStatement;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -27,21 +28,26 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
+import org.apache.logging.log4j.core.appender.db.ColumnMapping;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Booleans;
 
 /**
  * This Appender writes logging events to a relational database using standard JDBC mechanisms. It takes a list of
- * {@link ColumnConfig}s with which it determines how to save the event data into the appropriate columns in the table.
+ * {@link ColumnConfig}s and/or {@link ColumnMapping}s with which it determines how to save the event data into the
+ * appropriate columns in the table. ColumnMapping is new as of Log4j 2.8 and supports
+ * {@linkplain TypeConverter type conversion} and persistence using {@link PreparedStatement#setObject(int, Object)}.
  * A {@link ConnectionSource} plugin instance instructs the appender (and {@link JdbcDatabaseManager}) how to connect to
  * the database. This appender can be reconfigured at run time.
  *
  * @see ColumnConfig
+ * @see ColumnMapping
  * @see ConnectionSource
  */
 @Plugin(name = "JDBC", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
@@ -113,9 +119,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         @PluginElement("ColumnConfigs")
         private ColumnConfig[] columnConfigs;
 
-        // TODO: LOG4J2-424
-//        @PluginElement("ColumnMappings")
-//        private ColumnMapping[] columnMappings;
+        @PluginElement("ColumnMappings")
+        private ColumnMapping[] columnMappings;
 
         /**
          * The connections source from which database connections should be retrieved.
@@ -150,17 +155,22 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
             return asBuilder();
         }
 
-//        public B setColumnMappings(final ColumnMapping... columnMappings) {
-//            this.columnMappings = columnMappings;
-//            return asBuilder();
-//        }
+        public B setColumnMappings(final ColumnMapping... columnMappings) {
+            this.columnMappings = columnMappings;
+            return asBuilder();
+        }
 
         @Override
         public JdbcAppender build() {
+            if (Assert.isEmpty(columnConfigs) && Assert.isEmpty(columnMappings)) {
+                LOGGER.error("Cannot create JdbcAppender without any columns configured.");
+                return null;
+            }
             final String managerName = "JdbcManager{name=" + getName() + ", bufferSize=" + bufferSize + ", tableName=" +
-                tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + '}';
-            final JdbcDatabaseManager manager = JdbcDatabaseManager.getJDBCDatabaseManager(managerName, bufferSize,
-                connectionSource, tableName, columnConfigs);
+                tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings=" +
+                Arrays.toString(columnMappings) + '}';
+            final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize,
+                connectionSource, tableName, columnConfigs, columnMappings);
             if (manager == null) {
                 return null;
             }
