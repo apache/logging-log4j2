@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
@@ -62,13 +62,13 @@ public final class SyslogLayout extends AbstractStringLayout {
             setCharset(StandardCharsets.UTF_8);
         }
 
-        @PluginAttribute(value = "facility")
+        @PluginBuilderAttribute
         private Facility facility = Facility.LOCAL0;
 
-        @PluginAttribute(value = "newLine")
+        @PluginBuilderAttribute("newLine")
         private boolean includeNewLine;
 
-        @PluginAttribute("newLineEscape")
+        @PluginBuilderAttribute("newLineEscape")
         private String escapeNL;
 
         @Override
@@ -208,11 +208,8 @@ public final class SyslogLayout extends AbstractStringLayout {
      * @deprecated Use {@link #newBuilder()}.
      */
     @Deprecated
-    public static SyslogLayout createLayout(
-            @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
-            @PluginAttribute(value = "newLine") final boolean includeNewLine,
-            @PluginAttribute("newLineEscape") final String escapeNL,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset) {
+    public static SyslogLayout createLayout(final Facility facility, final boolean includeNewLine,
+                                            final String escapeNL, final Charset charset) {
         return new SyslogLayout(facility, includeNewLine, escapeNL, charset);
     }
 
