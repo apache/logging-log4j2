@@ -20,36 +20,32 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.junit.JdbcRule;
 
 /**
- * Tests the JDBC appender with the H2 database in memory.
+ *
  */
-public class JdbcH2AppenderTest extends AbstractJdbcAppenderTest {
-    private static final String USER_ID = "sa";
-    private static final String PASSWORD = Strings.EMPTY;
-
-    public JdbcH2AppenderTest() {
-        super("h2");
-    }
-
-    /**
-     * Referred from log4j2-h2-factory-method.xml.
-     */
-    public static Connection getConfigConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:h2:mem:Log4j", USER_ID, PASSWORD);
-    }
-
-    @Override
-    protected Connection newConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:h2:mem:Log4j", USER_ID, PASSWORD);
-    }
-
-    @Override
-    protected String toCreateTableSqlString(final String tableName) {
-        return "CREATE TABLE " + tableName + " ( " +
+public class JdbcAppenderH2FactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
+    public JdbcAppenderH2FactoryMethodTest() {
+        super(
+            new JdbcRule(
+                new ConnectionSource() {
+                    @Override
+                    public Connection getConnection() throws SQLException {
+                        return JdbcAppenderH2FactoryMethodTest.getConnection();
+                    }
+                },
+                "CREATE TABLE fmLogEntry (" +
                     "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), " +
                     "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP" +
-                " )";
+                    ")",
+                "DROP TABLE fmLogEntry"
+            ),
+            "h2"
+        );
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:h2:mem:Log4j", "sa", "");
     }
 }

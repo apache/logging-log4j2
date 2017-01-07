@@ -20,37 +20,31 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.junit.JdbcRule;
 
 /**
- * Tests the JDBC appender with the HyperSQL database (a.k.a. HSQLDB) in memory.
+ *
  */
-public class JdbcHyperSqlAppenderTest extends AbstractJdbcAppenderTest {
-    private static final String USER_ID = "sa";
-    private static final String PASSWORD = Strings.EMPTY;
-
-    public JdbcHyperSqlAppenderTest() {
-        super("hsqldb");
-    }
-
-    /**
-     * Referred from log4j2-hsqldb-factory-method.xml.
-     */
-    @SuppressWarnings("unused")
-    public static Connection getConfigConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j;ifexists=true", USER_ID, PASSWORD);
-    }
-
-    @Override
-    protected Connection newConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", USER_ID, PASSWORD);
-    }
-
-    @Override
-    protected String toCreateTableSqlString(final String tableName) {
-        return "CREATE TABLE " + tableName + " ( " +
+public class JdbcAppenderHsqlFactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
+    public JdbcAppenderHsqlFactoryMethodTest() {
+        super(new JdbcRule(
+                new ConnectionSource() {
+                    @Override
+                    public Connection getConnection() throws SQLException {
+                        return JdbcAppenderHsqlFactoryMethodTest.getConnection();
+                    }
+                },
+                "CREATE TABLE fmLogEntry (" +
                     "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), " +
                     "logger VARCHAR(255), message VARCHAR(1024), exception CLOB, anotherDate TIMESTAMP" +
-                " )";
+                    ")",
+                "DROP TABLE fmLogEntry"
+            ),
+            "hsqldb"
+        );
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");
     }
 }
