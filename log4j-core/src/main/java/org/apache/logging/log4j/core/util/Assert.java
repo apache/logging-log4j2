@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -49,8 +50,8 @@ public final class Assert {
         if (o.getClass().isArray()) {
             return ((Object[]) o).length == 0;
         }
-        if (o instanceof Iterable) {
-            return !((Iterable<?>) o).iterator().hasNext();
+        if (o instanceof Collection) {
+            return ((Collection<?>) o).isEmpty();
         }
         if (o instanceof Map) {
             return ((Map<?, ?>) o).isEmpty();
@@ -67,6 +68,34 @@ public final class Assert {
      */
     public static boolean isNonEmpty(final Object o) {
         return !isEmpty(o);
+    }
+
+    /**
+     * Checks a value for emptiness and throws an IllegalArgumentException if it's empty.
+     *
+     * @param value value to check for emptiness
+     * @param <T>   type of value
+     * @return the provided value if non-empty
+     * @since 2.8
+     */
+    public static <T> T requireNonEmpty(final T value) {
+        return requireNonEmpty(value, "");
+    }
+
+    /**
+     * Checks a value for emptiness and throws an IllegalArgumentException if it's empty.
+     *
+     * @param value   value to check for emptiness
+     * @param message message to provide in exception
+     * @param <T>     type of value
+     * @return the provided value if non-empty
+     * @since 2.8
+     */
+    public static <T> T requireNonEmpty(final T value, final String message) {
+        if (isEmpty(value)) {
+            throw new IllegalArgumentException(message);
+        }
+        return value;
     }
 
     public static int valueIsAtLeast(final int value, final int minValue) {
