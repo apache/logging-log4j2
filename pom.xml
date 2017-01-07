@@ -596,18 +596,6 @@
         <version>${activemq.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.mockejb</groupId>
-        <artifactId>mockejb</artifactId>
-        <version>0.6-beta2</version>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
         <version>0.10.1.1</version>

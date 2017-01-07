@@ -232,11 +232,6 @@
     </dependency>
     <!-- JPA, JNDI and JMS tests -->
     <dependency>
-      <groupId>org.mockejb</groupId>
-      <artifactId>mockejb</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-broker</artifactId>
       <scope>test</scope>
