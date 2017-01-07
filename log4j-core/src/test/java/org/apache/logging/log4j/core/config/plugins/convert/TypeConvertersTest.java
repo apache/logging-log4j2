@@ -163,6 +163,16 @@ public class TypeConvertersTest {
                 { "c:/temp", new File("c:/temp"), null, File.class },
                 // JRE Class
                 { TypeConvertersTest.class.getName(), TypeConvertersTest.class, null, Class.class },
+                { "boolean", boolean.class, null, Class.class },
+                { "byte", byte.class, null, Class.class },
+                { "char", char.class, null, Class.class },
+                { "double", double.class, null, Class.class },
+                { "float", float.class, null, Class.class },
+                { "int", int.class, null, Class.class },
+                { "long", long.class, null, Class.class },
+                { "short", short.class, null, Class.class },
+                { "void", void.class, null, Class.class },
+                { "\t", Object.class, Object.class.getName(), Class.class },
                 { "\n", null, null, Class.class },
                 // JRE URL
                 { "http://locahost", new URL("http://locahost"), null, URL.class },
