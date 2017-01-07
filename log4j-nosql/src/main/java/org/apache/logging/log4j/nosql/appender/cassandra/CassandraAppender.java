@@ -32,6 +32,9 @@ import org.apache.logging.log4j.core.util.Clock;
 
 /**
  * Appender plugin that uses a Cassandra database.
+ *
+ * @see SocketAddress
+ * @see ColumnMapping
  */
 @Plugin(name = "Cassandra", category = Core.CATEGORY_NAME, elementType = CassandraAppender.ELEMENT_TYPE, printObject = true)
 public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager> {

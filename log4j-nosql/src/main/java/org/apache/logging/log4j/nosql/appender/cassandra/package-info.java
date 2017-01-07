@@ -17,6 +17,7 @@
 /**
  * Log4j appender plugin and supporting classes for Apache Cassandra.
  *
+ * @see <a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#CassandraAppender">Cassandra Appender manual</a>
  * @since 2.8
  */
 package org.apache.logging.log4j.nosql.appender.cassandra;
