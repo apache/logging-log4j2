@@ -244,7 +244,7 @@ public final class GelfLayout extends AbstractStringLayout {
                final int compressionThreshold, final boolean includeStacktrace, final boolean includeThreadContext) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
-        this.additionalFields = additionalFields;
+        this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
         this.compressionType = compressionType;
         this.compressionThreshold = compressionThreshold;
         this.includeStacktrace = includeStacktrace;
