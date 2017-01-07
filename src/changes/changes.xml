@@ -228,6 +228,9 @@
       <action issue="LOG4J2-1302" dev="rpopma" type="update">
         The log4j-slf4j-impl module now declares a runtime dependency on log4j-core. While not technically required, this makes the log4j-slf4j-impl module behave similarly to slf4j-log4j12, and facilitates migration to Log4j 2.
       </action>
+      <action issue="LOG4J2-1770" dev="mattsicker" type="add">
+        Add a Builder to JdbcAppender and deprecate JdbcAppender.createAppender().
+      </action>
       <action issue="LOG4J2-1764" dev="mattsicker" type="add">
         Use MethodHandle in ContextDataFactory cached constructor.
       </action>
