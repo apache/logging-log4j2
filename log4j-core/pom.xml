@@ -224,6 +224,12 @@
       <artifactId>org.eclipse.persistence.jpa</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Useful mock classes and utilities -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- JPA, JNDI and JMS tests -->
     <dependency>
       <groupId>org.mockejb</groupId>

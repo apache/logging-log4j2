@@ -17,17 +17,14 @@
 package org.apache.logging.log4j.junit;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.mockejb.jndi.MockContext;
-import org.mockejb.jndi.MockContextFactory;
+import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 /**
- * JUnit rule to create a {@link MockContext} and bind an object to a name.
+ * JUnit rule to create a mock {@link Context} and bind an object to a name.
  *
  * @since 2.8
  */
@@ -46,23 +43,10 @@ public class JndiRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                try {
-                    MockContextFactory.setAsInitial();
-                    initialize();
-                    base.evaluate();
-                } finally {
-                    MockContextFactory.revertSetAsInitial();
-                }
+                SimpleNamingContextBuilder.emptyActivatedContextBuilder().bind(name, value);
+                base.evaluate();
             }
         };
     }
 
-    private void initialize() throws NamingException {
-        final String[] components = name.split("/");
-        Context context = new InitialContext();
-        for (int i = 0; i < components.length - 1; i++) {
-            context = context.createSubcontext(components[i]);
-        }
-        context.bind(components[components.length - 1], value);
-    }
 }
