@@ -43,6 +43,15 @@
         Log4j 2.x uses Maven 3 as its build tool. To build and install Log4j in your local Maven cache, from
         the root directory run: <kbd>mvn install</kbd>
       </p>
+      <p>
+        Note that if your <code>/etc/hosts</code> file does not include an entry for your computer's hostname, then
+        many unit tests may execute slowly due to DNS lookups to translate your hostname to an IP address in
+        <a class="javadoc" href="http://docs.oracle.com/javase/7/docs/api/java/net/InetAddress.html#getLocalHost()">InetAddress::getLocalHost</a>.
+        To remedy this, you can execute the following:
+      </p>
+      <pre class="prettyprint"><![CDATA[
+printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
+]]></pre>
       <p class="bg-warning">Note that in order to build the website, you need to use
           <a href="http://maven.apache.org/download.cgi#Maven_3.0.5">Maven 3.0.5</a> due to plugin compatibility
           issues as documented in
