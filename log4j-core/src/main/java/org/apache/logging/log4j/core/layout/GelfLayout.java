@@ -237,7 +237,7 @@ public final class GelfLayout extends AbstractStringLayout {
     @Deprecated
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
                       final int compressionThreshold, final boolean includeStacktrace) {
-        this(((LoggerContext) LogManager.getContext(false)).getConfiguration(), host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true);
+        this(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true);
     }
 
     private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
@@ -245,6 +245,9 @@ public final class GelfLayout extends AbstractStringLayout {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
+        if (this.additionalFields.length > 0 && config == null) {
+            throw new IllegalArgumentException("configuration needs to be set when there are additional fields");
+        }
         this.compressionType = compressionType;
         this.compressionThreshold = compressionThreshold;
         this.includeStacktrace = includeStacktrace;
@@ -266,7 +269,7 @@ public final class GelfLayout extends AbstractStringLayout {
             @PluginAttribute(value = "includeStacktrace",
                 defaultBoolean = true) final boolean includeStacktrace) {
             // @formatter:on
-        return new GelfLayout(((LoggerContext) LogManager.getContext(false)).getConfiguration(), host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true);
+        return new GelfLayout(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true);
     }
 
     @PluginBuilderFactory
