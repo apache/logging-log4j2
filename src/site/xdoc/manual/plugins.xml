@@ -129,7 +129,8 @@
             configuration in order to match the configuration item to its respective parameter. For plugin builders,
             the names of the fields will be used by default if no name is specified in the annotation. There are dozens
             of plugins in Log4j Core that can be used as examples for more complex scenarios including hierarchical
-            builder classes (e.g., see <code>FileAppender</code>).
+            builder classes (e.g., see <code>FileAppender</code>). See <a href="extending.html#Plugin_Builders">Extending
+            Log4j with Plugin Builders</a> for more details.
           </p>
           <h4>Attribute Types</h4>
             <dl>
