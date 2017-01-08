@@ -83,7 +83,7 @@ public class ConcurrentLoggingWithJsonLayoutTest {
         }
 
         // simple test to ensure content is not corrupted
-        final List<String> lines = Files.readAllLines(Paths.get(PATH), Charset.defaultCharset());
+        final List<String> lines = Files.readAllLines(new File(PATH).toPath(), Charset.defaultCharset());
         for (final String line : lines) {
             assertThat(line, startsWith("{\"timeMillis\":"));
             assertThat(line, endsWith("\"threadPriority\":5}"));
