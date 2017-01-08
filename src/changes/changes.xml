@@ -27,7 +27,7 @@
       <action issue="LOG4J2-1769" dev="rpopma" type="fix" due-to="Brandon Goodin">
         Fixed concurrency issue affecting all layouts except PatternLayout and GelfLayout, which caused scrambled output and exceptions when logging synchronously from multiple threads.
       </action>
-      <action issue="LOG4J2-1724" dev="mikes" type="fix" due-to="Alexander K">
+      <action issue="LOG4J2-1724" dev="mikes" type="fix" due-to="Alexander Krasnostavsky">
         Using variables in GelfLayout's additional fields at runtime.
       </action>
       <action issue="LOG4J2-1762" dev="mikes" type="fix">
