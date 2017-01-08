@@ -21,15 +21,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.logging.log4j.ThreadContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.JndiRule;
+import org.junit.ClassRule;
 import org.junit.Test;
-import org.mockejb.jndi.MockContextFactory;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
 
 import static org.junit.Assert.*;
 
@@ -44,27 +41,19 @@ public class InterpolatorTest {
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
 
-    private static Context context;
-
-    @BeforeClass
-    public static void before() throws NamingException {
-        System.setProperty(TESTKEY, TESTVAL);
-
-        MockContextFactory.setAsInitial();
-        context = new InitialContext();
-        context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
-    }
-
-    @AfterClass
-    public static void after() {
-        try {
-            context.close();
-        } catch (final NamingException ignored) {
+    @ClassRule
+    public static RuleChain rules = RuleChain.outerRule(new ExternalResource() {
+        @Override
+        protected void before() throws Throwable {
+            System.setProperty(TESTKEY, TESTVAL);
         }
-        MockContextFactory.revertSetAsInitial();
 
-        System.clearProperty(TESTKEY);
-    }
+        @Override
+        protected void after() {
+            System.clearProperty(TESTKEY);
+        }
+    }).around(new JndiRule(
+        JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME));
 
     @Test
     public void testLookup() {
@@ -93,7 +82,7 @@ public class InterpolatorTest {
         assertFalse(value.isEmpty());
         System.out.println(key + " = " + value);
     }
-    
+
     @Test
     public void testLookupWithDefaultInterpolator() {
         final StrLookup lookup = new Interpolator();

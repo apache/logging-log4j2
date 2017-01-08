@@ -191,7 +191,7 @@
     <logbackVersion>1.1.7</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.8.5</jackson2Version>
-    <springVersion>3.2.13.RELEASE</springVersion>
+    <springVersion>4.3.5.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion>
     <disruptorVersion>3.3.6</disruptorVersion>
     <conversantDisruptorVersion>1.2.8-JDK7</conversantDisruptorVersion>
@@ -594,18 +594,6 @@
         <groupId>org.apache.activemq</groupId>
         <artifactId>activemq-broker</artifactId>
         <version>${activemq.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mockejb</groupId>
-        <artifactId>mockejb</artifactId>
-        <version>0.6-beta2</version>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.kafka</groupId>
