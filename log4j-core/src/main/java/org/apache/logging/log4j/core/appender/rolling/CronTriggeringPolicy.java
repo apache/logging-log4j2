@@ -85,6 +85,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         }
         lastRollDate = lastRegularRoll;
         future = scheduler.scheduleWithCron(cronExpression, now, new CronTrigger());
+        LOGGER.debug(scheduler.toString());
     }
 
     /**

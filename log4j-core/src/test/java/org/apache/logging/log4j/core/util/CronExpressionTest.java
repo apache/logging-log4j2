@@ -66,6 +66,15 @@ public class CronExpressionTest {
     }
 
     @Test
+    public void testNextDay() throws Exception {
+        final CronExpression parser = new CronExpression("0 0 0 * * ?");
+        final Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        final Date fireDate = parser.getNextValidTimeAfter(date);
+        final Date expected = new GregorianCalendar(2015, 10, 3, 0, 0, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
+    @Test
     public void testPrevFireTime1() throws Exception {
         CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 L * ?");
         Date date = new GregorianCalendar(2015, 10, 2).getTime();
