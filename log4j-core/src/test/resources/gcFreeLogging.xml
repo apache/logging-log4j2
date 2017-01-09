@@ -66,7 +66,9 @@
       </PatternLayout>
     </MemoryMappedFile>
     <RandomAccessFile name="RandomAccessFileGelf" fileName="target/gcfree.json" immediateFlush="false" append="false">
-       <GelfLayout compressionType="OFF"/>
+       <GelfLayout compressionType="OFF">
+         <KeyValuePair key="foo" value="FOO"/>
+       </GelfLayout>
     </RandomAccessFile>
   </Appenders>
   <Loggers>

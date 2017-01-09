@@ -352,7 +352,9 @@ public final class GelfLayout extends AbstractStringLayout {
                 builder.append(QU);
                 JsonUtils.quoteAsString(additionalField.getKey(), builder);
                 builder.append("\":\"");
-                final String value = strSubstitutor.replace(event, additionalField.getValue());
+                final String value = valueNeedsLookup(additionalField.getValue())
+                    ? strSubstitutor.replace(event, additionalField.getValue())
+                    : additionalField.getValue();
                 JsonUtils.quoteAsString(toNullSafeString(value), builder);
                 builder.append(QC);
             }
@@ -388,6 +390,10 @@ public final class GelfLayout extends AbstractStringLayout {
         builder.append(Q);
         builder.append('}');
         return builder;
+    }
+
+    private static boolean valueNeedsLookup(final String value) {
+        return value != null && value.contains("${");
     }
 
     private static final TriConsumer<String, Object, StringBuilder> WRITE_KEY_VALUES_INTO = new TriConsumer<String, Object, StringBuilder>() {
