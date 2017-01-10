@@ -27,9 +27,11 @@ import com.datastax.driver.core.Session;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
 import static org.junit.Assert.*;
@@ -37,6 +39,7 @@ import static org.junit.Assert.*;
 /**
  * Integration test for CassandraAppender.
  */
+@Category(Appenders.Cassandra.class)
 public class CassandraAppenderIT {
 
     private static final String DDL = "CREATE TABLE logs (" +

@@ -19,24 +19,21 @@ package org.apache.logging.log4j.core.appender.db.jpa.converter;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
+@Category(Appenders.Jpa.class)
 public class ContextStackAttributeConverterTest {
     private ContextStackAttributeConverter converter;
 
     @Before
     public void setUp() {
         this.converter = new ContextStackAttributeConverter();
-    }
-
-    @After
-    public void tearDown() {
-
     }
 
     @Test

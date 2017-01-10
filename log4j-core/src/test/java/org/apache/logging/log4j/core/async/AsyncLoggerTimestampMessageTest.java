@@ -22,6 +22,7 @@ import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Clock;
@@ -35,6 +36,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
@@ -44,6 +46,7 @@ import static org.junit.Assert.*;
  * See LOG4J2-744.
  * </p>
  */
+@Category(AsyncLoggers.class)
 public class AsyncLoggerTimestampMessageTest {
 
     @BeforeClass

@@ -26,16 +26,19 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.junit.CleanFolders;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-1482
  */
+@Category(Layouts.Csv.class)
 public abstract class Log4j2_1482_Test {
 
 	static final String CONFIG_LOCATION = "log4j2-1482.xml";

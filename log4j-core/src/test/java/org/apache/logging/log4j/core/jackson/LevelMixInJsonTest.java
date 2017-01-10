@@ -18,7 +18,10 @@
 package org.apache.logging.log4j.core.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.categories.Layouts;
+import org.junit.experimental.categories.Category;
 
+@Category(Layouts.Json.class)
 public class LevelMixInJsonTest extends LevelMixInTest {
 
     @Override

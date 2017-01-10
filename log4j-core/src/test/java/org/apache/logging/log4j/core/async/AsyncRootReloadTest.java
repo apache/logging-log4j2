@@ -22,16 +22,19 @@ import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
 /**
  * Tests LOG4J2-807.
  */
+@Category(AsyncLoggers.class)
 public class AsyncRootReloadTest {
 
     private static final String ISSUE = "LOG4J2-807";

@@ -17,11 +17,14 @@
 
 package org.apache.logging.log4j.core.jackson;
 
+import org.apache.logging.log4j.categories.Layouts;
 import org.junit.Ignore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.experimental.categories.Category;
 
 @Ignore("Fails for #testNameOnly()")
+@Category(Layouts.Xml.class)
 public class LevelMixInXmlTest extends LevelMixInTest {
 
     @Override

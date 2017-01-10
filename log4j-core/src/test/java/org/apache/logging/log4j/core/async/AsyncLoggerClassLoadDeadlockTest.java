@@ -16,15 +16,18 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Test class loading deadlock condition from the LOG4J2-1457
  */
+@Category(AsyncLoggers.class)
 public class AsyncLoggerClassLoadDeadlockTest {
 
     static final int RING_BUFFER_SIZE = 128;

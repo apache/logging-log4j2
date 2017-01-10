@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import org.apache.logging.log4j.categories.Scripts;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
+import org.junit.experimental.categories.Category;
 
 /**
  *
  */
+@Category(Scripts.Groovy.class)
 public class ScriptFileFilterTest extends AbstractScriptFilterTest {
 
     private static final String CONFIG = "log4j-scriptFile-filters.xml";

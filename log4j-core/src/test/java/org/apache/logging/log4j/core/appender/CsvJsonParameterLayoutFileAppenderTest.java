@@ -22,12 +22,14 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
 import com.google.common.io.Files;
@@ -35,6 +37,7 @@ import com.google.common.io.Files;
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-1502
  */
+@Category(Layouts.Csv.class)
 public class CsvJsonParameterLayoutFileAppenderTest {
 
     private static final String FILE_PATH = "target/CsvJsonParameterLayoutFileAppenderTest.log";

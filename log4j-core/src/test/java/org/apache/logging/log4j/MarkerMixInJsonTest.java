@@ -17,10 +17,12 @@
 
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
+import org.junit.experimental.categories.Category;
 
+@Category(Layouts.Json.class)
 public class MarkerMixInJsonTest extends MarkerMixInTest {
 
     @Override

@@ -16,9 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.junit.experimental.categories.Category;
+
 // Note: the different ThreadContextMap implementations cannot be parameterized:
 // ThreadContext initialization will result in static final fields being set in various components.
 // To use a different ThreadContextMap, the test needs to be run in a new JVM.
+@Category(AsyncLoggers.class)
 public class AsyncLoggerConfigThreadContextCopyOnWriteTest extends AbstractAsyncThreadContextTestBase {
     public AsyncLoggerConfigThreadContextCopyOnWriteTest() {
         super(ContextImpl.COPY_ON_WRITE, Mode.MIXED);

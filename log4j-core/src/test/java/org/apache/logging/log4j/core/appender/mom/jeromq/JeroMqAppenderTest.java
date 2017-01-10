@@ -24,13 +24,16 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(Appenders.ZeroMq.class)
 public class JeroMqAppenderTest {
 
     private static final String ENDPOINT = "tcp://localhost:5556";

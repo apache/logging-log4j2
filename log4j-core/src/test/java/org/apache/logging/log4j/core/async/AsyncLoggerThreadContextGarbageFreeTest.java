@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.async;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -26,6 +28,7 @@ import org.junit.runners.Parameterized;
 // ThreadContext initialization will result in static final fields being set in various components.
 // To use a different ThreadContextMap, the test needs to be run in a new JVM.
 @RunWith(Parameterized.class)
+@Category(AsyncLoggers.class)
 public class AsyncLoggerThreadContextGarbageFreeTest extends AbstractAsyncThreadContextTestBase {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {

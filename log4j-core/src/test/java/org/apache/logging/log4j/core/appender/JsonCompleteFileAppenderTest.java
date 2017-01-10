@@ -16,29 +16,31 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import static org.junit.Assert.*;
+
 /**
  * Tests a "complete" JSON file.
  */
 @RunWith(Parameterized.class)
+@Category(Layouts.Json.class)
 public class JsonCompleteFileAppenderTest {
 
     public JsonCompleteFileAppenderTest(final Class<ContextSelector> contextSelector) {

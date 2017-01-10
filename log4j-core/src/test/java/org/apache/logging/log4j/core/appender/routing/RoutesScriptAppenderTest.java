@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.categories.Scripts;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderControl;
@@ -36,6 +37,7 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -43,6 +45,7 @@ import org.junit.runners.Parameterized;
  *
  */
 @RunWith(Parameterized.class)
+@Category(Scripts.Groovy.class) // technically only half of these tests require groovy
 public class RoutesScriptAppenderTest {
 
     @Parameterized.Parameters(name = "{0} {1}")

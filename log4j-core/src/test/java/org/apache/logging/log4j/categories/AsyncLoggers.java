@@ -19,5 +19,5 @@ package org.apache.logging.log4j.categories;
 /**
  * Category for tests related to AsyncLogger (requires LMAX Disruptor dependency).
  */
-public class AsyncLoggers {
+public interface AsyncLoggers {
 }
