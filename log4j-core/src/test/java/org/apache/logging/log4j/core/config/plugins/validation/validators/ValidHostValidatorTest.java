@@ -55,7 +55,7 @@ public class ValidHostValidatorTest {
 
     @Test
     public void testInvalidIpAddress() throws Exception {
-        node.getAttributes().put("host", "#$%^&*(*&^%$");
+        node.getAttributes().put("host", "256.256.256.256");
         node.getAttributes().put("port", "1");
         final HostAndPort plugin = buildPlugin();
         assertNull("Expected null, but got: " + plugin, plugin);
