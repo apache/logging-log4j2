@@ -245,8 +245,12 @@ public final class GelfLayout extends AbstractStringLayout {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
-        if (this.additionalFields.length > 0 && config == null) {
-            throw new IllegalArgumentException("configuration needs to be set when there are additional fields");
+        if (config == null) {
+            for (KeyValuePair additionalField : this.additionalFields) {
+                if (valueNeedsLookup(additionalField.getValue())) {
+                    throw new IllegalArgumentException("configuration needs to be set when there are additional fields with variables");
+                }
+            }
         }
         this.compressionType = compressionType;
         this.compressionThreshold = compressionThreshold;
