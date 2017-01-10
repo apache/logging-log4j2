@@ -23,6 +23,15 @@ import java.nio.file.Path;
 
 /**
  * A JUnit test rule to automatically delete files after a test is run.
+ * <p>
+ * For example:
+ * </p>
+ * 
+ * <pre>
+ * &#64;Rule
+ * public CleanFiles files = new CleanFiles("path/to/file.txt");
+ * </pre>
+ *
  */
 public class CleanFiles extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;

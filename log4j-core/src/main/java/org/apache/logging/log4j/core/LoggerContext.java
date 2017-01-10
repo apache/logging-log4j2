@@ -643,7 +643,6 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public void setConfigLocation(final URI configLocation) {
         this.configLocation = configLocation;
-
         reconfigure(configLocation);
     }
 
