@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -127,7 +128,7 @@ public class PluginProcessor extends AbstractProcessor {
         public PluginEntry visitType(final TypeElement e, final Plugin plugin) {
             Objects.requireNonNull(plugin, "Plugin annotation is null.");
             final PluginEntry entry = new PluginEntry();
-            entry.setKey(plugin.name().toLowerCase());
+            entry.setKey(plugin.name().toLowerCase(Locale.US));
             entry.setClassName(elements.getBinaryName(e).toString());
             entry.setName(Plugin.EMPTY.equals(plugin.elementType()) ? plugin.name() : plugin.elementType());
             entry.setPrintable(plugin.printObject());
@@ -158,7 +159,7 @@ public class PluginProcessor extends AbstractProcessor {
             final Collection<PluginEntry> entries = new ArrayList<>(aliases.value().length);
             for (final String alias : aliases.value()) {
                 final PluginEntry entry = new PluginEntry();
-                entry.setKey(alias.toLowerCase());
+                entry.setKey(alias.toLowerCase(Locale.US));
                 entry.setClassName(elements.getBinaryName(e).toString());
                 entry.setName(Plugin.EMPTY.equals(plugin.elementType()) ? alias : plugin.elementType());
                 entry.setPrintable(plugin.printObject());

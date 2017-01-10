@@ -36,6 +36,7 @@ import static org.junit.Assert.*;
 public class InterpolatorTest {
 
     private static final String TESTKEY = "TestKey";
+    private static final String TESTKEY2 = "TestKey2";
     private static final String TESTVAL = "TestValue";
 
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
@@ -46,11 +47,13 @@ public class InterpolatorTest {
         @Override
         protected void before() throws Throwable {
             System.setProperty(TESTKEY, TESTVAL);
+            System.setProperty(TESTKEY2, TESTVAL);
         }
 
         @Override
         protected void after() {
             System.clearProperty(TESTKEY);
+            System.clearProperty(TESTKEY2);
         }
     }).around(new JndiRule(
         JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME));
@@ -66,6 +69,8 @@ public class InterpolatorTest {
         value = lookup.lookup("ctx:" + TESTKEY);
         assertEquals(TESTVAL, value);
         value = lookup.lookup("sys:" + TESTKEY);
+        assertEquals(TESTVAL, value);
+        value = lookup.lookup("SYS:" + TESTKEY2);
         assertEquals(TESTVAL, value);
         value = lookup.lookup("BadKey");
         assertNull(value);

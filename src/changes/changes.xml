@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.8" date="2017-MM-DD" description="GA Release 2.8">
+      <action issue="LOG4J2-1243" dev="rgoers" type="add">
+        Allow default value in property to be a Lookup.
+      </action>
       <action issue="LOG4J2-1779" dev="rpopma" type="fix">
         Fixed bug where AsyncLogger did not resolve configuration properties.
       </action>

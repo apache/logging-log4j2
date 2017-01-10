@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.lookup;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
@@ -171,7 +172,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
         final int prefixPos = var.indexOf(PREFIX_SEPARATOR);
         if (prefixPos >= 0) {
-            final String prefix = var.substring(0, prefixPos);
+            final String prefix = var.substring(0, prefixPos).toLowerCase(Locale.US);
             final String name = var.substring(prefixPos + 1);
             final StrLookup lookup = lookups.get(prefix);
             if (lookup instanceof ConfigurationAware) {

@@ -940,7 +940,7 @@ public class StrSubstitutor implements ConfigurationAware {
                                     varNameExpr = bufName.toString();
                                 }
                                 pos += endMatchLen;
-                                final int endPos = pos;
+                                int endPos = pos;
 
                                 String varName = varNameExpr;
                                 String varDefaultValue = null;
@@ -956,7 +956,13 @@ public class StrSubstitutor implements ConfigurationAware {
                                         }
                                         if ((valueDelimiterMatchLen = valueDelimiterMatcher.isMatch(varNameExprChars, i)) != 0) {
                                             varName = varNameExpr.substring(0, i);
-                                            varDefaultValue = varNameExpr.substring(i + valueDelimiterMatchLen);
+                                            varDefaultValue = variableResolver.lookup(varNameExpr.substring(i + valueDelimiterMatchLen));
+                                            if (varDefaultValue != null) {
+                                                ++endPos;
+                                            }
+                                            if (varDefaultValue == null) {
+                                                varDefaultValue = varNameExpr.substring(i + valueDelimiterMatchLen);
+                                            }
                                             break;
                                         }
                                     }
