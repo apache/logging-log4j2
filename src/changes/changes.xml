@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.8" date="2017-MM-DD" description="GA Release 2.8">
+      <action issue="LOG4J2-1779" dev="rpopma" type="fix">
+        Fixed bug where AsyncLogger did not resolve configuration properties.
+      </action>
       <action issue="LOG4J2-1769" dev="rpopma" type="fix" due-to="Brandon Goodin">
         Fixed concurrency issue affecting all layouts except PatternLayout and GelfLayout, which caused scrambled output and exceptions when logging synchronously from multiple threads.
       </action>
