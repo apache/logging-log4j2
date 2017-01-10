@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -19,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
@@ -26,6 +28,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
  * Tests LOG4J2-1688 Multiple loggings of arguments are setting these arguments to null.
  */
 @RunWith(BlockJUnit4ClassRunner.class)
+@Category(AsyncLoggers.class)
 public class Log4j2Jira1688AsyncTest {
 
     @BeforeClass

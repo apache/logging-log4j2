@@ -22,10 +22,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.categories.Scripts;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.script.Script;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
@@ -90,6 +92,7 @@ public class ScriptConditionTest {
     }
 
     @Test
+    @Category(Scripts.Groovy.class)
     public void testSelectFilesToDelete3() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager

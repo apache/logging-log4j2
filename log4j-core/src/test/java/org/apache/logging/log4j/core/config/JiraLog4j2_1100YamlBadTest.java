@@ -17,9 +17,12 @@
 
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.categories.Configurations;
 import org.junit.Ignore;
+import org.junit.experimental.categories.Category;
 
 @Ignore
+@Category(Configurations.Yaml.class)
 public class JiraLog4j2_1100YamlBadTest extends AbstractLog4j2_1100Test {
 
     @Override

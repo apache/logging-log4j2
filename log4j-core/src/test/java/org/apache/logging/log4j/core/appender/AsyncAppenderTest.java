@@ -22,12 +22,14 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -37,6 +39,7 @@ import static org.junit.Assert.*;
  *
  */
 @RunWith(Parameterized.class)
+@Category({Appenders.AsyncConversant.class, Appenders.AsyncJcTools.class})
 public class AsyncAppenderTest {
 
     private static final long TIMEOUT_MILLIS = 2000;

@@ -16,26 +16,23 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
+@Category(Appenders.Jpa.class)
 public class ContextDataJsonAttributeConverterTest {
     private ContextDataJsonAttributeConverter converter;
 
     @Before
     public void setUp() {
         this.converter = new ContextDataJsonAttributeConverter();
-    }
-
-    @After
-    public void tearDown() {
-
     }
 
     @Test

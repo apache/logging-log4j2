@@ -29,6 +29,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.junit.JndiRule;
@@ -37,6 +38,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -48,6 +50,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
+@Category(Appenders.Jms.class)
 public class JmsAppenderTest {
 
     private static final String CONNECTION_FACTORY_NAME = "jms/connectionFactory";

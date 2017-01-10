@@ -14,17 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.categories;
 
-import org.apache.logging.log4j.categories.AsyncLoggers;
-import org.junit.experimental.categories.Category;
-
-// Note: the different ThreadContextMap implementations cannot be parameterized:
-// ThreadContext initialization will result in static final fields being set in various components.
-// To use a different ThreadContextMap, the test needs to be run in a new JVM.
-@Category(AsyncLoggers.class)
-public class AsyncLoggerConfigThreadContextCopyOnWriteTest extends AbstractAsyncThreadContextTestBase {
-    public AsyncLoggerConfigThreadContextCopyOnWriteTest() {
-        super(ContextImpl.COPY_ON_WRITE, Mode.MIXED);
-    }
+/**
+ * Categories for configuration formats that require extra dependencies.
+ */
+public interface Configurations {
+    interface Json {}
+    interface Yaml {}
 }

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
@@ -43,10 +44,12 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Tests the YamlLayout class.
  */
+@Category(Layouts.Yaml.class)
 public class YamlLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 

@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -38,6 +39,7 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -46,7 +48,8 @@ import org.junit.runners.Parameterized;
  *
  * @since 2.4
  */
-@RunWith(value = Parameterized.class)
+@RunWith(Parameterized.class)
+@Category(Layouts.Csv.class)
 public class CsvParameterLayoutTest {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {

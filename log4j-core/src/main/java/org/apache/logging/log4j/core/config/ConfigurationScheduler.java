@@ -18,21 +18,25 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *
  */
 public class ConfigurationScheduler extends AbstractLifeCycle {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String SIMPLE_NAME = "Log4j2 " + ConfigurationScheduler.class.getSimpleName();
     private static final int MAX_SCHEDULED_ITEMS = 5;
     private ScheduledExecutorService executorService;
@@ -139,6 +143,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
         final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future, fireDate);
         runnable.setScheduledFuture(cronScheduledFuture);
+        LOGGER.debug("Scheduled cron expression {} to fire at {}", cronExpression.getCronExpression(), fireDate);
         return cronScheduledFuture;
     }
 
@@ -212,15 +217,45 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         @Override
         public void run() {
             try {
+                long millis = scheduledFuture.getFireTime().getTime() - System.currentTimeMillis();
+                if (millis > 0) {
+                    LOGGER.debug("Cron thread woke up {} millis early. Sleeping", millis);
+                    try {
+                        Thread.sleep(millis);
+                    } catch (InterruptedException ie) {
+                        // Ignore the interruption.
+                    }
+                }
                 runnable.run();
             } catch(final Throwable ex) {
                 LOGGER.error("{} caught error running command", SIMPLE_NAME, ex);
             } finally {
                 final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
                 final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
+                LOGGER.debug("Cron expression {} scheduled to fire again at {}", cronExpression.getCronExpression(),
+                        fireDate);
                 scheduledFuture.reset(future, fireDate);
             }
         }
+
+        public String toString() {
+            return "CronRunnable{" + cronExpression.getCronExpression() + " - " + scheduledFuture.getFireTime();
+        }
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder("ConfigurationScheduler {");
+        Queue<Runnable> queue = ((ScheduledThreadPoolExecutor) executorService).getQueue();
+        boolean first = true;
+        for (Runnable runnable : queue) {
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(runnable.toString());
+            first = false;
+        }
+        sb.append("}");
+        return sb.toString();
     }
 
 }

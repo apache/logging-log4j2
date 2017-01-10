@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
-public class AsyncLoggerContextSelectorInitialStateTest {    
+@Category(AsyncLoggers.class)
+public class AsyncLoggerContextSelectorInitialStateTest {
 
     @Test
     public void testLoggerContextsListInitiallyEmpty() {

@@ -18,12 +18,15 @@ package org.apache.logging.log4j.nosql.appender;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 @Ignore("Requires a running MongoDB server")
+@Category(Appenders.MongoDb.class)
 public class MongoDbAuthTest {
 
     @ClassRule

@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -31,6 +30,7 @@ import javax.jms.ObjectMessage;
 
 import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.mom.JmsAppender;
 import org.apache.logging.log4j.core.appender.mom.JmsManager;
@@ -42,12 +42,14 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
 /**
  * Integration test for JmsAppender using an embedded ActiveMQ broker.
  */
+@Category(Appenders.Jms.class)
 public class JmsAppenderIT {
 
     private static final String KEY_SERIALIZABLE_PACKAGES = "org.apache.activemq.SERIALIZABLE_PACKAGES";

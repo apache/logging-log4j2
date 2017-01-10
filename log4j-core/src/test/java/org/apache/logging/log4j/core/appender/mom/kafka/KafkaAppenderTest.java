@@ -30,6 +30,7 @@ import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -39,9 +40,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
+@Category(Appenders.Kafka.class)
 public class KafkaAppenderTest {
 
     private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, null, null) {

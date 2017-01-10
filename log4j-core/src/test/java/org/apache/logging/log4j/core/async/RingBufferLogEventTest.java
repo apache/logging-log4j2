@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
@@ -35,12 +36,14 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
 /**
  * Tests the RingBufferLogEvent class.
  */
+@Category(AsyncLoggers.class)
 public class RingBufferLogEventTest {
 
     @Test

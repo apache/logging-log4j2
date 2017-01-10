@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.jackson;
 import java.io.IOException;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.categories.Layouts;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +28,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.junit.experimental.categories.Category;
 
 /**
  * Tests {@link LevelMixIn}.
  */
+@Category(Layouts.Json.class)
 public abstract class LevelMixInTest {
 
     static class Fixture {

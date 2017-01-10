@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.jackson;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +33,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.junit.experimental.categories.Category;
 
+@Category(Layouts.Json.class)
 public class JacksonIssue429MyNamesTest {
 
     @SuppressWarnings("serial")
