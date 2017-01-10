@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -46,8 +47,8 @@ public class ConcurrentLoggingWithJsonLayoutTest {
     public static LoggerContextRule context = new LoggerContextRule("log4j2-json-layout.xml");
     private static final String PATH = "target/test-json-layout.log";
 
-    @Before
-    public void before() {
+    @AfterClass
+    public static void after() {
         new File(PATH).delete();
     }
 
