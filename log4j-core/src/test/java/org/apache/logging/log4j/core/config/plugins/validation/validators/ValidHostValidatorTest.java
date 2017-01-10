@@ -16,20 +16,24 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import java.util.UUID;
-
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.validation.HostAndPort;
+import org.apache.logging.log4j.junit.StatusLoggerRule;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class ValidHostValidatorTest {
+
+    @Rule
+    public StatusLoggerRule rule = new StatusLoggerRule(Level.FATAL);
 
     private PluginType<HostAndPort> plugin;
     private Node node;
@@ -51,7 +55,7 @@ public class ValidHostValidatorTest {
 
     @Test
     public void testInvalidIpAddress() throws Exception {
-        node.getAttributes().put("host", UUID.randomUUID().toString());
+        node.getAttributes().put("host", "#$%^&*(*&^%$");
         node.getAttributes().put("port", "1");
         final HostAndPort plugin = buildPlugin();
         assertNull("Expected null, but got: " + plugin, plugin);
