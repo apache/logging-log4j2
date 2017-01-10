@@ -43,4 +43,11 @@ public class HostAndPort {
         @ValidPort(message = "Unit test (port)") @PluginAttribute("port") final int port) {
         return new HostAndPort(new InetSocketAddress(host, port));
     }
+
+    @Override
+    public String toString() {
+        return "HostAndPort{" +
+            "address=" + address +
+            '}';
+    }
 }
