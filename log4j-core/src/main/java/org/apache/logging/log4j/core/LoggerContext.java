@@ -26,13 +26,6 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -49,7 +42,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
-import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -92,8 +84,6 @@ public class LoggerContext extends AbstractLifeCycle
      * reference is updated.
      */
     private volatile Configuration configuration = new DefaultConfiguration();
-    private ExecutorService executorService;
-    private ExecutorService executorServiceDeamons;
     private Object externalContext;
     private String contextName;
     private volatile URI configLocation;
@@ -326,8 +316,8 @@ public class LoggerContext extends AbstractLifeCycle
      * Log4j can start threads to perform certain actions like file rollovers, calling this method with a positive timeout will
      * block until the rollover thread is done.
      *
-     * @param timeout the maximum time to wait, or 0 which mean that each apppender uses its default timeout, and don't wait for background
-    tasks
+     * @param timeout the maximum time to wait, or 0 which mean that each apppender uses its default timeout, and wait for
+     *                background tasks for one second
      * @param timeUnit
      *            the time unit of the timeout argument
      * @return {@code true} if the logger context terminated and {@code false} if the timeout elapsed before
@@ -338,8 +328,6 @@ public class LoggerContext extends AbstractLifeCycle
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
         configLock.lock();
-        final boolean shutdownEs;
-        final boolean shutdownEsd;
         try {
             if (this.isStopped()) {
                 return true;
@@ -366,16 +354,12 @@ public class LoggerContext extends AbstractLifeCycle
             }
             externalContext = null;
             LogManager.getFactory().removeContext(this);
-            final String source = "LoggerContext \'" + getName() + "\'";
-            shutdownEs = ExecutorServices.shutdown(executorService, timeout, timeUnit, source);
-            // Do not wait for daemon threads
-            shutdownEsd = ExecutorServices.shutdown(executorServiceDeamons, 0, timeUnit, source);
         } finally {
             configLock.unlock();
             this.setStopped();
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}]...", getName(), this);
-        return shutdownEs && shutdownEsd;
+        return true;
     }
 
     /**
@@ -548,9 +532,6 @@ public class LoggerContext extends AbstractLifeCycle
         try {
             final Configuration prev = this.configuration;
             config.addListener(this);
-            executorService = createNonDaemonThreadPool(Log4jThreadFactory.createThreadFactory(contextName));
-            // Daemon threads do not prevent the application from shutting down so the default keep-alive time is fine.
-            executorServiceDeamons = Executors.newCachedThreadPool(Log4jThreadFactory.createDaemonThreadFactory(contextName));
 
             final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
 
@@ -584,30 +565,6 @@ public class LoggerContext extends AbstractLifeCycle
         } finally {
             configLock.unlock();
         }
-    }
-
-    /**
-     * Returns an {@code ExecutorService} whose keep-alive time is one second by default, unless another
-     * value is specified for system property {@code log4j.nondaemon.threads.keepAliveSeconds}.
-     * <p>
-     * LOG4J2-1748: ThreadPool for non-daemon threads should use a short keep-alive time to prevent
-     * applications from being able to shut down promptly after a rollover.
-     * </p>
-     *
-     * @param threadFactory thread factory to use
-     * @return a new cached thread pool
-     */
-    private ExecutorService createNonDaemonThreadPool(final ThreadFactory threadFactory) {
-        final String PROP = "log4j.nondaemon.threads.keepAliveSeconds";
-        final int keepAliveTimeSeconds = PropertiesUtil.getProperties().getIntegerProperty(PROP, 1);
-        return createThreadPool(threadFactory, keepAliveTimeSeconds);
-    }
-
-    private ExecutorService createThreadPool(final ThreadFactory threadFactory, final int keepAliveTimeSeconds) {
-        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                keepAliveTimeSeconds, TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>(),
-                threadFactory);
     }
 
     private void firePropertyChangeEvent(final PropertyChangeEvent event) {
@@ -717,54 +674,6 @@ public class LoggerContext extends AbstractLifeCycle
     // LOG4J2-151: changed visibility from private to protected
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new Logger(ctx, name, messageFactory);
-    }
-
-    /**
-     * Gets the executor service to submit normal tasks.
-     *
-     * @return the ExecutorService to submit normal tasks.
-     */
-    public ExecutorService getExecutorService() {
-        return executorService;
-    }
-
-    /**
-     * Gets the executor service to submit daemon tasks.
-     *
-     * @return the ExecutorService to submit normal daemon tasks.
-     */
-    public ExecutorService getExecutorServiceDeamons() {
-        return executorServiceDeamons;
-    }
-
-    /**
-     * Submits a Runnable task for normal execution and returns a Future representing that task. The Future's
-     * {@code get} method will return {@code null} upon <em>successful</em> completion.
-     *
-     * @param task the task to submit
-     * @return a Future representing pending completion of the task
-     * @throws RejectedExecutionException if the task cannot be
-     *         scheduled for execution
-     * @throws NullPointerException if the task is null
-     */
-    public Future<?> submit(final Runnable task) {
-        return executorService.submit(task);
-    }
-
-    /**
-     * Submits a Runnable task for daemon execution and returns a Future representing that task. The Future's
-     * {@code get} method will return {@code null} upon <em>successful</em> completion.
-     *
-     * @param task
-     *            the task to submit
-     * @return a Future representing pending completion of the task
-     * @throws RejectedExecutionException
-     *             if the task cannot be scheduled for execution
-     * @throws NullPointerException
-     *             if the task is null
-     */
-    public Future<?> submitDaemon(final Runnable task) {
-        return executorServiceDeamons.submit(task);
     }
 
 }

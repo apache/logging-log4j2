@@ -296,7 +296,7 @@ public class RollingFileManager extends FileManager {
 
                 if (success && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
-                    future = LoggerContext.getContext(false).submit(new AsyncAction(descriptor.getAsynchronous(), this));
+                    future = LoggerContext.getContext(false).getConfiguration().getScheduler().submit(new AsyncAction(descriptor.getAsynchronous(), this));
                 }
                 return true;
             }

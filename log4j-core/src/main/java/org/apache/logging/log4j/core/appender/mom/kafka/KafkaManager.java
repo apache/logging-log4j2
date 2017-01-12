@@ -30,6 +30,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.Log4jThread;
 
 public class KafkaManager extends AbstractManager {
 
@@ -73,17 +74,19 @@ public class KafkaManager extends AbstractManager {
     private void closeProducer(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
             // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
-            final Runnable task = new Runnable() {
+           final Thread closeThread = new Log4jThread(new Runnable() {
                 @Override
                 public void run() {
                     if (producer != null) {
                         producer.close();
                     }
                 }
-            };
+            }, "KafkaManager-CloseThread");
+            closeThread.setDaemon(true); // avoid blocking JVM shutdown
+            closeThread.start();
             try {
-                getLoggerContext().submitDaemon(task).get(timeout, timeUnit);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                closeThread.join(timeUnit.toMillis(timeout));
+            } catch (final InterruptedException ignore) {
                 // ignore
             }
         }

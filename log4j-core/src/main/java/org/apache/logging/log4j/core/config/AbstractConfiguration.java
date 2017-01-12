@@ -373,9 +373,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         root.clearAppenders();
 
         if (watchManager.isStarted()) {
-            watchManager.stop();
+            watchManager.stop(timeout, timeUnit);
         }
-        configurationScheduler.stop();
+        configurationScheduler.stop(timeout, timeUnit);
 
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);

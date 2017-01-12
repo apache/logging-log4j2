@@ -17,9 +17,9 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -39,6 +39,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String SIMPLE_NAME = "Log4j2 " + ConfigurationScheduler.class.getSimpleName();
     private static final int MAX_SCHEDULED_ITEMS = 5;
+    private static final long DEFAULT_SHUTDOWN_TIMEOUT_MILLIS = 1000;
     private ScheduledExecutorService executorService;
 
     private int scheduledItems = 0;
@@ -52,14 +53,17 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
         if (isExecutorServiceSet()) {
+            long timeoutToUse = timeout > 0 ? timeout : DEFAULT_SHUTDOWN_TIMEOUT_MILLIS;
+            TimeUnit timeUnitToUse = timeout > 0 ? timeUnit : TimeUnit.MILLISECONDS;
+
             LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, getExecutorService());
             executorService.shutdown();
             try {
-                executorService.awaitTermination(timeout, timeUnit);
+                executorService.awaitTermination(timeoutToUse, timeUnitToUse);
             } catch (InterruptedException ie) {
                 executorService.shutdownNow();
                 try {
-                    executorService.awaitTermination(timeout, timeUnit);
+                    executorService.awaitTermination(timeoutToUse, timeUnitToUse);
                 } catch (InterruptedException inner) {
                     LOGGER.warn("ConfigurationScheduler stopped but some scheduled services may not have completed.");
                 }
@@ -93,6 +97,28 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             --scheduledItems;
         }
     }
+
+    /**
+     * Creates and executes a Future that becomes enabled immediately.
+     * @param <V> The result type returned by this Future
+     * @param callable the function to execute.
+     * @return a Future that can be used to extract result or cancel.
+     *
+     */
+    public <V> Future<V> submit(final Callable<V> callable) {
+        return getExecutorService().submit(callable);
+    }
+
+    /**
+     * Creates and executes a Future that becomes enabled immediately.
+     * @param runnable the function to execute.
+     * @return a Future representing pending completion of the task and whose get() method will return null
+     * upon completion.
+     */
+    public Future<?> submit(final Runnable runnable) {
+        return getExecutorService().submit(runnable);
+    }
+
 
     /**
      * Creates and executes a ScheduledFuture that becomes enabled after the given delay.
@@ -183,18 +209,13 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
 
     private ScheduledExecutorService getExecutorService() {
         if (executorService == null) {
-            if (scheduledItems > 0) {
-                LOGGER.debug("{} starting {} threads", SIMPLE_NAME, scheduledItems);
-                scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
-                ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems,
-                        Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
-                executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
-                executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
-                this.executorService = executor;
-
-            } else {
-                LOGGER.debug("{}: No scheduled items", SIMPLE_NAME);
-            }
+            LOGGER.debug("{} starting {} threads", SIMPLE_NAME, scheduledItems);
+            scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
+            ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems + 1,
+                    Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
+            executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
+            executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+            this.executorService = executor;
         }
         return executorService;
     }

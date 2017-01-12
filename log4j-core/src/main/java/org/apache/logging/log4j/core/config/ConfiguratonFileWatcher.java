@@ -19,8 +19,8 @@ package org.apache.logging.log4j.core.config;
 import java.io.File;
 import java.util.List;
 
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.util.FileWatcher;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 
 /**
  * Watcher for configuration files. Causes a reconfiguration when a file changes.
@@ -29,10 +29,12 @@ public class ConfiguratonFileWatcher implements FileWatcher {
 
     private final Reconfigurable reconfigurable;
     private final List<ConfigurationListener> configurationListeners;
+    private final Log4jThreadFactory threadFactory;
 
     public ConfiguratonFileWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> configurationListeners) {
         this.reconfigurable = reconfigurable;
         this.configurationListeners = configurationListeners;
+        this.threadFactory = Log4jThreadFactory.createDaemonThreadFactory("ConfiguratonFileWatcher");
     }
 
     public List<ConfigurationListener> getListeners() {
@@ -43,7 +45,8 @@ public class ConfiguratonFileWatcher implements FileWatcher {
     @Override
     public void fileModified(final File file) {
         for (final ConfigurationListener configurationListener : configurationListeners) {
-            LoggerContext.getContext(false).submitDaemon(new ReconfigurationRunnable(configurationListener, reconfigurable));
+            final Thread thread = threadFactory.newThread(new ReconfigurationRunnable(configurationListener, reconfigurable));
+            thread.start();
         }
     }
 

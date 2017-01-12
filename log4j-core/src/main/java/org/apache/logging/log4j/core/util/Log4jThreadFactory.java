@@ -40,17 +40,6 @@ public class Log4jThreadFactory implements ThreadFactory {
         return new Log4jThreadFactory(threadFactoryName, true, Thread.NORM_PRIORITY);
     }
 
-    /**
-     * Creates a new thread factory.
-     * 
-     * @param threadFactoryName
-     *            The thread factory name.
-     * @return a new daemon thread factory.
-     */
-    public static Log4jThreadFactory createThreadFactory(final String threadFactoryName) {
-        return new Log4jThreadFactory(threadFactoryName, false, Thread.NORM_PRIORITY);
-    }
-
     private static final AtomicInteger FACTORY_NUMBER = new AtomicInteger(1);
     private static final AtomicInteger THREAD_NUMBER = new AtomicInteger(1);
     private final boolean daemon;
