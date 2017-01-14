@@ -168,9 +168,9 @@
     </dependency>
     <!-- Zeroconf advertiser tests -->
     <dependency>
-      <groupId>javax.jmdns</groupId>
+      <groupId>org.jmdns</groupId>
       <artifactId>jmdns</artifactId>
-      <version>3.4.1</version>
+      <version>3.5.1</version>
       <scope>test</scope>
     </dependency>
     <!-- Log4j 1.2 tests -->
