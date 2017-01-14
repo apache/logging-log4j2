@@ -54,6 +54,7 @@
     <dependency>
       <groupId>com.conversantmedia</groupId>
       <artifactId>disruptor</artifactId>
+      <classifier>jdk7</classifier>
       <optional>true</optional>
     </dependency>
     <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->

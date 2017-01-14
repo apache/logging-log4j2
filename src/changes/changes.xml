@@ -201,6 +201,9 @@
       <action issue="LOG4J2-1756" dev="ggregory" type="fix" due-to="shubhankar1100">
         Adds xmlns in schema and some other tags.
       </action>
+      <action issue="LOG4J2-1781" dev="mattsicker" type="update">
+        Update Conversant Disruptor from 1.2.7 to 1.2.10
+      </action>
       <action issue="LOG4J2-1774" dev="mattsicker" type="update">
         Replace MockEJB dependency in unit tests with Spring Test and Mockito.
       </action>

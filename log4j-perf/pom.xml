@@ -93,6 +93,7 @@
     <dependency>
       <groupId>com.conversantmedia</groupId>
       <artifactId>disruptor</artifactId>
+      <classifier>jdk7</classifier>
     </dependency>
     <dependency>
       <groupId>org.jctools</groupId>

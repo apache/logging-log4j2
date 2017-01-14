@@ -194,7 +194,7 @@
     <springVersion>3.2.18.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion>
     <disruptorVersion>3.3.6</disruptorVersion>
-    <conversantDisruptorVersion>1.2.8-JDK7</conversantDisruptorVersion>
+    <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion>
     <compiler.plugin.version>3.6.0</compiler.plugin.version>
     <pmd.plugin.version>3.7</pmd.plugin.version>
     <findbugs.plugin.version>3.0.4</findbugs.plugin.version>
@@ -620,6 +620,8 @@
         <groupId>com.conversantmedia</groupId>
         <artifactId>disruptor</artifactId>
         <version>${conversantDisruptorVersion}</version>
+        <!-- TODO: this can be switched based on a profile -->
+        <classifier>jdk7</classifier>
       </dependency>
       <dependency>
         <groupId>org.jctools</groupId>
