@@ -27,6 +27,9 @@
       <action issue="LOG4J2-1780" dev="mikes" type="fix">
         Eliminate the use of the ExecutorServices in the LoggerContext.
       </action>
+      <action issue="LOG4J2-1786" dev="rpopma" type="fix">
+        ConfigurationScheduler now preserves interrupt flag during stop.
+      </action>
       <action issue="LOG4J2-1243" dev="rgoers" type="add">
         Allow default value in property to be a Lookup.
       </action>
@@ -49,7 +52,7 @@
         CronTriggeringPolicy would use the wrong date/time when rolling over and create multiple triggering policies on reconfiguration.
       </action>
       <action issue="LOG4J2-1748" dev="mikes" type="fix">
-        Use ConfigurationScheduler for rollover tasks.
+        Do not use non-daemon pool for rollover tasks.
       </action>
       <action issue="LOG4J2-1628" dev="rpopma" type="fix">
         Fixed file locking regression in FileAppender introduced in 2.6.
@@ -203,6 +206,9 @@
       </action>
       <action issue="LOG4J2-1756" dev="ggregory" type="fix" due-to="shubhankar1100">
         Adds xmlns in schema and some other tags.
+      </action>
+      <action issue="LOG4J2-1781" dev="mattsicker" type="update">
+        Update Conversant Disruptor from 1.2.7 to 1.2.10
       </action>
       <action issue="LOG4J2-1774" dev="mattsicker" type="update">
         Replace MockEJB dependency in unit tests with Spring Test and Mockito.
