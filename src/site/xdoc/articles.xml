@@ -113,6 +113,13 @@
             java.util.logging (JUL) Adapter Example</a>
           (June 24, 2016)
         </li>
+        <li>[VIDEO]
+          <a href="https://vimeo.com/169542136">Matt Sicker - Asynchronous Logging in Log4j 2.6 (CJUG Lightning Talk)</a>
+          (June 2, 2016)
+          <ul>
+            <li>Errata: "ThresholdFilter" should be "BurstFilter"</li>
+          </ul>
+        </li>
         <li>
           <a href="https://dzone.com/articles/log4j-2-configuration-using-properties-file">Log4J
             2 Configuration: Using the Properties File</a>
