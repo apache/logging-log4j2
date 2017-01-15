@@ -58,7 +58,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, getExecutorService());
             executorService.shutdown();
             try {
-                executorService.awaitTermination(timeout, timeUnit);
+                executorService.awaitTermination(timeoutToUse, timeUnitToUse);
             } catch (final InterruptedException ie) {
                 executorService.shutdownNow();
                 try {
