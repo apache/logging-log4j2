@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.8" date="2017-MM-DD" description="GA Release 2.8">
+      <action issue="LOG4J2-1101" dev="rgoers" type="add">
+        RollingFileAppender now supports omitting the file name and writing directly to the archive files.
+      </action>
       <action issue="LOG4J2-1786" dev="rpopma" type="fix">
         ConfigurationScheduler now preserves interrupt flag during stop.
       </action>

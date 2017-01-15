@@ -46,6 +46,8 @@ import org.apache.logging.log4j.core.util.Integers;
  * on the file pattern, however the DirectWriteRolloverStrategy writes directly to a file and does not rename it
  * during rollover, except if it is compressed, in which case it will add the appropriate file extension.
  * </p>
+ *
+ * @since 2.8
  */
 @Plugin(name = "DirectWriteRolloverStrategy", category = Core.CATEGORY_NAME, printObject = true)
 public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implements DirectFileRolloverStrategy {
