@@ -93,3 +93,18 @@ ol.linenums li { padding-left: 12px; color: #bebec5; line-height: 18px; text-sha
 a.javadoc, a.javadoc:hover {
     font: 12px Menlo, Monaco, "Courier New", monospace;
 }
+
+/* add film icons to youtube and vimeo links (.icon-film) */
+a[href^='https://www.youtube.com/']::before,
+a[href^='https://vimeo.com/']::before {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
+    margin-right: .3em;
+    line-height: 14px;
+    vertical-align: text-top;
+    content: '';
+    /* .icon-film */
+    background: url("../img/glyphicons-halflings.png") no-repeat -192px 0;
+}
