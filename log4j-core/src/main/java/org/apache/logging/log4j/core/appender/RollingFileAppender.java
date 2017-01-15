@@ -28,9 +28,11 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
+import org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
+import org.apache.logging.log4j.core.appender.rolling.DirectFileRolloverStrategy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -59,7 +61,6 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             implements org.apache.logging.log4j.core.util.Builder<RollingFileAppender> {
 
         @PluginBuilderAttribute
-        @Required
         private String fileName;
 
         @PluginBuilderAttribute
@@ -103,11 +104,6 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
                 LOGGER.warn("RollingFileAppender '{}': The bufferSize is set to {} but bufferedIO is not true", getName(), bufferSize);
             }
 
-            if (fileName == null) {
-                LOGGER.error("RollingFileAppender '{}': No file name provided.", getName());
-                return null;
-            }
-
             if (filePattern == null) {
                 LOGGER.error("RollingFileAppender '{}': No file name pattern provided.", getName());
                 return null;
@@ -119,13 +115,16 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             }
 
             if (strategy == null) {
-                strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
-                        String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, getConfiguration());
-            }
-
-            if (strategy == null) {
-                strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
-                        String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, getConfiguration());
+                if (fileName != null) {
+                    strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
+                            String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, getConfiguration());
+                } else {
+                    strategy = DirectWriteRolloverStrategy.createStrategy(null,
+                            String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, getConfiguration());
+                }
+            } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
+                LOGGER.error("RollingFileAppender '{}': When no file name is provided a DirectFilenameRolloverStrategy must be configured");
+                return null;
             }
 
             final Layout<? extends Serializable> layout = getOrCreateLayout();
