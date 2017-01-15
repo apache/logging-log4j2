@@ -37,6 +37,14 @@
             (June 12, 2016)
           </li>
           <li>
+            <a href="http://blog.csdn.net/autfish/article/details/51203709">详解log4j2(上) - 从基础到实战</a>
+            (April 20, 2016)
+          </li>
+          <li>
+            <a href="http://www.jianshu.com/p/7aec512a003c">Log4j2使用笔记</a>
+            (November 3, 2015)
+          </li>
+          <li>
             <a href="http://www.infoq.com/cn/news/2015/09/interview-log4j-pmc">过渡到全新Log4j：Log4j项目管理委员会访谈</a>
             (September 14, 2015)
           </li>
@@ -52,6 +60,15 @@
             <a href="http://www.importnew.com/19467.html">Log4j2架构分析与实战</a>
             (January 15, 2013)
           </li>
+          <li>
+            <a href="http://blog.csdn.net/lrenjun/article/details/8178875">log4j2 使用详解</a>
+            (November 13, 2012)
+          </li>
+          <li>
+            <a href="https://my.oschina.net/xianggao/blog/523401">Log4j2配置文件详解</a>
+            (Undated)
+          </li>
+
         </ul>
       </subsection>
       <a name="English"/>
@@ -278,6 +295,18 @@
       <subsection name="Japanese">
       <ul>
         <li>
+          <a href="http://tm-b.hatenablog.com/entry/2016/08/18/200715">中年プログラマーの息抜き</a>
+          (August 18, 2016)
+        </li>
+        <li>
+          <a href="http://minor.hatenablog.com/entry/2016/05/22/193556">【log4j2】ThreadContextを利用してすべてのログに追加情報を出力する</a>
+          (May 22, 2016)
+        </li>
+        <li>
+          <a href="http://qiita.com/kazurof/items/abbd42f11bfc125f3190">Log4j 2でログ出力をテストするサンプルソース</a>
+          (February 22, 2016)
+        </li>
+        <li>
           <a href="https://www.infoq.com/jp/news/2015/09/interview-log4j-pmc">新Log4jへの移行: Log4jプロジェクト管理グループとのQ&amp;A</a>
           (September 27, 2015)
         </li>
@@ -286,13 +315,28 @@
           (September 23, 2015)
         </li>
         <li>
+          <a href="http://qiita.com/pica/items/f801c74848f748f76b58">log4j2の設定ファイル(XML)</a>
+          (July 27, 2015)
+        </li>
+        <li>
+          <a href="http://japanengineers.seesaa.net/article/412195201.html">Apache log4j2によるロギング機能の基本サンプル</a>
+          (January 12, 2015)
+        </li>
+        <li>
+          <a href="http://yamashiro0110.hatenadiary.jp/entry/2014/08/24/093336">Log4j2の使い方めも</a>
+          (August 24, 2014)
+        </li>
+        <li>
           <a href="https://www.infoq.com/jp/news/2014/08/apache-log4j2">Apache Log4j 2.0 - アップグレードする価値はあるか？</a>
           (August 17, 2014)
         </li>
         <li>
-          <a
-            href="http://d.hatena.ne.jp/Kazuhira/20140628/1403959552">Log4j2を試してみる</a>
+          <a href="http://d.hatena.ne.jp/Kazuhira/20140628/1403959552">Log4j2を試してみる</a>
           (June 28, 2014)
+        </li>
+        <li>
+          <a href="http://nabedge.blogspot.jp/2013/10/log4j2.html">log4j2にログを集める</a>
+          (October 26, 2013)
         </li>
       </ul>
       </subsection>
@@ -300,6 +344,10 @@
       <a name="Korean"/>
       <subsection name="Korean">
       <ul>
+        <li>
+          <a href="http://dveamer.github.io/java/Log4j2.html">Log4j 2 설정하기</a>
+          (January 24, 2016)
+        </li>
         <li>
           <a
             href="http://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte3:fdl:%EC%84%A4%EC%A0%95_%ED%8C%8C%EC%9D%BC%EC%9D%84_%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94_%EB%B0%A9%EB%B2%95">Log4j 2 환경설정 [설정 파일 사용 시]</a>
