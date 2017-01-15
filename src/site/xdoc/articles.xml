@@ -58,14 +58,48 @@
       <subsection name="English">
       <ul>
         <li>
+          <a href="https://dzone.com/articles/getting-own-log4j2-file-for-mule-via-spring">Getting
+            Your Own Log4j2 File for Mule via Spring</a>
+          (December 29, 2016)
+        </li>
+        <li>[VIDEO]
+          <a href="https://www.youtube.com/watch?v=-XNvCNHjIKw">Understanding
+            and working with Log4j2 for logging in Selenium framework (Part B)</a>
+          (December 20, 2016)
+        </li>
+        <li>[VIDEO]
+          <a href="https://www.youtube.com/watch?v=RWZ0gsfkkc4">Understanding
+            and working with Log4j2 for logging in Selenium framework (Part A)</a>
+          (December 18, 2016)
+        </li>
+        <li>
           <a href="https://garygregory.wordpress.com/2016/11/27/loading-a-log4j-configuration-for-a-specific-ejb/">
             Loading a Log4j Configuration for a specific EJB</a>
           (November 27, 2016)
         </li>
         <li>
+          <a href="https://medium.com/@anishekagarwal/log4j2-logging-a-primer-f10ed18e9de6#.ojlde7jib">Log4j2
+            Logging: A Primer</a>
+          (October 15, 2016)
+        </li>
+        <li>
+          <a href="http://www.journaldev.com/7128/log4j2-example-tutorial-configuration-levels-appenders">Log4j2
+            Example Tutorial – Configuration, Levels, Appenders</a>
+          (July 6, 2016)
+        </li>
+        <li>
+          <a href="http://howtodoinjava.com/log4j2/log4j2-htmllayout-configuration-example/">Log4j2 HTMLLayout Configuration Example</a>
+          (June 27, 2016)
+        </li>
+        <li>
           <a href="http://javaevangelist.blogspot.jp/2016/06/log4j2-javautillogging-jul-adapter.html">Log4j2
             java.util.logging (JUL) Adapter Example</a>
           (June 24, 2016)
+        </li>
+        <li>
+          <a href="https://dzone.com/articles/log4j-2-configuration-using-properties-file">Log4J
+            2 Configuration: Using the Properties File</a>
+          (May 18, 2016)
         </li>
         <li>
           <a href="https://springframework.guru/using-log4j-2-spring-boot/">Using Log4j 2 with Sprint Boot</a>
@@ -115,6 +149,10 @@
           <a href="http://marxsoftware.blogspot.com/2015/10/log4j2-non-logging-performance.html">Better Performing Non-Logging Logger Calls in Log4j2</a>
           (October 15, 2015)
         </li>
+        <li>[VIDEO]
+          <a href="https://www.youtube.com/watch?v=Yv0n-4AsOiI">Nancy M Schorr - Log4j2 with Java and Maven for Logging</a>
+          (October 14, 2015)
+        </li>
         <li>
           <a href="https://www.javacodegeeks.com/2015/10/easy-and-consistent-log4j2-logger-naming.html">Easy and Consistent Log4j2 Logger Naming</a>
           (October 10, 2015)
@@ -151,6 +189,10 @@
           <a href="https://blog.oio.de/2015/04/27/log4j-2-configuration-depending-environment/">Log4j 2 configuration depending on environment</a>
           (April 27, 2015)
         </li>
+        <li>[VIDEO]
+          <a href="https://www.youtube.com/watch?v=EWftNoRhS_M">Ramesh Rajaram - Log4j Key Features</a>
+          (April 10, 2015)
+        </li>
         <li>
           <a
             href="http://www.journaldev.com/7128/apache-log4j-2-tutorial-configuration-levels-appenders-lookup-layouts-and-filters-example">Apache Log4j 2 Tutorial – Configuration, Levels, Appenders, Lookup, Layouts and
@@ -166,6 +208,15 @@
           (February 20, 2015)
         </li>
         <li>
+          <a href="http://andrew-flower.com/blog/Basic_Log4j2_Configuration">Log4j2 - a crash course...</a>
+          (February 10, 2015)
+        </li>
+        <li>
+          <a href="http://memorynotfound.com/log4j2-with-log4j2-xml-configuration-example/">Log4j2
+            with log4j2.xml Configuration Example</a>
+          (February 10, 2015)
+        </li>
+        <li>
           <a href="https://blog.logentries.com/2015/02/logging-from-your-java-application-using-log4j2/?utm_content=11878557&amp;utm_medium=social&amp;utm_source=facebook">Logging From Your Java Application Using Log4j2</a>
           (February 5, 2015)
         </li>
@@ -178,8 +229,20 @@
           (July 31, 2014)
         </li>
         <li>
+          <a href="http://mycuteblog.com/log4j2-xml-configuration-example/">log4j2 xml configuration example</a>
+          (July 26, 2014)
+        </li>
+        <li>
           <a href="http://tech.finn.no/2014/07/01/log4j2-in-production-making-it-fly/">Log4j 2 in Production – Making it Fly</a>
           (July 2, 2014)
+        </li>
+        <li>[VIDEO]
+          <a href="https://www.youtube.com/watch?v=ZzVSs_JEhgs">Matt Sicker - Introducing Log4j 2.0</a>
+          (May 6, 2014)
+        </li>
+        <li>[VIDEO]
+          <a href="https://www.youtube.com/watch?v=HB0r5DuxGPI">Nicholas Williams - Log4j 2 in Web Applications: A Deeper Look at Effective Java EE Logging</a>
+          (May 6, 2014)
         </li>
         <li>
           <a href="http://www.grobmeier.de/log4j-2-performance-close-to-insane-20072013.html">Log4j 2: Performance Close to Insane</a>
