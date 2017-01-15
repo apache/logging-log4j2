@@ -331,8 +331,8 @@ public final class Configurator {
     /**
      * Shuts down the given logger context. This request does not wait for Log4j tasks to complete.
      * <p>
-     * Log4j starts threads to perform certain actions like file rollovers; calling this method will wait up to one second
-     * until the rollover thread is done. When this method returns, these tasks' status are undefined, the tasks may be done or
+     * Log4j starts threads to perform certain actions like file rollovers; calling this method will not wait until the
+     * rollover thread is done. When this method returns, these tasks' status are undefined, the tasks may be done or
      * not.
      * </p>
      * 

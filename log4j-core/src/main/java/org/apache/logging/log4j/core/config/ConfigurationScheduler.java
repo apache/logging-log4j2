@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
@@ -38,7 +39,6 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String SIMPLE_NAME = "Log4j2 " + ConfigurationScheduler.class.getSimpleName();
     private static final int MAX_SCHEDULED_ITEMS = 5;
-    private static final long DEFAULT_SHUTDOWN_TIMEOUT_MILLIS = 1000;
     private ScheduledExecutorService executorService;
 
     private int scheduledItems = 0;
@@ -52,17 +52,14 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
         if (isExecutorServiceSet()) {
-            long timeoutToUse = timeout > 0 ? timeout : DEFAULT_SHUTDOWN_TIMEOUT_MILLIS;
-            TimeUnit timeUnitToUse = timeout > 0 ? timeUnit : TimeUnit.MILLISECONDS;
-
             LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, getExecutorService());
             executorService.shutdown();
             try {
-                executorService.awaitTermination(timeoutToUse, timeUnitToUse);
+                executorService.awaitTermination(timeout, timeUnit);
             } catch (final InterruptedException ie) {
                 executorService.shutdownNow();
                 try {
-                    executorService.awaitTermination(timeoutToUse, timeUnitToUse);
+                    executorService.awaitTermination(timeout, timeUnit);
                 } catch (final InterruptedException inner) {
                     LOGGER.warn("ConfigurationScheduler stopped but some scheduled services may not have completed.");
                 }
