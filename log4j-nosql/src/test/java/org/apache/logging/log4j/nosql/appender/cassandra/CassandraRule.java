@@ -37,7 +37,7 @@ import org.junit.rules.ExternalResource;
  */
 public class CassandraRule extends ExternalResource {
 
-    private static final ThreadFactory THREAD_FACTORY = new Log4jThreadFactory("Cassandra", false, Thread.NORM_PRIORITY);
+    private static final ThreadFactory THREAD_FACTORY = Log4jThreadFactory.createThreadFactory("Cassandra");
 
     private final CountDownLatch latch = new CountDownLatch(1);
     private final Cancellable embeddedCassandra = new EmbeddedCassandra(latch);

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -63,7 +62,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             } catch (final InterruptedException ie) {
                 executorService.shutdownNow();
                 try {
-                    executorService.awaitTermination(timeout, timeUnit);
+                    executorService.awaitTermination(timeoutToUse, timeUnitToUse);
                 } catch (final InterruptedException inner) {
                     LOGGER.warn("ConfigurationScheduler stopped but some scheduled services may not have completed.");
                 }
@@ -98,28 +97,6 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             --scheduledItems;
         }
     }
-
-    /**
-     * Creates and executes a Future that becomes enabled immediately.
-     * @param <V> The result type returned by this Future
-     * @param callable the function to execute.
-     * @return a Future that can be used to extract result or cancel.
-     *
-     */
-    public <V> Future<V> submit(final Callable<V> callable) {
-        return getExecutorService().submit(callable);
-    }
-
-    /**
-     * Creates and executes a Future that becomes enabled immediately.
-     * @param runnable the function to execute.
-     * @return a Future representing pending completion of the task and whose get() method will return null
-     * upon completion.
-     */
-    public Future<?> submit(final Runnable runnable) {
-        return getExecutorService().submit(runnable);
-    }
-
 
     /**
      * Creates and executes a ScheduledFuture that becomes enabled after the given delay.

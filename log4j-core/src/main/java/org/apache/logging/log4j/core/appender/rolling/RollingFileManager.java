@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 
 /**
  * The Rolling File Manager.
@@ -52,6 +53,7 @@ public class RollingFileManager extends FileManager {
     private long initialTime;
     private final PatternProcessor patternProcessor;
     private final Semaphore semaphore = new Semaphore(1);
+    private final Log4jThreadFactory threadFactory = Log4jThreadFactory.createThreadFactory("RollingFileManager");
     private volatile TriggeringPolicy triggeringPolicy;
     private volatile RolloverStrategy rolloverStrategy;
     private volatile boolean renameEmptyFiles = false;
@@ -278,7 +280,7 @@ public class RollingFileManager extends FileManager {
         }
 
         boolean success = false;
-        Future<?> future = null;
+        Thread thread = null;
 
         try {
             final RolloverDescription descriptor = strategy.rollover(this);
@@ -296,13 +298,14 @@ public class RollingFileManager extends FileManager {
 
                 if (success && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
-                    future = LoggerContext.getContext(false).getConfiguration().getScheduler().submit(new AsyncAction(descriptor.getAsynchronous(), this));
+                    thread = threadFactory.newThread(new AsyncAction(descriptor.getAsynchronous(), this));
+                    thread.start();
                 }
                 return true;
             }
             return false;
         } finally {
-            if (future == null || future.isDone() || future.isCancelled()) {
+            if (thread == null || thread.isAlive()) {
                 semaphore.release();
             }
         }
