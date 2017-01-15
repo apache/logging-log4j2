@@ -44,7 +44,7 @@ $(document).ready(function() {
 			parent.removeClass('linenums');
 			$(this).addClass('linenums');
 		}
-	})
+	});
 	
 	// Hack to add default visuals to tables
 	$('table').each(function() {
@@ -100,7 +100,7 @@ $(document).ready(function() {
 	
 	// Make external links open in new tab
 	$('a.external').attr('target', '_blank');
-	
+
 	// Trigger prettyprint
 	prettyPrint();
 });
