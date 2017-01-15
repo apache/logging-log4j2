@@ -304,7 +304,7 @@ public class RollingFileManager extends FileManager {
             }
             return false;
         } finally {
-            if (thread == null || thread.isAlive()) {
+            if (thread == null || !thread.isAlive()) {
                 semaphore.release();
             }
         }
