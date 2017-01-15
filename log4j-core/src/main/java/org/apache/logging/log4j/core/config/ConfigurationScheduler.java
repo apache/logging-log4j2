@@ -56,14 +56,15 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             executorService.shutdown();
             try {
                 executorService.awaitTermination(timeout, timeUnit);
-            } catch (InterruptedException ie) {
+            } catch (final InterruptedException ie) {
                 executorService.shutdownNow();
                 try {
                     executorService.awaitTermination(timeout, timeUnit);
-                } catch (InterruptedException inner) {
+                } catch (final InterruptedException inner) {
                     LOGGER.warn("ConfigurationScheduler stopped but some scheduled services may not have completed.");
                 }
-
+                // Preserve interrupt status
+                Thread.currentThread().interrupt();
             }
         }
         setStopped();
