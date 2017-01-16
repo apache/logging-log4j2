@@ -111,3 +111,8 @@ Log4j requires Apache Maven 3.x. To build from source and install to your local 
 ```sh
 mvn install
 ```
+
+## Contributing
+
+We love contributions! Take a look at
+[our contributing page](https://github.com/apache/logging-log4j2/blob/master/CONTRIBUTING.md).
