@@ -15,7 +15,9 @@
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
@@ -45,7 +47,7 @@
       <email>rgoers@apache.org</email>
       <organization>Nextiva</organization>
       <roles>
-        <role>PMC Member</role>
+        <role>PMC Chair</role>
       </roles>
       <timezone>America/Phoenix</timezone>
     </developer>
@@ -1161,6 +1163,33 @@
           </excludes>
         </configuration>
       </plugin>
+      <!-- DOAP (RDF) metadata generation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-doap-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <doapOptions>
+            <programmingLanguage>Java</programmingLanguage>
+            <category>library</category>
+          </doapOptions>
+          <asfExtOptions>
+            <charter>
+              The Apache Logging Services Project creates and maintains open-source software related to the logging of
+              application behavior and released at no charge to the public.
+            </charter>
+          </asfExtOptions>
+        </configuration>
+        <executions>
+          <execution>
+            <id>site</id>
+            <phase>site</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <reporting>
@@ -1276,6 +1305,7 @@
       <id>apache.website</id>
       <url>scp://people.apache.org/www/logging.apache.org/log4j/2.0</url>
     </site>
+    <downloadUrl>https://logging.apache.org/log4j/2.x/download.html</downloadUrl>
   </distributionManagement>
   <modules>
     <module>log4j-api</module>

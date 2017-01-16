@@ -26,7 +26,9 @@
 
   <artifactId>log4j-nosql</artifactId>
   <name>Apache Log4j NoSQL</name>
-  <description>The Apache Log4j NoSQL appenders to databases such as MongoDB, Apache CouchDB, and Apache Cassandra</description>
+  <description>
+    NoSQL appenders for Log4j. These include appenders to databases such as MongoDB, Apache CouchDB, and Apache Cassandra.
+  </description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>NoSQL Documentation</docLabel>
