@@ -44,6 +44,13 @@ $(document).ready(function() {
 			parent.removeClass('linenums');
 			$(this).addClass('linenums');
 		}
+
+		// markdown adds the "source" class instead
+		if (parent.hasClass('source')) {
+			parent.removeClass('source');
+			$(this).addClass('prettyprint');
+			$(this).addClass('linenums');
+		}
 	});
 	
 	// Hack to add default visuals to tables
