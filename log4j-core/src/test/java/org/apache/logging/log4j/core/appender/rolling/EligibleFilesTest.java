@@ -39,6 +39,10 @@ public class EligibleFilesTest {
 
     private class TestRolloverStrategy extends AbstractRolloverStrategy {
 
+        public TestRolloverStrategy() {
+            super(null);
+        }
+
         @Override
         public RolloverDescription rollover(RollingFileManager manager) throws SecurityException {
             return null;

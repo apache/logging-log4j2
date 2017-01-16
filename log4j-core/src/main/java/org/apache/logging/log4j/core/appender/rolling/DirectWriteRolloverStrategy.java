@@ -93,7 +93,6 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
      * Index for most recent log file.
      */
     private final int maxFiles;
-    private final StrSubstitutor strSubstitutor;
     private final int compressionLevel;
     private final List<Action> customActions;
     private final boolean stopCustomActionsOnError;
@@ -110,9 +109,9 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     protected DirectWriteRolloverStrategy(final int maxFiles, final int compressionLevel,
                                           final StrSubstitutor strSubstitutor, final Action[] customActions,
                                           final boolean stopCustomActionsOnError) {
+        super(strSubstitutor);
         this.maxFiles = maxFiles;
         this.compressionLevel = compressionLevel;
-        this.strSubstitutor = strSubstitutor;
         this.stopCustomActionsOnError = stopCustomActionsOnError;
         this.customActions = customActions == null ? Collections.<Action> emptyList() : Arrays.asList(customActions);
     }
@@ -129,18 +128,8 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         return this.maxFiles;
     }
 
-    public StrSubstitutor getStrSubstitutor() {
-        return strSubstitutor;
-    }
-
     public boolean isStopCustomActionsOnError() {
         return stopCustomActionsOnError;
-    }
-
-    private SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager) {
-        final StringBuilder buf = new StringBuilder();
-        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, -1);
-        return getEligibleFiles(buf.toString());
     }
 
     private int purge(final RollingFileManager manager) {

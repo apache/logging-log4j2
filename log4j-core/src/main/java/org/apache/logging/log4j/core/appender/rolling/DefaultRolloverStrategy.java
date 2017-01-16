@@ -17,21 +17,21 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
-import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -105,21 +105,31 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                     final boolean stopCustomActionsOnError,
             @PluginConfiguration final Configuration config) {
             // @formatter:on
-        final boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
-        int minIndex = MIN_WINDOW_SIZE;
-        if (min != null) {
-            minIndex = Integer.parseInt(min);
-            if (minIndex < 1) {
-                LOGGER.error("Minimum window size too small. Limited to " + MIN_WINDOW_SIZE);
-                minIndex = MIN_WINDOW_SIZE;
+        int minIndex;
+        int maxIndex;
+        boolean useMax;
+
+        if (fileIndex != null && fileIndex.equalsIgnoreCase("nomax")) {
+            minIndex = Integer.MIN_VALUE;
+            maxIndex = Integer.MAX_VALUE;
+            useMax = false;
+        } else {
+            useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
+            minIndex = MIN_WINDOW_SIZE;
+            if (min != null) {
+                minIndex = Integer.parseInt(min);
+                if (minIndex < 1) {
+                    LOGGER.error("Minimum window size too small. Limited to " + MIN_WINDOW_SIZE);
+                    minIndex = MIN_WINDOW_SIZE;
+                }
             }
-        }
-        int maxIndex = DEFAULT_WINDOW_SIZE;
-        if (max != null) {
-            maxIndex = Integer.parseInt(max);
-            if (maxIndex < minIndex) {
-                maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
-                LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
+            maxIndex = DEFAULT_WINDOW_SIZE;
+            if (max != null) {
+                maxIndex = Integer.parseInt(max);
+                if (maxIndex < minIndex) {
+                    maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
+                    LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
+                }
             }
         }
         final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
@@ -137,7 +147,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      */
     private final int minIndex;
     private final boolean useMax;
-    private final StrSubstitutor strSubstitutor;
     private final int compressionLevel;
     private final List<Action> customActions;
     private final boolean stopCustomActionsOnError;
@@ -153,11 +162,11 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
             final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
             final boolean stopCustomActionsOnError) {
+        super(strSubstitutor);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
         this.useMax = useMax;
         this.compressionLevel = compressionLevel;
-        this.strSubstitutor = strSubstitutor;
         this.stopCustomActionsOnError = stopCustomActionsOnError;
         this.customActions = customActions == null ? Collections.<Action> emptyList() : Arrays.asList(customActions);
     }
@@ -176,10 +185,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
     public int getMinIndex() {
         return this.minIndex;
-    }
-
-    public StrSubstitutor getStrSubstitutor() {
-        return strSubstitutor;
     }
 
     public boolean isStopCustomActionsOnError() {
@@ -204,101 +209,50 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @return true if purge was successful and rollover should be attempted.
      */
     private int purgeAscending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
-        final List<FileRenameAction> renames = new ArrayList<>();
-        final StringBuilder buf = new StringBuilder();
+        final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
+        final int maxFiles = highIndex - lowIndex + 1;
 
-        // LOG4J2-531: directory scan & rollover must use same format
-        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, highIndex);
-        String highFilename = strSubstitutor.replace(buf);
-        final int suffixLength = suffixLength(highFilename);
-        int curMaxIndex = 0;
-
-        for (int i = highIndex; i >= lowIndex; i--) {
-            File toRename = new File(highFilename);
-            if (i == highIndex && toRename.exists()) {
-                curMaxIndex = highIndex;
-            } else if (curMaxIndex == 0 && toRename.exists()) {
-                curMaxIndex = i + 1;
+        boolean renameFiles = false;
+        while (eligibleFiles.size() >= maxFiles) {
+            try {
+                LOGGER.debug("Eligible files: {}", eligibleFiles);
+                Integer key = eligibleFiles.firstKey();
+                LOGGER.debug("Deleting {}", eligibleFiles.get(key).toFile().getAbsolutePath());
+                Files.delete(eligibleFiles.get(key));
+                eligibleFiles.remove(key);
+                renameFiles = true;
+            } catch (IOException ioe) {
+                LOGGER.error("Unable to delete {}", eligibleFiles.firstKey(), ioe);
                 break;
             }
-
-            boolean isBase = false;
-
-            if (suffixLength > 0) {
-                final File toRenameBase = new File(highFilename.substring(0, highFilename.length() - suffixLength));
-
-                if (toRename.exists()) {
-                    if (toRenameBase.exists()) {
-                        LOGGER.debug("DefaultRolloverStrategy.purgeAscending deleting {} base of {}.", //
-                                toRenameBase, toRename);
-                        toRenameBase.delete();
-                    }
-                } else {
-                    toRename = toRenameBase;
-                    isBase = true;
+        }
+        final StringBuilder buf = new StringBuilder();
+        if (renameFiles) {
+            for (Map.Entry<Integer, Path> entry : eligibleFiles.entrySet()) {
+                buf.setLength(0);
+                // LOG4J2-531: directory scan & rollover must use same format
+                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, entry.getKey() - 1);
+                String currentName = entry.getValue().toFile().getName();
+                String renameTo = buf.toString();
+                int suffixLength = suffixLength(renameTo);
+                if (suffixLength > 0 && suffixLength(currentName) == 0) {
+                   renameTo = renameTo.substring(0, renameTo.length() - suffixLength);
                 }
-            }
-
-            if (toRename.exists()) {
-                //
-                // if at lower index and then all slots full
-                // attempt to delete last file
-                // if that fails then abandon purge
-                if (i == lowIndex) {
-                    LOGGER.debug("DefaultRolloverStrategy.purgeAscending deleting {} at low index {}: all slots full.",
-                            toRename, i);
-                    if (!toRename.delete()) {
+                Action action = new FileRenameAction(entry.getValue().toFile(), new File(renameTo), true);
+                try {
+                    LOGGER.debug("DefaultRolloverStrategy.purgeAscending executing {}", action);
+                    if (!action.execute()) {
                         return -1;
                     }
-
-                    break;
-                }
-
-                //
-                // if intermediate index
-                // add a rename action to the list
-                buf.setLength(0);
-                // LOG4J2-531: directory scan & rollover must use same format
-                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, i - 1);
-
-                final String lowFilename = strSubstitutor.replace(buf);
-                String renameTo = lowFilename;
-
-                if (isBase) {
-                    renameTo = lowFilename.substring(0, lowFilename.length() - suffixLength);
-                }
-
-                renames.add(new FileRenameAction(toRename, new File(renameTo), true));
-                highFilename = lowFilename;
-            } else {
-                buf.setLength(0);
-                // LOG4J2-531: directory scan & rollover must use same format
-                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, i - 1);
-
-                highFilename = strSubstitutor.replace(buf);
-            }
-        }
-        if (curMaxIndex == 0) {
-            curMaxIndex = lowIndex;
-        }
-
-        //
-        // work renames backwards
-        //
-        for (int i = renames.size() - 1; i >= 0; i--) {
-            final Action action = renames.get(i);
-            try {
-                LOGGER.debug("DefaultRolloverStrategy.purgeAscending executing {} of {}: {}", //
-                        i, renames.size(), action);
-                if (!action.execute()) {
+                } catch (final Exception ex) {
+                    LOGGER.warn("Exception during purge in RollingFileAppender", ex);
                     return -1;
                 }
-            } catch (final Exception ex) {
-                LOGGER.warn("Exception during purge in RollingFileAppender", ex);
-                return -1;
             }
         }
-        return curMaxIndex;
+
+        return eligibleFiles.size() > 0 ?
+                (eligibleFiles.lastKey() < highIndex ? eligibleFiles.lastKey() + 1 : highIndex) : lowIndex;
     }
 
     /**
@@ -311,79 +265,34 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @return true if purge was successful and rollover should be attempted.
      */
     private int purgeDescending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
-        final List<FileRenameAction> renames = new ArrayList<>();
-        final StringBuilder buf = new StringBuilder();
+        // Retrieve the files in descending order, so the highest key will be first.
+        final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager, false);
+        final int maxFiles = highIndex - lowIndex + 1;
 
-        // LOG4J2-531: directory scan & rollover must use same format
-        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, lowIndex);
-
-        String lowFilename = strSubstitutor.replace(buf);
-        final int suffixLength = suffixLength(lowFilename);
-
-        for (int i = lowIndex; i <= highIndex; i++) {
-            File toRename = new File(lowFilename);
-            boolean isBase = false;
-
-            if (suffixLength > 0) {
-                final File toRenameBase = new File(lowFilename.substring(0, lowFilename.length() - suffixLength));
-
-                if (toRename.exists()) {
-                    if (toRenameBase.exists()) {
-                        LOGGER.debug("DefaultRolloverStrategy.purgeDescending deleting {} base of {}.", //
-                                toRenameBase, toRename);
-                        toRenameBase.delete();
-                    }
-                } else {
-                    toRename = toRenameBase;
-                    isBase = true;
-                }
-            }
-
-            if (toRename.exists()) {
-                //
-                // if at upper index then
-                // attempt to delete last file
-                // if that fails then abandon purge
-                if (i == highIndex) {
-                    LOGGER.debug(
-                            "DefaultRolloverStrategy.purgeDescending deleting {} at high index {}: all slots full.", //
-                            toRename, i);
-                    if (!toRename.delete()) {
-                        return -1;
-                    }
-
-                    break;
-                }
-
-                //
-                // if intermediate index
-                // add a rename action to the list
-                buf.setLength(0);
-                // LOG4J2-531: directory scan & rollover must use same format
-                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, i + 1);
-
-                final String highFilename = strSubstitutor.replace(buf);
-                String renameTo = highFilename;
-
-                if (isBase) {
-                    renameTo = highFilename.substring(0, highFilename.length() - suffixLength);
-                }
-
-                renames.add(new FileRenameAction(toRename, new File(renameTo), true));
-                lowFilename = highFilename;
-            } else {
+        while (eligibleFiles.size() >= maxFiles) {
+            try {
+                Integer key = eligibleFiles.firstKey();
+                Files.delete(eligibleFiles.get(key));
+                eligibleFiles.remove(key);
+            } catch (IOException ioe) {
+                LOGGER.error("Unable to delete {}", eligibleFiles.firstKey(), ioe);
                 break;
             }
         }
-
-        //
-        // work renames backwards
-        //
-        for (int i = renames.size() - 1; i >= 0; i--) {
-            final Action action = renames.get(i);
+        final StringBuilder buf = new StringBuilder();
+        for (Map.Entry<Integer, Path> entry : eligibleFiles.entrySet()) {
+            buf.setLength(0);
+            // LOG4J2-531: directory scan & rollover must use same format
+            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, entry.getKey() + 1);
+            String currentName = entry.getValue().toFile().getName();
+            String renameTo = buf.toString();
+            int suffixLength = suffixLength(renameTo);
+            if (suffixLength > 0 && suffixLength(currentName) == 0) {
+                renameTo = renameTo.substring(0, renameTo.length() - suffixLength);
+            }
+            Action action = new FileRenameAction(entry.getValue().toFile(), new File(renameTo), true);
             try {
-                LOGGER.debug("DefaultRolloverStrategy.purgeDescending executing {} of {}: {}", //
-                        i, renames.size(), action);
+                LOGGER.debug("DefaultRolloverStrategy.purgeDescending executing {}", action);
                 if (!action.execute()) {
                     return -1;
                 }
@@ -405,17 +314,23 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      */
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
-        if (maxIndex < 0) {
-            return null;
-        }
-        final long startNanos = System.nanoTime();
-        final int fileIndex = purge(minIndex, maxIndex, manager);
-        if (fileIndex < 0) {
-            return null;
-        }
-        if (LOGGER.isTraceEnabled()) {
-            final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
-            LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);
+        int fileIndex;
+        if (minIndex == Integer.MIN_VALUE) {
+            final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
+            fileIndex = eligibleFiles.size() > 0 ? eligibleFiles.lastKey() + 1 : 1;
+        } else {
+            if (maxIndex < 0) {
+                return null;
+            }
+            final long startNanos = System.nanoTime();
+            fileIndex = purge(minIndex, maxIndex, manager);
+            if (fileIndex < 0) {
+                return null;
+            }
+            if (LOGGER.isTraceEnabled()) {
+                final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
+                LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);
+            }
         }
         final StringBuilder buf = new StringBuilder(255);
         manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
@@ -446,7 +361,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
     @Override
     public String toString() {
-        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ')';
+        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ", useMax=" + useMax + ")";
     }
 
 }

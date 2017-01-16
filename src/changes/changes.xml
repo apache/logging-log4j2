@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.8" date="2017-MM-DD" description="GA Release 2.8">
+      <action issue="LOG4J2-1032" dev="rgoers" type="add">
+        Make DefaultRolloverStrategy more efficent when renaming files. Add nomax option to the fileIndex attribute.
+      </action>
       <action issue="LOG4J2-1101" dev="rgoers" type="add">
         RollingFileAppender now supports omitting the file name and writing directly to the archive files.
       </action>

@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressActi
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -49,6 +50,17 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
      * Allow subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
+
+    protected final StrSubstitutor strSubstitutor;
+
+    protected AbstractRolloverStrategy(final StrSubstitutor strSubstitutor) {
+        this.strSubstitutor = strSubstitutor;
+    }
+
+
+    public StrSubstitutor getStrSubstitutor() {
+        return strSubstitutor;
+    }
 
     protected Action merge(final Action compressAction, final List<Action> custom, final boolean stopOnError) {
         if (custom.isEmpty()) {
@@ -72,8 +84,24 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         return 0;
     }
 
+
+    protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager) {
+        return getEligibleFiles(manager, true);
+    }
+
+    protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager,
+                                                        final boolean isAscending) {
+        final StringBuilder buf = new StringBuilder();
+        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, -1);
+        return getEligibleFiles(buf.toString(), isAscending);
+    }
+
     protected SortedMap<Integer, Path> getEligibleFiles(String path) {
-        SortedMap<Integer, Path> eligibleFiles = new TreeMap<>();
+        return getEligibleFiles(path, true);
+    }
+
+    protected SortedMap<Integer, Path> getEligibleFiles(String path, boolean isAscending) {
+        TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
         File file = new File(path);
         File parent = file.getParentFile();
         parent.mkdirs();
@@ -100,6 +128,6 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         } catch (IOException ioe) {
             throw new LoggingException("Error reading folder " + dir + " " + ioe.getMessage(), ioe);
         }
-        return eligibleFiles;
+        return isAscending? eligibleFiles : eligibleFiles.descendingMap();
     }
 }

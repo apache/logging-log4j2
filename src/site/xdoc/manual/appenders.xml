@@ -2609,7 +2609,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 The pattern may also contain lookup references that can be resolved at runtime such as is shown in the example
                 below.
               </p>
-              <p>The default rollover strategy supports two variations for incrementing the counter. The first is
+              <p>The default rollover strategy supports three variations for incrementing the counter. The first is
                 the "fixed window" strategy. To illustrate how it works, suppose that the min attribute is set to 1,
                 the max attribute is set to 3, the file name is "foo.log", and the file name pattern is "foo-%i.log".
               </p>
@@ -2703,6 +2703,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     created and starts being written to.</td>
                 </tr>
               </table>
+              <p>
+                Finally, as of release 2.8, if the fileIndex attribute is set to "nomax" then the min and max values
+                will be ignored and file numbering will increment by 1 and each rollover will have an incrementally
+                higher value with no maximum number of files.
+              </p>
               <table>
                 <caption align="top">DefaultRolloverStrategy Parameters</caption>
                 <tr>
