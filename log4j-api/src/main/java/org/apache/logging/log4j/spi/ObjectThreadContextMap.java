@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.Map;
+
 /**
  * Extension service provider interface to allow putting Object values in the
  * {@link org.apache.logging.log4j.ThreadContext}.
@@ -41,4 +43,12 @@ public interface ObjectThreadContextMap extends CleanableThreadContextMap {
      * @param value the value to add. Values may be {@code null}.
      */
     <V> void putValue(String key, V value);
+
+    /**
+     * Puts all given key-value pairs into the collection.
+     *
+     * @param values the map of key-value pairs to add
+     */
+    <V> void putAllValues(Map<String, V> values);
+
 }
