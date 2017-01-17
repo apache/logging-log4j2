@@ -82,7 +82,7 @@
         Add putAll() method to CloseableThreadContext.
       </action>
       <action issue="LOG4J2-1689" dev="mikes" type="fix">
-        Add ThreadContextMap3 interface supporting method removeAll(Iterable&lt;String&gt;).
+        Add CleanableThreadContextMap interface supporting method removeAll(Iterable&lt;String&gt;).
       </action>
       <action issue="LOG4J2-1685" dev="mikes" type="fix" due-to="Raman Gupta">
         Option 'disableAnsi' in PatternLayout to unconditionally disable ANSI escape codes.

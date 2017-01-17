@@ -23,7 +23,7 @@ package org.apache.logging.log4j.spi;
  * @see ThreadContextMap
  * @since 2.8
  */
-public interface ThreadContextMap3 extends ThreadContextMap2 {
+public interface CleanableThreadContextMap extends ThreadContextMap2 {
 
     /**
      * Removes all given context map keys from the current thread's context map.

@@ -20,10 +20,10 @@ package org.apache.logging.log4j.spi;
  * Extension service provider interface to allow putting Object values in the
  * {@link org.apache.logging.log4j.ThreadContext}.
  *
- * @see ThreadContextMap3
+ * @see ThreadContextMap
  * @since 2.8
  */
-public interface ObjectThreadContextMap extends ThreadContextMap3 {
+public interface ObjectThreadContextMap extends CleanableThreadContextMap {
 
     /**
      * Returns the Object value for the specified key, or {@code null} if the specified key does not exist in this
