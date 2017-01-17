@@ -18,98 +18,89 @@
 
 <h1>Frequently Asked Questions</h1>
 
-<ul>
-<li><a href="#missing_core">I'm seeing this error "Unable to locate a logging implementation, using SimpleLogger".
-    What is wrong?</a></li>
-<li><a href="#which_jars">Which JAR files do I need?</a></li>
-<li><a href="#exclusions">How do I exclude conflicting dependencies?</a></li>
-<li><a href="#config_location">How do I specify the configuration file location?</a></li>
-<li><a href="#config_from_code">How do I configure log4j2 in code without a configuration file?</a></li>
-<li><a href="#reconfig_from_code">How do I reconfigure log4j2 in code with a specific configuration file?</a></li>
-<li><a href="#shutdown">How do I shut down log4j2 in code?</a></li>
-<li><a href="#config_sep_appender_level">How do I send log messages with different levels to different appenders?</a></li>
-<li><a href="#troubleshooting">How do I debug my configuration?</a></li>
-<li><a href="#separate_log_files">How do I dynamically write to separate log files?</a></li>
-<li><a href="#reconfig_level_from_code">How do I set a logger's level programmatically?</a></li>
-<li><a href="#retention">How do I set my log archive retention policy? How do I delete old log archives?</a></li>
-<li><a href="#api-tradeoffs">What are the trade-offs of using the Log4j 2 API versus the SLF4J API?</a></li>
-<li><a href="#gc-free-slf4j">Is Log4j 2 still garbage-free when I use the SLF4J API?</a></li>
-<li><a href="#gc-free-domain-object">How do I log my domain object without creating garbage?</a> </li>
-<li><a href="#logger-wrapper">How do I create a custom logger wrapper that shows the correct class, method and line number?</a></li>
-
-</ul>
+* [I'm seeing this error "Unable to locate a logging implementation, using SimpleLogger". What is wrong?](#missing_core)
+* [Which JAR files do I need?](#which_jars)
+* [How do I exclude conflicting dependencies?](#exclusions)
+* [How do I specify the configuration file location?](#config_location)
+* [How do I configure log4j2 in code without a configuration file?](#config_from_code)
+* [How do I reconfigure log4j2 in code with a specific configuration file?](#reconfig_from_code)
+* [How do I shut down log4j2 in code?](#shutdown)
+* [How do I send log messages with different levels to different appenders?](#config_sep_appender_level)
+* [How do I debug my configuration?](#troubleshooting)
+* [How do I dynamically write to separate log files?](#separate_log_files)
+* [How do I set a logger's level programmatically?](#reconfig_level_from_code)
+* [How do I set my log archive retention policy? How do I delete old log archives?](#retention)
+* [What are the trade-offs of using the Log4j 2 API versus the SLF4J API?](#api-tradeoffs)
+* [Is Log4j 2 still garbage-free when I use the SLF4J API?](#gc-free-slf4j)
+* [How do I log my domain object without creating garbage?](#gc-free-domain-object) 
+* [How do I create a custom logger wrapper that shows the correct class, method and line number?](#logger-wrapper)
 
 <a name="missing_core"/>
-<h4>I'm seeing this error "Unable to locate a logging implementation, using SimpleLogger".
-  What is wrong?
-</h4>
-<p>You have the log4j-api-2.x jar file in your classpath but you still need to add the log4j-core-2.x jar to the
-  classpath. (Also, it looks like you are using an old version of Log4j 2. You may want to upgrade.)
-</p>
+<h4>I'm seeing this error "Unable to locate a logging implementation, using SimpleLogger". What is wrong?</h4>
+
+You have the log4j-api-2.x jar file in your classpath but you still need to add the log4j-core-2.x jar to the
+classpath. (Also, it looks like you are using an old version of Log4j 2. You may want to upgrade.)
 
 <a name="which_jars"/>
 <h4>Which JAR files do I need?</h4>
-<p>You need at least the log4j-api-2.x and the log4j-core-2.x jar files.</p>
-<p>The other jars are necessary if your application calls the API
-  of another logging framework and you want to route logging calls to the Log4j 2 implementation.
-</p>
-<p>
-  <img src="images/whichjar-2.x.png" alt="Diagram showing which JARs correspond to which systems"/>
-</p>
+
+You need at least the log4j-api-2.x and the log4j-core-2.x jar files.
+
+The other jars are necessary if your application calls the API
+of another logging framework and you want to route logging calls to the Log4j 2 implementation.
+
+![Diagram showing which JARs correspond to which systems](images/whichjar-2.x.png)
+
 <a name="which_jars_log4j-to-slf4j" />
-<p>You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2 API and you
-  want to route logging calls to a SLF4J implementation.
-</p>
-<p>
-  <img src="images/whichjar-slf4j-2.x.png"
-      alt="Diagram showing the dependency flow to use Log4j 2 API with SLF4J"/>
-</p>
-<p>Some of the Log4j components have features with optional dependencies.
-  The component page will have more detail.
-  For example, the
-  <a href="log4j-core/index.html">log4j-core component page</a>
-  has an outline of which log4j-core features have external dependencies.
-</p>
+You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2 API and you
+want to route logging calls to a SLF4J implementation.
+
+![Diagram showing the dependency flow to use Log4j 2 API with SLF4J](images/whichjar-slf4j-2.x.png)
+
+Some of the Log4j components have features with optional dependencies.
+The component page will have more detail. For example, the
+[log4j-core component page](log4j-core/index.html)
+has an outline of which log4j-core features have external dependencies.
 
 <a name="exclusions"/>
 <h4>How do I exclude conflicting dependencies?</h4>
-<p>
-  There are several scenarios where you may end up with conflicting dependencies, especially transitively
-  included ones. The following table shows for each Log4j dependency on the left (implicit groupId of
-  <code>org.apache.logging.log4j</code>), the following dependencies on the right can be safely excluded
-  (given in the format <code>groupId:artifactId</code>).
-</p>
+
+There are several scenarios where you may end up with conflicting dependencies, especially transitively
+included ones. The following table shows for each Log4j dependency on the left (implicit groupId of
+`org.apache.logging.log4j`), the following dependencies on the right can be safely excluded
+(given in the format `groupId:artifactId`).
+
 <table class="table table-bordered">
   <tr>
     <th>Log4j Dependency</th>
     <th colspan="3">Dependencies to Exclude</th>
   </tr>
   <tr>
-    <td><a href="log4j-1.2-api">log4j-1.2-api</a></td>
+    <td>[log4j-1.2-api](log4j-1.2-api)</td>
     <td>log4j:log4j</td>
     <td>org.slf4j:log4j-over-slf4j</td>
     <td/>
   </tr>
   <tr>
-    <td><a href="log4j-core">log4j-core</a></td>
+    <td>[log4j-core](log4j-core)</td>
     <td>log4j:log4j</td>
     <td>ch.qos.logback:logback-core</td>
     <td>org.apache.logging.log4j:log4j-to-slf4j</td>
   </tr>
   <tr>
-    <td><a href="log4j-jcl">log4j-jcl</a></td>
+    <td>[log4j-jcl](log4j-jcl)</td>
     <td>org.slf4j:jcl-over-slf4j</td>
     <td/>
     <td/>
   </tr>
   <tr>
-    <td><a href="log4j-jul">log4j-jul</a></td>
+    <td>[log4j-jul](log4j-jul)</td>
     <td>org.slf4j:jul-to-slf4j</td>
     <td/>
     <td/>
   </tr>
   <tr>
-    <td><a href="log4j-slf4j-impl">log4j-slf4j-impl</a></td>
+    <td>[log4j-slf4j-impl](log4j-slf4j-impl)</td>
     <td>org.apache.logging.log4j:log4j-to-slf4j</td>
     <td>ch.qos.logback:logback-core</td>
     <td/>
@@ -174,6 +165,7 @@ configurations {
   all*.exclude group: 'log4j', module: 'log4j'
 }
 ```
+
 The equivalent Gradle config for the above Maven exclusion would look like:
 
 ```
@@ -189,38 +181,32 @@ dependencies {
 
 <a name="config_location"/>
 <h4>How do I specify the configuration file location?</h4>
-<p>By default, Log4j looks for a configuration file named
-  <b>log4j2.xml</b>
-  (not log4j.xml) in the classpath.
-</p>
-<p>
-  You can also specify the full path of the configuration file with this system property:
-  <br/>
-  <code>-Dlog4j.configurationFile=path/to/log4j2.xml</code>
-</p>
-<p>Web applications can specify the Log4j configuration file location with a servlet context parameter.
-  See
-  <a href="http://logging.apache.org/log4j/2.x/manual/webapp.html#ContextParams">this section</a>
-  of the Using Log4j 2 in Web Applications manual page.
-</p>
+
+By default, Log4j looks for a configuration file named **log4j2.xml** (not log4j.xml) in the classpath.
+
+You can also specify the full path of the configuration file with this system property:
+`-Dlog4j.configurationFile=path/to/log4j2.xml`
+
+That property can also be included in a classpath resource file named `log4j2.component.properties`.
+
+Web applications can specify the Log4j configuration file location with a servlet context parameter.
+See [this section](http://logging.apache.org/log4j/2.x/manual/webapp.html#ContextParams)
+of the Using Log4j 2 in Web Applications manual page.
 
 <a name="config_from_code"/>
 <h4>How do I configure log4j2 in code without a configuration file?</h4>
-<p>Starting with version 2.4, Log4j 2 provides an <a href="manual/customconfig.html">API
-  for programmatic configuration</a>.
-  The new
-  <a href="log4j-core/apidocs/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html">ConfigurationBuilder
-    API
-  </a>
-  allows you to create Configurations in code by constructing component definitions
-  without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.
-</p>
+
+Starting with version 2.4, Log4j 2 provides an [API for programmatic configuration](manual/customconfig.html)
+The new
+[`ConfigurationBuilder` API](log4j-core/apidocs/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html)
+allows you to create Configurations in code by constructing component definitions
+without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.
 
 <a name="reconfig_from_code"/>
 <h4>How do I reconfigure log4j2 in code with a specific configuration file?</h4>
-<p>See the below example.
-  Be aware that this LoggerContext class is not part of the public API so your code may break with any minor release.
-</p>
+
+See the below example.
+Be aware that this LoggerContext class is not part of the public API so your code may break with any minor release.
 
 ```
 // import org.apache.logging.log4j.core.LoggerContext;
@@ -234,19 +220,17 @@ context.setConfigLocation(file.toURI());
 
 <a name="shutdown"/>
 <h4>How do I shut down log4j2 in code?</h4>
-<p>Normally there is no need to do this manually.
-  Each LoggerContext registers a shutdown hook that takes care of releasing resources
-  when the JVM exits (unless system property
-  <code>log4j.shutdownHookEnabled</code>
-  is set to<code>false</code>).
-  Web applications should include the log4j-web
-  module in their classpath which disables the shutdown hook but instead
-  cleans up log4j resources when the web application is stopped.
-</p>
-<p>However, if you need to manually shut down log4j, you can do so
-  as in the below example.
-  Be aware that these classes are not part of the public API so your code may break with any minor release.
-</p>
+
+Normally there is no need to do this manually.
+Each LoggerContext registers a shutdown hook that takes care of releasing resources
+when the JVM exits (unless system property `log4j.shutdownHookEnabled` is set to `false`).
+Web applications should include the log4j-web
+module in their classpath which disables the shutdown hook but instead
+cleans up log4j resources when the web application is stopped.
+
+However, if you need to manually shut down log4j, you can do so as in the below example.
+Be aware that these classes are not part of the public API so your code may break with any minor release.
+
 
 ```
 // import org.apache.logging.log4j.core.LoggerContext;
@@ -260,9 +244,7 @@ Configurator.shutdown(context);
 <a name="config_sep_appender_level"/>
 <h4>How do I send log messages with different levels to different appenders?</h4>
 You don't need to declare separate loggers to achieve this.
-You can set the logging level on the
-<code>AppenderRef</code>
-element.
+You can set the logging level on the `AppenderRef` element.
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -288,49 +270,32 @@ element.
 
 <a name="troubleshooting"/>
 <h4>How do I debug my configuration?</h4>
-<p>First, make sure you have
-  <a href="#which_jars">the right jar files</a>
-  on your classpath.
-  You need at least log4j-api and log4j-core.
-</p>
-<p>Next, check the name of your configuration file. By default, log4j2 will look
-  for a configuration file named
-  <code>log4j2.xml</code>
-  on the classpath. Note the "2" in the file name!
-  (See the
-  <a href="manual/configuration.html#AutomaticConfiguration">configuration manual page</a>
-  for more details.)
-</p>
-<p>If the configuration file is found correctly, log4j2 internal status logging can be controlled by
-  setting
-  <code>&lt;Configuration status="trace"&gt;</code>
-  in the configuration file.
-  This will display detailed log4j2-internal
-  log statements on the console about what happens during the configuration process.
-  This may be useful to trouble-shoot configuration issues.
-  By default the status logger level is WARN, so you only see notifications when there is a problem.
-</p>
-<p>If the configuration file is not found correctly, you can still enable
-  log4j2 internal status logging by setting system property
-  <code>-Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE</code>.
-</p>
+
+First, make sure you have [the right jar files](#which_jars) on your classpath.
+You need at least log4j-api and log4j-core.
+
+Next, check the name of your configuration file. By default, log4j2 will look
+for a configuration file named `log4j2.xml` on the classpath. Note the "2" in the file name!
+(See the [configuration manual page](manual/configuration.html#AutomaticConfiguration) for more details.)
+
+If the configuration file is found correctly, log4j2 internal status logging can be controlled by
+setting `<Configuration status="trace">` in the configuration file. This will display detailed log4j2-internal
+log statements on the console about what happens during the configuration process.
+This may be useful to trouble-shoot configuration issues.
+By default the status logger level is WARN, so you only see notifications when there is a problem.
+
+If the configuration file is not found correctly, you can still enable
+log4j2 internal status logging by setting system property
+`-Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE`.
 
 <a name="separate_log_files"/>
 <h4>How do I dynamically write to separate log files?</h4>
-<p>
-  Look at the
-  <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#RoutingAppender">RoutingAppender</a>.
-  You can define multiple routes in the configuration,
-  and put values in the
-  <code>ThreadContext</code>
-  map that determine
-  which log file subsequent events in this thread get logged to.
-</p>
-<p>
-  You can use the
-  <code>ThreadContext</code>
-  map value to determine the log file name.
-</p>
+
+Look at the [RoutingAppender](http://logging.apache.org/log4j/2.x/manual/appenders.html#RoutingAppender).
+You can define multiple routes in the configuration, and put values in the `ThreadContext`
+map that determine which log file subsequent events in this thread get logged to.
+
+You can use the `ThreadContext` map value to determine the log file name.
 
 ```
 <Routing name="Routing">
@@ -385,9 +350,9 @@ element.
 
 <a name="reconfig_level_from_code"/>
 <h4>How do I set a logger's level programmatically?</h4>
-<p>You can set a logger's level with the class Configurator from Core module.
-  Be aware that the Configuration class is not part of the public API.
-</p>
+
+You can set a logger's level with the class Configurator from Core module.
+Be aware that the Configuration class is not part of the public API.
 
 ```
 // org.apache.logging.log4j.core.config.Configurator;
@@ -400,92 +365,76 @@ Configurator.setRootLevel(Level.DEBUG);
 
 <a name="retention"/>
 <h4>How do I set my log archive retention policy? How do I delete old log archives?</h4>
-<p>The
-  <tt>DefaultRolloverStrategy</tt>
-  of the Rolling File appender (and Rolling Random Access File
-  appender) supports a
-  <a href="manual/appenders.html#CustomDeleteOnRollover">Delete</a>
-  element.
-</p>
-<p>Starting at a specified base directory, you can delete all files for which some condition
-  holds true, for example all files that match a given file name pattern and are older
-  than some number of days. More complex conditions are possible, and if the built-in
-  conditions are not sufficient, users can provide
-  custom conditions by creating
-  <a href="manual/appenders.html#DeletePathCondition">plugin conditions</a>
-  or by
-  writing a
-  <a href="manual/appenders.html#ScriptCondition">script condition</a>
-</p>
+
+The `DefaultRolloverStrategy` of the Rolling File appender (and Rolling Random Access File
+appender) supports a [Delete](manual/appenders.html#CustomDeleteOnRollover) element.
+
+Starting at a specified base directory, you can delete all files for which some condition
+holds true, for example all files that match a given file name pattern and are older
+than some number of days. More complex conditions are possible, and if the built-in
+conditions are not sufficient, users can provide custom conditions by creating
+[plugin conditions](manual/appenders.html#DeletePathCondition) or by writing a
+[script condition](manual/appenders.html#ScriptCondition).
+
 <a name="api-tradeoffs" />
 <h4>What are the trade-offs of using the Log4j 2 API versus the SLF4J API?</h4>
-<p>
-  The Log4j 2 API and SLF4J have a lot in common.
-  They both share the objective of cleanly separating the logging API from the implementation.
-  We believe that the Log4j 2 API can help make your application more performant
-  while offering more functionality and more flexibility.
-</p>
-<p>
-  There may be a concern that using the Log4j 2 API will tightly couple your application to Log4j 2.
-  This is not the case: applications coded to the Log4j 2 API always have the option to use any SLF4J-compliant
-  library as their logging implementation with the log4j-to-slf4j adapter.
-  See the <a href="#which_jars_log4j-to-slf4j">which jars</a> FAQ entry for details.
-</p>
-<p>
-  There are several advantages to using the Log4j 2 API:
-</p>
-<ul>
-  <li>SLF4J forces your application to log Strings.
-    The Log4j 2 API supports logging any CharSequence if you want to log text, but also
-    supports logging any Object as is.
-    It is the responsibility of the logging <em>implementation</em> to handle this object,
-    and we consider it a design mistake to limit applications to logging Strings.</li>
-  <li>
-    The Log4j 2 API offers support for logging <a href="manual/messages.html">Message objects</a>.
-    Messages allow support for interesting and complex constructs to be passed
-    through the logging system and be efficiently manipulated.
-    Users are free to create their own Message types and write custom Layouts,
-    Filters and Lookups to manipulate them.
-  </li>
-  <li>The Log4j 2 API has support for Java 8
-    <a href="manual/api.html#LambdaSupport">lambda expressions</a>.</li>
-  <li>
-    The Log4j 2 API has better support for <a href="manual/garbagefree.html">garbage-free logging</a>:
-    it avoids creating vararg arrays and avoids creating Strings when logging CharSequence objects.
-  </li>
-</ul>
 
+The Log4j 2 API and SLF4J have a lot in common.
+They both share the objective of cleanly separating the logging API from the implementation.
+We believe that the Log4j 2 API can help make your application more performant
+while offering more functionality and more flexibility.
+
+There may be a concern that using the Log4j 2 API will tightly couple your application to Log4j 2.
+This is not the case: applications coded to the Log4j 2 API always have the option to use any SLF4J-compliant
+library as their logging implementation with the log4j-to-slf4j adapter.
+See the [which jars](#which_jars_log4j-to-slf4j) FAQ entry for details.
+
+There are several advantages to using the Log4j 2 API:
+
+* SLF4J forces your application to log Strings.
+The Log4j 2 API supports logging any CharSequence if you want to log text, but also
+supports logging any Object as is.
+It is the responsibility of the logging <em>implementation</em> to handle this object,
+and we consider it a design mistake to limit applications to logging Strings.
+* The Log4j 2 API offers support for logging [Message objects](manual/messages.html).
+Messages allow support for interesting and complex constructs to be passed
+through the logging system and be efficiently manipulated.
+Users are free to create their own Message types and write custom Layouts,
+Filters and Lookups to manipulate them.
+* The Log4j 2 API has support for Java 8 [lambda expressions](manual/api.html#LambdaSupport).
+* The Log4j 2 API has better support for [garbage-free logging](manual/garbagefree.html):
+it avoids creating vararg arrays and avoids creating Strings when logging CharSequence objects.
 
 <a name="gc-free-slf4j" />
 <h4>Is Log4j 2 still garbage-free when I use the SLF4J API?</h4>
-<p>Yes, the log4j-slf4j-impl binding (together with log4j-core) implements the
-  <tt>org.slf4j.Logger</tt> methods to be GC-free.
-  However, bear in mind that there are some limitations:</p>
-<p>The SLF4J API only offers up to two parameters for a parameterized message.
-  More than that uses varargs which creates a temporary object for the parameter array.
-  The Log4j 2.6 API has methods for up to ten unrolled parameters.</p>
-<p>
-  Another consideration is that the SLF4J API forces your application to log Strings.
-  Log4j 2 API lets you log any java.lang.CharSequence, and even any Objects.
-  Log4j can log any Object that implements <tt>java.lang.CharSequence</tt>
-  or <tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt> without creating garbage.
-</p>
-<p>
-  The <tt>org.slf4j.spi.LocationAwareLogger::<a href="http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker, java.lang.String, int, java.lang.String, java.lang.Object[], java.lang.Throwable)">log</a></tt>
-  method is not yet implemented
-  in a garbage-free manner in the log4j-slf4j-impl binding. It creates a new message object for each call.
-</p>
+
+Yes, the log4j-slf4j-impl binding (together with log4j-core) implements the
+`org.slf4j.Logger` methods to be GC-free.
+However, bear in mind that there are some limitations:
+
+The SLF4J API only offers up to two parameters for a parameterized message.
+More than that uses varargs which creates a temporary object for the parameter array.
+The Log4j 2.6 API has methods for up to ten unrolled parameters.
+
+Another consideration is that the SLF4J API forces your application to log Strings.
+Log4j 2 API lets you log any java.lang.CharSequence, and even any Objects.
+Log4j can log any Object that implements `java.lang.CharSequence`
+or `org.apache.logging.log4j.util.StringBuilderFormattable` without creating garbage.
+
+The `org.slf4j.spi.LocationAwareLogger::[log](http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker, java.lang.String, int, java.lang.String, java.lang.Object[], java.lang.Throwable))`
+method is not yet implemented
+in a garbage-free manner in the log4j-slf4j-impl binding. It creates a new message object for each call.
 
 <a name="gc-free-domain-object" />
 <h4>How do I log my domain object without creating garbage?</h4>
-<p>One option is to let the domain object implement java.lang.CharSequence.
-  However, for many domain objects it may not be trivial to implement this without allocating temporary
-  objects.</p>
-<p>An alternative is to implement the <tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt> interface.
-  If an object is logged that implements this interface, its <tt>formatTo</tt> method is called instead of
-  <tt>toString()</tt>.
-</p>
 
+One option is to let the domain object implement java.lang.CharSequence.
+However, for many domain objects it may not be trivial to implement this without allocating temporary
+objects.
+
+An alternative is to implement the `org.apache.logging.log4j.util.StringBuilderFormattable` interface.
+If an object is logged that implements this interface, its `formatTo` method is called instead of
+`toString()`.
 
 ```
 package org.apache.logging.log4j.util;
@@ -513,6 +462,6 @@ so Log4j can't find the place where your custom logger was called.
 The solution is to provide the correct FQCN. The easiest way to do this is to let Log4j generate
 the logger wrapper for you. Log4j comes with a Logger wrapper generator tool.
 This tool was originally meant to support custom log levels and is documented
-<a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.html#CustomLoggers">here</a>.
+[here](https://logging.apache.org/log4j/2.x/manual/customloglevels.html#CustomLoggers).
 
 The generated logger code will take care of the FQCN.
