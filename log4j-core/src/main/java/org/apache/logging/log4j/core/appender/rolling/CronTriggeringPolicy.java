@@ -69,6 +69,9 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         final Date now = new Date();
         final Date lastRollForFile = cronExpression.getPrevFireTime(new Date(this.manager.getFileTime()));
         final Date lastRegularRoll = cronExpression.getPrevFireTime(new Date());
+        aManager.getPatternProcessor().setCurrentFileTime(lastRegularRoll.getTime());
+        LOGGER.debug("LastRollForFile {}, LastRegularRole {}", lastRollForFile, lastRegularRoll);
+        aManager.getPatternProcessor().setPrevFileTime(lastRegularRoll.getTime());
         if (checkOnStartup && lastRollForFile != null && lastRegularRoll != null &&
                 lastRollForFile.before(lastRegularRoll)) {
             lastRollDate = lastRollForFile;
@@ -145,6 +148,8 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private void rollover() {
         manager.getPatternProcessor().setPrevFileTime(lastRollDate.getTime());
+        final Date thisRoll = cronExpression.getPrevFireTime(new Date());
+        manager.getPatternProcessor().setCurrentFileTime(thisRoll.getTime());
         manager.rollover();
         if (future != null) {
             lastRollDate = future.getFireTime();

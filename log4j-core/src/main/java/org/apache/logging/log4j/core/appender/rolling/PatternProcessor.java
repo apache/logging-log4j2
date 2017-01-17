@@ -55,6 +55,7 @@ public class PatternProcessor {
 
     private long prevFileTime = 0;
     private long nextFileTime = 0;
+    private long currentFileTime = 0;
 
     private RolloverFrequency frequency = null;
 
@@ -92,11 +93,20 @@ public class PatternProcessor {
         }
     }
 
+    public long getCurrentFileTime() {
+        return currentFileTime;
+    }
+
+    public void setCurrentFileTime(long currentFileTime) {
+        this.currentFileTime = currentFileTime;
+    }
+
     public long getPrevFileTime() {
         return prevFileTime;
     }
 
     public void setPrevFileTime(final long prevFileTime) {
+        LOGGER.debug("Setting prev file time to {}", new Date(prevFileTime));
         this.prevFileTime = prevFileTime;
     }
 
@@ -215,8 +225,11 @@ public class PatternProcessor {
      * @param buf string buffer to which formatted file name is appended, may not be null.
      * @param obj object to be evaluated in formatting, may not be null.
      */
-    public final void formatFileName(final StringBuilder buf, final Object obj) {
-        final long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
+    public final void formatFileName(final StringBuilder buf, final boolean useCurrentTime, final Object obj) {
+        long time = useCurrentTime ? currentFileTime : prevFileTime;
+        if (time == 0) {
+            time = System.currentTimeMillis();
+        }
         formatFileName(buf, new Date(time), obj);
     }
 
@@ -227,9 +240,21 @@ public class PatternProcessor {
      * @param obj object to be evaluated in formatting, may not be null.
      */
     public final void formatFileName(final StrSubstitutor subst, final StringBuilder buf, final Object obj) {
+        formatFileName(subst, buf, false, obj);
+    }
+
+    /**
+     * Formats file name.
+     * @param subst The StrSubstitutor.
+     * @param buf string buffer to which formatted file name is appended, may not be null.
+     * @param obj object to be evaluated in formatting, may not be null.
+     */
+    public final void formatFileName(final StrSubstitutor subst, final StringBuilder buf, final boolean useCurrentTime,
+                                     final Object obj) {
         // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
         // for creating the file name of rolled-over files.
-        final long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
+        final long time = useCurrentTime && currentFileTime != 0 ? currentFileTime :
+                prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);
         final LogEvent event = new Log4jLogEvent.Builder().setTimeMillis(time).build();
         final String fileName = subst.replace(event, buf);

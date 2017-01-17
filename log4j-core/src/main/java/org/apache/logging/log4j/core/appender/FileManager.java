@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,7 +114,9 @@ public class FileManager extends OutputStreamManager {
 
     @Override
     protected OutputStream createOutputStream() throws FileNotFoundException {
-        return new FileOutputStream(getFileName(), isAppend);
+        String filename = getFileName();
+        LOGGER.debug("Now writing to {} at {}", filename, new Date());
+        return new FileOutputStream(filename, isAppend);
     }
 
     @Override

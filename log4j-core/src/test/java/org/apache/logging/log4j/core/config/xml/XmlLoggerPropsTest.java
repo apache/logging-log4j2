@@ -67,6 +67,8 @@ public class XmlLoggerPropsTest {
                 containsString("test=test"),
                 containsString("test2=test2default"),
                 containsString("test3=Unknown"),
+                containsString("test4=test"),
+                containsString("test5=test"),
                 containsString("attribKey=attribValue"),
                 containsString("duplicateKey=nodeValue")
             ));
@@ -76,6 +78,8 @@ public class XmlLoggerPropsTest {
                 containsString("test=test"),
                 containsString("test2=test2default"),
                 containsString("test3=Unknown"),
+                containsString("test4=test"),
+                containsString("test5=test"),
                 containsString("attribKey=attribValue"),
                 containsString("duplicateKey=nodeValue")
             ));

@@ -185,7 +185,7 @@ public class StrSubstitutor implements ConfigurationAware {
     /**
      * The flag whether substitution in variable names is enabled.
      */
-    private boolean enableSubstitutionInVariables;
+    private boolean enableSubstitutionInVariables = true;
     /**
      * The currently active Configuration for use by ConfigurationAware StrLookup implementations.
      */
@@ -940,7 +940,7 @@ public class StrSubstitutor implements ConfigurationAware {
                                     varNameExpr = bufName.toString();
                                 }
                                 pos += endMatchLen;
-                                int endPos = pos;
+                                final int endPos = pos;
 
                                 String varName = varNameExpr;
                                 String varDefaultValue = null;
@@ -956,13 +956,7 @@ public class StrSubstitutor implements ConfigurationAware {
                                         }
                                         if ((valueDelimiterMatchLen = valueDelimiterMatcher.isMatch(varNameExprChars, i)) != 0) {
                                             varName = varNameExpr.substring(0, i);
-                                            varDefaultValue = variableResolver.lookup(varNameExpr.substring(i + valueDelimiterMatchLen));
-                                            if (varDefaultValue != null) {
-                                                ++endPos;
-                                            }
-                                            if (varDefaultValue == null) {
-                                                varDefaultValue = varNameExpr.substring(i + valueDelimiterMatchLen);
-                                            }
+                                            varDefaultValue = varNameExpr.substring(i + valueDelimiterMatchLen);
                                             break;
                                         }
                                     }
@@ -1335,7 +1329,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * Sets a flag whether substitution is done in variable names. If set to
      * <b>true</b>, the names of variables can contain other variables which are
      * processed first before the original variable is evaluated, e.g.
-     * <code>${jre-${java.version}}</code>. The default value is <b>false</b>.
+     * <code>${jre-${java.version}}</code>. The default value is <b>true</b>.
      *
      * @param enableSubstitutionInVariables the new value of the flag
      */
