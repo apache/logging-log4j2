@@ -20,7 +20,7 @@
      <Property name="test2">test2default</Property>
      <Property name="attribKey" value="attribValue" />
      <Property name="duplicateKey" value="attribValue">nodeValue</Property>
-     <Property name="test5">${sys:test3:-${sys:test}}</Property>
+     <Property name="test5">${sys:test:-${sys:test2}}</Property>
   </Properties>
   <Appenders>
     <List name="List">
