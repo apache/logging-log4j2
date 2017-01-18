@@ -87,6 +87,7 @@ public class KafkaManager extends AbstractManager {
             try {
                 closeThread.join(timeUnit.toMillis(timeout));
             } catch (final InterruptedException ignore) {
+                Thread.currentThread().interrupt();
                 // ignore
             }
         }
