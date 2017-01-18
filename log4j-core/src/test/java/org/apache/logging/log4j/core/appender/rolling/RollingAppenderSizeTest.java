@@ -134,9 +134,8 @@ public class RollingAppenderSizeTest {
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(fileExtension))))));
 
-        final DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
-        if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
-                || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
+        final FileExtension ext = FileExtension.lookup(fileExtension);
+        if (ext == null || FileExtension.ZIP == ext || FileExtension.PACK200 == ext) {
             return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these formats
         }
         // Stop the context to make sure all files are compressed and closed. Trying to remedy failures in CI builds.

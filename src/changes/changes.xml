@@ -27,6 +27,12 @@
       <action issue="LOG4J2-1780" dev="mikes" type="fix">
         Eliminate the use of the ExecutorServices in the LoggerContext.
       </action>
+      <action issue="LOG4J2-1032" dev="rgoers" type="add">
+        Make DefaultRolloverStrategy more efficent when renaming files. Add nomax option to the fileIndex attribute.
+      </action>
+      <action issue="LOG4J2-1101" dev="rgoers" type="add">
+        RollingFileAppender now supports omitting the file name and writing directly to the archive files.
+      </action>
       <action issue="LOG4J2-1786" dev="rpopma" type="fix">
         ConfigurationScheduler now preserves interrupt flag during stop.
       </action>
@@ -79,7 +85,7 @@
         Add putAll() method to CloseableThreadContext.
       </action>
       <action issue="LOG4J2-1689" dev="mikes" type="fix">
-        Add ThreadContextMap3 interface supporting method removeAll(Iterable&lt;String&gt;).
+        Add CleanableThreadContextMap interface supporting method removeAll(Iterable&lt;String&gt;).
       </action>
       <action issue="LOG4J2-1685" dev="mikes" type="fix" due-to="Raman Gupta">
         Option 'disableAnsi' in PatternLayout to unconditionally disable ANSI escape codes.
@@ -248,6 +254,9 @@
       </action>
       <action issue="LOG4J2-1302" dev="rpopma" type="update">
         The log4j-slf4j-impl module now declares a runtime dependency on log4j-core. While not technically required, this makes the log4j-slf4j-impl module behave similarly to slf4j-log4j12, and facilitates migration to Log4j 2.
+      </action>
+      <action issue="LOG4J2-1787" dev="mattsicker" type="add">
+        Document how to exclude transitive conflicting dependencies in Maven and Gradle.
       </action>
       <action issue="LOG4J2-1773" dev="mattsicker" type="add">
         Add StatusLoggerRule to allow unit tests to set a status level.

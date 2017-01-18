@@ -157,6 +157,10 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         return getCount() > 0;
     }
 
+    public boolean hasOutputStream() {
+        return os != null;
+    }
+
     protected OutputStream getOutputStream() throws IOException {
         if (os == null) {
             os = createOutputStream();

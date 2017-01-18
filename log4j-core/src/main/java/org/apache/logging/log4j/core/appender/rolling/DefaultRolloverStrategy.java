@@ -17,21 +17,21 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
-import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -77,99 +77,6 @@ import org.apache.logging.log4j.core.util.Integers;
 @Plugin(name = "DefaultRolloverStrategy", category = Core.CATEGORY_NAME, printObject = true)
 public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
-    /**
-     * Enumerates over supported file extensions.
-     * <p>
-     * Package-protected for unit tests.
-     */
-    static enum FileExtensions {
-        ZIP(".zip") {
-            @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
-                return new ZipCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
-            }
-        },
-        GZ(".gz") {
-            @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
-                return new GzCompressAction(source(renameTo), target(compressedName), deleteSource);
-            }
-        },
-        BZIP2(".bz2") {
-            @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
-                // One of "gz", "bzip2", "xz", "pack200", or "deflate".
-                return new CommonsCompressAction("bzip2", source(renameTo), target(compressedName), deleteSource);
-            }
-        },
-        DEFLATE(".deflate") {
-            @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
-                // One of "gz", "bzip2", "xz", "pack200", or "deflate".
-                return new CommonsCompressAction("deflate", source(renameTo), target(compressedName), deleteSource);
-            }
-        },
-        PACK200(".pack200") {
-            @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
-                // One of "gz", "bzip2", "xz", "pack200", or "deflate".
-                return new CommonsCompressAction("pack200", source(renameTo), target(compressedName), deleteSource);
-            }
-        },
-        XZ(".xz") {
-            @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
-                // One of "gz", "bzip2", "xz", "pack200", or "deflate".
-                return new CommonsCompressAction("xz", source(renameTo), target(compressedName), deleteSource);
-            }
-        };
-
-        static FileExtensions lookup(final String fileExtension) {
-            for (final FileExtensions ext : values()) {
-                if (ext.isExtensionFor(fileExtension)) {
-                    return ext;
-                }
-            }
-            return null;
-        }
-
-        private final String extension;
-
-        private FileExtensions(final String extension) {
-            Objects.requireNonNull(extension, "extension");
-            this.extension = extension;
-        }
-
-        abstract Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
-                int compressionLevel);
-
-        String getExtension() {
-            return extension;
-        }
-
-        boolean isExtensionFor(final String s) {
-            return s.endsWith(this.extension);
-        }
-
-        int length() {
-            return extension.length();
-        }
-
-        File source(final String fileName) {
-            return new File(fileName);
-        }
-
-        File target(final String fileName) {
-            return new File(fileName);
-        }
-    }
-
     private static final int MIN_WINDOW_SIZE = 1;
     private static final int DEFAULT_WINDOW_SIZE = 7;
 
@@ -198,21 +105,31 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                     final boolean stopCustomActionsOnError,
             @PluginConfiguration final Configuration config) {
             // @formatter:on
-        final boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
-        int minIndex = MIN_WINDOW_SIZE;
-        if (min != null) {
-            minIndex = Integer.parseInt(min);
-            if (minIndex < 1) {
-                LOGGER.error("Minimum window size too small. Limited to " + MIN_WINDOW_SIZE);
-                minIndex = MIN_WINDOW_SIZE;
+        int minIndex;
+        int maxIndex;
+        boolean useMax;
+
+        if (fileIndex != null && fileIndex.equalsIgnoreCase("nomax")) {
+            minIndex = Integer.MIN_VALUE;
+            maxIndex = Integer.MAX_VALUE;
+            useMax = false;
+        } else {
+            useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
+            minIndex = MIN_WINDOW_SIZE;
+            if (min != null) {
+                minIndex = Integer.parseInt(min);
+                if (minIndex < 1) {
+                    LOGGER.error("Minimum window size too small. Limited to " + MIN_WINDOW_SIZE);
+                    minIndex = MIN_WINDOW_SIZE;
+                }
             }
-        }
-        int maxIndex = DEFAULT_WINDOW_SIZE;
-        if (max != null) {
-            maxIndex = Integer.parseInt(max);
-            if (maxIndex < minIndex) {
-                maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
-                LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
+            maxIndex = DEFAULT_WINDOW_SIZE;
+            if (max != null) {
+                maxIndex = Integer.parseInt(max);
+                if (maxIndex < minIndex) {
+                    maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
+                    LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
+                }
             }
         }
         final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
@@ -230,7 +147,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      */
     private final int minIndex;
     private final boolean useMax;
-    private final StrSubstitutor strSubstitutor;
     private final int compressionLevel;
     private final List<Action> customActions;
     private final boolean stopCustomActionsOnError;
@@ -246,11 +162,11 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
             final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
             final boolean stopCustomActionsOnError) {
+        super(strSubstitutor);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
         this.useMax = useMax;
         this.compressionLevel = compressionLevel;
-        this.strSubstitutor = strSubstitutor;
         this.stopCustomActionsOnError = stopCustomActionsOnError;
         this.customActions = customActions == null ? Collections.<Action> emptyList() : Arrays.asList(customActions);
     }
@@ -271,29 +187,12 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         return this.minIndex;
     }
 
-    public StrSubstitutor getStrSubstitutor() {
-        return strSubstitutor;
-    }
-
     public boolean isStopCustomActionsOnError() {
         return stopCustomActionsOnError;
     }
 
     public boolean isUseMax() {
         return useMax;
-    }
-
-    private Action merge(final Action compressAction, final List<Action> custom, final boolean stopOnError) {
-        if (custom.isEmpty()) {
-            return compressAction;
-        }
-        if (compressAction == null) {
-            return new CompositeAction(custom, stopOnError);
-        }
-        final List<Action> all = new ArrayList<>();
-        all.add(compressAction);
-        all.addAll(custom);
-        return new CompositeAction(all, stopOnError);
     }
 
     private int purge(final int lowIndex, final int highIndex, final RollingFileManager manager) {
@@ -310,101 +209,50 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @return true if purge was successful and rollover should be attempted.
      */
     private int purgeAscending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
-        final List<FileRenameAction> renames = new ArrayList<>();
-        final StringBuilder buf = new StringBuilder();
+        final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
+        final int maxFiles = highIndex - lowIndex + 1;
 
-        // LOG4J2-531: directory scan & rollover must use same format
-        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, highIndex);
-        String highFilename = strSubstitutor.replace(buf);
-        final int suffixLength = suffixLength(highFilename);
-        int curMaxIndex = 0;
-
-        for (int i = highIndex; i >= lowIndex; i--) {
-            File toRename = new File(highFilename);
-            if (i == highIndex && toRename.exists()) {
-                curMaxIndex = highIndex;
-            } else if (curMaxIndex == 0 && toRename.exists()) {
-                curMaxIndex = i + 1;
+        boolean renameFiles = false;
+        while (eligibleFiles.size() >= maxFiles) {
+            try {
+                LOGGER.debug("Eligible files: {}", eligibleFiles);
+                Integer key = eligibleFiles.firstKey();
+                LOGGER.debug("Deleting {}", eligibleFiles.get(key).toFile().getAbsolutePath());
+                Files.delete(eligibleFiles.get(key));
+                eligibleFiles.remove(key);
+                renameFiles = true;
+            } catch (IOException ioe) {
+                LOGGER.error("Unable to delete {}", eligibleFiles.firstKey(), ioe);
                 break;
             }
-
-            boolean isBase = false;
-
-            if (suffixLength > 0) {
-                final File toRenameBase = new File(highFilename.substring(0, highFilename.length() - suffixLength));
-
-                if (toRename.exists()) {
-                    if (toRenameBase.exists()) {
-                        LOGGER.debug("DefaultRolloverStrategy.purgeAscending deleting {} base of {}.", //
-                                toRenameBase, toRename);
-                        toRenameBase.delete();
-                    }
-                } else {
-                    toRename = toRenameBase;
-                    isBase = true;
+        }
+        final StringBuilder buf = new StringBuilder();
+        if (renameFiles) {
+            for (Map.Entry<Integer, Path> entry : eligibleFiles.entrySet()) {
+                buf.setLength(0);
+                // LOG4J2-531: directory scan & rollover must use same format
+                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, entry.getKey() - 1);
+                String currentName = entry.getValue().toFile().getName();
+                String renameTo = buf.toString();
+                int suffixLength = suffixLength(renameTo);
+                if (suffixLength > 0 && suffixLength(currentName) == 0) {
+                   renameTo = renameTo.substring(0, renameTo.length() - suffixLength);
                 }
-            }
-
-            if (toRename.exists()) {
-                //
-                // if at lower index and then all slots full
-                // attempt to delete last file
-                // if that fails then abandon purge
-                if (i == lowIndex) {
-                    LOGGER.debug("DefaultRolloverStrategy.purgeAscending deleting {} at low index {}: all slots full.",
-                            toRename, i);
-                    if (!toRename.delete()) {
+                Action action = new FileRenameAction(entry.getValue().toFile(), new File(renameTo), true);
+                try {
+                    LOGGER.debug("DefaultRolloverStrategy.purgeAscending executing {}", action);
+                    if (!action.execute()) {
                         return -1;
                     }
-
-                    break;
-                }
-
-                //
-                // if intermediate index
-                // add a rename action to the list
-                buf.setLength(0);
-                // LOG4J2-531: directory scan & rollover must use same format
-                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, i - 1);
-
-                final String lowFilename = strSubstitutor.replace(buf);
-                String renameTo = lowFilename;
-
-                if (isBase) {
-                    renameTo = lowFilename.substring(0, lowFilename.length() - suffixLength);
-                }
-
-                renames.add(new FileRenameAction(toRename, new File(renameTo), true));
-                highFilename = lowFilename;
-            } else {
-                buf.setLength(0);
-                // LOG4J2-531: directory scan & rollover must use same format
-                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, i - 1);
-
-                highFilename = strSubstitutor.replace(buf);
-            }
-        }
-        if (curMaxIndex == 0) {
-            curMaxIndex = lowIndex;
-        }
-
-        //
-        // work renames backwards
-        //
-        for (int i = renames.size() - 1; i >= 0; i--) {
-            final Action action = renames.get(i);
-            try {
-                LOGGER.debug("DefaultRolloverStrategy.purgeAscending executing {} of {}: {}", //
-                        i, renames.size(), action);
-                if (!action.execute()) {
+                } catch (final Exception ex) {
+                    LOGGER.warn("Exception during purge in RollingFileAppender", ex);
                     return -1;
                 }
-            } catch (final Exception ex) {
-                LOGGER.warn("Exception during purge in RollingFileAppender", ex);
-                return -1;
             }
         }
-        return curMaxIndex;
+
+        return eligibleFiles.size() > 0 ?
+                (eligibleFiles.lastKey() < highIndex ? eligibleFiles.lastKey() + 1 : highIndex) : lowIndex;
     }
 
     /**
@@ -417,79 +265,34 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @return true if purge was successful and rollover should be attempted.
      */
     private int purgeDescending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
-        final List<FileRenameAction> renames = new ArrayList<>();
-        final StringBuilder buf = new StringBuilder();
+        // Retrieve the files in descending order, so the highest key will be first.
+        final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager, false);
+        final int maxFiles = highIndex - lowIndex + 1;
 
-        // LOG4J2-531: directory scan & rollover must use same format
-        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, lowIndex);
-
-        String lowFilename = strSubstitutor.replace(buf);
-        final int suffixLength = suffixLength(lowFilename);
-
-        for (int i = lowIndex; i <= highIndex; i++) {
-            File toRename = new File(lowFilename);
-            boolean isBase = false;
-
-            if (suffixLength > 0) {
-                final File toRenameBase = new File(lowFilename.substring(0, lowFilename.length() - suffixLength));
-
-                if (toRename.exists()) {
-                    if (toRenameBase.exists()) {
-                        LOGGER.debug("DefaultRolloverStrategy.purgeDescending deleting {} base of {}.", //
-                                toRenameBase, toRename);
-                        toRenameBase.delete();
-                    }
-                } else {
-                    toRename = toRenameBase;
-                    isBase = true;
-                }
-            }
-
-            if (toRename.exists()) {
-                //
-                // if at upper index then
-                // attempt to delete last file
-                // if that fails then abandon purge
-                if (i == highIndex) {
-                    LOGGER.debug(
-                            "DefaultRolloverStrategy.purgeDescending deleting {} at high index {}: all slots full.", //
-                            toRename, i);
-                    if (!toRename.delete()) {
-                        return -1;
-                    }
-
-                    break;
-                }
-
-                //
-                // if intermediate index
-                // add a rename action to the list
-                buf.setLength(0);
-                // LOG4J2-531: directory scan & rollover must use same format
-                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, i + 1);
-
-                final String highFilename = strSubstitutor.replace(buf);
-                String renameTo = highFilename;
-
-                if (isBase) {
-                    renameTo = highFilename.substring(0, highFilename.length() - suffixLength);
-                }
-
-                renames.add(new FileRenameAction(toRename, new File(renameTo), true));
-                lowFilename = highFilename;
-            } else {
+        while (eligibleFiles.size() >= maxFiles) {
+            try {
+                Integer key = eligibleFiles.firstKey();
+                Files.delete(eligibleFiles.get(key));
+                eligibleFiles.remove(key);
+            } catch (IOException ioe) {
+                LOGGER.error("Unable to delete {}", eligibleFiles.firstKey(), ioe);
                 break;
             }
         }
-
-        //
-        // work renames backwards
-        //
-        for (int i = renames.size() - 1; i >= 0; i--) {
-            final Action action = renames.get(i);
+        final StringBuilder buf = new StringBuilder();
+        for (Map.Entry<Integer, Path> entry : eligibleFiles.entrySet()) {
+            buf.setLength(0);
+            // LOG4J2-531: directory scan & rollover must use same format
+            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, entry.getKey() + 1);
+            String currentName = entry.getValue().toFile().getName();
+            String renameTo = buf.toString();
+            int suffixLength = suffixLength(renameTo);
+            if (suffixLength > 0 && suffixLength(currentName) == 0) {
+                renameTo = renameTo.substring(0, renameTo.length() - suffixLength);
+            }
+            Action action = new FileRenameAction(entry.getValue().toFile(), new File(renameTo), true);
             try {
-                LOGGER.debug("DefaultRolloverStrategy.purgeDescending executing {} of {}: {}", //
-                        i, renames.size(), action);
+                LOGGER.debug("DefaultRolloverStrategy.purgeDescending executing {}", action);
                 if (!action.execute()) {
                     return -1;
                 }
@@ -511,17 +314,23 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      */
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
-        if (maxIndex < 0) {
-            return null;
-        }
-        final long startNanos = System.nanoTime();
-        final int fileIndex = purge(minIndex, maxIndex, manager);
-        if (fileIndex < 0) {
-            return null;
-        }
-        if (LOGGER.isTraceEnabled()) {
-            final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
-            LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);
+        int fileIndex;
+        if (minIndex == Integer.MIN_VALUE) {
+            final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
+            fileIndex = eligibleFiles.size() > 0 ? eligibleFiles.lastKey() + 1 : 1;
+        } else {
+            if (maxIndex < 0) {
+                return null;
+            }
+            final long startNanos = System.nanoTime();
+            fileIndex = purge(minIndex, maxIndex, manager);
+            if (fileIndex < 0) {
+                return null;
+            }
+            if (LOGGER.isTraceEnabled()) {
+                final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
+                LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);
+            }
         }
         final StringBuilder buf = new StringBuilder(255);
         manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
@@ -531,13 +340,13 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         final String compressedName = renameTo;
         Action compressAction = null;
 
-        for (final FileExtensions ext : FileExtensions.values()) { // LOG4J2-1077 support other compression formats
-            if (ext.isExtensionFor(renameTo)) {
-                renameTo = renameTo.substring(0, renameTo.length() - ext.length()); // LOG4J2-1135 omit extension!
-                compressAction = ext.createCompressAction(renameTo, compressedName, true, compressionLevel);
-                break;
-            }
+        FileExtension fileExtension = manager.getFileExtension();
+        if (fileExtension != null) {
+            renameTo = renameTo.substring(0, renameTo.length() - fileExtension.length());
+            compressAction = fileExtension.createCompressAction(renameTo, compressedName,
+                    true, compressionLevel);
         }
+
         if (currentFileName.equals(renameTo)) {
             LOGGER.warn("Attempt to rename file {} to itself will be ignored", currentFileName);
             return new RolloverDescriptionImpl(currentFileName, false, null, null);
@@ -550,18 +359,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction);
     }
 
-    private int suffixLength(final String lowFilename) {
-        for (final FileExtensions extension : FileExtensions.values()) {
-            if (extension.isExtensionFor(lowFilename)) {
-                return extension.length();
-            }
-        }
-        return 0;
-    }
-
     @Override
     public String toString() {
-        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ')';
+        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ", useMax=" + useMax + ")";
     }
 
 }

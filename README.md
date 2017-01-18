@@ -3,7 +3,8 @@
 Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x,
 and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
 
-[![Build Status](https://travis-ci.org/apache/logging-log4j2.svg?branch=master)](https://travis-ci.org/apache/logging-log4j2)
+[![Jenkins Status](https://builds.apache.org/buildStatus/icon?job=Log4j 2.x)](https://builds.apache.org/job/Log4j%202.x/)
+[![Travis Status](https://travis-ci.org/apache/logging-log4j2.svg?branch=master)](https://travis-ci.org/apache/logging-log4j2)
 [![Coverage Status](https://coveralls.io/repos/github/apache/logging-log4j2/badge.svg?branch=master)](https://coveralls.io/github/apache/logging-log4j2?branch=master)
 
 ## Usage
@@ -48,6 +49,11 @@ public class Example {
     public static void main(String... args) {
         String thing = args.length > 0 ? args[0] : "world";
         LOGGER.info("Hello, {}!", thing);
+        LOGGER.debug("Got calculated value only if debug enabled: {}", () -> doSomeCalculation());
+    }
+
+    private static Object doSomeCalculation() {
+        // do some complicated calculation
     }
 }
 ```
@@ -105,3 +111,8 @@ Log4j requires Apache Maven 3.x. To build from source and install to your local 
 ```sh
 mvn install
 ```
+
+## Contributing
+
+We love contributions! Take a look at
+[our contributing page](https://github.com/apache/logging-log4j2/blob/master/CONTRIBUTING.md).

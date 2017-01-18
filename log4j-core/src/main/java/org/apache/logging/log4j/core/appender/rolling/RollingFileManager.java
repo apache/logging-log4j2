@@ -57,6 +57,8 @@ public class RollingFileManager extends FileManager {
     private volatile RolloverStrategy rolloverStrategy;
     private volatile boolean renameEmptyFiles = false;
     private volatile boolean initialized = false;
+    private volatile String fileName;
+    private FileExtension fileExtension;
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, TriggeringPolicy.class, "triggeringPolicy");
@@ -85,6 +87,8 @@ public class RollingFileManager extends FileManager {
         this.rolloverStrategy = rolloverStrategy;
         this.patternProcessor = new PatternProcessor(pattern);
         this.patternProcessor.setPrevFileTime(time);
+        this.fileName = fileName;
+        this.fileExtension = FileExtension.lookupForFile(pattern);
     }
 
     /**
@@ -101,6 +105,8 @@ public class RollingFileManager extends FileManager {
         this.rolloverStrategy = rolloverStrategy;
         this.patternProcessor = new PatternProcessor(pattern);
         this.patternProcessor.setPrevFileTime(time);
+        this.fileName = fileName;
+        this.fileExtension = FileExtension.lookupForFile(pattern);
     }
 
     public void initialize() {
@@ -134,9 +140,25 @@ public class RollingFileManager extends FileManager {
             final boolean bufferedIO, final TriggeringPolicy policy, final RolloverStrategy strategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
             final boolean immediateFlush, final boolean createOnDemand, final Configuration configuration) {
-
-        return (RollingFileManager) getManager(fileName, new FactoryData(pattern, append,
+        String name = fileName == null ? pattern : fileName;
+        return (RollingFileManager) getManager(name, new FactoryData(fileName, pattern, append,
             bufferedIO, policy, strategy, advertiseURI, layout, bufferSize, immediateFlush, createOnDemand, configuration), factory);
+    }
+
+    /**
+     * Returns the name of the File being managed.
+     * @return The name of the File being managed.
+     */
+    @Override
+    public String getFileName() {
+        if (rolloverStrategy instanceof DirectFileRolloverStrategy) {
+            fileName = ((DirectFileRolloverStrategy) rolloverStrategy).getCurrentFileName(this);
+        }
+        return fileName;
+    }
+
+    public FileExtension getFileExtension() {
+        return fileExtension;
     }
 
     // override to make visible for unit tests
@@ -199,6 +221,9 @@ public class RollingFileManager extends FileManager {
     }
 
     public synchronized void rollover() {
+        if (!hasOutputStream()) {
+            return;
+        }
         if (rollover(rolloverStrategy)) {
             try {
                 size = 0;
@@ -211,7 +236,7 @@ public class RollingFileManager extends FileManager {
     }
 
     protected void createFileAfterRollover() throws IOException  {
-        setOutputStream(new FileOutputStream(getFileName(), isAppend()));
+        setOutputStream(createOutputStream());
     }
 
     /**
@@ -278,7 +303,7 @@ public class RollingFileManager extends FileManager {
             return false;
         }
 
-        boolean success = false;
+        boolean success = true;
         Thread thread = null;
 
         try {
@@ -291,6 +316,7 @@ public class RollingFileManager extends FileManager {
                     try {
                         success = descriptor.getSynchronous().execute();
                     } catch (final Exception ex) {
+                        success = false;
                         logError("Caught error in synchronous task", ex);
                     }
                 }
@@ -385,6 +411,7 @@ public class RollingFileManager extends FileManager {
      * Factory data.
      */
     private static class FactoryData extends ConfigurationFactoryData {
+        private final String fileName;
         private final String pattern;
         private final boolean append;
         private final boolean bufferedIO;
@@ -408,11 +435,12 @@ public class RollingFileManager extends FileManager {
          * @param createOnDemand true if you want to lazy-create the file (a.k.a. on-demand.)
          * @param configuration The configuration
          */
-        public FactoryData(final String pattern, final boolean append, final boolean bufferedIO,
+        public FactoryData(final String fileName, final String pattern, final boolean append, final boolean bufferedIO,
                 final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
                 final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush,
                 final boolean createOnDemand, final Configuration configuration) {
             super(configuration);
+            this.fileName = fileName;
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;
@@ -481,29 +509,37 @@ public class RollingFileManager extends FileManager {
          */
         @Override
         public RollingFileManager createManager(final String name, final FactoryData data) {
-            final File file = new File(name);
-            final File parent = file.getParentFile();
-            if (null != parent && !parent.exists()) {
-                parent.mkdirs();
+            long size = 0;
+            boolean writeHeader = !data.append;
+            File file = null;
+            if (data.fileName != null) {
+                file = new File(data.fileName);
+                final File parent = file.getParentFile();
+                if (null != parent && !parent.exists()) {
+                    parent.mkdirs();
+                }
+                // LOG4J2-1140: check writeHeader before creating the file
+                writeHeader = !data.append || !file.exists();
+
+                try {
+                    final boolean created = data.createOnDemand ? false : file.createNewFile();
+                    LOGGER.trace("New file '{}' created = {}", name, created);
+                } catch (final IOException ioe) {
+                    LOGGER.error("Unable to create file " + name, ioe);
+                    return null;
+                }
+                size = data.append ? file.length() : 0;
             }
-            // LOG4J2-1140: check writeHeader before creating the file
-            final boolean writeHeader = !data.append || !file.exists();
-            try {
-                final boolean created = data.createOnDemand ? false : file.createNewFile();
-                LOGGER.trace("New file '{}' created = {}", name, created);
-            } catch (final IOException ioe) {
-                LOGGER.error("Unable to create file " + name, ioe);
-                return null;
-            }
-            final long size = data.append ? file.length() : 0;
 
             try {
                 final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
-                final OutputStream os = data.createOnDemand ? null : new FileOutputStream(name, data.append);
-                final long time = data.createOnDemand? System.currentTimeMillis() : file.lastModified(); // LOG4J2-531 create file first so time has valid value
+                final OutputStream os = data.createOnDemand  || data.fileName == null ? null :
+                        new FileOutputStream(data.fileName, data.append);
+                final long time = data.createOnDemand || file == null ?
+                        System.currentTimeMillis() : file.lastModified(); // LOG4J2-531 create file first so time has valid value
 
-                return new RollingFileManager(data.getLoggerContext(), name, data.pattern, os,
+                return new RollingFileManager(data.getLoggerContext(), data.fileName, data.pattern, os,
                         data.append, data.createOnDemand, size, time, data.policy, data.strategy, data.advertiseURI,
                         data.layout, writeHeader, buffer);
             } catch (final IOException ex) {
