@@ -7,7 +7,7 @@
   ~ (the "License"); you may not use this file except in compliance with
   ~ the License. You may obtain a copy of the License at
   ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~      https://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +30,7 @@
     <version>9</version>
   </parent>
   <description>Apache Log4j 2</description>
-  <url>http://logging.apache.org/log4j/2.x/</url>
+  <url>https://logging.apache.org/log4j/2.x/</url>
   <issueManagement>
     <system>JIRA</system>
     <url>https://issues.apache.org/jira/browse/LOG4J2</url>
@@ -167,12 +167,12 @@
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
     <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
     <tag>log4j-${Log4jReleaseVersion}</tag>
@@ -180,7 +180,7 @@
   <!-- TODO: this can be removed after migrating to logging-parent -->
   <organization>
     <name>Apache Software Foundation</name>
-    <url>http://www.apache.org</url>
+    <url>https://www.apache.org</url>
   </organization>
   <properties>
     <!-- make sure to update these for each release! -->
