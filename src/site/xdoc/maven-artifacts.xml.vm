@@ -35,7 +35,7 @@
 
       <subsection name="Using Log4j in your Apache Maven build">
         <p>
-          To build with <a href="http://maven.apache.org/">Apache Maven</a>, add the dependencies listed below to your
+          To build with <a href="https://maven.apache.org/">Apache Maven</a>, add the dependencies listed below to your
           <code>pom.xml</code> file.
         </p>
         <code>pom.xml</code>
@@ -69,7 +69,7 @@
       </subsection>
       <subsection name="Using Log4j in your Gradle build">
         <p>
-          To build with <a href="http://www.gradle.org/">Gradle</a>, add the dependencies listed below to your
+          To build with <a href="https://gradle.org/">Gradle</a>, add the dependencies listed below to your
           <code>build.gradle</code> file.
         </p>
         <code>build.gradle</code>
@@ -85,7 +85,7 @@ dependencies {
           To keep your Log4j module versions in sync with each other, a
           <abbr id="Bill of Material">BOM</abbr>
           pom.xml file is provided for your convenience. To use this with
-          <a href="http://maven.apache.org/">Maven</a>, add the dependency listed below to your
+          <a href="https://maven.apache.org/">Maven</a>, add the dependency listed below to your
           <code>pom.xml</code>
           file. When you specify the version identifier in this section, you don't have to specify the version in your
           <code><![CDATA[<dependencies/>]]></code>
@@ -112,7 +112,7 @@ dependencies {
         <code>build.gradle</code>
         <pre class="prettyprint linenums"><![CDATA[
 plugins {
-  id 'io.spring.dependency-management' version '1.0.0.RC1'
+  id 'io.spring.dependency-management' version '1.0.0.RC2'
 }
 
 dependencyManagement {
@@ -430,6 +430,7 @@ dependencies {
       <subsection name="Snapshot builds">
         <p>You can access the latest development snapshot by using the Maven repository
         <code>https://repository.apache.org/content/repositories/snapshots/</code> and the current SNAPSHOT version.</p>
+    <!-- TODO: add example configs for maven/gradle to use this repo -->
       </subsection>
   </body>
 </document>
