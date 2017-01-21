@@ -163,6 +163,7 @@
       </otherArchives>
     </mailingList>
   </mailingLists>
+  <!-- TODO: this can be removed after migrating to logging-parent -->
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -176,6 +177,7 @@
     <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
     <tag>log4j-${Log4jReleaseVersion}</tag>
   </scm>
+  <!-- TODO: this can be removed after migrating to logging-parent -->
   <organization>
     <name>Apache Software Foundation</name>
     <url>http://www.apache.org</url>
@@ -218,6 +220,7 @@
     <site.plugin.version>3.4</site.plugin.version>
     <remote.resources.plugin.version>1.5</remote.resources.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
+    <!-- TODO: change to "compiler" instead of "compile" when migrating to logging-parent -->
     <maven.compile.source>1.7</maven.compile.source>
     <maven.compile.target>1.7</maven.compile.target>
     <docLabel>Site Documentation</docLabel>
@@ -798,6 +801,7 @@
   <build>
     <pluginManagement>
       <plugins>
+        <!-- TODO: remove after migrating to logging-parent -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-remote-resources-plugin</artifactId>
@@ -1107,6 +1111,7 @@
             </goals>
             <configuration>
               <skip>true</skip>
+              <resourceBundles/>
             </configuration>
           </execution>
         </executions>
@@ -1290,6 +1295,7 @@
       </plugin>
     </plugins>
   </reporting>
+  <!-- TODO: this can be removed after migrating to logging-parent -->
   <distributionManagement>
      <repository>
       <id>apache.releases.https</id>
