@@ -1,3 +1,4 @@
+<!-- vim: set syn=markdown : -->
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -177,6 +178,7 @@ dependencies {
   compile('org.apache.logging.log4j:log4j-core:${Log4jReleaseVersion}')
   compile('org.apache.logging.log4j:log4j-slf4j-impl:${Log4jReleaseVersion}')
   compile('org.apache.logging.log4j:log4j-1.2-api:${Log4jReleaseVersion}')
+}
 ```
 
 <a name="config_location"/>
@@ -222,23 +224,22 @@ context.setConfigLocation(file.toURI());
 <h4>How do I shut down log4j2 in code?</h4>
 
 Normally there is no need to do this manually.
-Each LoggerContext registers a shutdown hook that takes care of releasing resources
+Each `LoggerContext` registers a shutdown hook that takes care of releasing resources
 when the JVM exits (unless system property `log4j.shutdownHookEnabled` is set to `false`).
 Web applications should include the log4j-web
 module in their classpath which disables the shutdown hook but instead
 cleans up log4j resources when the web application is stopped.
 
-However, if you need to manually shut down log4j, you can do so as in the below example.
-Be aware that these classes are not part of the public API so your code may break with any minor release.
-
+However, if you need to manually shut down Log4j, you can do so as in the below example.
+Note that there is an optional parameter for specifying which `LoggerContext` to
+shut down.
 
 ```
-// import org.apache.logging.log4j.core.LoggerContext;
-// import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.LogManager;
 
-// get the current context
-LoggerContext context = (LoggerContext) LogManager.getContext();
-Configurator.shutdown(context);
+// ...
+
+LogManager.shutdown();
 ```
 
 <a name="config_sep_appender_level"/>
@@ -351,8 +352,9 @@ You can use the `ThreadContext` map value to determine the log file name.
 <a name="reconfig_level_from_code"/>
 <h4>How do I set a logger's level programmatically?</h4>
 
-You can set a logger's level with the class Configurator from Core module.
-Be aware that the Configuration class is not part of the public API.
+You can set a logger's level with the class 
+[`Configurator`](log4j-core/apidocs/org/apache/logging/log4j/core/config/Configurator.html)
+from Log4j Core. Be aware that the `Configurator` class is not part of the public API.
 
 ```
 // org.apache.logging.log4j.core.config.Configurator;
@@ -421,7 +423,7 @@ Log4j 2 API lets you log any java.lang.CharSequence, and even any Objects.
 Log4j can log any Object that implements `java.lang.CharSequence`
 or `org.apache.logging.log4j.util.StringBuilderFormattable` without creating garbage.
 
-The `org.slf4j.spi.LocationAwareLogger::[log](http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker, java.lang.String, int, java.lang.String, java.lang.Object[], java.lang.Throwable))`
+The [`org.slf4j.spi.LocationAwareLogger::log`](http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker, java.lang.String, int, java.lang.String, java.lang.Object[], java.lang.Throwable))
 method is not yet implemented
 in a garbage-free manner in the log4j-slf4j-impl binding. It creates a new message object for each call.
 
