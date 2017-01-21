@@ -25,9 +25,9 @@
   <name>Apache Log4j 2</name>
   <version>2.7.1-SNAPSHOT</version>
   <parent>
-    <groupId>org.apache</groupId>
-    <artifactId>apache</artifactId>
-    <version>9</version>
+    <groupId>org.apache.logging</groupId>
+    <artifactId>logging-parent</artifactId>
+    <version>1</version>
   </parent>
   <description>Apache Log4j 2</description>
   <url>https://logging.apache.org/log4j/2.x/</url>
@@ -163,25 +163,12 @@
       </otherArchives>
     </mailingList>
   </mailingLists>
-  <!-- TODO: this can be removed after migrating to logging-parent -->
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
   <scm>
     <connection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
     <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
     <tag>log4j-${Log4jReleaseVersion}</tag>
   </scm>
-  <!-- TODO: this can be removed after migrating to logging-parent -->
-  <organization>
-    <name>Apache Software Foundation</name>
-    <url>https://www.apache.org</url>
-  </organization>
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
@@ -220,9 +207,8 @@
     <site.plugin.version>3.4</site.plugin.version>
     <remote.resources.plugin.version>1.5</remote.resources.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
-    <!-- TODO: change to "compiler" instead of "compile" when migrating to logging-parent -->
-    <maven.compile.source>1.7</maven.compile.source>
-    <maven.compile.target>1.7</maven.compile.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
@@ -801,12 +787,6 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!-- TODO: remove after migrating to logging-parent -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-remote-resources-plugin</artifactId>
-          <version>${remote.resources.plugin.version}</version>
-        </plugin>
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
@@ -864,8 +844,8 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${compiler.plugin.version}</version>
           <configuration>
-            <source>${maven.compile.source}</source>
-            <target>${maven.compile.target}</target>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
             <encoding>UTF-8</encoding>
@@ -989,8 +969,8 @@
               <Implementation-Version>${project.version}</Implementation-Version>
               <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
               <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-              <X-Compile-Source-JDK>${maven.compile.source}</X-Compile-Source-JDK>
-              <X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
+              <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+              <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
             </manifestEntries>
           </archive>
         </configuration>
@@ -1295,22 +1275,7 @@
       </plugin>
     </plugins>
   </reporting>
-  <!-- TODO: this can be removed after migrating to logging-parent -->
   <distributionManagement>
-     <repository>
-      <id>apache.releases.https</id>
-      <name>Apache Release Distribution Repository</name>
-      <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>apache.snapshots.https</id>
-      <name>Apache Development Snapshot Repository</name>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <site>
-      <id>apache.website</id>
-      <url>scp://people.apache.org/www/logging.apache.org/log4j/2.0</url>
-    </site>
     <downloadUrl>https://logging.apache.org/log4j/2.x/download.html</downloadUrl>
   </distributionManagement>
   <modules>
