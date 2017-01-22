@@ -28,11 +28,9 @@ property substitution using Lookups, multiple patterns on a PatternLayout and as
 Loggers. Another notable Log4j 2 feature is the ability to be "garbage-free" (avoid allocating
 temporary objects) while logging. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This release contains several bugfixes and new features. The new features include new logging API
-modules for Scala 2.10 and 2.11, and support for various non-blocking queue implementations in
-AsyncAppender. Furthermore the ThreadContext map can now be configured to be garbage-free, and
-users can now inject context data from other sources than ThreadContext. Context data values can
-be any Object, not just Strings. More details on the fixes are itemized below.
+This release contains several bugfixes and new features. The new features include the ability
+to have the RollingFileAppender log directly to the archive files. More details on the new features and
+fixes are itemized below.
 
 Note that subsequent to the 2.6 release a minor source incompatibility was found due to the
 addition of new methods to the Logger interface. If you have code that does:

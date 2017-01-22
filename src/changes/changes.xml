@@ -23,7 +23,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.8" date="2017-MM-DD" description="GA Release 2.8">
+    <release version="2.8" date="2017-01-21" description="GA Release 2.8">
       <action issue="LOG4J2-1780" dev="mikes" type="fix">
         Eliminate the use of the ExecutorServices in the LoggerContext.
       </action>
