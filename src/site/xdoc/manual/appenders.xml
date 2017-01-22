@@ -2750,6 +2750,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               causes multiple files to be written durring the specified time period they will be numbered starting
               at one and continually incremented until a time-based rollover occurs.
             </p>
+            <p>
+              Warning: If the file pattern has a
+              suffix indicating compression should take place the current file will not be compressed when the
+              application is shut down. Furthermore, if the time changes such that the file pattern no longer
+              matches the current file it will not be compressed at startup either.
+            </p>
             <table>
               <caption align="top">DirectWriteRolloverStrategy Parameters</caption>
               <tr>
