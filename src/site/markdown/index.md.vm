@@ -122,4 +122,4 @@ or
 
     logger.error((Marker) null, "This is the log message", throwable);
 
-Log4j 2.7 maintains binary compatibility with previous releases.
+Log4j $Log4jReleaseVersion maintains binary compatibility with previous releases.
