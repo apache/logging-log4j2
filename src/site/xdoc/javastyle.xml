@@ -222,17 +222,18 @@
         for <em>nonempty</em> blocks and block-like constructs:</p><ul><li>No line break before the opening brace.</li><li>Line break after the opening brace.</li><li>Line break before the closing brace.</li><li>Line break after the closing brace <em>if</em> that brace terminates a statement or the body
       of a method, constructor or <em>named</em> class. For example, there is <em>no</em> line break
       after the brace if it is followed by <code>else</code> or a
-      comma.</li></ul><p>Example:</p><pre>
+      comma.</li></ul><p>Example:</p>
+<pre>
       return new MyClass() {
-      @Override public void method() {
-      if (condition()) {
-      try {
-      something();
-      } catch (ProblemException e) {
-      recover();
-      }
-      }
-      }
+          @Override public void method() {
+              if (condition()) {
+                  try {
+                      something();
+                  } catch (ProblemException e) {
+                      recover();
+                  }
+              }
+          }
       };
     </pre><p>A few exceptions for enum classes are given in Section 4.8.1,
       <a href="enum-classes">Enum classes</a>.</p>
@@ -448,14 +449,14 @@
         construct." For example, the following are all valid (<strong>not</strong> an exhaustive
         list):</p><pre>
       new int[] {           new int[] {
-      0, 1, 2, 3            0,
+        0, 1, 2, 3            0,
       }                       1,
-      2,
+                              2,
       new int[] {             3,
-      0, 1,               }
-      2, 3
+        0, 1,               }
+        2, 3
       }                     new int[]
-      {0, 1, 2, 3}
+                                {0, 1, 2, 3}
     </pre><a name="array-declarations"/>
       <h5>No C-style array declarations</h5>
       <p>The square brackets form a part of the <em>type</em>, not the variable:
@@ -485,15 +486,15 @@
         <code>// fall through</code>). This special comment is not required in
         the last statement group of the switch block. Example:</p><pre>
       switch (input) {
-      case 1:
-      case 2:
-      prepareOneOrTwo();
-      // fall through
-      case 3:
-      handleOneTwoOrThree();
-      break;
+        case 1:
+        case 2:
+          prepareOneOrTwo();
+          // fall through
+        case 3:
+          handleOneTwoOrThree();
+          break;
       default:
-      handleLargeNumber(input);
+          handleLargeNumber(input);
       }
     </pre><a name="switch-default"/>
       <h5>The default case is present</h5>
@@ -527,9 +528,9 @@
         <code>/* ... */</code> comments, subsequent lines must start with
         <code>*</code> aligned with the <code>*</code> on the previous line.</p><pre>
       /*
-      * This is          // And so           /* Or you can
-      * okay.            // is this.          * even do this. */
-      */
+       * This is          // And so           /* Or you can
+       * okay.            // is this.          * even do this. */
+       */
     </pre>
         <p>Comments are not enclosed in boxes drawn with asterisks or other characters.</p>
         <p><strong>Tip:</strong> When writing multi-line comments, use the
@@ -702,10 +703,10 @@
         <p>When it truly is appropriate to take no action whatsoever in a catch block, the reason this is
       justified is explained in a comment.</p><pre>
       try {
-      int i = Integer.parseInt(response);
-      return handleNumericResponse(i);
+          int i = Integer.parseInt(response);
+          return handleNumericResponse(i);
       } catch (NumberFormatException ok) {
-      // it's not numeric; that's fine, just continue
+          // it's not numeric; that's fine, just continue
       }
       return handleTextResponse(response);
     </pre><p><strong>Exception:</strong> In tests, a caught exception may be ignored
@@ -713,8 +714,8 @@
       following is a very common idiom for ensuring that the method under test <em>does</em> throw an
       exception of the expected type, so a comment is unnecessary here.</p><pre>
       try {
-      emptyStack.pop();
-      fail();
+          emptyStack.pop();
+          fail();
       } catch (NoSuchElementException expected) {
       }
     </pre><a name="static-members"/>
@@ -741,9 +742,9 @@
       <h4>General form</h4>
       <p>The <em>basic</em> formatting of Javadoc blocks is as seen in this example:</p><pre>
       /**
-      * Multiple lines of Javadoc text are written here,
-      * wrapped normally...
-      */
+       * Multiple lines of Javadoc text are written here,
+       * wrapped normally...
+       */
       public int method(String p1) { ... }
     </pre><p>... or in this single-line example:</p><pre>
       /** An especially short bit of Javadoc. */
