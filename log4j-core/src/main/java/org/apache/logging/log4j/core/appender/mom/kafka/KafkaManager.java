@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -95,9 +96,18 @@ public class KafkaManager extends AbstractManager {
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
-            Future<RecordMetadata> response = producer.send(new ProducerRecord<byte[], byte[]>(topic, msg));
+            ProducerRecord<byte[], byte[]> newRecord = new ProducerRecord<>(topic, msg);
             if (syncSend) {
+                Future<RecordMetadata> response = producer.send(newRecord);
                 response.get(timeoutMillis, TimeUnit.MILLISECONDS);
+            } else {
+                producer.send(newRecord, new Callback() {
+                    public void onCompletion(RecordMetadata metadata, Exception e) {
+                        if (e != null) {
+                            LOGGER.error("Unable to write to Kafka [" + getName() + "].", e);
+                        }
+                    }
+                });
             }
         }
     }
