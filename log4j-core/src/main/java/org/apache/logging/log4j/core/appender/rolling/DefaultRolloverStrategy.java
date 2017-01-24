@@ -222,7 +222,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 eligibleFiles.remove(key);
                 renameFiles = true;
             } catch (IOException ioe) {
-                LOGGER.error("Unable to delete {}", eligibleFiles.firstKey(), ioe);
+                LOGGER.error("Unable to delete {}, {}", eligibleFiles.firstKey(), ioe.getMessage(), ioe);
                 break;
             }
         }
@@ -275,7 +275,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 Files.delete(eligibleFiles.get(key));
                 eligibleFiles.remove(key);
             } catch (IOException ioe) {
-                LOGGER.error("Unable to delete {}", eligibleFiles.firstKey(), ioe);
+                LOGGER.error("Unable to delete {}, {}", eligibleFiles.firstKey(), ioe.getMessage(), ioe);
                 break;
             }
         }

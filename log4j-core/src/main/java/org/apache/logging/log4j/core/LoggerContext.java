@@ -358,7 +358,7 @@ public class LoggerContext extends AbstractLifeCycle
             configLock.unlock();
             this.setStopped();
         }
-        LOGGER.debug("Stopped LoggerContext[name={}, {}]...", getName(), this);
+        LOGGER.debug("Stopped LoggerContext[name={}, {}] with status {}", getName(), this, true);
         return true;
     }
 

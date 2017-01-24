@@ -143,6 +143,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         if (changeLifeCycleState) {
             setStopped();
         }
+        LOGGER.debug("Appender {} stopped with status {}", getName(), stopped);
         return stopped;
     }
 

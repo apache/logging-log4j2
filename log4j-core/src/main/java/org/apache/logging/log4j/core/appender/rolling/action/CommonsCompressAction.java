@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Objects;
 
 import org.apache.commons.compress.compressors.CompressorException;
@@ -107,17 +108,23 @@ public final class CommonsCompressAction extends AbstractAction {
                         new CompressorStreamFactory().createCompressorOutputStream(name, new FileOutputStream(
                                 destination)))) {
             IOUtils.copy(input, output, BUF_SIZE);
+            LOGGER.debug("Finished {} compression of {}", name, source.getPath() );
         } catch (final CompressorException e) {
             throw new IOException(e);
-        } finally {
-            LOGGER.debug("Finished {} compression of {}", name, source.getPath() );
         }
 
-        if (deleteSource && !source.delete()) {
-            LOGGER.warn("Unable to delete " + source.toString() + '.');
-        } else {
-            LOGGER.debug("Deleted {}", source.toString());
+        if (deleteSource) {
+            try {
+                if (Files.deleteIfExists(source.toPath())) {
+                    LOGGER.debug("Deleted {}", source.toString());
+                } else {
+                    LOGGER.warn("Unable to delete {} after {} compression. File did not exist", source.toString(), name);
+                }
+            } catch (Exception ex) {
+                LOGGER.warn("Unable to delete {} after {} compression, {}", source.toString(), name, ex.getMessage());
+            }
         }
+
         return true;
     }
 

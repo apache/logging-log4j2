@@ -22,7 +22,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.Collection;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
@@ -47,6 +51,7 @@ public class RollingFileManager extends FileManager {
 
     private static RollingFileManagerFactory factory = new RollingFileManagerFactory();
     private static final int MAX_TRIES = 3;
+    private static final int MIN_DURATION = 100;
 
     protected long size;
     private long initialTime;
@@ -59,6 +64,10 @@ public class RollingFileManager extends FileManager {
     private volatile boolean initialized = false;
     private volatile String fileName;
     private FileExtension fileExtension;
+    /* This executor pool will create a new Thread for every work async action to be performed. Using it allows
+       us to make sure all the Threads are completed when the Manager is stopped. */
+    private ExecutorService asyncExecutor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 0, TimeUnit.MILLISECONDS,
+            new EmptyQueue(), threadFactory);
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, TriggeringPolicy.class, "triggeringPolicy");
@@ -110,6 +119,7 @@ public class RollingFileManager extends FileManager {
     }
 
     public void initialize() {
+
         if (!initialized) {
             LOGGER.debug("Initializing triggering policy {}", triggeringPolicy);
             initialized = true;
@@ -210,6 +220,7 @@ public class RollingFileManager extends FileManager {
 
     @Override
     public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        LOGGER.debug("Shutting down RollingFileManager {}" + getName());
         boolean stopped = true;
         if (triggeringPolicy instanceof LifeCycle2) {
             stopped &= ((LifeCycle2) triggeringPolicy).stop(timeout, timeUnit);
@@ -217,7 +228,46 @@ public class RollingFileManager extends FileManager {
             ((LifeCycle) triggeringPolicy).stop();
             stopped &= true;
         }
-        return stopped && super.releaseSub(timeout, timeUnit);
+        boolean status = super.releaseSub(timeout, timeUnit) && stopped;
+        asyncExecutor.shutdown();
+        try {
+            // Allow at least the minimum interval to pass so async actions can complete.
+            long millis = timeUnit.toMillis(timeout);
+            long waitInterval = MIN_DURATION < millis ? millis : MIN_DURATION;
+
+            for (int count = 1; count <= MAX_TRIES && !asyncExecutor.isTerminated(); ++count) {
+                asyncExecutor.awaitTermination(waitInterval * count, TimeUnit.MILLISECONDS);
+            }
+            if (asyncExecutor.isTerminated()) {
+                LOGGER.debug("All asynchronous threads have terminated");
+            } else {
+                asyncExecutor.shutdownNow();
+                try {
+                    asyncExecutor.awaitTermination(timeout, timeUnit);
+                    if (asyncExecutor.isTerminated()) {
+                        LOGGER.debug("All asynchronous threads have terminated");
+                    } else {
+                        LOGGER.debug("RollingFileManager shutting down but some asynchronous services may not have completed");
+                    }
+                } catch (final InterruptedException inner) {
+                    LOGGER.warn("RollingFileManager stopped but some asynchronous services may not have completed.");
+                }
+            }
+        } catch (final InterruptedException ie) {
+            asyncExecutor.shutdownNow();
+            try {
+                asyncExecutor.awaitTermination(timeout, timeUnit);
+                if (asyncExecutor.isTerminated()) {
+                    LOGGER.debug("All asynchronous threads have terminated");
+                }
+            } catch (final InterruptedException inner) {
+                LOGGER.warn("RollingFileManager stopped but some asynchronous services may not have completed.");
+            }
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
+        LOGGER.debug("RollingFileManager shutdown completed with status {}", status);
+        return status;
     }
 
     public synchronized void rollover() {
@@ -323,8 +373,7 @@ public class RollingFileManager extends FileManager {
 
                 if (success && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
-                    thread = threadFactory.newThread(new AsyncAction(descriptor.getAsynchronous(), this));
-                    thread.start();
+                    asyncExecutor.execute(new AsyncAction(descriptor.getAsynchronous(), this));
                 }
                 return true;
             }
@@ -547,6 +596,44 @@ public class RollingFileManager extends FileManager {
             }
             return null;
         }
+    }
+
+    private static class EmptyQueue extends ArrayBlockingQueue<Runnable> {
+
+        EmptyQueue() {
+            super(1);
+        }
+
+        @Override
+        public int remainingCapacity() {
+            return 0;
+        }
+
+        @Override
+        public boolean add(Runnable runnable) {
+            throw new IllegalStateException("Queue is full");
+        }
+
+        @Override
+        public void put(Runnable runnable) throws InterruptedException {
+            /* No point in going into a permanent wait */
+            throw new InterruptedException("Unable to insert into queue");
+        }
+
+        @Override
+        public boolean offer(Runnable runnable, long timeout, TimeUnit timeUnit) throws InterruptedException {
+            Thread.sleep(timeUnit.toMillis(timeout));
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends Runnable> collection) {
+            if (collection.size() > 0) {
+                throw new IllegalArgumentException("Too many items in collection");
+            }
+            return false;
+        }
+
     }
 
 }

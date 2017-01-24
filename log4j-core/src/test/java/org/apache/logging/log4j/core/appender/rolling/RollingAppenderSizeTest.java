@@ -28,10 +28,14 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +48,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -104,6 +109,12 @@ public class RollingAppenderSizeTest {
         this.logger = this.loggerContextRule.getLogger(RollingAppenderSizeTest.class.getName());
     }
 
+    @After
+    public void cleanup() throws Exception {
+        Path path = new File(DIR).toPath();
+        cleanFolder(path);
+    }
+
     @Test
     public void testIsCreateOnDemand() {
         final RollingFileAppender rfAppender = loggerContextRule.getRequiredAppender("RollingFile",
@@ -119,8 +130,9 @@ public class RollingAppenderSizeTest {
         if (Files.exists(path) && createOnDemand) {
             Assert.fail(String.format("Unexpected file: %s (%s bytes)", path, Files.getAttribute(path, "size")));
         }
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 500; ++i) {
             logger.debug("This is test message number " + i);
+            Thread.sleep(1);
         }
         try {
             Thread.sleep(100);
@@ -139,7 +151,7 @@ public class RollingAppenderSizeTest {
             return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these formats
         }
         // Stop the context to make sure all files are compressed and closed. Trying to remedy failures in CI builds.
-        if (loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
+        if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
             System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
         }
         for (final File file : files) {
@@ -154,7 +166,12 @@ public class RollingAppenderSizeTest {
                     }
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     assertNotNull("No input stream for " + file.getName(), in);
-                    IOUtils.copy(in, baos);
+                    try {
+                        IOUtils.copy(in, baos);
+                    } catch (final Exception ex) {
+                        ex.printStackTrace();
+                        fail("Unable to decompress " + file.getAbsolutePath());
+                    }
                     final String text = new String(baos.toByteArray(), Charset.defaultCharset());
                     final String[] lines = text.split("[\\r\\n]+");
                     for (final String line : lines) {
@@ -165,6 +182,24 @@ public class RollingAppenderSizeTest {
                     Closer.close(in);
                 }
             }
+        }
+    }
+
+    private void cleanFolder(final Path folder) throws IOException {
+        if (Files.exists(folder) && Files.isDirectory(folder)) {
+            Files.walkFileTree(folder, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                    Files.deleteIfExists(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
         }
     }
 }
