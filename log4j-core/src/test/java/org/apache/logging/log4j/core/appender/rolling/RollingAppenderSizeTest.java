@@ -132,7 +132,6 @@ public class RollingAppenderSizeTest {
         }
         for (int i = 0; i < 500; ++i) {
             logger.debug("This is test message number " + i);
-            Thread.sleep(1);
         }
         try {
             Thread.sleep(100);

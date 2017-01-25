@@ -31,7 +31,7 @@
       <PatternLayout>
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
-      <SizeBasedTriggeringPolicy size="2000" />
+      <SizeBasedTriggeringPolicy size="500" />
       <DefaultRolloverStrategy compressionLevel="9" />
     </RollingFile>
     <List name="List">

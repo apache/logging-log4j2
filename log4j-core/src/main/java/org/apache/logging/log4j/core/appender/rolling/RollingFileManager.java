@@ -345,16 +345,17 @@ public class RollingFileManager extends FileManager {
 
     private boolean rollover(final RolloverStrategy strategy) {
 
+        boolean releaseRequired = false;
         try {
             // Block until the asynchronous operation is completed.
             semaphore.acquire();
+            releaseRequired = true;
         } catch (final InterruptedException e) {
             logError("Thread interrupted while attempting to check rollover", e);
             return false;
         }
 
         boolean success = true;
-        Thread thread = null;
 
         try {
             final RolloverDescription descriptor = strategy.rollover(this);
@@ -374,12 +375,13 @@ public class RollingFileManager extends FileManager {
                 if (success && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
                     asyncExecutor.execute(new AsyncAction(descriptor.getAsynchronous(), this));
+                    releaseRequired = false;
                 }
                 return true;
             }
             return false;
         } finally {
-            if (thread == null || !thread.isAlive()) {
+            if (releaseRequired) {
                 semaphore.release();
             }
         }
