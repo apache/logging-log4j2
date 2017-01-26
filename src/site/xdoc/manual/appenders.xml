@@ -1583,7 +1583,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>boolean</td>
               <td>The default is <code>true</code>, causing sends to block until the record has been acknowledged by the
                 Kafka server. When set to <code>false</code> sends return immediately, allowing for lower latency and significantly
-                higher throughput.
+                higher throughput. <i>New since 2.8. Be aware that this is a new addition, and it has not been extensively tested.
+                Any failure sending to Kafka will be reported as error to StatusLogger and the log event will be dropped
+                (the ignoreExceptions parameter will not be effective). Log events may arrive out of order to the Kafka server.</i>
               </td>
             </tr>
             <tr>
