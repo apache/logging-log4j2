@@ -61,7 +61,7 @@ import org.apache.logging.log4j.message.Message;
 public final class AsyncAppender extends AbstractAppender {
 
     private static final int DEFAULT_QUEUE_SIZE = 128;
-    private static final LogEvent SHUTDOWN = new AbstractLogEvent() {
+    private static final LogEvent SHUTDOWN_LOG_EVENT = new AbstractLogEvent() {
     };
 
     private static final AtomicLong THREAD_SEQUENCE = new AtomicLong(1);
@@ -401,7 +401,7 @@ public final class AsyncAppender extends AbstractAppender {
                 LogEvent event;
                 try {
                     event = queue.take();
-                    if (event == SHUTDOWN) {
+                    if (event == SHUTDOWN_LOG_EVENT) {
                         shutdown = true;
                         continue;
                     }
@@ -468,7 +468,7 @@ public final class AsyncAppender extends AbstractAppender {
         public void shutdown() {
             shutdown = true;
             if (queue.isEmpty()) {
-                queue.offer(SHUTDOWN);
+                queue.offer(SHUTDOWN_LOG_EVENT);
             }
             if (getState() == State.TIMED_WAITING || getState() == State.WAITING) {
                 this.interrupt(); // LOG4J2-1422: if underlying appender is stuck in wait/sleep/join/park call
