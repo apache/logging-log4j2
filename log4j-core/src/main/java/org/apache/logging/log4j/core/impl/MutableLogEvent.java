@@ -110,7 +110,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     /**
      * Clears all references this event has to other objects.
-     *
      */
     public void clear() {
         loggerFqcn = null;
