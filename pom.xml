@@ -1361,7 +1361,7 @@
               <templateDirectory>src/changes</templateDirectory>
               <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
               <announcementDirectory>.</announcementDirectory>
-              <announcementFile>RELEASE-NOTES.txt</announcementFile>
+              <announcementFile>RELEASE-NOTES.md</announcementFile>
               <issueManagementSystems>
                 <issueManagementSystem>changes.xml</issueManagementSystem>
                 <!--<issueManagementSystem>JIRA</issueManagementSystem> -->
