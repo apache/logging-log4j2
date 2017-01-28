@@ -16,12 +16,12 @@ Maven users can add the following dependencies to their `pom.xml` file:
   <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-api</artifactId>
-    <version>2.7</version>
+    <version>2.8</version>
   </dependency>
   <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-core</artifactId>
-    <version>2.7</version>
+    <version>2.8</version>
   </dependency>
 </dependencies>
 ```
@@ -30,8 +30,8 @@ Gradle users can add the following to their `build.gradle` file:
 
 ```gradle
 dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
-  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8'
 }
 ```
 
