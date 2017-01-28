@@ -245,7 +245,7 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>${pmd.plugin.version}</version>
         <configuration>
-          <targetJdk>${maven.compile.target}</targetJdk>
+          <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
       </plugin>
     </plugins>
