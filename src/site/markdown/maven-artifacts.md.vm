@@ -18,8 +18,62 @@
 #set($h1='#')
 #set($h2='##')
 #set($h3='###')
+#macro(maven $artifactIds)
+`pom.xml`
 
-$h1 Maven, Ivy, and Gradle Artifacts
+```
+<dependencies>
+#foreach($artifactId in $artifactIds)
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+#end
+</dependencies>
+```
+#end
+#macro(ivy $artifactIds)
+`ivy.xml`
+
+```
+<dependencies>
+#foreach($artifactId in $artifactIds)
+  <dependency org="org.apache.logging.log4j" name="${artifactId}" rev="${Log4jReleaseVersion}" />
+#end
+</dependencies>
+```
+#end
+#macro(gradle $artifactIds)
+`build.gradle`
+
+```
+dependencies {
+#foreach($artifactId in $artifactIds)
+  compile group: 'org.apache.logging.log4j', name: '${artifactId}', version: '${Log4jReleaseVersion}'
+#end
+}
+```
+#end
+#macro(sbt $artifactIds)
+`build.sbt`
+
+```
+#foreach($artifactId in $artifactIds)
+libraryDependencies += "org.apache.logging.log4j" %#if($artifactId.endsWith('scala'))%#end "${artifactId}" % "${Log4jReleaseVersion}"
+#end
+```
+#end
+## prints out maven/ivy/gradle/sbt snippet for a list of artifactIds
+#macro(dependencies $artifactIds)
+#maven($artifactIds)
+#ivy($artifactIds)
+#gradle($artifactIds)
+#sbt($artifactIds)
+#end
+## --------------------------------------
+
+$h1 Maven, Ivy, Gradle, and SBT Artifacts
 
 Log4j 2 is broken up in an API and an implementation (core), where the API
 provides the interface that applications should code to.
@@ -35,50 +89,27 @@ $h2 Using Log4j in your Apache Maven build
 To build with [Apache Maven](https://maven.apache.org/), add the dependencies listed below to your
 `pom.xml` file.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-api</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-core</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
+#maven(['log4j-api', 'log4j-core'])
 
 $h2 Using Log4j in your Apache Ivy build
 
 To build with [Apache Ivy](https://ant.apache.org/ivy/), add the dependencies listed below to your
 `ivy.xml` file.
 
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-api" rev="${Log4jReleaseVersion}" />
-  <dependency org="org.apache.logging.log4j" name="log4j-core" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
+#ivy(['log4j-api', 'log4j-core'])
 
 $h2 Using Log4j in your Gradle build
 
 To build with [Gradle](https://gradle.org/), add the dependencies listed below to your
 `build.gradle` file.
 
-`build.gradle`
+#gradle(['log4j-api', 'log4j-core'])
 
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '${Log4jReleaseVersion}'
-  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '${Log4jReleaseVersion}'
-}
-```
+$h2 Using Log4j in your SBT build
+
+To build with [SBT](http://www.scala-sbt.org/), add the dependencies listed below to your `build.sbt` file.
+
+#sbt(['log4j-api', 'log4j-core'])
 
 $h2 Bill of Material
 
@@ -138,132 +169,28 @@ $h3 Log4j 1.x API Bridge
 If existing components use Log4j 1.x and you want to have this logging routed to Log4j 2,
 then remove any log4j 1.x dependencies and add the following.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-1.2-api</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-1.2-api" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-1.2-api'])
 
 $h3 Apache Commons Logging Bridge
 
 If existing components use Apache Commons Logging 1.x and you want to have this logging routed to Log4j 2,
 then add the following but do not remove any Commons Logging 1.x dependencies.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-jcl</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-jcl" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-jcl'])
 
 $h3 SLF4J Bridge
 
 If existing components use SLF4J and you want to have this logging routed to Log4j 2, then add the
 following but do not remove any SLF4J dependencies.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-slf4j-impl</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-slf4j-impl'])
 
 $h3 JUL Adapter
 
 If existing components use Java Util Logging and you want to have this logging routed to Log4j 2,
 then add the following.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-jul</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-jul" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-jul', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-jul'])
 
 $h3 Web Servlet Support
 
@@ -273,34 +200,7 @@ you're using servlets in an OSGi environment, make sure your preferred version o
 already available (e.g., if you want to use 3.0, but you've also got 2.5 loaded, make sure both are
 loaded).
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-web</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-    <scope>runtime</scope>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-web" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-web', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-web'])
 
 $h3 Tag Library
 
@@ -308,65 +208,13 @@ The Log4j Log Tag Library creates the capability of inserting log statements in 
 the use of Java scripting. It uses the standard Log4j 2 API to log messages according to
 your Log4j configuration.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-taglib</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-taglib" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-taglib', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-taglib'])
 
 $h3 Apache Flume Appender
 
 The Flume Appender allows applications to send events to Flume Agents.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-flume-ng</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-flume-ng" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-flume-ng', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-flume-ng'])
 
 $h3 Log4j to SLF4J Adapter
 
@@ -374,65 +222,13 @@ The Log4j 2 to SLF4J Adapter allows applications coded to the Log4j 2 API to be 
 adapter may cause some loss of performance as the Log4j 2 Messages must be formatted before they can be passed
 to SLF4J. The SLF4J Bridge must NOT be on the class path when this is in use.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-to-slf4j</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-to-slf4j" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-to-slf4j'])
 
 $h3 NoSQL Appenders
 
 If your configuration uses one of the NoSQL Appenders, then add the following.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-nosql</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-nosql" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-nosql', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-nosql'])
 
 $h3 IO Streams
 
@@ -440,71 +236,27 @@ Log4j IO Streams allow applications to have data that is written to an OutputStr
 or a Writer be redirected to a Logger, or have data that is read from an InputStream or
 a Reader be wiretapped by a Logger. To use IO Streams, add the following.
 
-`pom.xml`
-
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-iostreams</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
-
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-iostreams" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-iostreams', version: '${Log4jReleaseVersion}'
-}
-```
+#dependencies(['log4j-iostreams'])
 
 $h3 Scala API
 
-A convenient Scala wrapper for the Logger API
+A convenient Scala wrapper for the Logger API. SBT users can add the following to their
+`build.sbt`:
 
-`build.sbt`
+#sbt(['log4j-api-scala'])
 
-```
-"org.apache.logging.log4j" %% "log4j-api-scala" % "${Log4jReleaseVersion}"
-```
+Maven, Ivy, and Gradle users need to add the Scala version to the artifact name.
+Scala 2.11 users can use the following:
 
-`pom.xml`
+#maven(['log4j-api-scala_2.11'])
+#ivy(['log4j-api-scala_2.11'])
+#gradle(['log4j-api-scala_2.11'])
 
-```
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-api-scala_2.11</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-```
+Scala 2.10 users can use the following:
 
-`ivy.xml`
-
-```
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-api-scala_2.11" rev="${Log4jReleaseVersion}" />
-</dependencies>
-```
-
-`build.gradle`
-
-```
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-api-scala_2.11', version: '${Log4jReleaseVersion}'
-}
-```
+#maven(['log4j-api-scala_2.10'])
+#ivy(['log4j-api-scala_2.10'])
+#gradle(['log4j-api-scala_2.10'])
 
 $h2 Snapshot builds
 
