@@ -261,5 +261,45 @@ Scala 2.10 users can use the following:
 $h2 Snapshot builds
 
 You can access the latest development snapshot by using the Maven repository
-`https://repository.apache.org/content/repositories/snapshots/` and the current SNAPSHOT version.
-<!-- TODO: add example configs for maven/gradle to use this repo -->
+`https://repository.apache.org/snapshots` and the current SNAPSHOT version.
+Generally, the master branch will use the next patch version as its snapshot
+version regardless of what the next actual version of Log4j will be. For example,
+if the latest release were `2.0`, then master would be using the version
+`2.0.1-SNAPSHOT`. Always verify with `pom.xml` in the master branch as described
+in the [source repository page](source-repository.html).
+
+$h3 Maven
+
+Maven users can add the following to their `pom.xml` to enable snapshots:
+
+```
+<repositories>
+  <repository>
+    <id>apache.snapshots</id>
+    <name>Apache Snapshot Repository</name>
+    <url>https://repository.apache.org/snapshots</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+  </repository>
+</repositories>
+```
+
+$h3 Gradle
+
+Gradle users can add the following to their `build.gradle` to enable snapshots:
+
+```
+repositories {
+  mavenCentral()
+  maven { url 'https://repository.apache.org/snapshots' }
+}
+```
+
+$h3 SBT
+
+SBT users can add the following to their `build.sbt` to enable snapshots:
+
+```
+resolvers += "Apache Snapshot Repository" at "https://repository.apache.org/snapshots"
+```
