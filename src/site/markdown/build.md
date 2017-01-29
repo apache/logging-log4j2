@@ -16,8 +16,7 @@
  limitations under the License.
 -->
 
-Building and Installing Log4j
-=============================
+# Building and Installing Log4j
 
 *The information below is for developers who want to modify Log4j or contribute
 to Log4j. If your goal is to add logging to your application you don't need to
@@ -53,7 +52,6 @@ To rebuild only what's changed and execute the tests, run: `mvn test`
 
 To rebuild from scratch, add "clean", for example: `mvn clean test`
 
-Releasing Log4j
----------------
+## Releasing Log4j
 
 Please see the wiki [Log4j2ReleaseGuide](https://wiki.apache.org/logging/Log4j2ReleaseGuide).

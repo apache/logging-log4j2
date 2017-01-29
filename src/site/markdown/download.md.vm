@@ -15,12 +15,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<!--
-Do note that since this is also a Velocity template, normal # headings do not work properly. Use the =/- versions.
--->
+#set($h1='#')
+#set($h2='##')
 
-Download Apache Log4j 2
-=======================
+$h1 Download Apache Log4j 2
 
 Apache Log4j 2 is distributed under the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -65,8 +63,7 @@ Apache Log4j ${Log4jReleaseVersion} is signed by ${Log4jReleaseManager} (${Log4j
 Alternatively, you can verify the MD5 signature on the files. A unix program called md5 or md5sum is included
 in many unix distributions.
 
-Previous Releases
------------------
+$h2 Previous Releases
 
 Log4j 2.3 was the last 2.x release to support Java 6. Those artifacts can be found at:
 
@@ -93,8 +90,7 @@ Log4j 2.3 was the last 2.x release to support Java 6. Those artifacts can be fou
 All previous releases of Apache log4j can be found in the
 [archive repository](https://archive.apache.org/dist/logging/log4j/).
 
-Using Log4j on your classpath
------------------------------
+$h2 Using Log4j on your classpath
 
 To use Log4j 2 in your application make sure that both the API and Core jars are in the application's classpath. Add
 the dependencies listed below to your classpath.
