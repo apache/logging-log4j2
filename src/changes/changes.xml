@@ -34,7 +34,7 @@
         Eliminate the use of the ExecutorServices in the LoggerContext.
       </action>
       <action issue="LOG4J2-1032" dev="rgoers" type="add">
-        Make DefaultRolloverStrategy more efficent when renaming files. Add nomax option to the fileIndex attribute.
+        Make DefaultRolloverStrategy more efficient when renaming files. Add nomax option to the fileIndex attribute.
       </action>
       <action issue="LOG4J2-1101" dev="rgoers" type="add">
         RollingFileAppender now supports omitting the file name and writing directly to the archive files.
