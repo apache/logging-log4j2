@@ -1127,8 +1127,6 @@
             <!-- IntelliJ files -->
             <exclude>.idea/**/*</exclude>
             <exclude>src/test/resources/**/*</exclude>
-            <!-- VM metadata -->
-            <exclude>.vagrant/**/*</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
             <!-- does it even make sense to apply a license to a GPG signature? -->
@@ -1143,6 +1141,7 @@
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
+            <exclude>RELEASE-NOTES.md</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -1252,8 +1251,6 @@
             <!-- IntelliJ files -->
             <exclude>.idea/**/*</exclude>
             <exclude>src/test/resources/**/*</exclude>
-            <!-- VM metadata -->
-            <exclude>.vagrant/**/*</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
             <!-- does it even make sense to apply a license to a GPG signature? -->
@@ -1268,6 +1265,7 @@
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
+            <exclude>RELEASE-NOTES.md</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -1420,14 +1418,9 @@
               <excludes>
                 <!-- Matches other RAT configurations in this POM -->
                 <exclude>src/main/resources/META-INF/services/**/*</exclude>
-                <!-- Docker -->
-                <exclude>.dockerignore</exclude>
-                <exclude>Dockerfile</exclude>
                 <!-- IntelliJ files -->
                 <exclude>.idea/**/*</exclude>
                 <exclude>src/test/resources/**/*</exclude>
-                <!-- VM metadata -->
-                <exclude>.vagrant/**/*</exclude>
                 <!-- IDE settings imports -->
                 <exclude>src/ide/**</exclude>
                 <!-- does it even make sense to apply a license to a GPG signature? -->
@@ -1442,6 +1435,7 @@
                 <exclude>velocity.log</exclude>
                 <!-- Other -->
                 <exclude>felix-cache/**</exclude>
+                <exclude>RELEASE-NOTES.md</exclude>
               </excludes>
             </configuration>
             <executions>
