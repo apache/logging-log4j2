@@ -829,6 +829,7 @@
             <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+            <!--<additionalparam>-Xdoclint:none</additionalparam>-->
           </configuration>
         </plugin>
         <plugin>
@@ -1273,6 +1274,11 @@
   </reporting>
   <distributionManagement>
     <downloadUrl>https://logging.apache.org/log4j/2.x/download.html</downloadUrl>
+    <!-- site is only included to make maven-site-plugin stop complaining -->
+    <site>
+      <id>www.example.com</id>
+      <url>scp://www.example.com/www/docs/project/</url>
+    </site>
   </distributionManagement>
   <modules>
     <module>log4j-api</module>
