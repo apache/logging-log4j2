@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<!-- vim: set syn=markdown : -->
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -16,31 +16,26 @@
     limitations under the License.
 -->
 #set($dollar = '$')
-<document>
-    <properties>
-        <title>Flume Appender</title>
-        <author email="rgoers@apache.org">Ralph Goers</author>
-    </properties>
+#set($h1='#')
+#set($h2='##')
 
-    <body>
-        <section name="Flume Appender">
+$h1 Flume Appender
 
-            <p>
-              The Flume Appender allows applications to send events to Flume Agents.
-            </p>
-          <subsection name="Remote Agent">
-            <p>
-              Including the Log4j flume-ng jar in your Maven-based project as a dependency should cause all the
-              transitive dependencies necessary for the remote Agent to function to be included.
-            </p>
-          </subsection>
-          <subsection name="Persistent Agent">
-            <p>
-              The persistent agent uses Berkeley DB. The following dependency should be added to your pom.xml
-              in addition to the log4j-flume-ng dependency.
-            </p>
-            <!-- TODO: use variables for dependency versions -->
-            <pre class="prettyprint linenums"><![CDATA[  <dependencyManagement>
+The Flume Appender allows applications to send events to Flume Agents.
+
+$h2 Remote Agent
+
+Including the Log4j flume-ng jar in your Maven-based project as a dependency should cause all the
+transitive dependencies necessary for the remote Agent to function to be included.
+
+$h2 Persistent Agent
+
+The persistent agent uses Berkeley DB. The following dependency should be added to your pom.xml
+in addition to the log4j-flume-ng dependency.
+
+<!-- TODO: use variables for dependency versions -->
+```
+  <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>com.sleepycat</groupId>
@@ -62,15 +57,16 @@
       <url>http://download.oracle.com/maven</url>
       <layout>default</layout>
     </repository>
-  </repositories>]]></pre>
-          </subsection>
+  </repositories>
+```
 
-          <subsection name="Embedded Agent">
-            <p>
-              The following is a sample pom file for Maven that can be used as a template for integrating the
-              Flume Embedded Appender into an application.
-            </p>
-            <pre class="prettyprint linenums"><![CDATA[<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+$h2 Embedded Agent
+
+The following is a sample pom file for Maven that can be used as a template for integrating the
+Flume Embedded Appender into an application.
+
+```
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.myapp</groupId>
@@ -229,17 +225,9 @@
       </exclusions>
     </dependency>
   </dependencies>
-</project>]]></pre>
-          </subsection>
+</project>
+```
 
-        </section>
-
-        <section name="Requirements">
-           <p>
-             The Flume Appender requires the Log4J 2 API.
-             For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
-          </p>
-        </section>
-
-    </body>
-</document>
+$h2 Requirements
+The Flume Appender requires the Log4J 2 API.
+For more information, see [Runtime Dependencies](../runtime-dependencies.html).

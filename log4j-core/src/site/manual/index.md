@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<!-- vim: set syn=markdown : -->
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -16,27 +16,18 @@
     limitations under the License.
 -->
 
-<document>
-    <properties>
-        <title>Log4j 2 API</title>
-        <author email="rgoers@apache.org">Ralph Goers</author>
-    </properties>
+# Log4j 2 Implementation
 
-    <body>
-        <section name="Log4j 2 API">
+The Log4j 2 implementation provides the functional components of the logging system.
+Users are free to create their own plugins and include them in the logging configuration.
 
-            <p>
-              The Log4j 2 API provides the interface that applications should code to and provides the
-              adapter components required for implementers to create a logging implementation.
-            </p>
+## Requirements
 
-        </section>
+As of version 2.4, Log4j 2 requires Java 7. Versions 2.3 and earlier require Java 6.
+Some features may require optional
+[dependencies](../runtime-dependencies.html). These dependencies are specified in the
+documentation for those features.
 
-        <section name="Requirements">
-           <p>
-             As of version 2.4, the Log4j 2 API requires Java 7. Versions 2.3 and earlier require Java 6.
-          </p>
-        </section>
-
-    </body>
-</document>
+Some Log4j features require external dependencies.
+See the [Dependency Tree](dependencies.html#Dependency_Tree)
+for the exact list of JAR files needed for these features.
