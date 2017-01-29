@@ -771,7 +771,7 @@
         (GC) Update Logger wrapper Generator tool to generate methods for the new Logger methods.
       </action>
       <action issue="LOG4J2-1356" dev="mikes" type="update">
-        (GC) GelfLayout does now support garabage-free logging (with compressionType=OFF).
+        (GC) GelfLayout does now support garbage-free logging (with compressionType=OFF).
       </action>
       <action issue="LOG4J2-1326" dev="rpopma" type="add">
         (GC) Added methods to the Logger interface for logging CharSequence messages.
@@ -2099,7 +2099,7 @@
         Create an appender to route log events to the ServletContext log.
       </action>
       <action issue="LOG4J2-419" dev="rgoers" type="update" due-to="Woonsan Ko">
-        Support default value for missing key in look ups with fallbacking to looking in the properties map.
+        Support default value for missing key in look ups with fallback to looking in the properties map.
       </action>
       <action issue="LOG4J2-563" dev="rgoers" type="fix" due-to="Michael Friedmann">
         FlumeAvroManager now always uses a client type of default_failover.
@@ -2864,7 +2864,7 @@
         HTML layout does not output meta element for charset.
       </action>
       <action issue="LOG4J2-257" dev="ggregory" type="fix">
-        XML layout ignores charset for the XML processing intruction's encoding attribute.
+        XML layout ignores charset for the XML processing instruction's encoding attribute.
       </action>
       <action issue="LOG4J2-255" dev="rpopma" type="fix">
         Multi-byte character strings are now assumed to be in the platform default encoding, not UTF-8.
@@ -3400,7 +3400,7 @@
       </action>
       <action issue="LOG4J2-51" dev="rgoers" type="fix" due-to="John Vasileff">
         Remove LoggerContext support for custom logger factories. All Loggers returned
-        by LoggerContext should be compatibile and of the same type.
+        by LoggerContext should be compatible and of the same type.
       </action>
       <action issue="LOG4J2-50" dev="rgoers" type="fix" due-to="John Vasileff">
         Make sure all application facing log methods use their own FQCN. This patch
