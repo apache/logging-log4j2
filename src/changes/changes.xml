@@ -23,6 +23,7 @@
     <title>Changes</title>
   </properties>
   <body>
+    <!-- NOTE: the text node in an action element is interpreted as Markdown in the release notes! -->
     <release version="2.8.1" date="2017-MM-DD" description="GA Release 2.8.1">
       <action issue="LOG4J2-1800" dev="mikes" type="fix" due-to="Vincent Tieleman">
         Report errors when sending to Kafka when using syncSend=false.
