@@ -31,6 +31,9 @@
       <action issue="LOG4J2-1800" dev="mikes" type="fix" due-to="Vincent Tieleman">
         Report errors when sending to Kafka when using syncSend=false.
       </action>
+      <action issue="LOG4J2-1805" dev="rpopma" type="fix">
+        Fixed rare race condition in FixedDateFormat, made FixedDateFormat::millisSinceMidnight method public.
+      </action>
     </release>
     <release version="2.8" date="2017-01-21" description="GA Release 2.8">
       <action issue="LOG4J2-1780" dev="mikes" type="fix">

@@ -281,21 +281,32 @@ public class FixedDateFormat {
         return timeZone;
     }
 
+    /**
+     * <p>Returns the number of milliseconds since midnight in the time zone that this {@code FixedDateFormat}
+     * was constructed with for the specified currentTime.</p>
+     * <p>As a side effect, this method updates the cached formatted date and the cached date demarcation timestamps
+     * when the specified current time is outside the previously set demarcation timestamps for the start or end
+     * of the current day.</p>
+     * @param currentTime the current time in millis since the epoch
+     * @return the number of milliseconds since midnight for the specified time
+     */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 30 bytes (allows immediate JVM inlining: <= -XX:MaxInlineSize=35 bytes)
-    private long millisSinceMidnight(final long now) {
-        if (now >= midnightTomorrow || now < midnightToday) {
-            updateMidnightMillis(now);
+    public long millisSinceMidnight(final long currentTime) {
+        if (currentTime >= midnightTomorrow || currentTime < midnightToday) {
+            updateMidnightMillis(currentTime);
         }
-        return now - midnightToday;
+        return currentTime - midnightToday;
     }
 
     private void updateMidnightMillis(final long now) {
-
-        updateCachedDate(now);
-
-        midnightToday = calcMidnightMillis(now, 0);
-        midnightTomorrow = calcMidnightMillis(now, 1);
+        if (now >= midnightTomorrow || now < midnightToday) {
+            synchronized (this) {
+                updateCachedDate(now);
+                midnightToday = calcMidnightMillis(now, 0);
+                midnightTomorrow = calcMidnightMillis(now, 1);
+            }
+        }
     }
 
     private long calcMidnightMillis(final long time, final int addDays) {
