@@ -143,7 +143,7 @@ public final class PropertiesUtil {
      */
     public Charset getCharsetProperty(final String name, final Charset defaultValue) {
         final String prop = getStringProperty(name);
-        return prop == null ? defaultValue : Charset.forName(name);
+        return prop == null ? defaultValue : Charset.forName(prop);
     }
 
     /**

@@ -17,6 +17,9 @@
 
 package org.apache.logging.log4j.util;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.Map;
 import java.util.Properties;
 
@@ -61,5 +64,22 @@ public class PropertiesUtilTest {
         assertEquals("1", properties.getProperty("1"));
         assertEquals("2", properties.getProperty("2"));
         assertEquals("3", properties.getProperty("3"));
+    }
+
+
+    @Test
+    public void testGetCharsetProperty() throws Exception {
+        Properties p = new Properties();
+        p.setProperty("e.1", StandardCharsets.US_ASCII.name());
+        p.setProperty("e.2", "wrong-charset-name");
+        PropertiesUtil pu = new PropertiesUtil(p);
+
+        assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.0"));
+        assertEquals(StandardCharsets.US_ASCII, pu.getCharsetProperty("e.1"));
+        try {
+            pu.getCharsetProperty("e.2");
+            fail("No expected UnsupportedCharsetException");
+        } catch (UnsupportedCharsetException ignored) {
+        }
     }
 }
