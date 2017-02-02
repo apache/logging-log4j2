@@ -37,6 +37,9 @@
       <action issue="LOG4J2-1799" dev="rpopma" type="fix" due-to="Eduard Gizatullin">
         Fixed bug in PropertiesUtil::getCharsetProperty that caused UnsupportedCharsetException for ConsoleAppender.
       </action>
+      <action issue="LOG4J2-1806" dev="rpopma" type="fix" due-to="challarao">
+        Fix javadoc for DefaultRolloverStrategy::purgeAscending
+      </action>
     </release>
     <release version="2.8" date="2017-01-21" description="GA Release 2.8">
       <action issue="LOG4J2-1780" dev="mikes" type="fix">
