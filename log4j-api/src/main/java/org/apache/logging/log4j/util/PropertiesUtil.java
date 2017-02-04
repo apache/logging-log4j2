@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <em>Consider this class private.</em>
@@ -38,7 +40,7 @@ public final class PropertiesUtil {
 
     private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil("log4j2.component.properties");
 
-    private final Properties props;
+    private final Environment environment;
 
     /**
      * Constructs a PropertiesUtil using a given Properties object as its source of defined properties.
@@ -46,7 +48,7 @@ public final class PropertiesUtil {
      * @param props the Properties to use by default
      */
     public PropertiesUtil(final Properties props) {
-        this.props = props;
+        this.environment = new Environment(props);
     }
 
     /**
@@ -64,7 +66,7 @@ public final class PropertiesUtil {
                 LowLevelLogUtil.logException("Unable to read " + url.toString(), ioe);
             }
         }
-        this.props = properties;
+        this.environment = new Environment(properties);
     }
 
     /**
@@ -241,13 +243,7 @@ public final class PropertiesUtil {
      * @return the String value of the property or {@code null} if undefined.
      */
     public String getStringProperty(final String name) {
-        String prop = null;
-        try {
-            prop = System.getProperty(name);
-        } catch (final SecurityException ignored) {
-            // Ignore
-        }
-        return prop == null ? props.getProperty(name) : prop;
+        return environment.get(name);
     }
 
     /**
@@ -274,6 +270,128 @@ public final class PropertiesUtil {
             LowLevelLogUtil.logException("Unable to access system properties.", ex);
             // Sandboxed - can't read System Properties
             return new Properties();
+        }
+    }
+
+    /**
+     * Provides support for looking up global configuration properties via environment variables, property files,
+     * and system properties, in three variations:
+     *
+     * Normalized: all log4j-related prefixes removed, remaining property is camelCased with a log4j2 prefix for
+     * property files and system properties, or follows a LOG4J_FOO_BAR format for environment variables.
+     *
+     * Legacy: the original property name as defined in the source pre-2.9.
+     *
+     * Tokenized: loose matching based on word boundaries.
+     */
+    private static class Environment {
+
+        private static final String NORMALIZED_PREFIX = "log4j2.";
+        private static final String PREFIXES = "(?:[Ll]og4j2?|org\\.apache\\.logging\\.log4j\\.)?";
+        private static final Pattern PROPERTY_TOKENIZER = Pattern.compile(PREFIXES + "([A-Z]*[a-z0-9]+)[-._/]?");
+
+        private final Map<String, String> literal = new ConcurrentHashMap<>();
+        private final Map<String, String> normalized = new ConcurrentHashMap<>();
+        private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
+
+        private Environment(final Properties props) {
+            for (final Map.Entry<String, String> entry : System.getenv().entrySet()) {
+                final String envKey = entry.getKey();
+                final String value = entry.getValue();
+                if (envKey.startsWith("LOG4J_")) {
+                    final String key = envKey.substring(6);
+                    literal.put(key, value);
+                    final List<CharSequence> tokens = tokenize(envKey);
+                    if (!tokens.isEmpty()) {
+                        tokenized.put(tokens, value);
+                        normalized.put("LOG4J" + joinAsAllCapsUnderscored(tokens), value);
+                    }
+                }
+            }
+            for (final Map.Entry<Object, Object> entry : props.entrySet()) {
+                final String key = (String) entry.getKey();
+                final String value = (String) entry.getValue();
+                literal.put(key, value);
+                final List<CharSequence> tokens = tokenize(key);
+                if (tokens.isEmpty()) {
+                    normalized.put(NORMALIZED_PREFIX + key, value);
+                } else {
+                    tokenized.put(tokens, value);
+                    normalized.put(NORMALIZED_PREFIX + joinAsCamelCase(tokens), value);
+                }
+
+            }
+            final Properties systemProperties = getSystemProperties();
+            for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
+                final String key = (String) entry.getKey();
+                final String value = (String) entry.getValue();
+                literal.put(key, value);
+                // TODO: should this include tokenized lookups? could get screwy
+                final List<CharSequence> tokens = tokenize(key);
+                if (tokens.isEmpty()) {
+                    normalized.put(NORMALIZED_PREFIX + key, value);
+                } else {
+                    tokenized.put(tokens, value);
+                    normalized.put(NORMALIZED_PREFIX + joinAsCamelCase(tokens), value);
+                }
+            }
+        }
+
+        private static CharSequence joinAsAllCapsUnderscored(final List<CharSequence> tokens) {
+            final StringBuilder sb = new StringBuilder();
+            for (final CharSequence token : tokens) {
+                sb.append('_');
+                for (int i = 0; i < token.length(); i++) {
+                    sb.append(Character.toUpperCase(token.charAt(i)));
+                }
+            }
+            return sb.toString();
+        }
+
+        private static CharSequence joinAsCamelCase(final List<CharSequence> tokens) {
+            final StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            for (final CharSequence token : tokens) {
+                if (first) {
+                    sb.append(token);
+                } else {
+                    sb.append(Character.toUpperCase(token.charAt(0)));
+                    if (token.length() > 1) {
+                        sb.append(token.subSequence(1, token.length()));
+                    }
+                }
+                first = false;
+            }
+            return sb.toString();
+        }
+
+        private static List<CharSequence> tokenize(final CharSequence value) {
+            // TODO: cache?
+            List<CharSequence> tokens = new ArrayList<>();
+            final Matcher matcher = PROPERTY_TOKENIZER.matcher(value);
+            while (matcher.find()) {
+                tokens.add(matcher.group(1).toLowerCase());
+            }
+            return tokens;
+        }
+
+        private String get(final String key) {
+            if (normalized.containsKey(key)) {
+                return normalized.get(key);
+            }
+            if (literal.containsKey(key)) {
+                return literal.get(key);
+            }
+            String prop = null;
+            try {
+                prop = System.getProperty(key);
+            } catch (final SecurityException ignored) {
+                // Ignore
+            }
+            if (prop != null) {
+                return prop;
+            }
+            return tokenized.get(tokenize(key));
         }
     }
 
