@@ -87,7 +87,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         private Protocol protocol = Protocol.TCP;
 
         @PluginBuilderAttribute
-        @PluginAliases({ "reconnectDelay, reconnectionDelay, delayMillis" })
+        @PluginAliases({ "reconnectDelay", "reconnectionDelay", "delayMillis", "reconnectionDelayMillis" })
         private int reconnectDelayMillis;
         
         @PluginElement("SocketOptions")
