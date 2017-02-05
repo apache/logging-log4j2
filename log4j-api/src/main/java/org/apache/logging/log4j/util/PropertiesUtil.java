@@ -33,13 +33,19 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * <em>Consider this class private.</em>
  * <p>
- * Helps access properties. This utility provides a method to override system properties by specifying properties in a
- * properties file.
+ * Provides utility methods for managing {@link Properties} instances as well as access to the global configuration
+ * system. Properties by default are loaded from the system properties, system environment, and a classpath resource
+ * file named {@value #LOG4J_PROPERTIES_FILE_NAME}. Additional properties can be loaded by implementing a custom
+ * {@link PropertySource} service and specifying it via a {@link ServiceLoader} file called
+ * {@code META-INF/services/org.apache.logging.log4j.util.PropertySource} with a list of fully qualified class names
+ * implementing that interface.
  * </p>
+ * @see PropertySource
  */
 public final class PropertiesUtil {
 
-    private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil("log4j2.component.properties");
+    private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
+    private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME);
 
     private final Environment environment;
 
