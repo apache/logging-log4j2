@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Level;
  *     by older log events taken from the queue.</li>
  *   <li>Discard the event. Log4j offers a variation of this policy where log events that are more verbose than
  *     a certain threshold are discarded, and other events are sent to the underlying appenders.
- *     See {@link DiscardingAsyncQueueFullPolicy} for defaults.</li>
+ *     See {@link DiscardingAsyncQueueFullPolicy} for details.</li>
  * </ul>
  * <p>
  * See {@link AsyncQueueFullPolicyFactory} for how to install a custom policy.
