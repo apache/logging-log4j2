@@ -25,6 +25,9 @@
   <body>
     <!-- NOTE: the text node in an action element is interpreted as Markdown in the release notes! -->
     <release version="2.8.1" date="2017-MM-DD" description="GA Release 2.8.1">
+      <action issue="LOG4J2-1810" dev="rgoers" type="update">
+        Update to use Logback 1.1.10 for tests.
+      </action>
       <action issue="LOG4J2-1803" dev="rgoers" type="fix">
         Fix Maven POM to ensure JMH generated classes in log4j-perf are included in benchmarks jar.
       </action>
