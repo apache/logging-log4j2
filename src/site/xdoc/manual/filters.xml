@@ -133,7 +133,7 @@
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Filters>
-    <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+    <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
     <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
                             onMatch="ACCEPT" onMismatch="NEUTRAL">
       <KeyValuePair key="User1" value="DEBUG"/>
