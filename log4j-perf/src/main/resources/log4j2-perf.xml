@@ -23,6 +23,11 @@
                 <Pattern>%d %5p [%t] %c{1} %X{transactionId} - %m%n</Pattern>
             </PatternLayout>
         </File>
+        <MemoryMappedFile name="MemoryMappedLogFile" fileName="target/testMappedlog4j2.log" immediateFlush="false">
+            <PatternLayout>
+                <Pattern>%d %5p [%t] %c{1} %X{transactionId} - %m%n</Pattern>
+            </PatternLayout>
+        </MemoryMappedFile>
         <RandomAccessFile name="RandomAccessLogFile" fileName="target/testRandomlog4j2.log" immediateFlush="false">
             <PatternLayout>
                 <Pattern>%d %5p [%t] %c{1} %X{transactionId} - %m%n</Pattern>
@@ -30,6 +35,9 @@
         </RandomAccessFile>
     </Appenders>
     <Loggers>
+        <Logger name="MemoryMapped" level="debug" additivity="false">
+            <AppenderRef ref="MemoryMappedLogFile"/>
+        </Logger>
         <Logger name="TestRandom" level="debug" additivity="false">
             <AppenderRef ref="RandomAccessLogFile"/>
         </Logger>

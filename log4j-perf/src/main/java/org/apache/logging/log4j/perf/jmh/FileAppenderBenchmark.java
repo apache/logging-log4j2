@@ -50,6 +50,7 @@ public class FileAppenderBenchmark {
 
     Logger log4j2Logger;
     Logger log4j2RandomLogger;
+    Logger log4j2MemoryLogger;
     org.slf4j.Logger slf4jLogger;
     org.apache.log4j.Logger log4j1Logger;
     java.util.logging.Logger julLogger;
@@ -63,6 +64,7 @@ public class FileAppenderBenchmark {
         deleteLogFiles();
 
         log4j2Logger = LogManager.getLogger(FileAppenderBenchmark.class);
+        log4j2MemoryLogger = LogManager.getLogger("MemoryMapped");
         log4j2RandomLogger = LogManager.getLogger("TestRandom");
         slf4jLogger = LoggerFactory.getLogger(FileAppenderBenchmark.class);
         log4j1Logger = org.apache.log4j.Logger.getLogger(FileAppenderBenchmark.class);
@@ -90,6 +92,8 @@ public class FileAppenderBenchmark {
         log4jFile.delete();
         final File log4jRandomFile = new File ("target/testRandomlog4j2.log");
         log4jRandomFile.delete();
+        final File log4jMemoryFile = new File ("target/testMappedlog4j2.log");
+        log4jMemoryFile.delete();
         final File log4j2File = new File ("target/testlog4j2.log");
         log4j2File.delete();
         final File julFile = new File("target/testJulLog.log");
@@ -101,6 +105,13 @@ public class FileAppenderBenchmark {
     @Benchmark
     public void log4j2RAF() {
         log4j2RandomLogger.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void log4j2MMF() {
+        log4j2MemoryLogger.debug(MESSAGE);
     }
 
 
