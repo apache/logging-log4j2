@@ -18,8 +18,8 @@
 <configuration>
     <appender name="TestLogfile" class="ch.qos.logback.core.FileAppender">
         <file>target/testlogback.log</file>
+        <immediateFlush>false</immediateFlush>
         <encoder>
-            <immediateFlush>false</immediateFlush>
             <Pattern>%d %5p [%t] %c{0} %X{transactionId} - %m%n</Pattern>
         </encoder>
     </appender>
