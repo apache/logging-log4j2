@@ -21,10 +21,11 @@
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd">
   <body>
     <links>
-      <item name="Logging Wiki" href="http://wiki.apache.org/logging"/>
-      <item name="Apache" href="http://www.apache.org/"/>
-      <item name="Logging Services" href="http://logging.apache.org/"/>
+      <item name="Logging Wiki" href="https://wiki.apache.org/logging"/>
+      <item name="Apache" href="https://www.apache.org/"/>
+      <item name="Logging Services" href="https://logging.apache.org/"/>
       <item name="Sonar" href="https://analysis.apache.org/dashboard/index/org.apache.logging.log4j:log4j"/>
+      <item name="GitHub" href="https://github.com/apache/logging-log4j2"/>
     </links>
 
     <menu name="Apache Log4j™ 2" inherit="top" img="icon-home">
