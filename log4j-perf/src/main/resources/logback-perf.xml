@@ -24,6 +24,14 @@
         </encoder>
     </appender>
 
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="TestLogfile" />
+    </appender>
+
+    <logger name="Async" level="debug" additivity="false">
+        <appender-ref ref="ASYNC"/>
+    </logger>
     <root level="debug">
         <appender-ref ref="TestLogfile" />
     </root>

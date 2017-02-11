@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
+//import java.lang.StackWalker;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -129,4 +130,12 @@ public class SimpleBenchmark {
     public void testDebugDisabledMessageResponseTime(final Blackhole bh) {
         logger.debug((Message) new SimpleMessage(msg));
     }
+/*
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    @Benchmark
+    public void testCallerStack(final Blackhole bh) {
+        StackWalker walker = StackWalker.getInstance();
+        StackWalker.StackFrame frame = walker.walk(s -> s.skip(2).findFirst());
+    } */
 }
