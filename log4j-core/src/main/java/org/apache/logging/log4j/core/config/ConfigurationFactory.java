@@ -75,7 +75,7 @@ import org.apache.logging.log4j.util.Strings;
  * last if no configuration has been returned.
  */
 public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
-    
+
     public ConfigurationFactory() {
         super();
         // TEMP For breakpoints
@@ -463,7 +463,10 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             if (config != null) {
                 return config;
             }
-            LOGGER.error("No log4j2 configuration file found. Using default configuration: logging only errors to the console.");
+            LOGGER.error("No log4j2 configuration file found. " +
+                    "Using default configuration: logging only errors to the console. " +
+                    "Set system property 'org.apache.logging.log4j.simplelog.StatusLogger.level'" +
+                    " to TRACE to show Log4j2 initialization internal logging.");
             return new DefaultConfiguration();
         }
 
