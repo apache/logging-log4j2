@@ -82,12 +82,12 @@
     <xs:complexType name="AppendersType">
         <xs:sequence>
           <xs:element name="Appender" type="AppenderType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Console" type="ConsoleType" minOccur="0"/>
+            <xs:element name="Console" type="ConsoleType" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
  <xs:complexType name="ConsoleType">
         <xs:sequence>
-            <xs:element name="PatternLayout" type="PatternLayoutType" minOccur="1" maxOccurs="unbounded"/>
+            <xs:element name="PatternLayout" type="PatternLayoutType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute type="xs:string" name="name" use="required"/>
         <xs:attribute type="xs:string" name="target" use="required"/>
