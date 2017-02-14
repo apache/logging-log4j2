@@ -109,12 +109,6 @@ public class RollingAppenderSizeTest {
         this.logger = this.loggerContextRule.getLogger(RollingAppenderSizeTest.class.getName());
     }
 
-    @After
-    public void cleanup() throws Exception {
-        Path path = new File(DIR).toPath();
-        cleanFolder(path);
-    }
-
     @Test
     public void testIsCreateOnDemand() {
         final RollingFileAppender rfAppender = loggerContextRule.getRequiredAppender("RollingFile",
@@ -181,24 +175,6 @@ public class RollingAppenderSizeTest {
                     Closer.close(in);
                 }
             }
-        }
-    }
-
-    private void cleanFolder(final Path folder) throws IOException {
-        if (Files.exists(folder) && Files.isDirectory(folder)) {
-            Files.walkFileTree(folder, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
-                    Files.deleteIfExists(dir);
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                    Files.deleteIfExists(file);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
         }
     }
 }
