@@ -122,6 +122,7 @@
             <Import-Package>
               sun.reflect;resolution:=optional,
               org.apache.logging.log4j.core.osgi;resolution:=optional,
+              org.apache.logging.log4j.core.util;resolution:=optional,
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
