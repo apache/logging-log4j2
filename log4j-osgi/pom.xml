@@ -50,7 +50,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.osgi</groupId>
+      <groupId>org.eclipse.tycho</groupId>
       <artifactId>org.eclipse.osgi</artifactId>
       <scope>test</scope>
     </dependency>
