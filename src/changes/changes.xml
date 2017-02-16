@@ -53,7 +53,7 @@
         Fixed bug in PropertiesUtil::getCharsetProperty that caused UnsupportedCharsetException for ConsoleAppender.
       </action>
       <action issue="LOG4J2-1806" dev="rpopma" type="fix" due-to="challarao">
-        Fix javadoc for DefaultRolloverStrategy::purgeAscending
+        Fix Javadoc for DefaultRolloverStrategy::purgeAscending
       </action>
       <action issue="LOG4J2-1818" dev="ggregory" type="fix" due-to="xkr47">
         Fix rollover to work when filePattern contains no directory components.
