@@ -260,7 +260,7 @@
       <dependency>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
-        <version>3.10.101.v20150820-1432</version>
+        <version>3.11.0.v20160603-1336</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
