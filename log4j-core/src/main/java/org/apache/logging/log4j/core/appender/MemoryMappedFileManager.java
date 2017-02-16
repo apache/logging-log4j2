@@ -35,6 +35,7 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
 //Lines too long...
@@ -332,10 +333,6 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         @Override
         public MemoryMappedFileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
-            final File parent = file.getParentFile();
-            if (null != parent && !parent.exists()) {
-                parent.mkdirs();
-            }
             if (!data.append) {
                 file.delete();
             }
@@ -344,6 +341,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final OutputStream os = NullOutputStream.getInstance();
             RandomAccessFile raf = null;
             try {
+                FileUtils.makeParentDirs(file);
                 raf = new RandomAccessFile(name, "rw");
                 final long position = (data.append) ? raf.length() : 0;
                 raf.setLength(position + data.regionLength);

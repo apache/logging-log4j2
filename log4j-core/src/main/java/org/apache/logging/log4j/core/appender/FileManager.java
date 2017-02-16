@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.FileUtils;
 
 
 /**
@@ -281,13 +282,9 @@ public class FileManager extends OutputStreamManager {
         @Override
         public FileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
-            final File parent = file.getParentFile();
-            if (null != parent && !parent.exists()) {
-                parent.mkdirs();
-            }
-
-            final boolean writeHeader = !data.append || !file.exists();
             try {
+                FileUtils.makeParentDirs(file);
+                final boolean writeHeader = !data.append || !file.exists();
                 final int actualSize = data.bufferedIo ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);
                 final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);

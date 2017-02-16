@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
@@ -186,10 +187,6 @@ public class RandomAccessFileManager extends OutputStreamManager {
         @Override
         public RandomAccessFileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
-            final File parent = file.getParentFile();
-            if (null != parent && !parent.exists()) {
-                parent.mkdirs();
-            }
             if (!data.append) {
                 file.delete();
             }
@@ -198,6 +195,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
             final OutputStream os = NullOutputStream.getInstance();
             RandomAccessFile raf;
             try {
+                FileUtils.makeParentDirs(file);
                 raf = new RandomAccessFile(name, "rw");
                 if (data.append) {
                     raf.seek(raf.length());

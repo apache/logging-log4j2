@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 
 /**
@@ -565,14 +566,11 @@ public class RollingFileManager extends FileManager {
             File file = null;
             if (data.fileName != null) {
                 file = new File(data.fileName);
-                final File parent = file.getParentFile();
-                if (null != parent && !parent.exists()) {
-                    parent.mkdirs();
-                }
                 // LOG4J2-1140: check writeHeader before creating the file
                 writeHeader = !data.append || !file.exists();
 
                 try {
+                    FileUtils.makeParentDirs(file);
                     final boolean created = data.createOnDemand ? false : file.createNewFile();
                     LOGGER.trace("New file '{}' created = {}", name, created);
                 } catch (final IOException ioe) {

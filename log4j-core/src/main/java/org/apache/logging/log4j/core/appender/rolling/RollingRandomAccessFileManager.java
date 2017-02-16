@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
@@ -165,10 +166,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         @Override
         public RollingRandomAccessFileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
-            final File parent = file.getParentFile();
-            if (null != parent && !parent.exists()) {
-                parent.mkdirs();
-            }
 
             if (!data.append) {
                 file.delete();
@@ -179,6 +176,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final boolean writeHeader = !data.append || !file.exists();
             RandomAccessFile raf = null;
             try {
+                FileUtils.makeParentDirs(file);
                 raf = new RandomAccessFile(name, "rw");
                 if (data.append) {
                     final long length = raf.length();
