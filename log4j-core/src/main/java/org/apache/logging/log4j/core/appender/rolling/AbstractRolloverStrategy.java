@@ -104,7 +104,11 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
         File file = new File(path);
         File parent = file.getParentFile();
-        parent.mkdirs();
+        if (parent == null) {
+            parent = new File(".");
+        } else {
+            parent.mkdirs();
+        }
         if (!path.contains("--1")) {
             return eligibleFiles;
         }
