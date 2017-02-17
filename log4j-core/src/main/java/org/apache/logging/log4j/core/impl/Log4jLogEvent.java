@@ -470,6 +470,13 @@ public class Log4jLogEvent implements LogEvent {
         return new Builder(this);
     }
 
+    public Log4jLogEvent toImmutable() {
+        if (getMessage() instanceof ReusableMessage) {
+            makeMessageImmutable();
+        }
+        return this;
+    }
+
     /**
      * Returns the logging Level.
      * @return the Level associated with this event.
@@ -727,13 +734,20 @@ public class Log4jLogEvent implements LogEvent {
         throw new InvalidObjectException("Proxy required");
     }
 
+    public LogEvent createMemento() {
+        return createMemento(this);
+    }
+    
+    public static LogEvent createMemento(final LogEvent logEvent) {
+        return new Log4jLogEvent.Builder(logEvent).build();
+    }
+    
     /**
      * Creates and returns a new immutable copy of this {@code Log4jLogEvent}.
      *
      * @return a new immutable copy of the data in this {@code Log4jLogEvent}
      */
     public static Log4jLogEvent createMemento(final LogEvent event, final boolean includeLocation) {
-        // TODO implement Log4jLogEvent.createMemento()
         return deserialize(serialize(event, includeLocation));
     }
 

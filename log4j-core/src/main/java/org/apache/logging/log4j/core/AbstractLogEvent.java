@@ -35,6 +35,14 @@ public abstract class AbstractLogEvent implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Subclasses should implement this method to provide an immutable version.
+     */
+    @Override
+    public LogEvent toImmutable() {
+        return this;
+    }
+
     @Override
     public ReadOnlyStringMap getContextData() {
         return null;

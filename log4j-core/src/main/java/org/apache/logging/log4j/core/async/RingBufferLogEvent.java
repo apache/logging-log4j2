@@ -114,6 +114,11 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.asyncLogger = anAsyncLogger;
     }
 
+    @Override
+    public LogEvent toImmutable() {
+        return createMemento();
+    }
+    
     private void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
@@ -429,8 +434,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      * @return a new immutable copy of the data in this {@code RingBufferLogEvent}
      */
     public LogEvent createMemento() {
-        final LogEvent result = new Log4jLogEvent.Builder(this).build();
-        return result;
+        return new Log4jLogEvent.Builder(this).build();
+        
     }
 
     /**

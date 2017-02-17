@@ -73,6 +73,10 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         this.parameters = replacementParameters;
     }
 
+    public Log4jLogEvent toImmutable() {
+        return createMemento();
+    }
+
     /**
      * Initialize the fields of this {@code MutableLogEvent} from another event.
      * Similar in purpose and usage as {@link org.apache.logging.log4j.core.impl.Log4jLogEvent.LogEventProxy},

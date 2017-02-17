@@ -23,8 +23,10 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
@@ -47,6 +49,13 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  * </p>
  */
 public interface LogEvent extends Serializable {
+
+    /**
+     * Returns an immutable version of this log event, which MAY BE a copy of this event.
+     *  
+     * @return an immutable version of this log event
+     */
+    LogEvent toImmutable();
 
     /**
      * Gets the context map (also know as Mapped Diagnostic Context or MDC).

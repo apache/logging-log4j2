@@ -27,11 +27,14 @@ import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -48,6 +51,12 @@ public class MutableLogEventTest {
         result.putValue("a", "1");
         result.putValue("b", "2");
         return result;
+    }
+
+    @Test
+    public void testToImmutable() {
+        final LogEvent logEvent = new MutableLogEvent();
+        Assert.assertNotSame(logEvent, logEvent.toImmutable());
     }
 
     @Test

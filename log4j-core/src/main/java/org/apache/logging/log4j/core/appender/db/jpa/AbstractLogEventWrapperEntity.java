@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextDataAttributeConverter;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -94,6 +95,11 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
             throw new IllegalArgumentException("The wrapped event cannot be null.");
         }
         this.wrappedEvent = wrappedEvent;
+    }
+
+    @Override
+    public LogEvent toImmutable() {
+        return Log4jLogEvent.createMemento(this);
     }
 
     /**

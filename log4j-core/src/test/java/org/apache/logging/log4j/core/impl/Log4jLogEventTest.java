@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,6 +33,7 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
@@ -39,15 +48,16 @@ import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.message.ReusableObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class Log4jLogEventTest {
 
@@ -74,6 +84,20 @@ public class Log4jLogEventTest {
     @AfterClass
     public static void afterClass() throws IllegalAccessException {
         ClockFactoryTest.resetClocks();
+    }
+
+    @Test
+    public void testToImmutableSame() {
+        final LogEvent logEvent = new Log4jLogEvent();
+        Assert.assertSame(logEvent, logEvent.toImmutable());
+    }
+
+    @Test
+    public void testToImmutableNotSame() {
+        final LogEvent logEvent = new Log4jLogEvent.Builder().setMessage(new ReusableObjectMessage()).build();
+        LogEvent immutable = logEvent.toImmutable();
+        Assert.assertSame(logEvent, immutable);
+        Assert.assertFalse(immutable.getMessage() instanceof ReusableMessage);
     }
 
     @Test

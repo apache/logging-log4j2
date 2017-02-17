@@ -226,8 +226,11 @@ public class SortedArrayStringMap implements IndexedStringMap {
 
     @Override
     public void putAll(final ReadOnlyStringMap source) {
-        if (source == this || source.isEmpty()) { // throw NPE if null
-            return; // this.putAll(this) does not modify this collection
+        if (source == this || source == null || source.isEmpty()) {
+            // this.putAll(this) does not modify this collection
+            // this.putAll(null) does not modify this collection
+            // this.putAll(empty ReadOnlyStringMap) does not modify this collection
+            return;
         }
         assertNotFrozen();
         assertNoConcurrentModification();
