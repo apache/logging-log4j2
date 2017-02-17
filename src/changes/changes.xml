@@ -58,6 +58,9 @@
       <action issue="LOG4J2-1818" dev="ggregory" type="fix" due-to="xkr47">
         Fix rollover to work when filePattern contains no directory components.
       </action>
+      <action issue="LOG4J2-1807" dev="ggregory" type="add">
+        [core] Add and implement LogEvent.toImmutable().
+      </action>
     </release>
     <release version="2.8" date="2017-01-21" description="GA Release 2.8">
       <action issue="LOG4J2-1780" dev="mikes" type="fix">
