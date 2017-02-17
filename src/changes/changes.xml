@@ -37,6 +37,9 @@
       <action issue="LOG4J2-1810" dev="rgoers" type="update">
         Update to use Logback 1.1.10 and then Logback 1.2 for tests.
       </action>
+      <action issue="LOG4J2-1819" dev="ggregory" type="update">
+        Update Jackson from 2.8.5 to 2.8.6.
+      </action>
       <action issue="LOG4J2-1816" dev="rpopma" type="fix" due-to="shubhankar1100">
         Change minOccur to minOccurs in Log4j-config.xsd.
       </action>
