@@ -67,6 +67,12 @@ import org.apache.logging.log4j.util.Supplier;
  * // the lambda expression is not evaluated if the TRACE level is not enabled
  * logger.trace(&quot;Some long-running operation returned {}&quot;, () -&gt; expensiveOperation());
  * </pre>
+ *
+ * <p>
+ * Note that although {@link MessageSupplier} is provided, using {@link Supplier Supplier<Message>} works just the
+ * same. MessageSupplier was deprecated in 2.6 and un-deprecated in 2.8.1. Anonymous class usage of these APIs
+ * should prefer using Supplier instead.
+ * </p>
  */
 public interface Logger {
 
@@ -113,9 +119,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void debug(Marker marker, MessageSupplier msgSupplier);
 
     /**
@@ -127,9 +131,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void debug(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -251,9 +253,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void debug(MessageSupplier msgSupplier);
 
     /**
@@ -264,9 +264,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void debug(MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -675,9 +673,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void error(Marker marker, MessageSupplier msgSupplier);
 
     /**
@@ -689,9 +685,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void error(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -813,9 +807,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void error(MessageSupplier msgSupplier);
 
     /**
@@ -826,9 +818,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void error(MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -1231,9 +1221,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void fatal(Marker marker, MessageSupplier msgSupplier);
 
     /**
@@ -1245,9 +1233,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void fatal(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -1369,9 +1355,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void fatal(MessageSupplier msgSupplier);
 
     /**
@@ -1382,9 +1366,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void fatal(MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -1792,9 +1774,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void info(Marker marker, MessageSupplier msgSupplier);
 
     /**
@@ -1806,9 +1786,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void info(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -1930,9 +1908,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void info(MessageSupplier msgSupplier);
 
     /**
@@ -1943,9 +1919,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void info(MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -2445,9 +2419,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void log(Level level, Marker marker, MessageSupplier msgSupplier);
 
     /**
@@ -2460,9 +2432,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void log(Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -2595,9 +2565,7 @@ public interface Logger {
      * @param level the logging level
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void log(Level level, MessageSupplier msgSupplier);
 
     /**
@@ -2609,9 +2577,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack log.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void log(Level level, MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -3067,9 +3033,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void trace(Marker marker, MessageSupplier msgSupplier);
 
     /**
@@ -3081,9 +3045,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void trace(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -3208,9 +3170,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void trace(MessageSupplier msgSupplier);
 
     /**
@@ -3221,9 +3181,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void trace(MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -3790,9 +3748,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void warn(Marker marker, MessageSupplier msgSupplier);
 
     /**
@@ -3804,9 +3760,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void warn(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -3928,9 +3882,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void warn(MessageSupplier msgSupplier);
 
     /**
@@ -3941,9 +3893,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack warn.
      * @since 2.4
-     * @deprecated Deprecated in 2.6, use the {@link Supplier} version of this API instead.
      */
-    @Deprecated
     void warn(MessageSupplier msgSupplier, Throwable t);
 
     /**

@@ -64,6 +64,9 @@
       <action issue="LOG4J2-1818" dev="ggregory" type="fix" due-to="xkr47">
         Fix rollover to work when filePattern contains no directory components.
       </action>
+      <action issue="LOG4J2-1823" dev="mattsicker" type="add">
+        Remove deprecation on MessageSupplier lambda functions in Logger API.
+      </action>
       <action issue="LOG4J2-1807" dev="ggregory" type="add">
         [core] Add and implement LogEvent.toImmutable().
       </action>
