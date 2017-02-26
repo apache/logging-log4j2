@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.nio.file.Path;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.pattern.NotANumber;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -30,7 +31,7 @@ public class EligibleFilesTest {
 
     @Test
     public void runTest() throws Exception {
-        String path = "target/test-classes/rolloverPath/log4j.txt.20170112_09--1.gz";
+        String path = "target/test-classes/rolloverPath/log4j.txt.20170112_09-" + NotANumber.VALUE + ".gz";
         TestRolloverStrategy strategy = new TestRolloverStrategy();
         Map<Integer, Path> files = strategy.findFilesInPath(path);
         assertTrue("No files found", files.size() > 0);
@@ -49,7 +50,7 @@ public class EligibleFilesTest {
         }
 
         public Map<Integer, Path> findFilesInPath(String path) {
-            return getEligibleFiles(path);
+            return getEligibleFiles(path, "log4j.txt.%d{yyyyMMdd}-%i.gz");
         }
     }
 }

@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.pattern.NotANumber;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -92,15 +93,16 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
     protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager,
                                                         final boolean isAscending) {
         final StringBuilder buf = new StringBuilder();
-        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, -1);
-        return getEligibleFiles(buf.toString(), isAscending);
+        String pattern = manager.getPatternProcessor().getPattern();
+        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, NotANumber.NAN);
+        return getEligibleFiles(buf.toString(), pattern, isAscending);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(String path) {
-        return getEligibleFiles(path, true);
+    protected SortedMap<Integer, Path> getEligibleFiles(String path, String pattern) {
+        return getEligibleFiles(path, pattern, true);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(String path, boolean isAscending) {
+    protected SortedMap<Integer, Path> getEligibleFiles(String path, String logfilePattern, boolean isAscending) {
         TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
         File file = new File(path);
         File parent = file.getParentFile();
@@ -109,7 +111,7 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         } else {
             parent.mkdirs();
         }
-        if (!path.contains("--1")) {
+        if (!logfilePattern.contains("%i")) {
             return eligibleFiles;
         }
         Path dir = parent.toPath();
@@ -118,7 +120,7 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         if (suffixLength > 0) {
             fileName = fileName.substring(0, fileName.length() - suffixLength) + ".*";
         }
-        String filePattern = fileName.replace("--1", "-(\\d+)");
+        String filePattern = fileName.replace(NotANumber.VALUE, "(\\d+)");
         Pattern pattern = Pattern.compile(filePattern);
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
