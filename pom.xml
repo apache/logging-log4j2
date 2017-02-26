@@ -1242,7 +1242,7 @@
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
-            <exclude>RELEASE-NOTES.md</exclude>
+            <exclude>RELEASE-NOTES.txt</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -1341,7 +1341,7 @@
               <templateDirectory>src/changes</templateDirectory>
               <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
               <announcementDirectory>.</announcementDirectory>
-              <announcementFile>RELEASE-NOTES.md</announcementFile>
+              <announcementFile>RELEASE-NOTES.txt</announcementFile>
               <issueManagementSystems>
                 <issueManagementSystem>changes.xml</issueManagementSystem>
                 <!--<issueManagementSystem>JIRA</issueManagementSystem> -->
