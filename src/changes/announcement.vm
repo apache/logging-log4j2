@@ -47,8 +47,7 @@ property substitution using Lookups, multiple patterns on a PatternLayout and as
 Loggers. Another notable Log4j 2 feature is the ability to be "garbage-free" (avoid allocating
 temporary objects) while logging. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This release contains several bugfixes and new features. The new features include the ability
-to have the RollingFileAppender log directly to the archive files. More details on the new features and
+This release primarily contains bugfixes and minor enhancements. More details on the new features and
 fixes are itemized below.
 
 Note that subsequent to the 2.6 release a minor source incompatibility was found due to the
