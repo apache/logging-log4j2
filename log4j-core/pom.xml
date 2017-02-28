@@ -383,15 +383,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <includes>
-            <include>**/*.java</include>
-          </includes>
-          <excludes>
-            <exclude>**/ForceNoDefClassFoundError.*</exclude>
-          </excludes>
-          <groups>
-            org.apache.logging.log4j.categories.PerformanceTests
-          </groups>
+          <skipTests>true</skipTests>
         </configuration>
       </plugin>
       <plugin>
