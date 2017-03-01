@@ -167,7 +167,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
 
         String escapedLogger = Transform.escapeHtmlTags(event.getLoggerName());
-        if (escapedLogger.isEmpty()) {
+        if (Strings.isEmpty(escapedLogger)) {
             escapedLogger = LoggerConfig.ROOT;
         }
         sbuf.append("<td title=\"").append(escapedLogger).append(" logger\">");

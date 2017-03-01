@@ -34,6 +34,9 @@
       <action issue="LOG4J2-1827" dev="rgoers" type="update">
         Move integration tests to their own module to speed up build.
       </action>
+      <action issue="LOG4J2-1831" dev="ggregory" type="fix">
+        NullPointerException in HtmlLayout.
+      </action>
     </release>
     <release version="2.8.1" date="2017-02-26" description="GA Release 2.8.1">
       <action issue="LOG4J2-1804" dev="rgoers" type="fix" due-to="Pierrick Hymbert">
