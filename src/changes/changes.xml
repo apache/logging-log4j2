@@ -34,7 +34,7 @@
       <action issue="LOG4J2-1827" dev="rgoers" type="update">
         Move integration tests to their own module to speed up build.
       </action>
-      <action issue="LOG4J2-1831" dev="ggregory" type="fix">
+      <action issue="LOG4J2-1831" dev="ggregory" type="fix" due-to="Edward Serebrinskiy">
         NullPointerException in HtmlLayout.
       </action>
     </release>
