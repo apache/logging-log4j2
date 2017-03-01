@@ -37,6 +37,9 @@
       <action issue="LOG4J2-1831" dev="ggregory" type="fix" due-to="Edward Serebrinskiy">
         NullPointerException in HtmlLayout.
       </action>
+      <action issue="LOG4J2-1820" dev="ggregory" type="fix" due-to="Jason Tedor">
+        Log4j 2.8 can lose exceptions when a security manager is present.
+      </action>
     </release>
     <release version="2.8.1" date="2017-02-26" description="GA Release 2.8.1">
       <action issue="LOG4J2-1804" dev="rgoers" type="fix" due-to="Pierrick Hymbert">

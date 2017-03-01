@@ -557,7 +557,7 @@ public class ThrowableProxy implements Serializable {
 
     private Class<?> loadClass(final String className) {
         try {
-            return Loader.loadClass(className,this.getClass().getClassLoader());
+            return Loader.loadClass(className, this.getClass().getClassLoader());
         } catch (final ClassNotFoundException | NoClassDefFoundError | SecurityException e) {
             return null;
         }
@@ -602,7 +602,11 @@ public class ThrowableProxy implements Serializable {
                     version = ver;
                 }
             }
-            lastLoader = callerClass.getClassLoader();
+            try {
+                lastLoader = callerClass.getClassLoader();
+            } catch (final SecurityException e) {
+                lastLoader = null;
+            }
         }
         return new CacheEntry(new ExtendedClassInfo(exact, location, version), lastLoader);
     }

@@ -29,16 +29,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.BindException;
 import java.net.InetSocketAddress;
-import java.net.SocketPermission;
 import java.nio.channels.ServerSocketChannel;
-import java.security.CodeSource;
-import java.security.PermissionCollection;
-import java.security.Permissions;
-import java.security.Policy;
+import java.security.Permission;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.spec.IvParameterSpec;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.LogManager;
@@ -133,41 +134,20 @@ public class ThrowableProxyTest {
 
     @Test
     public void testLogStackTraceWithClassThatWillCauseSecurityException() throws IOException {
-        class SimplePolicy extends Policy {
-
-            private final Permissions permissions;
-
-            public SimplePolicy(final Permissions permissions) {
-                this.permissions = permissions;
-            }
-
-            @Override
-            public PermissionCollection getPermissions(final CodeSource codesource) {
-                return permissions;
-            }
-
-        }
-
         final SecurityManager sm = System.getSecurityManager();
         try {
-            final Permissions permissions = new Permissions();
-
-            // you know, for binding
-            permissions.add(new SocketPermission("localhost:9300", "listen,resolve"));
-
-            /**
-             * the JUnit test runner uses reflection to invoke the test; while leaving this
-             * permission out would display the same issue, it's clearer to grant this
-             * permission and show the real issue that would arise
-             */
-            // TODO: other JDKs might need a different permission here
-            permissions.add(new RuntimePermission("accessClassInPackage.sun.reflect"));
-
-            // for restoring the security manager after test execution
-            permissions.add(new RuntimePermission("setSecurityManager"));
-
-            Policy.setPolicy(new SimplePolicy(permissions));
-            System.setSecurityManager(new SecurityManager());
+            System.setSecurityManager(
+                    new SecurityManager() {
+                        @Override
+                        public void checkPermission(Permission perm) {
+                            if (perm instanceof RuntimePermission) {
+                                // deny access to the class to trigger the security exception
+                                if ("accessClassInPackage.sun.nio.ch".equals(perm.getName())) {
+                                    throw new SecurityException(perm.toString());
+                                }
+                            }
+                        }
+                    });
             ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
             ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
             fail("expected a java.net.BindException");
@@ -175,6 +155,45 @@ public class ThrowableProxyTest {
             new ThrowableProxy(e);
         } finally {
             // restore the security manager
+            System.setSecurityManager(sm);
+        }
+    }
+
+    @Test
+    public void testLogStackTraceWithClassLoaderThatWithCauseSecurityException() throws Exception {
+        final SecurityManager sm = System.getSecurityManager();
+        try {
+            System.setSecurityManager(
+                    new SecurityManager() {
+                        @Override
+                        public void checkPermission(Permission perm) {
+                            if (perm instanceof RuntimePermission) {
+                                // deny access to the classloader to trigger the security exception
+                                if ("getClassLoader".equals(perm.getName())) {
+                                    throw new SecurityException(perm.toString());
+                                }
+                            }
+                        }
+                    });
+            final String algorithm = "AES/CBC/PKCS5Padding";
+            final Cipher ec = Cipher.getInstance(algorithm);
+            final byte[] bytes = new byte[16]; // initialization vector
+            final SecureRandom secureRandom = new SecureRandom();
+            secureRandom.nextBytes(bytes);
+            final KeyGenerator generator = KeyGenerator.getInstance("AES");
+            generator.init(128);
+            final IvParameterSpec algorithmParameterSpec = new IvParameterSpec(bytes);
+            ec.init(Cipher.ENCRYPT_MODE, generator.generateKey(), algorithmParameterSpec, secureRandom);
+            final byte[] raw = new byte[0];
+            final byte[] encrypted = ec.doFinal(raw);
+            final Cipher dc = Cipher.getInstance(algorithm);
+            dc.init(Cipher.DECRYPT_MODE, generator.generateKey(), algorithmParameterSpec, secureRandom);
+            dc.doFinal(encrypted);
+            fail("expected a javax.crypto.BadPaddingException");
+        } catch (final BadPaddingException e) {
+            new ThrowableProxy(e);
+        } finally {
+            // restore the existing security manager
             System.setSecurityManager(sm);
         }
     }
