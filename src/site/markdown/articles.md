@@ -44,6 +44,7 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
+* [Intro to Log4j2 – Appenders, Layouts and Filters](http://www.baeldung.com/log4j2-appenders-layouts-filters)(February 28, 2017)
 * [Getting Your Own Log4j2 File for Mule via Spring](https://dzone.com/articles/getting-own-log4j2-file-for-mule-via-spring)
 (December 29, 2016)
 * [Understanding and working with Log4j2 for logging in Selenium framework (Part B)](https://www.youtube.com/watch?v=-XNvCNHjIKw)
