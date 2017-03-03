@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.8.2" date="2017-MM-DD" description="GA Release 2.8.2">
+      <action issue="LOG4J2-1836" dev="rgoers" type="fix">
+        Update the API version to 2.6.0.
+      </action>
       <action issue="LOG4J2-1827" dev="rgoers" type="update">
         Move integration tests to their own module to speed up build.
       </action>
