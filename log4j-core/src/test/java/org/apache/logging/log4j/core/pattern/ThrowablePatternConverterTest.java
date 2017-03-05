@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ThrowablePatternConverterTest {
 
@@ -42,13 +43,13 @@ public class ThrowablePatternConverterTest {
     @Test(expected = Exception.class)
     public void testBadShortOption() {
         final String[] options = { "short.UNKNOWN" };
-        ThrowablePatternConverter.newInstance(options);
+        ThrowablePatternConverter.newInstance(null, options);
     }
 
     @Test
     public void testFull() {
         final String[] options = { "full" };
-        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         Throwable parent;
         try {
             try {
@@ -77,7 +78,7 @@ public class ThrowablePatternConverterTest {
     public void testShortClassName() {
         final String packageName = "org.apache.logging.log4j.core.pattern.";
         final String[] options = { "short.className" };
-        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -95,7 +96,7 @@ public class ThrowablePatternConverterTest {
     @Test
     public void testShortFileName() {
         final String[] options = { "short.fileName" };
-        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -113,7 +114,7 @@ public class ThrowablePatternConverterTest {
     @Test
     public void testShortLineNumber() {
         final String[] options = { "short.lineNumber" };
-        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final StackTraceElement top = parent.getStackTrace()[0];
@@ -134,7 +135,7 @@ public class ThrowablePatternConverterTest {
     @Test
     public void testShortLocalizedMessage() {
         final String[] options = { "short.localizedMessage" };
-        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable parent = new LocalizedException();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("testLogger") //
@@ -151,7 +152,7 @@ public class ThrowablePatternConverterTest {
     @Test
     public void testShortMessage() {
         final String[] options = { "short.message" };
-        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -169,7 +170,7 @@ public class ThrowablePatternConverterTest {
     @Test
     public void testShortMethodName() {
         final String[] options = { "short.methodName" };
-        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final LogEvent event = Log4jLogEvent.newBuilder() //

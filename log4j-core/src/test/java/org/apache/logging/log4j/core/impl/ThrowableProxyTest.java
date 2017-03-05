@@ -35,21 +35,20 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.IvParameterSpec;
 import javax.xml.bind.DatatypeConverter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -80,6 +79,19 @@ public class ThrowableProxyTest {
         final ObjectOutputStream out = new ObjectOutputStream(arr);
         out.writeObject(proxy);
         return arr.toByteArray();
+    }
+
+    private boolean allLinesContain(final String text, final String containedText) {
+        String[] lines = text.split("\n");
+        for (String line : lines) {
+            if (line.isEmpty()) {
+                continue;
+            }
+            if (!line.contains(containedText)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void testIoContainer(final ObjectMapper objectMapper ) throws IOException {
@@ -228,7 +240,7 @@ public class ThrowableProxyTest {
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);
 
-        assertEquals(proxy.getExtendedStackTraceAsString(), proxy2.getExtendedStackTraceAsString());
+        assertEquals(proxy.getExtendedStackTraceAsString(Strings.EMPTY), proxy2.getExtendedStackTraceAsString(Strings.EMPTY));
     }
 
     @Test
@@ -256,7 +268,7 @@ public class ThrowableProxyTest {
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);
 
-        assertEquals(proxy.getExtendedStackTraceAsString(), proxy2.getExtendedStackTraceAsString());
+        assertEquals(proxy.getExtendedStackTraceAsString(Strings.EMPTY), proxy2.getExtendedStackTraceAsString(Strings.EMPTY));
     }
 
     @Test
@@ -279,6 +291,64 @@ public class ThrowableProxyTest {
 
         assertEquals(this.getClass().getName() + "$DeletedException", proxy2.getName());
         assertEquals(msg, proxy2.getMessage());
+    }
+
+    @Test
+    public void testSuffix_getExtendedStackTraceAsString() throws Exception {
+        final Throwable throwable = new IllegalArgumentException("This is a test");
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+
+        String suffix = "some suffix";
+        assertTrue(allLinesContain(proxy.getExtendedStackTraceAsString(suffix), suffix));
+    }
+
+    @Test
+    public void testSuffix_getExtendedStackTraceAsStringWithCausedThrowable() throws Exception {
+        final Throwable throwable = new RuntimeException(new IllegalArgumentException("This is a test"));
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+
+        String suffix = "some suffix";
+        assertTrue(allLinesContain(proxy.getExtendedStackTraceAsString(suffix), suffix));
+    }
+
+    @Test
+    public void testSuffix_getExtendedStackTraceAsStringWithSuppressedThrowable() throws Exception {
+        IllegalArgumentException cause = new IllegalArgumentException("This is a test");
+        final Throwable throwable = new RuntimeException(cause);
+        throwable.addSuppressed(new IOException("This is a test"));
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+
+        String suffix = "some suffix";
+        assertTrue(allLinesContain(proxy.getExtendedStackTraceAsString(suffix), suffix));
+    }
+
+    @Test
+    public void testSuffix_getCauseStackTraceAsString() throws Exception {
+        final Throwable throwable = new IllegalArgumentException("This is a test");
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+
+        String suffix = "some suffix";
+        assertTrue(allLinesContain(proxy.getCauseStackTraceAsString(suffix), suffix));
+    }
+
+    @Test
+    public void testSuffix_getCauseStackTraceAsStringWithCausedThrowable() throws Exception {
+        final Throwable throwable = new RuntimeException(new IllegalArgumentException("This is a test"));
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+
+        String suffix = "some suffix";
+        assertTrue(allLinesContain(proxy.getCauseStackTraceAsString(suffix), suffix));
+    }
+
+    @Test
+    public void testSuffix_getCauseStackTraceAsStringWithSuppressedThrowable() throws Exception {
+        IllegalArgumentException cause = new IllegalArgumentException("This is a test");
+        final Throwable throwable = new RuntimeException(cause);
+        throwable.addSuppressed(new IOException("This is a test"));
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+
+        String suffix = "some suffix";
+        assertTrue(allLinesContain(proxy.getCauseStackTraceAsString(suffix), suffix));
     }
 
     @Test
@@ -332,7 +402,7 @@ public class ThrowableProxyTest {
 		e.addSuppressed(new IOException("Suppressed #2"));
 		LogManager.getLogger().error("Error", e);
 		final ThrowableProxy proxy = new ThrowableProxy(e);
-		final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+		final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString("same suffix");
 		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
 		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
 	}
@@ -344,7 +414,7 @@ public class ThrowableProxyTest {
 		cause.addSuppressed(new IOException("Suppressed #2"));
 		LogManager.getLogger().error("Error", new Exception(cause));
 		final ThrowableProxy proxy = new ThrowableProxy(new Exception("Root exception", cause));
-		final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+		final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString("same suffix");
 		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
 		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
 	}
