@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Formats a date by delegating to {@link DatePatternConverter}.  The default
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  */
 @Plugin(name = "FileDatePatternConverter", category = "FileConverter")
 @ConverterKeys({ "d", "date" })
+@PerformanceSensitive("allocation")
 public final class FileDatePatternConverter {
     /**
      * Private constructor.

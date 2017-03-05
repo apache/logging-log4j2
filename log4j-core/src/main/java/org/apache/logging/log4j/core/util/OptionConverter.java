@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -225,7 +226,7 @@ public final class OptionConverter {
                                          final Object defaultValue) {
         if (className != null) {
             try {
-                final Class<?> classObj = Loader.loadClass(className);
+                final Class<?> classObj = LoaderUtil.loadClass(className);
                 if (!superClass.isAssignableFrom(classObj)) {
                     LOGGER.error("A \"{}\" object is not assignable to a \"{}\" variable.", className,
                         superClass.getName());

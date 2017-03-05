@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -122,4 +123,18 @@ public final class FileUtils {
             throw new IOException("File " + dir + " exists and is not a directory. Unable to create directory.");
         }
     }
+    
+    /**
+     * Creates the parent directories for the given File.
+     * 
+     * @param file
+     * @throws IOException
+     */
+    public static void makeParentDirs(final File file) throws IOException {
+        File parent = Objects.requireNonNull(file, "file").getCanonicalFile().getParentFile();
+        if (parent != null) {
+            mkdir(parent, true);
+        }
+    }
+
 }

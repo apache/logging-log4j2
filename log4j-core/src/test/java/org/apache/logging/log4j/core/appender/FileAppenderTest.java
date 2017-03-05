@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -55,7 +56,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class FileAppenderTest {
 
-    @Parameters(name = "lazyCreate = {0}")
+    @Parameters(name = "createOnDemand = {0}")
     public static Boolean[] getParameters() {
         return new Boolean[] { false, true };
     }
@@ -64,12 +65,12 @@ public class FileAppenderTest {
     private static final Path PATH = Paths.get(FILE_NAME);
     private static final int THREADS = 2;
 
-    public FileAppenderTest(boolean lazyCreate) {
+    public FileAppenderTest(final boolean createOnDemand) {
         super();
-        this.lazyCreate = lazyCreate;
+        this.createOnDemand = createOnDemand;
     }
 
-    private final boolean lazyCreate;
+    private final boolean createOnDemand;
     private final int threadCount = THREADS;
 
     @Rule
@@ -83,7 +84,7 @@ public class FileAppenderTest {
     @Test
     public void testAppender() throws Exception {
         final int logEventCount = 1;
-        writer(false, logEventCount, "test", lazyCreate, false);
+        writer(false, logEventCount, "test", createOnDemand, false);
         verifyFile(logEventCount);
     }
 
@@ -99,18 +100,18 @@ public class FileAppenderTest {
             .withBufferedIo(false)
             .withBufferSize(1)
             .withLayout(layout)
-            .withLazyCreate(lazyCreate)
+            .withCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
-        Assert.assertEquals(lazyCreate, appender.getManager().isLazyCreate());
+        Assert.assertEquals(createOnDemand, appender.getManager().isCreateOnDemand());
         try {
-            Assert.assertNotEquals(lazyCreate, Files.exists(PATH));
+            Assert.assertNotEquals(createOnDemand, Files.exists(PATH));
             appender.start();
-            Assert.assertNotEquals(lazyCreate, Files.exists(PATH));
+            Assert.assertNotEquals(createOnDemand, Files.exists(PATH));
         } finally {
             appender.stop();
         }
-        Assert.assertNotEquals(lazyCreate, Files.exists(PATH));
+        Assert.assertNotEquals(createOnDemand, Files.exists(PATH));
     }
 
     private static PatternLayout createPatternLayout() {
@@ -130,14 +131,14 @@ public class FileAppenderTest {
             .withBufferedIo(false)
             .withBufferSize(1)
             .withLayout(layout)
-            .withLazyCreate(lazyCreate)
+            .withCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
         try {
             appender.start();
             final File file = new File(FILE_NAME);
             assertTrue("Appender did not start", appender.isStarted());
-            Assert.assertNotEquals(lazyCreate, Files.exists(PATH));
+            Assert.assertNotEquals(createOnDemand, Files.exists(PATH));
             long curLen = file.length();
             long prevLen = curLen;
             assertTrue("File length: " + curLen, curLen == 0);
@@ -166,7 +167,7 @@ public class FileAppenderTest {
     @Test
     public void testLockingAppender() throws Exception {
         final int logEventCount = 1;
-        writer(true, logEventCount, "test", lazyCreate, false);
+        writer(true, logEventCount, "test", createOnDemand, false);
         verifyFile(logEventCount);
     }
 
@@ -175,7 +176,7 @@ public class FileAppenderTest {
         testMultipleLockingAppenderThreads(false, threadCount);
     }
 
-    private void testMultipleLockingAppenderThreads(final boolean lock, int threadCount)
+    private void testMultipleLockingAppenderThreads(final boolean lock, final int threadCount)
             throws InterruptedException, Exception {
         final ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
         final Exception[] exceptionRef = new Exception[1];
@@ -208,7 +209,7 @@ public class FileAppenderTest {
         final ProcessBuilder[] builders = new ProcessBuilder[processCount];
         for (int index = 0; index < processCount; ++index) {
             builders[index] = new ProcessBuilder("java", "-cp", classPath, ProcessTest.class.getName(),
-                    "Process " + index, logEventCount.toString(), "true", Boolean.toString(lazyCreate));
+                    "Process " + index, logEventCount.toString(), "true", Boolean.toString(createOnDemand));
         }
         for (int index = 0; index < processCount; ++index) {
             processes[index] = builders[index].start();
@@ -227,8 +228,8 @@ public class FileAppenderTest {
         verifyFile(logEventCount * processCount);
     }
 
-    private static void writer(final boolean locking, final int logEventCount, final String name, boolean lazyCreate,
-            boolean concurrent) throws Exception {
+    private static void writer(final boolean locking, final int logEventCount, final String name, final boolean createOnDemand,
+            final boolean concurrent) throws Exception {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
@@ -239,23 +240,23 @@ public class FileAppenderTest {
             .withLocking(locking)
             .withBufferedIo(false)
             .withLayout(layout)
-            .withLazyCreate(lazyCreate)
+            .withCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
-        Assert.assertEquals(lazyCreate, appender.getManager().isLazyCreate());
+        Assert.assertEquals(createOnDemand, appender.getManager().isCreateOnDemand());
         try {
             appender.start();
             assertTrue("Appender did not start", appender.isStarted());
             final boolean exists = Files.exists(PATH);
-            String msg = String.format("concurrent = %s, lazyCreate = %s, file exists = %s", concurrent, lazyCreate,
+            final String msg = String.format("concurrent = %s, createOnDemand = %s, file exists = %s", concurrent, createOnDemand,
                     exists);
             // If concurrent the file might have been created (or not.)
-            // Can't really test lazyCreate && concurrent.
-            final boolean expectFileCreated = !lazyCreate;
+            // Can't really test createOnDemand && concurrent.
+            final boolean expectFileCreated = !createOnDemand;
             if (concurrent && expectFileCreated) {
                 Assert.assertTrue(msg, exists);
             } else if (expectFileCreated) {
-                Assert.assertNotEquals(msg, lazyCreate, exists);
+                Assert.assertNotEquals(msg, createOnDemand, exists);
             }
             for (int i = 0; i < logEventCount; ++i) {
                 final LogEvent logEvent = Log4jLogEvent.newBuilder().setLoggerName("TestLogger")
@@ -310,10 +311,10 @@ public class FileAppenderTest {
             final Thread thread = Thread.currentThread();
 
             try {
-                writer(lock, logEventCount, thread.getName(), lazyCreate, true);
-            } catch (final Exception ex) {
-                exceptionRef[0] = ex;
-                throw new RuntimeException(ex);
+                writer(lock, logEventCount, thread.getName(), createOnDemand, true);
+            } catch (final Exception e) {
+                exceptionRef[0] = e;
+                Throwables.rethrow(e);
             }
         }
     }
@@ -336,16 +337,16 @@ public class FileAppenderTest {
             }
             final boolean lock = Boolean.parseBoolean(args[2]);
 
-            final boolean lazyCreate = Boolean.parseBoolean(args[2]);
+            final boolean createOnDemand = Boolean.parseBoolean(args[2]);
 
             // System.out.println("Got arguments " + id + ", " + count + ", " + lock);
 
             try {
-                writer(lock, count, id, lazyCreate, true);
+                writer(lock, count, id, createOnDemand, true);
                 // thread.sleep(50);
 
-            } catch (final Exception ex) {
-                throw new RuntimeException(ex);
+            } catch (final Exception e) {
+                Throwables.rethrow(e);
             }
 
         }

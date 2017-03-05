@@ -93,7 +93,7 @@
           <subsection name="ConfigurationFactory">
             <p>
               Modifying the way in which logging can be configured is usually one of the areas with the most
-              interest. The primary method for doing that is by implementing or extending a 
+              interest. The primary method for doing that is by implementing or extending a
               <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationFactory.html">ConfigurationFactory</a>.
               Log4j provides two ways of adding new ConfigurationFactories. The first is by defining the system
               property named "log4j.configurationFactory" to the name of the class that should be searched first
@@ -123,12 +123,14 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
     public static final String[] SUFFIXES = new String[] {".xml", "*"};
 
     /**
-     * Return the Configuration.
+     * Returns the Configuration.
+     * @param loggerContext The logger context.
      * @param source The InputSource.
      * @return The Configuration.
      */
-    public Configuration getConfiguration(InputSource source) {
-        return new XMLConfiguration(source, configFile);
+    @Override
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return new XmlConfiguration(loggerContext, source);
     }
 
     /**
@@ -170,7 +172,19 @@ public static class RootLogger extends LoggerConfig {
             <p>A LogEventFactory is used to generate LogEvents. Applications may replace the standard LogEventFactory
               by setting the value of the system property Log4jLogEventFactory to the name of the custom
               LogEventFactory class. </p>
+            <p>Note: When log4j is configured to have <a href="async.html#AllAsync">all loggers asynchronous</a>,
+              log events are pre-allocated in a ring buffer and the LogEventFactory is not used.</p>
           </subsection>
+        <subsection name="MessageFactory">
+          <p>A MessageFactory is used to generate Message objects. Applications may replace the standard
+            ParameterizedMessageFactory (or ReusableMessageFactory in garbage-free mode)
+            by setting the value of the system property log4j2.messageFactory to the name of the custom
+            MessageFactory class. </p>
+          <p>Flow messages for the <tt>Logger.entry()</tt> and <tt>Logger.exit()</tt> methods have a separate FlowMessageFactory.
+            Applications may replace the DefaultFlowMessageFactory by setting the value of the system property
+            log4j2.flowMessageFactory to the name of the custom FlowMessageFactory class.
+          </p>
+        </subsection>
           <subsection name="Lookups">
             <p>
               Lookups are the means in which parameter substitution is performed. During Configuration initialization
@@ -502,6 +516,36 @@ ListAppender list1 = ListAppender.createAppender("List1", true, false, null, nul
 ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLine(true).build();
 ]]></pre>
           </subsection>
+        <subsection name="Custom ContextDataInjector">
+          <p>
+            The <code>ContextDataInjector</code> (introduced in Log4j 2.7) is responsible for
+            populating the LogEvent's
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/LogEvent.html#getContextData()">context data</a>
+            with key-value pairs or replacing it completely.
+            The default implementation is ThreadContextDataInjector, which obtains context attributes from the ThreadContext.
+          </p><p>
+          Applications may replace the default ContextDataInjector by setting the value of the system property
+          log4j2.ContextDataInjector to the name of the custom ContextDataInjector class.
+        </p><p>
+          Implementors should be aware there are some subtleties related to thread-safety and implementing a
+          context data injector in a garbage-free manner.
+          See the <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/ContextDataInjector.html">ContextDataInjector</a>
+          javadoc for detail.
+        </p>
+        </subsection>
+        <subsection name="Custom ThreadContextMap implementations">
+          <p>
+            A garbage-free StringMap-based context map can be installed by setting system property log4j2.garbagefree.threadContextMap
+            to true. (Log4j must be <a href="garbagefree.html#Config">enabled</a> to use ThreadLocals.)
+          </p><p>
+            Any custom <tt>ThreadContextMap</tt> implementation can be installed by setting system property
+            log4j2.threadContextMap to the fully qualified class name of the class implementing the
+            ThreadContextMap interface. By also implementing the <tt>ReadOnlyThreadContextMap</tt> interface, your custom
+            ThreadContextMap implementation will be accessible to applications via the
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()">ThreadContext::getThreadContextMap</a>
+            method.
+          </p>
+        </subsection>
           <subsection name="Custom Plugins">
             <p>See the <a href="plugins.html">Plugins</a> section of the manual.</p>
 <!-- TODO: some documentation here! -->

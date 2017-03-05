@@ -20,15 +20,18 @@ package org.apache.logging.log4j.core.config.plugins.convert;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Provider;
 import java.security.Security;
+import java.util.UUID;
 import java.util.regex.Pattern;
-
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
@@ -36,8 +39,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Collection of basic TypeConverter implementations. May be used to register additional TypeConverters or find
@@ -94,7 +97,7 @@ public final class TypeConverters {
      * <ul>
      * <li>0x0123456789ABCDEF</li>
      * <li>Base64:ABase64String</li>
-     * <li>String</li>
+     * <li>String using {@link Charset#defaultCharset()} [TODO Should this be UTF-8 instead?]</li>
      * </ul>
      */
     @Plugin(name = "ByteArray", category = CATEGORY)
@@ -175,7 +178,29 @@ public final class TypeConverters {
     public static class ClassConverter implements TypeConverter<Class<?>> {
         @Override
         public Class<?> convert(final String s) throws ClassNotFoundException {
-            return Loader.loadClass(s);
+            switch (s.toLowerCase()) {
+                case "boolean":
+                    return boolean.class;
+                case "byte":
+                    return byte.class;
+                case "char":
+                    return char.class;
+                case "double":
+                    return double.class;
+                case "float":
+                    return float.class;
+                case "int":
+                    return int.class;
+                case "long":
+                    return long.class;
+                case "short":
+                    return short.class;
+                case "void":
+                    return void.class;
+                default:
+                    return LoaderUtil.loadClass(s);
+            }
+
         }
     }
 
@@ -233,6 +258,17 @@ public final class TypeConverters {
     }
 
     /**
+     * Converts a {@link String} into an {@link InetAddress}.
+     */
+    @Plugin(name = "InetAddress", category = CATEGORY)
+    public static class InetAddressConverter implements TypeConverter<InetAddress> {
+        @Override
+        public InetAddress convert(final String s) throws Exception {
+            return InetAddress.getByName(s);
+        }
+    }
+
+    /**
      * Converts a {@link String} into a {@link Integer}.
      */
     @Plugin(name = "Integer", category = CATEGORY)
@@ -262,6 +298,18 @@ public final class TypeConverters {
         @Override
         public Long convert(final String s) {
             return Long.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Path}.
+     * @since 2.8
+     */
+    @Plugin(name = "Path", category = CATEGORY)
+    public static class PathConverter implements TypeConverter<Path> {
+        @Override
+        public Path convert(final String s) throws Exception {
+            return Paths.get(s);
         }
     }
 
@@ -332,6 +380,18 @@ public final class TypeConverters {
     }
 
     /**
+     * Converts a {@link String} into a {@link UUID}.
+     * @since 2.8
+     */
+    @Plugin(name = "UUID", category = CATEGORY)
+    public static class UuidConverter implements TypeConverter<UUID> {
+        @Override
+        public UUID convert(final String s) throws Exception {
+            return UUID.fromString(s);
+        }
+    }
+
+    /**
      * Converts a String to a given class if a TypeConverter is available for that class. Falls back to the provided
      * default value if the conversion is unsuccessful. However, if the default value is <em>also</em> invalid, then
      * {@code null} is returned (along with a nasty status log message).
@@ -348,8 +408,9 @@ public final class TypeConverters {
      * @throws IllegalArgumentException
      *         if no TypeConverter exists for the given class
      */
-    public static Object convert(final String s, final Class<?> clazz, final Object defaultValue) {
-        final TypeConverter<?> converter = TypeConverterRegistry.getInstance().findCompatibleConverter(clazz);
+    public static <T> T convert(final String s, final Class<? extends T> clazz, final Object defaultValue) {
+        @SuppressWarnings("unchecked")
+        final TypeConverter<T> converter = (TypeConverter<T>) TypeConverterRegistry.getInstance().findCompatibleConverter(clazz);
         if (s == null) {
             // don't debug print here, resulting output is hard to understand
             // LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
@@ -364,12 +425,13 @@ public final class TypeConverters {
         }
     }
 
-    private static Object parseDefaultValue(final TypeConverter<?> converter, final Object defaultValue) {
+    @SuppressWarnings("unchecked")
+    private static <T> T parseDefaultValue(final TypeConverter<T> converter, final Object defaultValue) {
         if (defaultValue == null) {
             return null;
         }
         if (!(defaultValue instanceof String)) {
-            return defaultValue;
+            return (T) defaultValue;
         }
         try {
             return converter.convert((String) defaultValue);

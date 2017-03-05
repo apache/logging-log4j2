@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -31,9 +32,11 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
+@Category(AsyncLoggers.class)
 public class AsyncLoggerTestNanoTime {
 
     @BeforeClass

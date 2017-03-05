@@ -18,11 +18,13 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.categories.Configurations;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
@@ -30,6 +32,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
+@Category(Configurations.Json.class)
 public class AppenderRefLevelJsonTest {
 
     private static final String CONFIG = "log4j-reference-level.json";

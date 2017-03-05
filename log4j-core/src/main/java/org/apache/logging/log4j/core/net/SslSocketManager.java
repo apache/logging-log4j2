@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -43,63 +44,102 @@ public class SslSocketManager extends TcpSocketManager {
     private final SslConfiguration sslConfig;
 
     /**
-     *
-     *
-     * @param name          The unique name of this connection.
-     * @param os            The OutputStream.
-     * @param sock          The Socket.
-     * @param inetAddress          The Internet address of the host.
-     * @param host          The name of the host.
-     * @param port          The port number on the host.
-     * @param connectTimeoutMillis the connect timeout in milliseconds.
-     * @param delay         Reconnection interval.
-     * @param immediateFail
-     * @param layout        The Layout.
-     */
-    public SslSocketManager(final String name, final OutputStream os, final Socket sock,
-            final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
-            final int connectTimeoutMillis, final int delay, final boolean immediateFail,
-            final Layout<? extends Serializable> layout) {
-        super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, delay, immediateFail, layout);
-        this.sslConfig = sslConfig;
-    }
+    *
+    *
+    * @param name          The unique name of this connection.
+    * @param os            The OutputStream.
+    * @param sock          The Socket.
+    * @param inetAddress          The Internet address of the host.
+    * @param host          The name of the host.
+    * @param port          The port number on the host.
+    * @param connectTimeoutMillis the connect timeout in milliseconds.
+    * @param delay         Reconnection interval.
+    * @param immediateFail
+    * @param layout        The Layout.
+    * @param bufferSize The buffer size.
+    * @deprecated Use {@link #SslSocketManager(String, OutputStream, Socket, SslConfiguration, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
+    */
+   public SslSocketManager(final String name, final OutputStream os, final Socket sock,
+           final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
+           final int connectTimeoutMillis, final int delay, final boolean immediateFail,
+           final Layout<? extends Serializable> layout, final int bufferSize) {
+       super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, delay, immediateFail, layout, bufferSize, null);
+       this.sslConfig = sslConfig;
+   }
+
+   /**
+   *
+   *
+   * @param name          The unique name of this connection.
+   * @param os            The OutputStream.
+   * @param sock          The Socket.
+   * @param inetAddress          The Internet address of the host.
+   * @param host          The name of the host.
+   * @param port          The port number on the host.
+   * @param connectTimeoutMillis the connect timeout in milliseconds.
+   * @param delay         Reconnection interval.
+   * @param immediateFail
+   * @param layout        The Layout.
+   * @param bufferSize The buffer size.
+   */
+  public SslSocketManager(final String name, final OutputStream os, final Socket sock,
+          final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
+          final int connectTimeoutMillis, final int delay, final boolean immediateFail,
+          final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
+      super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, delay, immediateFail, layout, bufferSize, socketOptions);
+      this.sslConfig = sslConfig;
+  }
 
     private static class SslFactoryData {
-        protected SslConfiguration sslConfig;
+        protected SslConfiguration sslConfiguration;
         private final String host;
         private final int port;
         private final int connectTimeoutMillis;
         private final int delayMillis;
         private final boolean immediateFail;
         private final Layout<? extends Serializable> layout;
+        private final int bufferSize;
+        private final SocketOptions socketOptions;
 
-        public SslFactoryData(final SslConfiguration sslConfig, final String host, final int port,
+        public SslFactoryData(final SslConfiguration sslConfiguration, final String host, final int port,
                 final int connectTimeoutMillis, final int delayMillis, final boolean immediateFail,
-                final Layout<? extends Serializable> layout) {
+                final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
             this.host = host;
             this.port = port;
             this.connectTimeoutMillis = connectTimeoutMillis;
             this.delayMillis = delayMillis;
             this.immediateFail = immediateFail;
             this.layout = layout;
-            this.sslConfig = sslConfig;
+            this.sslConfiguration = sslConfiguration;
+            this.bufferSize = bufferSize;
+            this.socketOptions = socketOptions;
         }
     }
 
+    /**
+     * @deprecated Use {@link SslSocketManager#getSocketManager(SslConfiguration, String, int, int, int, boolean, Layout, int, SocketOptions)}.
+     */
+    @Deprecated
+    public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, final int port,
+            final int connectTimeoutMillis, final int reconnectDelayMillis, final boolean immediateFail,
+            final Layout<? extends Serializable> layout, final int bufferSize) {
+        return getSocketManager(sslConfig, host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, null);
+    }
+
     public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, int port,
-            final int connectTimeoutMillis, int delayMillis, final boolean immediateFail,
-            final Layout<? extends Serializable> layout) {
+            final int connectTimeoutMillis, int reconnectDelayMillis, final boolean immediateFail,
+            final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
         if (port <= 0) {
             port = DEFAULT_PORT;
         }
-        if (delayMillis == 0) {
-            delayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
+        if (reconnectDelayMillis == 0) {
+            reconnectDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
         }
         return (SslSocketManager) getManager("TLS:" + host + ':' + port, new SslFactoryData(sslConfig, host, port,
-                connectTimeoutMillis, delayMillis, immediateFail, layout), FACTORY);
+                connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
     }
 
     @Override
@@ -131,28 +171,28 @@ public class SslSocketManager extends TcpSocketManager {
             private static final long serialVersionUID = 1L;
         }
 
+        @SuppressWarnings("resource")
         @Override
         public SslSocketManager createManager(final String name, final SslFactoryData data) {
             InetAddress inetAddress = null;
             OutputStream os = null;
             Socket socket = null;
-
             try {
                 inetAddress = resolveAddress(data.host);
                 socket = createSocket(data);
                 os = socket.getOutputStream();
                 checkDelay(data.delayMillis, os);
-            }
-            catch (final IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("SslSocketManager ({})", name, e);
                 os = new ByteArrayOutputStream();
-            }
-            catch (final TlsSocketManagerFactoryException e) {
+            } catch (final TlsSocketManagerFactoryException e) {
                 LOGGER.catching(Level.DEBUG, e);
+                Closer.closeSilently(socket);
                 return null;
             }
-            return new SslSocketManager(name, os, socket, data.sslConfig, inetAddress, data.host, data.port, 0,
-                    data.delayMillis, data.immediateFail, data.layout);
+            return new SslSocketManager(name, os, socket, data.sslConfiguration, inetAddress, data.host, data.port,
+                    data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout, data.bufferSize,
+                    data.socketOptions);
         }
 
         private InetAddress resolveAddress(final String hostName) throws TlsSocketManagerFactoryException {
@@ -178,8 +218,18 @@ public class SslSocketManager extends TcpSocketManager {
             SSLSocketFactory socketFactory;
             SSLSocket socket;
 
-            socketFactory = createSslSocketFactory(data.sslConfig);
-            socket = (SSLSocket) socketFactory.createSocket(data.host, data.port);
+            socketFactory = createSslSocketFactory(data.sslConfiguration);
+            socket = (SSLSocket) socketFactory.createSocket();
+            final SocketOptions socketOptions = data.socketOptions;
+            if (socketOptions != null) {
+                // Not sure which options must be applied before or after the connect() call.
+                socketOptions.apply(socket);
+            }
+            socket.connect(new InetSocketAddress(data.host, data.port), data.connectTimeoutMillis);
+            if (socketOptions != null) {
+                // Not sure which options must be applied before or after the connect() call.
+                socketOptions.apply(socket);
+            }
             return socket;
         }
     }

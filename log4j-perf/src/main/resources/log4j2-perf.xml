@@ -23,6 +23,18 @@
                 <Pattern>%d %5p [%t] %c{1} %X{transactionId} - %m%n</Pattern>
             </PatternLayout>
         </File>
+        <Async name="AsyncLogFile" bufferSize="256">
+            <AppenderRef ref="TestLogfile"/>
+        </Async>
+        <Async name="AsyncDisrupterLogFile">
+            <AppenderRef ref="TestLogfile"/>
+            <DisruptorBlockingQueue/>
+        </Async>
+        <MemoryMappedFile name="MemoryMappedLogFile" fileName="target/testMappedlog4j2.log" immediateFlush="false">
+            <PatternLayout>
+                <Pattern>%d %5p [%t] %c{1} %X{transactionId} - %m%n</Pattern>
+            </PatternLayout>
+        </MemoryMappedFile>
         <RandomAccessFile name="RandomAccessLogFile" fileName="target/testRandomlog4j2.log" immediateFlush="false">
             <PatternLayout>
                 <Pattern>%d %5p [%t] %c{1} %X{transactionId} - %m%n</Pattern>
@@ -30,6 +42,18 @@
         </RandomAccessFile>
     </Appenders>
     <Loggers>
+        <Logger name="AsyncAppender" level="debug" additivity="false">
+            <AppenderRef ref="AsyncLogFile" />
+        </Logger>
+        <Logger name="AsyncDisrupterAppender" level="debug" additivity="false">
+            <AppenderRef ref="AsyncDisrupterLogFile" />
+        </Logger>
+        <AsyncLogger name="AsyncLogger" level="debug" additivity="false">
+            <AppenderRef ref="TestLogfile" />
+        </AsyncLogger>
+        <Logger name="MemoryMapped" level="debug" additivity="false">
+            <AppenderRef ref="MemoryMappedLogFile"/>
+        </Logger>
         <Logger name="TestRandom" level="debug" additivity="false">
             <AppenderRef ref="RandomAccessLogFile"/>
         </Logger>

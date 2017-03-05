@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * Applications create Markers by using the Marker Manager. All Markers created by this Manager are immutable.
@@ -82,9 +83,7 @@ public final class MarkerManager {
         if (parentMarker == null) {
             throw new IllegalArgumentException("Parent Marker " + parent + " has not been defined");
         }
-        @SuppressWarnings("deprecation")
-        final Marker marker = getMarker(name, parentMarker);
-        return marker;
+        return getMarker(name, parentMarker);
     }
 
     /**
@@ -112,7 +111,7 @@ public final class MarkerManager {
      * is moved to this package and would of course stay in its current module.</em>
      * </p>
      */
-    public static class Log4jMarker implements Marker {
+    public static class Log4jMarker implements Marker, StringBuilderFormattable {
 
         private static final long serialVersionUID = 100L;
 
@@ -366,12 +365,18 @@ public final class MarkerManager {
         @Override
         public String toString() {
             // FIXME: might want to use an initial capacity; the default is 16 (or str.length() + 16)
-            final StringBuilder sb = new StringBuilder(name);
+            final StringBuilder sb = new StringBuilder();
+            formatTo(sb);
+            return sb.toString();
+        }
+
+        @Override
+        public void formatTo(final StringBuilder sb) {
+            sb.append(name);
             final Marker[] localParents = parents;
             if (localParents != null) {
                 addParentInfo(sb, localParents);
             }
-            return sb.toString();
         }
 
         @PerformanceSensitive("allocation")

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config.properties;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
@@ -30,8 +31,9 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
  */
 public class PropertiesConfiguration extends BuiltConfiguration implements Reconfigurable {
 
-    public PropertiesConfiguration(final ConfigurationSource source, final Component root) {
-        super(source, root);
+    // ctor is called through reflection.
+    public PropertiesConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component root) {
+        super(loggerContext, source, root);
     }
 
     @Override
@@ -42,7 +44,7 @@ public class PropertiesConfiguration extends BuiltConfiguration implements Recon
                 return null;
             }
             final PropertiesConfigurationFactory factory = new PropertiesConfigurationFactory();
-            final PropertiesConfiguration config = factory.getConfiguration(source);
+            final PropertiesConfiguration config = factory.getConfiguration(getLoggerContext(), source);
             return config == null || config.getState() != State.INITIALIZING ? null : config;
         } catch (final IOException ex) {
             LOGGER.error("Cannot locate file {}: {}", getConfigurationSource(), ex);

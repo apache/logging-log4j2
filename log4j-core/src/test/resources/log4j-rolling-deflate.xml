@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="XMLConfigTest">
+<Configuration status="WARN" name="XMLConfigTest">
   <Properties>
     <Property name="filename">target/rolling1/rollingtest.log</Property>
   </Properties>
@@ -31,7 +31,7 @@
       <PatternLayout>
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
-      <SizeBasedTriggeringPolicy size="500" />
+      <SizeBasedTriggeringPolicy size="200" />
       <DefaultRolloverStrategy compressionLevel="9" />
     </RollingFile>
     <List name="List">

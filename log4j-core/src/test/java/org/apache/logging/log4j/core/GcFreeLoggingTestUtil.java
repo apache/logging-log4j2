@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -23,13 +27,16 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.util.Strings;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
-
-import static org.junit.Assert.*;
 
 /**
  * Utily methods for the GC-free logging tests.s.
@@ -49,18 +56,26 @@ public class GcFreeLoggingTestUtil {
         assertFalse("Constants.IS_WEB_APP", Constants.IS_WEB_APP);
 
         final MyCharSeq myCharSeq = new MyCharSeq();
-        MarkerManager.getMarker("test"); // initial creation, value is cached
+        final Marker testGrandParent = MarkerManager.getMarker("testGrandParent");
+        final Marker testParent = MarkerManager.getMarker("testParent").setParents(testGrandParent);
+        final Marker test = MarkerManager.getMarker("test").setParents(testParent); // initial creation, value is cached
 
         // initialize LoggerContext etc.
         // This is not steady-state logging and will allocate objects.
+        ThreadContext.put("aKey", "value1");
+        ThreadContext.put("key2", "value2");
+
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger(testClass.getName());
         logger.debug("debug not set");
-        logger.fatal("This message is logged to the console");
+        logger.fatal(test, "This message is logged to the console");
         logger.error("Sample error message");
         logger.error("Test parameterized message {}", "param");
-        for (int i = 0; i < 128; i++) {
+        logger.error(new MapMessage().with("eventId", "Login")); // initialize GelfLayout's messageStringBuilder
+        for (int i = 0; i < 256; i++) {
             logger.debug("ensure all ringbuffer slots have been used once"); // allocate MutableLogEvent.messageText
         }
+        ThreadContext.remove("aKey");
+        ThreadContext.remove("key2");
 
         // BlockingWaitStrategy uses ReentrantLock which allocates Node objects. Ignore this.
         final String[] exclude = new String[] {
@@ -90,9 +105,14 @@ public class GcFreeLoggingTestUtil {
             }
         };
         Thread.sleep(500);
+        final MapMessage mapMessage = new MapMessage().with("eventId", "Login");
         AllocationRecorder.addSampler(sampler);
 
         // now do some steady-state logging
+
+        ThreadContext.put("aKey", "value1");
+        ThreadContext.put("key2", "value2");
+
         final int ITERATIONS = 5;
         for (int i = 0; i < ITERATIONS; i++) {
             logger.error(myCharSeq);
@@ -101,6 +121,9 @@ public class GcFreeLoggingTestUtil {
             logger.error("Test parameterized message {}", "param");
             logger.error("Test parameterized message {}{}", "param", "param2");
             logger.error("Test parameterized message {}{}{}", "param", "param2", "abc");
+            logger.error(mapMessage); // LOG4J2-1683
+            ThreadContext.remove("aKey");
+            ThreadContext.put("aKey", "value1");
         }
         Thread.sleep(50);
         samplingEnabled.set(false); // reliably ignore all allocations from now on
@@ -128,13 +151,12 @@ public class GcFreeLoggingTestUtil {
         final String text = new String(Files.readAllBytes(tempFile.toPath()));
         final List<String> lines = Files.readAllLines(tempFile.toPath(), Charset.defaultCharset());
         final String className = cls.getSimpleName();
-        assertEquals(text, "FATAL o.a.l.l.c." + className + " [main]  This message is logged to the console",
+        assertEquals(text, "FATAL o.a.l.l.c." + className + " [main] value1 {aKey=value1, key2=value2, prop1=value1, prop2=value2} This message is logged to the console",
                 lines.get(0));
 
-        final String LINESEP = System.getProperty("line.separator");
         for (int i = 1; i < lines.size(); i++) {
             final String line = lines.get(i);
-            assertFalse(i + ": " + line + LINESEP + text, line.contains("allocated") || line.contains("array"));
+            assertFalse(i + ": " + line + Strings.LINE_SEPARATOR + text, line.contains("allocated") || line.contains("array"));
         }
     }
 

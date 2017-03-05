@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.Test;
@@ -88,8 +89,29 @@ public class ThreadDumpMessageTest {
         };
         other.start();
         other.join();
-        
+
         assertTrue("No mention of other thread in msg", !actual[0].contains("OtherThread"));
+    }
+
+    @Test
+    public void formatTo_usesCachedMessageString() throws Exception {
+
+        final ThreadDumpMessage message = new ThreadDumpMessage("");
+        final String initial = message.getFormattedMessage();
+        assertFalse("no ThreadWithCountDownLatch thread yet", initial.contains("ThreadWithCountDownLatch"));
+
+        final CountDownLatch started = new CountDownLatch(1);
+        final CountDownLatch keepAlive = new CountDownLatch(1);
+        final ThreadWithCountDownLatch thread = new ThreadWithCountDownLatch(started, keepAlive);
+        thread.start();
+        started.await(); // ensure thread is running
+
+        final StringBuilder result = new StringBuilder();
+        message.formatTo(result);
+        assertFalse("no ThreadWithCountDownLatch captured",
+                result.toString().contains("ThreadWithCountDownLatch"));
+        assertEquals(initial, result.toString());
+        keepAlive.countDown(); // allow thread to die
     }
 
     private class Thread1 extends Thread {
@@ -116,8 +138,31 @@ public class ThreadDumpMessageTest {
         @Override
         public void run() {
             synchronized (obj) {
-
             }
+        }
+    }
+
+    private class ThreadWithCountDownLatch extends Thread {
+        private final CountDownLatch started;
+        private CountDownLatch keepAlive;
+        volatile boolean finished;
+
+        public ThreadWithCountDownLatch(final CountDownLatch started, final CountDownLatch keepAlive) {
+            super("ThreadWithCountDownLatch");
+            this.started = started;
+            this.keepAlive = keepAlive;
+            setDaemon(true);
+        }
+
+        @Override
+        public void run() {
+            started.countDown();
+            try {
+                keepAlive.await();
+            } catch (InterruptedException e) {
+                // ignored
+            }
+            finished = true;
         }
     }
 }

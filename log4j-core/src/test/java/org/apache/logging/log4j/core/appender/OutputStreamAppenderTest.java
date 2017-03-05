@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -100,7 +99,7 @@ public class OutputStreamAppenderTest {
             .withIgnoreExceptions(false)
             .withBufferedIo(false)
             .withBufferSize(4000)
-            .withConfig(config)
+            .setConfiguration(config)
             .build();
         // @formatter:on
         appender.start();

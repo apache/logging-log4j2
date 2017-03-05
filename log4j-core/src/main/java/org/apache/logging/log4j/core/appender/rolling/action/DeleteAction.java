@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 /**
  * Rollover or scheduled action for deleting old log files that are accepted by the specified PathFilters.
  */
-@Plugin(name = "Delete", category = "Core", printObject = true)
+@Plugin(name = "Delete", category = Core.CATEGORY_NAME, printObject = true)
 public class DeleteAction extends AbstractPathAction {
 
     private final PathSorter pathSorter;
@@ -199,9 +200,9 @@ public class DeleteAction extends AbstractPathAction {
     public static DeleteAction createDeleteAction(
             // @formatter:off
             @PluginAttribute("basePath") final String basePath, //
-            @PluginAttribute(value = "followLinks", defaultBoolean = false) final boolean followLinks,
+            @PluginAttribute(value = "followLinks") final boolean followLinks,
             @PluginAttribute(value = "maxDepth", defaultInt = 1) final int maxDepth,
-            @PluginAttribute(value = "testMode", defaultBoolean = false) final boolean testMode,
+            @PluginAttribute(value = "testMode") final boolean testMode,
             @PluginElement("PathSorter") final PathSorter sorterParameter,
             @PluginElement("PathConditions") final PathCondition[] pathConditions,
             @PluginElement("ScriptCondition") final ScriptCondition scriptCondition,

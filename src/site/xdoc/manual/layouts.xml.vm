@@ -200,8 +200,8 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
   &lt;Appenders&gt;
     &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
         &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
-            &lt;KeyValuePair key="additionalField1" value="additional value 1"/&gt;
-            &lt;KeyValuePair key="additionalField2" value="additional value 2"/&gt;
+            &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
+            &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
         &lt;/GelfLayout&gt;
     &lt;/Socket&gt;
   &lt;/Appenders&gt;
@@ -215,7 +215,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>host</td>
               <td>String</td>
-              <td>The value of the <code>host</code> property (mandatory).</td>
+              <td>The value of the <code>host</code> property (optional, defaults to local host name).</td>
             </tr>
             <tr>
               <td>compressionType</td>
@@ -225,7 +225,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>compressionThreshold</td>
               <td>int</td>
-              <td>compress if data is larger than this number of bytes (optional, defaults to 1024)</td>
+              <td>Compress if data is larger than this number of bytes (optional, defaults to 1024)</td>
             </tr>
             <tr>
               <td>includeStacktrace</td>
@@ -233,6 +233,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>Whether to include full stacktrace of logged Throwables (optional, default to true).
                   If set to false, only the class name and message of the #javadoc('java/lang', 'Throwable')
                   will be included.</td>
+            </tr>
+            <tr>
+              <td>includeThreadContext</td>
+              <td>boolean</td>
+              <td>Whether to include thread context as additional fields (optional, default to true).</td>
             </tr>
             <caption align="top">GELF Layout Parameters</caption>
           </table>
@@ -386,6 +391,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
                 is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
+            </tr>
             <caption align="top">JSON Layout Parameters</caption>
           </table>
         </subsection>
@@ -478,6 +488,11 @@ WARN  [main]: Message 2</pre>
               <td>footer</td>
               <td>String</td>
               <td>The optional footer string to include at the bottom of each log file.</td>
+            </tr>
+            <tr>
+              <td>disableAnsi</td>
+              <td>boolean</td>
+              <td>If <code>true</code> (default is false), do not output ANSI escape codes.</td>
             </tr>
             <tr>
               <td>noConsoleNoAnsi</td>
@@ -1013,9 +1028,9 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternMessage"/>
-                <b>m</b>{ansi}<br />
-                <b>msg</b>{ansi}<br />
-                <b>message</b>{ansi}
+                <b>m</b>{nolookups}{ansi}<br />
+                <b>msg</b>{nolookups}{ansi}<br />
+                <b>message</b>{nolookups}{ansi}
               </td>
               <td>
                 <p>
@@ -1049,6 +1064,12 @@ WARN  [main]: Message 2</pre>
                   The call site can look like this:
                 </p>
                 <pre class="prettyprint linenums">logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());</pre>
+                <p>
+                  Use <code>{nolookups}</code> to log messages like <code>"${esc.d}{date:YYYY-MM-dd}"</code>
+                  without using any lookups. Normally calling <code>logger.info("Try ${esc.d}{date:YYYY-MM-dd}")</code>
+                  would replace the date template <code>${esc.d}{date:YYYY-MM-dd}</code> with an actual date.
+                  Using <code>nolookups</code> disables this feature and logs the message string untouched.
+                </p>
               </td>
             </tr>
             <tr>
@@ -1460,7 +1481,7 @@ WARN  [main]: Message 2</pre>
                   <b>%xEx{short}</b>
                   which will only output the first line of the Throwable or <b>%xEx{n}</b> where
                   the first n lines of the stacktrace will be printed. The conversion word can also be
-                  followed by "filters(packages)" where packages is a comma-sepaarted list of package names that 
+                  followed by "filters(packages)" where packages is a comma-sepaarted list of package names that
                   should be suppressed from stack traces. Specifying <b>%xEx{none}</b>
                   or <b>%xEx{0}</b> will suppress printing of the exception.
                 </p>
@@ -1492,15 +1513,15 @@ WARN  [main]: Message 2</pre>
                     <li>ExtraClassInfo.Container</li>
                     <li>ExtraClassInfo.ContainerSeparator</li>
                     <li>ExtraClassInfo.Location</li>
-                    <li>ExtraClassInfo.Version</li>                   
-                  </ul> 
+                    <li>ExtraClassInfo.Version</li>
+                  </ul>
                 <p>
-                  The values are names from JAnsi's 
+                  The values are names from JAnsi's
                   <a href="https://fusesource.github.io/jansi/documentation/api/org/fusesource/jansi/AnsiRenderer.Code.html">Code</a>
-                  class like <code>blue</code>, <code>bg_red</code>, and so on (Log4j ignores case.)                  
+                  class like <code>blue</code>, <code>bg_red</code>, and so on (Log4j ignores case.)
                 </p>
                 <p>
-                  The special key <code>StyleMapName</code> can be set to one of the following prefedined maps: 
+                  The special key <code>StyleMapName</code> can be set to one of the following prefedined maps:
                   <code>Spock</code>, <code>Kirk</code>.
                 </p>
               </td>
@@ -1971,6 +1992,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
                 is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
+            </tr>
             <caption align="top">XML Layout Parameters</caption>
           </table>
         </subsection>
@@ -2139,6 +2165,11 @@ source:
               <p>Generating <a href="#LocationInformation">location information</a>
                 is an expensive operation and may impact performance. Use with caution.</p>
               </td>
+            </tr>
+            <tr>
+              <td>includeStacktrace</td>
+              <td>boolean</td>
+              <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
             <caption align="top">YAML Layout Parameters</caption>
           </table>

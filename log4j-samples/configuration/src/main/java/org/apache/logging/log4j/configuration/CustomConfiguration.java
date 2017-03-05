@@ -16,17 +16,18 @@
  */
 package org.apache.logging.log4j.configuration;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.io.Serializable;
 
 /**
  * This Configuration is the same as the DefaultConfiguration but shows how a custom configuration can be built
@@ -50,15 +51,15 @@ public class CustomConfiguration extends AbstractConfiguration {
      */
     public static final String DEFAULT_PATTERN = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
 
-    public CustomConfiguration() {
-        this(ConfigurationSource.NULL_SOURCE);
+    public CustomConfiguration(final LoggerContext loggerContext) {
+        this(loggerContext, ConfigurationSource.NULL_SOURCE);
     }
 
     /**
      * Constructor to create the default configuration.
      */
-    public CustomConfiguration(final ConfigurationSource source) {
-        super(source);
+    public CustomConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        super(loggerContext, source);
 
         setName(CONFIG_NAME);
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()

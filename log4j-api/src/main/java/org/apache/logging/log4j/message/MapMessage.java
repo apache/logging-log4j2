@@ -18,10 +18,14 @@ package org.apache.logging.log4j.message;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.IndexedStringMap;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -33,7 +37,10 @@ import org.apache.logging.log4j.util.Strings;
  * logged, because it is undefined whether the logged message string will contain the old values or the modified
  * values.
  */
-public class MapMessage implements MultiformatMessage {
+@PerformanceSensitive("allocation")
+@AsynchronouslyFormattable
+public class MapMessage implements MultiformatMessage, StringBuilderFormattable {
+
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
      */
@@ -44,18 +51,29 @@ public class MapMessage implements MultiformatMessage {
         /** The map should be formatted as JSON. */
         JSON,
         /** The map should be formatted the same as documented by java.util.AbstractMap.toString(). */
-        JAVA
+        JAVA;
+
+        public static MapFormat lookupIgnoreCase(final String format) {
+            return XML.name().equalsIgnoreCase(format) ? XML //
+                    : JSON.name().equalsIgnoreCase(format) ? JSON //
+                    : JAVA.name().equalsIgnoreCase(format) ? JAVA //
+                    : null;
+        }
+
+        public static String[] names() {
+            return new String[] {XML.name(), JSON.name(), JAVA.name()};
+        }
     }
 
     private static final long serialVersionUID = -5031471831131487120L;
 
-    private final SortedMap<String, String> data;
+    private final IndexedStringMap data;
 
     /**
      * Constructor.
      */
     public MapMessage() {
-        data = new TreeMap<>();
+        data = new SortedArrayStringMap();
     }
 
     /**
@@ -63,17 +81,12 @@ public class MapMessage implements MultiformatMessage {
      * @param map The Map.
      */
     public MapMessage(final Map<String, String> map) {
-        this.data = map instanceof SortedMap ? (SortedMap<String, String>) map : new TreeMap<>(map);
+        this.data = new SortedArrayStringMap(map);
     }
 
     @Override
     public String[] getFormats() {
-        final String[] formats = new String[MapFormat.values().length];
-        int i = 0;
-        for (final MapFormat format : MapFormat.values()) {
-            formats[i++] = format.name();
-        }
-        return formats;
+        return MapFormat.names();
     }
 
     /**
@@ -82,7 +95,11 @@ public class MapMessage implements MultiformatMessage {
      */
     @Override
     public Object[] getParameters() {
-        return data.values().toArray();
+        final Object[] result = new Object[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            result[i] = data.getValueAt(i);
+        }
+        return result;
     }
 
     /**
@@ -99,7 +116,19 @@ public class MapMessage implements MultiformatMessage {
      * @return the message data as an unmodifiable map.
      */
     public Map<String, String> getData() {
-        return Collections.unmodifiableMap(data);
+        final TreeMap<String, String> result = new TreeMap<>(); // returned map must be sorted
+        for (int i = 0; i < data.size(); i++) {
+            result.put(data.getKeyAt(i), (String) data.getValueAt(i));
+        }
+        return Collections.unmodifiableMap(result);
+    }
+
+    /**
+     * Returns a read-only view of the message data.
+     * @return the read-only message data.
+     */
+    public IndexedReadOnlyStringMap getIndexedReadOnlyStringMap() {
+        return data;
     }
 
     /**
@@ -130,7 +159,7 @@ public class MapMessage implements MultiformatMessage {
             throw new IllegalArgumentException("No value provided for key " + key);
         }
         validate(key, value);
-        data.put(key, value);
+        data.putValue(key, value);
     }
 
     protected void validate(final String key, final String value) {
@@ -142,7 +171,9 @@ public class MapMessage implements MultiformatMessage {
      * @param map The Map to add.
      */
     public void putAll(final Map<String, String> map) {
-        data.putAll(map);
+        for (final Map.Entry<String, ?> entry : map.entrySet()) {
+            data.putValue(entry.getKey(), entry.getValue());
+        }
     }
 
     /**
@@ -151,7 +182,7 @@ public class MapMessage implements MultiformatMessage {
      * @return The value of the element or null if the key is not present.
      */
     public String get(final String key) {
-        return data.get(key);
+        return data.getValue(key);
     }
 
     /**
@@ -160,7 +191,9 @@ public class MapMessage implements MultiformatMessage {
      * @return The previous value of the element.
      */
     public String remove(final String key) {
-        return data.remove(key);
+        final String result = data.getValue(key);
+        data.remove(key);
+        return result;
     }
 
     /**
@@ -169,12 +202,12 @@ public class MapMessage implements MultiformatMessage {
      * @return The formatted String.
      */
     public String asString() {
-        return asString((MapFormat) null);
+        return format((MapFormat) null, new StringBuilder()).toString();
     }
 
     public String asString(final String format) {
         try {
-            return asString(EnglishEnums.valueOf(MapFormat.class, format));
+            return format(EnglishEnums.valueOf(MapFormat.class, format), new StringBuilder()).toString();
         } catch (final IllegalArgumentException ex) {
             return asString();
         }
@@ -185,8 +218,7 @@ public class MapMessage implements MultiformatMessage {
      * @param format The format identifier. Ignored in this implementation.
      * @return The formatted String.
      */
-    private String asString(final MapFormat format) {
-        final StringBuilder sb = new StringBuilder();
+    private StringBuilder format(final MapFormat format, final StringBuilder sb) {
         if (format == null) {
             appendMap(sb);
         } else {
@@ -208,14 +240,14 @@ public class MapMessage implements MultiformatMessage {
                 }
             }
         }
-        return sb.toString();
+        return sb;
     }
 
     public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
-        for (final Map.Entry<String, String> entry : data.entrySet()) {
-            sb.append("  <Entry key=\"").append(entry.getKey()).append("\">").append(entry.getValue())
-              .append("</Entry>\n");
+        for (int i = 0; i < data.size(); i++) {
+            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">").append(data.getValueAt(i))
+                    .append("</Entry>\n");
         }
         sb.append("</Map>");
     }
@@ -242,11 +274,10 @@ public class MapMessage implements MultiformatMessage {
         if (formats == null || formats.length == 0) {
             return asString();
         }
-        for (final String format : formats) {
-            for (final MapFormat mapFormat : MapFormat.values()) {
-                if (mapFormat.name().equalsIgnoreCase(format)) {
-                    return asString(mapFormat);
-                }
+        for (int i = 0; i < formats.length; i++) {
+            final MapFormat mapFormat = MapFormat.lookupIgnoreCase(formats[i]);
+            if (mapFormat != null) {
+                return format(mapFormat, new StringBuilder()).toString();
             }
         }
         return asString();
@@ -254,40 +285,34 @@ public class MapMessage implements MultiformatMessage {
     }
 
     protected void appendMap(final StringBuilder sb) {
-        boolean first = true;
-        for (final Map.Entry<String, String> entry : data.entrySet()) {
-            if (!first) {
+        for (int i = 0; i < data.size(); i++) {
+            if (i > 0) {
                 sb.append(' ');
             }
-            first = false;
-            StringBuilders.appendKeyDqValue(sb, entry);
+            StringBuilders.appendKeyDqValue(sb, data.getKeyAt(i), data.getValueAt(i));
         }
     }
 
     protected void asJson(final StringBuilder sb) {
-        boolean first = true;
         sb.append('{');
-        for (final Map.Entry<String, String> entry : data.entrySet()) {
-            if (!first) {
+        for (int i = 0; i < data.size(); i++) {
+            if (i > 0) {
                 sb.append(", ");
             }
-            first = false;
-            StringBuilders.appendDqValue(sb, entry.getKey()).append(':');
-            StringBuilders.appendDqValue(sb, entry.getValue());
+            StringBuilders.appendDqValue(sb, data.getKeyAt(i)).append(':');
+            StringBuilders.appendDqValue(sb, data.getValueAt(i));
         }
         sb.append('}');
     }
 
 
     protected void asJava(final StringBuilder sb) {
-        boolean first = true;
         sb.append('{');
-        for (final Map.Entry<String, String> entry : data.entrySet()) {
-            if (!first) {
+        for (int i = 0; i < data.size(); i++) {
+            if (i > 0) {
                 sb.append(", ");
             }
-            first = false;
-            StringBuilders.appendKeyDqValue(sb, entry);
+            StringBuilders.appendKeyDqValue(sb, data.getKeyAt(i), data.getValueAt(i));
         }
         sb.append('}');
     }
@@ -299,6 +324,11 @@ public class MapMessage implements MultiformatMessage {
     @Override
     public String toString() {
         return asString();
+    }
+
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        format((MapFormat) null, buffer);
     }
 
     @Override

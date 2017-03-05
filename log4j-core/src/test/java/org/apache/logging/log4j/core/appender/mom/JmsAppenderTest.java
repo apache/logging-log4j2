@@ -17,114 +17,128 @@
 
 package org.apache.logging.log4j.core.appender.mom;
 
-import javax.jms.Message;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
+import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.JndiCloser;
+import org.apache.logging.log4j.junit.JndiRule;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockejb.jms.MockQueue;
-import org.mockejb.jms.MockTopic;
-import org.mockejb.jms.QueueConnectionFactoryImpl;
-import org.mockejb.jms.TopicConnectionFactoryImpl;
-import org.mockejb.jndi.MockContextFactory;
+import org.junit.experimental.categories.Category;
+import org.junit.rules.RuleChain;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
+@Category(Appenders.Jms.class)
 public class JmsAppenderTest {
 
-    private static final String CONNECTION_FACTORY_NAME = "jms/queues";
+    private static final String CONNECTION_FACTORY_NAME = "jms/connectionFactory";
+    private static final String QUEUE_FACTORY_NAME = "jms/queues";
     private static final String TOPIC_FACTORY_NAME = "jms/topics";
     private static final String DESTINATION_NAME = "jms/destination";
     private static final String QUEUE_NAME = "jms/queue";
     private static final String TOPIC_NAME = "jms/topic";
     private static final String LOG_MESSAGE = "Hello, world!";
 
-    private static Context context;
+    private ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
+    private Connection connection = mock(Connection.class);
+    private Session session = mock(Session.class);
+    private Destination destination = mock(Destination.class);
+    private MessageProducer messageProducer = mock(MessageProducer.class);
+    private TextMessage textMessage = mock(TextMessage.class);
+    private ObjectMessage objectMessage = mock(ObjectMessage.class);
 
-    private static MockQueue destination;
-    private static MockQueue queue;
-    private static MockTopic topic;
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        MockContextFactory.setAsInitial();
-        context = new InitialContext();
-        context.rebind(CONNECTION_FACTORY_NAME, new QueueConnectionFactoryImpl());
-        context.rebind(TOPIC_FACTORY_NAME, new TopicConnectionFactoryImpl());
-        destination = new MockQueue(DESTINATION_NAME);
-        context.rebind(DESTINATION_NAME, destination);
-        queue = new MockQueue(QUEUE_NAME);
-        context.rebind(QUEUE_NAME, queue);
-        topic = new MockTopic(TOPIC_NAME);
-        context.rebind(TOPIC_NAME, topic);
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        JndiCloser.close(context);
-    }
+    private JndiRule jndiRule = new JndiRule(createBindings());
+    private LoggerContextRule ctx = new LoggerContextRule("JmsAppenderTest.xml");
 
     @Rule
-    public LoggerContextRule ctx = new LoggerContextRule("JmsAppenderTest.xml");
+    public RuleChain rules = RuleChain.outerRule(jndiRule).around(ctx);
+
+    private Map<String, Object> createBindings() {
+        final ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+        map.put(CONNECTION_FACTORY_NAME, connectionFactory);
+        map.put(DESTINATION_NAME, destination);
+        map.put(QUEUE_FACTORY_NAME, connectionFactory);
+        map.put(QUEUE_NAME, destination);
+        map.put(TOPIC_FACTORY_NAME, connectionFactory);
+        map.put(TOPIC_NAME, destination);
+        return map;
+    }
+
+    public JmsAppenderTest() throws Exception {
+        // this needs to set up before LoggerContextRule
+        given(connectionFactory.createConnection()).willReturn(connection);
+        given(connectionFactory.createConnection(anyString(), anyString())).willThrow(IllegalArgumentException.class);
+        given(connection.createSession(eq(false), eq(Session.AUTO_ACKNOWLEDGE))).willReturn(session);
+        given(session.createProducer(eq(destination))).willReturn(messageProducer);
+        given(session.createTextMessage(anyString())).willReturn(textMessage);
+        given(session.createObjectMessage(isA(Serializable.class))).willReturn(objectMessage);
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        // we have 3 appenders all connecting to the same ConnectionFactory
+        then(connection).should(times(3)).start();
+    }
 
     @Test
     public void testAppendToQueue() throws Exception {
-        assertEquals(0, destination.size());
         final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsAppender");
         final LogEvent event = createLogEvent();
         appender.append(event);
-        assertEquals(1, destination.size());
-        final Message message = destination.getMessageAt(0);
-        assertNotNull(message);
-        assertThat(message, instanceOf(TextMessage.class));
-        final TextMessage textMessage = (TextMessage) message;
-        assertEquals(LOG_MESSAGE, textMessage.getText());
+        then(session).should().createTextMessage(eq(LOG_MESSAGE));
+        then(textMessage).should().setJMSTimestamp(anyLong());
+        then(messageProducer).should().send(textMessage);
+        appender.stop();
+        then(session).should().close();
+        then(connection).should().close();
     }
 
     @Test
     public void testJmsQueueAppenderCompatibility() throws Exception {
-        assertEquals(0, queue.size());
         final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsQueueAppender");
         final LogEvent expected = createLogEvent();
         appender.append(expected);
-        assertEquals(1, queue.size());
-        final Message message = queue.getMessageAt(0);
-        assertNotNull(message);
-        assertThat(message, instanceOf(ObjectMessage.class));
-        final ObjectMessage objectMessage = (ObjectMessage) message;
-        final Object o = objectMessage.getObject();
-        assertThat(o, instanceOf(LogEvent.class));
-        final LogEvent actual = (LogEvent) o;
-        assertEquals(expected.getMessage().getFormattedMessage(), actual.getMessage().getFormattedMessage());
+        then(session).should().createObjectMessage(eq(expected));
+        then(objectMessage).should().setJMSTimestamp(anyLong());
+        then(messageProducer).should().send(objectMessage);
+        appender.stop();
+        then(session).should().close();
+        then(connection).should().close();
     }
 
     @Test
     public void testJmsTopicAppenderCompatibility() throws Exception {
-        assertEquals(0, topic.size());
         final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsTopicAppender");
         final LogEvent expected = createLogEvent();
         appender.append(expected);
-        assertEquals(1, topic.size());
-        final Message message = topic.getMessageAt(0);
-        assertNotNull(message);
-        assertThat(message, instanceOf(ObjectMessage.class));
-        final ObjectMessage objectMessage = (ObjectMessage) message;
-        final Object o = objectMessage.getObject();
-        assertThat(o, instanceOf(LogEvent.class));
-        final LogEvent actual = (LogEvent) o;
-        assertEquals(expected.getMessage().getFormattedMessage(), actual.getMessage().getFormattedMessage());
+        then(session).should().createObjectMessage(eq(expected));
+        then(objectMessage).should().setJMSTimestamp(anyLong());
+        then(messageProducer).should().send(objectMessage);
+        appender.stop();
+        then(session).should().close();
+        then(connection).should().close();
     }
 
     private static Log4jLogEvent createLogEvent() {

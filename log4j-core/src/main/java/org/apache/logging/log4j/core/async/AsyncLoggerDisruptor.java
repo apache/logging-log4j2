@@ -19,13 +19,17 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.core.util.ExecutorServices;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -36,10 +40,9 @@ import com.lmax.disruptor.dsl.ProducerType;
  * life cycle of the context. The AsyncLoggerDisruptor of the context is shared by all AsyncLogger objects created by
  * that AsyncLoggerContext.
  */
-class AsyncLoggerDisruptor {
+class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private volatile Disruptor<RingBufferLogEvent> disruptor;
     private ExecutorService executor;
@@ -71,7 +74,8 @@ class AsyncLoggerDisruptor {
      *
      * @see #stop()
      */
-    synchronized void start() {
+    @Override
+    public synchronized void start() {
         if (disruptor != null) {
             LOGGER.trace(
                     "[{}] AsyncLoggerDisruptor not starting new disruptor for this context, using existing object.",
@@ -81,7 +85,7 @@ class AsyncLoggerDisruptor {
         LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
-        executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]"));
+        executor = Executors.newSingleThreadExecutor(Log4jThreadFactory.createDaemonThreadFactory("AsyncLogger[" + contextName + "]"));
         backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
         asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
@@ -101,18 +105,21 @@ class AsyncLoggerDisruptor {
 
         LOGGER.trace("[{}] AsyncLoggers use a {} translator", contextName, useThreadLocalTranslator ? "threadlocal"
                 : "vararg");
+        super.start();
     }
 
     /**
      * Decreases the reference count. If the reference count reached zero, the Disruptor and its associated thread are
      * shut down and their references set to {@code null}.
      */
-    synchronized void stop() {
+    @Override
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         final Disruptor<RingBufferLogEvent> temp = getDisruptor();
         if (temp == null) {
             LOGGER.trace("[{}] AsyncLoggerDisruptor: disruptor for this context already shut down.", contextName);
-            return; // disruptor was already shut down by another thread
+            return true; // disruptor was already shut down by another thread
         }
+        setStopping();
         LOGGER.debug("[{}] AsyncLoggerDisruptor: shutting down disruptor for this context.", contextName);
 
         // We must guarantee that publishing to the RingBuffer has stopped before we call disruptor.shutdown().
@@ -127,16 +134,24 @@ class AsyncLoggerDisruptor {
             } catch (final InterruptedException e) { // ignored
             }
         }
-        temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
+        try {
+            // busy-spins until all events currently in the disruptor have been processed
+            temp.shutdown(timeout, timeUnit);
+        } catch (final TimeoutException e) {
+            temp.shutdown();
+        } 
 
         LOGGER.trace("[{}] AsyncLoggerDisruptor: shutting down disruptor executor.", contextName);
-        executor.shutdown(); // finally, kill the processor thread
+        // finally, kill the processor thread
+        ExecutorServices.shutdown(executor, timeout, timeUnit, toString());
         executor = null;
 
         if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {
             LOGGER.trace("AsyncLoggerDisruptor: {} discarded {} events.", asyncQueueFullPolicy,
                     DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
+        setStopped();
+        return true;
     }
 
     /**

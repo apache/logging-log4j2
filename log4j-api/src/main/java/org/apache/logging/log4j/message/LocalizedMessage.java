@@ -102,6 +102,13 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this(baseName, (Locale) null, key, new Object[] {arg});
     }
 
+    /**
+     * @since 2.8
+     */
+    public LocalizedMessage(final ResourceBundle bundle, final String key) {
+        this(bundle, (Locale) null, key, new Object[] {});
+    }
+
     public LocalizedMessage(final ResourceBundle bundle, final String key, final Object arg) {
         this(bundle, (Locale) null, key, new Object[] {arg});
     }
@@ -281,7 +288,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         formattedMessage = in.readUTF();
         key = in.readUTF();
         baseName = in.readUTF();
-        final int length = in.readInt();
+        in.readInt();
         stringArgs = (String[]) in.readObject();
         logger = StatusLogger.getLogger();
         resourceBundle = null;

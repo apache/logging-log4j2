@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.appender.mom.jeromq;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -91,7 +92,7 @@ public final class JeroMqAppender extends AbstractAppender {
             // ZMQ attributes; defaults picked from zmq.Options.
             @PluginAttribute(value = "affinity", defaultLong = 0) final long affinity,
             @PluginAttribute(value = "backlog", defaultLong = DEFAULT_BACKLOG) final long backlog,
-            @PluginAttribute(value = "delayAttachOnConnect", defaultBoolean = false) final boolean delayAttachOnConnect,
+            @PluginAttribute(value = "delayAttachOnConnect") final boolean delayAttachOnConnect,
             @PluginAttribute(value = "identity") final byte[] identity,
             @PluginAttribute(value = "ipv4Only", defaultBoolean = true) final boolean ipv4Only,
             @PluginAttribute(value = "linger", defaultLong = -1) final long linger,
@@ -108,7 +109,7 @@ public final class JeroMqAppender extends AbstractAppender {
             @PluginAttribute(value = "tcpKeepAliveCount", defaultLong = -1) final long tcpKeepAliveCount,
             @PluginAttribute(value = "tcpKeepAliveIdle", defaultLong = -1) final long tcpKeepAliveIdle,
             @PluginAttribute(value = "tcpKeepAliveInterval", defaultLong = -1) final long tcpKeepAliveInterval,
-            @PluginAttribute(value = "xpubVerbose", defaultBoolean = false) final boolean xpubVerbose
+            @PluginAttribute(value = "xpubVerbose") final boolean xpubVerbose
             // @formatter:on
     ) {
         if (layout == null) {
@@ -149,9 +150,12 @@ public final class JeroMqAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        manager.release();
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        boolean stopped = super.stop(timeout, timeUnit, false);
+        stopped &= manager.stop(timeout, timeUnit);
+        setStopped();
+        return stopped;
     }
 
     // not public, handy for testing

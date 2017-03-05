@@ -27,10 +27,13 @@ import org.apache.logging.log4j.message.Message;
  *
  * <p>Implementors are free to cache values or return a new or distinct value each time the supplier is invoked.
  *
+ * <p><strong>DEPRECATED:</strong> this class should not normally be used outside a Java 8+ lambda syntax. Instead,
+ * {@link Supplier Supplier<Message>} should be used as an anonymous class. Both this and {@link Supplier} will be
+ * removed in 3.0.
+ * </p>
+ *
  * @since 2.4
- * @deprecated Since 2.6, use {@link Supplier} instead as {@code Supplier<Message>}. 
  */
-@Deprecated
 public interface MessageSupplier {
 
     /**

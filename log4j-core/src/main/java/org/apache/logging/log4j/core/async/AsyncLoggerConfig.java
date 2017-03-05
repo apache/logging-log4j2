@@ -18,9 +18,11 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderRef;
@@ -124,9 +126,12 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     @Override
-    public void stop() {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         LOGGER.trace("AsyncLoggerConfig[{}] stopping...", displayName());
-        super.stop();
+        setStopped();
+        return true;
     }
 
     /**
@@ -193,7 +198,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     /**
      * An asynchronous root Logger.
      */
-    @Plugin(name = "asyncRoot", category = "Core", printObject = true)
+    @Plugin(name = "asyncRoot", category = Core.CATEGORY_NAME, printObject = true)
     public static class RootLogger extends LoggerConfig {
 
         @PluginFactory

@@ -252,6 +252,11 @@ public final class CronExpression {
     protected transient boolean expressionParsed = false;
 
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
+    public static final Calendar MIN_CAL = Calendar.getInstance();
+    static {
+        MIN_CAL.set(1970, 0, 1);
+    }
+    public static final Date MIN_DATE = MIN_CAL.getTime();
 
     /**
      * Constructs a new <CODE>CronExpression</CODE> based on the specified
@@ -1162,7 +1167,6 @@ public final class CronExpression {
         boolean gotOne = false;
         // loop until we've computed the next time, or we've past the endTime
         while (!gotOne) {
-
             //if (endTime != null && cl.getTime().after(endTime)) return null;
             if (cl.get(Calendar.YEAR) > 2999) { // prevent endless loop...
                 return null;
@@ -1565,13 +1569,64 @@ public final class CronExpression {
         }
     }
 
-    /**
-     * NOT YET IMPLEMENTED: Returns the time before the given time
-     * that the <code>CronExpression</code> matches.
-     */
-    public Date getTimeBefore(final Date endTime) {
-        // FUTURE_TODO: implement QUARTZ-423
-        return null;
+    protected Date getTimeBefore(Date targetDate) {
+        Calendar cl = Calendar.getInstance(getTimeZone());
+
+        // to match this
+        Date start = targetDate;
+        long minIncrement = findMinIncrement();
+        Date prevFireTime;
+        do {
+            Date prevCheckDate = new Date(start.getTime() - minIncrement);
+            prevFireTime = getTimeAfter(prevCheckDate);
+            if (prevFireTime == null || prevFireTime.before(MIN_DATE)) {
+                return null;
+            }
+            start = prevCheckDate;
+        } while (prevFireTime.compareTo(targetDate) >= 0);
+        return prevFireTime;
+    }
+
+    public Date getPrevFireTime(Date targetDate) {
+        return getTimeBefore(targetDate);
+    }
+
+    private long findMinIncrement() {
+        if (seconds.size() != 1) {
+            return minInSet(seconds) * 1000;
+        } else if (seconds.first() == ALL_SPEC_INT) {
+            return 1000;
+        }
+        if (minutes.size() != 1) {
+            return minInSet(minutes) * 60000;
+        } else if (minutes.first() == ALL_SPEC_INT) {
+            return 60000;
+        }
+        if (hours.size() != 1) {
+            return minInSet(hours) * 3600000;
+        } else if (hours.first() == ALL_SPEC_INT) {
+            return 3600000;
+        }
+        return 86400000;
+    }
+
+    private int minInSet(TreeSet<Integer> set) {
+        int previous = 0;
+        int min = Integer.MAX_VALUE;
+        boolean first = true;
+        for (int value : set) {
+            if (first) {
+                previous = value;
+                first = false;
+                continue;
+            } else {
+                int diff = value - previous;
+                if (diff < min) {
+                    min = diff;
+                }
+            }
+        }
+        return min;
     }
 
     /**

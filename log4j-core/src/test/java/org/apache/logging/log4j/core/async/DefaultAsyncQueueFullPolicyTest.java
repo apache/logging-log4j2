@@ -17,13 +17,16 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
 /**
  * Tests the DefaultAsyncQueueFullPolicy class.
  */
+@Category(AsyncLoggers.class)
 public class DefaultAsyncQueueFullPolicyTest {
 
     private static long currentThreadId() {
@@ -35,10 +38,10 @@ public class DefaultAsyncQueueFullPolicyTest {
     }
 
     @Test
-    public void testGetRouteEnqueuesIfQueueFullAndCalledFromDifferentThread() throws Exception {
+    public void testGetRouteSynchronousIfQueueFullAndCalledFromDifferentThread() throws Exception {
         final DefaultAsyncQueueFullPolicy router = new DefaultAsyncQueueFullPolicy();
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.ALL));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.OFF));
+        assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(otherThreadId(), Level.ALL));
+        assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(otherThreadId(), Level.OFF));
     }
 
     @Test

@@ -48,4 +48,13 @@ public class LevelRangeFilterTest {
                 .build();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
     }
+
+    @Test
+    public void testMinimumOnlyLevel() {
+        final LevelRangeFilter filter = LevelRangeFilter.createFilter(Level.ERROR, null, null, null);
+        filter.start();
+        assertTrue(filter.isStarted());
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
+    }
+    
 }

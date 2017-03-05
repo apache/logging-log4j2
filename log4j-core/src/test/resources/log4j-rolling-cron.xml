@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="RollingCronTest" monitorInterval="1">
+<Configuration status="WARN" name="RollingCronTest" monitorInterval="1">
   <Properties>
     <Property name="filename">target/rolling-cron/rollingtest.log</Property>
   </Properties>
@@ -44,7 +44,7 @@
   <Loggers>
     <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
       <AppenderRef ref="RollingFile"/>
-    </Logger>>
+    </Logger>
 
     <Root level="error">
       <AppenderRef ref="STDOUT"/>

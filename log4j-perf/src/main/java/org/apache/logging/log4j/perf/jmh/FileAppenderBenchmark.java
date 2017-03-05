@@ -49,8 +49,13 @@ public class FileAppenderBenchmark {
     private FileHandler julFileHandler;
 
     Logger log4j2Logger;
+    Logger log4j2AsyncAppender;
+    Logger log4j2AsyncLogger;
+    Logger log4j2AsyncDisruptor;
     Logger log4j2RandomLogger;
+    Logger log4j2MemoryLogger;
     org.slf4j.Logger slf4jLogger;
+    org.slf4j.Logger slf4jAsyncLogger;
     org.apache.log4j.Logger log4j1Logger;
     java.util.logging.Logger julLogger;
 
@@ -63,8 +68,13 @@ public class FileAppenderBenchmark {
         deleteLogFiles();
 
         log4j2Logger = LogManager.getLogger(FileAppenderBenchmark.class);
+        log4j2AsyncAppender = LogManager.getLogger("AsyncAppender");
+        log4j2AsyncDisruptor = LogManager.getLogger("AsyncDisruptorAppender");
+        log4j2AsyncLogger = LogManager.getLogger("AsyncLogger");
+        log4j2MemoryLogger = LogManager.getLogger("MemoryMapped");
         log4j2RandomLogger = LogManager.getLogger("TestRandom");
         slf4jLogger = LoggerFactory.getLogger(FileAppenderBenchmark.class);
+        slf4jAsyncLogger = LoggerFactory.getLogger("Async");
         log4j1Logger = org.apache.log4j.Logger.getLogger(FileAppenderBenchmark.class);
 
         julFileHandler = new FileHandler("target/testJulLog.log");
@@ -90,6 +100,8 @@ public class FileAppenderBenchmark {
         log4jFile.delete();
         final File log4jRandomFile = new File ("target/testRandomlog4j2.log");
         log4jRandomFile.delete();
+        final File log4jMemoryFile = new File ("target/testMappedlog4j2.log");
+        log4jMemoryFile.delete();
         final File log4j2File = new File ("target/testlog4j2.log");
         log4j2File.delete();
         final File julFile = new File("target/testJulLog.log");
@@ -103,6 +115,33 @@ public class FileAppenderBenchmark {
         log4j2RandomLogger.debug(MESSAGE);
     }
 
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void log4j2MMF() {
+        log4j2MemoryLogger.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void log4j2AsyncAppender() {
+        log4j2AsyncAppender.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void log4j2AsyncDisruptor() {
+        log4j2AsyncDisruptor.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void log4j2AsyncLogger() {
+        log4j2AsyncLogger.debug(MESSAGE);
+    }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
@@ -116,6 +155,13 @@ public class FileAppenderBenchmark {
     @Benchmark
     public void logbackFile() {
         slf4jLogger.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void logbackAsyncFile() {
+        slf4jAsyncLogger.debug(MESSAGE);
     }
 
     @BenchmarkMode(Mode.Throughput)

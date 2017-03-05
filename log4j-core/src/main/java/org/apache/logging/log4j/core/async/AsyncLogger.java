@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Map;
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -27,14 +27,19 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventTranslatorVararg;
@@ -67,6 +72,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final Clock CLOCK = ClockFactory.getClock(); // not reconfigurable
+    private static final ContextDataInjector CONTEXT_DATA_INJECTOR = ContextDataInjectorFactory.createInjector();
 
     private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
 
@@ -186,14 +192,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 // don't construct ThrowableProxy until required
                 thrown,
 
-                // config properties are taken care of in the EventHandler thread
-                // in the AsyncLogger#actualAsyncLog method
-
-                // needs shallow copy to be fast (LOG4J2-154)
-                ThreadContext.getImmutableContext(), //
-
                 // needs shallow copy to be fast (LOG4J2-154)
                 ThreadContext.getImmutableStack(), //
+
                 // location (expensive to calculate)
                 calcLocationIfRequested(fqcn), //
                 CLOCK.currentTimeMillis(), //
@@ -243,12 +244,17 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             return;
         }
         // if the Message instance is reused, there is no point in freezing its message here
-        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND && !isReused(message)) { // LOG4J2-898: user may choose
+        if (!canFormatMessageInBackground(message) && !isReused(message)) {
             message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
         // calls the translateTo method on this AsyncLogger
         disruptor.getRingBuffer().publishEvent(this, this, calcLocationIfRequested(fqcn), fqcn, level, marker, message,
                 thrown);
+    }
+
+    private boolean canFormatMessageInBackground(final Message message) {
+        return Constants.FORMAT_MESSAGES_IN_BACKGROUND // LOG4J2-898: user wants to format all msgs in background
+                || message.getClass().isAnnotationPresent(AsynchronouslyFormattable.class); // LOG4J2-1718
     }
 
     /*
@@ -268,14 +274,14 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         final Throwable thrown = (Throwable) args[6];
 
         // needs shallow copy to be fast (LOG4J2-154)
-        final Map<String, String> contextMap = ThreadContext.getImmutableContext();
-
-        // needs shallow copy to be fast (LOG4J2-154)
         final ContextStack contextStack = ThreadContext.getImmutableStack();
 
         final Thread currentThread = Thread.currentThread();
         final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
-        event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown, contextMap,
+        event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown,
+                // config properties are taken care of in the EventHandler thread
+                // in the AsyncLogger#actualAsyncLog method
+                CONTEXT_DATA_INJECTOR.injectContextData(null, (StringMap) event.getContextData()),
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
                 CLOCK.currentTimeMillis(), nanoClock.nanoTime());
     }
@@ -299,12 +305,34 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
     /**
      * This method is called by the EventHandler that processes the RingBufferLogEvent in a separate thread.
+     * Merges the contents of the configuration map into the contextData, after replacing any variables in the property
+     * values with the StrSubstitutor-supplied actual values.
      *
      * @param event the event to log
      */
     public void actualAsyncLog(final RingBufferLogEvent event) {
-        final Map<Property, Boolean> properties = privateConfig.loggerConfig.getProperties();
-        event.mergePropertiesIntoContextMap(properties, privateConfig.config.getStrSubstitutor());
+        final List<Property> properties = privateConfig.loggerConfig.getPropertyList();
+
+        if (properties != null) {
+            StringMap contextData = (StringMap) event.getContextData();
+            if (contextData.isFrozen()) {
+                final StringMap temp = ContextDataFactory.createContextData();
+                temp.putAll(contextData);
+                contextData = temp;
+            }
+            for (int i = 0; i < properties.size(); i++) {
+                final Property prop = properties.get(i);
+                if (contextData.getValue(prop.getName()) != null) {
+                    continue; // contextMap overrides config properties
+                }
+                final String value = prop.isValueNeedsLookup() //
+                        ? privateConfig.config.getStrSubstitutor().replace(event, prop.getValue()) //
+                        : prop.getValue();
+                contextData.putValue(prop.getName(), value);
+            }
+            event.setContextData(contextData);
+        }
+
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, event);
     }

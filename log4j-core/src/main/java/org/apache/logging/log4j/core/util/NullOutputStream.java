@@ -31,11 +31,27 @@ import java.io.OutputStream;
  */
 public class NullOutputStream extends OutputStream {
 
+    private static final NullOutputStream INSTANCE = new NullOutputStream();
+    
     /**
-     * A singleton.
+     * @deprecated Deprecated in 2.7: use {@link #getInstance()}.
      */
-    public static final NullOutputStream NULL_OUTPUT_STREAM = new NullOutputStream();
+    @Deprecated
+    public static final NullOutputStream NULL_OUTPUT_STREAM = INSTANCE;
 
+    /**
+     * Gets the singleton instance.
+     * 
+     * @return the singleton instance.
+     */
+    public static NullOutputStream getInstance() {
+        return INSTANCE;
+    }
+    
+    private NullOutputStream() {
+        // do nothing
+    }
+    
     /**
      * Does nothing - output to <code>/dev/null</code>.
      * 

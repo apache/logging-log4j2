@@ -24,9 +24,12 @@ import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.categories.Scripts;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
@@ -42,10 +45,11 @@ import org.junit.Test;
  * or, on Windows:
  * 
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%USERPROFILE%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiMessageMain log4j-core/src/test/resources/log4j2-console-msg-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%USERPROFILE%\.m2\repository\org\fusesource\jansi\jansi\1.14\jansi-1.14.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiMessageMain log4j-core/src/test/resources/log4j2-console-msg-ansi.xml
  * </pre>
  * 
  */
+@Category(Layouts.Jansi.class)
 public class ConsoleAppenderJAnsiMessageMain {
 
     public static void main(final String[] args) {
@@ -70,7 +74,7 @@ public class ConsoleAppenderJAnsiMessageMain {
             logger.info(ansi().fg(RED).a("Hello").fg(CYAN).a(" World").reset());
             // JAnsi format:
             // logger.info("@|red Hello|@ @|cyan World|@");
-            for (Entry<Object, Object> entry : System.getProperties().entrySet()) {
+            for (final Entry<Object, Object> entry : System.getProperties().entrySet()) {
                 logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());
             }
         }

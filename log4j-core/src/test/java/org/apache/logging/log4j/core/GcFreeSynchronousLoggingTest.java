@@ -34,6 +34,7 @@ public class GcFreeSynchronousLoggingTest {
      * This code runs in a separate process, instrumented with the Google Allocation Instrumenter.
      */
     public static void main(final String[] args) throws Exception {
+        System.setProperty("log4j2.garbagefree.threadContextMap", "true");
         GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeSynchronousLoggingTest.class);
     }
 }

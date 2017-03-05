@@ -28,20 +28,27 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -105,18 +112,156 @@ public final class GelfLayout extends AbstractStringLayout {
     private final CompressionType compressionType;
     private final String host;
     private final boolean includeStacktrace;
+    private final boolean includeThreadContext;
 
+    public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
+        implements org.apache.logging.log4j.core.util.Builder<GelfLayout> {
+
+        @PluginBuilderAttribute
+        private String host;
+
+        @PluginElement("AdditionalField")
+        private KeyValuePair[] additionalFields;
+
+        @PluginBuilderAttribute
+        private CompressionType compressionType = CompressionType.GZIP;
+
+        @PluginBuilderAttribute
+        private int compressionThreshold = COMPRESSION_THRESHOLD;
+
+        @PluginBuilderAttribute
+        private boolean includeStacktrace = true;
+
+        @PluginBuilderAttribute
+        private boolean includeThreadContext = true;
+
+        public Builder() {
+            super();
+            setCharset(StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public GelfLayout build() {
+            return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold, includeStacktrace, includeThreadContext);
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public CompressionType getCompressionType() {
+            return compressionType;
+        }
+
+        public int getCompressionThreshold() {
+            return compressionThreshold;
+        }
+
+        public boolean isIncludeStacktrace() {
+            return includeStacktrace;
+        }
+
+        public boolean isIncludeThreadContext() {
+            return includeThreadContext;
+        }
+
+        public KeyValuePair[] getAdditionalFields() {
+            return additionalFields;
+        }
+
+        /**
+         * The value of the <code>host</code> property (optional, defaults to local host name).
+         *
+         * @return this builder
+         */
+        public B setHost(String host) {
+            this.host = host;
+            return asBuilder();
+        }
+
+        /**
+         * Compression to use (optional, defaults to GZIP).
+         *
+         * @return this builder
+         */
+        public B setCompressionType(CompressionType compressionType) {
+            this.compressionType = compressionType;
+            return asBuilder();
+        }
+
+        /**
+         * Compress if data is larger than this number of bytes (optional, defaults to 1024).
+         *
+         * @return this builder
+         */
+        public B setCompressionThreshold(int compressionThreshold) {
+            this.compressionThreshold = compressionThreshold;
+            return asBuilder();
+        }
+
+        /**
+         * Whether to include full stacktrace of logged Throwables (optional, default to true).
+         * If set to false, only the class name and message of the Throwable will be included.
+         *
+         * @return this builder
+         */
+        public B setIncludeStacktrace(boolean includeStacktrace) {
+            this.includeStacktrace = includeStacktrace;
+            return asBuilder();
+        }
+
+        /**
+         * Whether to include thread context as additional fields (optional, default to true).
+         *
+         * @return this builder
+         */
+        public B setIncludeThreadContext(boolean includeThreadContext) {
+            this.includeThreadContext = includeThreadContext;
+            return asBuilder();
+        }
+
+        /**
+         * Additional fields to set on each log event.
+         *
+         * @return this builder
+         */
+        public B setAdditionalFields(KeyValuePair[] additionalFields) {
+            this.additionalFields = additionalFields;
+            return asBuilder();
+        }
+    }
+
+    /**
+     * @deprecated Use {@link #newBuilder()} instead
+     */
+    @Deprecated
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
                       final int compressionThreshold, final boolean includeStacktrace) {
-        super(StandardCharsets.UTF_8);
-        this.host = host;
-        this.additionalFields = additionalFields;
+        this(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true);
+    }
+
+    private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
+               final int compressionThreshold, final boolean includeStacktrace, final boolean includeThreadContext) {
+        super(config, StandardCharsets.UTF_8, null, null);
+        this.host = host != null ? host : NetUtils.getLocalHostname();
+        this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
+        if (config == null) {
+            for (KeyValuePair additionalField : this.additionalFields) {
+                if (valueNeedsLookup(additionalField.getValue())) {
+                    throw new IllegalArgumentException("configuration needs to be set when there are additional fields with variables");
+                }
+            }
+        }
         this.compressionType = compressionType;
         this.compressionThreshold = compressionThreshold;
         this.includeStacktrace = includeStacktrace;
+        this.includeThreadContext = includeThreadContext;
     }
 
-    @PluginFactory
+    /**
+     * @deprecated Use {@link #newBuilder()} instead
+     */
+    @Deprecated
     public static GelfLayout createLayout(
             //@formatter:off
             @PluginAttribute("host") final String host,
@@ -128,7 +273,12 @@ public final class GelfLayout extends AbstractStringLayout {
             @PluginAttribute(value = "includeStacktrace",
                 defaultBoolean = true) final boolean includeStacktrace) {
             // @formatter:on
-        return new GelfLayout(host, additionalFields, compressionType, compressionThreshold, includeStacktrace);
+        return new GelfLayout(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true);
+    }
+
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     @Override
@@ -200,20 +350,21 @@ public final class GelfLayout extends AbstractStringLayout {
             JsonUtils.quoteAsString(event.getLoggerName(), builder);
             builder.append(QC);
         }
-
-        for (final KeyValuePair additionalField : additionalFields) {
-            builder.append(QU);
-            JsonUtils.quoteAsString(additionalField.getKey(), builder);
-            builder.append("\":\"");
-            JsonUtils.quoteAsString(toNullSafeString(additionalField.getValue()), builder);
-            builder.append(QC);
+        if (additionalFields.length > 0) {
+            final StrSubstitutor strSubstitutor = getConfiguration().getStrSubstitutor();
+            for (final KeyValuePair additionalField : additionalFields) {
+                builder.append(QU);
+                JsonUtils.quoteAsString(additionalField.getKey(), builder);
+                builder.append("\":\"");
+                final String value = valueNeedsLookup(additionalField.getValue())
+                    ? strSubstitutor.replace(event, additionalField.getValue())
+                    : additionalField.getValue();
+                JsonUtils.quoteAsString(toNullSafeString(value), builder);
+                builder.append(QC);
+            }
         }
-        for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
-            builder.append(QU);
-            JsonUtils.quoteAsString(entry.getKey(), builder);
-            builder.append("\":\"");
-            JsonUtils.quoteAsString(toNullSafeString(entry.getValue()), builder);
-            builder.append(QC);
+        if (includeThreadContext) {
+            event.getContextData().forEach(WRITE_KEY_VALUES_INTO, builder);
         }
         if (event.getThrown() != null) {
             builder.append("\"full_message\":\"");
@@ -245,6 +396,21 @@ public final class GelfLayout extends AbstractStringLayout {
         return builder;
     }
 
+    private static boolean valueNeedsLookup(final String value) {
+        return value != null && value.contains("${");
+    }
+
+    private static final TriConsumer<String, Object, StringBuilder> WRITE_KEY_VALUES_INTO = new TriConsumer<String, Object, StringBuilder>() {
+        @Override
+        public void accept(final String key, final Object value, final StringBuilder stringBuilder) {
+            stringBuilder.append(QU);
+            JsonUtils.quoteAsString(key, stringBuilder);
+            stringBuilder.append("\":\"");
+            JsonUtils.quoteAsString(toNullSafeString(String.valueOf(value)), stringBuilder);
+            stringBuilder.append(QC);
+        }
+    };
+
     private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
 
     private static StringBuilder getMessageStringBuilder() {
@@ -257,7 +423,7 @@ public final class GelfLayout extends AbstractStringLayout {
         return result;
     }
 
-    private CharSequence toNullSafeString(final CharSequence s) {
+    private static CharSequence toNullSafeString(final CharSequence s) {
         return s == null ? Strings.EMPTY : s;
     }
 

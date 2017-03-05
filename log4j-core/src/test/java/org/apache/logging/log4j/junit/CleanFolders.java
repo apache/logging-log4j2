@@ -69,7 +69,7 @@ public class CleanFolders extends AbstractExternalFileCleaner {
     }
 
     @Override
-    protected boolean clean(Path path, int tryIndex) throws IOException {
+    protected boolean clean(final Path path, final int tryIndex) throws IOException {
         cleanFolder(path);
         return true;
     }

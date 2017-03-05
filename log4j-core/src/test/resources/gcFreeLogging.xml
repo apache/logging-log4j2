@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
+  <Filters>
+    <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
+        onMatch="ACCEPT" onMismatch="NEUTRAL">
+      <KeyValuePair key="User1" value="DEBUG"/>
+    </DynamicThresholdFilter>
+    <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+      <KeyValuePair key="eventId" value="Login"/>
+      <KeyValuePair key="eventId" value="Logout"/>
+    </MapFilter>
+    <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+    <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+      <KeyValuePair key="User1" value="DEBUG"/>
+      <KeyValuePair key="User2" value="WARN"/>
+    </ContextMapFilter>
+    <StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+      <KeyValuePair key="id" value="Login"/>
+      <KeyValuePair key="id" value="Logout"/>
+    </StructuredDataFilter>
+    <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+  </Filters>
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%p %c{1.} [%t] %X{aKey} %m%ex%n" />
+      <PatternLayout pattern="%p %c{1.} [%t] %X{aKey} %X %m%ex%n" />
     </Console>
     <File name="File" fileName="target/gcfreefile.log" bufferedIO="false">
+      <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
       <PatternLayout>
-        <Pattern>%d{DEFAULT}{UTC} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
+        <Pattern>%d{DEFAULT}{UTC} %r %sn %enc{'/} %notEmpty{[%marker]} %markerSimpleName %MAP %maxLen{%marker}{10} %equals{%markerSimpleName}{test}{substitute} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
       </PatternLayout>
     </File>
     <RollingFile name="RollingFile" fileName="target/gcfreeRollingFile.log"
         filePattern="target/gcfree-%d{MM-dd-yy-HH-mm-ss}.log.gz">
+      <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
       <PatternLayout>
-        <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss,SSS}{UTC} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
+        <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss,SSS}{UTC} %r %sn %markerSimpleName %MAP %maxLen{%marker}{10} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
       </PatternLayout>
       <Policies>
         <SizeBasedTriggeringPolicy size="50M" />
       </Policies>
     </RollingFile>
     <RandomAccessFile name="RandomAccessFile" fileName="target/gcfreeRAF.log" immediateFlush="false" append="false">
+      <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
       <PatternLayout>
-        <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS}{UTC} %p %c{1.} [%t] %X{aKey} %m %ex%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %X{aKey} %m %ex%n}</Pattern>
+        <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS}{UTC} %r %sn %markerSimpleName %MAP %maxLen{%marker}{10} %p %c{1.} [%t] %X{aKey} %m %ex%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %X{aKey} %m %ex%n}</Pattern>
       </PatternLayout>
     </RandomAccessFile>
     <RollingRandomAccessFile name="RollingRandomAccessFile"
@@ -43,11 +66,15 @@
       </PatternLayout>
     </MemoryMappedFile>
     <RandomAccessFile name="RandomAccessFileGelf" fileName="target/gcfree.json" immediateFlush="false" append="false">
-       <GelfLayout compressionType="OFF"/>
+       <GelfLayout compressionType="OFF">
+         <KeyValuePair key="foo" value="FOO"/>
+       </GelfLayout>
     </RandomAccessFile>
   </Appenders>
   <Loggers>
-    <Root level="info" includeLocation="false">
+    <Root level="trace" includeLocation="false">
+      <Property name="prop1">value1</Property>
+      <Property name="prop2">value2</Property>
       <appender-ref ref="Console" level="FATAL" />
       <appender-ref ref="File"/>
       <appender-ref ref="RandomAccessFile"/>

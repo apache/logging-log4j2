@@ -17,13 +17,17 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
@@ -39,7 +43,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     /**
      * Subclasses can extend this abstract Builder. 
      * 
-     * @param <B> This builder class.
+     * @param <B> The type to build.
      */
     public abstract static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B> {
 
@@ -47,12 +51,14 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         private boolean ignoreExceptions = true;
         
         @PluginElement("Layout")
-        @Required
         private Layout<? extends Serializable> layout;
 
         @PluginBuilderAttribute
-        @Required
+        @Required(message = "No appender name provided")
         private String name;
+
+        @PluginConfiguration
+        private Configuration configuration;
 
         public String getName() {
             return name;
@@ -66,17 +72,17 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return layout;
         }
 
-        public B withName(String name) {
+        public B withName(final String name) {
             this.name = name;
             return asBuilder();
         }
 
-        public B withIgnoreExceptions(boolean ignoreExceptions) {
+        public B withIgnoreExceptions(final boolean ignoreExceptions) {
             this.ignoreExceptions = ignoreExceptions;
             return asBuilder();
         }
 
-        public B withLayout(Layout<? extends Serializable> layout) {
+        public B withLayout(final Layout<? extends Serializable> layout) {
             this.layout = layout;
             return asBuilder();
         }
@@ -86,6 +92,31 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
                 return PatternLayout.createDefaultLayout();
             }
             return layout;
+        }
+        
+        public Layout<? extends Serializable> getOrCreateLayout(final Charset charset) {
+            if (layout == null) {
+                return PatternLayout.newBuilder().withCharset(charset).build();
+            }
+            return layout;
+        }
+
+        /**
+         * @deprecated Use {@link #setConfiguration(Configuration)}
+         */
+        @Deprecated
+        public B withConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return asBuilder();
+        }
+
+        public B setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return asBuilder();
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
         }
         
     }
@@ -118,7 +149,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
             final boolean ignoreExceptions) {
         super(filter);
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "name");
         this.layout = layout;
         this.ignoreExceptions = ignoreExceptions;
     }

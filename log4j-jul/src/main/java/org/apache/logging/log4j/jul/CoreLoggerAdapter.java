@@ -34,7 +34,10 @@ public class CoreLoggerAdapter extends AbstractLoggerAdapter {
 
     @Override
     protected Logger newLogger(final String name, final LoggerContext context) {
-        return new CoreLogger((org.apache.logging.log4j.core.Logger) context.getLogger(name, MESSAGE_FACTORY));
+        final org.apache.logging.log4j.spi.ExtendedLogger original = context.getLogger(name, MESSAGE_FACTORY);
+        if (original instanceof org.apache.logging.log4j.core.Logger) {
+            return new CoreLogger((org.apache.logging.log4j.core.Logger) original);
+        }
+        return new ApiLogger(original); // LOG4J2-1618 during shutdown, a SimpleLogger may be returned
     }
-
 }

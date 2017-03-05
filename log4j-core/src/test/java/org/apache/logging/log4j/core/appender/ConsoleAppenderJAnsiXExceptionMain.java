@@ -21,9 +21,11 @@ import java.nio.file.Paths;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
@@ -39,10 +41,11 @@ import org.junit.Test;
  * or, on Windows:
  * 
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%USERPROFILE%\.m2\repository\org\fusesource\jansi\jansi\1.13\jansi-1.13.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiXExceptionMain log4j-core/src/test/resources/log4j2-console-xex-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%USERPROFILE%\.m2\repository\org\fusesource\jansi\jansi\1.14\jansi-1.14.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiXExceptionMain log4j-core/src/test/resources/log4j2-console-xex-ansi.xml
  * </pre>
  * 
  */
+@Category(Layouts.Jansi.class)
 public class ConsoleAppenderJAnsiXExceptionMain {
 
     public static void main(final String[] args) {
@@ -65,8 +68,8 @@ public class ConsoleAppenderJAnsiXExceptionMain {
         final Logger logger = LogManager.getLogger(ConsoleAppenderJAnsiXExceptionMain.class);
         try {
             Files.getFileStore(Paths.get("?BOGUS?"));
-        } catch (Exception e) {
-            IllegalArgumentException logE = new IllegalArgumentException("Bad argument foo", e);
+        } catch (final Exception e) {
+            final IllegalArgumentException logE = new IllegalArgumentException("Bad argument foo", e);
             logger.error("Gotcha!", logE);
         } finally {
             Configurator.shutdown(ctx);

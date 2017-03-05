@@ -24,8 +24,8 @@ import java.util.List;
 
 import liquibase.logging.Logger;
 
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,31 +46,31 @@ public class LoggingTest {
     @Test
     public void debug() {
         logger.debug("Debug message");
-        verify(NAME + " " + getClass().getName() + " DEBUG Debug message" + Constants.LINE_SEPARATOR);
+        verify(NAME + " " + getClass().getName() + " DEBUG Debug message" + Strings.LINE_SEPARATOR);
     }
 
     @Test
     public void info() {
         logger.info("Info message");
-        verify(NAME + " " + getClass().getName() + " INFO Info message" + Constants.LINE_SEPARATOR);
+        verify(NAME + " " + getClass().getName() + " INFO Info message" + Strings.LINE_SEPARATOR);
     }
 
     @Test
     public void warning() {
         logger.warning("Warning message");
-        verify(NAME + " " + getClass().getName() + " WARN Warning message" + Constants.LINE_SEPARATOR);
+        verify(NAME + " " + getClass().getName() + " WARN Warning message" + Strings.LINE_SEPARATOR);
     }
 
     @Test
     public void severe() {
         logger.severe("Severe message");
-        verify(NAME + " " + getClass().getName() + " ERROR Severe message" + Constants.LINE_SEPARATOR);
+        verify(NAME + " " + getClass().getName() + " ERROR Severe message" + Strings.LINE_SEPARATOR);
     }
 
     @Test
     public void severeStacktrace() {
         logger.severe("Severe message with stacktrace", new RuntimeException("thrown error"));
-        verify(NAME + " " + getClass().getName() + " ERROR Severe message with stacktrace" + Constants.LINE_SEPARATOR
+        verify(NAME + " " + getClass().getName() + " ERROR Severe message with stacktrace" + Strings.LINE_SEPARATOR
                 + "java.lang.RuntimeException: thrown error");
     }
 

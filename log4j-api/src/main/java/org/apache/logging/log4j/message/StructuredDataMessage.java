@@ -20,6 +20,8 @@ package org.apache.logging.log4j.message;
 import java.util.Map;
 
 import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Represents a Message that conforms to an RFC 5424 StructuredData element along with the syslog message.
@@ -32,7 +34,8 @@ import org.apache.logging.log4j.util.EnglishEnums;
  *
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
-public class StructuredDataMessage extends MapMessage {
+@AsynchronouslyFormattable
+public class StructuredDataMessage extends MapMessage implements StringBuilderFormattable {
 
     private static final long serialVersionUID = 1703221292892071920L;
     private static final int MAX_LENGTH = 32;
@@ -195,6 +198,11 @@ public class StructuredDataMessage extends MapMessage {
         this.type = type;
     }
 
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        asString(Format.FULL, null, buffer);
+    }
+
     /**
      * Returns the message.
      * @return the message.
@@ -218,8 +226,8 @@ public class StructuredDataMessage extends MapMessage {
         if (key.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Structured data keys are limited to 32 characters. key: " + key);
         }
-        final char[] chars = key.toCharArray();
-        for (final char c : chars) {
+        for (int i = 0; i < key.length(); i++) {
+            final char c = key.charAt(i);
             if (c < '!' || c > '~' || c == '=' || c == ']' || c == '"') {
                 throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters" +
                         "and may not contain a space, =, ], or \"");
@@ -264,25 +272,39 @@ public class StructuredDataMessage extends MapMessage {
      */
     public final String asString(final Format format, final StructuredDataId structuredDataId) {
         final StringBuilder sb = new StringBuilder();
+        asString(format, structuredDataId, sb);
+        return sb.toString();
+    }
+
+    /**
+     * Formats the structured data as described in RFC 5424.
+     *
+     * @param format           "full" will include the type and message. null will return only the STRUCTURED-DATA as
+     *                         described in RFC 5424
+     * @param structuredDataId The SD-ID as described in RFC 5424. If null the value in the StructuredData
+     *                         will be used.
+     * @param sb The StringBuilder to append the formatted message to.
+     */
+    public final void asString(final Format format, final StructuredDataId structuredDataId, final StringBuilder sb) {
         final boolean full = Format.FULL.equals(format);
         if (full) {
             final String myType = getType();
             if (myType == null) {
-                return sb.toString();
+                return;
             }
             sb.append(getType()).append(' ');
         }
         StructuredDataId sdId = getId();
         if (sdId != null) {
-            sdId = sdId.makeId(structuredDataId);
+            sdId = sdId.makeId(structuredDataId); // returns sdId if structuredDataId is null
         } else {
             sdId = structuredDataId;
         }
         if (sdId == null || sdId.getName() == null) {
-            return sb.toString();
+            return;
         }
         sb.append('[');
-        sb.append(sdId);
+        StringBuilders.appendValue(sb, sdId); // avoids toString if implements StringBuilderFormattable
         sb.append(' ');
         appendMap(sb);
         sb.append(']');
@@ -292,7 +314,6 @@ public class StructuredDataMessage extends MapMessage {
                 sb.append(' ').append(msg);
             }
         }
-        return sb.toString();
     }
 
     /**
@@ -316,7 +337,8 @@ public class StructuredDataMessage extends MapMessage {
     @Override
     public String getFormattedMessage(final String[] formats) {
         if (formats != null && formats.length > 0) {
-            for (final String format : formats) {
+            for (int i = 0; i < formats.length; i++) {
+                final String format = formats[i];
                 if (Format.XML.name().equalsIgnoreCase(format)) {
                     return asXml();
                 } else if (Format.FULL.name().equalsIgnoreCase(format)) {

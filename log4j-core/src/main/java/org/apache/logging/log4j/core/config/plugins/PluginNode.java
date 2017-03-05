@@ -32,4 +32,5 @@ import org.apache.logging.log4j.core.config.plugins.visitors.PluginNodeVisitor;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @PluginVisitorStrategy(PluginNodeVisitor.class)
 public @interface PluginNode {
+    // empty
 }

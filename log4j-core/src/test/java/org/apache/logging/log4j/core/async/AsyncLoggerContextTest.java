@@ -17,12 +17,15 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
+@Category(AsyncLoggers.class)
 public class AsyncLoggerContextTest {
 
     @Test

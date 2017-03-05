@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
@@ -36,12 +37,14 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Tests {@link AbstractCsvLayout}.
  *
  * @since 2.4
  */
+@Category(Layouts.Csv.class)
 public class CsvLogEventLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.jackson;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.categories.Layouts;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +27,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.junit.experimental.categories.Category;
 
+@Category(Layouts.Json.class)
 public class StackTraceElementMixInTest {
 
     @Test
@@ -78,7 +81,7 @@ public class StackTraceElementMixInTest {
     public void testFromJsonWithLog4jModule() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
         final boolean encodeThreadContextAsList = false;
-        final SimpleModule module = new Log4jJsonModule(encodeThreadContextAsList);
+        final SimpleModule module = new Log4jJsonModule(encodeThreadContextAsList, true);
         module.addDeserializer(StackTraceElement.class, new Log4jStackTraceElementDeserializer());
         mapper.registerModule(module);
         final StackTraceElement expected = new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);

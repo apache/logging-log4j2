@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -47,23 +44,9 @@ public final class Constants {
     public static final String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
 
     /**
-     * Line separator.
-     */
-    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
-            "\n");
-
-    /**
      * Number of milliseconds in a second.
      */
     public static final int MILLIS_IN_SECONDS = 1000;
-
-    /**
-     * Equivalent to StandardCharsets.UTF_8.
-     *
-     * @deprecated Use {@link StandardCharsets#UTF_8}. Will be removed in 2.5.
-     */
-    @Deprecated
-    public static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     /**
      * Supports user request LOG4J2-898 to have the option to format a message in the background thread.

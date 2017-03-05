@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 
 /**
@@ -50,6 +51,7 @@ public final class NdcPatternConverter extends LogEventPatternConverter {
     }
 
     @Override
+    @PerformanceSensitive("allocation")
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         toAppendTo.append(event.getContextStack());
     }

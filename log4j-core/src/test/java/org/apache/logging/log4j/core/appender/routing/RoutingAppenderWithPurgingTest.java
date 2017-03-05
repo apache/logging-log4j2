@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 
 /**
- * Testing Routing appender purge facilities
+ * Tests Routing appender purge facilities
  */
 public class RoutingAppenderWithPurgingTest {
     private static final String CONFIG = "log4j-routing-purge.xml";
@@ -46,13 +46,12 @@ public class RoutingAppenderWithPurgingTest {
     private static final String MANUAL_LOG_FILE2 = "target/routing-purge-manual/routingtest-2.log";
     private static final String MANUAL_LOG_FILE3 = "target/routing-purge-manual/routingtest-3.log";
 
-
     private ListAppender app;
     private RoutingAppender routingAppenderIdle;
     private RoutingAppender routingAppenderIdleWithHangingAppender;
     private RoutingAppender routingAppenderManual;
 
-    private LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFilesRule(IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3,
@@ -71,7 +70,7 @@ public class RoutingAppenderWithPurgingTest {
     @After
     public void tearDown() throws Exception {
         this.app.clear();
-        this.loggerContextRule.getContext().stop();
+        this.loggerContextRule.getLoggerContext().stop();
     }
 
     @Test(timeout = 5000)
@@ -105,11 +104,22 @@ public class RoutingAppenderWithPurgingTest {
 
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
         assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
+
+        msg = new StructuredDataMessage("5", "This is a test 5", "Service");
+        EventLogger.logEvent(msg);
+
+        assertEquals("Incorrect number of appenders with manual purge.", 1, routingAppenderManual.getAppenders().size());
+
+        routingAppenderManual.deleteAppender("5");
+        routingAppenderManual.deleteAppender("5");
+
+        assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
     }
 
+
     private void assertFileExistance(final String... files) {
-    	for (final String file : files) {
-			assertTrue("File should exist - " + file + " file ", new File(file).exists());
-		}
+        for (final String file : files) {
+            assertTrue("File should exist - " + file + " file ", new File(file).exists());
+        }
     }
 }

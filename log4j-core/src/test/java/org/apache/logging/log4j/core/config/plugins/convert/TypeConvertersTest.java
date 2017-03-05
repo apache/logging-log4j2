@@ -20,14 +20,18 @@ package org.apache.logging.log4j.core.config.plugins.convert;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -159,6 +163,16 @@ public class TypeConvertersTest {
                 { "c:/temp", new File("c:/temp"), null, File.class },
                 // JRE Class
                 { TypeConvertersTest.class.getName(), TypeConvertersTest.class, null, Class.class },
+                { "boolean", boolean.class, null, Class.class },
+                { "byte", byte.class, null, Class.class },
+                { "char", char.class, null, Class.class },
+                { "double", double.class, null, Class.class },
+                { "float", float.class, null, Class.class },
+                { "int", int.class, null, Class.class },
+                { "long", long.class, null, Class.class },
+                { "short", short.class, null, Class.class },
+                { "void", void.class, null, Class.class },
+                { "\t", Object.class, Object.class.getName(), Class.class },
                 { "\n", null, null, Class.class },
                 // JRE URL
                 { "http://locahost", new URL("http://locahost"), null, URL.class },
@@ -176,7 +190,13 @@ public class TypeConvertersTest {
                 { Security.getProviders()[0].getName(), Security.getProviders()[0], null, Provider.class },
                 { "\n", null, null, Provider.class },
                 // Duration
-                { "P7DT10H", Duration.parse("P7DT10H"), null, Duration.class }, 
+                { "P7DT10H", Duration.parse("P7DT10H"), null, Duration.class },
+                // JRE InetAddress
+                { "127.0.0.1", InetAddress.getByName("127.0.0.1"), null, InetAddress.class },
+                // JRE Path
+                { "/path/to/file", Paths.get("/path", "to", "file"), null, Path.class },
+                // JRE UUID
+                { "8fd389fb-9154-4096-b52e-435bde4a1835", UUID.fromString("8fd389fb-9154-4096-b52e-435bde4a1835"), null, UUID.class },
             }
         );
     }

@@ -18,9 +18,9 @@ package org.apache.logging.slf4j;
 
 import java.util.List;
 
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class OptionalTest {
     public void testEventLogger() {
         logger.info(marker, "This is a test");
         MDC.clear();
-        verify("EventLogger", "o.a.l.s.OptionalTest This is a test" + Constants.LINE_SEPARATOR);
+        verify("EventLogger", "o.a.l.s.OptionalTest This is a test" + Strings.LINE_SEPARATOR);
     }
 
     private void verify(final String name, final String expected) {

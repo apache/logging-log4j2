@@ -40,6 +40,8 @@ public final class Constants {
     public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
             "log4j2.enable.threadlocals", true);
 
+    public static final int JAVA_MAJOR_VERSION = getMajorVersion();
+
     /**
      * Determines if a named Class can be loaded or not.
      *
@@ -58,5 +60,21 @@ public final class Constants {
      * Prevent class instantiation.
      */
     private Constants() {
+    }
+
+    private static int getMajorVersion() {
+        final String version = System.getProperty("java.version");
+        final String[] parts = version.split("-|\\.");
+        boolean isJEP223;
+        try {
+            final int token = Integer.parseInt(parts[0]);
+            isJEP223 = token != 1;
+            if (isJEP223) {
+                return token;
+            }
+            return Integer.parseInt(parts[1]);
+        } catch (final Exception ex) {
+            return 0;
+        }
     }
 }

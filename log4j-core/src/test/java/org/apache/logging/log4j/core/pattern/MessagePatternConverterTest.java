@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -58,7 +59,19 @@ public class MessagePatternConverterTest {
         sb = new StringBuilder();
         converter.format(event, sb);
         assertEquals("Incorrect length: " + sb, 4, sb.length());
+    }
 
+    @Test
+    public void testPatternAndParameterizedMessageDateLookup() throws Exception {
+        final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, null);
+        final Message msg = new ParameterizedMessage("${date:now:buhu}");
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg).build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        assertEquals("Unexpected result", "${date:now:buhu}", sb.toString());
     }
 
     @Test

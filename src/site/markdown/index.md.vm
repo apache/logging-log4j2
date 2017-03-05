@@ -1,0 +1,128 @@
+<!-- vim: set syn=markdown : -->
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+#set($h1='#')
+#set($h2='##')
+#set($h3='###')
+
+$h1 Apache Log4j 2
+
+Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and
+provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
+
+$h2 Features
+
+$h3 API Separation
+
+The API for Log4j is separate from the implementation making it clear for application developers which classes and
+methods they can use while ensuring forward compatibility. This allows the Log4j team to improve the implementation
+safely and in a compatible manner.
+
+$h3 Improved Performance
+
+Log4j 2 contains next-generation Asynchronous Loggers based on the LMAX Disruptor library. In multi-threaded scenarios
+Asynchronous Loggers have 18 times higher throughput and orders of magnitude lower latency than Log4j 1.x and Logback.
+See [Asynchronous Logging Performance](manual/async.html#Performance) for details. Otherwise, Log4j 2 significantly
+outperforms Log4j 1.x, Logback and java.util.logging, especially in multi-threaded applications.
+See [Performance](performance.html) for more information.
+
+$h3 Support for multiple APIs
+
+While the Log4j 2 API will provide the best performance, Log4j 2 provides support for the Log4j 1.2, SLF4J, Commons
+Logging and java.util.logging (JUL) APIs.
+
+$h3 Avoid lock-in
+
+Applications coded to the Log4j 2 API always have the option to use any SLF4J-compliant library as their logger
+implementation with the log4j-to-slf4j adapter.
+
+$h3 Automatic Reloading of Configurations
+
+Like Logback, Log4j 2 can automatically reload its configuration upon modification. Unlike Logback, it will do so
+without losing log events while reconfiguration is taking place.
+
+$h3 Advanced Filtering
+
+Like Logback, Log4j 2 supports filtering based on context data, markers, regular expressions, and other components in
+the Log event. Filtering can be specified to apply to all events before being passed to Loggers or as they pass through
+Appenders. In addition, filters can also be associated with Loggers. Unlike Logback, you can use a common Filter class
+in any of these circumstances.
+
+$h3 Plugin Architecture
+
+Log4j uses the plugin pattern to configure components. As such, you do not need to write code to create and configure an
+Appender, Layout, Pattern Converter, and so on. Log4j automatically recognizes plugins and uses them when a
+configuration references them.
+
+$h3 Property Support
+
+You can reference properties in a configuration, Log4j will directly replace them, or Log4j will pass them to an
+underlying component that will dynamically resolve them. Properties come from values defined in the configuration file,
+system properties, environment variables, the ThreadContext Map, and data present in the event. Users can further
+customize the property providers by adding their own [Lookup](manual/lookups.html) Plugin.
+
+$h3 Java 8 Lambda Support
+
+Previously, if a log message was expensive to construct, you would often explicitly check if the requested log level is
+enabled before constructing the message. Client code running on Java 8 can benefit from Log4j's
+[lambda support](manual/api.html#LambdaSupport). Since Log4j will not evaluate a lambda expression if the requested log
+level is not enabled, the same effect can be achieved with less code.
+
+$h3 Custom Log Levels
+
+In Log4j 2, [custom log levels](manual/customloglevels.html) can easily be defined in code or in configuration. No
+subclassing is required.
+
+$h3 Garbage-free
+
+During steady state logging, Log4j 2 is [garbage-free](manual/garbagefree.html) in stand-alone applications, and low
+garbage in web applications. This reduces pressure on the garbage collector and can give better response time performance.
+
+$h2 Documentation
+
+The Log4j 2 User's Guide is available on this [site](manual/index.html) or as a downloadable
+[PDF](log4j-users-guide.pdf).
+
+$h2 Requirements
+
+Log4j 2.4 and greater requires Java 7, versions 2.0-alpha1 to 2.3 required Java 6. Some features require optional
+dependencies; the documentation for these features specifies the dependencies.
+
+$h2 News
+
+Log4j $Log4jReleaseVersion is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter is
+available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for Apache Commons
+Logging, SLF4J, and java.util.logging.
+
+Log4j $Log4jReleaseVersion is the latest release of Log4j and contains several bug fixes that were found after the release of Log4j 2.6.
+The list of fixes can be found in the latest [changes report](changes-report.html#a$Log4jReleaseVersion).
+
+Note that subsequent to the release of Log4j 2.6 a minor source incompatibility with prior release was found due to the
+addition of new methods to the Logger interface. If you have code that does:
+
+    logger.error(null, "This is the log message", throwable);
+
+or similar with any log level you will get a compiler error saying the reference is ambiguous. To correct this either
+do:
+
+    logger.error("This is the log message", throwable);
+
+or
+
+    logger.error((Marker) null, "This is the log message", throwable);
+
+Log4j $Log4jReleaseVersion maintains binary compatibility with previous releases.

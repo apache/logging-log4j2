@@ -29,7 +29,10 @@
         dependencies.
       </p>
       <p>
-        As of version 2.4, Log4J requires Java 7. Versions 2.3 and earlier require Java 6.
+        As of version 2.4, Log4J requires Java 7.
+      </p>
+      <p>
+        Log4j version 2.3 and older require Java 6.
       </p>
 
       <a name="log4j-api" />
@@ -71,10 +74,6 @@
         <tr>
           <td>CSV Layout</td>
           <td><a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a></td>
-        </tr>
-        <tr>
-          <td>GELF Layout</td>
-          <td><a href="https://github.com/FasterXML/jackson">Jackson core</a></td>
         </tr>
         <tr>
           <td>JSON Layout</td>
@@ -125,6 +124,10 @@
           <td>LightCouch CouchDB client library</td>
         </tr>
         <tr>
+          <td>Cassandra Appender</td>
+          <td>Datastax Cassandra driver and Log4j NoSQL library</td>
+        </tr>
+        <tr>
           <td>Bzip2, Deflate, Pack200, and XZ compression on rollover</td>
           <td><a href="http://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.
             In addition, XZ requires <a href="http://tukaani.org/xz/java.html">XZ for Java</a>.
@@ -136,6 +139,13 @@
             The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library which is
             licensed under the terms of the GNU Lesser General Public License (LGPL). For details see the
             files <code>COPYING</code> and <code>COPYING.LESSER</code> included with the JeroMQ distribution.
+          </td>
+        </tr>
+        <tr>
+          <td>TcpSocketServer and UdpSocketServer</td>
+          <td>
+            TcpSocketServer and UdpSocketServer use the <a href="http://www.jcommander.org/">JCommander</a> library 
+            which is licensed under the terms of the Apache License version 2.0.
           </td>
         </tr>
       </table>
@@ -251,6 +261,13 @@
       <p>
         The Log4j <a href="log4j-iostreams/index.html">IO Streams</a> module has no external dependencies.
         This only requires the Log4j API.
+      </p>
+
+      <a name="log4j-api-scala" />
+      <h4>log4j-api-scala</h4>
+      <p>
+        The Log4j <a href="log4j-api-scala_2.11/index.html">Scala API</a> requires Scala runtime library and reflection in
+        addition to the Log4j API.
       </p>
 
     </section>

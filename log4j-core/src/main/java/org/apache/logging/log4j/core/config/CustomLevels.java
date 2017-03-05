@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -28,7 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Container for CustomLevelConfig objects.
  */
-@Plugin(name = "CustomLevels", category = "Core", printObject = true)
+@Plugin(name = "CustomLevels", category = Core.CATEGORY_NAME, printObject = true)
 public final class CustomLevels {
 
     private final List<CustomLevelConfig> customLevels;

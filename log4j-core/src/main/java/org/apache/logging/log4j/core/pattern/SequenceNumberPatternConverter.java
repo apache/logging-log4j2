@@ -20,13 +20,14 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Formats the event sequence number.
  */
 @Plugin(name = "SequenceNumberPatternConverter", category = "Converter")
 @ConverterKeys({ "sn", "sequenceNumber" })
+@PerformanceSensitive("allocation")
 public final class SequenceNumberPatternConverter extends LogEventPatternConverter {
 
     private static final AtomicLong SEQUENCE = new AtomicLong();
@@ -50,8 +51,7 @@ public final class SequenceNumberPatternConverter extends LogEventPatternConvert
      * @param options options, currently ignored, may be null.
      * @return instance of SequencePatternConverter.
      */
-    public static SequenceNumberPatternConverter newInstance(
-        final String[] options) {
+    public static SequenceNumberPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 
@@ -60,6 +60,6 @@ public final class SequenceNumberPatternConverter extends LogEventPatternConvert
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        toAppendTo.append(Long.toString(SEQUENCE.incrementAndGet()));
+        toAppendTo.append(SEQUENCE.incrementAndGet());
     }
 }

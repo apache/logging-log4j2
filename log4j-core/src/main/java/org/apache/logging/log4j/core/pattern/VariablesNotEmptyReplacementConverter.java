@@ -22,19 +22,21 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * VariablesNotEmpty pattern converter.
  */
 @Plugin(name = "notEmpty", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "notEmpty", "varsNotEmpty", "variablesNotEmpty", })
+@PerformanceSensitive("allocation")
 public final class VariablesNotEmptyReplacementConverter extends LogEventPatternConverter {
 
     private final List<PatternFormatter> formatters;
 
     /**
-     * Construct the converter.
-     * 
+     * Constructs the converter.
+     *
      * @param formatters
      *            The PatternFormatters to generate the text to manipulate.
      */
@@ -72,20 +74,20 @@ public final class VariablesNotEmptyReplacementConverter extends LogEventPattern
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        int emptyVars = 0;
-        int vars = 0;
-        for (final PatternFormatter formatter : formatters) {
-            final int start = buf.length();
-            formatter.format(event, buf);
-            final boolean isVariable = formatter.getConverter().isVariable();
-            vars += isVariable ? 1 : 0;
-            if (isVariable && buf.length() - start == 0) {
-                emptyVars++;
+        final int start = toAppendTo.length();
+        boolean allVarsEmpty = true;
+        boolean hasVars = false;
+        for (int i = 0; i < formatters.size(); i++) {
+            final PatternFormatter formatter = formatters.get(i);
+            final int formatterStart = toAppendTo.length();
+            formatter.format(event, toAppendTo);
+            if (formatter.getConverter().isVariable()) {
+                hasVars = true;
+                allVarsEmpty = allVarsEmpty && (toAppendTo.length() == formatterStart);
             }
         }
-        if (vars > 0 && emptyVars != vars) {
-            toAppendTo.append(buf.toString());
+        if (!hasVars || allVarsEmpty) {
+            toAppendTo.setLength(start); // remove formatter results
         }
     }
 }

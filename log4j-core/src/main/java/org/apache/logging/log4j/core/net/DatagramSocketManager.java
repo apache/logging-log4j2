@@ -42,10 +42,11 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param host The host to connect to.
      * @param port The port on the host.
      * @param layout The layout
+     * @param bufferSize The buffer size
      */
     protected DatagramSocketManager(final String name, final OutputStream os, final InetAddress inetAddress, final String host,
-                final int port, final Layout<? extends Serializable> layout) {
-        super(name, os, inetAddress, host, port, layout, true);
+                final int port, final Layout<? extends Serializable> layout, final int bufferSize) {
+        super(name, os, inetAddress, host, port, layout, true, bufferSize);
     }
 
     /**
@@ -53,17 +54,19 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param host The host to connect to.
      * @param port The port on the host.
      * @param layout The layout.
+     * @param bufferSize The buffer size.
      * @return A DatagramSocketManager.
      */
-    public static DatagramSocketManager getSocketManager(final String host, final int port, final Layout<? extends Serializable> layout) {
+    public static DatagramSocketManager getSocketManager(final String host, final int port,
+            final Layout<? extends Serializable> layout, final int bufferSize) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
         if (port <= 0) {
             throw new IllegalArgumentException("A port value is required");
         }
-        return (DatagramSocketManager) getManager("UDP:" + host + ':' + port, new FactoryData(host, port, layout),
-            FACTORY);
+        return (DatagramSocketManager) getManager("UDP:" + host + ':' + port,
+                new FactoryData(host, port, layout, bufferSize), FACTORY);
     }
 
     /**
@@ -90,11 +93,13 @@ public class DatagramSocketManager extends AbstractSocketManager {
         private final String host;
         private final int port;
         private final Layout<? extends Serializable> layout;
-
-        public FactoryData(final String host, final int port, final Layout<? extends Serializable> layout) {
+        private final int bufferSize;
+        
+        public FactoryData(final String host, final int port, final Layout<? extends Serializable> layout, final int bufferSize) {
             this.host = host;
             this.port = port;
             this.layout = layout;
+            this.bufferSize = bufferSize;
         }
     }
 
@@ -114,7 +119,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
             }
             final OutputStream os = new DatagramOutputStream(data.host, data.port, data.layout.getHeader(),
                     data.layout.getFooter());
-            return new DatagramSocketManager(name, os, inetAddress, data.host, data.port, data.layout);
+            return new DatagramSocketManager(name, os, inetAddress, data.host, data.port, data.layout, data.bufferSize);
         }
     }
 }

@@ -90,7 +90,8 @@ public class AppenderControl extends AbstractFilterable {
 
     @PerformanceSensitive
     private boolean isFilteredByAppenderControl(final LogEvent event) {
-        return getFilter() != null && Filter.Result.DENY == getFilter().filter(event);
+        final Filter filter = getFilter();
+        return filter != null && Filter.Result.DENY == filter.filter(event);
     }
 
     @PerformanceSensitive

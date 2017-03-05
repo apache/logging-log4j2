@@ -18,11 +18,17 @@ package org.apache.logging.log4j.spi;
 
 import java.util.Map;
 
+import org.apache.logging.log4j.ThreadContext;
+
 /**
  * Service provider interface to implement custom MDC behavior for {@link org.apache.logging.log4j.ThreadContext}.
+ * <p>
+ * Since 2.8, {@code ThreadContextMap} implementations that implement the {@link ReadOnlyThreadContextMap} interface
+ * are accessible to applications via the {@link ThreadContext#getThreadContextMap()} method.
+ * </p>
  */
 public interface ThreadContextMap {
-    
+
     /**
      * Clears the context.
      */
@@ -73,17 +79,6 @@ public interface ThreadContextMap {
      * @param value The key value.
      */
     void put(final String key, final String value);
-
-    /**
-     * Puts all given context map entries into the current thread's
-     * context map.
-     *
-     * <p>If the current thread does not have a context map it is
-     * created as a side effect.</p>
-     * @param m The map.
-     * @since 2.7
-     */
-    public void putAll(final Map<String, String> m);
 
     /**
      * Removes the the context identified by the <code>key</code>

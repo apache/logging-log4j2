@@ -26,7 +26,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -35,7 +34,6 @@ import org.apache.logging.log4j.core.util.ExtensionLanguageMapping;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.IOUtils;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Container for the language and body of a script file along with the file location.
@@ -43,7 +41,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "ScriptFile", category = Node.CATEGORY, printObject = true)
 public class ScriptFile extends AbstractScript {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
     private final Path filePath;
     private final boolean isWatched;
 

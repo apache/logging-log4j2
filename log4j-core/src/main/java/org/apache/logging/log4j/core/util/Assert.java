@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.util.Objects;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Utility class providing common validation logic.
@@ -25,46 +26,82 @@ public final class Assert {
     private Assert() {
     }
 
+    /**
+     * Checks if an object has empty semantics. The following scenarios are considered empty:
+     * <ul>
+     * <li>{@code null}</li>
+     * <li>empty {@link CharSequence}</li>
+     * <li>empty array</li>
+     * <li>empty {@link Iterable}</li>
+     * <li>empty {@link Map}</li>
+     * </ul>
+     *
+     * @param o value to check for emptiness
+     * @return true if the value is empty, false otherwise
+     * @since 2.8
+     */
+    public static boolean isEmpty(final Object o) {
+        if (o == null) {
+            return true;
+        }
+        if (o instanceof CharSequence) {
+            return ((CharSequence) o).length() == 0;
+        }
+        if (o.getClass().isArray()) {
+            return ((Object[]) o).length == 0;
+        }
+        if (o instanceof Collection) {
+            return ((Collection<?>) o).isEmpty();
+        }
+        if (o instanceof Map) {
+            return ((Map<?, ?>) o).isEmpty();
+        }
+        return false;
+    }
+
+    /**
+     * Opposite of {@link #isEmpty(Object)}.
+     *
+     * @param o value to check for non-emptiness
+     * @return true if the value is non-empty, false otherwise
+     * @since 2.8
+     */
+    public static boolean isNonEmpty(final Object o) {
+        return !isEmpty(o);
+    }
+
+    /**
+     * Checks a value for emptiness and throws an IllegalArgumentException if it's empty.
+     *
+     * @param value value to check for emptiness
+     * @param <T>   type of value
+     * @return the provided value if non-empty
+     * @since 2.8
+     */
+    public static <T> T requireNonEmpty(final T value) {
+        return requireNonEmpty(value, "");
+    }
+
+    /**
+     * Checks a value for emptiness and throws an IllegalArgumentException if it's empty.
+     *
+     * @param value   value to check for emptiness
+     * @param message message to provide in exception
+     * @param <T>     type of value
+     * @return the provided value if non-empty
+     * @since 2.8
+     */
+    public static <T> T requireNonEmpty(final T value, final String message) {
+        if (isEmpty(value)) {
+            throw new IllegalArgumentException(message);
+        }
+        return value;
+    }
+
     public static int valueIsAtLeast(final int value, final int minValue) {
         if (value < minValue) {
             throw new IllegalArgumentException("Value should be at least " + minValue + " but was " + value);
         }
         return value;
-    }
-
-    /**
-     * Throws a {@code NullPointerException} if the specified parameter is
-     * {@code null}, otherwise returns the specified parameter.
-     * <p>
-     * On Java 7, just use {@code Objects.requireNonNull(T, String)}
-     * </p>
-     * <p>
-     * Usage:
-     * </p>
-     * <pre>
-     * // earlier you would write this:
-     * public SomeConstructor(Object param) {
-     *     if (param == null) {
-     *         throw new NullPointerException(&quot;param&quot;);
-     *     }
-     *     this.field = param;
-     * }
-     *
-     * // now you can do the same in one line:
-     * public SomeConstructor(Object param) {
-     *     this.field = Assert.requireNonNull(&quot;param&quot;);
-     * }
-     * </pre>
-     *
-     * @param <T> the type of the parameter to check and return
-     * @param object the parameter to check
-     * @param message message to populate the NPE with if necessary
-     * @return the specified parameter
-     * @throws NullPointerException if {@code object} is {@code null}
-     * @deprecated Will be removed in 2.5.
-     */
-    @Deprecated
-    public static <T> T requireNonNull(final T object, final String message) {
-        return Objects.requireNonNull(object, message);
     }
 }

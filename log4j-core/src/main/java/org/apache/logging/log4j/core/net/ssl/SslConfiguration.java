@@ -29,6 +29,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  *  SSL Configuration
  */
-@Plugin(name = "Ssl", category = "Core", printObject = true)
+@Plugin(name = "Ssl", category = Core.CATEGORY_NAME, printObject = true)
 public class SslConfiguration {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final KeyStoreConfiguration keyStoreConfig;
@@ -204,29 +205,6 @@ public class SslConfiguration {
         }
     }
 
-    public boolean equals(final SslConfiguration config) {
-        if (config == null) {
-            return false;
-        }
-
-        boolean keyStoreEquals = false;
-        boolean trustStoreEquals = false;
-
-        if (keyStoreConfig != null) {
-            keyStoreEquals = keyStoreConfig.equals(config.keyStoreConfig);
-        } else {
-            keyStoreEquals = keyStoreConfig == config.keyStoreConfig;
-        }
-
-        if (trustStoreConfig != null) {
-            trustStoreEquals = trustStoreConfig.equals(config.trustStoreConfig);
-        } else {
-            trustStoreEquals = trustStoreConfig == config.trustStoreConfig;
-        }
-
-        return keyStoreEquals && trustStoreEquals;
-    }
-
     /**
      * Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
      * @param protocol The protocol, see http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext
@@ -242,5 +220,59 @@ public class SslConfiguration {
             @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig) {
             // @formatter:on
         return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((keyStoreConfig == null) ? 0 : keyStoreConfig.hashCode());
+        result = prime * result + ((protocol == null) ? 0 : protocol.hashCode());
+        result = prime * result + ((sslContext == null) ? 0 : sslContext.hashCode());
+        result = prime * result + ((trustStoreConfig == null) ? 0 : trustStoreConfig.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SslConfiguration other = (SslConfiguration) obj;
+        if (keyStoreConfig == null) {
+            if (other.keyStoreConfig != null) {
+                return false;
+            }
+        } else if (!keyStoreConfig.equals(other.keyStoreConfig)) {
+            return false;
+        }
+        if (protocol == null) {
+            if (other.protocol != null) {
+                return false;
+            }
+        } else if (!protocol.equals(other.protocol)) {
+            return false;
+        }
+        if (sslContext == null) {
+            if (other.sslContext != null) {
+                return false;
+            }
+        } else if (!sslContext.equals(other.sslContext)) {
+            return false;
+        }
+        if (trustStoreConfig == null) {
+            if (other.trustStoreConfig != null) {
+                return false;
+            }
+        } else if (!trustStoreConfig.equals(other.trustStoreConfig)) {
+            return false;
+        }
+        return true;
     }
 }

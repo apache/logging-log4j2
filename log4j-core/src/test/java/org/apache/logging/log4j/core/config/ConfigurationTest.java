@@ -89,7 +89,7 @@ public class ConfigurationTest {
 
     @Before
     public void setUp() throws Exception {
-        this.ctx = this.init.getContext();
+        this.ctx = this.init.getLoggerContext();
     }
 
     @Test
@@ -98,6 +98,12 @@ public class ConfigurationTest {
         final Map<String, Appender> appenders = configuration.getAppenders();
         assertThat(appenders, is(notNullValue()));
         assertThat(appenders.size(), is(equalTo(3)));
+    }
+
+    @Test
+    public void testConfigurationLoggerContext() throws Exception {
+        final Configuration configuration = this.ctx.getConfiguration();
+        assertThat(configuration.getLoggerContext(), is(notNullValue()));
     }
 
     @Test

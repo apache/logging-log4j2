@@ -17,15 +17,18 @@
 
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.experimental.categories.Category;
 
+@Category(Layouts.Xml.class)
 public class MarkerMixInXmlTest extends MarkerMixInTest {
 
     @Override
     protected ObjectMapper newObjectMapper() {
-        return new Log4jXmlObjectMapper();
+        return new Log4jXmlObjectMapper(true);
     }
 
 }

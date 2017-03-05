@@ -16,14 +16,17 @@
  */
 package org.apache.logging.log4j.core;
 
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Verifies steady state logging is GC-free.
  *
  * @see <a href="https://github.com/google/allocation-instrumenter">https://github.com/google/allocation-instrumenter</a>
  */
+@Category(AsyncLoggers.class)
 public class GcFreeAsynchronousLoggingTest {
 
     @Test
@@ -35,6 +38,8 @@ public class GcFreeAsynchronousLoggingTest {
      * This code runs in a separate process, instrumented with the Google Allocation Instrumenter.
      */
     public static void main(final String[] args) throws Exception {
+        System.setProperty("log4j2.garbagefree.threadContextMap", "true");
+        System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
         System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
         GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeAsynchronousLoggingTest.class);
     }

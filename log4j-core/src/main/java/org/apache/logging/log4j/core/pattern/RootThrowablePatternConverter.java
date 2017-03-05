@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Outputs the Throwable portion of the LoggingEvent as a full stack trace
@@ -71,9 +71,9 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');
             }
-            if (!options.allLines() || !Constants.LINE_SEPARATOR.equals(options.getSeparator())) {
+            if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator())) {
                 final StringBuilder sb = new StringBuilder();
-                final String[] array = trace.split(Constants.LINE_SEPARATOR);
+                final String[] array = trace.split(Strings.LINE_SEPARATOR);
                 final int limit = options.minLines(array.length) - 1;
                 for (int i = 0; i <= limit; ++i) {
                     sb.append(array[i]);

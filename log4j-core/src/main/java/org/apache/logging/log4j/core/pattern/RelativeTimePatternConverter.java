@@ -20,19 +20,16 @@ import java.lang.management.ManagementFactory;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Returns the relative time in milliseconds since JVM Startup.
  */
 @Plugin(name = "RelativeTimePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "r", "relative" })
+@PerformanceSensitive("allocation")
 public class RelativeTimePatternConverter extends LogEventPatternConverter {
-    /**
-     * Cached formatted timestamp.
-     */
-    private long lastTimestamp = Long.MIN_VALUE;
     private final long startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
-    private String relative;
 
     /**
      * Private constructor.
@@ -47,8 +44,7 @@ public class RelativeTimePatternConverter extends LogEventPatternConverter {
      * @param options options, currently ignored, may be null.
      * @return instance of RelativeTimePatternConverter.
      */
-    public static RelativeTimePatternConverter newInstance(
-        final String[] options) {
+    public static RelativeTimePatternConverter newInstance(final String[] options) {
         return new RelativeTimePatternConverter();
     }
 
@@ -58,13 +54,6 @@ public class RelativeTimePatternConverter extends LogEventPatternConverter {
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final long timestamp = event.getTimeMillis();
-
-        synchronized (this) {
-            if (timestamp != lastTimestamp) {
-                lastTimestamp = timestamp;
-                relative = Long.toString(timestamp - startTime);
-            }
-        }
-        toAppendTo.append(relative);
+        toAppendTo.append(timestamp - startTime);
     }
 }

@@ -67,7 +67,7 @@ public class ObjectMessageTest {
         final String actual = msg.getFormattedMessage();
         assertEquals("Should use initial param value", "abc", actual);
     }
-    
+
     @Test
     public void testSerializeWithSerializableParam() {
         final BigDecimal big = BigDecimal.valueOf(123.456);
@@ -75,7 +75,7 @@ public class ObjectMessageTest {
         final ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
         assertEquals(msg, other);
     }
-    
+
     @Test
     public void testDeserializeNonSerializableParamEqualIfToStringSame() {
         class NonSerializable {
@@ -91,5 +91,19 @@ public class ObjectMessageTest {
 
         assertEquals(msg, other);
         assertEquals(other, msg);
+    }
+
+    @Test
+    public void formatTo_usesCachedMessageString() throws Exception {
+        final StringBuilder charSequence = new StringBuilder("initial value");
+        final ObjectMessage message = new ObjectMessage(charSequence);
+        assertEquals("initial value", message.getFormattedMessage());
+
+        charSequence.setLength(0);
+        charSequence.append("different value");
+
+        final StringBuilder result = new StringBuilder();
+        message.formatTo(result);
+        assertEquals("initial value", result.toString());
     }
 }

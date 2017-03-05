@@ -17,13 +17,16 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
 /**
  * Tests the DiscardingAsyncQueueFullPolicy class..
  */
+@Category(AsyncLoggers.class)
 public class DiscardingAsyncQueueFullPolicyTest {
 
     private static long currentThreadId() {
@@ -76,18 +79,18 @@ public class DiscardingAsyncQueueFullPolicyTest {
 
         for (final Level level : new Level[] {Level.ERROR, Level.FATAL, Level.OFF}) {
             assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level));
-            assertEquals(level.name(), EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level));
+            assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(otherThreadId(), level));
             assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level));
-            assertEquals(level.name(), EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level));
+            assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(otherThreadId(), level));
         }
     }
 
     @Test
-    public void testGetRouteEnqueuesIfOtherThreadQueueFullAndLevelMoreSpecificThanThreshold() throws Exception {
+    public void testGetRouteSynchronousIfOtherThreadQueueFullAndLevelMoreSpecificThanThreshold() throws Exception {
         final DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (final Level level : new Level[] {Level.ERROR, Level.FATAL, Level.OFF}) {
-            assertEquals(level.name(), EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level));
+            assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(otherThreadId(), level));
         }
     }
 

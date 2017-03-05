@@ -34,12 +34,19 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Filter based on data in a StructuredDataMessage.
  */
 @Plugin(name = "StructuredDataFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PerformanceSensitive("allocation")
 public final class StructuredDataFilter extends MapFilter {
+
+    private static final int MAX_BUFFER_SIZE = 2048;
+    private static ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
 
     private StructuredDataFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch,
                                  final Result onMismatch) {
@@ -66,10 +73,11 @@ public final class StructuredDataFilter extends MapFilter {
 
     protected Result filter(final StructuredDataMessage message) {
         boolean match = false;
-        for (final Map.Entry<String, List<String>> entry : getMap().entrySet()) {
-            final String toMatch = getValue(message, entry.getKey());
+        final IndexedReadOnlyStringMap map = getStringMap();
+        for (int i = 0; i < map.size(); i++) {
+            final StringBuilder toMatch = getValue(message, map.getKeyAt(i));
             if (toMatch != null) {
-                match = entry.getValue().contains(toMatch);
+                match = listContainsValue((List<String>) map.getValueAt(i), toMatch);
             } else {
                 match = false;
             }
@@ -80,18 +88,65 @@ public final class StructuredDataFilter extends MapFilter {
         return match ? onMatch : onMismatch;
     }
 
-    private String getValue(final StructuredDataMessage data, final String key) {
+    private StringBuilder getValue(final StructuredDataMessage data, final String key) {
+        final StringBuilder sb = getStringBuilder();
         if (key.equalsIgnoreCase("id")) {
-            return data.getId().toString();
+            data.getId().formatTo(sb);
+            return sb;
         } else if (key.equalsIgnoreCase("id.name")) {
-            return data.getId().getName();
+            return appendOrNull(data.getId().getName(), sb);
         } else if (key.equalsIgnoreCase("type")) {
-            return data.getType();
+            return appendOrNull(data.getType(), sb);
         } else if (key.equalsIgnoreCase("message")) {
-            return data.getFormattedMessage();
+            data.formatTo(sb);
+            return sb;
         } else {
-            return data.getData().get(key);
+            return appendOrNull(data.get(key), sb);
         }
+    }
+
+    private StringBuilder getStringBuilder() {
+        StringBuilder result = threadLocalStringBuilder.get();
+        if (result == null) {
+            result = new StringBuilder();
+            threadLocalStringBuilder.set(result);
+        }
+        if (result.length() > MAX_BUFFER_SIZE) {
+            result.setLength(MAX_BUFFER_SIZE);
+            result.trimToSize();
+        }
+        result.setLength(0);
+        return result;
+    }
+
+    private StringBuilder appendOrNull(final String value, final StringBuilder sb) {
+        if (value == null) {
+            return null;
+        }
+        sb.append(value);
+        return sb;
+    }
+
+    private boolean listContainsValue(final List<String> candidates, final StringBuilder toMatch) {
+        if (toMatch == null) {
+            for (int i = 0; i < candidates.size(); i++) {
+                final String candidate = candidates.get(i);
+                if (candidate == null) {
+                    return true;
+                }
+            }
+        } else {
+            for (int i = 0; i < candidates.size(); i++) {
+                final String candidate = candidates.get(i);
+                if (candidate == null) {
+                    return false;
+                }
+                if (StringBuilders.equals(candidate, 0, candidate.length(), toMatch, 0, toMatch.length())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

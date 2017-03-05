@@ -30,19 +30,18 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * {@link StringBuilderFormattable#formatTo(StringBuilder) formatTo(StringBuilder)} instead of
  * {@link Message#getFormattedMessage()} if the Message implements StringBuilderFormattable.
  * </p>
- *<p>
+ * <p>
  * Note: Message objects should not be considered to be thread safe nor should they be assumed to be
  * safely reusable even on the same thread. The logging system may provide information to the Message
  * objects and the Messages might be queued for asynchronous delivery. Thus, any modifications to a
  * Message object by an application should by avoided after the Message has been passed as a parameter on
  * a Logger method.
  * </p>
- * TODO Interfaces should rarely extend Serializable according to Effective Java 2nd Ed pg 291.
- * (RG) That section also says "If a class or interface exists primarily to participate in a framework that
- * requires all participants to implement Serializable, then it makes perfect sense for the class or
- * interface to implement or extend Serializable". Such is the case here as the LogEvent must be Serializable.
  *
  * @see StringBuilderFormattable
+ */
+/*
+ * Implementation note: this interface extends Serializable since LogEvents must be serializable.
  */
 public interface Message extends Serializable {
 
@@ -51,7 +50,15 @@ public interface Message extends Serializable {
      * appropriate way to format the data encapsulated in the Message. Messages that provide
      * more than one way of formatting the Message will implement MultiformatMessage.
      * <p>
-     * This method will not be called for Messages that implement the
+     * When configured to log asynchronously, this method is called before the Message is queued, unless this
+     * message implements {@link ReusableMessage} or is annotated with {@link AsynchronouslyFormattable}.
+     * This gives the Message implementation class a chance to create a formatted message String with the current value
+     * of any mutable objects.
+     * The intention is that the Message implementation caches this formatted message and returns it on subsequent
+     * calls. (See <a href="https://issues.apache.org/jira/browse/LOG4J2-763">LOG4J2-763</a>.)
+     * </p>
+     * <p>
+     * When logging synchronously, this method will not be called for Messages that implement the
      * {@link StringBuilderFormattable} interface: instead, the
      * {@link StringBuilderFormattable#formatTo(StringBuilder) formatTo(StringBuilder)} method will be called so the
      * Message can format its contents without creating intermediate String objects.

@@ -16,12 +16,16 @@
  */
 package org.apache.logging.log4j;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests {@link CloseableThreadContext}.
@@ -32,9 +36,9 @@ public class CloseableThreadContextTest {
 
     private final String key = "key";
     private final String value = "value";
-    
+
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @Test
     public void shouldAddAnEntryToTheMap() throws Exception {
@@ -184,4 +188,35 @@ public class CloseableThreadContextTest {
         assertThat(ThreadContext.get(key), is(originalMapValue));
         assertThat(ThreadContext.peek(), is(originalStackValue));
     }
+
+    @Test
+    public void putAllWillPutAllValues() throws Exception {
+
+        final String oldValue = "oldValue";
+        ThreadContext.put(key, oldValue);
+
+        final Map<String, String> valuesToPut = new HashMap<>();
+        valuesToPut.put(key, value);
+
+        try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.putAll(valuesToPut)) {
+            assertThat(ThreadContext.get(key), is(value));
+        }
+        assertThat(ThreadContext.get(key), is(oldValue));
+
+    }
+
+    @Test
+    public void pushAllWillPushAllValues() throws Exception {
+
+        ThreadContext.push(key);
+        final List<String> messages = ThreadContext.getImmutableStack().asList();
+        ThreadContext.pop();
+
+        try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.pushAll(messages)) {
+            assertThat(ThreadContext.peek(), is(key));
+        }
+        assertThat(ThreadContext.peek(), is(""));
+
+    }
+
 }

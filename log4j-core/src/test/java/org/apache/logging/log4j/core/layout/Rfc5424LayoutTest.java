@@ -342,7 +342,7 @@ public class Rfc5424LayoutTest {
     public void testDiscardEmptyLoggerFields() {
         final String mdcId = "RequestContext";
 
-        final List<String> expectedToContain = Arrays.asList(
+        Arrays.asList(
                 "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"  +
                         "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"
         );

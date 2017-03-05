@@ -38,13 +38,13 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
     protected static CSVFormat createFormat(final String format, final Character delimiter, final Character escape,
             final Character quote, final QuoteMode quoteMode, final String nullString, final String recordSeparator) {
         CSVFormat csvFormat = CSVFormat.valueOf(format);
-        if (delimiter != null) {
+        if (isNotNul(delimiter)) {
             csvFormat = csvFormat.withDelimiter(delimiter);
         }
-        if (escape != null) {
+        if (isNotNul(escape)) {
             csvFormat = csvFormat.withEscape(escape);
         }
-        if (quote != null) {
+        if (isNotNul(quote)) {
             csvFormat = csvFormat.withQuote(quote);
         }
         if (quoteMode != null) {
@@ -59,12 +59,17 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
         return csvFormat;
     }
 
+    private static boolean isNotNul(final Character character) {
+        return character != null && character.charValue() != 0;
+    }
+
     private final CSVFormat format;
 
     protected AbstractCsvLayout(final Configuration config, final Charset charset, final CSVFormat csvFormat,
             final String header, final String footer) {
-        super(config, charset, PatternLayout.createSerializer(config, null, header, null, null, false, false),
-                PatternLayout.createSerializer(config, null, footer, null, null, false, false));
+        super(config, charset, 
+                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(header).build(),
+                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footer).build());
         this.format = csvFormat;
     }
 

@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://logging.apache.org/log4j/2.0/config" targetNamespace="http://logging.apache.org/log4j/2.0/config" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:element name="Configuration" type="ConfigurationType"/>
     <xs:complexType name="ConfigurationType">
         <xs:sequence>
@@ -24,12 +24,12 @@
                 <xs:element name="CustomLevels" type="CustomLevelsType"/>
                 <xs:element name="CustomLevel" type="CustomLevelType"/>
             </xs:choice>
-            <xs:element name="Properties" type="PropertiesType"/>
+            <xs:element name="Properties" type="PropertiesType" minOccurs="0"/>
             <xs:choice minOccurs="0" maxOccurs="1">
                 <xs:element name="Filters" type="FiltersType"/>
                 <xs:element name="Filter" type="FilterType"/>
             </xs:choice>
-            <xs:element name="ThresholdFilter" type="ThresholdFilterType"/>
+            <xs:element name="ThresholdFilter" type="ThresholdFilterType" minOccurs="0"/>
             <xs:element name="Appenders" type="AppendersType"/>
             <xs:element name="Loggers" type="LoggersType"/>
         </xs:sequence>
@@ -38,6 +38,7 @@
         <xs:attribute name="strict" type="xs:string"/>
         <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="advertiser" type="xs:string"/>
+        <xs:attribute name="shutdownTimeout" type="xs:string" use="optional"/>
         <xs:attribute name="schema" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="PropertiesType">
@@ -80,10 +81,26 @@
     </xs:complexType>
     <xs:complexType name="AppendersType">
         <xs:sequence>
-            <xs:element name="Appender" type="AppenderType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Appender" type="AppenderType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Console" type="ConsoleType" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="AppenderRefType">
+ <xs:complexType name="ConsoleType">
+        <xs:sequence>
+            <xs:element name="PatternLayout" type="PatternLayoutType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="name" use="required"/>
+        <xs:attribute type="xs:string" name="target" use="required"/>
+        <xs:attribute type="xs:string" name="follow" use="optional"/>
+  </xs:complexType>
+     <xs:complexType name="PatternLayoutType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="pattern" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+               <xs:complexType name="AppenderRefType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="ref" type="xs:string" use="required"/>

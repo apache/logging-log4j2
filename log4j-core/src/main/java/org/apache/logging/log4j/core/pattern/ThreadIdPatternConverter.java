@@ -18,14 +18,16 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Formats the event thread ID.
- * 
+ *
  * @since 2.6
  */
 @Plugin(name = "ThreadIdPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "T", "tid", "threadId" })
+@PerformanceSensitive("allocation")
 public final class ThreadIdPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.

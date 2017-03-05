@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
 import org.apache.logging.log4j.util.Strings;
@@ -34,6 +35,46 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected static final String DEFAULT_EOL = "\r\n";
     protected static final String COMPACT_EOL = Strings.EMPTY;
+
+    public static abstract class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B> {
+
+        @PluginBuilderAttribute
+        private boolean eventEol;
+        
+        @PluginBuilderAttribute
+        private boolean compact;
+        
+        @PluginBuilderAttribute
+        private boolean complete;
+
+        public boolean getEventEol() {
+            return eventEol;
+        }
+
+        public boolean isCompact() {
+            return compact;
+        }
+
+        public boolean isComplete() {
+            return complete;
+        }
+
+        public B setEventEol(final boolean eventEol) {
+            this.eventEol = eventEol;
+            return asBuilder();
+        }
+
+        public B setCompact(final boolean compact) {
+            this.compact = compact;
+            return asBuilder();
+        }
+
+        public B setComplete(final boolean complete) {
+            this.complete = complete;
+            return asBuilder();
+        }
+
+    }
 
     protected final String eol;
     protected final ObjectWriter objectWriter;

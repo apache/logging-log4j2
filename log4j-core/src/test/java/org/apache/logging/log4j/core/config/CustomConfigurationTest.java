@@ -21,7 +21,6 @@ import java.io.Serializable;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
@@ -66,7 +65,7 @@ public class CustomConfigurationTest {
     @Test
     public void testConfig() {
         // don't bother using "error" since that's the default; try another level
-        final LoggerContext ctx = this.init.getContext();
+        final LoggerContext ctx = this.init.getLoggerContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
         assertThat(config, instanceOf(XmlConfiguration.class));

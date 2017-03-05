@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.TrustManagerFactory;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -28,7 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Configuration of the TrustStore
  */
-@Plugin(name = "TrustStore", category = "Core", printObject = true)
+@Plugin(name = "TrustStore", category = Core.CATEGORY_NAME, printObject = true)
 public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     private final String trustManagerFactoryAlgorithm;
@@ -52,13 +53,13 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
      * @param trustManagerFactoryAlgorithm
      *        The standard name of the requested trust management algorithm. See the Java Secure Socket Extension Reference Guide for information these names.
      * @return a new TrustStoreConfiguration
-     * @throws StoreConfigurationException
+     * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
      */
     @PluginFactory
     public static TrustStoreConfiguration createKeyStoreConfiguration(
             // @formatter:off
             @PluginAttribute("location") final String location,
-            @PluginAttribute("password") final String password,
+            @PluginAttribute(value = "password", sensitive = true) final String password,
             @PluginAttribute("type") final String keyStoreType, 
             @PluginAttribute("trustManagerFactoryAlgorithm") final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
             // @formatter:on
@@ -69,5 +70,36 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
         final TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(this.trustManagerFactoryAlgorithm);
         tmFactory.init(this.getKeyStore());
         return tmFactory;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((trustManagerFactoryAlgorithm == null) ? 0 : trustManagerFactoryAlgorithm.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TrustStoreConfiguration other = (TrustStoreConfiguration) obj;
+        if (trustManagerFactoryAlgorithm == null) {
+            if (other.trustManagerFactoryAlgorithm != null) {
+                return false;
+            }
+        } else if (!trustManagerFactoryAlgorithm.equals(other.trustManagerFactoryAlgorithm)) {
+            return false;
+        }
+        return true;
     }
 }

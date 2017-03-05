@@ -19,17 +19,17 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
@@ -37,9 +37,76 @@ import org.apache.logging.log4j.core.util.Integers;
 /**
  * File Appender.
  */
-@Plugin(name = "RandomAccessFile", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "RandomAccessFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RandomAccessFileAppender extends AbstractOutputStreamAppender<RandomAccessFileManager> {
 
+    /**
+     * Builds RandomAccessFileAppender instances.
+     * 
+     * @param <B>
+     *            The type to build
+     */
+    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<RandomAccessFileAppender> {
+
+        @PluginBuilderAttribute("fileName")
+        private String fileName;
+
+        @PluginBuilderAttribute("append")
+        private boolean append;
+
+        @PluginBuilderAttribute("advertise")
+        private boolean advertise;
+
+        @PluginBuilderAttribute("advertiseURI")
+        private String advertiseURI;
+
+        @Override
+        public RandomAccessFileAppender build() {
+            final String name = getName();
+            if (name == null) {
+                LOGGER.error("No name provided for FileAppender");
+                return null;
+            }
+
+            if (fileName == null) {
+                LOGGER.error("No filename provided for FileAppender with name " + name);
+                return null;
+            }
+            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            final boolean immediateFlush = isImmediateFlush();
+            final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(fileName, append,
+                    immediateFlush, getBufferSize(), advertiseURI, layout, null);
+            if (manager == null) {
+                return null;
+            }
+
+            return new RandomAccessFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(),
+                    immediateFlush, advertise ? getConfiguration().getAdvertiser() : null);
+        }
+
+        public B setFileName(final String fileName) {
+            this.fileName = fileName;
+            return asBuilder();
+        }
+
+        public B setAppend(final boolean append) {
+            this.append = append;
+            return asBuilder();
+        }
+
+        public B setAdvertise(final boolean advertise) {
+            this.advertise = advertise;
+            return asBuilder();
+        }
+
+        public B setAdvertiseURI(final String advertiseURI) {
+            this.advertiseURI = advertiseURI;
+            return asBuilder();
+        }
+
+    }
+    
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;
@@ -62,11 +129,14 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         if (advertiser != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
+        return true;
     }
 
     /**
@@ -127,22 +197,23 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
      *            advertised, "false" otherwise.
      * @param advertiseURI The advertised URI which can be used to retrieve the
      *            file contents.
-     * @param config The Configuration.
+     * @param configuration The Configuration.
      * @return The FileAppender.
+     * @deprecated Use {@link #newBuilder()}.
      */
-    @PluginFactory
-    public static RandomAccessFileAppender createAppender(
-            @PluginAttribute("fileName") final String fileName,
-            @PluginAttribute("append") final String append,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("immediateFlush") final String immediateFlush,
-            @PluginAttribute("bufferSize") final String bufferSizeStr,
-            @PluginAttribute("ignoreExceptions") final String ignore,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("advertise") final String advertise,
-            @PluginAttribute("advertiseURI") final String advertiseURI,
-            @PluginConfiguration final Configuration config) {
+    @Deprecated
+    public static <B extends Builder<B>> RandomAccessFileAppender createAppender(
+            final String fileName,
+            final String append,
+            final String name,
+            final String immediateFlush,
+            final String bufferSizeStr,
+            final String ignore,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String advertise,
+            final String advertiseURI,
+            final Configuration configuration) {
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
@@ -150,29 +221,28 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final int bufferSize = Integers.parseInt(bufferSizeStr, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
-        if (name == null) {
-            LOGGER.error("No name provided for FileAppender");
-            return null;
-        }
-
-        if (fileName == null) {
-            LOGGER.error("No filename provided for FileAppender with name "
-                    + name);
-            return null;
-        }
-        if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
-        }
-        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-                fileName, isAppend, isFlush, bufferSize, advertiseURI, layout
-        );
-        if (manager == null) {
-            return null;
-        }
-
-        return new RandomAccessFileAppender(
-                name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
-                isAdvertise ? config.getAdvertiser() : null
-        );
+        return RandomAccessFileAppender.<B>newBuilder()
+            .setAdvertise(isAdvertise)
+            .setAdvertiseURI(advertiseURI)
+            .setAppend(isAppend)
+            .withBufferSize(bufferSize)
+            .setConfiguration(configuration)
+            .setFileName(fileName)
+            .withFilter(filter)
+            .withIgnoreExceptions(ignoreExceptions)
+            .withImmediateFlush(isFlush)
+            .withLayout(layout)
+            .withName(name)
+            .build();
     }
+    
+    /**
+     * Creates a builder for a RandomAccessFileAppender.
+     * @return a builder for a RandomAccessFileAppender.
+     */
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
+
 }

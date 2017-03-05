@@ -144,17 +144,17 @@ public class StrSubstitutor implements ConfigurationAware {
      * Constant for the default escape character.
      */
     public static final char DEFAULT_ESCAPE = '$';
-    
+
     /**
      * Constant for the default variable prefix.
      */
     public static final StrMatcher DEFAULT_PREFIX = StrMatcher.stringMatcher(DEFAULT_ESCAPE + "{");
-    
+
     /**
      * Constant for the default variable suffix.
      */
     public static final StrMatcher DEFAULT_SUFFIX = StrMatcher.stringMatcher("}");
-    
+
     /**
      * Constant for the default value delimiter of a variable.
      */
@@ -185,7 +185,7 @@ public class StrSubstitutor implements ConfigurationAware {
     /**
      * The flag whether substitution in variable names is enabled.
      */
-    private boolean enableSubstitutionInVariables;
+    private boolean enableSubstitutionInVariables = true;
     /**
      * The currently active Configuration for use by ConfigurationAware StrLookup implementations.
      */
@@ -199,6 +199,7 @@ public class StrSubstitutor implements ConfigurationAware {
     public StrSubstitutor() {
         this(null, DEFAULT_PREFIX, DEFAULT_SUFFIX, DEFAULT_ESCAPE);
     }
+
     /**
      * Creates a new instance and initializes it. Uses defaults for variable
      * prefix and suffix and the escaping character.
@@ -248,6 +249,16 @@ public class StrSubstitutor implements ConfigurationAware {
     public StrSubstitutor(final Map<String, String> valueMap, final String prefix, final String suffix,
                               final char escape, final String valueDelimiter) {
         this(new MapLookup(valueMap), prefix, suffix, escape, valueDelimiter);
+    }
+
+    /**
+     * Creates a new instance and initializes it. Uses defaults for variable
+     * prefix and suffix and the escaping character.
+     *
+     * @param properties  the map with the variables' values, may be null
+     */
+    public StrSubstitutor(final Properties properties) {
+        this(toTypeSafeMap(properties));
     }
 
     /**
@@ -378,6 +389,14 @@ public class StrSubstitutor implements ConfigurationAware {
             valueMap.put(propName, propValue);
         }
         return StrSubstitutor.replace(source, valueMap);
+    }
+
+    private static Map<String, String> toTypeSafeMap(final Properties properties) {
+        final Map<String, String> map = new HashMap<>(properties.size());
+        for (final String name : properties.stringPropertyNames()) {
+            map.put(name, properties.getProperty(name));
+        }
+        return map;
     }
 
     //-----------------------------------------------------------------------
@@ -881,8 +900,7 @@ public class StrSubstitutor implements ConfigurationAware {
         int bufEnd = offset + length;
         int pos = offset;
         while (pos < bufEnd) {
-            final int startMatchLen = prefixMatcher.isMatch(chars, pos, offset,
-                    bufEnd);
+            final int startMatchLen = prefixMatcher.isMatch(chars, pos, offset, bufEnd);
             if (startMatchLen == 0) {
                 pos++;
             } else {
@@ -902,24 +920,20 @@ public class StrSubstitutor implements ConfigurationAware {
                     int nestedVarCount = 0;
                     while (pos < bufEnd) {
                         if (substitutionInVariablesEnabled
-                                && (endMatchLen = prefixMatcher.isMatch(chars,
-                                        pos, offset, bufEnd)) != 0) {
+                                && (endMatchLen = prefixMatcher.isMatch(chars, pos, offset, bufEnd)) != 0) {
                             // found a nested variable start
                             nestedVarCount++;
                             pos += endMatchLen;
                             continue;
                         }
 
-                        endMatchLen = suffixMatcher.isMatch(chars, pos, offset,
-                                bufEnd);
+                        endMatchLen = suffixMatcher.isMatch(chars, pos, offset, bufEnd);
                         if (endMatchLen == 0) {
                             pos++;
                         } else {
                             // found variable end marker
                             if (nestedVarCount == 0) {
-                                String varNameExpr = new String(chars, startPos
-                                        + startMatchLen, pos - startPos
-                                        - startMatchLen);
+                                String varNameExpr = new String(chars, startPos + startMatchLen, pos - startPos - startMatchLen);
                                 if (substitutionInVariablesEnabled) {
                                     final StringBuilder bufName = new StringBuilder(varNameExpr);
                                     substitute(event, bufName, 0, bufName.length());
@@ -951,8 +965,7 @@ public class StrSubstitutor implements ConfigurationAware {
                                 // on the first call initialize priorVariables
                                 if (priorVariables == null) {
                                     priorVariables = new ArrayList<>();
-                                    priorVariables.add(new String(chars,
-                                            offset, length + lengthChange));
+                                    priorVariables.add(new String(chars, offset, length + lengthChange));
                                 }
 
                                 // handle cyclic substitution
@@ -960,8 +973,7 @@ public class StrSubstitutor implements ConfigurationAware {
                                 priorVariables.add(varName);
 
                                 // resolve the variable
-                                String varValue = resolveVariable(event, varName, buf,
-                                        startPos, endPos);
+                                String varValue = resolveVariable(event, varName, buf, startPos, endPos);
                                 if (varValue == null) {
                                     varValue = varDefaultValue;
                                 }
@@ -970,20 +982,16 @@ public class StrSubstitutor implements ConfigurationAware {
                                     final int varLen = varValue.length();
                                     buf.replace(startPos, endPos, varValue);
                                     altered = true;
-                                    int change = substitute(event, buf, startPos,
-                                            varLen, priorVariables);
-                                    change = change
-                                            + (varLen - (endPos - startPos));
+                                    int change = substitute(event, buf, startPos, varLen, priorVariables);
+                                    change = change + (varLen - (endPos - startPos));
                                     pos += change;
                                     bufEnd += change;
                                     lengthChange += change;
-                                    chars = getChars(buf); // in case buffer was
-                                                        // altered
+                                    chars = getChars(buf); // in case buffer was altered
                                 }
 
                                 // remove variable from the cyclic stack
-                                priorVariables
-                                        .remove(priorVariables.size() - 1);
+                                priorVariables.remove(priorVariables.size() - 1);
                                 break;
                             }
                             nestedVarCount--;
@@ -1321,7 +1329,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * Sets a flag whether substitution is done in variable names. If set to
      * <b>true</b>, the names of variables can contain other variables which are
      * processed first before the original variable is evaluated, e.g.
-     * <code>${jre-${java.version}}</code>. The default value is <b>false</b>.
+     * <code>${jre-${java.version}}</code>. The default value is <b>true</b>.
      *
      * @param enableSubstitutionInVariables the new value of the flag
      */

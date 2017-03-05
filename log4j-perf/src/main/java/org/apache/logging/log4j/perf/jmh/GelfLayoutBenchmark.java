@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -78,12 +79,15 @@ public class GelfLayoutBenchmark {
     public void setUp() {
         System.setProperty("log4j2.enable.direct.encoders", "true");
 
-        appender = new DemoAppender(new GelfLayout(
-                "host",
-                ADDITIONAL_FIELDS,
-                GelfLayout.CompressionType.OFF,
-                0,
-                true));
+        appender = new DemoAppender(GelfLayout.newBuilder()
+                .setConfiguration(new NullConfiguration())
+                .setHost("host")
+                .setAdditionalFields(ADDITIONAL_FIELDS)
+                .setCompressionType(GelfLayout.CompressionType.OFF)
+                .setCompressionThreshold(0)
+                .setIncludeStacktrace(true)
+                .setIncludeThreadContext(true)
+                .build());
 
         j = 0;
     }

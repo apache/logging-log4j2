@@ -35,30 +35,39 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.IndexedStringMap;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 
 /**
  * A Filter that operates on a Map.
  */
 @Plugin(name = "MapFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PerformanceSensitive("allocation")
 public class MapFilter extends AbstractFilter {
 
-    private final Map<String, List<String>> map;
-
+    private final IndexedStringMap map;
     private final boolean isAnd;
 
-    protected MapFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch,
-                        final Result onMismatch) {
+    protected MapFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
-        Objects.requireNonNull(map, "map cannot be null");
         this.isAnd = oper;
-        this.map = map;
+        Objects.requireNonNull(map, "map cannot be null");
+
+        this.map = new SortedArrayStringMap(map.size());
+        for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
+            this.map.putValue(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
                          final Throwable t) {
         if (msg instanceof MapMessage) {
-            return filter(((MapMessage) msg).getData()) ? onMatch : onMismatch;
+            return filter((MapMessage) msg) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
     }
@@ -67,20 +76,43 @@ public class MapFilter extends AbstractFilter {
     public Result filter(final LogEvent event) {
         final Message msg = event.getMessage();
         if (msg instanceof MapMessage) {
-            return filter(((MapMessage) msg).getData()) ? onMatch : onMismatch;
+            return filter((MapMessage) msg) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
     }
 
+    protected boolean filter(final MapMessage mapMessage) {
+        boolean match = false;
+        for (int i = 0; i < map.size(); i++) {
+            final String toMatch = mapMessage.get(map.getKeyAt(i));
+            match = toMatch != null && ((List<String>) map.getValueAt(i)).contains(toMatch);
+
+            if ((!isAnd && match) || (isAnd && !match)) {
+                break;
+            }
+        }
+        return match;
+    }
+
     protected boolean filter(final Map<String, String> data) {
         boolean match = false;
-        for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
-            final String toMatch = data.get(entry.getKey());
-            if (toMatch != null) {
-                match = entry.getValue().contains(toMatch);
-            } else {
-                match = false;
+        for (int i = 0; i < map.size(); i++) {
+            final String toMatch = data.get(map.getKeyAt(i));
+            match = toMatch != null && ((List<String>) map.getValueAt(i)).contains(toMatch);
+
+            if ((!isAnd && match) || (isAnd && !match)) {
+                break;
             }
+        }
+        return match;
+    }
+
+    protected boolean filter(final ReadOnlyStringMap data) {
+        boolean match = false;
+        for (int i = 0; i < map.size(); i++) {
+            final String toMatch = data.getValue(map.getKeyAt(i));
+            match = toMatch != null && ((List<String>) map.getValueAt(i)).contains(toMatch);
+
             if ((!isAnd && match) || (isAnd && !match)) {
                 break;
             }
@@ -89,20 +121,87 @@ public class MapFilter extends AbstractFilter {
     }
 
     @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return Result.NEUTRAL;
+    }
+
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("isAnd=").append(isAnd);
         if (map.size() > 0) {
             sb.append(", {");
-            boolean first = true;
-            for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
-                if (!first) {
+            for (int i = 0; i < map.size(); i++) {
+                if (i > 0) {
                     sb.append(", ");
                 }
-                first = false;
-                final List<String> list = entry.getValue();
+                final List<String> list = map.getValueAt(i);
                 final String value = list.size() > 1 ? list.get(0) : list.toString();
-                sb.append(entry.getKey()).append('=').append(value);
+                sb.append(map.getKeyAt(i)).append('=').append(value);
             }
             sb.append('}');
         }
@@ -113,7 +212,25 @@ public class MapFilter extends AbstractFilter {
         return isAnd;
     }
 
+    /** @deprecated  use {@link #getStringMap()} instead */
+    @Deprecated
     protected Map<String, List<String>> getMap() {
+        final Map<String, List<String>> result = new HashMap<>(map.size());
+        map.forEach(new BiConsumer<String, List<String>>() {
+            @Override
+            public void accept(final String key, final List<String> value) {
+                result.put(key, value);
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Returns the IndexedStringMap with {@code List<String>} values that this MapFilter was constructed with.
+     * @return the IndexedStringMap with {@code List<String>} values to match against
+     * @since 2.8
+     */
+    protected IndexedReadOnlyStringMap getStringMap() {
         return map;
     }
 

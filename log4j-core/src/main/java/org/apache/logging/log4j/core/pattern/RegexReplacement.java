@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -27,7 +28,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Replace tokens in the LogEvent message.
  */
-@Plugin(name = "replace", category = "Core", printObject = true)
+@Plugin(name = "replace", category = Core.CATEGORY_NAME, printObject = true)
 public final class RegexReplacement {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

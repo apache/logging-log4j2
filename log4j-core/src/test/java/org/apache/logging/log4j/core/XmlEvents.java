@@ -21,6 +21,7 @@ import java.util.Locale;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -52,6 +53,7 @@ public class XmlEvents {
 
     }
 
+    @AsynchronouslyFormattable
     private static class TransferMessage extends StructuredDataMessage {
 
         /**

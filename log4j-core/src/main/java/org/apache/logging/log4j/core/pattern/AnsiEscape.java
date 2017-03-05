@@ -40,7 +40,7 @@ public enum AnsiEscape {
      * </p>
      */
     CSI("\u001b["),
-    
+
     /**
      * Escape suffix.
      */
@@ -216,6 +216,8 @@ public enum AnsiEscape {
      */
     BG_WHITE("47");
 
+    private static final String DEFAULT_STYLE = CSI.getCode() + SUFFIX.getCode();
+
     private final String code;
 
     AnsiEscape(final String code) {
@@ -228,7 +230,7 @@ public enum AnsiEscape {
      * @return the default style
      */
     public static String getDefaultStyle() {
-        return CSI.getCode() + SUFFIX.getCode();
+        return DEFAULT_STYLE;
     }
 
     /**

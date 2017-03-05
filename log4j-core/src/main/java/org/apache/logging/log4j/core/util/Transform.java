@@ -43,7 +43,7 @@ public final class Transform {
      * @return The input string with the special characters replaced.
      */
     public static String escapeHtmlTags(final String input) {
-        //Check if the string is null, zero length or devoid of special characters
+        // Check if the string is null, zero length or devoid of special characters
         // if so, return what was sent in.
 
         if (Strings.isEmpty(input)

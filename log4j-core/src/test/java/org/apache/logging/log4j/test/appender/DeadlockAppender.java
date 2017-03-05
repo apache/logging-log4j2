@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.test.appender;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -29,7 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name="Deadlock", category ="Core", elementType="appender", printObject=true)
+@Plugin(name="Deadlock", category ="Core", elementType=Appender.ELEMENT_TYPE, printObject=true)
 public class DeadlockAppender extends AbstractAppender {
 
     private WorkerThread thread = null;
@@ -46,14 +49,17 @@ public class DeadlockAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         thread.start();
         try {
             thread.join();
         } catch (final Exception ex) {
             System.out.println("Thread interrupted");
         }
+        setStopped();
+        return true;
     }
 
     @Override

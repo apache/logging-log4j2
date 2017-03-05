@@ -25,6 +25,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -34,6 +36,56 @@ import org.apache.logging.log4j.status.StatusLogger;
  *            The Class that the Layout will format the LogEvent into.
  */
 public abstract class AbstractLayout<T extends Serializable> implements Layout<T> {
+
+    /**
+     * Subclasses can extend this abstract Builder.
+     *
+     * @param <B> The type to build.
+     */
+    public abstract static class Builder<B extends Builder<B>> {
+
+        @PluginConfiguration
+        private Configuration configuration;
+
+        @PluginBuilderAttribute
+        private byte[] footer;
+
+        @PluginBuilderAttribute
+        private byte[] header;
+
+        @SuppressWarnings("unchecked")
+        public B asBuilder() {
+            return (B) this;
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+        public byte[] getFooter() {
+            return footer;
+        }
+
+        public byte[] getHeader() {
+            return header;
+        }
+
+        public B setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return asBuilder();
+        }
+
+        public B setFooter(final byte[] footer) {
+            this.footer = footer;
+            return asBuilder();
+        }
+
+        public B setHeader(final byte[] header) {
+            this.header = header;
+            return asBuilder();
+        }
+
+    }
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -170,15 +222,17 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      */
     public static void writeTo(final byte[] data, int offset, int length, final ByteBufferDestination destination) {
         int chunk = 0;
-        ByteBuffer buffer = destination.getByteBuffer();
-        do {
-            if (length > buffer.remaining()) {
-                buffer = destination.drain(buffer);
-            }
-            chunk = Math.min(length, buffer.remaining());
-            buffer.put(data, offset, chunk);
-            offset += chunk;
-            length -= chunk;
-        } while (length > 0);
+        synchronized (destination) {
+            ByteBuffer buffer = destination.getByteBuffer();
+            do {
+                if (length > buffer.remaining()) {
+                    buffer = destination.drain(buffer);
+                }
+                chunk = Math.min(length, buffer.remaining());
+                buffer.put(data, offset, chunk);
+                offset += chunk;
+                length -= chunk;
+            } while (length > 0);
+        }
     }
 }

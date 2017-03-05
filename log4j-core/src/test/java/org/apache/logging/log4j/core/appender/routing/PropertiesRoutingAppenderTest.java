@@ -44,7 +44,7 @@ public class PropertiesRoutingAppenderTest {
 
     private ListAppender app;
 
-    private LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain rules = loggerContextRule.withCleanFilesRule(UNKNOWN_LOG_FILE, ALERT_LOG_FILE, ACTIVITY_LOG_FILE);
@@ -57,7 +57,7 @@ public class PropertiesRoutingAppenderTest {
     @After
     public void tearDown() throws Exception {
         this.app.clear();
-        this.loggerContextRule.getContext().stop();
+        this.loggerContextRule.getLoggerContext().stop();
     }
 
     @Test

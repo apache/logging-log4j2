@@ -32,7 +32,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
+import org.apache.logging.log4j.junit.CleanFolders;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -49,8 +51,8 @@ public class OnStartupTriggeringPolicyTest {
     private static final String TEST_DATA = "Hello world!";
     private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yyyy");
 
-    // @Rule
-    // public CleanFolders rule = new CleanFolders("target/rollOnStartup");
+    @Rule
+    public CleanFolders rule = new CleanFolders("target/rollOnStartup");
 
     @Test
     public void testPolicy() throws Exception {
@@ -75,17 +77,14 @@ public class OnStartupTriggeringPolicyTest {
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
                 configuration);
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
-        final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
-                policy, strategy, null, layout, 8192, true);
-        try {
+        try (final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
+                policy, strategy, null, layout, 8192, true, false, configuration)) {
             manager.initialize();
-            String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());
+            final String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());
             assertTrue(target.toString() + ", files = " + files, Files.exists(target));
             assertEquals(target.toString(), 0, Files.size(target));
-            assertTrue(rolled.toString() + ", files = " + files, Files.exists(rolled));
+            assertTrue("Missing: " + rolled.toString() + ", files on disk = " + files, Files.exists(rolled));
             assertEquals(rolled.toString(), size, Files.size(rolled));
-        } finally {
-            manager.release();
         }
     }
 

@@ -1094,7 +1094,8 @@ public final class Generate {
             sb.append(String.format(phase2, ""));
         }
 
-        sb.append(String.format("}%n", "")); // yes, does not use args to apply %n
+        sb.append('}');
+        sb.append(System.getProperty("line.separator"));
         return sb.toString();
     }
 

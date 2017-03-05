@@ -18,16 +18,17 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
@@ -36,14 +37,270 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * The Syslog Appender.
  */
-@Plugin(name = "Syslog", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Syslog", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class SyslogAppender extends SocketAppender {
 
+    public static class Builder<B extends Builder<B>> extends AbstractBuilder<B>
+            implements org.apache.logging.log4j.core.util.Builder<SocketAppender> {
+
+        @PluginBuilderAttribute(value = "facility")
+        private Facility facility = Facility.LOCAL0;
+
+        @PluginBuilderAttribute("id")
+        private String id;
+        
+        @PluginBuilderAttribute(value = "enterpriseNumber")
+        private int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
+        
+        @PluginBuilderAttribute(value = "includeMdc")
+        private boolean includeMdc = true;
+        
+        @PluginBuilderAttribute("mdcId")
+        private String mdcId;
+        
+        @PluginBuilderAttribute("mdcPrefix")
+        private String mdcPrefix;
+        
+        @PluginBuilderAttribute("eventPrefix")
+        private String eventPrefix;
+        
+        @PluginBuilderAttribute(value = "newLine")
+        private boolean newLine;
+        
+        @PluginBuilderAttribute("newLineEscape")
+        private String escapeNL;
+        
+        @PluginBuilderAttribute("appName")
+        private String appName;
+        
+        @PluginBuilderAttribute("messageId")
+        private String msgId;
+        
+        @PluginBuilderAttribute("mdcExcludes")
+        private String excludes;
+        
+        @PluginBuilderAttribute("mdcIncludes")
+        private String includes;
+        
+        @PluginBuilderAttribute("mdcRequired")
+        private String required;
+        
+        @PluginBuilderAttribute("format")
+        private String format;
+        
+        @PluginBuilderAttribute("charset")
+        private Charset charsetName = StandardCharsets.UTF_8;
+        
+        @PluginBuilderAttribute("exceptionPattern")
+        private String exceptionPattern;
+        
+        @PluginElement("LoggerFields")
+        private LoggerFields[] loggerFields;
+
+        @SuppressWarnings({"resource", "unchecked"})
+        @Override
+        public SyslogAppender build() {
+            final Protocol protocol = getProtocol();
+            final SslConfiguration sslConfiguration = getSslConfiguration();
+            final boolean useTlsMessageFormat = sslConfiguration != null || protocol == Protocol.SSL;
+            final Configuration configuration = getConfiguration();
+            Layout<? extends Serializable> layout = getLayout();
+            if (layout == null) {
+                layout = RFC5424.equalsIgnoreCase(format)
+                        ? Rfc5424Layout.createLayout(facility, id, enterpriseNumber, includeMdc, mdcId, mdcPrefix,
+                                eventPrefix, newLine, escapeNL, appName, msgId, excludes, includes, required,
+                                exceptionPattern, useTlsMessageFormat, loggerFields, configuration)
+                        :
+                        // @formatter:off
+                        SyslogLayout.newBuilder()
+                            .setFacility(facility)
+                            .setIncludeNewLine(newLine)
+                            .setEscapeNL(escapeNL)
+                            .setCharset(charsetName)
+                            .build();
+                        // @formatter:off
+            }
+            final String name = getName();
+            if (name == null) {
+                LOGGER.error("No name provided for SyslogAppender");
+                return null;
+            }
+            final AbstractSocketManager manager = createSocketManager(name, protocol, getHost(), getPort(), getConnectTimeoutMillis(),
+                    sslConfiguration, getReconnectDelayMillis(), getImmediateFail(), layout, Constants.ENCODER_BYTE_BUFFER_SIZE, null);
+
+            return new SyslogAppender(name, layout, getFilter(), isIgnoreExceptions(), isImmediateFlush(), manager,
+                    getAdvertise() ? configuration.getAdvertiser() : null);
+        }
+
+        public Facility getFacility() {
+            return facility;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public int getEnterpriseNumber() {
+            return enterpriseNumber;
+        }
+
+        public boolean isIncludeMdc() {
+            return includeMdc;
+        }
+
+        public String getMdcId() {
+            return mdcId;
+        }
+
+        public String getMdcPrefix() {
+            return mdcPrefix;
+        }
+
+        public String getEventPrefix() {
+            return eventPrefix;
+        }
+
+        public boolean isNewLine() {
+            return newLine;
+        }
+
+        public String getEscapeNL() {
+            return escapeNL;
+        }
+
+        public String getAppName() {
+            return appName;
+        }
+
+        public String getMsgId() {
+            return msgId;
+        }
+
+        public String getExcludes() {
+            return excludes;
+        }
+
+        public String getIncludes() {
+            return includes;
+        }
+
+        public String getRequired() {
+            return required;
+        }
+
+        public String getFormat() {
+            return format;
+        }
+
+        public Charset getCharsetName() {
+            return charsetName;
+        }
+
+        public String getExceptionPattern() {
+            return exceptionPattern;
+        }
+
+        public LoggerFields[] getLoggerFields() {
+            return loggerFields;
+        }
+
+        public B setFacility(final Facility facility) {
+            this.facility = facility;
+            return asBuilder();
+        }
+
+        public B setId(final String id) {
+            this.id = id;
+            return asBuilder();
+        }
+
+        public B setEnterpriseNumber(final int enterpriseNumber) {
+            this.enterpriseNumber = enterpriseNumber;
+            return asBuilder();
+        }
+
+        public B setIncludeMdc(final boolean includeMdc) {
+            this.includeMdc = includeMdc;
+            return asBuilder();
+        }
+
+        public B setMdcId(final String mdcId) {
+            this.mdcId = mdcId;
+            return asBuilder();
+        }
+
+        public B setMdcPrefix(final String mdcPrefix) {
+            this.mdcPrefix = mdcPrefix;
+            return asBuilder();
+        }
+
+        public B setEventPrefix(final String eventPrefix) {
+            this.eventPrefix = eventPrefix;
+            return asBuilder();
+        }
+
+        public B setNewLine(final boolean newLine) {
+            this.newLine = newLine;
+            return asBuilder();
+        }
+
+        public B setEscapeNL(final String escapeNL) {
+            this.escapeNL = escapeNL;
+            return asBuilder();
+        }
+
+        public B setAppName(final String appName) {
+            this.appName = appName;
+            return asBuilder();
+        }
+
+        public B setMsgId(final String msgId) {
+            this.msgId = msgId;
+            return asBuilder();
+        }
+
+        public B setExcludes(final String excludes) {
+            this.excludes = excludes;
+            return asBuilder();
+        }
+
+        public B setIncludes(final String includes) {
+            this.includes = includes;
+            return asBuilder();
+        }
+
+        public B setRequired(final String required) {
+            this.required = required;
+            return asBuilder();
+        }
+
+        public B setFormat(final String format) {
+            this.format = format;
+            return asBuilder();
+        }
+
+        public B setCharsetName(final Charset charset) {
+            this.charsetName = charset;
+            return asBuilder();
+        }
+
+        public B setExceptionPattern(final String exceptionPattern) {
+            this.exceptionPattern = exceptionPattern;
+            return asBuilder();
+        }
+
+        public B setLoggerFields(final LoggerFields[] loggerFields) {
+            this.loggerFields = loggerFields;
+            return asBuilder();
+        }
+    }
+    
     protected static final String RFC5424 = "RFC5424";
 
     protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
@@ -54,13 +311,13 @@ public class SyslogAppender extends SocketAppender {
     }
 
     /**
-     * Create a SyslogAppender.
+     * Creates a SyslogAppender.
      * @param host The name of the host to connect to.
      * @param port The port to connect to on the target host.
      * @param protocolStr The Protocol to use.
-     * @param sslConfig TODO
+     * @param sslConfiguration TODO
      * @param connectTimeoutMillis the connect timeout in milliseconds.
-     * @param reconnectionDelayMillis The interval in which failed writes should be retried.
+     * @param reconnectDelayMillis The interval in which failed writes should be retried.
      * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
      * @param immediateFlush "true" if data should be flushed on each write.
@@ -84,67 +341,90 @@ public class SyslogAppender extends SocketAppender {
      * @param format If set to "RFC5424" the data will be formatted in accordance with RFC 5424. Otherwise,
      * it will be formatted as a BSD Syslog record.
      * @param filter A Filter to determine if the event should be handled by this Appender.
-     * @param config The Configuration.
-     * @param charsetName The character set to use when converting the syslog String to a byte array.
+     * @param configuration The Configuration.
+     * @param charset The character set to use when converting the syslog String to a byte array.
      * @param exceptionPattern The converter pattern to use for formatting exceptions.
      * @param loggerFields The logger fields
      * @param advertise Whether to advertise
-     * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @return A SyslogAppender.
+     * @deprecated Use {@link #newSyslogAppenderBuilder()}.
      */
-    @PluginFactory
-    public static SyslogAppender createAppender(
+    @Deprecated
+    public static <B extends Builder<B>> SyslogAppender createAppender(
             // @formatter:off
-            @PluginAttribute("host") final String host,
-            @PluginAttribute(value = "port", defaultInt = 0) final int port,
-            @PluginAttribute("protocol") final String protocolStr,
-            @PluginElement("SSL") final SslConfiguration sslConfig,
-            @PluginAttribute(value = "connectTimeoutMillis", defaultInt = 0) final int connectTimeoutMillis,
-            @PluginAliases("reconnectionDelay") // deprecated
-            @PluginAttribute(value = "reconnectionDelayMillis", defaultInt = 0) final int reconnectionDelayMillis,
-            @PluginAttribute(value = "immediateFail", defaultBoolean = true) final boolean immediateFail,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "immediateFlush", defaultBoolean = true) final boolean immediateFlush,
-            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions,
-            @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
-            @PluginAttribute("id") final String id,
-            @PluginAttribute(value = "enterpriseNumber", defaultInt = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
-            @PluginAttribute(value = "includeMdc", defaultBoolean = true) final boolean includeMdc,
-            @PluginAttribute("mdcId") final String mdcId,
-            @PluginAttribute("mdcPrefix") final String mdcPrefix,
-            @PluginAttribute("eventPrefix") final String eventPrefix,
-            @PluginAttribute(value = "newLine", defaultBoolean = false) final boolean newLine,
-            @PluginAttribute("newLineEscape") final String escapeNL,
-            @PluginAttribute("appName") final String appName,
-            @PluginAttribute("messageId") final String msgId,
-            @PluginAttribute("mdcExcludes") final String excludes,
-            @PluginAttribute("mdcIncludes") final String includes,
-            @PluginAttribute("mdcRequired") final String required,
-            @PluginAttribute("format") final String format,
-            @PluginElement("Filter") final Filter filter,
-            @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charsetName,
-            @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginElement("LoggerFields") final LoggerFields[] loggerFields, @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
+            final String host,
+            final int port,
+            final String protocolStr,
+            final SslConfiguration sslConfiguration,
+            final int connectTimeoutMillis,
+            final int reconnectDelayMillis,
+            final boolean immediateFail,
+            final String name,
+            final boolean immediateFlush,
+            final boolean ignoreExceptions,
+            final Facility facility,
+            final String id,
+            final int enterpriseNumber,
+            final boolean includeMdc,
+            final String mdcId,
+            final String mdcPrefix,
+            final String eventPrefix,
+            final boolean newLine,
+            final String escapeNL,
+            final String appName,
+            final String msgId,
+            final String excludes,
+            final String includes,
+            final String required,
+            final String format,
+            final Filter filter,
+            final Configuration configuration,
+            final Charset charset,
+            final String exceptionPattern,
+            final LoggerFields[] loggerFields, 
+            final boolean advertise) {
         // @formatter:on
 
-        // TODO: add Protocol to TypeConverters
-        final Protocol protocol = EnglishEnums.valueOf(Protocol.class, protocolStr);
-        final boolean useTlsMessageFormat = sslConfig != null || protocol == Protocol.SSL;
-        final Layout<? extends Serializable> layout = RFC5424.equalsIgnoreCase(format) ?
-            Rfc5424Layout.createLayout(facility, id, enterpriseNumber, includeMdc, mdcId, mdcPrefix, eventPrefix, newLine,
-                escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, useTlsMessageFormat, loggerFields,
-                config) :
-            SyslogLayout.createLayout(facility, newLine, escapeNL, charsetName);
-
-        if (name == null) {
-            LOGGER.error("No name provided for SyslogAppender");
-            return null;
-        }
-        final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, connectTimeoutMillis,
-                sslConfig, reconnectionDelayMillis, immediateFail, layout);
-
-        return new SyslogAppender(name, layout, filter, ignoreExceptions, immediateFlush, manager,
-                advertise ? config.getAdvertiser() : null);
+        // @formatter:off
+        return SyslogAppender.<B>newSyslogAppenderBuilder()
+                .withHost(host)
+                .withPort(port)
+                .withProtocol(EnglishEnums.valueOf(Protocol.class, protocolStr))
+                .withSslConfiguration(sslConfiguration)
+                .withConnectTimeoutMillis(connectTimeoutMillis)
+                .withReconnectDelayMillis(reconnectDelayMillis)
+                .withImmediateFail(immediateFail)
+                .withName(appName)
+                .withImmediateFlush(immediateFlush)
+                .withIgnoreExceptions(ignoreExceptions)
+                .withFilter(filter)
+                .setConfiguration(configuration)
+                .withAdvertise(advertise)
+                .setFacility(facility)
+                .setId(id)
+                .setEnterpriseNumber(enterpriseNumber)
+                .setIncludeMdc(includeMdc)
+                .setMdcId(mdcId)
+                .setMdcPrefix(mdcPrefix)
+                .setEventPrefix(eventPrefix)
+                .setNewLine(newLine)
+                .setAppName(appName)
+                .setMsgId(msgId)
+                .setExcludes(excludes)
+                .setIncludeMdc(includeMdc)
+                .setRequired(required)
+                .setFormat(format)
+                .setCharsetName(charset)
+                .setExceptionPattern(exceptionPattern)
+                .setLoggerFields(loggerFields)
+                .build();
+        // @formatter:on
     }
+    
+    // Calling this method newBuilder() does not compile
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newSyslogAppenderBuilder() {
+        return new Builder<B>().asBuilder();
+    }
+
 }

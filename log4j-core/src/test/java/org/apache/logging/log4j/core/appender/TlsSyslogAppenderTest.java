@@ -37,7 +37,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
 
     private SSLServerSocketFactory serverSocketFactory;
     private TlsSyslogMessageFormat messageFormat;
-    private SslConfiguration sslConfig;
+    private SslConfiguration sslConfiguration;
 
     public TlsSyslogAppenderTest() throws StoreConfigurationException {
         initServerSocketFactory();
@@ -52,16 +52,15 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
         final char[] msg = new char[2 * 1024 * 2014 + prefix.length()];
         Arrays.fill(msg, 'a');
         System.arraycopy(prefix.toCharArray(), 0, msg, 0, prefix.length());
-        sendAndCheckLegacyBSDMessage(new String(msg));
+        sendAndCheckLegacyBsdMessage(new String(msg));
     }
 
     @Test
     public void sendLegacyBsdMessagesOverTls() throws IOException, InterruptedException {
         final int numberOfMessages = 100;
-        initTlsTestEnvironment(100, TlsSyslogMessageFormat.LEGACY_BSD);
-
-        final List<String> sentMessages = TlsSyslogTestUtil.generateMessages(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
-        sendAndCheckLegacyBSDMessages(sentMessages);
+        initTlsTestEnvironment(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
+        final List<String> generatedMessages = TlsSyslogTestUtil.generateMessages(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
+        sendAndCheckLegacyBsdMessages(generatedMessages);
     }
 
     @Test
@@ -74,16 +73,15 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     @Test
     public void sendStructuredMessagesOverTls() throws IOException, InterruptedException {
         final int numberOfMessages = 100;
-        initTlsTestEnvironment(100, TlsSyslogMessageFormat.SYSLOG);
-
+        initTlsTestEnvironment(numberOfMessages, TlsSyslogMessageFormat.SYSLOG);
         sendAndCheckStructuredMessages(numberOfMessages);
     }
 
     private void initServerSocketFactory() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD, null, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, null, null);
-        sslConfig = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
-        serverSocketFactory = sslConfig.getSslServerSocketFactory();
+        sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
+        serverSocketFactory = sslConfiguration.getSslServerSocketFactory();
     }
 
     private SyslogAppender createAppender() {
@@ -95,7 +93,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
             format = "RFC5424";
         }
 
-        return SyslogAppender.createAppender("localhost", PORTNUM, "SSL", sslConfig, 0, -1, true, "Test", true,
+        return SyslogAppender.createAppender("localhost", PORTNUM, "SSL", sslConfiguration, 0, -1, true, "Test", true,
             false, Facility.LOCAL0, "Audit", 18060, true, "RequestContext", null, null, includeNewLine, null,
             "TestApp", "Test", null, "ipAddress,loginId", null, format, null, null, null, null, null, false);
     }
@@ -111,6 +109,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
 
     protected void initAppender() {
         appender = createAppender();
+        validate(appender);
         appender.start();
         initRootLogger(appender);
     }

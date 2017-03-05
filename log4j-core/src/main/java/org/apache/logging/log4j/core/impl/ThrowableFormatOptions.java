@@ -18,13 +18,13 @@ package org.apache.logging.log4j.core.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
-import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -72,12 +72,12 @@ public final class ThrowableFormatOptions {
      */
     private final String separator;
 
+    private final List<String> mdcKeys;
+
     /**
      * The list of packages to filter.
      */
     private final List<String> ignorePackages;
-
-    private final List<String> mdcKeys;
 
     public static final String CLASS_NAME = "short.className";
     public static final String METHOD_NAME = "short.methodName";
@@ -98,9 +98,9 @@ public final class ThrowableFormatOptions {
      * @param mdcKeys
      */
     protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
-                                     TextRenderer textRenderer, final List<String> mdcKeys) {
+                                     final TextRenderer textRenderer, final List<String> mdcKeys) {
         this.lines = lines;
-        this.separator = separator == null ? Constants.LINE_SEPARATOR : separator;
+        this.separator = separator == null ? Strings.LINE_SEPARATOR : separator;
         this.ignorePackages = ignorePackages;
         this.textRenderer = textRenderer == null ? PlainTextRenderer.getInstance() : textRenderer;
         this.mdcKeys = mdcKeys;
@@ -247,10 +247,10 @@ public final class ThrowableFormatOptions {
         }
 
         int lines = DEFAULT.lines;
+        List<String> mdcKeys = DEFAULT.mdcKeys;
         String separator = DEFAULT.separator;
         List<String> packages = DEFAULT.ignorePackages;
         TextRenderer ansiRenderer = DEFAULT.textRenderer;
-        List<String> mdcKeys = DEFAULT.mdcKeys;
         for (final String rawOption : options) {
             if (rawOption != null) {
                 final String option = rawOption.trim();
@@ -281,9 +281,9 @@ public final class ThrowableFormatOptions {
                     lines = 2;
                 } else if (option.startsWith("ansi(") && option.endsWith(")") || option.equals("ansi")) {
                     if (Loader.isJansiAvailable()) {
-                        String styleMapStr = option.equals("ansi") ? Strings.EMPTY
+                        final String styleMapStr = option.equals("ansi") ? Strings.EMPTY
                                 : option.substring("ansi(".length(), option.length() - 1);
-                        ansiRenderer = new JAnsiTextRenderer(new String[] {null, styleMapStr},
+                        ansiRenderer = new JAnsiTextRenderer(new String[] { null, styleMapStr },
                                 JAnsiTextRenderer.DefaultExceptionStyleMap);
                     } else {
                         StatusLogger.getLogger().warn(
@@ -303,9 +303,12 @@ public final class ThrowableFormatOptions {
         return new ThrowableFormatOptions(lines, separator, packages, ansiRenderer, mdcKeys);
     }
 
-    private static List<String> parseMdcKeys(final String mdcKeyExp) {
-        String[] keys = mdcKeyExp.split(",");
-        return Arrays.asList(keys);
+    private static List<String> parseMdcKeys(final String suffixPattern) {
+        if (suffixPattern.trim().isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return Arrays.asList(suffixPattern.split(","));
+        }
     }
 
 }

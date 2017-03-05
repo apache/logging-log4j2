@@ -81,7 +81,7 @@ public class ThreadLocalVsPoolBenchmark {
         final Configuration config = new DefaultConfiguration();
         final PatternParser parser = new PatternParser(config, "Converter", LogEventPatternConverter.class);
         final List<PatternFormatter> result = parser.parse(LOG4JPATTERN, false, true);
-        return (PatternFormatter[]) result.toArray(new PatternFormatter[result.size()]);
+        return result.toArray(new PatternFormatter[result.size()]);
     }
 
     @Benchmark

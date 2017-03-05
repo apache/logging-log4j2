@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -41,7 +42,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * The regular expression is a pattern as defined by the {@link Pattern} class. A glob is a simplified pattern
  * expression described in {@link FileSystem#getPathMatcher(String)}.
  */
-@Plugin(name = "IfFileName", category = "Core", printObject = true)
+@Plugin(name = "IfFileName", category = Core.CATEGORY_NAME, printObject = true)
 public final class IfFileName implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final PathMatcher pathMatcher;

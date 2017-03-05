@@ -33,7 +33,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
     private static final long serialVersionUID = 7800075879295123856L;
-    private static ThreadLocal<StringBuilder> buffer = new ThreadLocal<>();
+    private transient ThreadLocal<StringBuilder> buffer; // non-static: LOG4J2-1583
 
     private String messagePattern;
     private int argCount;
@@ -42,6 +42,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     private transient Object[] varargs;
     private transient Object[] params = new Object[MAX_PARMS];
     private transient Throwable throwable;
+    transient boolean reserved = false; // LOG4J2-1583 prevent scrambled logs with nested logging calls
 
     /**
      * Creates a reusable message.
@@ -81,14 +82,16 @@ public class ReusableParameterizedMessage implements ReusableMessage {
             // Therefore we want to avoid returning arrays with less than 10 elements.
             // If the vararg array is less than 10 params we just copy its content into the specified array
             // and return it. This helps the caller to retain a reusable array of at least 10 elements.
+            // NOTE: LOG4J2-1688 unearthed the use case that an application array (not a varargs array) is passed
+            // as the argument array. This array should not be modified, so it cannot be passed to the caller
+            // who will at some point null out the elements in the array).
             if (argCount <= emptyReplacement.length) {
-                // copy params into the specified replacement array and return that
-                System.arraycopy(varargs, 0, emptyReplacement, 0, argCount);
                 result = emptyReplacement;
             } else {
-                result = varargs;
-                varargs = emptyReplacement;
+                result = new Object[argCount]; // LOG4J2-1688
             }
+            // copy params into the specified replacement array and return that
+            System.arraycopy(varargs, 0, result, 0, argCount);
         }
         return result;
     }
@@ -289,6 +292,9 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     }
 
     private StringBuilder getBuffer() {
+        if (buffer == null) {
+            buffer = new ThreadLocal<>();
+        }
         StringBuilder result = buffer.get();
         if (result == null) {
             final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
@@ -308,6 +314,15 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         }
     }
 
+    /**
+     * Sets the reserved flag to true and returns this object.
+     * @return this object
+     * @since 2.7
+     */
+    ReusableParameterizedMessage reserve() {
+        reserved = true;
+        return this;
+    }
 
     @Override
     public String toString() {

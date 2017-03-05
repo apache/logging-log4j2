@@ -19,10 +19,13 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.util.PerformanceSensitive;
+
 
 /**
  * NameAbbreviator generates abbreviated logger and class names.
  */
+@PerformanceSensitive("allocation")
 public abstract class NameAbbreviator {
     /**
      * Default (no abbreviation) abbreviator.

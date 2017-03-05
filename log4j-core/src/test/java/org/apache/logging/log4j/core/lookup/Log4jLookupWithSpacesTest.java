@@ -24,47 +24,42 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.apache.logging.log4j.core.lookup.Log4jLookup.*;
-
-import static org.easymock.EasyMock.*;
-
+import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_LOCATION;
+import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_PARENT_LOCATION;
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
 
 /**
  *
  */
+@RunWith(MockitoJUnitRunner.class)
 public class Log4jLookupWithSpacesTest {
 
     private final static File EXPECT = new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e/log4j2 file.xml");
-    private LoggerContext mockCtx = null;
-    private Configuration config = null;
-    private ConfigurationSource configSrc = null;
+    @Mock
+    private LoggerContext mockCtx;
+    @Mock
+    private Configuration config;
+    @Mock
+    private ConfigurationSource configSrc;
 
     @Before
     public void setup() throws URISyntaxException, MalformedURLException {
-        this.mockCtx = EasyMock.createMock(LoggerContext.class);
         ContextAnchor.THREAD_CONTEXT.set(mockCtx);
-
-        this.config = EasyMock.createMock(Configuration.class);
-
-        this.configSrc = EasyMock.createMock(ConfigurationSource.class);
-        expect(config.getConfigurationSource()).andReturn(configSrc);
-        expect(configSrc.getFile()).andReturn(EXPECT);
-
-        replay(mockCtx, config, configSrc);
+        given(config.getConfigurationSource()).willReturn(configSrc);
+        given(configSrc.getFile()).willReturn(EXPECT);
     }
 
     @After
     public void cleanup() {
-        verify(mockCtx, config, configSrc);
-
         ContextAnchor.THREAD_CONTEXT.set(null);
-        this.mockCtx = null;
     }
 
     @Test

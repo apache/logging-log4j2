@@ -1,0 +1,101 @@
+<!-- vim: set syn=markdown : -->
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+#set($h1='#')
+#set($h2='##')
+
+$h1 Download Apache Log4j 2
+
+Apache Log4j 2 is distributed under the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
+
+The link in the Mirrors column should display a list of available mirrors with a default selection based on your
+inferred location. If you do not see that page, try a different browser. The checksum and signature are links to
+the originals on the main distribution server.
+
+| Distribution                   | Mirrors                                                  | Checksum                                                        | Signature                                                       |
+| ------------------------------ | -------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
+| Apache Log4j 2 binary (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz][bintar] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5][bintarmd5] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc][bintarasc] |
+| Apache Log4j 2 binary (zip)    | [apache-log4j-${Log4jReleaseVersion}-bin.zip][binzip]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.md5][binzipmd5]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.asc][binzipasc]    |
+| Apache Log4j 2 source (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz][srctar] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5][srctarmd5] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc][srctarasc] |
+| Apache Log4j 2 source (zip)    | [apache-log4j-${Log4jReleaseVersion}-src.zip][srczip]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.md5][srczipmd5]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.asc][srczipasc]    |
+
+[bintar]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz
+[bintarmd5]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5
+[bintarasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
+[binzip]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip
+[binzipmd5]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.md5
+[binzipasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.asc
+[srctar]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz
+[srctarmd5]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5
+[srctarasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc
+[srczip]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip
+[srczipmd5]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.md5
+[srczipasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.asc
+
+It is essential that you verify the integrity of the downloaded files using the PGP or MD5 signatures.
+Please read [Verifying Apache HTTP Server Releases](https://httpd.apache.org/dev/verification.html) for more
+information on why you should verify our releases.
+
+The PGP signatures can be verified using PGP or GPG. First download the
+[KEYS](https://www.apache.org/dist/logging/KEYS) as well as the asc signature file for the relevant distribution.
+Make sure you get these files from the [main distribution directory](https://www.apache.org/dist/logging/), rather
+than from a mirror. Then verify the signatures using
+
+    gpg --import KEYS
+    gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
+
+Apache Log4j ${Log4jReleaseVersion} is signed by ${Log4jReleaseManager} (${Log4jReleaseKey})
+
+Alternatively, you can verify the MD5 signature on the files. A unix program called md5 or md5sum is included
+in many unix distributions.
+
+$h2 Previous Releases
+
+Log4j 2.3 was the last 2.x release to support Java 6. Those artifacts can be found at:
+
+| Distribution                   | Mirrors                                    | Checksum                                          | Signature                                         |
+| ------------------------------ | ------------------------------------------ | ------------------------------------------------- | ------------------------------------------------- |
+| Apache Log4j 2 binary (tar.gz) | [apache-log4j-2.3-bin.tar.gz][bintar-jdk6] | [apache-log4j-2.3-bin.tar.gz.md5][bintarmd5-jdk6] | [apache-log4j-2.3-bin.tar.gz.asc][bintarasc-jdk6] |
+| Apache Log4j 2 binary (zip)    | [apache-log4j-2.3-bin.zip][binzip-jdk6]    | [apache-log4j-2.3-bin.zip.md5][binzipmd5-jdk6]    | [apache-log4j-2.3-bin.zip.asc][binzipasc-jdk6]    |
+| Apache Log4j 2 source (tar.gz) | [apache-log4j-2.3-src.tar.gz][srctar-jdk6] | [apache-log4j-2.3-src.tar.gz.md5][srctarmd5-jdk6] | [apache-log4j-2.3-src.tar.gz.asc][srctarasc-jdk6] |
+| Apache Log4j 2 source (zip)    | [apache-log4j-2.3-src.zip][srczip-jdk6]    | [apache-log4j-2.3-src.zip.md5][srczipmd5-jdk6]    | [apache-log4j-2.3-src.zip.asc][srczipasc-jdk6]    |
+
+[bintar-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz
+[bintarmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5
+[bintarasc-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
+[binzip-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip
+[binzipmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.md5
+[binzipasc-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.asc
+[srctar-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz
+[srctarmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5
+[srctarasc-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc
+[srczip-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip
+[srczipmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.md5
+[srczipasc-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.asc
+
+All previous releases of Apache log4j can be found in the
+[archive repository](https://archive.apache.org/dist/logging/log4j/).
+
+$h2 Using Log4j on your classpath
+
+To use Log4j 2 in your application make sure that both the API and Core jars are in the application's classpath. Add
+the dependencies listed below to your classpath.
+
+    log4j-api-${Log4jReleaseVersion}.jar
+    log4j-core-${Log4jReleaseVersion}.jar
+
+You can do this from the command line or a manifest file.

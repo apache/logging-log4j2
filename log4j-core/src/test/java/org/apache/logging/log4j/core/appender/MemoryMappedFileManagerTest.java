@@ -43,18 +43,16 @@ public class MemoryMappedFileManagerTest {
         assertEquals(0, file.length());
 
         final boolean append = false;
-        final boolean force = false;
-        final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(file.getAbsolutePath(), append,
-                force, mapSize, null, null);
+        final boolean immediateFlush = false;
+        try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(file.getAbsolutePath(),
+                append, immediateFlush, mapSize, null, null)) {
+            byte[] msg;
+            for (int i = 0; i < 1000; i++) {
+                msg = ("Message " + i + "\n").getBytes();
+                manager.write(msg, 0, msg.length, false);
+            }
 
-        byte[] msg;
-
-        for (int i = 0; i < 1000; i++) {
-            msg = ("Message " + i + "\n").getBytes();
-            manager.write(msg, 0, msg.length, false);
         }
-
-        manager.release();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
@@ -82,12 +80,11 @@ public class MemoryMappedFileManagerTest {
         assertEquals("all flushed to disk", initialLength, file.length());
 
         final boolean isAppend = true;
-        final boolean isForce = false;
-        final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(file.getAbsolutePath(),
-                isAppend, isForce, MemoryMappedFileManager.DEFAULT_REGION_LENGTH, null, null);
-
-        manager.write(new byte[initialLength], 0, initialLength);
-        manager.release();
+        final boolean immediateFlush = false;
+        try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(file.getAbsolutePath(),
+                isAppend, immediateFlush, MemoryMappedFileManager.DEFAULT_REGION_LENGTH, null, null)) {
+            manager.write(new byte[initialLength], 0, initialLength);
+        }
         final int expected = initialLength * 2;
         assertEquals("appended, not overwritten", expected, file.length());
     }

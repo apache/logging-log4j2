@@ -31,17 +31,24 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
- * Compare against a log level that is associated with an MDC value.
+ * Compares against a log level that is associated with a context value. By default the context is the
+ * {@link ThreadContext}, but users may {@linkplain ContextDataInjectorFactory configure} a custom
+ * {@link ContextDataInjector} which obtains context data from some other source.
  */
 @Plugin(name = "DynamicThresholdFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PerformanceSensitive("allocation")
 public final class DynamicThresholdFilter extends AbstractFilter {
 
     /**
-     * Create the DynamicThresholdFilter.
+     * Creates a DynamicThresholdFilter.
      * @param key The name of the key to compare.
      * @param pairs An array of value and Level pairs.
      * @param defaultThreshold The default Level.
@@ -63,9 +70,10 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         final Level level = defaultThreshold == null ? Level.ERROR : defaultThreshold;
         return new DynamicThresholdFilter(key, map, level, onMatch, onMismatch);
     }
+
     private Level defaultThreshold = Level.ERROR;
     private final String key;
-
+    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
     private Map<String, Level> levelMap = new HashMap<>();
 
     private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
@@ -113,8 +121,8 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return true;
     }
 
-    private Result filter(final Level level, final Map<String, String> contextMap) {
-        final String value = contextMap.get(key);
+    private Result filter(final Level level, final ReadOnlyStringMap contextMap) {
+        final String value = contextMap.getValue(key);
         if (value != null) {
             Level ctxLevel = levelMap.get(value);
             if (ctxLevel == null) {
@@ -128,25 +136,98 @@ public final class DynamicThresholdFilter extends AbstractFilter {
 
     @Override
     public Result filter(final LogEvent event) {
-        return filter(event.getLevel(), event.getContextMap());
+        return filter(event.getLevel(), event.getContextData());
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
                          final Throwable t) {
-        return filter(level, ThreadContext.getContext());
+        return filter(level, currentContextData());
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
                          final Throwable t) {
-        return filter(level, ThreadContext.getContext());
+        return filter(level, currentContextData());
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
                          final Object... params) {
-        return filter(level, ThreadContext.getContext());
+        return filter(level, currentContextData());
+    }
+
+    private ReadOnlyStringMap currentContextData() {
+        return injector.rawContextData();
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        return filter(level, currentContextData());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        return filter(level, currentContextData());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        return filter(level, currentContextData());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        return filter(level, currentContextData());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return filter(level, currentContextData());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return filter(level, currentContextData());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return filter(level, currentContextData());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return filter(level, currentContextData());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return filter(level, currentContextData());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return filter(level, currentContextData());
     }
 
     public String getKey() {

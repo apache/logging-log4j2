@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+    <properties>
+        <title>Log4j 2 Scala API</title>
+        <author email="mikes@apache.org">Mikael Ståldal</author>
+    </properties>
+
+    <body>
+        <section name="Log4j 2 API">
+            <a name="ScalaAPI"/>
+            <subsection name="Scala API">
+                <p>
+                    Log4j 2 contains a convenient Scala wrapper for the
+                    <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/Logger.html">Logger</a>
+                    API.
+                </p>
+
+                <h4>Requirements</h4>
+                <p>
+                    Log4j 2 Scala API is dependent on the Log4j 2 API, Scala runtime library and reflection.
+                    It currently supports Scala 2.10 and 2.11. See <a href="../maven-artifacts.html#Scala_API">instructions</a>
+                    on including this in an SBT, Maven, Ivy, or Gradle project.
+                </p>
+
+                <h4>Example</h4>
+                <pre class="prettyprint linenums">
+import org.apache.logging.log4j.scala.Logging
+import org.apache.logging.log4j.Level
+
+class MyClass extends BaseClass with Logging {
+  def doStuff(): Unit = {
+    logger.info("Doing stuff")
+  }
+  def doStuffWithLevel(level: Level): Unit = {
+    logger(level, "Doing stuff with arbitrary level")
+  }
+}
+                </pre>
+                <p>
+                    The output from the call to logger.info() will vary significantly depending on the configuration
+                    used. See the
+                    <a href="./configuration.html">Configuration</a>
+                    section for more details.
+                </p>
+                <h4>Substituting Parameters</h4>
+                <p>
+                    Frequently the purpose of logging is to provide information about what is happening in the system,
+                    which requires including information about the objects being manipulated. In Scala, you can use
+                    <a href="http://docs.scala-lang.org/overviews/core/string-interpolation.html">string interpolation
+                    </a>
+                    to achieve this:
+                </p>
+                <pre class="prettyprint">
+logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBirthday}")
+                </pre>
+                <p>
+                    Since the Scala Logger is implemented with macros, the String construction and method invocations
+                    will only occur when debug logging is enabled.
+                </p>
+
+                <h4>Logger Names</h4>
+                <p>
+                    Most logging implementations use a hierarchical scheme for matching logger names with logging
+                    configuration. In this scheme the logger name hierarchy is represented by '.' characters in the
+                    logger name, in a fashion very similar to the hierarchy used for Java/Scala package names.
+                    The <a class="javadoc" href="../log4j-api-scala_2.11/scaladocs/index.html#org.apache.logging.log4j.scala.Logging">Logging trait</a> will automatically name the Logger accordingly to the class it is being used in.
+                </p>
+
+                <h4>ScalaDoc</h4>
+                <p>
+                    <a href="../log4j-api-scala_2.11/scaladocs/index.html#org.apache.logging.log4j.scala.package">ScalaDoc</a>.
+                </p>
+
+            </subsection>
+        </section>
+    </body>
+</document>

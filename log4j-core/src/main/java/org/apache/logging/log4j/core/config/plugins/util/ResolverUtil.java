@@ -67,11 +67,11 @@ import org.osgi.framework.wiring.BundleWiring;
  * </p>
  *
  * <pre>
- * ResolverUtil&lt;ActionBean&gt; resolver = new ResolverUtil&lt;ActionBean&gt;();
- * resolver.findImplementation(ActionBean.class, pkg1, pkg2);
+ * ResolverUtil resolver = new ResolverUtil();
+ * resolver.findInPackage(new CustomTest(), pkg1);
  * resolver.find(new CustomTest(), pkg1);
- * resolver.find(new CustomTest(), pkg2);
- * Collection&lt;ActionBean&gt; beans = resolver.getClasses();
+ * resolver.find(new CustomTest(), pkg1, pkg2);
+ * Set&lt;Class&lt;?&gt;&gt; beans = resolver.getClasses();
  * </pre>
  *
  * <p>
@@ -83,6 +83,8 @@ public class ResolverUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final String VFSZIP = "vfszip";
+
+    private static final String VFS = "vfs";
 
     private static final String BUNDLE_RESOURCE = "bundleresource";
 
@@ -118,7 +120,7 @@ public class ResolverUtil {
     }
 
     /**
-     * Returns the classloader that will be used for scanning for classes. If no explicit ClassLoader has been set by
+     * Returns the ClassLoader that will be used for scanning for classes. If no explicit ClassLoader has been set by
      * the calling, the context class loader will be used.
      *
      * @return the ClassLoader that will be used to scan for classes
@@ -129,7 +131,7 @@ public class ResolverUtil {
 
     /**
      * Sets an explicit ClassLoader that should be used when scanning for classes. If none is set then the context
-     * classloader will be used.
+     * ClassLoader will be used.
      *
      * @param aClassloader
      *        a ClassLoader to use when scanning for classes
@@ -196,6 +198,15 @@ public class ResolverUtil {
                     } finally {
                         close(stream, newURL);
                     }
+                } else if (VFS.equals(url.getProtocol())) {
+                    final String containerPath = urlPath.substring(1,
+                                                  urlPath.length() - packageName.length() - 2);
+                    final File containerFile = new File(containerPath);
+                    if (containerFile.isDirectory()) {
+                        loadImplementationsInDirectory(test, packageName, new File(containerFile, packageName));
+                    } else {
+                        loadImplementationsInJar(test, packageName, containerFile);
+                    }
                 } else if (BUNDLE_RESOURCE.equals(url.getProtocol())) {
                     loadImplementationsInBundle(test, packageName);
                 } else {
@@ -207,7 +218,7 @@ public class ResolverUtil {
                     }
                 }
             } catch (final IOException | URISyntaxException ioe) {
-                LOGGER.warn("could not read entries", ioe);
+                LOGGER.warn("Could not read entries", ioe);
             }
         }
     }
@@ -225,14 +236,15 @@ public class ResolverUtil {
             urlPath = urlPath.substring(5);
         }
         // If it was in a JAR, grab the path to the jar
-        if (urlPath.indexOf('!') > 0) {
-            urlPath = urlPath.substring(0, urlPath.indexOf('!'));
+        final int bangIndex = urlPath.indexOf('!');
+        if (bangIndex > 0) {
+            urlPath = urlPath.substring(0, bangIndex);
         }
 
         // LOG4J2-445
         // Finally, decide whether to URL-decode the file name or not...
         final String protocol = url.getProtocol();
-        final List<String> neverDecode = Arrays.asList(VFSZIP, BUNDLE_RESOURCE);
+        final List<String> neverDecode = Arrays.asList(VFS, VFSZIP, BUNDLE_RESOURCE);
         if (neverDecode.contains(protocol)) {
             return urlPath;
         }
@@ -254,7 +266,7 @@ public class ResolverUtil {
     }
 
     /**
-     * Finds matches in a physical directory on a filesystem. Examines all files within a directory - if the File object
+     * Finds matches in a physical directory on a file system. Examines all files within a directory - if the File object
      * is not a directory, and ends with <i>.class</i> the file is loaded and tested to see if it is acceptable
      * according to the Test. Operates recursively to find classes within a folder structure matching the package
      * structure.

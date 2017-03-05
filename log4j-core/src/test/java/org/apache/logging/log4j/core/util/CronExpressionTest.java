@@ -64,4 +64,93 @@ public class CronExpressionTest {
         final Date expected = new GregorianCalendar(2015, 10, 30, 7, 0, 0).getTime();
         assertEquals("Dates not equal.", expected, fireDate);
     }
+
+    @Test
+    public void testNextDay() throws Exception {
+        final CronExpression parser = new CronExpression("0 0 0 * * ?");
+        final Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        final Date fireDate = parser.getNextValidTimeAfter(date);
+        final Date expected = new GregorianCalendar(2015, 10, 3, 0, 0, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
+    @Test
+    public void testPrevFireTime1() throws Exception {
+        CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 L * ?");
+        Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        Date fireDate = parser.getPrevFireTime(date);
+        Date expected = new GregorianCalendar(2015, 9, 31, 17, 45, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
+    @Test
+    public void testPrevFireTime2() throws Exception {
+        CronExpression parser = new CronExpression("0 0/5 14,18 * * ?");
+        Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        Date fireDate = parser.getPrevFireTime(date);
+        Date expected = new GregorianCalendar(2015, 10, 1, 18, 55, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
+    /**
+     * 35,45, and 55 minutes past the hour evern hour.
+     */
+    @Test
+    public void testPrevFireTime3() throws Exception {
+        CronExpression parser = new CronExpression("0 35/10 * * * ?");
+        Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        Date fireDate = parser.getPrevFireTime(date);
+        Date expected = new GregorianCalendar(2015, 10, 1, 23, 55, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
+    /**
+     *
+     * 10:15 every day.
+     */
+    @Test
+    public void testPrevFireTimeTenFifteen() throws Exception {
+        CronExpression parser = new CronExpression("0 15 10 * * ? *");
+        Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        Date fireDate = parser.getPrevFireTime(date);
+        Date expected = new GregorianCalendar(2015, 10, 1, 10, 15, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
+    /**
+     * Every day from 2 pm to 2:59 pm
+     */
+    @Test
+    public void testPrevFireTimeTwoPM() throws Exception {
+        CronExpression parser = new CronExpression("0 * 14 * * ?");
+        Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        Date fireDate = parser.getPrevFireTime(date);
+        Date expected = new GregorianCalendar(2015, 10, 1, 14, 59, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
+    /**
+     *  2:10pm and at 2:44pm every Wednesday in the month of March.
+     */
+    @Test
+    public void testPrevFireTimeMarch() throws Exception {
+        CronExpression parser = new CronExpression("0 10,44 14 ? 3 WED");
+        Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        Date fireDate = parser.getPrevFireTime(date);
+        Date expected = new GregorianCalendar(2015, 2, 25, 14, 44, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
+    /**
+     *  Fire at 10:15am on the third Friday of every month.
+     */
+    @Test
+    public void testPrevFireTimeThirdFriday() throws Exception {
+        CronExpression parser = new CronExpression("0 15 10 ? * 6#3");
+        Date date = new GregorianCalendar(2015, 10, 2).getTime();
+        Date fireDate = parser.getPrevFireTime(date);
+        Date expected = new GregorianCalendar(2015, 9, 16, 10, 15, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
 }

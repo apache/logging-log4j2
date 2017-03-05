@@ -19,15 +19,16 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.Date;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Formats an integer.
  */
 @Plugin(name = "IntegerPatternConverter", category = "FileConverter")
 @ConverterKeys({ "i", "index" })
+@PerformanceSensitive("allocation")
 public final class IntegerPatternConverter extends AbstractPatternConverter implements ArrayPatternConverter {
-    
+
     /**
      * Singleton.
      */
@@ -46,16 +47,18 @@ public final class IntegerPatternConverter extends AbstractPatternConverter impl
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static IntegerPatternConverter newInstance(
-        final String[] options) {
+    public static IntegerPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 
     @Override
     public void format(final StringBuilder toAppendTo, final Object... objects) {
-        for (final Object obj : objects) {
-            if (obj instanceof Integer) {
-                format(obj, toAppendTo);
+        for (int i = 0; i < objects.length; i++) {
+            if (objects[i] instanceof Integer) {
+                format(objects[i], toAppendTo);
+                break;
+            } else if (objects[i] instanceof NotANumber) {
+                toAppendTo.append(NotANumber.VALUE);
                 break;
             }
         }
@@ -67,9 +70,9 @@ public final class IntegerPatternConverter extends AbstractPatternConverter impl
     @Override
     public void format(final Object obj, final StringBuilder toAppendTo) {
         if (obj instanceof Integer) {
-            toAppendTo.append(obj.toString());
+            toAppendTo.append(((Integer) obj).intValue());
         } else if (obj instanceof Date) {
-            toAppendTo.append(Long.toString(((Date) obj).getTime()));
+            toAppendTo.append(((Date) obj).getTime());
         }
     }
 }

@@ -1,0 +1,38 @@
+{
+    "Configuration" : {
+        "status": "error",
+        "name": "LoggerConfigTest",
+        "properties" : {
+          "property" : [{
+            "name" : "filename",
+            "value": "target/composite.log"
+           }]
+        },
+        "Loggers" : {
+            "logger" : [
+                {
+                    "name" : "cat2",
+                    "level" : "info",
+                    "additivity" : true,
+                    "AppenderRef" : {
+                        "ref" : "File"
+                    }
+
+                },
+                {
+                    "name" : "cat3",
+                    "level" : "error",
+                    "AppenderRef" : {
+                        "ref" : "STDOUT"
+                    }
+                }
+            ],
+            "Root" : {
+                "level" : "warn",
+                "AppenderRef" : [{
+                    "ref" : "File"
+                }]
+            }
+        }
+    }
+}

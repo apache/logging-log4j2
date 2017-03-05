@@ -19,17 +19,17 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
@@ -39,9 +39,85 @@ import org.apache.logging.log4j.core.util.Integers;
  *
  * @since 2.1
  */
-@Plugin(name = "MemoryMappedFile", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "MemoryMappedFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender<MemoryMappedFileManager> {
 
+    /**
+     * Builds RandomAccessFileAppender instances.
+     * 
+     * @param <B>
+     *            The type to build
+     */
+    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<MemoryMappedFileAppender> {
+
+        @PluginBuilderAttribute("fileName")
+        private String fileName;
+
+        @PluginBuilderAttribute("append")
+        private boolean append = true;
+
+        @PluginBuilderAttribute("regionLength")
+        private int regionLength = MemoryMappedFileManager.DEFAULT_REGION_LENGTH;
+
+        @PluginBuilderAttribute("advertise")
+        private boolean advertise;
+
+        @PluginBuilderAttribute("advertiseURI")
+        private String advertiseURI;
+
+        @Override
+        public MemoryMappedFileAppender build() {
+            final String name = getName();
+            final int actualRegionLength = determineValidRegionLength(name, regionLength);
+
+            if (name == null) {
+                LOGGER.error("No name provided for MemoryMappedFileAppender");
+                return null;
+            }
+
+            if (fileName == null) {
+                LOGGER.error("No filename provided for MemoryMappedFileAppender with name " + name);
+                return null;
+            }
+            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(fileName, append, isImmediateFlush(),
+                    actualRegionLength, advertiseURI, layout);
+            if (manager == null) {
+                return null;
+            }
+
+            return new MemoryMappedFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(), false,
+                    advertise ? getConfiguration().getAdvertiser() : null);
+        }
+
+        public B setFileName(final String fileName) {
+            this.fileName = fileName;
+            return asBuilder();
+        }
+
+        public B setAppend(final boolean append) {
+            this.append = append;
+            return asBuilder();
+        }
+
+        public B setRegionLength(final int regionLength) {
+            this.regionLength = regionLength;
+            return asBuilder();
+        }
+
+        public B setAdvertise(final boolean advertise) {
+            this.advertise = advertise;
+            return asBuilder();
+        }
+
+        public B setAdvertiseURI(final String advertiseURI) {
+            this.advertiseURI = advertiseURI;
+            return asBuilder();
+        }
+
+    }
+    
     private static final int BIT_POSITION_1GB = 30; // 2^30 ~= 1GB
     private static final int MAX_REGION_LENGTH = 1 << BIT_POSITION_1GB;
     private static final int MIN_REGION_LENGTH = 256;
@@ -66,11 +142,14 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         if (advertiser != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
+        return true;
     }
 
     /**
@@ -117,7 +196,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      *            "true".
      * @param name The name of the Appender.
      * @param immediateFlush "true" if the contents should be flushed on every write, "false" otherwise. The default is
-     *            "true".
+     *            "false".
      * @param regionLengthStr The buffer size, defaults to {@value MemoryMappedFileManager#DEFAULT_REGION_LENGTH}.
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
@@ -128,50 +207,50 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
      * @param config The Configuration.
      * @return The FileAppender.
+     * @deprecated Use {@link #newBuilder()}.
      */
-    @PluginFactory
-    public static MemoryMappedFileAppender createAppender(
-// @formatter:off
-            @PluginAttribute("fileName") final String fileName, //
-            @PluginAttribute("append") final String append, //
-            @PluginAttribute("name") final String name, //
-            @PluginAttribute("immediateFlush") final String immediateFlush, //
-            @PluginAttribute("regionLength") final String regionLengthStr, //
-            @PluginAttribute("ignoreExceptions") final String ignore, //
-            @PluginElement("Layout") Layout<? extends Serializable> layout, //
-            @PluginElement("Filter") final Filter filter, //
-            @PluginAttribute("advertise") final String advertise, //
-            @PluginAttribute("advertiseURI") final String advertiseURI, //
-            @PluginConfiguration final Configuration config) {
-        // @formatter:on
+    @Deprecated
+    public static <B extends Builder<B>> MemoryMappedFileAppender createAppender(
+            // @formatter:off
+            final String fileName, //
+            final String append, //
+            final String name, //
+            final String immediateFlush, //
+            final String regionLengthStr, //
+            final String ignore, //
+            final Layout<? extends Serializable> layout, //
+            final Filter filter, //
+            final String advertise, //
+            final String advertiseURI, //
+            final Configuration config) {
+            // @formatter:on
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
-        final boolean isForce = Booleans.parseBoolean(immediateFlush, false);
+        final boolean isImmediateFlush = Booleans.parseBoolean(immediateFlush, false);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final int regionLength = Integers.parseInt(regionLengthStr, MemoryMappedFileManager.DEFAULT_REGION_LENGTH);
-        final int actualRegionLength = determineValidRegionLength(name, regionLength);
 
-        if (name == null) {
-            LOGGER.error("No name provided for MemoryMappedFileAppender");
-            return null;
-        }
+        // @formatter:off
+        return MemoryMappedFileAppender.<B>newBuilder()
+            .setAdvertise(isAdvertise)
+            .setAdvertiseURI(advertiseURI)
+            .setAppend(isAppend)
+            .setConfiguration(config)
+            .setFileName(fileName)
+            .withFilter(filter)
+            .withIgnoreExceptions(ignoreExceptions)
+            .withImmediateFlush(isImmediateFlush)
+            .withLayout(layout)
+            .withName(name)
+            .setRegionLength(regionLength)
+            .build();
+        // @formatter:on
+    }
 
-        if (fileName == null) {
-            LOGGER.error("No filename provided for MemoryMappedFileAppender with name " + name);
-            return null;
-        }
-        if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
-        }
-        final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(fileName, isAppend, isForce,
-                actualRegionLength, advertiseURI, layout);
-        if (manager == null) {
-            return null;
-        }
-
-        return new MemoryMappedFileAppender(name, layout, filter, manager, fileName, ignoreExceptions, false,
-                isAdvertise ? config.getAdvertiser() : null);
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     /**

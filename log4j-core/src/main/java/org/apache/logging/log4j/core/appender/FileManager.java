@@ -25,11 +25,15 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.FileUtils;
 
 
 /**
@@ -40,11 +44,14 @@ public class FileManager extends OutputStreamManager {
     private static final FileManagerFactory FACTORY = new FileManagerFactory();
 
     private final boolean isAppend;
-    private final boolean isLazyCreate;
+    private final boolean createOnDemand;
     private final boolean isLocking;
     private final String advertiseURI;
     private final int bufferSize;
 
+    /**
+     * @deprecated
+     */
     @Deprecated
     protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
@@ -53,8 +60,8 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * @deprecated 
-     * @since 2.6 
+     * @deprecated
+     * @since 2.6
      */
     @Deprecated
     protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
@@ -62,22 +69,21 @@ public class FileManager extends OutputStreamManager {
             final ByteBuffer buffer) {
         super(os, fileName, layout, writeHeader, buffer);
         this.isAppend = append;
-        this.isLazyCreate = false;
+        this.createOnDemand = false;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
         this.bufferSize = buffer.capacity();
     }
 
-    /** 
-     * @throws IOException 
-     * @since 2.7 
+    /**
+     * @since 2.7
      */
-    protected FileManager(final String fileName, final boolean append, final boolean locking, final boolean lazyCreate,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader,
-            final ByteBuffer buffer) throws IOException {
-        super(fileName, lazyCreate, layout, writeHeader, buffer);
+    protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
+            final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
+            final boolean writeHeader, final ByteBuffer buffer) {
+        super(loggerContext, os, fileName, createOnDemand, layout, writeHeader, buffer);
         this.isAppend = append;
-        this.isLazyCreate = lazyCreate;
+        this.createOnDemand = createOnDemand;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
         this.bufferSize = buffer.capacity();
@@ -89,30 +95,31 @@ public class FileManager extends OutputStreamManager {
      * @param append true if the file should be appended to, false if it should be overwritten.
      * @param locking true if the file should be locked while writing, false otherwise.
      * @param bufferedIo true if the contents should be buffered as they are written.
-     * @param lazyCreate true if you want to lazy-create the file (a.k.a. on-demand.)
+     * @param createOnDemand true if you want to lazy-create the file (a.k.a. on-demand.)
      * @param advertiseUri the URI to use when advertising the file
      * @param layout The layout
      * @param bufferSize buffer size for buffered IO
-     * @param immediateFlush true if the contents should be flushed on every write, false otherwise.
+     * @param configuration The configuration.
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
-            final boolean bufferedIo, final boolean lazyCreate, final String advertiseUri,
-            final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush) {
+            final boolean bufferedIo, final boolean createOnDemand, final String advertiseUri,
+            final Layout<? extends Serializable> layout, final int bufferSize, final Configuration configuration) {
 
         if (locking && bufferedIo) {
             locking = false;
         }
-        return (FileManager) getManager(fileName,
-                new FactoryData(append, locking, bufferedIo, bufferSize, immediateFlush, lazyCreate, advertiseUri, layout),
-                FACTORY);
+        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
+                createOnDemand, advertiseUri, layout, configuration), FACTORY);
     }
 
     @Override
     protected OutputStream createOutputStream() throws FileNotFoundException {
-        return new FileOutputStream(getFileName(), isAppend);
+        String filename = getFileName();
+        LOGGER.debug("Now writing to {} at {}", filename, new Date());
+        return new FileOutputStream(filename, isAppend);
     }
-    
+
     @Override
     protected synchronized void write(final byte[] bytes, final int offset, final int length,
             final boolean immediateFlush) {
@@ -140,6 +147,38 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
+     * Overrides {@link OutputStreamManager#writeToDestination(byte[], int, int)} to add support for file locking.
+     *
+     * @param bytes the array containing data
+     * @param offset from where to write
+     * @param length how many bytes to write
+     * @since 2.8
+     */
+    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
+        if (isLocking) {
+            try {
+                @SuppressWarnings("resource")
+                final FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
+                /*
+                 * Lock the whole file. This could be optimized to only lock from the current file position. Note that
+                 * locking may be advisory on some systems and mandatory on others, so locking just from the current
+                 * position would allow reading on systems where locking is mandatory. Also, Java 6 will throw an
+                 * exception if the region of the file is already locked by another FileChannel in the same JVM.
+                 * Hopefully, that will be avoided since every file should have a single file manager - unless two
+                 * different files strings are configured that somehow map to the same file.
+                 */
+                try (final FileLock lock = channel.lock(0, Long.MAX_VALUE, false)) {
+                    super.writeToDestination(bytes, offset, length);
+                }
+            } catch (final IOException ex) {
+                throw new AppenderLoggingException("Unable to obtain lock on " + getName(), ex);
+            }
+        } else {
+            super.writeToDestination(bytes, offset, length);
+        }
+    }
+
+    /**
      * Returns the name of the File being managed.
      * @return The name of the File being managed.
      */
@@ -159,8 +198,8 @@ public class FileManager extends OutputStreamManager {
      * Returns the lazy-create.
      * @return true if the file will be lazy-created.
      */
-    public boolean isLazyCreate() {
-        return isLazyCreate;
+    public boolean isCreateOnDemand() {
+        return createOnDemand;
     }
 
     /**
@@ -195,13 +234,12 @@ public class FileManager extends OutputStreamManager {
     /**
      * Factory Data.
      */
-    private static class FactoryData {
+    private static class FactoryData extends ConfigurationFactoryData {
         private final boolean append;
         private final boolean locking;
-        private final boolean bufferedIO;
+        private final boolean bufferedIo;
         private final int bufferSize;
-        private final boolean immediateFlush;
-        private final boolean lazyCreate;
+        private final boolean createOnDemand;
         private final String advertiseURI;
         private final Layout<? extends Serializable> layout;
 
@@ -209,22 +247,22 @@ public class FileManager extends OutputStreamManager {
          * Constructor.
          * @param append Append status.
          * @param locking Locking status.
-         * @param bufferedIO Buffering flag.
+         * @param bufferedIo Buffering flag.
          * @param bufferSize Buffer size.
-         * @param immediateFlush flush on every write or not
-         * @param lazyCreate if you want to lazy-create the file (a.k.a. on-demand.)
+         * @param createOnDemand if you want to lazy-create the file (a.k.a. on-demand.)
          * @param advertiseURI the URI to use when advertising the file
          * @param layout The layout
+         * @param configuration the configuration
          */
-        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO, final int bufferSize,
-                final boolean immediateFlush, final boolean lazyCreate, final String advertiseURI,
-                final Layout<? extends Serializable> layout) {
+        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIo, final int bufferSize,
+                final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
+                final Configuration configuration) {
+            super(configuration);
             this.append = append;
             this.locking = locking;
-            this.bufferedIO = bufferedIO;
+            this.bufferedIo = bufferedIo;
             this.bufferSize = bufferSize;
-            this.immediateFlush = immediateFlush;
-            this.lazyCreate = lazyCreate;
+            this.createOnDemand = createOnDemand;
             this.advertiseURI = advertiseURI;
             this.layout = layout;
         }
@@ -244,17 +282,14 @@ public class FileManager extends OutputStreamManager {
         @Override
         public FileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
-            final File parent = file.getParentFile();
-            if (null != parent && !parent.exists()) {
-                parent.mkdirs();
-            }
-
-            final boolean writeHeader = !data.append || !file.exists();
             try {
-                final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
-                final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
-                return new FileManager(name, data.append, data.locking, data.lazyCreate, data.advertiseURI, data.layout,
-                        writeHeader, buffer);
+                FileUtils.makeParentDirs(file);
+                final boolean writeHeader = !data.append || !file.exists();
+                final int actualSize = data.bufferedIo ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
+                final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);
+                final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
+                return new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
+                        data.createOnDemand, data.advertiseURI, data.layout, writeHeader, byteBuffer);
             } catch (final IOException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);
             }

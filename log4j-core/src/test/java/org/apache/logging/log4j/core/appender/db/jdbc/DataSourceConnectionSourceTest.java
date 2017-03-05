@@ -18,74 +18,43 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collection;
-
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.JndiRule;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.mockejb.jndi.MockContextFactory;
-
-import static org.easymock.EasyMock.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
 public class DataSourceConnectionSourceTest {
 
     @Parameterized.Parameters(name = "{0}")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[][]{
-                        {"java:/comp/env/jdbc/Logging01"},
-                        {"java:/comp/env/jdbc/Logging02"}
-                }
-        );
-    }
-
-    private final String jndiURL;
-    private InitialContext context;
-
-    public DataSourceConnectionSourceTest(final String jndiURL) {
-        this.jndiURL = jndiURL;
+    public static Object[][] data() {
+        return new Object[][]{
+            {"java:/comp/env/jdbc/Logging01"},
+            {"java:/comp/env/jdbc/Logging02"}
+        };
     }
 
     private static final String CONFIG = "log4j-fatalOnly.xml";
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.reconfigure();
-        final StatusLogger logger = StatusLogger.getLogger();
-        logger.setLevel(Level.FATAL);
-    }
+    @Rule
+    public final RuleChain rules;
+    private final DataSource dataSource = mock(DataSource.class);
+    private final String jndiURL;
 
-    @Before
-    public void setUp() throws NamingException {
-        MockContextFactory.setAsInitial();
-
-        this.context = new InitialContext();
-        this.context.createSubcontext("java:");
-        this.context.createSubcontext("java:/comp");
-        this.context.createSubcontext("java:/comp/env");
-        this.context.createSubcontext("java:/comp/env/jdbc");
-    }
-
-    @After
-    public void tearDown() {
-        MockContextFactory.revertSetAsInitial();
+    public DataSourceConnectionSourceTest(final String jndiURL) {
+        this.rules = RuleChain.outerRule(new JndiRule(jndiURL, dataSource))
+            .around(new LoggerContextRule(CONFIG));
+        this.jndiURL = jndiURL;
     }
 
     @Test
@@ -104,38 +73,29 @@ public class DataSourceConnectionSourceTest {
 
     @Test
     public void testNoDataSource() {
-        final DataSourceConnectionSource source = DataSourceConnectionSource
-                .createConnectionSource(this.jndiURL);
+        final DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource(jndiURL + "123");
 
         assertNull("The connection source should be null.", source);
     }
 
     @Test
     public void testDataSource() throws NamingException, SQLException {
-        final DataSource dataSource = createStrictMock(DataSource.class);
-        final Connection connection1 = createStrictMock(Connection.class);
-        final Connection connection2 = createStrictMock(Connection.class);
+        final Connection connection1 = mock(Connection.class);
+        final Connection connection2 = mock(Connection.class);
 
-        expect(dataSource.getConnection()).andReturn(connection1);
-        expect(dataSource.getConnection()).andReturn(connection2);
-        replay(dataSource, connection1, connection2);
+        given(dataSource.getConnection()).willReturn(connection1, connection2);
 
-        this.context.bind(this.jndiURL, dataSource);
-
-        DataSourceConnectionSource source = DataSourceConnectionSource
-                .createConnectionSource(this.jndiURL);
+        DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource(jndiURL);
 
         assertNotNull("The connection source should not be null.", source);
         assertEquals("The toString value is not correct.", "dataSource{ name=" + jndiURL + ", value="
-                + dataSource + " }", source.toString());
+            + dataSource + " }", source.toString());
         assertSame("The connection is not correct (1).", connection1, source.getConnection());
         assertSame("The connection is not correct (2).", connection2, source.getConnection());
 
         source = DataSourceConnectionSource.createConnectionSource(jndiURL.substring(0, jndiURL.length() - 1));
 
         assertNull("The connection source should be null now.", source);
-
-        verify(dataSource, connection1, connection2);
     }
 
 }

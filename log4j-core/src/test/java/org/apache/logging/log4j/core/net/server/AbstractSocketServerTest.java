@@ -78,7 +78,19 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createJsonLayout() {
-        return JsonLayout.createLayout(null, true, true, false, false, false, false, null, null, null);
+        // @formatter: off
+        return JsonLayout.newBuilder()
+            .setLocationInfo(true)
+            .setProperties(true)
+            .setPropertiesAsList(false)
+            .setComplete(false)
+            .setCompact(false)
+            .setEventEol(false)
+            .setIncludeStacktrace(true)
+            .build();
+        // @formatter: on
+            
+        //return JsonLayout.createLayout(null, true, true, false, false, false, false, null, null, null, true);
     }
 
     protected abstract Layout<? extends Serializable> createLayout();
@@ -88,7 +100,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createXmlLayout() {
-        return XmlLayout.createLayout(true, true, false, false, null);
+        return XmlLayout.createLayout(true, true, false, false, null, true);
     }
 
     @After
@@ -206,8 +218,20 @@ public abstract class AbstractSocketServerTest {
 
     protected SocketAppender createSocketAppender(final Filter socketFilter,
             final Layout<? extends Serializable> socketLayout) {
-        return SocketAppender.createAppender("localhost", this.port, this.protocol, null, 0, -1, true,
-                "Test", true, false, socketLayout, socketFilter, false, null);
+        // @formatter:off
+        return SocketAppender.newBuilder()
+                .withProtocol(this.protocol)
+                .withHost("localhost")
+                .withPort(this.port)
+                .withReconnectDelayMillis(-1)
+                .withName("test")
+                .withImmediateFlush(true)
+                .withImmediateFail(false)
+                .withIgnoreExceptions(false)
+                .withLayout(socketLayout)
+                .withFilter(socketFilter)
+                .build();
+        // @formatter:on        
     }
 
 }

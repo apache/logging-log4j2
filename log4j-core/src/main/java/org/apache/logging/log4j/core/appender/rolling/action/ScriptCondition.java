@@ -24,12 +24,14 @@ import java.util.Objects;
 import javax.script.SimpleBindings;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.script.AbstractScript;
+import org.apache.logging.log4j.core.script.ScriptFile;
 import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -39,7 +41,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * 
  * @see #createCondition(AbstractScript, Configuration)
  */
-@Plugin(name = "ScriptCondition", category = "Core", printObject = true)
+@Plugin(name = "ScriptCondition", category = Core.CATEGORY_NAME, printObject = true)
 public class ScriptCondition {
     private static Logger LOGGER = StatusLogger.getLogger();
 

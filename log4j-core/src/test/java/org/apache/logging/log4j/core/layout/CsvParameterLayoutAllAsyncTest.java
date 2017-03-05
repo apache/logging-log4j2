@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -26,12 +27,14 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Tests {@link AbstractCsvLayout} with all loggers async.
  *
  * @since 2.6
  */
+@Category(Layouts.Csv.class)
 public class CsvParameterLayoutAllAsyncTest {
 
     @BeforeClass

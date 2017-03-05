@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,13 +48,16 @@ import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.message.ReusableObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class Log4jLogEventTest {
 
@@ -76,6 +87,20 @@ public class Log4jLogEventTest {
     }
 
     @Test
+    public void testToImmutableSame() {
+        final LogEvent logEvent = new Log4jLogEvent();
+        Assert.assertSame(logEvent, logEvent.toImmutable());
+    }
+
+    @Test
+    public void testToImmutableNotSame() {
+        final LogEvent logEvent = new Log4jLogEvent.Builder().setMessage(new ReusableObjectMessage()).build();
+        LogEvent immutable = logEvent.toImmutable();
+        Assert.assertSame(logEvent, immutable);
+        Assert.assertFalse(immutable.getMessage() instanceof ReusableMessage);
+    }
+
+    @Test
     public void testJavaIoSerializable() throws Exception {
         final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
                 .setLoggerName("some.test") //
@@ -93,6 +118,7 @@ public class Log4jLogEventTest {
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
         assertEquals(evt.getContextMap(), evt2.getContextMap());
+        assertEquals(evt.getContextData(), evt2.getContextData());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());
         assertEquals(evt.getSource(), evt2.getSource());
@@ -122,6 +148,7 @@ public class Log4jLogEventTest {
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
         assertEquals(evt.getContextMap(), evt2.getContextMap());
+        assertEquals(evt.getContextData(), evt2.getContextData());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());
         assertEquals(evt.getSource(), evt2.getSource());
@@ -175,9 +202,7 @@ public class Log4jLogEventTest {
         // System.out.println("final String base64 = \"" + base64Str.replaceAll("\r\n", "\\\\r\\\\n\" +\r\n\"") +
         // "\";");
 
-        //final String base64_v_2_5 = "rO0ABXNyAD5vcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkxvZzRqTG9nRXZlbnQkTG9nRXZlbnRQcm94eZztD11w2ioWAgANWgAMaXNFbmRPZkJhdGNoWgASaXNMb2NhdGlvblJlcXVpcmVkSgAKdGltZU1pbGxpc0wACmNvbnRleHRNYXB0AA9MamF2YS91dGlsL01hcDtMAAxjb250ZXh0U3RhY2t0ADVMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL1RocmVhZENvbnRleHQkQ29udGV4dFN0YWNrO0wABWxldmVsdAAgTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9MZXZlbDtMAApsb2dnZXJGUUNOdAASTGphdmEvbGFuZy9TdHJpbmc7TAAKbG9nZ2VyTmFtZXEAfgAETAAGbWFya2VydAAhTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9NYXJrZXI7TAAHbWVzc2FnZXQAKkxvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovbWVzc2FnZS9NZXNzYWdlO0wABnNvdXJjZXQAHUxqYXZhL2xhbmcvU3RhY2tUcmFjZUVsZW1lbnQ7TAAKdGhyZWFkTmFtZXEAfgAETAALdGhyb3duUHJveHl0ADNMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL2NvcmUvaW1wbC9UaHJvd2FibGVQcm94eTt4cAAAAAAAAEmWAtJzcgAeamF2YS51dGlsLkNvbGxlY3Rpb25zJEVtcHR5TWFwWTYUhVrc59ACAAB4cHNyAD5vcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouVGhyZWFkQ29udGV4dCRFbXB0eVRocmVhZENvbnRleHRTdGFjawAAAAAAAAABAgAAeHBzcgAeb3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLkxldmVsAAAAAAAYIBoCAANJAAhpbnRMZXZlbEwABG5hbWVxAH4ABEwADXN0YW5kYXJkTGV2ZWx0ACxMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL3NwaS9TdGFuZGFyZExldmVsO3hwAAABkHQABElORk9+cgAqb3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLnNwaS5TdGFuZGFyZExldmVsAAAAAAAAAAASAAB4cgAOamF2YS5sYW5nLkVudW0AAAAAAAAAABIAAHhwdAAESU5GT3QAAHQACXNvbWUudGVzdHBzcgAub3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLm1lc3NhZ2UuU2ltcGxlTWVzc2FnZYt0TTBgt6KoAgABTAAHbWVzc2FnZXEAfgAEeHB0AANhYmNwdAAEbWFpbnNyADFvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLlRocm93YWJsZVByb3h52cww1Zp7rPoCAAdJABJjb21tb25FbGVtZW50Q291bnRMAApjYXVzZVByb3h5cQB+AAhbABJleHRlbmRlZFN0YWNrVHJhY2V0AD9bTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvRXh0ZW5kZWRTdGFja1RyYWNlRWxlbWVudDtMABBsb2NhbGl6ZWRNZXNzYWdlcQB+AARMAAdtZXNzYWdlcQB+AARMAARuYW1lcQB+AARbABFzdXBwcmVzc2VkUHJveGllc3QANFtMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL2NvcmUvaW1wbC9UaHJvd2FibGVQcm94eTt4cAAAAABwdXIAP1tMb3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5FeHRlbmRlZFN0YWNrVHJhY2VFbGVtZW50O8rPiCOlx8+8AgAAeHAAAAAac3IAPG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuRXh0ZW5kZWRTdGFja1RyYWNlRWxlbWVudOHez7rGtpAHAgACTAAOZXh0cmFDbGFzc0luZm90ADZMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL2NvcmUvaW1wbC9FeHRlbmRlZENsYXNzSW5mbztMABFzdGFja1RyYWNlRWxlbWVudHEAfgAHeHBzcgA0b3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5FeHRlbmRlZENsYXNzSW5mbwAAAAAAAAABAgADWgAFZXhhY3RMAAhsb2NhdGlvbnEAfgAETAAHdmVyc2lvbnEAfgAEeHABdAANdGVzdC1jbGFzc2VzL3QAAT9zcgAbamF2YS5sYW5nLlN0YWNrVHJhY2VFbGVtZW50YQnFmiY23YUCAARJAApsaW5lTnVtYmVyTAAOZGVjbGFyaW5nQ2xhc3NxAH4ABEwACGZpbGVOYW1lcQB+AARMAAptZXRob2ROYW1lcQB+AAR4cAAAAJh0ADRvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkxvZzRqTG9nRXZlbnRUZXN0dAAWTG9nNGpMb2dFdmVudFRlc3QuamF2YXQAKnRlc3RKYXZhSW9TZXJpYWxpemFibGVXaXRoVW5rbm93blRocm93YWJsZXNxAH4AInNxAH4AJQBxAH4AKHQACDEuNy4wXzU1c3EAfgAp/////nQAJHN1bi5yZWZsZWN0Lk5hdGl2ZU1ldGhvZEFjY2Vzc29ySW1wbHB0AAdpbnZva2Uwc3EAfgAic3EAfgAlAHEAfgAocQB+ADBzcQB+ACn/////cQB+ADJwdAAGaW52b2tlc3EAfgAic3EAfgAlAHEAfgAocQB+ADBzcQB+ACn/////dAAoc3VuLnJlZmxlY3QuRGVsZWdhdGluZ01ldGhvZEFjY2Vzc29ySW1wbHBxAH4AN3NxAH4AInNxAH4AJQBxAH4AKHEAfgAwc3EAfgAp/////3QAGGphdmEubGFuZy5yZWZsZWN0Lk1ldGhvZHBxAH4AN3NxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAAAL3QAKW9yZy5qdW5pdC5ydW5uZXJzLm1vZGVsLkZyYW1ld29ya01ldGhvZCQxdAAURnJhbWV3b3JrTWV0aG9kLmphdmF0ABFydW5SZWZsZWN0aXZlQ2FsbHNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAAADHQAM29yZy5qdW5pdC5pbnRlcm5hbC5ydW5uZXJzLm1vZGVsLlJlZmxlY3RpdmVDYWxsYWJsZXQAF1JlZmxlY3RpdmVDYWxsYWJsZS5qYXZhdAADcnVuc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTEuamFycQB+AChzcQB+ACkAAAAsdAAnb3JnLmp1bml0LnJ1bm5lcnMubW9kZWwuRnJhbWV3b3JrTWV0aG9kcQB+AEV0ABFpbnZva2VFeHBsb3NpdmVseXNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAAAEXQAMm9yZy5qdW5pdC5pbnRlcm5hbC5ydW5uZXJzLnN0YXRlbWVudHMuSW52b2tlTWV0aG9kdAARSW52b2tlTWV0aG9kLmphdmF0AAhldmFsdWF0ZXNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAABD3QAHm9yZy5qdW5pdC5ydW5uZXJzLlBhcmVudFJ1bm5lcnQAEVBhcmVudFJ1bm5lci5qYXZhdAAHcnVuTGVhZnNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAAARnQAKG9yZy5qdW5pdC5ydW5uZXJzLkJsb2NrSlVuaXQ0Q2xhc3NSdW5uZXJ0ABtCbG9ja0pVbml0NENsYXNzUnVubmVyLmphdmF0AAhydW5DaGlsZHNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAAAMnEAfgBmcQB+AGdxAH4AaHNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAAA7nQAIG9yZy5qdW5pdC5ydW5uZXJzLlBhcmVudFJ1bm5lciQzcQB+AGBxAH4ATXNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAAAP3QAIG9yZy5qdW5pdC5ydW5uZXJzLlBhcmVudFJ1bm5lciQxcQB+AGB0AAhzY2hlZHVsZXNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAAA7HEAfgBfcQB+AGB0AAtydW5DaGlsZHJlbnNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjExLmphcnEAfgAoc3EAfgApAAAANXEAfgBfcQB+AGB0AAphY2Nlc3MkMDAwc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTEuamFycQB+AChzcQB+ACkAAADldAAgb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVyJDJxAH4AYHEAfgBac3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTEuamFycQB+AChzcQB+ACkAAAAadAAwb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMuc3RhdGVtZW50cy5SdW5CZWZvcmVzdAAPUnVuQmVmb3Jlcy5qYXZhcQB+AFpzcQB+ACJzcQB+ACUBdAAOanVuaXQtNC4xMS5qYXJxAH4AKHNxAH4AKQAAABt0AC9vcmcuanVuaXQuaW50ZXJuYWwucnVubmVycy5zdGF0ZW1lbnRzLlJ1bkFmdGVyc3QADlJ1bkFmdGVycy5qYXZhcQB+AFpzcQB+ACJzcQB+ACUBdAAOanVuaXQtNC4xMS5qYXJxAH4AKHNxAH4AKQAAATVxAH4AX3EAfgBgcQB+AE1zcQB+ACJzcQB+ACUBdAAELmNwL3EAfgAoc3EAfgApAAAAMnQAOm9yZy5lY2xpcHNlLmpkdC5pbnRlcm5hbC5qdW5pdDQucnVubmVyLkpVbml0NFRlc3RSZWZlcmVuY2V0ABhKVW5pdDRUZXN0UmVmZXJlbmNlLmphdmFxAH4ATXNxAH4AInNxAH4AJQF0AAQuY3AvcQB+AChzcQB+ACkAAAAmdAAzb3JnLmVjbGlwc2UuamR0LmludGVybmFsLmp1bml0LnJ1bm5lci5UZXN0RXhlY3V0aW9udAASVGVzdEV4ZWN1dGlvbi5qYXZhcQB+AE1zcQB+ACJzcQB+ACUBdAAELmNwL3EAfgAoc3EAfgApAAAB03QANm9yZy5lY2xpcHNlLmpkdC5pbnRlcm5hbC5qdW5pdC5ydW5uZXIuUmVtb3RlVGVzdFJ1bm5lcnQAFVJlbW90ZVRlc3RSdW5uZXIuamF2YXQACHJ1blRlc3Rzc3EAfgAic3EAfgAlAXQABC5jcC9xAH4AKHNxAH4AKQAAAqtxAH4Ap3EAfgCocQB+AKlzcQB+ACJzcQB+ACUBdAAELmNwL3EAfgAoc3EAfgApAAABhnEAfgCncQB+AKhxAH4ATXNxAH4AInNxAH4AJQF0AAQuY3AvcQB+AChzcQB+ACkAAADFcQB+AKdxAH4AqHQABG1haW50ABZPTUcgSSd2ZSBiZWVuIGRlbGV0ZWQhcQB+ALd0AEVvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkxvZzRqTG9nRXZlbnRUZXN0JERlbGV0ZWRFeGNlcHRpb251cgA0W0xvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLlRocm93YWJsZVByb3h5O/rtAeCFous5AgAAeHAAAAAA";
-        final String base64_v_2_6 = "rO0ABXNyAD5vcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkxvZzRqTG9nRXZlbnQkTG9nRXZlbnRQcm94eYgtmn+yXsP9AgAPWgAMaXNFbmRPZkJhdGNoWgASaXNMb2NhdGlvblJlcXVpcmVkSgAIdGhyZWFkSWRJAA50aHJlYWRQcmlvcml0eUoACnRpbWVNaWxsaXNMAApjb250ZXh0TWFwdAAPTGphdmEvdXRpbC9NYXA7TAAMY29udGV4dFN0YWNrdAA1TG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9UaHJlYWRDb250ZXh0JENvbnRleHRTdGFjaztMAAVsZXZlbHQAIExvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovTGV2ZWw7TAAKbG9nZ2VyRlFDTnQAEkxqYXZhL2xhbmcvU3RyaW5nO0wACmxvZ2dlck5hbWVxAH4ABEwABm1hcmtlcnQAIUxvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovTWFya2VyO0wAB21lc3NhZ2V0ACpMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL21lc3NhZ2UvTWVzc2FnZTtMAAZzb3VyY2V0AB1MamF2YS9sYW5nL1N0YWNrVHJhY2VFbGVtZW50O0wACnRocmVhZE5hbWVxAH4ABEwAC3Rocm93blByb3h5dAAzTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvVGhyb3dhYmxlUHJveHk7eHAAAAAAAAAAAAABAAAABQAAAABJlgLSc3IAHmphdmEudXRpbC5Db2xsZWN0aW9ucyRFbXB0eU1hcFk2FIVa3OfQAgAAeHBzcgA+b3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLlRocmVhZENvbnRleHQkRW1wdHlUaHJlYWRDb250ZXh0U3RhY2sAAAAAAAAAAQIAAHhwc3IAHm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5MZXZlbAAAAAAAGCAaAgADSQAIaW50TGV2ZWxMAARuYW1lcQB+AARMAA1zdGFuZGFyZExldmVsdAAsTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9zcGkvU3RhbmRhcmRMZXZlbDt4cAAAAZB0AARJTkZPfnIAKm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5zcGkuU3RhbmRhcmRMZXZlbAAAAAAAAAAAEgAAeHIADmphdmEubGFuZy5FbnVtAAAAAAAAAAASAAB4cHQABElORk90AAB0AAlzb21lLnRlc3Rwc3IALm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5tZXNzYWdlLlNpbXBsZU1lc3NhZ2WLdE0wYLeiqAMAAUwAB21lc3NhZ2VxAH4ABHhwdAADYWJjcQB+ABp4cHQABG1haW5zcgAxb3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5UaHJvd2FibGVQcm94ednMMNWae6z6AgAHSQASY29tbW9uRWxlbWVudENvdW50TAAKY2F1c2VQcm94eXEAfgAIWwASZXh0ZW5kZWRTdGFja1RyYWNldAA/W0xvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL0V4dGVuZGVkU3RhY2tUcmFjZUVsZW1lbnQ7TAAQbG9jYWxpemVkTWVzc2FnZXEAfgAETAAHbWVzc2FnZXEAfgAETAAEbmFtZXEAfgAEWwARc3VwcHJlc3NlZFByb3hpZXN0ADRbTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvVGhyb3dhYmxlUHJveHk7eHAAAAAAcHVyAD9bTG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuRXh0ZW5kZWRTdGFja1RyYWNlRWxlbWVudDvKz4gjpcfPvAIAAHhwAAAAHXNyADxvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkV4dGVuZGVkU3RhY2tUcmFjZUVsZW1lbnTh3s+6xraQBwIAAkwADmV4dHJhQ2xhc3NJbmZvdAA2TG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvRXh0ZW5kZWRDbGFzc0luZm87TAARc3RhY2tUcmFjZUVsZW1lbnRxAH4AB3hwc3IANG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuRXh0ZW5kZWRDbGFzc0luZm8AAAAAAAAAAQIAA1oABWV4YWN0TAAIbG9jYXRpb25xAH4ABEwAB3ZlcnNpb25xAH4ABHhwAXQADXRlc3QtY2xhc3Nlcy90AAE/c3IAG2phdmEubGFuZy5TdGFja1RyYWNlRWxlbWVudGEJxZomNt2FAgAESQAKbGluZU51bWJlckwADmRlY2xhcmluZ0NsYXNzcQB+AARMAAhmaWxlTmFtZXEAfgAETAAKbWV0aG9kTmFtZXEAfgAEeHAAAACqdAA0b3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5Mb2c0akxvZ0V2ZW50VGVzdHQAFkxvZzRqTG9nRXZlbnRUZXN0LmphdmF0ACp0ZXN0SmF2YUlvU2VyaWFsaXphYmxlV2l0aFVua25vd25UaHJvd2FibGVzcQB+ACJzcQB+ACUAcQB+ACh0AAgxLjcuMF81NXNxAH4AKf////50ACRzdW4ucmVmbGVjdC5OYXRpdmVNZXRob2RBY2Nlc3NvckltcGx0AB1OYXRpdmVNZXRob2RBY2Nlc3NvckltcGwuamF2YXQAB2ludm9rZTBzcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKQAAADlxAH4AMnEAfgAzdAAGaW52b2tlc3EAfgAic3EAfgAlAHEAfgAocQB+ADBzcQB+ACkAAAArdAAoc3VuLnJlZmxlY3QuRGVsZWdhdGluZ01ldGhvZEFjY2Vzc29ySW1wbHQAIURlbGVnYXRpbmdNZXRob2RBY2Nlc3NvckltcGwuamF2YXEAfgA4c3EAfgAic3EAfgAlAHEAfgAocQB+ADBzcQB+ACkAAAJedAAYamF2YS5sYW5nLnJlZmxlY3QuTWV0aG9kdAALTWV0aG9kLmphdmFxAH4AOHNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjEyLmphcnQABDQuMTJzcQB+ACkAAAAydAApb3JnLmp1bml0LnJ1bm5lcnMubW9kZWwuRnJhbWV3b3JrTWV0aG9kJDF0ABRGcmFtZXdvcmtNZXRob2QuamF2YXQAEXJ1blJlZmxlY3RpdmVDYWxsc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAAMdAAzb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMubW9kZWwuUmVmbGVjdGl2ZUNhbGxhYmxldAAXUmVmbGVjdGl2ZUNhbGxhYmxlLmphdmF0AANydW5zcQB+ACJzcQB+ACUBdAAOanVuaXQtNC4xMi5qYXJxAH4ARnNxAH4AKQAAAC90ACdvcmcuanVuaXQucnVubmVycy5tb2RlbC5GcmFtZXdvcmtNZXRob2RxAH4ASXQAEWludm9rZUV4cGxvc2l2ZWx5c3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAARdAAyb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMuc3RhdGVtZW50cy5JbnZva2VNZXRob2R0ABFJbnZva2VNZXRob2QuamF2YXQACGV2YWx1YXRlc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAFFdAAeb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVydAARUGFyZW50UnVubmVyLmphdmF0AAdydW5MZWFmc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAABOdAAob3JnLmp1bml0LnJ1bm5lcnMuQmxvY2tKVW5pdDRDbGFzc1J1bm5lcnQAG0Jsb2NrSlVuaXQ0Q2xhc3NSdW5uZXIuamF2YXQACHJ1bkNoaWxkc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAA5cQB+AGpxAH4Aa3EAfgBsc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAEidAAgb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVyJDNxAH4AZHEAfgBRc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAABHdAAgb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVyJDFxAH4AZHQACHNjaGVkdWxlc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAEgcQB+AGNxAH4AZHQAC3J1bkNoaWxkcmVuc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAA6cQB+AGNxAH4AZHQACmFjY2VzcyQwMDBzcQB+ACJzcQB+ACUBdAAOanVuaXQtNC4xMi5qYXJxAH4ARnNxAH4AKQAAAQx0ACBvcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXIkMnEAfgBkcQB+AF5zcQB+ACJzcQB+ACUBdAAOanVuaXQtNC4xMi5qYXJxAH4ARnNxAH4AKQAAABp0ADBvcmcuanVuaXQuaW50ZXJuYWwucnVubmVycy5zdGF0ZW1lbnRzLlJ1bkJlZm9yZXN0AA9SdW5CZWZvcmVzLmphdmFxAH4AXnNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjEyLmphcnEAfgBGc3EAfgApAAAAG3QAL29yZy5qdW5pdC5pbnRlcm5hbC5ydW5uZXJzLnN0YXRlbWVudHMuUnVuQWZ0ZXJzdAAOUnVuQWZ0ZXJzLmphdmFxAH4AXnNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjEyLmphcnEAfgBGc3EAfgApAAABa3EAfgBjcQB+AGRxAH4AUXNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjEyLmphcnEAfgBGc3EAfgApAAAAiXQAGm9yZy5qdW5pdC5ydW5uZXIuSlVuaXRDb3JldAAOSlVuaXRDb3JlLmphdmFxAH4AUXNxAH4AInNxAH4AJQF0AAxqdW5pdC1ydC5qYXJxAH4AKHNxAH4AKQAAAEV0AChjb20uaW50ZWxsaWouanVuaXQ0LkpVbml0NElkZWFUZXN0UnVubmVydAAZSlVuaXQ0SWRlYVRlc3RSdW5uZXIuamF2YXQAE3N0YXJ0UnVubmVyV2l0aEFyZ3NzcQB+ACJzcQB+ACUBdAAManVuaXQtcnQuamFycQB+AChzcQB+ACkAAADqdAAsY29tLmludGVsbGlqLnJ0LmV4ZWN1dGlvbi5qdW5pdC5KVW5pdFN0YXJ0ZXJ0ABFKVW5pdFN0YXJ0ZXIuamF2YXQAFnByZXBhcmVTdHJlYW1zQW5kU3RhcnRzcQB+ACJzcQB+ACUBdAAManVuaXQtcnQuamFycQB+AChzcQB+ACkAAABKcQB+AKxxAH4ArXQABG1haW5zcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKf////5xAH4AMnEAfgAzcQB+ADRzcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKQAAADlxAH4AMnEAfgAzcQB+ADhzcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKQAAACtxAH4APHEAfgA9cQB+ADhzcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKQAAAl5xAH4AQXEAfgBCcQB+ADhzcQB+ACJzcQB+ACUBdAALaWRlYV9ydC5qYXJxAH4AKHNxAH4AKQAAAJB0AC1jb20uaW50ZWxsaWoucnQuZXhlY3V0aW9uLmFwcGxpY2F0aW9uLkFwcE1haW50AAxBcHBNYWluLmphdmFxAH4As3QAFk9NRyBJJ3ZlIGJlZW4gZGVsZXRlZCFxAH4AxnQARW9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuTG9nNGpMb2dFdmVudFRlc3QkRGVsZXRlZEV4Y2VwdGlvbnVyADRbTG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuVGhyb3dhYmxlUHJveHk7+u0B4IWi6zkCAAB4cAAAAAA=";
-        final String base64 = "rO0ABXNyAD5vcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkxvZzRqTG9nRXZlbnQkTG9nRXZlbnRQcm94eYgtmn+yXsP9AgAPWgAMaXNFbmRPZkJhdGNoWgASaXNMb2NhdGlvblJlcXVpcmVkSgAIdGhyZWFkSWRJAA50aHJlYWRQcmlvcml0eUoACnRpbWVNaWxsaXNMAApjb250ZXh0TWFwdAAPTGphdmEvdXRpbC9NYXA7TAAMY29udGV4dFN0YWNrdAA1TG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9UaHJlYWRDb250ZXh0JENvbnRleHRTdGFjaztMAAVsZXZlbHQAIExvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovTGV2ZWw7TAAKbG9nZ2VyRlFDTnQAEkxqYXZhL2xhbmcvU3RyaW5nO0wACmxvZ2dlck5hbWVxAH4ABEwABm1hcmtlcnQAIUxvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovTWFya2VyO0wAB21lc3NhZ2V0ACpMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL21lc3NhZ2UvTWVzc2FnZTtMAAZzb3VyY2V0AB1MamF2YS9sYW5nL1N0YWNrVHJhY2VFbGVtZW50O0wACnRocmVhZE5hbWVxAH4ABEwAC3Rocm93blByb3h5dAAzTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvVGhyb3dhYmxlUHJveHk7eHAAAAAAAAAAAAABAAAABQAAAABJlgLSc3IAHmphdmEudXRpbC5Db2xsZWN0aW9ucyRFbXB0eU1hcFk2FIVa3OfQAgAAeHBzcgA+b3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLlRocmVhZENvbnRleHQkRW1wdHlUaHJlYWRDb250ZXh0U3RhY2sAAAAAAAAAAQIAAHhwc3IAHm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5MZXZlbAAAAAAAGCAaAgADSQAIaW50TGV2ZWxMAARuYW1lcQB+AARMAA1zdGFuZGFyZExldmVsdAAsTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9zcGkvU3RhbmRhcmRMZXZlbDt4cAAAAZB0AARJTkZPfnIAKm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5zcGkuU3RhbmRhcmRMZXZlbAAAAAAAAAAAEgAAeHIADmphdmEubGFuZy5FbnVtAAAAAAAAAAASAAB4cHQABElORk90AAB0AAlzb21lLnRlc3Rwc3IALm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5tZXNzYWdlLlNpbXBsZU1lc3NhZ2WLdE0wYLeiqAMAAUwAB21lc3NhZ2VxAH4ABHhwdAADYWJjcQB+ABp4cHQABG1haW5zcgAxb3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5UaHJvd2FibGVQcm94ednMMNWae6z6AgAHSQASY29tbW9uRWxlbWVudENvdW50TAAKY2F1c2VQcm94eXEAfgAIWwASZXh0ZW5kZWRTdGFja1RyYWNldAA/W0xvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL0V4dGVuZGVkU3RhY2tUcmFjZUVsZW1lbnQ7TAAQbG9jYWxpemVkTWVzc2FnZXEAfgAETAAHbWVzc2FnZXEAfgAETAAEbmFtZXEAfgAEWwARc3VwcHJlc3NlZFByb3hpZXN0ADRbTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvVGhyb3dhYmxlUHJveHk7eHAAAAAAcHVyAD9bTG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuRXh0ZW5kZWRTdGFja1RyYWNlRWxlbWVudDvKz4gjpcfPvAIAAHhwAAAAHXNyADxvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkV4dGVuZGVkU3RhY2tUcmFjZUVsZW1lbnTh3s+6xraQBwIAAkwADmV4dHJhQ2xhc3NJbmZvdAA2TG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvRXh0ZW5kZWRDbGFzc0luZm87TAARc3RhY2tUcmFjZUVsZW1lbnRxAH4AB3hwc3IANG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuRXh0ZW5kZWRDbGFzc0luZm8AAAAAAAAAAQIAA1oABWV4YWN0TAAIbG9jYXRpb25xAH4ABEwAB3ZlcnNpb25xAH4ABHhwAXQADXRlc3QtY2xhc3Nlcy90AAE/c3IAG2phdmEubGFuZy5TdGFja1RyYWNlRWxlbWVudGEJxZomNt2FAgAESQAKbGluZU51bWJlckwADmRlY2xhcmluZ0NsYXNzcQB+AARMAAhmaWxlTmFtZXEAfgAETAAKbWV0aG9kTmFtZXEAfgAEeHAAAACqdAA0b3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5Mb2c0akxvZ0V2ZW50VGVzdHQAFkxvZzRqTG9nRXZlbnRUZXN0LmphdmF0ACp0ZXN0SmF2YUlvU2VyaWFsaXphYmxlV2l0aFVua25vd25UaHJvd2FibGVzcQB+ACJzcQB+ACUAcQB+ACh0AAgxLjcuMF81NXNxAH4AKf////50ACRzdW4ucmVmbGVjdC5OYXRpdmVNZXRob2RBY2Nlc3NvckltcGx0AB1OYXRpdmVNZXRob2RBY2Nlc3NvckltcGwuamF2YXQAB2ludm9rZTBzcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKQAAADlxAH4AMnEAfgAzdAAGaW52b2tlc3EAfgAic3EAfgAlAHEAfgAocQB+ADBzcQB+ACkAAAArdAAoc3VuLnJlZmxlY3QuRGVsZWdhdGluZ01ldGhvZEFjY2Vzc29ySW1wbHQAIURlbGVnYXRpbmdNZXRob2RBY2Nlc3NvckltcGwuamF2YXEAfgA4c3EAfgAic3EAfgAlAHEAfgAocQB+ADBzcQB+ACkAAAJedAAYamF2YS5sYW5nLnJlZmxlY3QuTWV0aG9kdAALTWV0aG9kLmphdmFxAH4AOHNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjEyLmphcnQABDQuMTJzcQB+ACkAAAAydAApb3JnLmp1bml0LnJ1bm5lcnMubW9kZWwuRnJhbWV3b3JrTWV0aG9kJDF0ABRGcmFtZXdvcmtNZXRob2QuamF2YXQAEXJ1blJlZmxlY3RpdmVDYWxsc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAAMdAAzb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMubW9kZWwuUmVmbGVjdGl2ZUNhbGxhYmxldAAXUmVmbGVjdGl2ZUNhbGxhYmxlLmphdmF0AANydW5zcQB+ACJzcQB+ACUBdAAOanVuaXQtNC4xMi5qYXJxAH4ARnNxAH4AKQAAAC90ACdvcmcuanVuaXQucnVubmVycy5tb2RlbC5GcmFtZXdvcmtNZXRob2RxAH4ASXQAEWludm9rZUV4cGxvc2l2ZWx5c3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAARdAAyb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMuc3RhdGVtZW50cy5JbnZva2VNZXRob2R0ABFJbnZva2VNZXRob2QuamF2YXQACGV2YWx1YXRlc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAFFdAAeb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVydAARUGFyZW50UnVubmVyLmphdmF0AAdydW5MZWFmc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAABOdAAob3JnLmp1bml0LnJ1bm5lcnMuQmxvY2tKVW5pdDRDbGFzc1J1bm5lcnQAG0Jsb2NrSlVuaXQ0Q2xhc3NSdW5uZXIuamF2YXQACHJ1bkNoaWxkc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAA5cQB+AGpxAH4Aa3EAfgBsc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAEidAAgb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVyJDNxAH4AZHEAfgBRc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAABHdAAgb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVyJDFxAH4AZHQACHNjaGVkdWxlc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAEgcQB+AGNxAH4AZHQAC3J1bkNoaWxkcmVuc3EAfgAic3EAfgAlAXQADmp1bml0LTQuMTIuamFycQB+AEZzcQB+ACkAAAA6cQB+AGNxAH4AZHQACmFjY2VzcyQwMDBzcQB+ACJzcQB+ACUBdAAOanVuaXQtNC4xMi5qYXJxAH4ARnNxAH4AKQAAAQx0ACBvcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXIkMnEAfgBkcQB+AF5zcQB+ACJzcQB+ACUBdAAOanVuaXQtNC4xMi5qYXJxAH4ARnNxAH4AKQAAABp0ADBvcmcuanVuaXQuaW50ZXJuYWwucnVubmVycy5zdGF0ZW1lbnRzLlJ1bkJlZm9yZXN0AA9SdW5CZWZvcmVzLmphdmFxAH4AXnNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjEyLmphcnEAfgBGc3EAfgApAAAAG3QAL29yZy5qdW5pdC5pbnRlcm5hbC5ydW5uZXJzLnN0YXRlbWVudHMuUnVuQWZ0ZXJzdAAOUnVuQWZ0ZXJzLmphdmFxAH4AXnNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjEyLmphcnEAfgBGc3EAfgApAAABa3EAfgBjcQB+AGRxAH4AUXNxAH4AInNxAH4AJQF0AA5qdW5pdC00LjEyLmphcnEAfgBGc3EAfgApAAAAiXQAGm9yZy5qdW5pdC5ydW5uZXIuSlVuaXRDb3JldAAOSlVuaXRDb3JlLmphdmFxAH4AUXNxAH4AInNxAH4AJQF0AAxqdW5pdC1ydC5qYXJxAH4AKHNxAH4AKQAAAEV0AChjb20uaW50ZWxsaWouanVuaXQ0LkpVbml0NElkZWFUZXN0UnVubmVydAAZSlVuaXQ0SWRlYVRlc3RSdW5uZXIuamF2YXQAE3N0YXJ0UnVubmVyV2l0aEFyZ3NzcQB+ACJzcQB+ACUBdAAManVuaXQtcnQuamFycQB+AChzcQB+ACkAAADqdAAsY29tLmludGVsbGlqLnJ0LmV4ZWN1dGlvbi5qdW5pdC5KVW5pdFN0YXJ0ZXJ0ABFKVW5pdFN0YXJ0ZXIuamF2YXQAFnByZXBhcmVTdHJlYW1zQW5kU3RhcnRzcQB+ACJzcQB+ACUBdAAManVuaXQtcnQuamFycQB+AChzcQB+ACkAAABKcQB+AKxxAH4ArXQABG1haW5zcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKf////5xAH4AMnEAfgAzcQB+ADRzcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKQAAADlxAH4AMnEAfgAzcQB+ADhzcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKQAAACtxAH4APHEAfgA9cQB+ADhzcQB+ACJzcQB+ACUAcQB+AChxAH4AMHNxAH4AKQAAAl5xAH4AQXEAfgBCcQB+ADhzcQB+ACJzcQB+ACUBdAALaWRlYV9ydC5qYXJxAH4AKHNxAH4AKQAAAJB0AC1jb20uaW50ZWxsaWoucnQuZXhlY3V0aW9uLmFwcGxpY2F0aW9uLkFwcE1haW50AAxBcHBNYWluLmphdmFxAH4As3QAFk9NRyBJJ3ZlIGJlZW4gZGVsZXRlZCFxAH4AxnQARW9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuTG9nNGpMb2dFdmVudFRlc3QkRGVsZXRlZEV4Y2VwdGlvbnVyADRbTG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuVGhyb3dhYmxlUHJveHk7+u0B4IWi6zkCAAB4cAAAAAA=";
+        final String base64 = "rO0ABXNyAD5vcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkxvZzRqTG9nRXZlbnQkTG9nRXZlbnRQcm94eYgtmn+yXsP9AwAQWgAMaXNFbmRPZkJhdGNoWgASaXNMb2NhdGlvblJlcXVpcmVkSgAIdGhyZWFkSWRJAA50aHJlYWRQcmlvcml0eUoACnRpbWVNaWxsaXNMAAtjb250ZXh0RGF0YXQAKUxvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovdXRpbC9TdHJpbmdNYXA7TAAMY29udGV4dFN0YWNrdAA1TG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9UaHJlYWRDb250ZXh0JENvbnRleHRTdGFjaztMAAVsZXZlbHQAIExvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovTGV2ZWw7TAAKbG9nZ2VyRlFDTnQAEkxqYXZhL2xhbmcvU3RyaW5nO0wACmxvZ2dlck5hbWVxAH4ABEwABm1hcmtlcnQAIUxvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovTWFya2VyO0wAEW1hcnNoYWxsZWRNZXNzYWdldAAbTGphdmEvcm1pL01hcnNoYWxsZWRPYmplY3Q7TAANbWVzc2FnZVN0cmluZ3EAfgAETAAGc291cmNldAAdTGphdmEvbGFuZy9TdGFja1RyYWNlRWxlbWVudDtMAAp0aHJlYWROYW1lcQB+AARMAAt0aHJvd25Qcm94eXQAM0xvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL1Rocm93YWJsZVByb3h5O3hwAAAAAAAAAAAAAQAAAAUAAAAASZYC0nNyADJvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGoudXRpbC5Tb3J0ZWRBcnJheVN0cmluZ01hcLA3yJFz7CvcAwACWgAJaW1tdXRhYmxlSQAJdGhyZXNob2xkeHABAAAAAXcIAAAAAQAAAAB4c3IAPm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5UaHJlYWRDb250ZXh0JEVtcHR5VGhyZWFkQ29udGV4dFN0YWNrAAAAAAAAAAECAAB4cHNyAB5vcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouTGV2ZWwAAAAAABggGgIAA0kACGludExldmVsTAAEbmFtZXEAfgAETAANc3RhbmRhcmRMZXZlbHQALExvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovc3BpL1N0YW5kYXJkTGV2ZWw7eHAAAAGQdAAESU5GT35yACpvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouc3BpLlN0YW5kYXJkTGV2ZWwAAAAAAAAAABIAAHhyAA5qYXZhLmxhbmcuRW51bQAAAAAAAAAAEgAAeHB0AARJTkZPdAAAdAAJc29tZS50ZXN0cHNyABlqYXZhLnJtaS5NYXJzaGFsbGVkT2JqZWN0fL0el+1j/D4CAANJAARoYXNoWwAIbG9jQnl0ZXN0AAJbQlsACG9iakJ5dGVzcQB+ABl4cJNvO+xwdXIAAltCrPMX+AYIVOACAAB4cAAAAGms7QAFc3IALm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5tZXNzYWdlLlNpbXBsZU1lc3NhZ2WLdE0wYLeiqAMAAUwAB21lc3NhZ2V0ABJMamF2YS9sYW5nL1N0cmluZzt4cHQAA2FiY3h0AANhYmNwdAAEbWFpbnNyADFvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLlRocm93YWJsZVByb3h52cww1Zp7rPoCAAdJABJjb21tb25FbGVtZW50Q291bnRMAApjYXVzZVByb3h5cQB+AAhbABJleHRlbmRlZFN0YWNrVHJhY2V0AD9bTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvRXh0ZW5kZWRTdGFja1RyYWNlRWxlbWVudDtMABBsb2NhbGl6ZWRNZXNzYWdlcQB+AARMAAdtZXNzYWdlcQB+AARMAARuYW1lcQB+AARbABFzdXBwcmVzc2VkUHJveGllc3QANFtMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL2NvcmUvaW1wbC9UaHJvd2FibGVQcm94eTt4cAAAAABwdXIAP1tMb3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5FeHRlbmRlZFN0YWNrVHJhY2VFbGVtZW50O8rPiCOlx8+8AgAAeHAAAAAec3IAPG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuRXh0ZW5kZWRTdGFja1RyYWNlRWxlbWVudOHez7rGtpAHAgACTAAOZXh0cmFDbGFzc0luZm90ADZMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL2NvcmUvaW1wbC9FeHRlbmRlZENsYXNzSW5mbztMABFzdGFja1RyYWNlRWxlbWVudHEAfgAHeHBzcgA0b3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5FeHRlbmRlZENsYXNzSW5mbwAAAAAAAAABAgADWgAFZXhhY3RMAAhsb2NhdGlvbnEAfgAETAAHdmVyc2lvbnEAfgAEeHABdAANdGVzdC1jbGFzc2VzL3QAAT9zcgAbamF2YS5sYW5nLlN0YWNrVHJhY2VFbGVtZW50YQnFmiY23YUCAARJAApsaW5lTnVtYmVyTAAOZGVjbGFyaW5nQ2xhc3NxAH4ABEwACGZpbGVOYW1lcQB+AARMAAptZXRob2ROYW1lcQB+AAR4cAAAAKx0ADRvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkxvZzRqTG9nRXZlbnRUZXN0dAAWTG9nNGpMb2dFdmVudFRlc3QuamF2YXQAKnRlc3RKYXZhSW9TZXJpYWxpemFibGVXaXRoVW5rbm93blRocm93YWJsZXNxAH4AJXNxAH4AKABxAH4AK3QACDEuNy4wXzU1c3EAfgAs/////nQAJHN1bi5yZWZsZWN0Lk5hdGl2ZU1ldGhvZEFjY2Vzc29ySW1wbHQAHU5hdGl2ZU1ldGhvZEFjY2Vzc29ySW1wbC5qYXZhdAAHaW52b2tlMHNxAH4AJXNxAH4AKABxAH4AK3EAfgAzc3EAfgAsAAAAOXEAfgA1cQB+ADZ0AAZpbnZva2VzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAACt0AChzdW4ucmVmbGVjdC5EZWxlZ2F0aW5nTWV0aG9kQWNjZXNzb3JJbXBsdAAhRGVsZWdhdGluZ01ldGhvZEFjY2Vzc29ySW1wbC5qYXZhcQB+ADtzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAAl50ABhqYXZhLmxhbmcucmVmbGVjdC5NZXRob2R0AAtNZXRob2QuamF2YXEAfgA7c3EAfgAlc3EAfgAoAXQADmp1bml0LTQuMTIuamFydAAENC4xMnNxAH4ALAAAADJ0AClvcmcuanVuaXQucnVubmVycy5tb2RlbC5GcmFtZXdvcmtNZXRob2QkMXQAFEZyYW1ld29ya01ldGhvZC5qYXZhdAARcnVuUmVmbGVjdGl2ZUNhbGxzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAAAx0ADNvcmcuanVuaXQuaW50ZXJuYWwucnVubmVycy5tb2RlbC5SZWZsZWN0aXZlQ2FsbGFibGV0ABdSZWZsZWN0aXZlQ2FsbGFibGUuamF2YXQAA3J1bnNxAH4AJXNxAH4AKAF0AA5qdW5pdC00LjEyLmphcnEAfgBJc3EAfgAsAAAAL3QAJ29yZy5qdW5pdC5ydW5uZXJzLm1vZGVsLkZyYW1ld29ya01ldGhvZHEAfgBMdAARaW52b2tlRXhwbG9zaXZlbHlzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAABF0ADJvcmcuanVuaXQuaW50ZXJuYWwucnVubmVycy5zdGF0ZW1lbnRzLkludm9rZU1ldGhvZHQAEUludm9rZU1ldGhvZC5qYXZhdAAIZXZhbHVhdGVzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAAUV0AB5vcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXJ0ABFQYXJlbnRSdW5uZXIuamF2YXQAB3J1bkxlYWZzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAAE50AChvcmcuanVuaXQucnVubmVycy5CbG9ja0pVbml0NENsYXNzUnVubmVydAAbQmxvY2tKVW5pdDRDbGFzc1J1bm5lci5qYXZhdAAIcnVuQ2hpbGRzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAADlxAH4AbXEAfgBucQB+AG9zcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAASJ0ACBvcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXIkM3EAfgBncQB+AFRzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAAEd0ACBvcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXIkMXEAfgBndAAIc2NoZWR1bGVzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAASBxAH4AZnEAfgBndAALcnVuQ2hpbGRyZW5zcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAADpxAH4AZnEAfgBndAAKYWNjZXNzJDAwMHNxAH4AJXNxAH4AKAF0AA5qdW5pdC00LjEyLmphcnEAfgBJc3EAfgAsAAABDHQAIG9yZy5qdW5pdC5ydW5uZXJzLlBhcmVudFJ1bm5lciQycQB+AGdxAH4AYXNxAH4AJXNxAH4AKAF0AA5qdW5pdC00LjEyLmphcnEAfgBJc3EAfgAsAAAAGnQAMG9yZy5qdW5pdC5pbnRlcm5hbC5ydW5uZXJzLnN0YXRlbWVudHMuUnVuQmVmb3Jlc3QAD1J1bkJlZm9yZXMuamF2YXEAfgBhc3EAfgAlc3EAfgAoAXQADmp1bml0LTQuMTIuamFycQB+AElzcQB+ACwAAAAbdAAvb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMuc3RhdGVtZW50cy5SdW5BZnRlcnN0AA5SdW5BZnRlcnMuamF2YXEAfgBhc3EAfgAlc3EAfgAoAXQADmp1bml0LTQuMTIuamFycQB+AElzcQB+ACwAAAFrcQB+AGZxAH4AZ3EAfgBUc3EAfgAlc3EAfgAoAXQADmp1bml0LTQuMTIuamFycQB+AElzcQB+ACwAAACJdAAab3JnLmp1bml0LnJ1bm5lci5KVW5pdENvcmV0AA5KVW5pdENvcmUuamF2YXEAfgBUc3EAfgAlc3EAfgAoAXQADGp1bml0LXJ0LmphcnEAfgArc3EAfgAsAAAAdXQAKGNvbS5pbnRlbGxpai5qdW5pdDQuSlVuaXQ0SWRlYVRlc3RSdW5uZXJ0ABlKVW5pdDRJZGVhVGVzdFJ1bm5lci5qYXZhdAATc3RhcnRSdW5uZXJXaXRoQXJnc3NxAH4AJXNxAH4AKAF0AAxqdW5pdC1ydC5qYXJxAH4AK3NxAH4ALAAAACpxAH4AqHEAfgCpcQB+AKpzcQB+ACVzcQB+ACgBdAAManVuaXQtcnQuamFycQB+ACtzcQB+ACwAAAEGdAAsY29tLmludGVsbGlqLnJ0LmV4ZWN1dGlvbi5qdW5pdC5KVW5pdFN0YXJ0ZXJ0ABFKVW5pdFN0YXJ0ZXIuamF2YXQAFnByZXBhcmVTdHJlYW1zQW5kU3RhcnRzcQB+ACVzcQB+ACgBdAAManVuaXQtcnQuamFycQB+ACtzcQB+ACwAAABUcQB+ALNxAH4AtHQABG1haW5zcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALP////5xAH4ANXEAfgA2cQB+ADdzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAADlxAH4ANXEAfgA2cQB+ADtzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAACtxAH4AP3EAfgBAcQB+ADtzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAAl5xAH4ARHEAfgBFcQB+ADtzcQB+ACVzcQB+ACgBdAALaWRlYV9ydC5qYXJxAH4AK3NxAH4ALAAAAJN0AC1jb20uaW50ZWxsaWoucnQuZXhlY3V0aW9uLmFwcGxpY2F0aW9uLkFwcE1haW50AAxBcHBNYWluLmphdmFxAH4AunQAFk9NRyBJJ3ZlIGJlZW4gZGVsZXRlZCFxAH4AzXQARW9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuTG9nNGpMb2dFdmVudFRlc3QkRGVsZXRlZEV4Y2VwdGlvbnVyADRbTG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuVGhyb3dhYmxlUHJveHk7+u0B4IWi6zkCAAB4cAAAAAB4";
 
         final byte[] binaryDecoded = DatatypeConverter.parseBase64Binary(base64);
         final Log4jLogEvent evt2 = deserialize(binaryDecoded);
@@ -235,6 +260,7 @@ public class Log4jLogEventTest {
                 null, null, null, null, null, 0).getNanoTime());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testBuilderCorrectlyCopiesAllEventAttributes() {
         final Map<String, String> contextMap = new HashMap<>();
@@ -264,7 +290,56 @@ public class Log4jLogEventTest {
                 .setTimeMillis(987654321L)
                 .build();
 
-        assertSame(contextMap, event.getContextMap());
+        assertEquals(contextMap, event.getContextMap());
+        assertSame(contextStack, event.getContextStack());
+        assertEquals(true, event.isEndOfBatch());
+        assertEquals(true, event.isIncludeLocation());
+        assertSame(Level.FATAL, event.getLevel());
+        assertSame(fqcn, event.getLoggerFqcn());
+        assertSame(name, event.getLoggerName());
+        assertSame(marker, event.getMarker());
+        assertSame(message, event.getMessage());
+        assertEquals(1234567890L, event.getNanoTime());
+        assertSame(stackTraceElement, event.getSource());
+        assertSame(threadName, event.getThreadName());
+        assertSame(exception, event.getThrown());
+        assertEquals(987654321L, event.getTimeMillis());
+
+        final LogEvent event2 = new Log4jLogEvent.Builder(event).build();
+        assertEquals("copy constructor builder", event2, event);
+        assertEquals("same hashCode", event2.hashCode(), event.hashCode());
+    }
+
+    @Test
+    public void testBuilderCorrectlyCopiesAllEventAttributesInclContextData() {
+        final StringMap contextData = new SortedArrayStringMap();
+        contextData.putValue("A", "B");
+        final ContextStack contextStack = ThreadContext.getImmutableStack();
+        final Exception exception = new Exception("test");
+        final Marker marker = MarkerManager.getMarker("EVENTTEST");
+        final Message message = new SimpleMessage("foo");
+        final StackTraceElement stackTraceElement = new StackTraceElement("A", "B", "file", 123);
+        final String fqcn = "qualified";
+        final String name = "Ceci n'est pas une pipe";
+        final String threadName = "threadName";
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
+                .setContextData(contextData) //
+                .setContextStack(contextStack) //
+                .setEndOfBatch(true) //
+                .setIncludeLocation(true) //
+                .setLevel(Level.FATAL) //
+                .setLoggerFqcn(fqcn) //
+                .setLoggerName(name) //
+                .setMarker(marker) //
+                .setMessage(message) //
+                .setNanoTime(1234567890L) //
+                .setSource(stackTraceElement) //
+                .setThreadName(threadName) //
+                .setThrown(exception) //
+                .setTimeMillis(987654321L)
+                .build();
+
+        assertSame(contextData, event.getContextData());
         assertSame(contextStack, event.getContextStack());
         assertEquals(true, event.isEndOfBatch());
         assertEquals(true, event.isIncludeLocation());
@@ -286,18 +361,18 @@ public class Log4jLogEventTest {
 
     @Test
     public void testBuilderCorrectlyCopiesMutableLogEvent() throws Exception {
-        final Map<String, String> contextMap = new HashMap<>();
-        contextMap.put("A", "B");
+        final StringMap contextData = new SortedArrayStringMap();
+        contextData.putValue("A", "B");
         final ContextStack contextStack = ThreadContext.getImmutableStack();
         final Exception exception = new Exception("test");
         final Marker marker = MarkerManager.getMarker("EVENTTEST");
         final Message message = new SimpleMessage("foo");
-        final StackTraceElement stackTraceElement = new StackTraceElement("A", "B", "file", 123);
+        new StackTraceElement("A", "B", "file", 123);
         final String fqcn = "qualified";
         final String name = "Ceci n'est pas une pipe";
         final String threadName = "threadName";
         final MutableLogEvent event = new MutableLogEvent();
-        event.setContextMap(contextMap);
+        event.setContextData(contextData);
         event.setContextStack(contextStack);
         event.setEndOfBatch(true);
         event.setIncludeLocation(true);
@@ -312,7 +387,7 @@ public class Log4jLogEventTest {
         event.setThrown(exception);
         event.setTimeMillis(987654321L);
 
-        assertSame(contextMap, event.getContextMap());
+        assertSame(contextData, event.getContextData());
         assertSame(contextStack, event.getContextStack());
         assertEquals(true, event.isEndOfBatch());
         assertEquals(true, event.isIncludeLocation());
@@ -328,7 +403,7 @@ public class Log4jLogEventTest {
         assertEquals(987654321L, event.getTimeMillis());
 
         final LogEvent e2 = new Log4jLogEvent.Builder(event).build();
-        assertSame(contextMap, e2.getContextMap());
+        assertEquals(contextData, e2.getContextData());
         assertSame(contextStack, e2.getContextStack());
         assertEquals(true, e2.isEndOfBatch());
         assertEquals(true, e2.isIncludeLocation());
@@ -351,6 +426,7 @@ public class Log4jLogEventTest {
         assertNull("source in copy", value);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testEquals() {
         final Map<String, String> contextMap = new HashMap<>();
@@ -381,7 +457,7 @@ public class Log4jLogEventTest {
                 .setTimeMillis(987654321L)
                 .build();
 
-        assertSame(contextMap, event.getContextMap());
+        assertEquals(contextMap, event.getContextMap());
         assertSame(contextStack, event.getContextStack());
         assertEquals(true, event.isEndOfBatch());
         assertEquals(true, event.isIncludeLocation());
@@ -400,7 +476,7 @@ public class Log4jLogEventTest {
         assertEquals("copy constructor builder", event2, event);
         assertEquals("same hashCode", event2.hashCode(), event.hashCode());
 
-        assertSame(contextMap, event2.getContextMap());
+        assertEquals(contextMap, event2.getContextMap());
         assertSame(contextStack, event2.getContextStack());
         assertEquals(true, event2.isEndOfBatch());
         assertEquals(true, event2.isIncludeLocation());
@@ -472,5 +548,11 @@ public class Log4jLogEventTest {
         final LogEvent other = builder.build();
         assertNotEquals(reason, other, event);
         assertNotEquals(reason + " hashCode", other.hashCode(), event.hashCode());
+    }
+
+    @Test
+    public void testToString() {
+        // Throws an NPE in 2.6.2
+        assertNotNull(new Log4jLogEvent().toString());
     }
 }

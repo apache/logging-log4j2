@@ -18,17 +18,19 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
 
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Equals ignore case pattern converter.
  */
 @Plugin(name = "equalsIgnoreCase", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "equalsIgnoreCase" })
-public final class EqualsIgnoreCaseReplacementConverter extends LogEventPatternConverter {
+@PerformanceSensitive("allocation")
+public final class EqualsIgnoreCaseReplacementConverter extends EqualsBaseReplacementConverter {
 
     /**
      * Gets an instance of the class.
@@ -59,43 +61,24 @@ public final class EqualsIgnoreCaseReplacementConverter extends LogEventPatternC
         final String p = options[1];
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
-        return new EqualsIgnoreCaseReplacementConverter(formatters, p, options[2]);
+        return new EqualsIgnoreCaseReplacementConverter(formatters, p, options[2], parser);
     }
-
-    private final List<PatternFormatter> formatters;
-
-    private final String substitution;
-
-    private final String testString;
 
     /**
      * Construct the converter.
-     * 
-     * @param formatters
-     *            The PatternFormatters to generate the text to manipulate.
-     * @param testString
-     *            The test string.
-     * @param substitution
-     *            The substitution string.
+     *
+     * @param formatters   The PatternFormatters to generate the text to manipulate.
+     * @param testString   The test string.
+     * @param substitution The substitution string.
+     * @param parser        The PatternParser.
      */
     private EqualsIgnoreCaseReplacementConverter(final List<PatternFormatter> formatters, final String testString,
-            final String substitution) {
-        super("equals", "equals");
-        this.testString = testString;
-        this.substitution = substitution;
-        this.formatters = formatters;
+            final String substitution, final PatternParser parser) {
+        super("equalsIgnoreCase", "equalsIgnoreCase", formatters, testString, substitution, parser);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : formatters) {
-            formatter.format(event, buf);
-        }
-        final String string = buf.toString();
-        toAppendTo.append(testString.equalsIgnoreCase(string) ? substitution : string);
+    protected boolean equals(final String str, final StringBuilder buff, final int from, final int len) {
+        return StringBuilders.equalsIgnoreCase(str, 0, str.length(), buff, from, len);
     }
 }

@@ -19,14 +19,16 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
@@ -35,14 +37,16 @@ import org.apache.logging.log4j.core.util.Integers;
 /**
  * File Appender.
  */
-@Plugin(name = "File", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = FileAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class FileAppender extends AbstractOutputStreamAppender<FileManager> {
+
+    public static final String PLUGIN_NAME = "File";
 
     /**
      * Builds FileAppender instances.
      * 
      * @param <B>
-     *            This builder class
+     *            The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<FileAppender> {
@@ -58,54 +62,39 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         private boolean locking;
 
         @PluginBuilderAttribute
-        private boolean bufferedIo = true;
-
-        @PluginBuilderAttribute
-        private int bufferSize = DEFAULT_BUFFER_SIZE;
-
-        @PluginBuilderAttribute
         private boolean advertise;
 
         @PluginBuilderAttribute
         private String advertiseUri;
 
         @PluginBuilderAttribute
-        private boolean lazyCreate;
-
-        @PluginConfiguration
-        private Configuration config;
+        private boolean createOnDemand;
 
         @Override
         public FileAppender build() {
+            boolean bufferedIo = isBufferedIo();
+            final int bufferSize = getBufferSize();
             if (locking && bufferedIo) {
                 LOGGER.warn("Locking and buffering are mutually exclusive. No buffering will occur for {}", fileName);
                 bufferedIo = false;
             }
             if (!bufferedIo && bufferSize > 0) {
-                LOGGER.warn("The bufferSize is set to {} but bufferedIo is not true: {}", bufferSize, bufferedIo);
+                LOGGER.warn("The bufferSize is set to {} but bufferedIo is false: {}", bufferSize, bufferedIo);
             }
-            Layout<? extends Serializable> layout = getOrCreateLayout();
+            final Layout<? extends Serializable> layout = getOrCreateLayout();
 
-            final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, lazyCreate,
-                    advertiseUri, layout, bufferSize, isImmediateFlush());
+            final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
+                    advertiseUri, layout, bufferSize, getConfiguration());
             if (manager == null) {
                 return null;
             }
 
             return new FileAppender(getName(), layout, getFilter(), manager, fileName, isIgnoreExceptions(),
-                    !bufferedIo || isImmediateFlush(), advertise ? config.getAdvertiser() : null);
+                    !bufferedIo || isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null);
         }
 
         public String getAdvertiseUri() {
             return advertiseUri;
-        }
-
-        public int getBufferSize() {
-            return bufferSize;
-        }
-
-        public Configuration getConfig() {
-            return config;
         }
 
         public String getFileName() {
@@ -120,12 +109,8 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return append;
         }
 
-        public boolean isBufferedIo() {
-            return bufferedIo;
-        }
-
-        public boolean isLazyCreate() {
-            return lazyCreate;
+        public boolean isCreateOnDemand() {
+            return createOnDemand;
         }
 
         public boolean isLocking() {
@@ -147,28 +132,13 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return asBuilder();
         }
 
-        public B withBufferedIo(final boolean bufferedIo) {
-            this.bufferedIo = bufferedIo;
-            return asBuilder();
-        }
-
-        public B withBufferSize(final int bufferSize) {
-            this.bufferSize = bufferSize;
-            return asBuilder();
-        }
-
-        public B withConfig(final Configuration config) {
-            this.config = config;
-            return asBuilder();
-        }
-
         public B withFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
-        public B withLazyCreate(final boolean lazyCreate) {
-            this.lazyCreate = lazyCreate;
+        public B withCreateOnDemand(final boolean createOnDemand) {
+            this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 
@@ -204,7 +174,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
      * @deprecated Use {@link #newBuilder()}
      */
     @Deprecated
-    public static FileAppender createAppender(
+    public static <B extends Builder<B>> FileAppender createAppender(
             // @formatter:off
             final String fileName,
             final String append,
@@ -219,13 +189,13 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             final String advertise,
             final String advertiseUri,
             final Configuration config) {
-        return newBuilder()
+        return FileAppender.<B>newBuilder()
             .withAdvertise(Boolean.parseBoolean(advertise))
             .withAdvertiseUri(advertiseUri)
             .withAppend(Booleans.parseBoolean(append, true))
             .withBufferedIo(Booleans.parseBoolean(bufferedIo, true))
             .withBufferSize(Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE))
-            .withConfig(config)
+            .setConfiguration(config)
             .withFileName(fileName)
             .withFilter(filter)
             .withIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
@@ -275,10 +245,13 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         if (advertiser != null) {
             advertiser.unadvertise(advertisement);
         }
+        setStopped();
+        return true;
     }
 }

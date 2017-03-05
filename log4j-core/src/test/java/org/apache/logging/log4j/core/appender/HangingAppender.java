@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,9 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
-import java.io.Serializable;
-
-@Plugin(name = "Hanging", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Hanging", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class HangingAppender extends AbstractAppender {
 
     private static final long serialVersionUID = 1L;
@@ -76,12 +79,15 @@ public class HangingAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        super.stop(timeout, timeUnit, false);
         try {
             Thread.sleep(shutdownDelay);
         } catch (final InterruptedException ignore) {
             // ignore
         }
+        setStopped();
+        return true;
     }
 }

@@ -40,7 +40,7 @@ public class RollingAppenderUncompressedTest {
     private static final String CONFIG = "log4j-rolling4.xml";
     private static final String DIR = "target/rolling4";
 
-    private Logger logger = LogManager.getLogger(RollingAppenderUncompressedTest.class.getName());
+    private final Logger logger = LogManager.getLogger(RollingAppenderUncompressedTest.class.getName());
     
     @ClassRule
     public static CleanFolders rule = new CleanFolders(CONFIG);

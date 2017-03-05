@@ -21,10 +21,12 @@ import java.util.Locale;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.ArrayUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
@@ -32,15 +34,19 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  */
 @Plugin(name = "MessagePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "m", "msg", "message" })
+@PerformanceSensitive("allocation")
 public final class MessagePatternConverter extends LogEventPatternConverter {
+
+    private static final String NOLOOKUPS = "nolookups";
 
     private final String[] formats;
     private final Configuration config;
     private final TextRenderer textRenderer;
+    private final boolean noLookups;
 
     /**
      * Private constructor.
-     * 
+     *
      * @param options
      *            options, may be null.
      */
@@ -48,22 +54,37 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         super("Message", "message");
         this.formats = options;
         this.config = config;
-        this.textRenderer = loadMessageRenderer(options);
+        final int noLookupsIdx = loadNoLookups(options);
+        this.noLookups = noLookupsIdx >= 0;
+        this.textRenderer = loadMessageRenderer(noLookupsIdx >= 0 ? ArrayUtils.remove(options, noLookupsIdx) : options);
     }
 
-    private TextRenderer loadMessageRenderer(String[] options) {
-        if (formats != null && formats.length > 0) {
-            final String format = formats[0].toUpperCase(Locale.ROOT);
-            switch (format) {
-            case "ANSI":
-                if (Loader.isJansiAvailable()) {
-                    return new JAnsiTextRenderer(formats, JAnsiTextRenderer.DefaultMessageStyleMap);
+    private int loadNoLookups(final String[] options) {
+        if (options != null) {
+            for (int i = 0; i < options.length; i++) {
+                final String option = options[i];
+                if (NOLOOKUPS.equalsIgnoreCase(option)) {
+                    return i;
                 }
-                StatusLogger.getLogger()
-                        .warn("You requested ANSI message rendering but JANSI is not on the classpath.");
-                return null;
-            case "HTML":
-                return new HtmlTextRenderer(formats);
+            }
+        }
+        return -1;
+    }
+
+    private TextRenderer loadMessageRenderer(final String[] options) {
+        if (options != null) {
+            for (final String option : options) {
+                switch (option.toUpperCase(Locale.ROOT)) {
+                case "ANSI":
+                    if (Loader.isJansiAvailable()) {
+                        return new JAnsiTextRenderer(options, JAnsiTextRenderer.DefaultMessageStyleMap);
+                    }
+                    StatusLogger.getLogger()
+                            .warn("You requested ANSI message rendering but JANSI is not on the classpath.");
+                    return null;
+                case "HTML":
+                    return new HtmlTextRenderer(options);
+                }
             }
         }
         return null;
@@ -90,15 +111,15 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         final Message msg = event.getMessage();
         if (msg instanceof StringBuilderFormattable) {
 
-            boolean doRender = textRenderer != null;
-            StringBuilder workingBuilder = doRender ? new StringBuilder(80) : toAppendTo;
+            final boolean doRender = textRenderer != null;
+            final StringBuilder workingBuilder = doRender ? new StringBuilder(80) : toAppendTo;
 
-            StringBuilderFormattable stringBuilderFormattable = (StringBuilderFormattable) msg;
+            final StringBuilderFormattable stringBuilderFormattable = (StringBuilderFormattable) msg;
             final int offset = workingBuilder.length();
             stringBuilderFormattable.formatTo(workingBuilder);
 
             // TODO can we optimize this?
-            if (config != null) {
+            if (config != null && !noLookups) {
                 for (int i = offset; i < workingBuilder.length() - 1; i++) {
                     if (workingBuilder.charAt(i) == '$' && workingBuilder.charAt(i + 1) == '{') {
                         final String value = workingBuilder.substring(offset, workingBuilder.length());

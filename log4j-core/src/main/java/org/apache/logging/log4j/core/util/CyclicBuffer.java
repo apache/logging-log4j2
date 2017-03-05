@@ -31,7 +31,7 @@ public final class CyclicBuffer<T> {
     private final Class<T> clazz;
 
     /**
-     * Instantiate a new CyclicBuffer of at most <code>maxSize</code> events.
+     * Instantiates a new CyclicBuffer of at most <code>maxSize</code> events.
      * @param clazz The Class associate with the type of object in the buffer.
      * @param size The number of items in the buffer.
      * @throws IllegalArgumentException if the size is negative.
@@ -50,7 +50,7 @@ public final class CyclicBuffer<T> {
     }
 
     /**
-     * Add an item as the last event in the buffer.
+     * Adds an item as the last event in the buffer.
      * @param item The item to add to the buffer.
      */
     public synchronized void add(final T item) {

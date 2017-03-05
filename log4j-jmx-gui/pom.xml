@@ -20,15 +20,14 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.6.3-SNAPSHOT</version>
+    <version>2.8.2-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-jmx-gui</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j JMX GUI</name>
   <description>
-    The Apache Log4j Swing-based client for remotely editing the log4j configuration and remotely monitoring StatusLogger output.
-    Includes a JConsole plug-in.
+    Swing GUI to remotely edit Log4j configurations. This includes a JConsole plugin and a StatusLogger monitor.
   </description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
@@ -174,7 +173,7 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>${pmd.plugin.version}</version>
         <configuration>
-          <targetJdk>${maven.compile.target}</targetJdk>
+          <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
       </plugin>
     </plugins>

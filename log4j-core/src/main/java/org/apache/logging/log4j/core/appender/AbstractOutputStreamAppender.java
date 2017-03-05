@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -34,21 +35,46 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     /**
      * Subclasses can extend this abstract Builder. 
      * 
-     * @param <B> This builder class.
+     * @param <B> The type to build.
      */
     public abstract static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
     
         @PluginBuilderAttribute
-        private boolean immediateFlush;
+        private boolean bufferedIo = true;
+
+        @PluginBuilderAttribute
+        private int bufferSize = Constants.ENCODER_BYTE_BUFFER_SIZE;
+
+        @PluginBuilderAttribute
+        private boolean immediateFlush = true;
+
+        public int getBufferSize() {
+            return bufferSize;
+        }
+
+        public boolean isBufferedIo() {
+            return bufferedIo;
+        }
 
         public boolean isImmediateFlush() {
             return immediateFlush;
         }
-
-        public B withImmediateFlush(boolean immediateFlush) {
+        
+        public B withImmediateFlush(final boolean immediateFlush) {
             this.immediateFlush = immediateFlush;
             return asBuilder();
         }
+        
+        public B withBufferedIo(final boolean bufferedIo) {
+            this.bufferedIo = bufferedIo;
+            return asBuilder();
+        }
+
+        public B withBufferSize(final int bufferSize) {
+            this.bufferSize = bufferSize;
+            return asBuilder();
+        }
+
     }
     
     /**
@@ -106,9 +132,19 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     }
 
     @Override
-    public void stop() {
-        super.stop();
-        manager.release();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        return stop(timeout, timeUnit, true);
+    }
+
+    @Override
+    protected boolean stop(final long timeout, final TimeUnit timeUnit, final boolean changeLifeCycleState) {
+        boolean stopped = super.stop(timeout, timeUnit, changeLifeCycleState);
+        stopped &= manager.stop(timeout, timeUnit);
+        if (changeLifeCycleState) {
+            setStopped();
+        }
+        LOGGER.debug("Appender {} stopped with status {}", getName(), stopped);
+        return stopped;
     }
 
     /**

@@ -64,7 +64,7 @@ public class PatternParserTest2 {
         final PatternParser parser0 = new PatternParser(null, "Converter", null);
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
-        parser0.parse(pattern, converters, fields, false, convert);
+        parser0.parse(pattern, converters, fields, false, false, convert);
         final FormattingInfo[] infoArray = new FormattingInfo[fields.size()];
         final FormattingInfo[] patternFields = fields.toArray(infoArray);
         final ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];

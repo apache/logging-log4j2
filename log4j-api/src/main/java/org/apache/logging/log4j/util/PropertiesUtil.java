@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -121,6 +122,28 @@ public final class PropertiesUtil {
     public boolean getBooleanProperty(final String name, final boolean defaultValue) {
         final String prop = getStringProperty(name);
         return (prop == null) ? defaultValue : "true".equalsIgnoreCase(prop);
+    }
+
+    /**
+     * Gets the named property as a Charset value.
+     *
+     * @param name the name of the property to look up
+     * @return the Charset value of the property or {@link Charset#defaultCharset()} if undefined.
+     */
+    public Charset getCharsetProperty(final String name) {
+        return getCharsetProperty(name, Charset.defaultCharset());
+    }
+
+    /**
+     * Gets the named property as a Charset value.
+     *
+     * @param name the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the Charset value of the property or {@code defaultValue} if undefined.
+     */
+    public Charset getCharsetProperty(final String name, final Charset defaultValue) {
+        final String prop = getStringProperty(name);
+        return prop == null ? defaultValue : Charset.forName(prop);
     }
 
     /**

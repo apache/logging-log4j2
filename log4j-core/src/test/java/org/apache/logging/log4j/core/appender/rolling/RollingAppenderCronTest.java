@@ -49,7 +49,7 @@ public class RollingAppenderCronTest {
     private static final String DIR = "target/rolling-cron";
     private static final String FILE = "target/rolling-cron/rollingtest.log";
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -58,7 +58,7 @@ public class RollingAppenderCronTest {
     public void testAppender() throws Exception {
         // TODO Is there a better way to test than putting the thread to sleep all over the place?
         final Logger logger = loggerContextRule.getLogger();
-        File file = new File(FILE);
+        final File file = new File(FILE);
         assertTrue("Log file does not exist", file.exists());
         logger.debug("This is test message number 1");
         Thread.sleep(2500);
@@ -79,7 +79,7 @@ public class RollingAppenderCronTest {
         }
         if (!succeeded) {
             final File[] files = dir.listFiles();
-            for (File dirFile : files) {
+            for (final File dirFile : files) {
                 logger.error("Found file: " + dirFile.getPath());
             }
             fail("No compressed files found");
@@ -94,7 +94,7 @@ public class RollingAppenderCronTest {
             logger.debug("Adding new event {}", i);
         }
         Thread.sleep(1000);
-        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getContext().getConfiguration().getAppender("RollingFile");
+        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
         assertNotNull("No triggering policy", policy);
         assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);

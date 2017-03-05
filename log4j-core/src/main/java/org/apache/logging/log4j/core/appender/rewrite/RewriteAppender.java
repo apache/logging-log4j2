@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -36,7 +37,7 @@ import org.apache.logging.log4j.core.util.Booleans;
 /**
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
  */
-@Plugin(name = "Rewrite", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Rewrite", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RewriteAppender extends AbstractAppender {
 
     private final Configuration config;
@@ -67,11 +68,6 @@ public final class RewriteAppender extends AbstractAppender {
             }
         }
         super.start();
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
     }
 
     /**

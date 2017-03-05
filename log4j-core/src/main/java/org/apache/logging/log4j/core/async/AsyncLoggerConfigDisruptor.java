@@ -19,17 +19,19 @@ package org.apache.logging.log4j.core.async;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.ExecutorServices;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
-import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventTranslatorTwoArg;
@@ -53,11 +55,10 @@ import com.lmax.disruptor.dsl.ProducerType;
  * This class serves to make the dependency on the Disruptor optional, so that these classes are only loaded when the
  * {@code AsyncLoggerConfig} is actually used.
  */
-public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
+public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements AsyncLoggerConfigDelegate {
 
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * RingBuffer events contain all information necessary to perform the work in a separate thread.
@@ -176,7 +177,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         }
     };
 
-    private static final ThreadFactory THREAD_FACTORY = new DaemonThreadFactory("AsyncLoggerConfig-");
+    private static final ThreadFactory THREAD_FACTORY = Log4jThreadFactory.createDaemonThreadFactory("AsyncLoggerConfig");
 
     private int ringBufferSize;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
@@ -205,6 +206,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
      *
      * @see #stop()
      */
+    @Override
     public synchronized void start() {
         if (disruptor != null) {
             LOGGER.trace("AsyncLoggerConfigDisruptor not starting new disruptor for this configuration, "
@@ -232,18 +234,21 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
                 + "waitStrategy={}, exceptionHandler={}...", disruptor.getRingBuffer().getBufferSize(), waitStrategy
                 .getClass().getSimpleName(), errorHandler);
         disruptor.start();
+        super.start();
     }
 
     /**
      * Decreases the reference count. If the reference count reached zero, the Disruptor and its associated thread are
      * shut down and their references set to {@code null}.
      */
-    public synchronized void stop() {
+    @Override
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         final Disruptor<Log4jEventWrapper> temp = disruptor;
         if (temp == null) {
             LOGGER.trace("AsyncLoggerConfigDisruptor: disruptor for this configuration already shut down.");
-            return; // disruptor was already shut down by another thread
+            return true; // disruptor was already shut down by another thread
         }
+        setStopping();
         LOGGER.trace("AsyncLoggerConfigDisruptor: shutting down disruptor for this configuration.");
 
         // We must guarantee that publishing to the RingBuffer has stopped before we call disruptor.shutdown().
@@ -261,13 +266,16 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
 
         LOGGER.trace("AsyncLoggerConfigDisruptor: shutting down disruptor executor for this configuration.");
-        executor.shutdown(); // finally, kill the processor thread
+        // finally, kill the processor thread
+        ExecutorServices.shutdown(executor, timeout, timeUnit, toString());
         executor = null; // release reference to allow GC
 
         if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {
             LOGGER.trace("AsyncLoggerConfigDisruptor: {} discarded {} events.", asyncQueueFullPolicy,
                     DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
+        setStopped();
+        return true;
     }
 
     /**

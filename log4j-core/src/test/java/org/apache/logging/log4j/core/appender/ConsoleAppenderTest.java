@@ -25,24 +25,27 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.easymock.EasyMockSupport;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.easymock.EasyMock.anyInt;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.Assert.*;
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.atLeastOnce;
 
 /**
  *
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ConsoleAppenderTest {
 
     private static final String LOG4J_SKIP_JANSI = "log4j.skipJansi";
@@ -59,15 +62,12 @@ public class ConsoleAppenderTest {
 
     ByteArrayOutputStream baos;
 
-    EasyMockSupport mocks;
-
+    @Mock
     PrintStream psMock;
 
     @Before
     public void before() {
         System.setProperty(LOG4J_SKIP_JANSI, "true");
-        mocks = new EasyMockSupport();
-        psMock = mocks.createMock("psMock", PrintStream.class);
         baos = new ByteArrayOutputStream();
     }
 
@@ -90,12 +90,6 @@ public class ConsoleAppenderTest {
 
     private void testConsoleStreamManagerDoesNotClose(final PrintStream ps, final Target targetName, final SystemSetter systemSetter) {
         try {
-            psMock.write((byte[]) anyObject(), anyInt(), anyInt());
-            expectLastCall().anyTimes();
-            psMock.flush();
-            expectLastCall().anyTimes();
-
-            mocks.replayAll();
             systemSetter.systemSet(psMock);
             final Layout<String> layout = PatternLayout.newBuilder().withAlwaysWriteExceptions(true).build();
             final ConsoleAppender app = ConsoleAppender.newBuilder().withLayout(layout).setTarget(targetName)
@@ -116,7 +110,8 @@ public class ConsoleAppenderTest {
         } finally {
             systemSetter.systemSet(ps);
         }
-        mocks.verifyAll();
+        then(psMock).should(atLeastOnce()).write(any(byte[].class), anyInt(), anyInt());
+        then(psMock).should(atLeastOnce()).flush();
     }
 
     @Test
@@ -131,7 +126,7 @@ public class ConsoleAppenderTest {
 
     private void testFollowSystemPrintStream(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
         final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true)
-                .withIgnoreExceptions(false).build();
+                .withIgnoreExceptions(false).withName("test").build();
         Assert.assertEquals(target, app.getTarget());
         app.start();
         try {
@@ -151,7 +146,7 @@ public class ConsoleAppenderTest {
             }
             final String msg = baos.toString();
             assertNotNull("No message", msg);
-            assertTrue("Incorrect message: \"" + msg + "\"", msg.endsWith("Test" + Constants.LINE_SEPARATOR));
+            assertTrue("Incorrect message: \"" + msg + "\"", msg.endsWith("Test" + Strings.LINE_SEPARATOR));
         } finally {
             app.stop();
         }

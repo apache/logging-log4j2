@@ -18,6 +18,8 @@ package org.apache.logging.log4j.util;
 
 import java.util.Map.Entry;
 
+import static java.lang.Character.toLowerCase;
+
 /**
  * <em>Consider this class private.</em>
  */
@@ -27,7 +29,7 @@ public final class StringBuilders {
 
     /**
      * Appends in the following format: double quoted value.
-     * 
+     *
      * @param sb a string builder
      * @param value a value
      * @return {@code "value"}
@@ -38,7 +40,7 @@ public final class StringBuilders {
 
     /**
      * Appends in the following format: key=double quoted value.
-     * 
+     *
      * @param sb a string builder
      * @param entry a map entry
      * @return {@code key="value"}
@@ -49,7 +51,7 @@ public final class StringBuilders {
 
     /**
      * Appends in the following format: key=double quoted value.
-     * 
+     *
      * @param sb a string builder
      * @param key a key
      * @param value a value
@@ -59,4 +61,86 @@ public final class StringBuilders {
         return sb.append(key).append(Chars.EQ).append(Chars.DQUOTE).append(value).append(Chars.DQUOTE);
     }
 
+    /**
+     * Appends a text representation of the specified object to the specified StringBuilder,
+     * if possible without allocating temporary objects.
+     *
+     * @param stringBuilder the StringBuilder to append the value to
+     * @param obj the object whose text representation to append to the StringBuilder
+     */
+    public static void appendValue(final StringBuilder stringBuilder, final Object obj) {
+        if (obj == null || obj instanceof String) {
+            stringBuilder.append((String) obj);
+        } else if (obj instanceof StringBuilderFormattable) {
+            ((StringBuilderFormattable) obj).formatTo(stringBuilder);
+        } else if (obj instanceof CharSequence) {
+            stringBuilder.append((CharSequence) obj);
+        } else if (obj instanceof Integer) { // LOG4J2-1437 unbox auto-boxed primitives to avoid calling toString()
+            stringBuilder.append(((Integer) obj).intValue());
+        } else if (obj instanceof Long) {
+            stringBuilder.append(((Long) obj).longValue());
+        } else if (obj instanceof Double) {
+            stringBuilder.append(((Double) obj).doubleValue());
+        } else if (obj instanceof Boolean) {
+            stringBuilder.append(((Boolean) obj).booleanValue());
+        } else if (obj instanceof Character) {
+            stringBuilder.append(((Character) obj).charValue());
+        } else if (obj instanceof Short) {
+            stringBuilder.append(((Short) obj).shortValue());
+        } else if (obj instanceof Float) {
+            stringBuilder.append(((Float) obj).floatValue());
+        } else {
+            stringBuilder.append(obj);
+        }
+    }
+
+    /**
+     * Returns true if the specified section of the left CharSequence equals the specified section of the right
+     * CharSequence.
+     *
+     * @param left the left CharSequence
+     * @param leftOffset start index in the left CharSequence
+     * @param leftLength length of the section in the left CharSequence
+     * @param right the right CharSequence to compare a section of
+     * @param rightOffset start index in the right CharSequence
+     * @param rightLength length of the section in the right CharSequence
+     * @return true if equal, false otherwise
+     */
+    public static boolean equals(final CharSequence left, final int leftOffset, final int leftLength,
+                                    final CharSequence right, final int rightOffset, final int rightLength) {
+        if (leftLength == rightLength) {
+            for (int i = 0; i < rightLength; i++) {
+                if (left.charAt(i + leftOffset) != right.charAt(i + rightOffset)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the specified section of the left CharSequence equals, ignoring case, the specified section of
+     * the right CharSequence.
+     *
+     * @param left the left CharSequence
+     * @param leftOffset start index in the left CharSequence
+     * @param leftLength length of the section in the left CharSequence
+     * @param right the right CharSequence to compare a section of
+     * @param rightOffset start index in the right CharSequence
+     * @param rightLength length of the section in the right CharSequence
+     * @return true if equal ignoring case, false otherwise
+     */
+    public static boolean equalsIgnoreCase(final CharSequence left, final int leftOffset, final int leftLength,
+                                              final CharSequence right, final int rightOffset, final int rightLength) {
+        if (leftLength == rightLength) {
+            for (int i = 0; i < rightLength; i++) {
+                if (toLowerCase(left.charAt(i + leftOffset)) != toLowerCase(right.charAt(i + rightOffset))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }

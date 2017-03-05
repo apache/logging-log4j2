@@ -28,17 +28,28 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,26 +72,35 @@ public class RollingAppenderSizeTest {
 
     private Logger logger;
 
-    @Parameterized.Parameters(name = "{0} \u2192 {1}")
+    private final boolean createOnDemand;
+
+    @Parameterized.Parameters(name = "{0} \u2192 {1} (createOnDemand = {2})")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { //
                 // @formatter:off
-                {"log4j-rolling-gz.xml", ".gz"}, //
-                {"log4j-rolling-zip.xml", ".zip"}, //
+               {"log4j-rolling-gz-lazy.xml", ".gz", true},
+               {"log4j-rolling-gz.xml", ".gz", false},
+               {"log4j-rolling-zip-lazy.xml", ".zip", true},
+               {"log4j-rolling-zip.xml", ".zip", false},
                 // Apache Commons Compress
-                {"log4j-rolling-bzip2.xml", ".bz2"}, //
-                {"log4j-rolling-deflate.xml", ".deflate"}, //
-                {"log4j-rolling-pack200.xml", ".pack200"}, //
-                {"log4j-rolling-xz.xml", ".xz"}, //
+               {"log4j-rolling-bzip2-lazy.xml", ".bz2", true},
+               {"log4j-rolling-bzip2.xml", ".bz2", false},
+               {"log4j-rolling-deflate-lazy.xml", ".deflate", true},
+               {"log4j-rolling-deflate.xml", ".deflate", false},
+               {"log4j-rolling-pack200-lazy.xml", ".pack200", true},
+               {"log4j-rolling-pack200.xml", ".pack200", false},
+               {"log4j-rolling-xz-lazy.xml", ".xz", true},
+               {"log4j-rolling-xz.xml", ".xz", false},
                 });
                 // @formatter:on
     }
 
-    private LoggerContextRule loggerContextRule;
+    private final LoggerContextRule loggerContextRule;
 
-    public RollingAppenderSizeTest(final String configFile, final String fileExtension) {
+    public RollingAppenderSizeTest(final String configFile, final String fileExtension, final boolean createOnDemand) {
         this.fileExtension = fileExtension;
-        this.loggerContextRule = new LoggerContextRule(configFile);
+        this.createOnDemand = createOnDemand;
+        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(configFile);
         this.chain = loggerContextRule.withCleanFoldersRule(DIR);
     }
 
@@ -90,13 +110,26 @@ public class RollingAppenderSizeTest {
     }
 
     @Test
+    public void testIsCreateOnDemand() {
+        final RollingFileAppender rfAppender = loggerContextRule.getRequiredAppender("RollingFile",
+                RollingFileAppender.class);
+        final RollingFileManager manager = rfAppender.getManager();
+        Assert.assertNotNull(manager);
+        Assert.assertEquals(createOnDemand, manager.isCreateOnDemand());
+    }
+
+    @Test
     public void testAppender() throws Exception {
-        for (int i = 0; i < 100; ++i) {
+        final Path path = Paths.get(DIR, "rollingtest.log");
+        if (Files.exists(path) && createOnDemand) {
+            Assert.fail(String.format("Unexpected file: %s (%s bytes)", path, Files.getAttribute(path, "size")));
+        }
+        for (int i = 0; i < 500; ++i) {
             logger.debug("This is test message number " + i);
         }
         try {
             Thread.sleep(100);
-        } catch (InterruptedException ie) {
+        } catch (final InterruptedException ie) {
             // Ignore the error.
         }
 
@@ -106,10 +139,13 @@ public class RollingAppenderSizeTest {
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(fileExtension))))));
 
-        final DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
-        if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
-                || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
+        final FileExtension ext = FileExtension.lookup(fileExtension);
+        if (ext == null || FileExtension.ZIP == ext || FileExtension.PACK200 == ext) {
             return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these formats
+        }
+        // Stop the context to make sure all files are compressed and closed. Trying to remedy failures in CI builds.
+        if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
+            System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
         }
         for (final File file : files) {
             if (file.getName().endsWith(fileExtension)) {
@@ -123,7 +159,12 @@ public class RollingAppenderSizeTest {
                     }
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     assertNotNull("No input stream for " + file.getName(), in);
-                    IOUtils.copy(in, baos);
+                    try {
+                        IOUtils.copy(in, baos);
+                    } catch (final Exception ex) {
+                        ex.printStackTrace();
+                        fail("Unable to decompress " + file.getAbsolutePath());
+                    }
                     final String text = new String(baos.toByteArray(), Charset.defaultCharset());
                     final String[] lines = text.split("[\\r\\n]+");
                     for (final String line : lines) {

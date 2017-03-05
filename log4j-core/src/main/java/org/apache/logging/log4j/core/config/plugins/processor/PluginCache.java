@@ -63,7 +63,7 @@ public class PluginCache {
      * Stores the plugin cache to a given OutputStream.
      *
      * @param os destination to save cache to.
-     * @throws IOException
+     * @throws IOException if an I/O exception occurs.
      */
     // NOTE: if this file format is to be changed, the filename should change and this format should still be readable
     public void writeCache(final OutputStream os) throws IOException {
@@ -91,7 +91,7 @@ public class PluginCache {
      * Loads and merges all the Log4j plugin cache files specified. Usually, this is obtained via a ClassLoader.
      *
      * @param resources URLs to all the desired plugin cache files to load.
-     * @throws IOException
+     * @throws IOException if an I/O exception occurs.
      */
     public void loadCacheFiles(final Enumeration<URL> resources) throws IOException {
         categories.clear();

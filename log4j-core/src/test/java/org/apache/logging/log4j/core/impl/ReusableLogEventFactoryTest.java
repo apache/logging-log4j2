@@ -30,11 +30,27 @@ import static org.junit.Assert.*;
 public class ReusableLogEventFactoryTest {
 
     @Test
-    public void testCreateEventReturnsSameInstance() throws Exception {
+    public void testCreateEventReturnsDifferentInstanceIfNotReleased() throws Exception {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
         final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
         final LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
+        assertNotSame(event1, event2);
+        ReusableLogEventFactory.release(event1);
+        ReusableLogEventFactory.release(event2);
+    }
+
+    @Test
+    public void testCreateEventReturnsSameInstance() throws Exception {
+        final ReusableLogEventFactory factory = new ReusableLogEventFactory();
+        final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
+        ReusableLogEventFactory.release(event1);
+        final LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
         assertSame(event1, event2);
+
+        ReusableLogEventFactory.release(event2);
+        final LogEvent event3 = callCreateEvent(factory, "c", Level.INFO, new SimpleMessage("123"), null);
+        assertSame(event2, event3);
+        ReusableLogEventFactory.release(event3);
     }
 
     @Test
@@ -45,6 +61,7 @@ public class ReusableLogEventFactoryTest {
         assertEquals("level", Level.DEBUG, event1.getLevel());
         assertEquals("msg", new SimpleMessage("abc"), event1.getMessage());
 
+        ReusableLogEventFactory.release(event1);
         final LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
         assertSame(event1, event2);
 
@@ -96,6 +113,19 @@ public class ReusableLogEventFactoryTest {
         assertEquals("msg", new SimpleMessage("xyz"), event2[0].getMessage());
         assertEquals("thread name", "Thread 2", event2[0].getThreadName());
         assertEquals("tid", t2.getId(), event2[0].getThreadId());
+        ReusableLogEventFactory.release(event1[0]);
+        ReusableLogEventFactory.release(event2[0]);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    public void testCreateEventInitFieldsProperly() throws Exception {
+        final ReusableLogEventFactory factory = new ReusableLogEventFactory();
+        final LogEvent event = callCreateEvent(factory, "logger", Level.INFO, new SimpleMessage("xyz"), null);
+        ReusableLogEventFactory.release(event);
+        assertNotNull(event.getContextMap());
+        assertNotNull(event.getContextData());
+        assertNotNull(event.getContextStack());
     }
 
 }

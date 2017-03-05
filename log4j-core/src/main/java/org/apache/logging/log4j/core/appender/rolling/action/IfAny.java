@@ -21,6 +21,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -29,7 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * Composite {@code PathCondition} that accepts objects that are accepted by <em>any</em> component conditions.
  * Corresponds to logical "OR".
  */
-@Plugin(name = "IfAny", category = "Core", printObject = true)
+@Plugin(name = "IfAny", category = Core.CATEGORY_NAME, printObject = true)
 public final class IfAny implements PathCondition {
 
     private final PathCondition[] components;

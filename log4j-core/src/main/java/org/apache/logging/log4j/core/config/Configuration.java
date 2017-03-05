@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -34,6 +35,12 @@ import org.apache.logging.log4j.core.util.WatchManager;
 
 /**
  * Interface that must be implemented to create a configuration.
+ * <p>
+ * Custom implementations are recommended to extend {@link AbstractConfiguration}.
+ * </p>
+ *
+ * @see AbstractConfiguration
+ * @see org.apache.logging.log4j.core.LifeCycle2
  */
 public interface Configuration extends Filterable {
 
@@ -121,6 +128,8 @@ public interface Configuration extends Filterable {
 
     boolean isShutdownHookEnabled();
 
+    long getShutdownTimeoutMillis();
+
     ConfigurationScheduler getScheduler();
 
     /**
@@ -188,4 +197,11 @@ public interface Configuration extends Filterable {
      * @param nanoClock the new nano clock for this configuration. Must be non-null.
      */
     void setNanoClock(NanoClock nanoClock);
+
+    /**
+     * Gets the logger context.
+     *
+     * @return the logger context.
+     */
+    LoggerContext getLoggerContext();
 }

@@ -35,12 +35,19 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Records events that occur in the logging system.
+ * Records events that occur in the logging system. By default, only error messages are logged to {@link System#err}.
+ * Normally, the Log4j StatusLogger is configured via the root {@code <Configuration status="LEVEL"/>} node in a Log4j
+ * configuration file. However, this can be overridden via a system property named
+ * "{@value SimpleLoggerContext#SYSTEM_PREFIX}StatusLogger.level" and will work with any Log4j provider.
+ *
+ * @see SimpleLogger
+ * @see SimpleLoggerContext
  */
 public final class StatusLogger extends AbstractLogger {
 
@@ -50,6 +57,12 @@ public final class StatusLogger extends AbstractLogger {
      */
     public static final String MAX_STATUS_ENTRIES = "log4j2.status.entries";
 
+    /**
+     * System property that can be configured with the {@link Level} name to use as the default level for
+     * {@link StatusListener}s.
+     */
+    public static final String DEFAULT_STATUS_LISTENER_LEVEL = "log4j2.StatusLogger.level";
+
     private static final long serialVersionUID = 2L;
 
     private static final String NOT_AVAIL = "?";
@@ -58,7 +71,7 @@ public final class StatusLogger extends AbstractLogger {
 
     private static final int MAX_ENTRIES = PROPS.getIntegerProperty(MAX_STATUS_ENTRIES, 200);
 
-    private static final String DEFAULT_STATUS_LEVEL = PROPS.getStringProperty("log4j2.StatusLogger.level");
+    private static final String DEFAULT_STATUS_LEVEL = PROPS.getStringProperty(DEFAULT_STATUS_LISTENER_LEVEL);
 
     // LOG4J2-1176: normal parameterized message remembers param object, causing memory leaks.
     private static final StatusLogger STATUS_LOGGER = new StatusLogger(StatusLogger.class.getName(),

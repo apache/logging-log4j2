@@ -1,0 +1,305 @@
+<!-- vim: set syn=markdown : -->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements. See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License. You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+#set($h1='#')
+#set($h2='##')
+#set($h3='###')
+#macro(maven $artifactIds)
+`pom.xml`
+
+```
+<dependencies>
+#foreach($artifactId in $artifactIds)
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+#end
+</dependencies>
+```
+#end
+#macro(ivy $artifactIds)
+`ivy.xml`
+
+```
+<dependencies>
+#foreach($artifactId in $artifactIds)
+  <dependency org="org.apache.logging.log4j" name="${artifactId}" rev="${Log4jReleaseVersion}" />
+#end
+</dependencies>
+```
+#end
+#macro(gradle $artifactIds)
+`build.gradle`
+
+```
+dependencies {
+#foreach($artifactId in $artifactIds)
+  compile group: 'org.apache.logging.log4j', name: '${artifactId}', version: '${Log4jReleaseVersion}'
+#end
+}
+```
+#end
+#macro(sbt $artifactIds)
+`build.sbt`
+
+```
+#foreach($artifactId in $artifactIds)
+libraryDependencies += "org.apache.logging.log4j" %#if($artifactId.endsWith('scala'))%#end "${artifactId}" % "${Log4jReleaseVersion}"
+#end
+```
+#end
+## prints out maven/ivy/gradle/sbt snippet for a list of artifactIds
+#macro(dependencies $artifactIds)
+#maven($artifactIds)
+#ivy($artifactIds)
+#gradle($artifactIds)
+#sbt($artifactIds)
+#end
+## --------------------------------------
+
+$h1 Maven, Ivy, Gradle, and SBT Artifacts
+
+Log4j 2 is broken up in an API and an implementation (core), where the API
+provides the interface that applications should code to.
+Strictly speaking Log4j core is only needed at runtime and not at compile time.
+
+However, below we list Log4j core as a compile time dependency
+to improve the startup time for [custom plugins](manual/plugins.html) as it provides an
+annotation processor that generates a metadata file to cache plugin information as well
+as the necessary code to compile against to create custom plugins.
+
+$h2 Using Log4j in your Apache Maven build
+
+To build with [Apache Maven](https://maven.apache.org/), add the dependencies listed below to your
+`pom.xml` file.
+
+#maven(['log4j-api', 'log4j-core'])
+
+$h2 Using Log4j in your Apache Ivy build
+
+To build with [Apache Ivy](https://ant.apache.org/ivy/), add the dependencies listed below to your
+`ivy.xml` file.
+
+#ivy(['log4j-api', 'log4j-core'])
+
+$h2 Using Log4j in your Gradle build
+
+To build with [Gradle](https://gradle.org/), add the dependencies listed below to your
+`build.gradle` file.
+
+#gradle(['log4j-api', 'log4j-core'])
+
+$h2 Using Log4j in your SBT build
+
+To build with [SBT](http://www.scala-sbt.org/), add the dependencies listed below to your `build.sbt` file.
+
+#sbt(['log4j-api', 'log4j-core'])
+
+$h2 Bill of Material
+
+To keep your Log4j module versions in sync with each other, a
+<abbr id="Bill of Material">BOM</abbr>
+pom.xml file is provided for your convenience. To use this with
+[Maven](https://maven.apache.org/), add the dependency listed below to your
+`pom.xml`
+file. When you specify the version identifier in this section, you don't have to specify the version in your
+`<dependencies/>` section.
+
+`pom.xml`
+
+```
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-bom</artifactId>
+      <version>${Log4jReleaseVersion}</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+To use this with Gradle, an additional [Gradle plugin](https://github.com/spring-gradle-plugins/dependency-management-plugin)
+is required for dependency management functionality.
+
+`build.gradle`
+
+```
+plugins {
+  id 'io.spring.dependency-management' version '1.0.0.RC2'
+}
+
+dependencyManagement {
+  imports {
+    mavenBom 'org.apache.logging.log4j:log4j-bom:${Log4jReleaseVersion}'
+  }
+}
+
+dependencies {
+  compile 'org.apache.logging.log4j:log4j-api'
+  compile 'org.apache.logging.log4j:log4j-core'
+  // etc.
+}
+```
+
+$h2 Optional Components
+
+Log4j 2.x contains several optional components that can be included in an application.
+
+$h3 Log4j 1.x API Bridge
+
+If existing components use Log4j 1.x and you want to have this logging routed to Log4j 2,
+then remove any log4j 1.x dependencies and add the following.
+
+#dependencies(['log4j-1.2-api'])
+
+$h3 Apache Commons Logging Bridge
+
+If existing components use Apache Commons Logging 1.x and you want to have this logging routed to Log4j 2,
+then add the following but do not remove any Commons Logging 1.x dependencies.
+
+#dependencies(['log4j-jcl'])
+
+$h3 SLF4J Bridge
+
+If existing components use SLF4J and you want to have this logging routed to Log4j 2, then add the
+following but do not remove any SLF4J dependencies.
+
+#dependencies(['log4j-slf4j-impl'])
+
+$h3 JUL Adapter
+
+If existing components use Java Util Logging and you want to have this logging routed to Log4j 2,
+then add the following.
+
+#dependencies(['log4j-jul'])
+
+$h3 Web Servlet Support
+
+In order to properly support and handle the ClassLoader environment and container lifecycle of a web
+application, an additional module is required. This module is only required at runtime. In addition, if
+you're using servlets in an OSGi environment, make sure your preferred version of the servlet API is
+already available (e.g., if you want to use 3.0, but you've also got 2.5 loaded, make sure both are
+loaded).
+
+#dependencies(['log4j-web'])
+
+$h3 Tag Library
+
+The Log4j Log Tag Library creates the capability of inserting log statements in JSPs without
+the use of Java scripting. It uses the standard Log4j 2 API to log messages according to
+your Log4j configuration.
+
+#dependencies(['log4j-taglib'])
+
+$h3 Apache Flume Appender
+
+The Flume Appender allows applications to send events to Flume Agents.
+
+#dependencies(['log4j-flume-ng'])
+
+$h3 Log4j to SLF4J Adapter
+
+The Log4j 2 to SLF4J Adapter allows applications coded to the Log4j 2 API to be routed to SLF4J. Use of this
+adapter may cause some loss of performance as the Log4j 2 Messages must be formatted before they can be passed
+to SLF4J. The SLF4J Bridge must NOT be on the class path when this is in use.
+
+#dependencies(['log4j-to-slf4j'])
+
+$h3 NoSQL Appenders
+
+If your configuration uses one of the NoSQL Appenders, then add the following.
+
+#dependencies(['log4j-nosql'])
+
+$h3 IO Streams
+
+Log4j IO Streams allow applications to have data that is written to an OutputStream
+or a Writer be redirected to a Logger, or have data that is read from an InputStream or
+a Reader be wiretapped by a Logger. To use IO Streams, add the following.
+
+#dependencies(['log4j-iostreams'])
+
+$h3 Scala API
+
+A convenient Scala wrapper for the Logger API. SBT users can add the following to their
+`build.sbt`:
+
+#sbt(['log4j-api-scala'])
+
+Maven, Ivy, and Gradle users need to add the Scala version to the artifact name.
+Scala 2.11 users can use the following:
+
+#maven(['log4j-api-scala_2.11'])
+#ivy(['log4j-api-scala_2.11'])
+#gradle(['log4j-api-scala_2.11'])
+
+Scala 2.10 users can use the following:
+
+#maven(['log4j-api-scala_2.10'])
+#ivy(['log4j-api-scala_2.10'])
+#gradle(['log4j-api-scala_2.10'])
+
+$h2 Snapshot builds
+
+You can access the latest development snapshot by using the Maven repository
+`https://repository.apache.org/snapshots` and the current SNAPSHOT version.
+Generally, the master branch will use the next patch version as its snapshot
+version regardless of what the next actual version of Log4j will be. For example,
+if the latest release were `2.0`, then master would be using the version
+`2.0.1-SNAPSHOT`. Always verify with `pom.xml` in the master branch as described
+in the [source repository page](source-repository.html).
+
+$h3 Maven
+
+Maven users can add the following to their `pom.xml` to enable snapshots:
+
+```
+<repositories>
+  <repository>
+    <id>apache.snapshots</id>
+    <name>Apache Snapshot Repository</name>
+    <url>https://repository.apache.org/snapshots</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+  </repository>
+</repositories>
+```
+
+$h3 Gradle
+
+Gradle users can add the following to their `build.gradle` to enable snapshots:
+
+```
+repositories {
+  mavenCentral()
+  maven { url 'https://repository.apache.org/snapshots' }
+}
+```
+
+$h3 SBT
+
+SBT users can add the following to their `build.sbt` to enable snapshots:
+
+```
+resolvers += "Apache Snapshot Repository" at "https://repository.apache.org/snapshots"
+```

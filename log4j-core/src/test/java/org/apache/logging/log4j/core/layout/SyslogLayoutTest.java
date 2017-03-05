@@ -69,9 +69,6 @@ public class SyslogLayoutTest {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
-
-
-
     /**
      * Test case for MDC conversion pattern.
      */
@@ -81,7 +78,12 @@ public class SyslogLayoutTest {
             root.removeAppender(appender);
         }
         // set up appender
-        final SyslogLayout layout = SyslogLayout.createLayout(Facility.LOCAL0, true, null, null);
+        // @formatter:off
+        final SyslogLayout layout = SyslogLayout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setIncludeNewLine(true)
+                .build();
+        // @formatter:on
         //ConsoleAppender appender = new ConsoleAppender("Console", layout);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();

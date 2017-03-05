@@ -35,6 +35,7 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
 //Lines too long...
@@ -64,7 +65,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     private static final MemoryMappedFileManagerFactory FACTORY = new MemoryMappedFileManagerFactory();
     private static final double NANOS_PER_MILLISEC = 1000.0 * 1000.0;
 
-    private final boolean isForce;
+    private final boolean immediateFlush;
     private final int regionLength;
     private final String advertiseURI;
     private final RandomAccessFile randomAccessFile;
@@ -73,10 +74,10 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     private long mappingOffset;
 
     protected MemoryMappedFileManager(final RandomAccessFile file, final String fileName, final OutputStream os,
-            final boolean force, final long position, final int regionLength, final String advertiseURI,
+            final boolean immediateFlush, final long position, final int regionLength, final String advertiseURI,
             final Layout<? extends Serializable> layout, final boolean writeHeader) throws IOException {
         super(os, fileName, layout, writeHeader, ByteBuffer.wrap(new byte[0]));
-        this.isForce = force;
+        this.immediateFlush = immediateFlush;
         this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;
         this.advertiseURI = advertiseURI;
@@ -91,16 +92,16 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      *
      * @param fileName The name of the file to manage.
      * @param append true if the file should be appended to, false if it should be overwritten.
-     * @param isForce true if the contents should be flushed to disk on every write
+     * @param immediateFlush true if the contents should be flushed to disk on every write
      * @param regionLength The mapped region length.
      * @param advertiseURI the URI to use when advertising the file
      * @param layout The layout.
      * @return A MemoryMappedFileManager for the File.
      */
     public static MemoryMappedFileManager getFileManager(final String fileName, final boolean append,
-            final boolean isForce, final int regionLength, final String advertiseURI,
+            final boolean immediateFlush, final int regionLength, final String advertiseURI,
             final Layout<? extends Serializable> layout) {
-        return (MemoryMappedFileManager) getManager(fileName, new FactoryData(append, isForce, regionLength,
+        return (MemoryMappedFileManager) getManager(fileName, new FactoryData(append, immediateFlush, regionLength,
                 advertiseURI, layout), FACTORY);
     }
 
@@ -156,7 +157,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    public synchronized void close() {
+    public synchronized boolean closeOutputStream() {
         final long position = mappedBuffer.position();
         final long length = mappingOffset + position;
         try {
@@ -169,8 +170,10 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                     length, mappingOffset, position);
             randomAccessFile.setLength(length);
             randomAccessFile.close();
+            return true;
         } catch (final IOException ex) {
             logError("Unable to close MemoryMappedFile", ex);
+            return false;
         }
     }
 
@@ -250,7 +253,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      * @return whether each write should be force-sync'ed
      */
     public boolean isImmediateFlush() {
-        return isForce;
+        return immediateFlush;
     }
 
     /**
@@ -289,7 +292,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      */
     private static class FactoryData {
         private final boolean append;
-        private final boolean force;
+        private final boolean immediateFlush;
         private final int regionLength;
         private final String advertiseURI;
         private final Layout<? extends Serializable> layout;
@@ -298,15 +301,15 @@ public class MemoryMappedFileManager extends OutputStreamManager {
          * Constructor.
          *
          * @param append Append to existing file or truncate.
-         * @param force forces the memory content to be written to the storage device on every event
+         * @param immediateFlush forces the memory content to be written to the storage device on every event
          * @param regionLength length of the mapped region
          * @param advertiseURI the URI to use when advertising the file
          * @param layout The layout.
          */
-        public FactoryData(final boolean append, final boolean force, final int regionLength,
+        public FactoryData(final boolean append, final boolean immediateFlush, final int regionLength,
                 final String advertiseURI, final Layout<? extends Serializable> layout) {
             this.append = append;
-            this.force = force;
+            this.immediateFlush = immediateFlush;
             this.regionLength = regionLength;
             this.advertiseURI = advertiseURI;
             this.layout = layout;
@@ -330,22 +333,19 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         @Override
         public MemoryMappedFileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
-            final File parent = file.getParentFile();
-            if (null != parent && !parent.exists()) {
-                parent.mkdirs();
-            }
             if (!data.append) {
                 file.delete();
             }
 
             final boolean writeHeader = !data.append || !file.exists();
-            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
+            final OutputStream os = NullOutputStream.getInstance();
             RandomAccessFile raf = null;
             try {
+                FileUtils.makeParentDirs(file);
                 raf = new RandomAccessFile(name, "rw");
                 final long position = (data.append) ? raf.length() : 0;
                 raf.setLength(position + data.regionLength);
-                return new MemoryMappedFileManager(raf, name, os, data.force, position, data.regionLength,
+                return new MemoryMappedFileManager(raf, name, os, data.immediateFlush, position, data.regionLength,
                         data.advertiseURI, data.layout, writeHeader);
             } catch (final Exception ex) {
                 LOGGER.error("MemoryMappedFileManager (" + name + ") " + ex, ex);

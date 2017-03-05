@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
+
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Encoder for StringBuilders that uses ThreadLocals to avoid locking as much as possible.
@@ -69,7 +69,6 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
         try {
             TextEncoderHelper.encodeTextWithCopy(charsetEncoder, charBuffer, temp, source, destination);
         } catch (final Exception ex) {
-            ex.printStackTrace();
             logEncodeTextException(ex, source, destination);
             TextEncoderHelper.encodeTextFallBack(charset, source, destination);
         }

@@ -1,0 +1,79 @@
+<!-- vim: set syn=markdown : -->
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+#set($h1='#')
+#set($h2='##')
+## TODO: use properties for dynamic dependency versions
+
+$h1 NoSQL Appenders
+
+The NoSQL Appenders allow applications to send events to NoSQL repositories.
+To use it, you need both the `log4j-nosql` as well as the appropriate
+driver for your NoSQL database type.
+
+$h2 CouchDB
+
+[Apache CouchDB](https://couchdb.apache.org/) is supported through the
+[LightCouch](http://www.lightcouch.org/) driver.
+
+```
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.lightcouch</groupId>
+        <artifactId>lightcouch</artifactId>
+        <version>0.0.6</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.lightcouch</groupId>
+      <artifactId>lightcouch</artifactId>
+    </dependency>
+  </dependencies>
+```
+
+$h2 MongoDB
+
+[MongoDB](http://www.mongodb.org/) is supported through the
+[Java MongoDB Driver](http://docs.mongodb.org/ecosystem/drivers/java/).
+
+```
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongo-java-driver</artifactId>
+        <version>2.12.3</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+    </dependency>
+  </dependencies>
+```
+
+## TODO: Cassandra dependencies (already mentioned in runtime-dependencies.html)
+
+$h2 Requirements
+
+The NoSQL Appenders is dependent on the Log4j 2 API and implementation.
+For more information, see [Runtime Dependencies](../runtime-dependencies.html).

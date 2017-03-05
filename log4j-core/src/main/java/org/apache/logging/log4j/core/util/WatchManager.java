@@ -63,15 +63,17 @@ public class WatchManager extends AbstractLifeCycle {
     public void start() {
         super.start();
         if (intervalSeconds > 0) {
-            future = scheduler.scheduleWithFixedDelay(new WatchWorker(), intervalSeconds, intervalSeconds,
+            future = scheduler.scheduleWithFixedDelay(new WatchRunnable(), intervalSeconds, intervalSeconds,
                     TimeUnit.SECONDS);
         }
     }
 
     @Override
-    public void stop() {
-        future.cancel(true);
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        final boolean stopped = stop(future);
+        setStopped();
+        return stopped;
     }
 
     public void watchFile(final File file, final FileWatcher watcher) {
@@ -87,7 +89,7 @@ public class WatchManager extends AbstractLifeCycle {
         return map;
     }
 
-    private class WatchWorker implements Runnable {
+    private class WatchRunnable implements Runnable {
 
         @Override
         public void run() {
@@ -96,7 +98,7 @@ public class WatchManager extends AbstractLifeCycle {
                 final FileMonitor fileMonitor = entry.getValue();
                 final long lastModfied = file.lastModified();
                 if (fileModified(fileMonitor, lastModfied)) {
-                    logger.info("File {} was modified", file.toString());
+                    logger.info("File {} was modified on {}, previous modification was {}", file, lastModfied, fileMonitor.lastModified);
                     fileMonitor.lastModified = lastModfied;
                     fileMonitor.fileWatcher.fileModified(file);
                 }

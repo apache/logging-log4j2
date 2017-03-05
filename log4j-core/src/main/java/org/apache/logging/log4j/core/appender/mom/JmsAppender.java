@@ -18,6 +18,8 @@
 package org.apache.logging.log4j.core.appender.mom;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
@@ -69,9 +71,12 @@ public class JmsAppender extends AbstractAppender {
     }
 
     @Override
-    public void stop() {
-        this.manager.release();
-        super.stop();
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        setStopping();
+        boolean stopped = super.stop(timeout, timeUnit, false);
+        stopped &= this.manager.stop(timeout, timeUnit);
+        setStopped();
+        return stopped;
     }
 
     @PluginBuilderFactory
@@ -123,6 +128,9 @@ public class JmsAppender extends AbstractAppender {
 
         @PluginBuilderAttribute
         private boolean ignoreExceptions = true;
+        
+        // Programmatic access only for now.
+        private JmsManager jmsManager;
 
         private Builder() {
         }
@@ -187,6 +195,11 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
+        public Builder setJmsManager(final JmsManager jmsManager) {
+            this.jmsManager = jmsManager;
+            return this;
+        }
+
         public Builder setIgnoreExceptions(final boolean ignoreExceptions) {
             this.ignoreExceptions = ignoreExceptions;
             return this;
@@ -194,17 +207,21 @@ public class JmsAppender extends AbstractAppender {
 
         @Override
         public JmsAppender build() {
+            JmsManager actualJmsManager = jmsManager;
+            if (actualJmsManager == null) {
             final JndiManager jndiManager = JndiManager.getJndiManager(factoryName, providerUrl, urlPkgPrefixes,
                 securityPrincipalName, securityCredentials, null);
-            final JmsManager jmsManager = JmsManager.getJmsManager(name, jndiManager, factoryBindingName,
+            actualJmsManager = JmsManager.getJmsManager(name, jndiManager, factoryBindingName,
                 destinationBindingName, username, password);
+            }
             try {
-                return new JmsAppender(name, filter, layout, ignoreExceptions, jmsManager);
+                return new JmsAppender(name, filter, layout, ignoreExceptions, actualJmsManager);
             } catch (final JMSException e) {
                 LOGGER.error("Error creating JmsAppender [{}].", name, e);
                 return null;
             }
         }
+
     }
 
 }

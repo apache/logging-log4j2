@@ -64,9 +64,9 @@ public final class PatternLayout extends AbstractStringLayout {
     public static final String DEFAULT_CONVERSION_PATTERN = "%m%n";
 
     /**
-     * A conversion pattern equivalent to the TTCCCLayout. Current value is <b>%r [%t] %p %c %x - %m%n</b>.
+     * A conversion pattern equivalent to the TTCCLayout. Current value is <b>%r [%t] %p %c %notEmpty{%x }- %m%n</b>.
      */
-    public static final String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %x - %m%n";
+    public static final String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %notEmpty{%x }- %m%n";
 
     /**
      * A simple pattern. Current value is <b>%d [%t] %p %c - %m%n</b>.
@@ -84,7 +84,7 @@ public final class PatternLayout extends AbstractStringLayout {
     private final Serializer eventSerializer;
 
     /**
-     * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
+     * Constructs a PatternLayout using the supplied conversion pattern.
      *
      * @param config The Configuration.
      * @param replace The regular expression to match.
@@ -93,6 +93,8 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param charset The character set.
      * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
      *                         exceptions will be written even if the pattern does not specify so).
+     * @param disableAnsi
+     *            If {@code "true"}, do not output ANSI escape codes
      * @param noConsoleNoAnsi
      *            If {@code "true"} (default) and {@link System#console()} is null, do not output ANSI escape codes
      * @param headerPattern header conversion pattern.
@@ -100,36 +102,71 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String eventPattern,
             final PatternSelector patternSelector, final Charset charset, final boolean alwaysWriteExceptions,
-            final boolean noConsoleNoAnsi, final String headerPattern, final String footerPattern) {
+            final boolean disableAnsi, final boolean noConsoleNoAnsi, final String headerPattern,
+            final String footerPattern) {
         super(config, charset,
-                createSerializer(config, replace, headerPattern, null, patternSelector, alwaysWriteExceptions,
-                        noConsoleNoAnsi),
-                createSerializer(config, replace, footerPattern, null, patternSelector, alwaysWriteExceptions,
-                        noConsoleNoAnsi));
+                newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setReplace(replace)
+                        .setPatternSelector(patternSelector)
+                        .setAlwaysWriteExceptions(alwaysWriteExceptions)
+                        .setDisableAnsi(disableAnsi)
+                        .setNoConsoleNoAnsi(noConsoleNoAnsi)
+                        .setPattern(headerPattern)
+                        .build(),
+                newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setReplace(replace)
+                        .setPatternSelector(patternSelector)
+                        .setAlwaysWriteExceptions(alwaysWriteExceptions)
+                        .setDisableAnsi(disableAnsi)
+                        .setNoConsoleNoAnsi(noConsoleNoAnsi)
+                        .setPattern(footerPattern)
+                        .build());
         this.conversionPattern = eventPattern;
         this.patternSelector = patternSelector;
-        this.eventSerializer = createSerializer(config, replace, eventPattern, DEFAULT_CONVERSION_PATTERN,
-                patternSelector, alwaysWriteExceptions, noConsoleNoAnsi);
+        this.eventSerializer = newSerializerBuilder()
+                .setConfiguration(config)
+                .setReplace(replace)
+                .setPatternSelector(patternSelector)
+                .setAlwaysWriteExceptions(alwaysWriteExceptions)
+                .setDisableAnsi(disableAnsi)
+                .setNoConsoleNoAnsi(noConsoleNoAnsi)
+                .setPattern(eventPattern)
+                .setDefaultPattern(DEFAULT_CONVERSION_PATTERN)
+                .build();
     }
 
+    public static SerializerBuilder newSerializerBuilder() {
+        return new SerializerBuilder();
+    }
+
+    /**
+     * Deprecated, use {@link #newSerializerBuilder()} instead.
+     * 
+     * @param configuration
+     * @param replace
+     * @param pattern
+     * @param defaultPattern
+     * @param patternSelector
+     * @param alwaysWriteExceptions
+     * @param noConsoleNoAnsi
+     * @return a new Serializer.
+     * @deprecated Use {@link #newSerializerBuilder()} instead.
+     */
+    @Deprecated
     public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
             final String pattern, final String defaultPattern, final PatternSelector patternSelector,
             final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
-        if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
-            return null;
-        }
-        if (patternSelector == null) {
-            try {
-                final PatternParser parser = createPatternParser(configuration);
-                final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
-                        alwaysWriteExceptions, noConsoleNoAnsi);
-                final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
-                return new PatternSerializer(formatters, replace);
-            } catch (final RuntimeException ex) {
-                throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
-            }
-        }
-        return new PatternSelectorSerializer(patternSelector, replace);
+        final SerializerBuilder builder = newSerializerBuilder();
+        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
+        builder.setConfiguration(configuration);
+        builder.setDefaultPattern(defaultPattern);
+        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
+        builder.setPattern(pattern);
+        builder.setPatternSelector(patternSelector);
+        builder.setReplace(replace);
+        return builder.build();
     }
 
     /**
@@ -240,8 +277,10 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param footerPattern
      *        The footer to place at the bottom of the document, once.
      * @return The PatternLayout.
+     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
      */
     @PluginFactory
+    @Deprecated
     public static PatternLayout createLayout(
             @PluginAttribute(value = "pattern", defaultString = DEFAULT_CONVERSION_PATTERN) final String pattern,
             @PluginElement("PatternSelector") final PatternSelector patternSelector,
@@ -250,7 +289,7 @@ public final class PatternLayout extends AbstractStringLayout {
             // LOG4J2-783 use platform default by default, so do not specify defaultString for charset
             @PluginAttribute(value = "charset") final Charset charset,
             @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
-            @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
+            @PluginAttribute(value = "noConsoleNoAnsi") final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String headerPattern,
             @PluginAttribute("footer") final String footerPattern) {
         return newBuilder()
@@ -315,8 +354,80 @@ public final class PatternLayout extends AbstractStringLayout {
         }
     }
 
-    private static class PatternSelectorSerializer implements Serializer, Serializer2 {
+    public static class SerializerBuilder implements org.apache.logging.log4j.core.util.Builder<Serializer> {
 
+        private Configuration configuration;
+        private RegexReplacement replace;
+        private String pattern;
+        private String defaultPattern;
+        private PatternSelector patternSelector;
+        private boolean alwaysWriteExceptions;
+        private boolean disableAnsi;
+        private boolean noConsoleNoAnsi;
+
+        @Override
+        public Serializer build() {
+            if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
+                return null;
+            }
+            if (patternSelector == null) {
+                try {
+                    final PatternParser parser = createPatternParser(configuration);
+                    final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
+                            alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
+                    final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
+                    return new PatternSerializer(formatters, replace);
+                } catch (final RuntimeException ex) {
+                    throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
+                }
+            }
+            return new PatternSelectorSerializer(patternSelector, replace);
+        }
+
+        public SerializerBuilder setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        public SerializerBuilder setReplace(final RegexReplacement replace) {
+            this.replace = replace;
+            return this;
+        }
+
+        public SerializerBuilder setPattern(final String pattern) {
+            this.pattern = pattern;
+            return this;
+        }
+
+        public SerializerBuilder setDefaultPattern(final String defaultPattern) {
+            this.defaultPattern = defaultPattern;
+            return this;
+        }
+
+        public SerializerBuilder setPatternSelector(final PatternSelector patternSelector) {
+            this.patternSelector = patternSelector;
+            return this;
+        }
+
+        public SerializerBuilder setAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
+            this.alwaysWriteExceptions = alwaysWriteExceptions;
+            return this;
+        }
+
+        public SerializerBuilder setDisableAnsi(final boolean disableAnsi) {
+            this.disableAnsi = disableAnsi;
+            return this;
+        }
+
+        public SerializerBuilder setNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
+            this.noConsoleNoAnsi = noConsoleNoAnsi;
+            return this;
+        }
+
+    }
+
+    private static class PatternSelectorSerializer implements Serializer, Serializer2 {
+        
         private final PatternSelector patternSelector;
         private final RegexReplacement replace;
 
@@ -424,6 +535,9 @@ public final class PatternLayout extends AbstractStringLayout {
         private boolean alwaysWriteExceptions = true;
 
         @PluginBuilderAttribute
+        private boolean disableAnsi;
+
+        @PluginBuilderAttribute
         private boolean noConsoleNoAnsi;
 
         @PluginBuilderAttribute
@@ -435,28 +549,47 @@ public final class PatternLayout extends AbstractStringLayout {
         private Builder() {
         }
 
-        // TODO: move javadocs from PluginFactory to here
 
+        /**
+         * @param pattern
+         *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
+         */
         public Builder withPattern(final String pattern) {
             this.pattern = pattern;
             return this;
         }
 
+        /**
+         * @param patternSelector
+         *        Allows different patterns to be used based on some selection criteria.
+         */
         public Builder withPatternSelector(final PatternSelector patternSelector) {
             this.patternSelector = patternSelector;
             return this;
         }
 
+        /**
+         * @param configuration
+         *        The Configuration. Some Converters require access to the Interpolator.
+         */
         public Builder withConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
+        /**
+         * @param regexReplacement
+         *        A Regex replacement
+         */
         public Builder withRegexReplacement(final RegexReplacement regexReplacement) {
             this.regexReplacement = regexReplacement;
             return this;
         }
 
+        /**
+         * @param charset
+         *        The character set. The platform default is used if not specified.
+         */
         public Builder withCharset(final Charset charset) {
             // LOG4J2-783 if null, use platform default by default
             if (charset != null) {
@@ -465,21 +598,46 @@ public final class PatternLayout extends AbstractStringLayout {
             return this;
         }
 
+        /**
+         * @param alwaysWriteExceptions
+         *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
+         */
         public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
             this.alwaysWriteExceptions = alwaysWriteExceptions;
             return this;
         }
 
+        /**
+         * @param disableAnsi
+         *        If {@code "true"} (default is false), do not output ANSI escape codes
+         */
+        public Builder withDisableAnsi(final boolean disableAnsi) {
+            this.disableAnsi = disableAnsi;
+            return this;
+        }
+
+        /**
+         * @param noConsoleNoAnsi
+         *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
+         */
         public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }
 
+        /**
+         * @param header
+         *        The footer to place at the top of the document, once.
+         */
         public Builder withHeader(final String header) {
             this.header = header;
             return this;
         }
 
+        /**
+         * @param footer
+         *        The footer to place at the bottom of the document, once.
+         */
         public Builder withFooter(final String footer) {
             this.footer = footer;
             return this;
@@ -492,7 +650,7 @@ public final class PatternLayout extends AbstractStringLayout {
                 configuration = new DefaultConfiguration();
             }
             return new PatternLayout(configuration, regexReplacement, pattern, patternSelector, charset,
-                alwaysWriteExceptions, noConsoleNoAnsi, header, footer);
+                alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, header, footer);
         }
     }
 }

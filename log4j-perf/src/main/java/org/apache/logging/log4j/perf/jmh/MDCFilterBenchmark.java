@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -45,12 +46,19 @@ public class MDCFilterBenchmark {
     Logger log4jLogger;
     org.slf4j.Logger slf4jLogger;
 
+    @Param({"0", "4"})
+    public int size;
+
+    static int staticSize;
+
     @State(Scope.Thread)
     public static class ThreadContextState {
         // Thread scope: initialize MDC/ThreadContext here to ensure each thread has some value set
         public ThreadContextState() {
-            ThreadContext.put("user", "Apache");
-            MDC.put("user", "Apache");
+            for (int i = 0; i < staticSize; i++) {
+                ThreadContext.put("user" + i, "Apache");
+                MDC.put("user" + i, "Apache");
+            }
         }
 
         public String message() {
@@ -65,6 +73,8 @@ public class MDCFilterBenchmark {
 
         log4jLogger = LogManager.getLogger(MDCFilterBenchmark.class);
         slf4jLogger = LoggerFactory.getLogger(MDCFilterBenchmark.class);
+
+        staticSize = size;
     }
 
     @TearDown

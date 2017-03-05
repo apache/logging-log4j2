@@ -18,17 +18,19 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
 
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Equals pattern converter.
  */
 @Plugin(name = "equals", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "equals" })
-public final class EqualsReplacementConverter extends LogEventPatternConverter {
+@PerformanceSensitive("allocation")
+public final class EqualsReplacementConverter extends EqualsBaseReplacementConverter {
 
     /**
      * Gets an instance of the class.
@@ -60,62 +62,21 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
         return new EqualsReplacementConverter(formatters, p, options[2], parser);
     }
 
-    private final List<PatternFormatter> formatters;
-
-    private final String substitution;
-
-    private final String testString;
-
-    private final PatternParser parser;
-
     /**
      * Construct the converter.
      *
      * @param formatters   The PatternFormatters to generate the text to manipulate.
      * @param testString   The test string.
      * @param substitution The substitution string.
-     * @param parser       The PatternParser.
+     * @param parser        The PatternParser.
      */
     private EqualsReplacementConverter(final List<PatternFormatter> formatters, final String testString,
                                        final String substitution, final PatternParser parser) {
-        super("equals", "equals");
-        this.testString = testString;
-        this.substitution = substitution;
-        this.formatters = formatters;
-        this.parser = parser;
+        super("equals", "equals", formatters, testString, substitution, parser);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : formatters) {
-            formatter.format(event, buf);
-        }
-        final String string = buf.toString();
-        toAppendTo.append(testString.equals(string) ? parseSubstitution(event) : string);
-    }
-
-    /**
-     * Returns the parsed substitution text.
-     *
-     * @param event the current log event
-     * @return the parsed substitution text
-     */
-    String parseSubstitution(final LogEvent event) {
-        final StringBuilder substitutionBuffer = new StringBuilder();
-        // check if substitution needs to be parsed
-        if (substitution.contains("%")) {
-            // parse substitution pattern
-            final List<PatternFormatter> substitutionFormatters = parser.parse(substitution);
-            for (final PatternFormatter formatter : substitutionFormatters) {
-                formatter.format(event, substitutionBuffer);
-            }
-        } else {
-            substitutionBuffer.append(substitution);
-        }
-        return substitutionBuffer.toString();
+    protected boolean equals(final String str, final StringBuilder buff, final int from, final int len) {
+        return StringBuilders.equals(str, 0, str.length(), buff, from, len);
     }
 }

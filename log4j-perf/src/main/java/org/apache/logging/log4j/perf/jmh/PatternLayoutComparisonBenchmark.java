@@ -103,7 +103,6 @@ public class PatternLayoutComparisonBenchmark {
         patternLayoutEncoder.setContext(context);
         patternLayoutEncoder.start();
         ((ch.qos.logback.classic.PatternLayout) patternLayoutEncoder.getLayout()).setOutputPatternAsHeader(false);
-        patternLayoutEncoder.init(baos);
     }
 
     ILoggingEvent makeLoggingEvent(final String message) {
@@ -114,9 +113,7 @@ public class PatternLayoutComparisonBenchmark {
     @Benchmark
     public byte[] logback() throws IOException {
         baos.reset();
-        patternLayoutEncoder.doEncode(LOGBACKEVENT);
-        // patternLayoutEncoder.close();
-        return baos.toByteArray();
+        return patternLayoutEncoder.encode(LOGBACKEVENT);
     }
 
     @Benchmark

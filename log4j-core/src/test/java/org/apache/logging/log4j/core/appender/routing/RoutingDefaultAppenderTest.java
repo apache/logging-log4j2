@@ -26,9 +26,6 @@ import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -39,31 +36,16 @@ import org.junit.rules.RuleChain;
 public class RoutingDefaultAppenderTest {
     private static final String LOG_FILE = "target/routing1/routingtest.log";
 
-    private ListAppender app;
-
-    private LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing3.xml");
+    private final LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing3.xml");
 
     @Rule
     public RuleChain rules = loggerContextRule.withCleanFilesRule(LOG_FILE);
-
-    @Before
-    public void setUp() throws Exception {
-        app = this.loggerContextRule.getListAppender("List");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        if (app != null) {
-            app.clear();
-        }
-        this.loggerContextRule.getContext().stop();
-    }
 
     @Test
     public void routingTest() {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
-        final List<LogEvent> list = app.getEvents();
+        final List<LogEvent> list = loggerContextRule.getListAppender("List").getEvents();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         msg = new StructuredDataMessage("Test", "This is a test", "Alert");

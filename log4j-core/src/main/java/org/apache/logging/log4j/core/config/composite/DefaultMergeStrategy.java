@@ -155,6 +155,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
                             final Node targetNode = getLoggerNode(targetChildNode, node.getAttributes().get(NAME));
                             final Node loggerNode = new Node(targetChildNode, node.getName(), node.getType());
                             if (targetNode != null) {
+                                targetNode.getAttributes().putAll(node.getAttributes());
                                 for (final Node sourceLoggerChild : node.getChildren()) {
                                     if (isFilterNode(sourceLoggerChild)) {
                                         boolean foundFilter = false;
@@ -175,6 +176,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
                                         final Node childNode = new Node(loggerNode, sourceLoggerChild.getName(),
                                                 sourceLoggerChild.getType());
                                         childNode.getAttributes().putAll(sourceLoggerChild.getAttributes());
+                                        childNode.getChildren().addAll(sourceLoggerChild.getChildren());
                                         if (childNode.getName().equalsIgnoreCase("AppenderRef")) {
                                             for (final Node targetChild : targetNode.getChildren()) {
                                                 if (isSameReference(targetChild, childNode)) {

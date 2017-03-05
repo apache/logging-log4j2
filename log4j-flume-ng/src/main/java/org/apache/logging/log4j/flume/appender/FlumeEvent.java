@@ -29,7 +29,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.UuidUtil;
@@ -88,7 +90,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         if (eventPrefix == null) {
             eventPrefix = DEFAULT_EVENT_PREFIX;
         }
-        final Map<String, String> mdc = event.getContextMap();
+        final Map<String, String> mdc = event.getContextData().toMap();
         if (includes != null) {
             final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
@@ -169,6 +171,11 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         context.clear();
         context.putAll(map);
     }
+
+	@Override
+	public LogEvent toImmutable() {
+		return Log4jLogEvent.createMemento(this);
+	}
 
     /**
      * Set the body in the event.
@@ -321,6 +328,15 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
+     * Returns the context data of the {@code LogEvent} that this {@code FlumeEvent} was constructed with.
+     * @return the context data of the {@code LogEvent} that this {@code FlumeEvent} was constructed with.
+     */
+    @Override
+    public ReadOnlyStringMap getContextData() {
+        return event.getContextData();
+    }
+
+    /**
      * Returns a copy of the context stack.
      * @return a copy of the context stack.
      */
@@ -348,4 +364,5 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     public void setEndOfBatch(final boolean endOfBatch) {
         event.setEndOfBatch(endOfBatch);
     }
+
 }

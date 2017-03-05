@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,19 +30,85 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.util.Chars;
-
 
 /**
  * Formats a log event as a BSD Log record.
  */
 @Plugin(name = "SyslogLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class SyslogLayout extends AbstractStringLayout {
+
+    /**
+     * Builds a SyslogLayout.
+     * <p>The main arguments are</p>
+     * <ul> 
+     * <li>facility: The Facility is used to try to classify the message.</li>
+     * <li>includeNewLine: If true a newline will be appended to the result.</li>
+     * <li>escapeNL: Pattern to use for replacing newlines.</li>
+     * <li>charset: The character set.</li>
+     * </ul> 
+     * @param <B> the builder type
+     */
+    public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<SyslogLayout> {
+        
+        public Builder() {
+            super();
+            setCharset(StandardCharsets.UTF_8);
+        }
+
+        @PluginBuilderAttribute
+        private Facility facility = Facility.LOCAL0;
+
+        @PluginBuilderAttribute("newLine")
+        private boolean includeNewLine;
+
+        @PluginBuilderAttribute("newLineEscape")
+        private String escapeNL;
+
+        @Override
+        public SyslogLayout build() {
+            return new SyslogLayout(facility, includeNewLine, escapeNL, getCharset());
+        }
+
+        public Facility getFacility() {
+            return facility;
+        }
+
+        public boolean isIncludeNewLine() {
+            return includeNewLine;
+        }
+
+        public String getEscapeNL() {
+            return escapeNL;
+        }
+
+        public B setFacility(final Facility facility) {
+            this.facility = facility;
+            return asBuilder();
+        }
+
+        public B setIncludeNewLine(final boolean includeNewLine) {
+            this.includeNewLine = includeNewLine;
+            return asBuilder();
+        }
+
+        public B setEscapeNL(final String escapeNL) {
+            this.escapeNL = escapeNL;
+            return asBuilder();
+        }
+
+    }
+    
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
 
     /**
      * Match newlines in a platform-independent manner.
@@ -56,6 +123,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * Date format used if header = true.
      */
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH);
+    
     /**
      * Host name used to identify messages from this appender.
      */
@@ -130,19 +198,27 @@ public final class SyslogLayout extends AbstractStringLayout {
     }
 
     /**
-     * Create a SyslogLayout.
+     * Creates a SyslogLayout.
+     * 
      * @param facility The Facility is used to try to classify the message.
      * @param includeNewLine If true a newline will be appended to the result.
      * @param escapeNL Pattern to use for replacing newlines.
      * @param charset The character set.
      * @return A SyslogLayout.
+     * @deprecated Use {@link #newBuilder()}.
      */
-    @PluginFactory
-    public static SyslogLayout createLayout(
-            @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
-            @PluginAttribute(value = "newLine", defaultBoolean = false) final boolean includeNewLine,
-            @PluginAttribute("newLineEscape") final String escapeNL,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset) {
+    @Deprecated
+    public static SyslogLayout createLayout(final Facility facility, final boolean includeNewLine,
+                                            final String escapeNL, final Charset charset) {
         return new SyslogLayout(facility, includeNewLine, escapeNL, charset);
+    }
+
+    /**
+     * Gets the facility.
+     * 
+     * @return the facility
+     */
+    public Facility getFacility() {
+        return facility;
     }
 }

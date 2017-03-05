@@ -266,13 +266,13 @@ public class TraceLoggingTest extends AbstractLogger {
     @Test
     public void testTraceEntryExit() {
         currentLevel = Level.TRACE;
-        FlowMessageFactory fact = new DefaultFlowMessageFactory();
+        final FlowMessageFactory fact = new DefaultFlowMessageFactory();
 
-        ParameterizedMessage paramMsg = new ParameterizedMessage("Tracy {}", "Logan");
+        final ParameterizedMessage paramMsg = new ParameterizedMessage("Tracy {}", "Logan");
         currentEvent = new LogEvent(ENTRY_MARKER.getName(), fact.newEntryMessage(paramMsg), null);
-        EntryMessage entry = traceEntry("Tracy {}", "Logan");
+        final EntryMessage entry = traceEntry("Tracy {}", "Logan");
 
-        ReusableParameterizedMessage msg = ReusableParameterizedMessageTest.set(
+        final ReusableParameterizedMessage msg = ReusableParameterizedMessageTest.set(
                 new ReusableParameterizedMessage(), "Tracy {}", "Logan");
         ReusableParameterizedMessageTest.set(msg, "Some other message {}", 123);
         currentEvent = new LogEvent(null, msg, null);
@@ -291,14 +291,14 @@ public class TraceLoggingTest extends AbstractLogger {
     @Test
     public void testTraceEntryMessage() {
         currentLevel = Level.TRACE;
-        FlowMessageFactory fact = new DefaultFlowMessageFactory();
+        final FlowMessageFactory fact = new DefaultFlowMessageFactory();
 
-        ParameterizedMessage paramMsg = new ParameterizedMessage("Tracy {}", "Logan");
+        final ParameterizedMessage paramMsg = new ParameterizedMessage("Tracy {}", "Logan");
         currentEvent = new LogEvent(ENTRY_MARKER.getName(), fact.newEntryMessage(paramMsg), null);
 
-        ReusableParameterizedMessage msg = ReusableParameterizedMessageTest.set(
+        final ReusableParameterizedMessage msg = ReusableParameterizedMessageTest.set(
                 new ReusableParameterizedMessage(), "Tracy {}", "Logan");
-        EntryMessage entry = traceEntry(msg);
+        final EntryMessage entry = traceEntry(msg);
 
         ReusableParameterizedMessageTest.set(msg, "Some other message {}", 123);
         currentEvent = new LogEvent(null, msg, null);

@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Represents a key/value pair in the configuration.
@@ -33,10 +36,12 @@ public final class Property {
 
     private final String name;
     private final String value;
+    private final boolean valueNeedsLookup;
 
     private Property(final String name, final String value) {
         this.name = name;
         this.value = value;
+        this.valueNeedsLookup = value != null && value.contains("${");
     }
 
     /**
@@ -52,12 +57,20 @@ public final class Property {
      * @return the value of the property.
      */
     public String getValue() {
-        return value;
+        return Objects.toString(value, Strings.EMPTY); // LOG4J2-1313 null would be same as Property not existing
+    }
+
+    /**
+     * Returns {@code true} if the value contains a substitutable property that requires a lookup to be resolved.
+     * @return {@code true} if the value contains {@code "${"}, {@code false} otherwise
+     */
+    public boolean isValueNeedsLookup() {
+        return valueNeedsLookup;
     }
 
     /**
      * Creates a Property.
-     * 
+     *
      * @param name The key.
      * @param value The value.
      * @return A Property.
@@ -74,6 +87,6 @@ public final class Property {
 
     @Override
     public String toString() {
-        return name + '=' + value;
+        return name + '=' + getValue();
     }
 }

@@ -22,17 +22,20 @@ import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
+@Category(Layouts.Xml.class)
 public class XmlRandomAccessFileAppenderTest {
 
     @BeforeClass

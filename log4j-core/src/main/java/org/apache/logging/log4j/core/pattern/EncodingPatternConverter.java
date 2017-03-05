@@ -22,12 +22,14 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Returns the event's rendered message in a StringBuilder.
  */
 @Plugin(name = "encode", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "enc", "encode" })
+@PerformanceSensitive("allocation")
 public final class EncodingPatternConverter extends LogEventPatternConverter {
 
     private final List<PatternFormatter> formatters;
@@ -68,39 +70,44 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : formatters) {
-            formatter.format(event, buf);
+        final int start = toAppendTo.length();
+        for (int i = 0; i < formatters.size(); i++) {
+            formatters.get(i).format(event, toAppendTo);
         }
-        for (int i = 0; i < buf.length(); i++) {
-            final char c = buf.charAt(i);
+        for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
+            final char c = toAppendTo.charAt(i);
             switch (c) {
                 case '\r':
-                    toAppendTo.append("\\r");
+                    toAppendTo.setCharAt(i, '\\');
+                    toAppendTo.insert(i + 1, 'r');
                     break;
                 case '\n':
-                    toAppendTo.append("\\n");
+                    toAppendTo.setCharAt(i, '\\');
+                    toAppendTo.insert(i + 1, 'n');
                     break;
                 case '&':
-                    toAppendTo.append("&amp;");
+                    toAppendTo.setCharAt(i, '&');
+                    toAppendTo.insert(i + 1, "amp;");
                     break;
                 case '<':
-                    toAppendTo.append("&lt;");
+                    toAppendTo.setCharAt(i, '&');
+                    toAppendTo.insert(i + 1, "lt;");
                     break;
                 case '>':
-                    toAppendTo.append("&gt;");
+                    toAppendTo.setCharAt(i, '&');
+                    toAppendTo.insert(i + 1, "gt;");
                     break;
                 case '"':
-                    toAppendTo.append("&quot;");
+                    toAppendTo.setCharAt(i, '&');
+                    toAppendTo.insert(i + 1, "quot;");
                     break;
                 case '\'':
-                    toAppendTo.append("&apos;");
+                    toAppendTo.setCharAt(i, '&');
+                    toAppendTo.insert(i + 1, "apos;");
                     break;
                 case '/':
-                    toAppendTo.append("&#x2F;");
-                    break;
-                default:
-                    toAppendTo.append(c);
+                    toAppendTo.setCharAt(i, '&');
+                    toAppendTo.insert(i + 1, "#x2F;");
                     break;
             }
         }

@@ -24,7 +24,7 @@
     </Console>
     <Block name="Block">
     </Block>
-    <Async name="Async" bufferSize="3" includeLocation="false" error-ref="STDOUT">
+    <Async name="Async" bufferSize="4" includeLocation="false" error-ref="STDOUT">
       <AppenderRef ref="Block"/>
     </Async>
   </Appenders>

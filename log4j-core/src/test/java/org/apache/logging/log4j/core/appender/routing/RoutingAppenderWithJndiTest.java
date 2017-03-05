@@ -16,16 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
-
+import java.util.Collections;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.EventLogger;
+import org.apache.logging.log4j.junit.JndiRule;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -33,7 +31,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.mockejb.jndi.MockContextFactory;
+import org.junit.rules.RuleChain;
+
+import static org.junit.Assert.*;
 
 /**
  * RoutingAppenderWithJndiTest
@@ -44,12 +44,14 @@ public class RoutingAppenderWithJndiTest {
     private ListAppender listAppender1;
     private ListAppender listAppender2;
 
-    @ClassRule
     public static LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing-by-jndi.xml");
+
+    @ClassRule
+    public static RuleChain rules = RuleChain.outerRule(new JndiRule(Collections.<String, Object>emptyMap()))
+        .around(loggerContextRule);
 
     @Before
     public void before() throws NamingException {
-        MockContextFactory.setAsInitial();
         listAppender1 = RoutingAppenderWithJndiTest.loggerContextRule.getListAppender("List1");
         listAppender2 = RoutingAppenderWithJndiTest.loggerContextRule.getListAppender("List2");
     }
@@ -58,7 +60,6 @@ public class RoutingAppenderWithJndiTest {
     public void after() {
         listAppender1.clear();
         listAppender2.clear();
-        MockContextFactory.revertSetAsInitial();
     }
 
     @Test

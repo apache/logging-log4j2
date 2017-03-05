@@ -20,13 +20,13 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.6.3-SNAPSHOT</version>
+    <version>2.8.2-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-to-slf4j</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j to SLF4J Adapter</name>
-  <description>The Apache Log4j binding between the Log4j 2 API and SLF4J</description>
+  <description>The Apache Log4j binding between Log4j 2 API and SLF4J.</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>SLF4J Documentation</docLabel>
@@ -185,7 +185,7 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>${pmd.plugin.version}</version>
         <configuration>
-          <targetJdk>${maven.compile.target}</targetJdk>
+          <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
       </plugin>
     </plugins>

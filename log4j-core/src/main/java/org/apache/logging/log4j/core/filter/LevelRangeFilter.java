@@ -26,22 +26,25 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
- * This filter returns the onMatch result if the level in the LogEvent is in the
- * range of the configured min and max levels, otherwise it returns onMismatch
- * value . For example, if the filter is configured with Level ERROR and Level
- * INFO and the LogEvent contains Level WARN then the onMatch value will be
- * returned since WARN events are in between ERROR and INFO.
- *
- * The default Levels are both ERROR.
+ * This filter returns the {@code onMatch} result if the level in the {@code LogEvent} is in the range of the configured
+ * min and max levels, otherwise it returns {@code onMismatch} value . For example, if the filter is configured with
+ * {@link Level#ERROR} and {@link Level#INFO} and the LogEvent contains {@link Level#WARN} then the onMatch value will
+ * be returned since {@link Level#WARN WARN} events are in between {@link Level#ERROR ERROR} and {@link Level#INFO
+ * INFO}.
+ * <p>
+ * The default Levels are both {@link Level#ERROR ERROR}.
+ * </p>
  */
 @Plugin(name = "LevelRangeFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@PerformanceSensitive("allocation")
 public final class LevelRangeFilter extends AbstractFilter {
 
     /**
      * Create a ThresholdFilter.
-     * 
+     *
      * @param minLevel
      *            The minimum log Level.
      * @param maxLevel
@@ -57,11 +60,11 @@ public final class LevelRangeFilter extends AbstractFilter {
             // @formatter:off
             @PluginAttribute("minLevel") final Level minLevel,
             @PluginAttribute("maxLevel") final Level maxLevel,
-            @PluginAttribute("onMatch") final Result match, 
+            @PluginAttribute("onMatch") final Result match,
             @PluginAttribute("onMismatch") final Result mismatch) {
             // @formatter:on
         final Level actualMinLevel = minLevel == null ? Level.ERROR : minLevel;
-        final Level actualMaxLevel = minLevel == null ? Level.ERROR : maxLevel;
+        final Level actualMaxLevel = maxLevel == null ? Level.ERROR : maxLevel;
         final Result onMatch = match == null ? Result.NEUTRAL : match;
         final Result onMismatch = mismatch == null ? Result.DENY : mismatch;
         return new LevelRangeFilter(actualMinLevel, actualMaxLevel, onMatch, onMismatch);
@@ -100,6 +103,75 @@ public final class LevelRangeFilter extends AbstractFilter {
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object... params) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
         return filter(level);
     }
 

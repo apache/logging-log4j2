@@ -21,8 +21,10 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Constants;
 
@@ -39,23 +41,23 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
         // Can't use new ctor because it throws an exception
-        this(os, streamName, layout, writeHeader, ByteBuffer.wrap(new byte[Constants.ENCODER_BYTE_BUFFER_SIZE]));
+        this(os, streamName, layout, writeHeader, Constants.ENCODER_BYTE_BUFFER_SIZE);
+    }
+
+    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
+            final boolean writeHeader, final int bufferSize) {
+        // Can't use new ctor because it throws an exception
+        this(os, streamName, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
     }
 
     /**
-     *
-     * @param os
-     * @param streamName
-     * @param layout
-     * @param writeHeader
-     * @param byteBuffer
      * @since 2.6
      * @deprecated
      */
     @Deprecated
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader, final ByteBuffer byteBuffer) {
-        super(streamName);
+        super(null, streamName);
         this.os = os;
         this.layout = layout;
         if (writeHeader && layout != null) {
@@ -72,17 +74,20 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     }
 
     /**
-     * @param byteBuffer
-     * @throws IOException 
      * @since 2.7
      */
-    protected OutputStreamManager(final String streamName, final boolean lazyCreate, final Layout<? extends Serializable> layout,
-            final boolean writeHeader, final ByteBuffer byteBuffer)
-            throws IOException {
-        super(streamName);
+    protected OutputStreamManager(final LoggerContext loggerContext, final OutputStream os, final String streamName,
+            final boolean createOnDemand, final Layout<? extends Serializable> layout, final boolean writeHeader,
+            final ByteBuffer byteBuffer) {
+        super(loggerContext, streamName);
+        if (createOnDemand && os != null) {
+            LOGGER.error(
+                    "Invalid OutputStreamManager configuration for '{}': You cannot both set the OutputStream and request on-demand.",
+                    streamName);
+        }
         this.layout = layout;
         this.byteBuffer = Objects.requireNonNull(byteBuffer, "byteBuffer");
-        this.os = lazyCreate ? null : createOutputStream();
+        this.os = os;
         if (writeHeader && layout != null) {
             final byte[] header = layout.getHeader();
             if (header != null) {
@@ -126,9 +131,9 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * Default hook to write footer during close.
      */
     @Override
-    public void releaseSub() {
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         writeFooter();
-        close();
+        return closeOutputStream();
     }
 
     /**
@@ -150,6 +155,10 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      */
     public boolean isOpen() {
         return getCount() > 0;
+    }
+
+    public boolean hasOutputStream() {
+        return os != null;
     }
 
     protected OutputStream getOutputStream() throws IOException {
@@ -289,17 +298,19 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         flushDestination();
     }
 
-    protected synchronized void close() {
+    protected synchronized boolean closeOutputStream() {
         flush();
         final OutputStream stream = os; // access volatile field only once per method
         if (stream == null || stream == System.out || stream == System.err) {
-            return;
+            return true;
         }
         try {
             stream.close();
         } catch (final IOException ex) {
             logError("Unable to close stream", ex);
+            return false;
         }
+        return true;
     }
 
     /**

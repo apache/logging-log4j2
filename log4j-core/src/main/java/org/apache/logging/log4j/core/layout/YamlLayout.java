@@ -710,11 +710,11 @@ public final class YamlLayout extends AbstractJacksonLayout {
 
     protected YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
-            final String footerPattern, final Charset charset) {
-        super(config, new JacksonFactory.YAML().newWriter(locationInfo, properties, compact), charset, compact,
+            final String footerPattern, final Charset charset, final boolean includeStacktrace) {
+        super(config, new JacksonFactory.YAML(includeStacktrace).newWriter(locationInfo, properties, compact), charset, compact,
                 complete, eventEol,
-                PatternLayout.createSerializer(config, null, headerPattern, DEFAULT_HEADER, null, false, false),
-                PatternLayout.createSerializer(config, null, footerPattern, DEFAULT_FOOTER, null, false, false));
+                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
+                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
     }
 
     /**
@@ -786,21 +786,24 @@ public final class YamlLayout extends AbstractJacksonLayout {
      *            The header pattern, defaults to {@code ""} if null.
      * @param charset
      *            The character set to use, if {@code null}, uses "UTF-8".
+     * @param includeStacktrace
+     *            If "true", includes the stacktrace of any Throwable in the generated YAML, defaults to "true".
      * @return A YAML Layout.
      */
     @PluginFactory
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
             @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
-            @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
+            @PluginAttribute(value = "locationInfo") final boolean locationInfo,
+            @PluginAttribute(value = "properties") final boolean properties,
             @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
             @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset
+            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
+            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace
             // @formatter:on
     ) {
         return new YamlLayout(config, locationInfo, properties, false, false, true, headerPattern, footerPattern,
-                charset);
+                charset, includeStacktrace);
     }
 
     /**
@@ -810,7 +813,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
      */
     public static AbstractJacksonLayout createDefaultLayout() {
         return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER,
-                DEFAULT_FOOTER, StandardCharsets.UTF_8);
+                DEFAULT_FOOTER, StandardCharsets.UTF_8, true);
     }
 
     @Override

@@ -24,12 +24,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Returns the event's level in a StringBuilder.
  */
 @Plugin(name = "LevelPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "p", "level" })
+@PerformanceSensitive("allocation")
 public final class LevelPatternConverter extends LogEventPatternConverter {
     private static final String OPTION_LENGTH = "length";
     private static final String OPTION_LOWER = "lowerCase";

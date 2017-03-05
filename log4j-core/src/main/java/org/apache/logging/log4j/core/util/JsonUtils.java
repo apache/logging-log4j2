@@ -16,14 +16,40 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import com.fasterxml.jackson.core.io.CharTypes;
-
 /**
  * This class is borrowed from <a href="https://github.com/FasterXML/jackson-core">Jackson</a>.
  */
 public final class JsonUtils {
 
-    private final static char[] HC = CharTypes.copyHexChars();
+    private static final char[] HC = "0123456789ABCDEF".toCharArray();
+
+    /**
+     * Read-only encoding table for first 128 Unicode code points (single-byte UTF-8 characters).
+     * Value of 0 means "no escaping"; other positive values that value is character
+     * to use after backslash; and negative values that generic (backslash - u)
+     * escaping is to be used.
+     */
+    private static final int[] ESC_CODES;
+    static {
+        int[] table = new int[128];
+        // Control chars need generic escape sequence
+        for (int i = 0; i < 32; ++i) {
+            // 04-Mar-2011, tatu: Used to use "-(i + 1)", replaced with constant
+            table[i] = -1;
+        }
+        /* Others (and some within that range too) have explicit shorter
+         * sequences
+         */
+        table['"'] = '"';
+        table['\\'] = '\\';
+        // Escaping of slash is optional, so let's not add it
+        table[0x08] = 'b';
+        table[0x09] = 't';
+        table[0x0C] = 'f';
+        table[0x0A] = 'n';
+        table[0x0D] = 'r';
+        ESC_CODES = table;
+    }
 
     /**
      * Temporary buffer used for composing quote/escape sequences
@@ -48,8 +74,7 @@ public final class JsonUtils {
      */
     public static void quoteAsString(final CharSequence input, final StringBuilder output) {
         final char[] qbuf = getQBuf();
-        final int[] escCodes = CharTypes.get7BitOutputEscapes();
-        final int escCodeCount = escCodes.length;
+        final int escCodeCount = ESC_CODES.length;
         int inPtr = 0;
         final int inputLen = input.length();
 
@@ -58,7 +83,7 @@ public final class JsonUtils {
             tight_loop:
             while (true) {
                 final char c = input.charAt(inPtr);
-                if (c < escCodeCount && escCodes[c] != 0) {
+                if (c < escCodeCount && ESC_CODES[c] != 0) {
                     break tight_loop;
                 }
                 output.append(c);
@@ -68,7 +93,7 @@ public final class JsonUtils {
             }
             // something to escape; 2 or 6-char variant?
             final char d = input.charAt(inPtr++);
-            final int escCode = escCodes[d];
+            final int escCode = ESC_CODES[d];
             final int length = (escCode < 0)
                     ? _appendNumeric(d, qbuf)
                     : _appendNamed(escCode, qbuf);
