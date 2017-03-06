@@ -98,7 +98,7 @@ public final class ThrowableFormatOptions {
      * @param suffix
      */
     protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
-                                     final TextRenderer textRenderer, final String suffix) {
+            final TextRenderer textRenderer, final String suffix) {
         this.lines = lines;
         this.separator = separator == null ? Strings.LINE_SEPARATOR : separator;
         this.ignorePackages = ignorePackages;
