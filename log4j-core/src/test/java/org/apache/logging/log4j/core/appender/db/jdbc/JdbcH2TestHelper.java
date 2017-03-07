@@ -16,17 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import org.apache.logging.log4j.junit.JdbcRule;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-/**
- *
- */
-public class JdbcAppenderH2DataSourceTest extends AbstractJdbcAppenderDataSourceTest {
-    public JdbcAppenderH2DataSourceTest() {
-        super(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE,
-                "CREATE TABLE dsLogEntry ("
-                        + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
-                        + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP" + ")",
-                "DROP TABLE dsLogEntry"));
+public class JdbcH2TestHelper {
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:h2:mem:Log4j", "sa", "");
     }
+
+    public static ConnectionSource TEST_CONFIGURATION_SOURCE = new ConnectionSource() {
+        @Override
+        public Connection getConnection() throws SQLException {
+            return JdbcH2TestHelper.getConnection();
+        }
+    };
+
 }
