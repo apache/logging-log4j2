@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.util.Strings;
@@ -35,22 +36,23 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
 
     /**
      * Private constructor.
-     *
+     * @param config
      * @param options options, may be null.
      */
-    private ExtendedThrowablePatternConverter(final String[] options) {
-        super("ExtendedThrowable", "throwable", options);
+    private ExtendedThrowablePatternConverter(final Configuration config, final String[] options) {
+        super("ExtendedThrowable", "throwable", options, config);
     }
 
     /**
      * Gets an instance of the class.
      *
+     * @param config The current Configuration.
      * @param options pattern options, may be null.  If first element is "short",
      *                only the first line of the throwable will be formatted.
      * @return instance of class.
      */
-    public static ExtendedThrowablePatternConverter newInstance(final String[] options) {
-        return new ExtendedThrowablePatternConverter(options);
+    public static ExtendedThrowablePatternConverter newInstance(final Configuration config, final String[] options) {
+        return new ExtendedThrowablePatternConverter(config, options);
     }
 
     /**
@@ -65,7 +67,8 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
                 super.format(event, toAppendTo);
                 return;
             }
-            final String extStackTrace = proxy.getExtendedStackTraceAsString(options.getIgnorePackages(), options.getTextRenderer());
+            String suffix = getSuffix(event);
+            final String extStackTrace = proxy.getExtendedStackTraceAsString(options.getIgnorePackages(), options.getTextRenderer(), suffix);
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');
@@ -86,4 +89,5 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
             }
         }
     }
+
 }

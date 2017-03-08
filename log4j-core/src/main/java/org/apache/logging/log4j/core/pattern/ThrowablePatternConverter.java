@@ -18,10 +18,15 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.Strings;
 
 
@@ -34,6 +39,7 @@ import org.apache.logging.log4j.util.Strings;
 @ConverterKeys({ "ex", "throwable", "exception" })
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 
+    protected final List<PatternFormatter> formatters;
     private String rawOption;
 
     /**
@@ -46,24 +52,52 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      * @param name Name of converter.
      * @param style CSS style for output.
      * @param options options, may be null.
+     * @param config
      */
-    protected ThrowablePatternConverter(final String name, final String style, final String[] options) {
+    protected ThrowablePatternConverter(final String name, final String style, final String[] options, final Configuration config) {
         super(name, style);
         this.options = ThrowableFormatOptions.newInstance(options);
         if (options != null && options.length > 0) {
             rawOption = options[0];
         }
+        if (this.options.getSuffix() != null) {
+            final PatternParser parser = PatternLayout.createPatternParser(config);
+            List<PatternFormatter> parsedFormatters = parser.parse(this.options.getSuffix());
+            // filter out nested formatters that will handle throwable
+            boolean hasThrowableFormatter = false;
+            for (PatternFormatter formatter : parsedFormatters) {
+                if (formatter.handlesThrowable()) {
+                    hasThrowableFormatter = true;
+                }
+            }
+            if (!hasThrowableFormatter) {
+                this.formatters = parsedFormatters;
+            } else {
+                List<PatternFormatter> formatters = new ArrayList<>();
+                for (PatternFormatter formatter : parsedFormatters) {
+                    if (!formatter.handlesThrowable()) {
+                        formatters.add(formatter);
+                    }
+                }
+                this.formatters = formatters;
+            }
+        } else {
+            this.formatters = Collections.emptyList();
+        }
+
     }
 
     /**
      * Gets an instance of the class.
      *
+     *
+     * @param config
      * @param options pattern options, may be null.  If first element is "short",
      *                only the first line of the throwable will be formatted.
      * @return instance of class.
      */
-    public static ThrowablePatternConverter newInstance(final String[] options) {
-        return new ThrowablePatternConverter("Throwable", "throwable", options);
+    public static ThrowablePatternConverter newInstance(final Configuration config, final String[] options) {
+        return new ThrowablePatternConverter("Throwable", "throwable", options, config);
     }
 
     /**
@@ -165,5 +199,14 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     @Override
     public boolean handlesThrowable() {
         return true;
+    }
+
+    protected String getSuffix(LogEvent event) {
+        //noinspection ForLoopReplaceableByForEach
+        StringBuilder toAppendTo = new StringBuilder();
+        for (int i = 0, size = formatters.size(); i <  size; i++) {
+            formatters.get(i).format(event, toAppendTo);
+        }
+        return toAppendTo.toString();
     }
 }

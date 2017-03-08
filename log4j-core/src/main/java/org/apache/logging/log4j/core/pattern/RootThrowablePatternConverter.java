@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.util.Strings;
@@ -36,21 +37,23 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
     /**
      * Private constructor.
      *
+     * @param config
      * @param options options, may be null.
      */
-    private RootThrowablePatternConverter(final String[] options) {
-        super("RootThrowable", "throwable", options);
+    private RootThrowablePatternConverter(final Configuration config, final String[] options) {
+        super("RootThrowable", "throwable", options, config);
     }
 
     /**
      * Gets an instance of the class.
      *
+     * @param config
      * @param options pattern options, may be null.  If first element is "short",
      *                only the first line of the throwable will be formatted.
      * @return instance of class.
      */
-    public static RootThrowablePatternConverter newInstance(final String[] options) {
-        return new RootThrowablePatternConverter(options);
+    public static RootThrowablePatternConverter newInstance(final Configuration config, final String[] options) {
+        return new RootThrowablePatternConverter(config, options);
     }
 
     /**
@@ -65,7 +68,8 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
                 super.format(event, toAppendTo);
                 return;
             }
-            final String trace = proxy.getCauseStackTraceAsString(options.getIgnorePackages());
+            String suffix = getSuffix(event);
+            final String trace = proxy.getCauseStackTraceAsString(options.getIgnorePackages(), suffix);
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');

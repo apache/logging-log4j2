@@ -762,7 +762,10 @@ WARN  [main]: Message 2</pre>
                 &nbsp;&nbsp;|"short.lineNumber"<br />
                 &nbsp;&nbsp;|"short.methodName"<br />
                 &nbsp;&nbsp;|"short.message"<br />
-                &nbsp;&nbsp;|"short.localizedMessage"]}
+                &nbsp;&nbsp;|"short.localizedMessage"]}<br />
+                &nbsp;&nbsp;{suffix(<i>pattern</i>)}
+                <!-- TODO: there are actually more options available in ThrowableFormatOptions that apply here -->
+                <!-- separator(), filters(), and ansi() -->
               </td>
               <td>
                 <p>
@@ -798,6 +801,11 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <p>
                   Specifying <b>%throwable{none}</b> or <b>%throwable{0}</b> suppresses output of the exception.
+                </p>
+                <p>
+                  Specifying <b>%throwable{suffix{<i>pattern</i>}</b> adds the output of <i>pattern</i> to the
+                  output only if there is a throwable to print. This option is orthogonal with the above
+                  conversions.
                 </p>
               </td>
             </tr>
@@ -1223,9 +1231,11 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternException"/>
-                <b>rEx</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
-                <b>rException</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
-                <b>rThrowable</b>["none"|"short"|"full"|depth],[filters(packages)}
+                <b>rEx</b>{["none"|"short"|"full"|depth]}{[filters(packages)]}{suffix(<i>pattern</i>)}<br />
+                <b>rException</b>{["none"|"short"|"full"|depth]}{[filters(packages)]}{suffix(<i>pattern</i>)}<br />
+                <b>rThrowable</b>{["none"|"short"|"full"|depth]}{[filters(packages)]}{suffix(<i>pattern</i>)}
+                <!-- TODO: more options are available in ThrowableFormatOptions -->
+                <!-- FIXME: these options are confusing! -->
               </td>
               <td>
                 <p>The same as the %throwable conversion word but the stack trace is printed starting with the
@@ -1238,6 +1248,10 @@ WARN  [main]: Message 2</pre>
                   followed by "filters(packages)" where packages is a list of package names that should
                   be suppressed from stack traces. Specifying <b>%rEx{none}</b>
                   or <b>%rEx{0}</b> will suppress printing of the exception.
+                </p>
+                <p>
+                  As with the %throwable conversion, using <b>rEx{suffix(<i>pattern</i>)</b> will add the output
+                  of <i>pattern</i> to the output only if there is a throwable to print.
                 </p>
               </td>
             </tr>
@@ -1468,6 +1482,7 @@ WARN  [main]: Message 2</pre>
                 &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;...)<br/>
                 &nbsp;&nbsp;}<br/>
+                &nbsp;&nbsp;{suffix(<i>pattern</i>)}<br/>
               </td>
               <td>
                 <p>The same as the %throwable conversion word but also includes class packaging information.
@@ -1523,6 +1538,10 @@ WARN  [main]: Message 2</pre>
                 <p>
                   The special key <code>StyleMapName</code> can be set to one of the following prefedined maps:
                   <code>Spock</code>, <code>Kirk</code>.
+                </p>
+                <p>
+                  As with %throwable, the <b>%xEx{suffix(<i>pattern</i>)</b> conversion will add the output of
+                  <i>pattern</i> to the output only if there is a throwable to print.
                 </p>
               </td>
             </tr>
