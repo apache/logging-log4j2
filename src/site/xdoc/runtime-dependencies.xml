@@ -137,8 +137,9 @@
           <td>ZeroMQ Appender</td>
           <td>
             The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library which is
-            licensed under the terms of the GNU Lesser General Public License (LGPL). For details see the
-            files <code>COPYING</code> and <code>COPYING.LESSER</code> included with the JeroMQ distribution.
+            licensed under the terms of the Mozilla Public License Version 2.0 (MPLv2). For details see the
+            file <a href="https://github.com/zeromq/jeromq/blob/master/LICENSE">LICENSE</a> included with the JeroMQ
+            distribution.
           </td>
         </tr>
         <tr>

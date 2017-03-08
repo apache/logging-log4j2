@@ -34,11 +34,14 @@
       <action issue="LOG4J2-1838" dev="mattsicker" type="add" due-to="Zilong Song">
         Add support for appending common suffix to each line of throwable stack trace.
       </action>
-      <action issue="LOG4J2-1836" dev="rgoers" type="fix">
-        Update the API version to 2.6.0.
-      </action>
       <action issue="LOG4J2-1827" dev="rgoers" type="update">
         Move integration tests to their own module to speed up build.
+      </action>
+      <action issue="LOG4J2-1835" dev="mattsicker" type="fix">
+        Fix documentation about the licensing for JeroMQ.
+      </action>
+      <action issue="LOG4J2-1836" dev="rgoers" type="fix">
+        Update the API version to 2.6.0.
       </action>
       <action issue="LOG4J2-1831" dev="ggregory" type="fix" due-to="Edward Serebrinskiy">
         NullPointerException in HtmlLayout.
