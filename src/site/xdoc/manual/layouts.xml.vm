@@ -1211,7 +1211,7 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>Replaces occurrences of 'regex', a regular expression, with its replacement 'substitution' in the
-                  string resulting from evaluation of the pattern. For example, "%replace(%msg}{\s}{}" will remove
+                  string resulting from evaluation of the pattern. For example, "%replace{%msg}{\s}{}" will remove
                   all spaces contained in the event message.
                 </p>
                 <p>The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.
