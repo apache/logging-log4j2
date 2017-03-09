@@ -24,7 +24,27 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Looks up keys from system properties.
+ * Looks up keys from system properties using an expression.
+ * The expression can be either:
+ * <ol>
+ *   <li>A single property key for {@code System.getProperty(key)}</li>
+ *   <li>
+ *     A series of pipe-separated property keys followed by a default value:
+ *
+ *     <blockquote>
+ *       <pre>key<sub>1</sub>|key<sub>2</sub>|...|key<sub>n</sub>|defaultValue</pre>
+ *     </blockquote>
+ *
+ *     If <code>key<sub>1</sub></code> is not {@code null}, then it is used.
+ *     Otherwise <code>key<sub>2</sub></code> is checked and so on until the {@code defaultValue} is reached.
+ *     Example:
+ *
+ *     <blockquote>
+ *       <pre>&lt;Logger name="com.myapp.dao" level="${sys:myapp.log.level|myapp.log.level.dao|warn}"/&gt;</pre>
+ *     </blockquote>
+ *
+ *   </li>
+ * </ol>
  */
 @Plugin(name = "sys", category = StrLookup.CATEGORY)
 public class SystemPropertiesLookup extends AbstractLookup {
@@ -33,17 +53,30 @@ public class SystemPropertiesLookup extends AbstractLookup {
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
 
     /**
-     * Looks up the value for the key using the data in the LogEvent.
      * @param event The current LogEvent.
-     * @param key  the key to be looked up, may be null
-     * @return The value associated with the key.
+     * @param expression the expression to be looked up.
+     * @return The value resolved by expression.
      */
     @Override
-    public String lookup(final LogEvent event, final String key) {
+    public String lookup(final LogEvent event, final String expression) {
         try {
-            return System.getProperty(key);
+            if (expression.indexOf('|') < 0) {
+                return System.getProperty(expression);
+            }
+
+            String[] expressionElements = expression.split("\\|");
+
+            for (int i = 0; i < expressionElements.length - 1; i++) {
+                String propertyValue = System.getProperty(expressionElements[i]);
+
+                if (propertyValue != null) {
+                    return propertyValue;
+                }
+            }
+
+            return expressionElements[expressionElements.length - 1];
         } catch (final Exception ex) {
-            LOGGER.warn(LOOKUP, "Error while getting system property [{}].", key, ex);
+            LOGGER.warn(LOOKUP, "Error while resolving system property by expression [{}].", expression, ex);
             return null;
         }
     }

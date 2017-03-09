@@ -16,36 +16,74 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
  */
 public class SystemPropertiesLookupTest {
 
-    private static final String TESTKEY = "TestKey";
-    private static final String TESTVAL = "TestValue";
+    private final StrLookup lookup = new SystemPropertiesLookup();
 
-    @BeforeClass
-    public static void before() {
-        System.setProperty(TESTKEY, TESTVAL);
-    }
+    @Test
+    public void returnsNullForNonExistingProperty() {
+        System.clearProperty("log4j.testkey");
 
-    @AfterClass
-    public static void after() {
-        System.clearProperty(TESTKEY);
+        String value = lookup.lookup("log4j.testkey");
+
+        assertNull(value);
     }
 
     @Test
-    public void testLookup() {
-        final StrLookup lookup = new SystemPropertiesLookup();
-        String value = lookup.lookup(TESTKEY);
-        assertEquals(TESTVAL, value);
-        value = lookup.lookup("BadKey");
-        assertNull(value);
+    public void returnsPropertyByKey() {
+        try {
+            System.setProperty("log4j.testkey", "testvalue");
+
+            String value = lookup.lookup("log4j.testkey");
+
+            assertEquals("testvalue", value);
+        } finally {
+            System.clearProperty("log4j.testkey");
+        }
+    }
+
+    @Test
+    public void returnsFirstExistingPropertyBy2ElementExpression() {
+        try {
+            System.setProperty("log4j.testkey", "testvalue");
+
+            String value = lookup.lookup("log4j.testkey|default");
+
+            assertEquals("testvalue", value);
+        } finally {
+            System.clearProperty("log4j.testkey");
+        }
+    }
+
+    @Test
+    public void returnsFirstExistingPropertyBy3ElementExpression() {
+        try {
+            System.clearProperty("log4j.testkey1");
+            System.setProperty("log4j.testkey2", "testvalue2");
+
+            String value = lookup.lookup("log4j.testkey1|log4j.testkey2|default");
+
+            assertEquals("testvalue2", value);
+        } finally {
+            System.clearProperty("log4j.testkey2");
+        }
+    }
+
+    @Test
+    public void returnsDefaultValueByExpressionIfNoPropertiesExist() {
+        System.clearProperty("log4j.testkey1");
+        System.clearProperty("log4j.testkey2");
+
+        String value = lookup.lookup("log4j.testkey1|log4j.testkey2|default");
+
+        assertEquals("default", value);
     }
 }
