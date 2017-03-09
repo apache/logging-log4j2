@@ -108,11 +108,10 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         final Throwable t = event.getThrown();
 
         if (isSubShortOption()) {
-            formatSubShortOption(t, buffer);
+            formatSubShortOption(t, getSuffix(event), buffer);
         }
         else if (t != null && options.anyLines()) {
-            String suffix = getSuffix(event);
-            formatOption(t, suffix, buffer);
+            formatOption(t, getSuffix(event), buffer);
         }
     }
 
@@ -125,7 +124,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
                 ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption);
     }
 
-    private void formatSubShortOption(final Throwable t, final StringBuilder buffer) {
+    private void formatSubShortOption(final Throwable t, final String suffix, final StringBuilder buffer) {
         StackTraceElement[] trace;
         StackTraceElement throwingMethod = null;
         int len;
@@ -164,6 +163,11 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
                 buffer.append(' ');
             }
             buffer.append(toAppend);
+
+            if (Strings.isNotBlank(suffix)) {
+                buffer.append(' ');
+                buffer.append(suffix);
+            }
         }
     }
 
