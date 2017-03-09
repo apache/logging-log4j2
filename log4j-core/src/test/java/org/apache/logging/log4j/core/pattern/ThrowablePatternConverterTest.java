@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
 public class ThrowablePatternConverterTest {
@@ -35,6 +36,16 @@ public class ThrowablePatternConverterTest {
         public String getLocalizedMessage() {
             return "I am localized.";
         }
+    }
+
+    private boolean everyLineEndsWith(final String text, final String suffix) {
+        String[] lines = text.split(Strings.LINE_SEPARATOR);
+        for (String line: lines) {
+            if (!line.trim().endsWith(suffix)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -72,6 +83,32 @@ public class ThrowablePatternConverterTest {
         // System.out.print(result);
         assertTrue("Incorrect start of msg", result.startsWith("java.lang.IllegalArgumentException: IllegalArgument"));
         assertTrue("Missing nested exception", result.contains("java.lang.NullPointerException: null pointer"));
+    }
+
+    @Test
+    public void testFullWithSuffix() {
+        final String[] options = { "full", "suffix(test suffix)" };
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
+        Throwable parent;
+        try {
+            try {
+                throw new NullPointerException("null pointer");
+            } catch (final NullPointerException e) {
+                throw new IllegalArgumentException("IllegalArgument", e);
+            }
+        } catch (final IllegalArgumentException e) {
+            parent = e;
+        }
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("testLogger") //
+                .setLoggerFqcn(this.getClass().getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("test exception")) //
+                .setThrown(parent).build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        assertTrue("Each line of full stack trace should end with the specified suffix", everyLineEndsWith(result, "test suffix"));
     }
 
     @Test

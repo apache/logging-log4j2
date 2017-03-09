@@ -111,7 +111,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             formatSubShortOption(t, buffer);
         }
         else if (t != null && options.anyLines()) {
-            formatOption(t, buffer);
+            String suffix = getSuffix(event);
+            formatOption(t, suffix, buffer);
         }
     }
 
@@ -166,7 +167,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
     }
 
-    private void formatOption(final Throwable throwable, final StringBuilder buffer) {
+    private void formatOption(final Throwable throwable, final String suffix, final StringBuilder buffer) {
         final StringWriter w = new StringWriter();
 
         throwable.printStackTrace(new PrintWriter(w));
@@ -174,12 +175,14 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
             buffer.append(' ');
         }
-        if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator())) {
+        if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator()) || Strings.isNotBlank(suffix)) {
             final StringBuilder sb = new StringBuilder();
             final String[] array = w.toString().split(Strings.LINE_SEPARATOR);
             final int limit = options.minLines(array.length) - 1;
             for (int i = 0; i <= limit; ++i) {
                 sb.append(array[i]);
+                sb.append(' ');
+                sb.append(suffix);
                 if (i < limit) {
                     sb.append(options.getSeparator());
                 }
