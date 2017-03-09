@@ -183,10 +183,13 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             final StringBuilder sb = new StringBuilder();
             final String[] array = w.toString().split(Strings.LINE_SEPARATOR);
             final int limit = options.minLines(array.length) - 1;
+            final boolean suffixNotBlank = Strings.isNotBlank(suffix);
             for (int i = 0; i <= limit; ++i) {
                 sb.append(array[i]);
-                sb.append(' ');
-                sb.append(suffix);
+                if (suffixNotBlank) {
+                    sb.append(' ');
+                    sb.append(suffix);
+                }
                 if (i < limit) {
                     sb.append(options.getSeparator());
                 }
