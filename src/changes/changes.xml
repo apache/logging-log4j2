@@ -81,6 +81,9 @@
       <action issue="LOG4J2-1819" dev="ggregory" type="update">
         Update Jackson from 2.8.5 to 2.8.6.
       </action>
+      <action issue="LOG4J2-1753" dev="ggregory" type="fix" due-to="Ludovic Hochet">
+        Fix ClassNotFoundException org.apache.logging.log4j.core.util.ExecutorServices in OSGi tests.
+      </action>
       <action issue="LOG4J2-1816" dev="rpopma" type="fix" due-to="shubhankar1100">
         Change minOccur to minOccurs in Log4j-config.xsd.
       </action>
