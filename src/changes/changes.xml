@@ -40,8 +40,11 @@
       <action issue="LOG4J2-1845" dev="mikes" type="fix">
         Handle when LogEvent.getLoggerName() returns null in KafkaAppender.
       </action>
-      <action issue="LOG4J2-1838" dev="mattsicker" type="add" due-to="Zilong Song">
+      <action issue="LOG4J2-1843" dev="mattsicker" type="add" due-to="Zilong Song">
         Add support for appending common suffix to each line of throwable stack trace.
+      </action>
+      <action issue="LOG4J2-1838" dev="mattsicker" type="add" due-to="Zilong Song">
+        Add support for appending common suffix to each line of extended and root throwable stack trace.
       </action>
       <action issue="LOG4J2-1827" dev="rgoers" type="update">
         Move integration tests to their own module to speed up build.
