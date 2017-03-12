@@ -40,6 +40,9 @@
       <action issue="LOG4J2-1845" dev="mikes" type="fix">
         Handle when LogEvent.getLoggerName() returns null in KafkaAppender.
       </action>
+      <action issue="LOG4J2-1848" dev="mattsicker" type="add">
+        Add JSON encoding support to EncodingPatternConverter %encode{}.
+      </action>
       <action issue="LOG4J2-1843" dev="mattsicker" type="add" due-to="Zilong Song">
         Add support for appending common suffix to each line of throwable stack trace.
       </action>

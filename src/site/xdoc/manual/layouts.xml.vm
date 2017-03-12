@@ -703,36 +703,66 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>enc</b>{pattern}<br />
-                <b>encode</b>{pattern}
+                <b>enc</b>{<i>pattern</i>}{[HTML|JSON]}<br />
+                <b>encode</b>{<i>pattern</i>}{[HTML|JSON]}
               </td>
               <td>
                 <p>
-                  Encodes special characters such as '\n' and HTML characters to help prevent log forging
-                  and some XSS attacks that could occur when displaying logs in a web browser. Anytime
-                  user provided data is logged, this can provide a safeguard.
+                  Encodes and escapes special characters suitable for output in specific markup languages.
+                  By default, this encodes for HTML if only one option is specified. The second option is used to
+                  specify which encoding format should be used. This converter is particularly useful for encoding
+                  user provided data so that the output data is not written improperly or insecurely.
                 </p>
                 <p>
                   A typical usage would encode the message
-                  <pre>%enc{%m}</pre>
+                  <code>%enc{%m}</code>
                   but user input could come from other locations as well, such as the MDC
-                  <pre>%enc{%mdc{key}}</pre>
+                  <code>%enc{%mdc{key}}</code>
                 </p>
-                <p>The replaced characters are:
-                 <table>
-                   <tr>
-                     <th>Character</th>
-                     <th>Replacement</th>
-                   </tr>
-                   <tr>
-                     <th>'\r', '\n'</th>
-                     <th>Converted into escaped strings "\\r" and "\\n" respectively</th>
-                   </tr>
-                   <tr>
-                     <td>&amp;, &lt;, &gt;, &quot;, &apos;, &#x2F;</td>
-                     <td>Replaced with the corresponding HTML entity</td>
-                   </tr>
-                 </table>
+                <p>Using the HTML encoding format, the following characters are replaced:</p>
+                <table>
+                  <tr>
+                    <th>Character</th>
+                    <th>Replacement</th>
+                  </tr>
+                  <tr>
+                    <td>'\r', '\n'</td>
+                    <td>Converted into escaped strings "\\r" and "\\n" respectively</td>
+                  </tr>
+                  <tr>
+                    <td>&amp;, &lt;, &gt;, &quot;, &apos;, &#x2F;</td>
+                    <td>Replaced with the corresponding HTML entity</td>
+                  </tr>
+                </table>
+                <p>
+                  Using the JSON encoding format, this follows the escaping rules specified by
+                  <a href="https://www.ietf.org/rfc/rfc4627.txt">RFC 4627 section 2.5</a>:
+                </p>
+                <table>
+                  <tr>
+                    <th>Character</th>
+                    <th>Replacement</th>
+                  </tr>
+                  <tr>
+                    <td>U+0000 - U+001F</td>
+                    <td>\u0000 - \u001F</td>
+                  </tr>
+                  <tr>
+                    <td>Any other control characters</td>
+                    <td>Encoded into its <code>\uABCD</code> equivalent escaped code point</td>
+                  </tr>
+                  <tr>
+                    <td>&quot;</td>
+                    <td>\&quot;</td>
+                  </tr>
+                  <tr>
+                    <td>\</td>
+                    <td>\\</td>
+                  </tr>
+                </table>
+                <p>
+                  For example, the pattern <code>{"message": "%enc{%m}{JSON}"}</code> could be used to output a
+                  valid JSON document containing the log message as a string value.
                 </p>
               </td>
             </tr>
