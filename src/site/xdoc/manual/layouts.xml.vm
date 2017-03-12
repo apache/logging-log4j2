@@ -726,7 +726,7 @@ WARN  [main]: Message 2</pre>
                    </tr>
                    <tr>
                      <th>'\r', '\n'</th>
-                     <th>Removed from the pattern</th>
+                     <th>Converted into escaped strings "\\r" and "\\n" respectively</th>
                    </tr>
                    <tr>
                      <td>&amp;, &lt;, &gt;, &quot;, &apos;, &#x2F;</td>
