@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.Permission;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 
@@ -30,6 +31,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.rules.ExternalResource;
 
 /**
@@ -96,7 +98,33 @@ public class CassandraRule extends ExternalResource {
 
         @Override
         public void cancel() {
-            daemon.stop();
+            // LOG4J2-1850 Cassandra on Windows calls System.exit in the daemon stop method
+            if (PropertiesUtil.getProperties().isOsWindows()) {
+                cancelOnWindows();
+            } else {
+                daemon.stop();
+            }
+        }
+
+        private void cancelOnWindows() {
+            SecurityManager currentSecurityManager = System.getSecurityManager();
+            try {
+                final SecurityManager securityManager = new SecurityManager() {
+                    @Override
+                    public void checkPermission(Permission permission) {
+                        String permissionName = permission.getName();
+                        if (permissionName != null && permissionName.startsWith("exitVM")) {
+                            throw new SecurityException("test");
+                        }
+                    }
+                };
+                System.setSecurityManager(securityManager);
+                daemon.stop();
+            } catch (SecurityException ex) {
+                // ignore
+            } finally {
+                System.setSecurityManager(currentSecurityManager);
+            }
         }
 
         @Override
