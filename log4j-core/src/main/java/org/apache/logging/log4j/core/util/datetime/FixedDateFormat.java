@@ -17,9 +17,11 @@
 
 package org.apache.logging.log4j.core.util.datetime;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
@@ -193,6 +195,8 @@ public class FixedDateFormat {
 
     private volatile long midnightToday = 0;
     private volatile long midnightTomorrow = 0;
+    private int[] dstOffsets = new int[25];
+
     // cachedDate does not need to be volatile because
     // there is a write to a volatile field *after* cachedDate is modified,
     // and there is a read from a volatile field *before* cachedDate is read.
@@ -305,6 +309,8 @@ public class FixedDateFormat {
                 updateCachedDate(now);
                 midnightToday = calcMidnightMillis(now, 0);
                 midnightTomorrow = calcMidnightMillis(now, 1);
+
+                updateDaylightSavingTime();
             }
         }
     }
@@ -318,6 +324,23 @@ public class FixedDateFormat {
         cal.set(Calendar.MILLISECOND, 0);
         cal.add(Calendar.DATE, addDays);
         return cal.getTimeInMillis();
+    }
+
+    private void updateDaylightSavingTime() {
+        Arrays.fill(dstOffsets, 0);
+        final int ONE_HOUR = (int) TimeUnit.HOURS.toMillis(1);
+        if (timeZone.getOffset(midnightToday) != timeZone.getOffset(midnightToday + 23 * ONE_HOUR)) {
+            for (int i = 0; i < dstOffsets.length; i++) {
+                final long time = midnightToday + i * ONE_HOUR;
+                dstOffsets[i] = timeZone.getOffset(time) - timeZone.getRawOffset();
+            }
+            if (dstOffsets[0] > dstOffsets[23]) { // clock is moved backwards.
+                // we obtain midnightTonight with Calendar.getInstance(TimeZone), so it already includes raw offset
+                for (int i = dstOffsets.length - 1; i >= 0; i--) {
+                    dstOffsets[i] -= dstOffsets[0]; //
+                }
+            }
+        }
     }
 
     private void updateCachedDate(final long now) {
@@ -360,8 +383,9 @@ public class FixedDateFormat {
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 262 bytes (will be inlined when hot enough: <= -XX:FreqInlineSize=325 bytes on Linux)
     private int writeTime(int ms, final char[] buffer, int pos) {
-        final int hours = ms / 3600000;
-        ms -= 3600000 * hours;
+        final int hourOfDay = ms / 3600000;
+        final int hours = hourOfDay + daylightSavingTime(hourOfDay) / 3600000;
+        ms -= 3600000 * hourOfDay;
 
         final int minutes = ms / 60000;
         ms -= 60000 * minutes;
@@ -405,5 +429,9 @@ public class FixedDateFormat {
         ms -= 10 * temp;
         buffer[pos++] = ((char) (ms + '0'));
         return pos;
+    }
+
+    private int daylightSavingTime(final int hourOfDay) {
+        return hourOfDay > 23 ? dstOffsets[23] : dstOffsets[hourOfDay];
     }
 }
