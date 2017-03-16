@@ -32,7 +32,7 @@
     -->
     <release version="2.8.2" date="2017-MM-DD" description="GA Release 2.8.2">
       <action issue="LOG4J2-1849" dev="rpopma" type="fix">
-        Fixed daylight savings time issue with FixedDateFormat.
+        Fixed daylight savings time (DST) issue with FixedDateFormat.
       </action>
       <action issue="LOG4J2-1850" dev="mattsicker" type="fix" due-to="Ludovic Hochet">
         Fix CassandraRule and unit tests on Windows.
