@@ -142,13 +142,6 @@
             distribution.
           </td>
         </tr>
-        <tr>
-          <td>TcpSocketServer and UdpSocketServer</td>
-          <td>
-            TcpSocketServer and UdpSocketServer use the <a href="http://www.jcommander.org/">JCommander</a> library 
-            which is licensed under the terms of the Apache License version 2.0.
-          </td>
-        </tr>
       </table>
 
       <a name="log4j-jcl" />
@@ -263,6 +256,20 @@
         The Log4j <a href="log4j-iostreams/index.html">IO Streams</a> module has no external dependencies.
         This only requires the Log4j API.
       </p>
+
+      <a name="log4j-server" />
+      <h4>log4j-server</h4>
+      <table>
+        <caption align="top">Optional Dependencies per Feature in Log4J Server components</caption>
+        <tr>
+          <th>Feature</th>
+          <th>Requirements</th>
+        </tr>
+        <tr>
+          <td>JMS receivers</td>
+          <td>a JMS broker like <a href="http://activemq.apache.org/">Apache ActiveMQ</a></td>
+        </tr>
+      </table>
 
       <a name="log4j-api-scala" />
       <h4>log4j-api-scala</h4>
