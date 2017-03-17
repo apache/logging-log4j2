@@ -20,10 +20,11 @@
 
 ## Log4j Server components
 
+Standalone server classes for consuming log events over a network. Each of the various servers should be used with
+another Log4j configuration to handle incoming log events. It is recommended to consider using the 
+[Flume Appender](../manual/appenders.html#FlumeAppender) for highly reliable networked logging.
 
 ## Requirements
 
 The Log4j Server components requires the Log4j 2 API and core. This component was introduced in Log4j 2.8.2, 
-before it was part of log4j-core. For more information, see [Runtime Dependencies](../runtime-dependencies.html).
-
-## Usage
+before it was part of log4j-core. For more information, see [Runtime Dependencies](../manual/runtime-dependencies.html).
