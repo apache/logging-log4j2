@@ -1266,6 +1266,9 @@
   <profiles>
     <profile>
       <id>full</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <modules>
         <module>log4j-java9</module>
         <module>log4j-api</module>

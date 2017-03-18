@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF8"?>
+<toolchains>
+  <!-- JDK toolchains -->
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.7</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/latest1.7</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.8</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/latest1.7</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>9</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/jigsaw-jdk-9-ea-b156</jdkHome>
+    </configuration>
+  </toolchain>
+ 
+  <!-- other toolchains -->
+</toolchains>
