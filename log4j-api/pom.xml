@@ -40,6 +40,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-java9</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
@@ -90,6 +95,23 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${manifestfile}</manifestFile>
+            <manifestEntries>
+              <Specification-Title>${project.name}</Specification-Title>
+              <Specification-Version>${project.version}</Specification-Version>
+              <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+              <Implementation-Title>${project.name}</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+              <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+              <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+              <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+              <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+              <Multi-Release>true</Multi-Release>
+            </manifestEntries>
+          </archive>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -128,6 +150,26 @@
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
           </instructions>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>add-java9-supplement</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.apache.logging.log4j</includeGroupIds>
+              <includeArtifactIds>log4j-java9</includeArtifactIds>
+              <excludeTransitive>false</excludeTransitive>
+              <includes>org/apache/logging/log4j/util/*.class</includes>
+              <outputDirectory>${project.build.directory}/classes/META-INF/versions/9</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -302,6 +302,12 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-java9</artifactId>
+        <version>${project.version}</version>
+        <scope></scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1256,30 +1262,73 @@
       <url>scp://www.example.com/www/docs/project/</url>
     </site>
   </distributionManagement>
-  <modules>
-    <module>log4j-api</module>
-    <module>log4j-core</module>
-    <module>log4j-core-its</module>
-    <module>log4j-1.2-api</module>
-    <module>log4j-slf4j-impl</module>
-    <module>log4j-to-slf4j</module>
-    <module>log4j-jcl</module>
-    <module>log4j-flume-ng</module>
-    <module>log4j-taglib</module>
-    <module>log4j-jmx-gui</module>
-    <module>log4j-samples</module>
-    <module>log4j-osgi</module>
-    <module>log4j-bom</module>
-    <module>log4j-nosql</module>
-    <module>log4j-web</module>
-    <module>log4j-perf</module>
-    <module>log4j-iostreams</module>
-    <module>log4j-jul</module>
-    <module>log4j-liquibase</module>
-    <module>log4j-api-scala_2.10</module>
-    <module>log4j-api-scala_2.11</module>
-  </modules>
+
   <profiles>
+    <profile>
+      <id>full</id>
+      <modules>
+        <module>log4j-java9</module>
+        <module>log4j-api</module>
+        <module>log4j-core</module>
+        <module>log4j-core-its</module>
+        <module>log4j-1.2-api</module>
+        <module>log4j-slf4j-impl</module>
+        <module>log4j-to-slf4j</module>
+        <module>log4j-jcl</module>
+        <module>log4j-flume-ng</module>
+        <module>log4j-taglib</module>
+        <module>log4j-jmx-gui</module>
+        <module>log4j-samples</module>
+        <module>log4j-osgi</module>
+        <module>log4j-bom</module>
+        <module>log4j-nosql</module>
+        <module>log4j-web</module>
+        <module>log4j-perf</module>
+        <module>log4j-iostreams</module>
+        <module>log4j-jul</module>
+        <module>log4j-liquibase</module>
+        <module>log4j-api-scala_2.10</module>
+        <module>log4j-api-scala_2.11</module>
+      </modules>
+    </profile>
+    <profile>
+        <id>Java 7</id>
+        <activation>
+          <jdk>(,1.9)</jdk>
+        </activation>
+      <modules>
+        <module>log4j-api</module>
+        <module>log4j-core</module>
+        <module>log4j-core-its</module>
+        <module>log4j-1.2-api</module>
+        <module>log4j-slf4j-impl</module>
+        <module>log4j-to-slf4j</module>
+        <module>log4j-jcl</module>
+        <module>log4j-flume-ng</module>
+        <module>log4j-taglib</module>
+        <module>log4j-jmx-gui</module>
+        <module>log4j-samples</module>
+        <module>log4j-osgi</module>
+        <module>log4j-bom</module>
+        <module>log4j-nosql</module>
+        <module>log4j-web</module>
+        <module>log4j-perf</module>
+        <module>log4j-iostreams</module>
+        <module>log4j-jul</module>
+        <module>log4j-liquibase</module>
+        <module>log4j-api-scala_2.10</module>
+        <module>log4j-api-scala_2.11</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>Java 9</id>
+      <activation>
+        <jdk>(1.8,)</jdk>
+      </activation>
+      <modules>
+        <module>log4j-java9</module>
+      </modules>
+    </profile>
     <profile>
         <id>Windows</id>
         <activation>

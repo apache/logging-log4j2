@@ -353,7 +353,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         if (loggerFqcn == null || !includeLocation) {
             return null;
         }
-        source = Log4jLogEvent.calcLocation(loggerFqcn);
+        source = LocationLocator.calcLocation(loggerFqcn);
         return source;
     }
 

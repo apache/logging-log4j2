@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF8"?>
+<toolchains>
+  <!-- JDK toolchains -->
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.7</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/Library/Java/JavaVirtualMachines/java7/Contents/Home</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.8</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/Library/Java/JavaVirtualMachines/java8/Contents/Home</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>9</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/Library/Java/JavaVirtualMachines/java9/Contents/Home</jdkHome>
+    </configuration>
+  </toolchain>
+ 
+  <!-- other toolchains -->
+</toolchains>

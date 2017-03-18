@@ -27,10 +27,10 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
+import org.apache.logging.log4j.core.impl.LocationLocator;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -219,7 +219,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         // location: very expensive operation. LOG4J2-153:
         // Only include if "includeLocation=true" is specified,
         // exclude if not specified or if "false" was specified.
-        return includeLocation ? Log4jLogEvent.calcLocation(fqcn) : null;
+        return includeLocation ? LocationLocator.calcLocation(fqcn) : null;
     }
 
     /**
