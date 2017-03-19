@@ -33,7 +33,6 @@ public final class ClassNamePredicate implements Predicate<StackWalker.StackFram
 
     @Override
     public boolean test(StackWalker.StackFrame f) {
-        System.out.println(f.getClassName());
         if (fqcn.equals(f.getClassName())) {
             next = true;
             return false;

@@ -27,4 +27,8 @@ public class LocationLocator {
     public static StackTraceElement calcLocation(final String fqcnOfLogger) {
         return walker.walk(s -> s.filter(new ClassNamePredicate(fqcnOfLogger)).findFirst()).get().toStackTraceElement();
     }
+
+    public static StackTraceElement getStackTraceElement(final int depth) {
+        return walker.walk(s -> s.skip(depth - 1)).findFirst().get().toStackTraceElement();
+    }
 }

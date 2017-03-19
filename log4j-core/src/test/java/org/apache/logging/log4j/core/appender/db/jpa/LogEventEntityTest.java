@@ -28,7 +28,7 @@ import org.apache.logging.log4j.message.Message;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class LogEventTest {
+public class LogEventEntityTest {
 
     @Test
     public void testToImmutable_AbstractLogEventWrapperEntity() {

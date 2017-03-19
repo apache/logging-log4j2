@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
+import org.apache.logging.log4j.core.impl.LocationLocator;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.util.ReflectionUtil;
@@ -28,7 +29,6 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import sun.reflect.Reflection;
 
 /**
  * <p>
@@ -88,10 +88,6 @@ public class ReflectionBenchmark {
         return ReflectionUtil.getCallerClass(3).getName();
     }
 
-    @Benchmark
-    public String test04_getCallerClassNameSunReflection() {
-        return Reflection.getCallerClass(3).getName();
-    }
 
     @Benchmark
     public Class<?> test05_getStackTraceClassForClassName() throws ClassNotFoundException {
@@ -106,11 +102,6 @@ public class ReflectionBenchmark {
     @Benchmark
     public Class<?> test07_getReflectiveCallerClassUtility() {
         return ReflectionUtil.getCallerClass(3);
-    }
-
-    @Benchmark
-    public Class<?> test08_getDirectSunReflection() {
-        return Reflection.getCallerClass(3);
     }
 
     @Benchmark
@@ -140,6 +131,47 @@ public class ReflectionBenchmark {
     @Benchmark
     public Class<?>[] test12_getClassContextViaSecurityManager(final ClassContextManager classContextManager) {
         return classContextManager.getClassContext();
+    }
+
+
+    @Benchmark
+    public Class<?> reflectionUtilGetClass() {
+        return new ClassLocator().findClass(4);
+    }
+
+    @Benchmark
+    public String locationLocatorGetMethod() {
+        return new MethodLocator().findMethodName(4);
+    }
+
+    private static class ClassLocator {
+
+        private Class<?> findClass(int depth) {
+            if (depth == 1) {
+                return locateCaller();
+            } else {
+                return findClass(depth - 1);
+            }
+        }
+
+        private Class<?> locateCaller() {
+            return ReflectionUtil.getCallerClass(ClassLocator.class.getName());
+        }
+    }
+
+    private static class MethodLocator {
+
+        private String findMethodName(int depth) {
+            if (depth == 1) {
+                return locateMethodName();
+            } else {
+                return findMethodName(depth - 1);
+            }
+        }
+
+        private String locateMethodName() {
+            return LocationLocator.calcLocation(MethodLocator.class.getName()).getMethodName();
+        }
     }
 
 }

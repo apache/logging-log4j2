@@ -33,11 +33,13 @@ import org.openjdk.jmh.infra.Blackhole;
 public class Log4jLogEventBenchmark {
     private static Message MESSAGE;
     private static Throwable ERROR;
+    private static TestClass TESTER;
 
     @Setup
     public void setup() {
         MESSAGE = new SimpleMessage("Test message");
         ERROR = new Exception("test");
+        TESTER = new TestClass();
     }
 
     @Benchmark
@@ -63,10 +65,8 @@ public class Log4jLogEventBenchmark {
 
     @Benchmark
     public StackTraceElement getSourceLocationOfLogEvent() {
-        final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(this.getClass().getName())
-                .setLoggerFqcn(this.getClass().getName()).setLevel(Level.INFO).setMessage(MESSAGE).build();
-        event.setIncludeLocation(true);
-        return event.getSource();
+
+        return TESTER.getEventSource(this.getClass().getName());
     }
 
     @Benchmark
@@ -76,9 +76,26 @@ public class Log4jLogEventBenchmark {
     }
 
     @Benchmark
+    public Serializable createSerializableLogEventProxyWithoutExceptionWithLocation() {
+        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
+        return Log4jLogEvent.serialize(event, true);
+    }
+
+    @Benchmark
     public Serializable createSerializableLogEventProxyWithException(final Blackhole bh) {
         final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, ERROR);
         return Log4jLogEvent.serialize(event, false);
+    }
+
+    private static class TestClass {
+        private static final String FQCN = TestClass.class.getName();
+
+        public StackTraceElement getEventSource(String loggerName) {
+            final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(loggerName)
+                    .setLoggerFqcn(FQCN).setLevel(Level.INFO).setMessage(MESSAGE).build();
+            event.setIncludeLocation(true);
+            return event.getSource();
+        }
     }
 
     // ============================== HOW TO RUN THIS TEST: ====================================

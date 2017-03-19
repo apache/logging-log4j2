@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.function.Predicate;
+import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
 
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
@@ -36,4 +38,16 @@ public class ReflectionUtil {
     public static Class<?> getCallerClass(final Class<?> anchor) {
         return walker.walk(s -> s.filter(new ClassPredicate(anchor)).findFirst()).get().getDeclaringClass();
     }
+
+    public static Class<?> getCallerClass(final int depth) {
+        return walker.walk(s -> s.skip(depth - 1)).findFirst().get().getDeclaringClass();
+    }
+
+    public static Stack<Class<?>> getCurrentStackTrace() {
+        Stack<Class<?>> stack = new Stack<Class<?>>();
+        List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
+        stack.addAll(classes);
+        return stack;
+    }
+
 }
