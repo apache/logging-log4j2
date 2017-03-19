@@ -21,11 +21,6 @@ package org.apache.logging.log4j.core.impl;
  */
 public class LocationLocator {
 
-    static {
-        System.out.println("Using Java 7 Locator");
-    }
-
-
     public static StackTraceElement calcLocation(final String fqcnOfLogger) {
         if (fqcnOfLogger == null) {
             return null;

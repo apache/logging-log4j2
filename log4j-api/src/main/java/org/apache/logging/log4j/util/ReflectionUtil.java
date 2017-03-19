@@ -61,7 +61,6 @@ public final class ReflectionUtil {
     static {
         Method getCallerClass;
         int java7u25CompensationOffset = 0;
-        System.out.println("Using Java 7 ReflectionUtil");
         try {
             final Class<?> sunReflectionClass = LoaderUtil.loadClass("sun.reflect.Reflection");
             getCallerClass = sunReflectionClass.getDeclaredMethod("getCallerClass", int.class);

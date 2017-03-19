@@ -70,21 +70,27 @@ public class Log4jLogEventBenchmark {
     }
 
     @Benchmark
-    public Serializable createSerializableLogEventProxyWithoutException() {
+    public Serializable createSerializableLogEventProxyWithoutException(final Blackhole bh) {
         final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
-        return Log4jLogEvent.serialize(event, false);
+        Serializable obj = Log4jLogEvent.serialize(event, false);
+        bh.consume(obj);
+        return obj;
     }
 
     @Benchmark
-    public Serializable createSerializableLogEventProxyWithoutExceptionWithLocation() {
+    public Serializable createSerializableLogEventProxyWithoutExceptionWithLocation(final Blackhole bh) {
         final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
-        return Log4jLogEvent.serialize(event, true);
+        Serializable obj = Log4jLogEvent.serialize(event, true);
+        bh.consume(obj);
+        return obj;
     }
 
     @Benchmark
     public Serializable createSerializableLogEventProxyWithException(final Blackhole bh) {
         final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, ERROR);
-        return Log4jLogEvent.serialize(event, false);
+        Serializable obj = Log4jLogEvent.serialize(event, false);
+        bh.consume(obj);
+        return obj;
     }
 
     private static class TestClass {
