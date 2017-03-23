@@ -64,8 +64,8 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         // LOG4J2-531: call getNextTime twice to force initialization of both prevFileTime and nextFileTime
         aManager.getPatternProcessor().getNextTime(aManager.getFileTime(), interval, modulate);
         
-		nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
-				+ aManager.getPatternProcessor().getNextTime(aManager.getFileTime(), interval, modulate);
+        nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
+                + aManager.getPatternProcessor().getNextTime(aManager.getFileTime(), interval, modulate);
     }
 
     /**
@@ -80,8 +80,8 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         }
         final long nowMillis = event.getTimeMillis();
         if (nowMillis >= nextRolloverMillis) {
-			nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
-					+ manager.getPatternProcessor().getNextTime(nowMillis, interval, modulate);
+            nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
+                    + manager.getPatternProcessor().getNextTime(nowMillis, interval, modulate);
             return true;
         }
         return false;
@@ -99,10 +99,10 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
             @PluginAttribute("interval") final String interval,
             @PluginAttribute("modulate") final String modulate,
             @PluginAttribute("maxRandomDelay") final int maxRandomDelay) {
-    	final int increment = Integers.parseInt(interval, 1);
+        final int increment = Integers.parseInt(interval, 1);
         final boolean mod = Boolean.parseBoolean(modulate);
         long maxRandomDelayMillis = TimeUnit.SECONDS.toMillis(maxRandomDelay);
-		return new TimeBasedTriggeringPolicy(increment, mod, maxRandomDelayMillis);
+        return new TimeBasedTriggeringPolicy(increment, mod, maxRandomDelayMillis);
     }
 
     @Override
