@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -32,12 +35,14 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
     private long nextRolloverMillis;
     private final int interval;
     private final boolean modulate;
+    private final long maxRandomDelayMillis;
 
     private RollingFileManager manager;
 
-    private TimeBasedTriggeringPolicy(final int interval, final boolean modulate) {
+    private TimeBasedTriggeringPolicy(final int interval, final boolean modulate, final long maxRandomDelayMillis) {
         this.interval = interval;
         this.modulate = modulate;
+        this.maxRandomDelayMillis = maxRandomDelayMillis;
     }
 
     public int getInterval() {
@@ -59,7 +64,8 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         // LOG4J2-531: call getNextTime twice to force initialization of both prevFileTime and nextFileTime
         aManager.getPatternProcessor().getNextTime(aManager.getFileTime(), interval, modulate);
         
-        nextRolloverMillis = aManager.getPatternProcessor().getNextTime(aManager.getFileTime(), interval, modulate);
+		nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
+				+ aManager.getPatternProcessor().getNextTime(aManager.getFileTime(), interval, modulate);
     }
 
     /**
@@ -74,7 +80,8 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         }
         final long nowMillis = event.getTimeMillis();
         if (nowMillis >= nextRolloverMillis) {
-            nextRolloverMillis = manager.getPatternProcessor().getNextTime(nowMillis, interval, modulate);
+			nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
+					+ manager.getPatternProcessor().getNextTime(nowMillis, interval, modulate);
             return true;
         }
         return false;
@@ -84,15 +91,18 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
      * Creates a TimeBasedTriggeringPolicy.
      * @param interval The interval between rollovers.
      * @param modulate If true the time will be rounded to occur on a boundary aligned with the increment.
+     * @param maxRandomDelay If non-zero the rolling will be delayed by a random amount of time, up to the specified value (in seconds)  
      * @return a TimeBasedTriggeringPolicy.
      */
     @PluginFactory
     public static TimeBasedTriggeringPolicy createPolicy(
             @PluginAttribute("interval") final String interval,
-            @PluginAttribute("modulate") final String modulate) {
-        final int increment = Integers.parseInt(interval, 1);
+            @PluginAttribute("modulate") final String modulate,
+            @PluginAttribute("maxRandomDelay") final int maxRandomDelay) {
+    	final int increment = Integers.parseInt(interval, 1);
         final boolean mod = Boolean.parseBoolean(modulate);
-        return new TimeBasedTriggeringPolicy(increment, mod);
+        long maxRandomDelayMillis = TimeUnit.SECONDS.toMillis(maxRandomDelay);
+		return new TimeBasedTriggeringPolicy(increment, mod, maxRandomDelayMillis);
     }
 
     @Override
