@@ -73,7 +73,7 @@
       <action issue="LOG4J2-1820" dev="ggregory" type="fix" due-to="Jason Tedor">
         Log4j 2.8 can lose exceptions when a security manager is present.
       </action>
-      <action issue="LOG4J2-18" dev="ggregory" type="update">
+      <action issue="LOG4J2-1856" dev="ggregory" type="update">
         Update Jackson from 2.8.6 to 2.8.7.
       </action>
     </release>
