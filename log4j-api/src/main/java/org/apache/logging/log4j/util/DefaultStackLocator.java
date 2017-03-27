@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.lang.reflect.Method;
 import java.util.Stack;
 
 import org.apache.logging.log4j.Logger;
@@ -47,50 +46,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  * examination of every virtual frame of execution.
  * </p>
  */
-public final class ReflectionUtil {
-    // Checkstyle Suppress: the lower-case 'u' ticks off CheckStyle...
-    // CHECKSTYLE:OFF
-    static final int JDK_7u25_OFFSET;
-    // CHECKSTYLE:OFF
-    
-    private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final boolean SUN_REFLECTION_SUPPORTED;
-    private static final Method GET_CALLER_CLASS;
-    private static final PrivateSecurityManager SECURITY_MANAGER;
+public class DefaultStackLocator implements StackLocator {
+
+    protected static final Logger LOGGER = StatusLogger.getLogger();
+    private static PrivateSecurityManager SECURITY_MANAGER;
 
     static {
-        Method getCallerClass;
-        int java7u25CompensationOffset = 0;
-        try {
-            final Class<?> sunReflectionClass = LoaderUtil.loadClass("sun.reflect.Reflection");
-            getCallerClass = sunReflectionClass.getDeclaredMethod("getCallerClass", int.class);
-            Object o = getCallerClass.invoke(null, 0);
-            final Object test1 = getCallerClass.invoke(null, 0);
-            if (o == null || o != sunReflectionClass) {
-                LOGGER.warn("Unexpected return value from Reflection.getCallerClass(): {}", test1);
-                getCallerClass = null;
-                java7u25CompensationOffset = -1;
-            } else {
-                o = getCallerClass.invoke(null, 1);
-                if (o == sunReflectionClass) {
-                    LOGGER.warn("You are using Java 1.7.0_25 which has a broken implementation of "
-                            + "Reflection.getCallerClass.");
-                    LOGGER.warn("You should upgrade to at least Java 1.7.0_40 or later.");
-                    LOGGER.debug("Using stack depth compensation offset of 1 due to Java 7u25.");
-                    java7u25CompensationOffset = 1;
-                }
-            }
-        } catch (final Exception | LinkageError e) {
-            LOGGER.info("sun.reflect.Reflection.getCallerClass is not supported. "
-                    + "ReflectionUtil.getCallerClass will be much slower due to this.", e);
-            getCallerClass = null;
-            java7u25CompensationOffset = -1;
-        }
-
-        SUN_REFLECTION_SUPPORTED = getCallerClass != null;
-        GET_CALLER_CLASS = getCallerClass;
-        JDK_7u25_OFFSET = java7u25CompensationOffset;
-
         PrivateSecurityManager psm;
         try {
             final SecurityManager sm = System.getSecurityManager();
@@ -106,47 +67,48 @@ public final class ReflectionUtil {
         SECURITY_MANAGER = psm;
     }
 
-    private ReflectionUtil() {
+    protected DefaultStackLocator() {
     }
 
-    public static boolean supportsFastReflection() {
-        return SUN_REFLECTION_SUPPORTED;
+    protected PrivateSecurityManager getSecurityManager() {
+        return SECURITY_MANAGER;
     }
-
-    // TODO: return Object.class instead of null (though it will have a null ClassLoader)
-    // (MS) I believe this would work without any modifications elsewhere, but I could be wrong
 
     // migrated from ReflectiveCallerClassUtility
     @PerformanceSensitive
-    public static Class<?> getCallerClass(final int depth) {
+    public Class<?> getCallerClass(final int depth) {
         if (depth < 0) {
             throw new IndexOutOfBoundsException(Integer.toString(depth));
         }
-        // note that we need to add 1 to the depth value to compensate for this method, but not for the Method.invoke
-        // since Reflection.getCallerClass ignores the call to Method.invoke()
-        if (supportsFastReflection()) {
-            try {
-                return (Class<?>) GET_CALLER_CLASS.invoke(null, depth + 1 + JDK_7u25_OFFSET);
-            } catch (final Exception e) {
-                // theoretically this could happen if the caller class were native code
-                LOGGER.error("Error in ReflectionUtil.getCallerClass({}).", depth, e);
-                // TODO: return Object.class
-                return null;
-            }
-        }
-        // TODO: SecurityManager-based version?
         // slower fallback method using stack trace
-        final StackTraceElement element = getEquivalentStackTraceElement(depth + 1);
+        final StackTraceElement element = getStackTraceElement(depth + 1);
         try {
             return LoaderUtil.loadClass(element.getClassName());
         } catch (final ClassNotFoundException e) {
-            LOGGER.error("Could not find class in ReflectionUtil.getCallerClass({}).", depth, e);
+            LOGGER.error("Could not find class in StackLocatorUtil.getCallerClass({}).", depth, e);
         }
         // TODO: return Object.class
         return null;
     }
 
-    static StackTraceElement getEquivalentStackTraceElement(final int depth) {
+    public StackTraceElement calcLocation(final String fqcnOfLogger) {
+        if (fqcnOfLogger == null) {
+            return null;
+        }
+        // LOG4J2-1029 new Throwable().getStackTrace is faster than Thread.currentThread().getStackTrace().
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        StackTraceElement last = null;
+        for (int i = stackTrace.length - 1; i > 0; i--) {
+            final String className = stackTrace[i].getClassName();
+            if (fqcnOfLogger.equals(className)) {
+                return last;
+            }
+            last = stackTrace[i];
+        }
+        return null;
+    }
+
+    public StackTraceElement getStackTraceElement(final int depth) {
         // (MS) I tested the difference between using Throwable.getStackTrace() and Thread.getStackTrace(), and
         // the version using Throwable was surprisingly faster! at least on Java 1.8. See ReflectionBenchmark.
         final StackTraceElement[] elements = new Throwable().getStackTrace();
@@ -163,7 +125,7 @@ public final class ReflectionUtil {
         throw new IndexOutOfBoundsException(Integer.toString(depth));
     }
 
-    private static boolean isValid(final StackTraceElement element) {
+    private boolean isValid(final StackTraceElement element) {
         // ignore native methods (oftentimes are repeated frames)
         if (element.isNativeMethod()) {
             return false;
@@ -199,28 +161,13 @@ public final class ReflectionUtil {
 
     // migrated from ClassLoaderContextSelector
     @PerformanceSensitive
-    public static Class<?> getCallerClass(final String fqcn) {
+    public Class<?> getCallerClass(final String fqcn) {
         return getCallerClass(fqcn, Strings.EMPTY);
     }
 
     // migrated from Log4jLoggerFactory
     @PerformanceSensitive
-    public static Class<?> getCallerClass(final String fqcn, final String pkg) {
-        if (supportsFastReflection()) {
-            boolean next = false;
-            Class<?> clazz;
-            for (int i = 2; null != (clazz = getCallerClass(i)); i++) {
-                if (fqcn.equals(clazz.getName())) {
-                    next = true;
-                    continue;
-                }
-                if (next && clazz.getName().startsWith(pkg)) {
-                    return clazz;
-                }
-            }
-            // TODO: return Object.class
-            return null;
-        }
+    public Class<?> getCallerClass(final String fqcn, final String pkg) {
         if (SECURITY_MANAGER != null) {
             return SECURITY_MANAGER.getCallerClass(fqcn, pkg);
         }
@@ -235,21 +182,7 @@ public final class ReflectionUtil {
 
     // added for use in LoggerAdapter implementations mainly
     @PerformanceSensitive
-    public static Class<?> getCallerClass(final Class<?> anchor) {
-        if (supportsFastReflection()) {
-            boolean next = false;
-            Class<?> clazz;
-            for (int i = 2; null != (clazz = getCallerClass(i)); i++) {
-                if (anchor.equals(clazz)) {
-                    next = true;
-                    continue;
-                }
-                if (next) {
-                    return clazz;
-                }
-            }
-            return Object.class;
-        }
+    public Class<?> getCallerClass(final Class<?> anchor) {
         if (SECURITY_MANAGER != null) {
             return SECURITY_MANAGER.getCallerClass(anchor);
         }
@@ -279,22 +212,13 @@ public final class ReflectionUtil {
 
     // migrated from ThrowableProxy
     @PerformanceSensitive
-    public static Stack<Class<?>> getCurrentStackTrace() {
+    public Stack<Class<?>> getCurrentStackTrace() {
         // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
         if (SECURITY_MANAGER != null) {
             final Class<?>[] array = SECURITY_MANAGER.getClassContext();
             final Stack<Class<?>> classes = new Stack<>();
             classes.ensureCapacity(array.length);
             for (final Class<?> clazz : array) {
-                classes.push(clazz);
-            }
-            return classes;
-        }
-        // slower version using getCallerClass where we cannot use a SecurityManager
-        if (supportsFastReflection()) {
-            final Stack<Class<?>> classes = new Stack<>();
-            Class<?> clazz;
-            for (int i = 1; null != (clazz = getCallerClass(i)); i++) {
                 classes.push(clazz);
             }
             return classes;

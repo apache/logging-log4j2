@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.FrameworkUtil;
@@ -52,7 +52,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         if (loader instanceof BundleReference) {
             return locateContext(((BundleReference) loader).getBundle(), configLocation);
         }
-        final Class<?> callerClass = ReflectionUtil.getCallerClass(fqcn);
+        final Class<?> callerClass = StackLocatorUtil.getCallerClass(fqcn);
         if (callerClass != null) {
             return locateContext(FrameworkUtil.getBundle(callerClass), configLocation);
         }

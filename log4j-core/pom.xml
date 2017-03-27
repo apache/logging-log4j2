@@ -38,12 +38,6 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
-    <!-- The Java 9 jar is used to pull in the Java 9 specific classes -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-java9</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
@@ -351,11 +345,10 @@
           <execution>
             <!-- disable annotation processing for first pass -->
             <id>default-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>compile</phase>
             <configuration>
+              <excludes>
+                <exclude>module-info.java</exclude>
+              </excludes>
               <proc>none</proc>
             </configuration>
           </execution>
@@ -367,6 +360,9 @@
             </goals>
             <phase>process-classes</phase>
             <configuration>
+              <excludes>
+                <exclude>module-info.java</exclude>
+              </excludes>
               <proc>only</proc>
             </configuration>
           </execution>
@@ -408,7 +404,6 @@
               <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
               <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
               <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-              <Multi-Release>true</Multi-Release>
             </manifestEntries>
           </archive>
         </configuration>
@@ -435,26 +430,6 @@
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>add-java9-supplement</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeGroupIds>org.apache.logging.log4j</includeGroupIds>
-              <includeArtifactIds>log4j-java9</includeArtifactIds>
-              <excludeTransitive>false</excludeTransitive>
-              <includes>org/apache/logging/log4j/core/**/*.class</includes>
-              <outputDirectory>${project.build.directory}/classes/META-INF/versions/9</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 
@@ -353,7 +354,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         if (loggerFqcn == null || !includeLocation) {
             return null;
         }
-        source = LocationLocator.calcLocation(loggerFqcn);
+        source = StackLocatorUtil.calcLocation(loggerFqcn);
         return source;
     }
 

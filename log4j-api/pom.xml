@@ -40,11 +40,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-java9</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
@@ -85,6 +80,99 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>clean-java9</id>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.directory}/classes</directory>
+                  <includes>
+                    <include>**/*.class</include>
+                  </includes>
+                  <excludes>
+                    <exclude>module-info.class</exclude>
+                    <exclude>**/util/ClassNamePredicate.class</exclude>
+                    <exclude>**/util/ClassPredicate.class</exclude>
+                    <exclude>**/util/StackWalkerStackLocator.class</exclude>
+                  </excludes>
+                  <followSymlinks>false</followSymlinks>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>org.apache.logging.log4j.*</Export-Package>
+            <Import-Package>
+              sun.reflect;resolution:=optional,
+              org.apache.logging.log4j.core.osgi;resolution:=optional,
+              org.apache.logging.log4j.core.util;resolution:=optional,
+              *
+            </Import-Package>
+            <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <!-- recompile everything for target VM except the module-info.java -->
+            <configuration>
+              <excludes>
+                <exclude>module-info.java</exclude>
+                <exclude>**/util/ClassNamePredicate.java</exclude>
+                <exclude>**/util/ClassPredicate.java</exclude>
+                <exclude>**/util/StackWalkerStackLocator.java</exclude>
+              </excludes>
+              <source>1.7</source>
+              <target>1.7</target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>process-plugins</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java9-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>process-classes</phase>
+            <configuration>
+              <!-- compile everything to ensure module-info contains right entries -->
+              <!-- required when JAVA_HOME is JDK 8 or below -->
+              <jdkToolchain>
+                <version>9</version>
+              </jdkToolchain>
+              <release>9</release>
+              <proc>none</proc>
+              <includes>
+                <include>module-info.java</include>
+                <include>**/util/ClassNamePredicate.java</include>
+                <include>**/util/ClassPredicate.java</include>
+                <include>**/util/StackWalkerStackLocator.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -108,7 +196,6 @@
               <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
               <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
               <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-              <Multi-Release>true</Multi-Release>
             </manifestEntries>
           </archive>
         </configuration>
@@ -150,26 +237,6 @@
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
           </instructions>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>add-java9-supplement</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeGroupIds>org.apache.logging.log4j</includeGroupIds>
-              <includeArtifactIds>log4j-java9</includeArtifactIds>
-              <excludeTransitive>false</excludeTransitive>
-              <includes>org/apache/logging/log4j/util/*.class</includes>
-              <outputDirectory>${project.build.directory}/classes/META-INF/versions/9</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

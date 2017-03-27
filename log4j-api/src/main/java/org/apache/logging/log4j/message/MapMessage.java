@@ -246,7 +246,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
         for (int i = 0; i < data.size(); i++) {
-            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">").append(data.getValueAt(i))
+            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">").append((String)data.getValueAt(i))
                     .append("</Entry>\n");
         }
         sb.append("</Map>");

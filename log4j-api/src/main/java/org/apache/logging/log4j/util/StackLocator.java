@@ -16,20 +16,24 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.util.Stack;
 
 /**
- * Test walking the stack using StackWalker.
+ * Interface for methods used to locate information about the caller.
  */
-public class ReflectionUtilTest {
+public interface StackLocator {
 
-    @Test
-    public void testLocateClass() {
-        ClassLocator locator = new ClassLocator();
-        Class<?> clazz = locator.locateClass();
-        assertNotNull("Could not locate class", clazz);
-        assertEquals("Incorrect class", this.getClass(), clazz);
-    }
+    Class<?> getCallerClass(final int depth);
+
+    StackTraceElement getStackTraceElement(final int depth);
+
+    Class<?> getCallerClass(final String fqcn);
+
+    Class<?> getCallerClass(final String fqcn, final String pkg);
+
+    Class<?> getCallerClass(final Class<?> anchor);
+
+    Stack<Class<?>> getCurrentStackTrace();
+
+    StackTraceElement calcLocation(final String fqcnOfLogger);
 }

@@ -20,10 +20,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
-import org.apache.logging.log4j.core.impl.LocationLocator;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
@@ -85,7 +84,7 @@ public class ReflectionBenchmark {
 
     @Benchmark
     public String test03_getCallerClassNameReflectively() {
-        return ReflectionUtil.getCallerClass(3).getName();
+        return StackLocatorUtil.getCallerClass(3).getName();
     }
 
 
@@ -101,7 +100,7 @@ public class ReflectionBenchmark {
 
     @Benchmark
     public Class<?> test07_getReflectiveCallerClassUtility() {
-        return ReflectionUtil.getCallerClass(3);
+        return StackLocatorUtil.getCallerClass(3);
     }
 
     @Benchmark
@@ -122,7 +121,7 @@ public class ReflectionBenchmark {
         // let's not benchmark LinkedList or anything here
         final Class<?>[] classes = new Class<?>[100];
         Class<?> clazz;
-        for (int i = 0; null != (clazz = ReflectionUtil.getCallerClass(i)); i++) {
+        for (int i = 0; null != (clazz = StackLocatorUtil.getCallerClass(i)); i++) {
             classes[i] = clazz;
         }
         return classes;
@@ -155,7 +154,7 @@ public class ReflectionBenchmark {
         }
 
         private Class<?> locateCaller() {
-            return ReflectionUtil.getCallerClass(ClassLocator.class.getName());
+            return StackLocatorUtil.getCallerClass(ClassLocator.class.getName());
         }
     }
 
@@ -170,7 +169,7 @@ public class ReflectionBenchmark {
         }
 
         private String locateMethodName() {
-            return LocationLocator.calcLocation(MethodLocator.class.getName()).getMethodName();
+            return StackLocatorUtil.calcLocation(MethodLocator.class.getName()).getMethodName();
         }
     }
 

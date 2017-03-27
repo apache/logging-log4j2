@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Builder class to wrap {@link Logger Loggers} into Java IO compatible classes.
@@ -112,7 +112,7 @@ public class IoBuilder {
      * @return a new IoBuilder
      */
     public static IoBuilder forLogger() {
-        return new IoBuilder(LogManager.getLogger(ReflectionUtil.getCallerClass(2)));
+        return new IoBuilder(LogManager.getLogger(StackLocatorUtil.getCallerClass(2)));
     }
 
     /**

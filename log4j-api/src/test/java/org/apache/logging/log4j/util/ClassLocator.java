@@ -16,14 +16,12 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.core.impl.LocationLocator;
-
 /**
- *
+ * Created by rgoers on 3/15/17.
  */
-public class ClassNameLocator {
+public class ClassLocator {
 
-    public StackTraceElement locateClass() {
-        return LocationLocator.calcLocation(ClassNameLocator.class.getName());
+    public Class<?> locateClass() {
+        return StackLocatorUtil.getCallerClass(ClassLocator.class);
     }
 }

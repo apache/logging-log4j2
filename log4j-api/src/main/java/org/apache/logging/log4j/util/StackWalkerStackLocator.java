@@ -23,31 +23,41 @@ import java.util.stream.Collectors;
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
  */
-public class ReflectionUtil {
+public class StackWalkerStackLocator implements StackLocator {
 
     private final static StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
-    public static Class<?> getCallerClass(final String fqcn) {
+    private final static StackWalker stackWalker = StackWalker.getInstance();
+
+    public Class<?> getCallerClass(final String fqcn) {
         return getCallerClass(fqcn, "");
     }
 
-    public static Class<?> getCallerClass(final String fqcn, final String pkg) {
+    public Class<?> getCallerClass(final String fqcn, final String pkg) {
         return walker.walk(s -> s.filter(new ClassNamePredicate(fqcn)).findFirst()).get().getDeclaringClass();
     }
 
-    public static Class<?> getCallerClass(final Class<?> anchor) {
+    public Class<?> getCallerClass(final Class<?> anchor) {
         return walker.walk(s -> s.filter(new ClassPredicate(anchor)).findFirst()).get().getDeclaringClass();
     }
 
-    public static Class<?> getCallerClass(final int depth) {
-        return walker.walk(s -> s.skip(depth - 1)).findFirst().get().getDeclaringClass();
+    public Class<?> getCallerClass(final int depth) {
+        ;
+        return walker.walk(s -> s.skip(depth).findFirst()).get().getDeclaringClass();
     }
 
-    public static Stack<Class<?>> getCurrentStackTrace() {
+    public Stack<Class<?>> getCurrentStackTrace() {
         Stack<Class<?>> stack = new Stack<Class<?>>();
         List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
         stack.addAll(classes);
         return stack;
     }
 
+    public StackTraceElement calcLocation(final String fqcnOfLogger) {
+        return stackWalker.walk(s -> s.filter(new ClassNamePredicate(fqcnOfLogger)).findFirst()).get().toStackTraceElement();
+    }
+
+    public StackTraceElement getStackTraceElement(final int depth) {
+        return stackWalker.walk(s -> s.skip(depth).findFirst()).get().toStackTraceElement();
+    }
 }

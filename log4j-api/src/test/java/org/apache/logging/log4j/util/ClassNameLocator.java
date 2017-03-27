@@ -14,21 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.impl;
-
-import org.apache.logging.log4j.util.ClassNamePredicate;
+package org.apache.logging.log4j.util;
 
 /**
- * <em>Consider this class private</em> Methods shared by LogEvent implementations.
+ *
  */
-public class LocationLocator {
-    private final static StackWalker walker = StackWalker.getInstance();
+public class ClassNameLocator {
 
-    public static StackTraceElement calcLocation(final String fqcnOfLogger) {
-        return walker.walk(s -> s.filter(new ClassNamePredicate(fqcnOfLogger)).findFirst()).get().toStackTraceElement();
-    }
-
-    public static StackTraceElement getStackTraceElement(final int depth) {
-        return walker.walk(s -> s.skip(depth - 1)).findFirst().get().toStackTraceElement();
+    public StackTraceElement locateClass() {
+        return StackLocatorUtil.calcLocation(ClassNameLocator.class.getName());
     }
 }

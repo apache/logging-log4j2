@@ -79,7 +79,7 @@ public final class MapPatternConverter extends LogEventPatternConverter {
                 if (i > 0) {
                     toAppendTo.append(", ");
                 }
-                toAppendTo.append(sortedMap.getKeyAt(i)).append('=').append(sortedMap.getValueAt(i));
+                toAppendTo.append(sortedMap.getKeyAt(i)).append('=').append((String)sortedMap.getValueAt(i));
             }
             toAppendTo.append('}');
         } else {

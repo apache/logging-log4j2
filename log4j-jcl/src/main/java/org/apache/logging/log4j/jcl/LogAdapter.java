@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Commons Logging adapter registry.
@@ -36,7 +36,7 @@ public class LogAdapter extends AbstractLoggerAdapter<Log> {
 
     @Override
     protected LoggerContext getContext() {
-        return getContext(ReflectionUtil.getCallerClass(LogFactory.class));
+        return getContext(StackLocatorUtil.getCallerClass(LogFactory.class));
     }
 
 }
