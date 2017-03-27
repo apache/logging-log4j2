@@ -49,6 +49,9 @@
       <action issue="LOG4J2-1845" dev="mikes" type="fix">
         Handle when LogEvent.getLoggerName() returns null in KafkaAppender.
       </action>
+      <action issue="LOG4J2-1853" dev="ggregory" type="fix" due-to="wangyuntao">
+        The default value of RandomAccessFileAppender.Builder append field is wrong.
+      </action>
       <action issue="LOG4J2-1848" dev="mattsicker" type="add">
         Add JSON encoding support to EncodingPatternConverter %encode{}.
       </action>
@@ -72,6 +75,9 @@
       </action>
       <action issue="LOG4J2-1820" dev="ggregory" type="fix" due-to="Jason Tedor">
         Log4j 2.8 can lose exceptions when a security manager is present.
+      </action>
+      <action issue="LOG4J2-1856" dev="ggregory" type="update">
+        Update Jackson from 2.8.6 to 2.8.7.
       </action>
     </release>
     <release version="2.8.1" date="2017-02-26" description="GA Release 2.8.1">
