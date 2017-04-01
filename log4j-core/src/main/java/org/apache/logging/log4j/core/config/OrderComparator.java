@@ -54,7 +54,7 @@ public class OrderComparator implements Comparator<Class<?>>, Serializable {
         if (lhsOrder == null) {
             return 1;
         }
-        // larger value means lower priority
+        // larger value means higher priority
         return Integer.signum(rhsOrder.value() - lhsOrder.value());
     }
 }

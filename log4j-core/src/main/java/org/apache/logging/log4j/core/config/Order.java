@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Order {
     /**
-     * The priority of this annotated type. Larger numbers indicate lower priority with a lowest priority of
+     * The priority of this annotated type. Larger numbers indicate higher priority with a highest priority of
      * {@link Integer#MAX_VALUE}.
      */
     int value();
