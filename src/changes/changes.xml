@@ -31,6 +31,12 @@
          - "remove" - Removed
     -->
     <release version="2.8.2" date="2017-MM-DD" description="GA Release 2.8.2">
+      <action issue="LOG4J2-1861" dev="mattsicker" type="fix">
+        Fix JavaDoc on org.apache.logging.log4j.ThreadContext about inheritance.
+      </action>
+      <action issue="LOG4J2-1862" dev="mattsicker" type="fix" due-to="wangyuntao">
+        Fix JavaDoc about @Order and OrderComparator ordering.
+      </action>
       <action issue="LOG4J2-1849" dev="rpopma" type="fix">
         Fixed daylight savings time issue with FixedDateFormat.
       </action>
@@ -48,6 +54,9 @@
       </action>
       <action issue="LOG4J2-1853" dev="ggregory" type="fix" due-to="wangyuntao">
         The default value of RandomAccessFileAppender.Builder append field is wrong.
+      </action>
+      <action issue="LOG4J2-1863" dev="mattsicker" type="add">
+        Add support for filtering input in TcpSocketServer and UdpSocketServer.
       </action>
       <action issue="LOG4J2-1848" dev="mattsicker" type="add">
         Add JSON encoding support to EncodingPatternConverter %encode{}.
