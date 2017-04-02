@@ -30,7 +30,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.8.2" date="2017-MM-DD" description="GA Release 2.8.2">
+    <release version="2.8.2" date="2017-04-02" description="GA Release 2.8.2">
       <action issue="LOG4J2-1861" dev="mattsicker" type="fix">
         Fix JavaDoc on org.apache.logging.log4j.ThreadContext about inheritance.
       </action>
