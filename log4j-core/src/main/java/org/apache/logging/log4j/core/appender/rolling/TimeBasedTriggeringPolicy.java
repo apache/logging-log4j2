@@ -23,7 +23,8 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.util.Integers;
 
 /**
@@ -31,6 +32,53 @@ import org.apache.logging.log4j.core.util.Integers;
  */
 @Plugin(name = "TimeBasedTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
 public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
+
+    
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<TimeBasedTriggeringPolicy> {
+
+        @PluginBuilderAttribute
+        private int interval = 1;
+        
+        @PluginBuilderAttribute
+        private boolean modulate = false;
+        
+        @PluginBuilderAttribute
+        private int maxRandomDelay = 0;
+        
+        @Override
+        public TimeBasedTriggeringPolicy build() {
+            long maxRandomDelayMillis = TimeUnit.SECONDS.toMillis(maxRandomDelay);
+            return new TimeBasedTriggeringPolicy(interval, modulate, maxRandomDelayMillis);
+        }
+
+        public int getInterval() {
+            return interval;
+        }
+
+        public boolean isModulate() {
+            return modulate;
+        }
+
+        public int getMaxRandomDelay() {
+            return maxRandomDelay;
+        }
+        
+        public Builder withInterval(int interval){
+            this.interval = interval;
+            return this;
+        }
+        
+        public Builder withModulate(boolean modulate){
+            this.modulate = modulate;
+            return this;
+        }
+        
+        public Builder withMaxRandomDelay(int maxRandomDelay){
+            this.maxRandomDelay = maxRandomDelay;
+            return this;
+        }
+
+    }
 
     private long nextRolloverMillis;
     private final int interval;
@@ -91,18 +139,22 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
      * Creates a TimeBasedTriggeringPolicy.
      * @param interval The interval between rollovers.
      * @param modulate If true the time will be rounded to occur on a boundary aligned with the increment.
-     * @param maxRandomDelay If non-zero the rolling will be delayed by a random amount of time, up to the specified value (in seconds)  
      * @return a TimeBasedTriggeringPolicy.
+     * @deprecated Use {@link #newBuilder()}.
      */
-    @PluginFactory
+    @Deprecated
     public static TimeBasedTriggeringPolicy createPolicy(
             @PluginAttribute("interval") final String interval,
-            @PluginAttribute("modulate") final String modulate,
-            @PluginAttribute("maxRandomDelay") final int maxRandomDelay) {
-        final int increment = Integers.parseInt(interval, 1);
-        final boolean mod = Boolean.parseBoolean(modulate);
-        long maxRandomDelayMillis = TimeUnit.SECONDS.toMillis(maxRandomDelay);
-        return new TimeBasedTriggeringPolicy(increment, mod, maxRandomDelayMillis);
+            @PluginAttribute("modulate") final String modulate) {
+        return newBuilder()
+                .withInterval(Integers.parseInt(interval, 1))
+                .withModulate(Boolean.parseBoolean(modulate))
+                .build();
+    }
+    
+    @PluginBuilderFactory
+    public static TimeBasedTriggeringPolicy.Builder newBuilder() {
+        return new Builder();
     }
 
     @Override
