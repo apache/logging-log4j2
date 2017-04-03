@@ -53,18 +53,22 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
     private final DB database;
     private final String description;
     private final WriteConcern writeConcern;
+    private final boolean isCapped;
+    private final Integer collectionSize;
 
     private MongoDbProvider(final DB database, final WriteConcern writeConcern, final String collectionName,
-            final String description) {
+            final boolean isCapped, final Integer collectionSize, final String description) {
         this.database = database;
         this.writeConcern = writeConcern;
         this.collectionName = collectionName;
+        this.isCapped = isCapped;
+        this.collectionSize = collectionSize;
         this.description = "mongoDb{ " + description + " }";
     }
 
     @Override
     public MongoDbConnection getConnection() {
-        return new MongoDbConnection(this.database, this.writeConcern, this.collectionName);
+        return new MongoDbConnection(this.database, this.writeConcern, this.collectionName, this.isCapped, this.collectionSize);
     }
 
     @Override
@@ -76,6 +80,8 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
      * Factory method for creating a MongoDB provider within the plugin manager.
      *
      * @param collectionName The name of the MongoDB collection to which log events should be written.
+     * @param isCapped If the MongoDB collection shall be a capped collection.
+     * @param collectionSize The size of the MongoDB collection in case it's a capped collection.
      * @param writeConcernConstant The {@link WriteConcern} constant to control writing details, defaults to
      *                             {@link WriteConcern#ACKNOWLEDGED}.
      * @param writeConcernConstantClassName The name of a class containing the aforementioned static WriteConcern
@@ -97,6 +103,8 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
     @PluginFactory
     public static MongoDbProvider createNoSqlProvider(
             @PluginAttribute("collectionName") final String collectionName,
+            @PluginAttribute(value = "capped", defaultBoolean = false) final Boolean isCapped,
+            @PluginAttribute(value = "collectionSize", defaultInt = 536870912) final Integer collectionSize,
             @PluginAttribute("writeConcernConstant") final String writeConcernConstant,
             @PluginAttribute("writeConcernConstantClass") final String writeConcernConstantClassName,
             @PluginAttribute("databaseName") final String databaseName,
@@ -190,7 +198,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
         final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
 
-        return new MongoDbProvider(database, writeConcern, collectionName, description);
+        return new MongoDbProvider(database, writeConcern, collectionName, isCapped, collectionSize, description);
     }
 
     private static WriteConcern toWriteConcern(final String writeConcernConstant,
