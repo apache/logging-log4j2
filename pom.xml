@@ -592,7 +592,7 @@
       <dependency>
         <groupId>org.zeromq</groupId>
         <artifactId>jeromq</artifactId>
-        <version>0.3.6</version>
+        <version>0.4.0</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
