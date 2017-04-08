@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.util.Constants;
 
 /**
@@ -209,7 +210,8 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param length The number of bytes to write.
      * @throws AppenderLoggingException if an error occurs.
      */
-    protected void write(final byte[] bytes, final int offset, final int length) {
+    @Override
+    public void write(final byte[] bytes, final int offset, final int length) {
         write(bytes, offset, length, false);
     }
 
@@ -344,5 +346,15 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     public ByteBuffer drain(final ByteBuffer buf) {
         flushBuffer(buf);
         return buf;
+    }
+
+    @Override
+    public void write(ByteBuffer data) {
+        if (data.remaining() == 0) {
+          return;
+        }
+        synchronized (this) {
+          ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+        }
     }
 }

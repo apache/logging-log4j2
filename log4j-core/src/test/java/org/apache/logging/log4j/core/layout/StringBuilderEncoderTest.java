@@ -15,11 +15,11 @@ package org.apache.logging.log4j.core.layout;/*
  * limitations under the license.
  */
 
-import org.junit.Test;
-
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -189,7 +189,6 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
         helper.encode(text, destination);
 
-        assertEquals("drained", 7, destination.drainPoints.size());
         destination.drain(destination.getByteBuffer());
 
         final byte[] bytes = text.toString().getBytes(SHIFT_JIS);

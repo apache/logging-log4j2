@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 
 /**
  * Demo Appender that does not do any I/O.
@@ -67,5 +68,15 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
         consume(buf.array(), buf.arrayOffset() + buf.position(), buf.arrayOffset() + buf.limit());
         buf.clear();
         return buf;
+    }
+
+    @Override
+    public void write(ByteBuffer data) {
+        ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+    }
+
+    @Override
+    public void write(final byte[] data, final int offset, final int length) {
+        ByteBufferDestinationHelper.writeToUnsynchronized(data, offset, length, this);
     }
 }

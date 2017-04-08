@@ -44,4 +44,21 @@ public interface ByteBufferDestination {
      * @return a buffer with more available space (which may or may not be the same instance)
      */
     ByteBuffer drain(ByteBuffer buf);
+
+    /**
+     * Writes the given data to this ByteBufferDestination entirely. Call of this method should *not* be protected
+     * with synchronized on this ByteBufferDestination instance. ByteBufferDestination implementations should
+     * synchronize themselves inside this method, if needed.
+     */
+    void write(ByteBuffer data);
+
+    /**
+     * Writes the given data to this ByteBufferDestination. Call of this method should *not* be protected with
+     * synchronized on this ByteBufferDestination instance. ByteBufferDestination implementations should
+     * synchronize themselves inside this method, if needed.
+     * <p>
+     * This method should behave identically to {@code write(ByteBuffer.wrap(data, offset, length)}. It is provided to
+     * allow callers not to generate extra garbage.
+     */
+    void write(byte[] data, int offset, int length);
 }

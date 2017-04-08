@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -258,6 +259,16 @@ public class AbstractStringLayoutStringEncodingBenchmark {
             consume(buf.array(), buf.arrayOffset() + buf.position(), buf.arrayOffset() + buf.limit());
             buf.clear();
             return buf;
+        }
+
+        @Override
+        public void write(ByteBuffer data) {
+            ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+        }
+
+        @Override
+        public void write(final byte[] data, final int offset, final int length) {
+            ByteBufferDestinationHelper.writeToUnsynchronized(data, offset, length, this);
         }
 
         public void reset() {
