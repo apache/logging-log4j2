@@ -47,10 +47,10 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
         }
     }
 
-    private void consume(final byte[] data, final int offset, final int length) {
+    private void consume(final byte[] data, final int offset, final int limit) {
         // need to do something with the result or the JVM may optimize everything away
         long sum = 0;
-        for (int i = offset; i < length; i++) {
+        for (int i = offset; i < limit; i++) {
             sum += data[i];
         }
         checksum += sum;
@@ -64,7 +64,7 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
     @Override
     public ByteBuffer drain(final ByteBuffer buf) {
         buf.flip();
-        consume(buf.array(), buf.position(), buf.limit());
+        consume(buf.array(), buf.arrayOffset() + buf.position(), buf.arrayOffset() + buf.limit());
         buf.clear();
         return buf;
     }

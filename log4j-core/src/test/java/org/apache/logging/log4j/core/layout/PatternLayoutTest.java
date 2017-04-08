@@ -100,7 +100,7 @@ public class PatternLayoutTest {
         layout.encode(event, destination);
         final ByteBuffer byteBuffer = destination.getByteBuffer();
         byteBuffer.flip(); // set limit to position, position back to zero
-        assertEquals(expectedStr, new String(byteBuffer.array(), 0, byteBuffer.limit()));
+        assertEquals(expectedStr, new String(byteBuffer.array(), byteBuffer.arrayOffset(), byteBuffer.remaining()));
     }
 
     @Test
