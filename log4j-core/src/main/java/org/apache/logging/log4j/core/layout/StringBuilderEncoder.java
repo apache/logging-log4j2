@@ -53,12 +53,12 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
     public void encode(final StringBuilder source, final ByteBufferDestination destination) {
         final ByteBuffer temp = getByteBuffer();
         temp.clear();
-        temp.limit(Math.min(temp.capacity(), destination.getByteBuffer().capacity()));
+        temp.limit(Math.min(temp.capacity(), destination.getByteBuffer().remaining()));
         final CharsetEncoder charsetEncoder = getCharsetEncoder();
 
         final int estimatedBytes = estimateBytes(source.length(), charsetEncoder.maxBytesPerChar());
         if (temp.remaining() < estimatedBytes) {
-            encodeSynchronized(getCharsetEncoder(), getCharBuffer(), source, destination);
+            encodeSynchronized(charsetEncoder, getCharBuffer(), source, destination);
         } else {
             encodeWithThreadLocals(charsetEncoder, getCharBuffer(), temp, source, destination);
         }
