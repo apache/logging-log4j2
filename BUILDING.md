@@ -50,7 +50,7 @@ If Java 7 runs out of memory building the site, you will need:
 
 On Windows, use a local staging directory, for example:
 
-    mvn site:stage-deploy -DstagingSiteURL=file:///%HOME%/log4j
+    mvn site:stage-deploy -DstagingSiteURL=file:///%HOMEDRIVE%%HOMEPATH%/log4j
 
 On UNIX, use a local staging directory, for example:
 

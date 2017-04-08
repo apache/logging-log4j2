@@ -1,4 +1,4 @@
-This directory contains files to test the TLSSyslogAppender and its helpes classes. Please don't remove them.
+This directory contains files to test the TLSSyslogAppender and its helpers classes. Please don't remove them.
 
 All certificates are signed with log4j2-cacert.pem, which is the root certificate (you can find help here to install it:
 http://askubuntu.com/questions/73287/how-do-i-install-a-root-certificate). The client.log4j2-keystore.jks contains the
