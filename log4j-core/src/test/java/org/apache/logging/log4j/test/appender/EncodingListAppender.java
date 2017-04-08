@@ -52,6 +52,16 @@ public class EncodingListAppender extends ListAppender {
         public ByteBuffer drain(final ByteBuffer buf) {
             throw new IllegalStateException("Unexpected message larger than 4096 bytes");
         }
+
+        @Override
+        public void write(final ByteBuffer data) {
+            byteBuffer.put(data);
+        }
+
+        @Override
+        public void write(final byte[] data, final int offset, final int length) {
+            byteBuffer.put(data, offset, length);
+        }
     }
 
     @Override

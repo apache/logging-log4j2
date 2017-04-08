@@ -36,58 +36,86 @@ public class TextEncoderHelper {
     static void encodeTextFallBack(final Charset charset, final StringBuilder text,
             final ByteBufferDestination destination) {
         final byte[] bytes = text.toString().getBytes(charset);
-        synchronized (destination) {
-            ByteBuffer buffer = destination.getByteBuffer();
-            int offset = 0;
-            do {
-                final int length = Math.min(bytes.length - offset, buffer.remaining());
-                buffer.put(bytes, offset, length);
-                offset += length;
-                if (offset < bytes.length) {
-                    buffer = destination.drain(buffer);
-                }
-            } while (offset < bytes.length);
-        }
-    }
-
-    static void encodeTextWithCopy(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer temp,
-            final StringBuilder text, final ByteBufferDestination destination) {
-
-        encodeText(charsetEncoder, charBuf, temp, text, destination);
-        copyDataToDestination(temp, destination);
-    }
-
-    private static void copyDataToDestination(final ByteBuffer temp, final ByteBufferDestination destination) {
-        synchronized (destination) {
-            ByteBuffer destinationBuffer = destination.getByteBuffer();
-            if (destinationBuffer != temp) { // still need to write to the destination
-                temp.flip();
-                if (temp.remaining() > destinationBuffer.remaining()) {
-                    destinationBuffer = destination.drain(destinationBuffer);
-                }
-                destinationBuffer.put(temp);
-                temp.clear();
-            }
-        }
+        destination.write(ByteBuffer.wrap(bytes));
     }
 
     static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer byteBuf,
-            final StringBuilder text, final ByteBufferDestination destination) {
+            final StringBuilder text, final ByteBufferDestination destination)
+            throws CharacterCodingException {
         charsetEncoder.reset();
-        ByteBuffer temp = byteBuf; // may be the destination's buffer or a temporary buffer
+        if (text.length() > charBuf.capacity()) {
+            encodeChunkedText(charsetEncoder, charBuf, byteBuf, text, destination);
+            return;
+        }
+        charBuf.clear();
+        text.getChars(0, text.length(), charBuf.array(), charBuf.arrayOffset());
+        charBuf.limit(text.length());
+        CoderResult result = charsetEncoder.encode(charBuf, byteBuf, true);
+        writeEncodedText(charsetEncoder, charBuf, byteBuf, destination, result);
+    }
+
+    private static void writeEncodedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
+            final ByteBuffer byteBuf, final ByteBufferDestination destination, final CoderResult result) {
+        if (!result.isUnderflow()) {
+            writeChunkedEncodedText(charsetEncoder, charBuf, destination, byteBuf, result);
+            return;
+        }
+        charsetEncoder.flush(byteBuf);
+        if (!result.isUnderflow()) {
+            synchronized (destination) {
+                flushRemainingBytes(charsetEncoder, destination, byteBuf);
+            }
+            return;
+        }
+        // If the byteBuf is actually the destination's buffer, this method call should be protected with
+        // synchronization on the destination object at some level, and then destination.getByteBuffer() call should
+        // be safe. If the byteBuf is an unrelated buffer, this condition should fail despite
+        // destination.getByteBuffer() is not protected with the synchronization on the destination object.
+        if (byteBuf != destination.getByteBuffer()) {
+            byteBuf.flip();
+            destination.write(byteBuf);
+        }
+    }
+
+    private static void writeChunkedEncodedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
+            final ByteBufferDestination destination, ByteBuffer byteBuf, final CoderResult result) {
+        synchronized (destination) {
+            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf,
+                result);
+            flushRemainingBytes(charsetEncoder, destination, byteBuf);
+        }
+    }
+
+    private static void encodeChunkedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
+            ByteBuffer byteBuf, final StringBuilder text, final ByteBufferDestination destination) {
         int start = 0;
-        int todoChars = text.length();
-        boolean endOfInput = true;
-        do {
-            charBuf.clear(); // reset character buffer position to zero, limit to capacity
+        CoderResult result = CoderResult.UNDERFLOW;
+        boolean endOfInput = false;
+        while (!endOfInput && result.isUnderflow()) {
+            charBuf.clear();
             final int copied = copy(text, start, charBuf);
             start += copied;
-            todoChars -= copied;
-            endOfInput = todoChars <= 0;
-
-            charBuf.flip(); // prepare for reading: set limit to position, position to zero
-            temp = encode(charsetEncoder, charBuf, endOfInput, destination, temp);
-        } while (!endOfInput);
+            endOfInput = start >= text.length();
+            charBuf.flip();
+            result = charsetEncoder.encode(charBuf, byteBuf, endOfInput);
+        }
+        if (endOfInput) {
+            writeEncodedText(charsetEncoder, charBuf, byteBuf, destination, result);
+            return;
+        }
+        synchronized (destination) {
+            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
+                result);
+            while (!endOfInput) {
+                charBuf.clear();
+                final int copied = copy(text, start, charBuf);
+                start += copied;
+                endOfInput = start >= text.length();
+                charBuf.flip();
+                byteBuf = encodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf);
+            }
+            flushRemainingBytes(charsetEncoder, destination, byteBuf);
+        }
     }
 
     /**
@@ -98,61 +126,68 @@ public class TextEncoderHelper {
             final ByteBufferDestination destination) {
         synchronized (destination) {
             charsetEncoder.reset();
-            final ByteBuffer byteBuf = destination.getByteBuffer();
-            encode(charsetEncoder, charBuf, true, destination, byteBuf);
+            ByteBuffer byteBuf = destination.getByteBuffer();
+            byteBuf = encodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf);
+            flushRemainingBytes(charsetEncoder, destination, byteBuf);
         }
     }
 
-    private static ByteBuffer encode(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final boolean endOfInput, final ByteBufferDestination destination, ByteBuffer byteBuf) {
-        try {
-            byteBuf = encodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf);
-            if (endOfInput) {
-                byteBuf = flushRemainingBytes(charsetEncoder, destination, byteBuf);
+    private static ByteBuffer writeAndEncodeAsMuchAsPossible(final CharsetEncoder charsetEncoder,
+            final CharBuffer charBuf, final boolean endOfInput, final ByteBufferDestination destination,
+            ByteBuffer temp, CoderResult result) {
+        while (true) {
+            temp = drainIfByteBufferFull(destination, temp, result);
+            if (!result.isOverflow()) {
+                break;
             }
-        } catch (final CharacterCodingException ex) {
-            throw new IllegalStateException(ex);
+            result = charsetEncoder.encode(charBuf, temp, endOfInput);
         }
-        return byteBuf;
+        if (!result.isUnderflow()) { // we should have fully read the char buffer contents
+            throwException(result);
+        }
+        return temp;
+    }
+
+    private static void throwException(final CoderResult result) {
+        try {
+            result.throwException();
+        } catch (CharacterCodingException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private static ByteBuffer encodeAsMuchAsPossible(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final boolean endOfInput, final ByteBufferDestination destination, ByteBuffer temp)
-            throws CharacterCodingException {
+            final boolean endOfInput, final ByteBufferDestination destination, ByteBuffer temp) {
         CoderResult result;
         do {
             result = charsetEncoder.encode(charBuf, temp, endOfInput);
             temp = drainIfByteBufferFull(destination, temp, result);
         } while (result.isOverflow()); // byte buffer has been drained: retry
         if (!result.isUnderflow()) { // we should have fully read the char buffer contents
-            result.throwException();
+            throwException(result);
         }
         return temp;
     }
 
-    private static ByteBuffer drainIfByteBufferFull(final ByteBufferDestination destination, ByteBuffer temp, final CoderResult result) {
+    private static ByteBuffer drainIfByteBufferFull(final ByteBufferDestination destination, ByteBuffer temp,
+            final CoderResult result) {
         if (result.isOverflow()) { // byte buffer full
-
-            // SHOULD NOT HAPPEN:
-            // CALLER SHOULD ONLY PASS TEMP ByteBuffer LARGE ENOUGH TO ENCODE ALL CHARACTERS,
-            // AND LOCK ON THE DESTINATION IF THIS IS NOT POSSIBLE
             ByteBuffer destinationBuffer = destination.getByteBuffer();
             if (destinationBuffer != temp) {
                 temp.flip();
-                destinationBuffer.put(temp);
+                ByteBufferDestinationHelper.writeToUnsynchronized(temp, destination);
                 temp.clear();
+                return destination.getByteBuffer();
+            } else {
+                return destination.drain(destinationBuffer);
             }
-            // destination consumes contents
-            // and returns byte buffer with more capacity
-            destinationBuffer = destination.drain(destinationBuffer);
-            temp = destinationBuffer;
+        } else {
+            return temp;
         }
-        return temp;
     }
 
-    private static ByteBuffer flushRemainingBytes(final CharsetEncoder charsetEncoder,
-            final ByteBufferDestination destination, ByteBuffer temp)
-            throws CharacterCodingException {
+    private static void flushRemainingBytes(final CharsetEncoder charsetEncoder,
+            final ByteBufferDestination destination, ByteBuffer temp) {
         CoderResult result;
         do {
             // write any final bytes to the output buffer once the overall input sequence has been read
@@ -160,9 +195,13 @@ public class TextEncoderHelper {
             temp = drainIfByteBufferFull(destination, temp, result);
         } while (result.isOverflow()); // byte buffer has been drained: retry
         if (!result.isUnderflow()) { // we should have fully flushed the remaining bytes
-            result.throwException();
+            throwException(result);
         }
-        return temp;
+        if (temp.remaining() > 0 && temp != destination.getByteBuffer()) {
+            temp.flip();
+            ByteBufferDestinationHelper.writeToUnsynchronized(temp, destination);
+            temp.clear();
+        }
     }
 
     /**
