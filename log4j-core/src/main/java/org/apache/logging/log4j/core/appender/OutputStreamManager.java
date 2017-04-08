@@ -285,7 +285,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     protected synchronized void flushBuffer(final ByteBuffer buf) {
         buf.flip();
         if (buf.limit() > 0) {
-            writeToDestination(buf.array(), 0, buf.limit());
+            writeToDestination(buf.array(), buf.arrayOffset(), buf.remaining());
         }
         buf.clear();
     }

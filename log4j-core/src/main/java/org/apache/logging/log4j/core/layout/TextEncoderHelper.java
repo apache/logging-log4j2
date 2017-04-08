@@ -176,7 +176,7 @@ public class TextEncoderHelper {
         final int length = Math.min(source.length() - offset, destination.remaining());
         final char[] array = destination.array();
         final int start = destination.position();
-        source.getChars(offset, offset + length, array, start);
+        source.getChars(offset, offset + length, array, destination.arrayOffset() + start);
         destination.position(start + length);
         return length;
     }
