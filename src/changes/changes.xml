@@ -37,6 +37,9 @@
       <action issue="LOG4J2-1869" dev="ggregory" type="update">
 		Update Kafka client from 0.10.1.1 to 0.10.2.0
       </action>
+      <action issue="LOG4J2-1872" dev="ggregory" type="update">
+		Update JavaMail from 1.5.5 to 1.5.6.
+      </action>
     </release>
     <release version="2.8.2" date="2017-04-02" description="GA Release 2.8.2">
       <action issue="LOG4J2-1861" dev="mattsicker" type="fix">
