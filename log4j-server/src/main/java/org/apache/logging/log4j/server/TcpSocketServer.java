@@ -24,6 +24,8 @@ import java.io.OptionalDataException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -148,9 +150,26 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      */
     public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port, final int backlog,
             final InetAddress localBindAddress) throws IOException {
+        return createSerializedSocketServer(port, backlog, localBindAddress, Collections.<String>emptyList());
+    }
+
+    /**
+     * Creates a socket server that reads serialized log events.
+     *
+     * @param port the port to listen
+     * @param localBindAddress The server socket's local bin address
+     * @param allowedClasses additional class names to allow for deserialization
+     * @return a new a socket server
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     * @since 2.8.2
+     */
+    public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(
+        final int port, final int backlog, final InetAddress localBindAddress, final List<String> allowedClasses
+    ) throws IOException {
         LOGGER.entry(port);
         final TcpSocketServer<ObjectInputStream> socketServer = new TcpSocketServer<>(port, backlog, localBindAddress,
-                new ObjectInputStreamLogEventBridge());
+                new ObjectInputStreamLogEventBridge(allowedClasses));
         return LOGGER.exit(socketServer);
     }
 
@@ -185,8 +204,8 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
         if (cla.getConfigLocation() != null) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(cla.getConfigLocation()));
         }
-        final TcpSocketServer<ObjectInputStream> socketServer = TcpSocketServer
-                .createSerializedSocketServer(cla.getPort(), cla.getBacklog(), cla.getLocalBindAddress());
+        final TcpSocketServer<ObjectInputStream> socketServer = TcpSocketServer.createSerializedSocketServer(
+            cla.getPort(), cla.getBacklog(), cla.getLocalBindAddress(), cla.getAllowedClasses());
         final Thread serverThread = socketServer.startNewThread();
         if (cla.isInteractive()) {
             socketServer.awaitTermination(serverThread);

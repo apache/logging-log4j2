@@ -26,6 +26,8 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import com.beust.jcommander.Parameter;
@@ -70,6 +72,9 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
                 "-a" }, converter = InetAddressConverter.class, description = "Server socket local bind address.")
         private InetAddress localBindAddress;
 
+        @Parameter(names = {"--classes", "-C"}, description = "Additional classes to allow deserialization")
+        private List<String> allowedClasses;
+
         String getConfigLocation() {
             return configLocation;
         }
@@ -100,6 +105,14 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
         void setLocalBindAddress(final InetAddress localBindAddress) {
             this.localBindAddress = localBindAddress;
+        }
+
+        List<String> getAllowedClasses() {
+            return allowedClasses == null ? Collections.<String>emptyList() : allowedClasses;
+        }
+
+        void setAllowedClasses(final List<String> allowedClasses) {
+            this.allowedClasses = allowedClasses;
         }
     }
 

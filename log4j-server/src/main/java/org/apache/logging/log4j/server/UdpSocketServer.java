@@ -24,6 +24,7 @@ import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.List;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.BasicCommandLineArguments;
@@ -64,6 +65,21 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
     }
 
     /**
+     * Creates a socket server that reads serialized log events.
+     *
+     * @param port the port to listen
+     * @param allowedClasses additional classes to allow for deserialization
+     * @return a new a socket server
+     * @throws IOException if an I/O error occurs when opening the socket.
+     * @since 2.8.2
+     */
+    public static UdpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port,
+                                                                                  final List<String> allowedClasses)
+        throws IOException {
+        return new UdpSocketServer<>(port, new ObjectInputStreamLogEventBridge(allowedClasses));
+    }
+
+    /**
      * Creates a socket server that reads XML log events.
      * 
      * @param port
@@ -93,7 +109,7 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(cla.getConfigLocation()));
         }
         final UdpSocketServer<ObjectInputStream> socketServer = UdpSocketServer
-                .createSerializedSocketServer(cla.getPort());
+                .createSerializedSocketServer(cla.getPort(), cla.getAllowedClasses());
         final Thread serverThread = socketServer.startNewThread();
         if (cla.isInteractive()) {
             socketServer.awaitTermination(serverThread);

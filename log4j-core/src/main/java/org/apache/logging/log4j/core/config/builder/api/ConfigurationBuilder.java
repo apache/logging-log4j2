@@ -227,6 +227,21 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      */
     <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(String name, String pluginName, String value);
 
+    /**
+     * Returns a builder for creating Property:s
+     * @param name The name of the property.
+     * @param value The value of the component.
+     * @return A new PropertyComponentBuilder.
+     */
+    PropertyComponentBuilder newProperty(String name, String value);
+
+    /**
+     * Returns a builder for creating KeyValuePair:s
+     * @param key The name
+     * @param value The value
+     * @return A new KeyValuePairComponentBuilder.
+     */
+    KeyValuePairComponentBuilder newKeyValuePair(String key, String value);
 
     /**
      * Returns a builder for creating CustomLevels

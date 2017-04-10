@@ -144,7 +144,7 @@ is required for dependency management functionality.
 
 ```
 plugins {
-  id 'io.spring.dependency-management' version '1.0.0.RC2'
+  id 'io.spring.dependency-management' version '1.0.1.RELEASE'
 }
 
 dependencyManagement {

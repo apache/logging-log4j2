@@ -30,9 +30,26 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.8.2" date="2017-MM-DD" description="GA Release 2.8.2">
-      <action issue="LOG4J2-1851" dev="mikes" type="update">
-        Move server components from log4j-core to new log4-server module.
+    <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1860" dev="mikes" type="add">
+        Shortcut to add Property and KeyValuePair component in ConfigurationBuilder.
+      </action>
+      <action issue="LOG4J2-1868" dev="ggregory" type="update">
+        Update ZeroMQ's JeroMQ from 0.3.6 to 0.4.0.
+      </action>
+      <action issue="LOG4J2-1869" dev="ggregory" type="update">
+		Update Kafka client from 0.10.1.1 to 0.10.2.0
+      </action>
+      <action issue="LOG4J2-1872" dev="ggregory" type="update">
+		Update JavaMail from 1.5.5 to 1.5.6.
+      </action>
+    </release>
+    <release version="2.8.2" date="2017-04-02" description="GA Release 2.8.2">
+      <action issue="LOG4J2-1861" dev="mattsicker" type="fix">
+        Fix JavaDoc on org.apache.logging.log4j.ThreadContext about inheritance.
+      </action>
+      <action issue="LOG4J2-1862" dev="mattsicker" type="fix" due-to="wangyuntao">
+        Fix JavaDoc about @Order and OrderComparator ordering.
       </action>
       <action issue="LOG4J2-1849" dev="rpopma" type="fix">
         Fixed daylight savings time issue with FixedDateFormat.
@@ -51,6 +68,9 @@
       </action>
       <action issue="LOG4J2-1853" dev="ggregory" type="fix" due-to="wangyuntao">
         The default value of RandomAccessFileAppender.Builder append field is wrong.
+      </action>
+      <action issue="LOG4J2-1863" dev="mattsicker" type="add">
+        Add support for filtering input in TcpSocketServer and UdpSocketServer.
       </action>
       <action issue="LOG4J2-1848" dev="mattsicker" type="add">
         Add JSON encoding support to EncodingPatternConverter %encode{}.

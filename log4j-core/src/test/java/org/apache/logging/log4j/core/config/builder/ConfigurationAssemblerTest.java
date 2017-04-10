@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -40,6 +41,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.Test;
 
@@ -87,7 +89,9 @@ public class ConfigurationAssemblerTest {
         assertEquals("Incorrect State: " + config.getState(), config.getState(), LifeCycle.State.STARTED);
         final Map<String, Appender> appenders = config.getAppenders();
         assertNotNull(appenders);
-        assertTrue("Incorrect number of Appenders: " + appenders.size(), appenders.size() == 1);
+        assertTrue("Incorrect number of Appenders: " + appenders.size(), appenders.size() == 2);
+        final KafkaAppender kafkaAppender = (KafkaAppender)appenders.get("Kafka");
+        final GelfLayout gelfLayout = (GelfLayout)kafkaAppender.getLayout();
         final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertNotNull(loggers);
         assertTrue("Incorrect number of LoggerConfigs: " + loggers.size(), loggers.size() == 2);

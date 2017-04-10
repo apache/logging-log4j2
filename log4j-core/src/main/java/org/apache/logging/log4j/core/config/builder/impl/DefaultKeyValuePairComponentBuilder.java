@@ -14,25 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config;
+package org.apache.logging.log4j.core.config.builder.impl;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.builder.api.KeyValuePairComponentBuilder;
 
 /**
- * Identifies the relative ordering of a {@link ConfigurationFactory} plugin.
- *
- * @see OrderComparator
+ * @since 2.9
  */
-// TODO: 2.2+ use this annotation for all @Plugin classes
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Order {
-    /**
-     * The priority of this annotated type. Larger numbers indicate higher priority with a highest priority of
-     * {@link Integer#MAX_VALUE}.
-     */
-    int value();
+class DefaultKeyValuePairComponentBuilder extends DefaultComponentAndConfigurationBuilder<KeyValuePairComponentBuilder>
+        implements KeyValuePairComponentBuilder {
+
+    public DefaultKeyValuePairComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
+                                               final String key, final String value) {
+        super(builder,"KeyValuePair");
+        addAttribute("key", key);
+        addAttribute("value", value);
+    }
 }
