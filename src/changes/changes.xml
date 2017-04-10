@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1851" dev="mikes" type="update">
+        Move server components from log4j-core to new log4-server module.
+      </action>
       <action issue="LOG4J2-1860" dev="mikes" type="add">
         Shortcut to add Property and KeyValuePair component in ConfigurationBuilder.
       </action>
