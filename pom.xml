@@ -356,11 +356,6 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-server</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jul</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1279,7 +1274,6 @@
     <module>log4j-web</module>
     <module>log4j-perf</module>
     <module>log4j-iostreams</module>
-    <module>log4j-server</module>
     <module>log4j-jul</module>
     <module>log4j-liquibase</module>
     <module>log4j-api-scala_2.10</module>

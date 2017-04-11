@@ -257,20 +257,6 @@
         This only requires the Log4j API.
       </p>
 
-      <a name="log4j-server" />
-      <h4>log4j-server</h4>
-      <table>
-        <caption align="top">Optional Dependencies per Feature in Log4J Server components</caption>
-        <tr>
-          <th>Feature</th>
-          <th>Requirements</th>
-        </tr>
-        <tr>
-          <td>JMS receivers</td>
-          <td>a JMS broker like <a href="http://activemq.apache.org/">Apache ActiveMQ</a></td>
-        </tr>
-      </table>
-
       <a name="log4j-api-scala" />
       <h4>log4j-api-scala</h4>
       <p>
