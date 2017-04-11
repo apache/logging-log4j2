@@ -32,9 +32,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class StringBuilderEncoder implements Encoder<StringBuilder> {
 
     private static final int DEFAULT_BYTE_BUFFER_SIZE = 8 * 1024;
-    private final ThreadLocal<CharBuffer> charBufferThreadLocal = new ThreadLocal<>();
-    private final ThreadLocal<ByteBuffer> byteBufferThreadLocal = new ThreadLocal<>();
-    private final ThreadLocal<CharsetEncoder> charsetEncoderThreadLocal = new ThreadLocal<>();
+    private final ThreadLocal<ThreadLocalState> threadLocal = new ThreadLocal<>();
     private final Charset charset;
     private final int charBufferSize;
     private final int byteBufferSize;
@@ -52,46 +50,43 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
     @Override
     public void encode(final StringBuilder source, final ByteBufferDestination destination) {
         try {
-            TextEncoderHelper.encodeText(getCharsetEncoder(), getCharBuffer(), getByteBuffer(), source, destination);
+            ThreadLocalState threadLocalState = getThreadLocalState();
+            TextEncoderHelper.encodeText(threadLocalState.charsetEncoder, threadLocalState.charBuffer,
+                    threadLocalState.byteBuffer, source, destination);
         } catch (final Exception ex) {
             logEncodeTextException(ex, source, destination);
             TextEncoderHelper.encodeTextFallBack(charset, source, destination);
         }
     }
 
-    private CharsetEncoder getCharsetEncoder() {
-        CharsetEncoder result = charsetEncoderThreadLocal.get();
-        if (result == null) {
-            result = charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
-                    .onUnmappableCharacter(CodingErrorAction.REPLACE);
-            charsetEncoderThreadLocal.set(result);
-        }
-        return result;
-    }
-
-
-    private CharBuffer getCharBuffer() {
-        CharBuffer result = charBufferThreadLocal.get();
-        if (result == null) {
-            result = CharBuffer.wrap(new char[charBufferSize]);
-            charBufferThreadLocal.set(result);
-        }
-        return result;
-    }
-
-    private ByteBuffer getByteBuffer() {
-        ByteBuffer result = byteBufferThreadLocal.get();
-        if (result == null) {
-            result = ByteBuffer.wrap(new byte[byteBufferSize]);
-            byteBufferThreadLocal.set(result);
+    private ThreadLocalState getThreadLocalState() {
+        ThreadLocalState threadLocalState = threadLocal.get();
+        if (threadLocalState == null) {
+            threadLocalState = new ThreadLocalState(charset, charBufferSize, byteBufferSize);
+            threadLocal.set(threadLocalState);
         } else {
-            result.clear();
+            threadLocalState.charsetEncoder.reset();
+            threadLocalState.charBuffer.clear();
+            threadLocalState.byteBuffer.clear();
         }
-        return result;
+        return threadLocalState;
     }
 
     private void logEncodeTextException(final Exception ex, final StringBuilder text,
-                                        final ByteBufferDestination destination) {
+            final ByteBufferDestination destination) {
         StatusLogger.getLogger().error("Recovering from StringBuilderEncoder.encode('{}') error: {}", text, ex, ex);
+    }
+
+    private static class ThreadLocalState {
+        private final CharsetEncoder charsetEncoder;
+        private final CharBuffer charBuffer;
+        private final ByteBuffer byteBuffer;
+
+        ThreadLocalState(Charset charset, int charBufferSize, int byteBufferSize) {
+            charsetEncoder = charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
+                    .onUnmappableCharacter(CodingErrorAction.REPLACE);
+            charBuffer = CharBuffer.allocate(charBufferSize);
+            byteBuffer = ByteBuffer.allocate(byteBufferSize);
+        }
     }
 }
