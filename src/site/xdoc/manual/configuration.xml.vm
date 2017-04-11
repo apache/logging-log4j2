@@ -551,8 +551,6 @@ public class Bar {
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </Layout>
     </Appender>
-    <Appender type="List" name="List">
-    </Appender>
   </Appenders>
 
   <Loggers>
@@ -568,7 +566,7 @@ public class Bar {
     </Logger>
 
     <Root level="trace">
-      <AppenderRef ref="List"/>
+      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
 
@@ -826,8 +824,6 @@ Configuration:
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
     </File>
-    <List name="List">
-    </List>
   </Appenders>
 
   <Loggers>
@@ -849,7 +845,7 @@ Configuration:
     </Logger>
 
     <Root level="trace">
-      <AppenderRef ref="List"/>
+      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
 
@@ -953,10 +949,8 @@ rootLogger.appenderRef.stdout.ref = STDOUT
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
-    </Console>
-    <List name="List">
       <ThresholdFilter level="debug"/>
-    </List>
+    </Console>
     <Routing name="Routing">
       <Routes pattern="${dollar}${dollar}{sd:type}">
         <Route>
@@ -969,7 +963,6 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           </RollingFile>
         </Route>
         <Route ref="STDOUT" key="Audit"/>
-        <Route ref="List" key="Service"/>
       </Routes>
     </Routing>
   </Appenders>
@@ -1349,7 +1342,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           </p>
 
           <pre class="prettyprint linenums"><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>;
+<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug" name="RoutingTest">
   <Properties>
     <Property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</Property>
@@ -1359,10 +1352,8 @@ rootLogger.appenderRef.stdout.ref = STDOUT
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
-    </Console>
-    <List name="List">
       <ThresholdFilter level="debug"/>
-    </List>
+    </Console>
     <Routing name="Routing">
       <Routes pattern="${dollar}${dollar}{sd:type}">
         <Route>
@@ -1375,7 +1366,6 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           </RollingFile>
         </Route>
         <Route ref="STDOUT" key="Audit"/>
-        <Route ref="List" key="Service"/>
       </Routes>
     </Routing>
   </Appenders>
@@ -1418,26 +1408,19 @@ rootLogger.appenderRef.stdout.ref = STDOUT
 2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.
        filter.ThresholdFilter for element ThresholdFilter with params(level="debug",
        onMatch="null", onMismatch="null")
-2011-11-23 17:08:00,806 DEBUG Calling createAppender on class org.apache.logging.log4j.test.
-       appender.ListAppender for element List with params(name="List", entryPerNewLine="null",
-       raw="null", null, ThresholdFilter(DEBUG))
 2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
        routing.Route for element Route with params(AppenderRef="null", key="null", Node=Route)
 2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
        routing.Route for element Route with params(AppenderRef="STDOUT", key="Audit", Node=Route)
-2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
-       routing.Route for element Route with params(AppenderRef="List", key="Service", Node=Route)
 2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.
        routing.Routes for element Routes with params(pattern="${dollar}{sd:type}",
-       routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'),
-       Route(type=static Reference=List key='Service')})
+       routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'))})
 2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.
        routing.RoutingAppender for element Routing with params(name="Routing",
       ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static
-       Reference=STDOUT key='Audit'),
-       Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
+       Reference=STDOUT key='Audit')}), Configuration(RoutingTest), null, null)
 2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.
-       plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
+       plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, Routing})
 2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.
        config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="Routing")
 2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.
@@ -1484,13 +1467,11 @@ rootLogger.appenderRef.stdout.ref = STDOUT
 2011-11-23 17:08:00,802 DEBUG Generated plugins in 0.001349000 seconds
 2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null, target="null", name="STDOUT", ignoreExceptions="null")
 2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
-2011-11-23 17:08:00,806 DEBUG Calling createAppender on class org.apache.logging.log4j.test.appender.ListAppender for element List with params(name="List", entryPerNewLine="null", raw="null", null, ThresholdFilter(DEBUG))
 2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="null", key="null", Node=Route)
 2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="STDOUT", key="Audit", Node=Route)
-2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="List", key="Service", Node=Route)
-2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${dollar}{sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'), Route(type=static Reference=List key='Service')})
-2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit'),Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
-2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
+2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${dollar}{sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit')})
+2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit')}), Configuration(RoutingTest), null, null)
+2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.AppendersPlugin for element appenders with params(appenders={STDOUT, Routing})
 2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="Routing")
 2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", AppenderRef={Routing}, null)
 2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="STDOUT")
