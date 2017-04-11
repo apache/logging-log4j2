@@ -721,11 +721,8 @@ Configuration:
     File:
       name: File
       fileName: ${dollar}{filename}
-      bufferedIO: false
       PatternLayout:
         Pattern: "%d %p %C{1.} [%t] %m%n"
-    List:
-      name: List
       Filters:
         ThresholdFilter:
           level: error
