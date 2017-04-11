@@ -902,6 +902,8 @@ appender.console.type = Console
 appender.console.name = STDOUT
 appender.console.layout.type = PatternLayout
 appender.console.layout.pattern = %m%n
+appender.console.filter.threshold.type = ThresholdFilter
+appender.console.filter.threshold.level = error
 
 appender.rolling.type = RollingFile
 appender.rolling.name = RollingFile
@@ -917,11 +919,6 @@ appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
 appender.rolling.policies.size.size=100MB
 appender.rolling.strategy.type = DefaultRolloverStrategy
 appender.rolling.strategy.max = 5
-
-appender.list.type = List
-appender.list.name = List
-appender.list.filter.threshold.type = ThresholdFilter
-appender.list.filter.threshold.level = error
 
 logger.rolling.name = com.example.my.app
 logger.rolling.level = debug
