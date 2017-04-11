@@ -594,9 +594,7 @@ public class Bar {
     "ThresholdFilter": { "level": "debug" },
     "appenders": {
       "Console": { "name": "STDOUT",
-        "PatternLayout": { "pattern": "%m%n" }
-      },
-      "List": { "name": "List",
+        "PatternLayout": { "pattern": "%m%n" },
         "ThresholdFilter": { "level": "debug" }
       },
       "Routing": { "name": "Routing",
@@ -610,8 +608,7 @@ public class Bar {
                 "SizeBasedTriggeringPolicy": { "size": "500" }
               }
             },
-            { "AppenderRef": "STDOUT", "key": "Audit"},
-            { "AppenderRef": "List", "key": "Service"}
+            { "AppenderRef": "STDOUT", "key": "Audit"}
           ]
         }
       }
@@ -642,8 +639,7 @@ public class Bar {
     "ThresholdFilter": { "level": "debug" },
     "appenders": {
       "appender": [
-         { "type": "Console", "name": "STDOUT", "PatternLayout": { "pattern": "%m%n" }},
-         { "type": "List", "name": "List", "ThresholdFilter": { "level": "debug" }},
+         { "type": "Console", "name": "STDOUT", "PatternLayout": { "pattern": "%m%n" }, "ThresholdFilter": { "level": "debug" }},
          { "type": "Routing",  "name": "Routing",
           "Routes": { "pattern": "${dollar}${dollar}{sd:type}",
             "Route": [
@@ -655,8 +651,7 @@ public class Bar {
                   "SizeBasedTriggeringPolicy": { "size": "500" }
                 }
               },
-              { "AppenderRef": "STDOUT", "key": "Audit"},
-              { "AppenderRef": "List", "key": "Service"}
+              { "AppenderRef": "STDOUT", "key": "Audit"}
             ]
           }
         }
@@ -667,7 +662,7 @@ public class Bar {
         { "name": "EventLogger", "level": "info", "additivity": "false",
           "AppenderRef": { "ref": "Routing" }},
         { "name": "com.foo.bar", "level": "error", "additivity": "false",
-          "AppenderRef": { "ref": "Console" }}
+          "AppenderRef": { "ref": "STDOUT" }}
       ],
       "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
     }
@@ -675,28 +670,9 @@ public class Bar {
 }
 ]]></pre>
           <p>
-            The JSON support uses the Jackson Data Processor to parse the JSON files. These dependencies must be added
-            to a project that wants to use JSON for configuration:
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using
+            JSON configuration files.
           </p>
-          <pre class="prettyprint linenums"><![CDATA[
-<dependency>
-  <groupId>com.fasterxml.jackson.core</groupId>
-  <artifactId>jackson-core</artifactId>
-  <version>${jackson2Version}</version>
-</dependency>
-
-<dependency>
-  <groupId>com.fasterxml.jackson.core</groupId>
-  <artifactId>jackson-databind</artifactId>
-  <version>${jackson2Version}</version>
-</dependency>
-
-<dependency>
-  <groupId>com.fasterxml.jackson.core</groupId>
-  <artifactId>jackson-annotations</artifactId>
-  <version>${jackson2Version}</version>
-</dependency>
-]]></pre>
           <a name="YAML"/>
           <h4>Configuration with YAML</h4>
           <p>
@@ -751,15 +727,9 @@ Configuration:
         ref: STDOUT
           ]]></pre>
           <p>
-            In order to use YAML configuration files, the Jackson YAML data format must be included:
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using
+            YAML configuration files.
           </p>
-          <pre class="prettyprint linenums"><![CDATA[
-<dependency>
-    <groupId>com.fasterxml.jackson.dataformat</groupId>
-    <artifactId>jackson-dataformat-yaml</artifactId>
-    <version>${jackson2Version}</version>
-</dependency>
-          ]]></pre>
         <a name="Loggers"/>
           <h4>Configuring loggers</h4>
           <p>
