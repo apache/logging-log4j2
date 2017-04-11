@@ -34,6 +34,9 @@
       <action issue="LOG4J2-1876" dev="mikes" type="fix">
         More reliable checking for runtime dependencies.
       </action>
+      <action issue="LOG4J2-1867" dev="mikes" type="fix">
+        Fix configuration documentation.
+      </action>
       <action issue="LOG4J2-1851" dev="mikes" type="update">
         Move server components from log4j-core to new log4-server module.
       </action>
