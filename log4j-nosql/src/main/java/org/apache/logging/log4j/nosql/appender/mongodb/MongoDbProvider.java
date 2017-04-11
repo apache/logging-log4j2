@@ -21,33 +21,39 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
+import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.nosql.appender.NoSqlProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
+
 /**
  * The MongoDB implementation of {@link NoSqlProvider}.
  */
-@Plugin(name = "MongoDb", category = "Core", printObject = true)
+@Plugin(name = "MongoDb", category = Core.CATEGORY_NAME, printObject = true)
 public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
     private static final WriteConcern DEFAULT_WRITE_CONCERN = WriteConcern.ACKNOWLEDGED;
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int DEFAULT_PORT = 27017;
+    private static final int DEFAULT_COLLECTION_SIZE = 536870912;
 
     private final String collectionName;
     private final DB database;
@@ -80,8 +86,6 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
      * Factory method for creating a MongoDB provider within the plugin manager.
      *
      * @param collectionName The name of the MongoDB collection to which log events should be written.
-     * @param isCapped If the MongoDB collection shall be a capped collection.
-     * @param collectionSize The size of the MongoDB collection in case it's a capped collection.
      * @param writeConcernConstant The {@link WriteConcern} constant to control writing details, defaults to
      *                             {@link WriteConcern#ACKNOWLEDGED}.
      * @param writeConcernConstantClassName The name of a class containing the aforementioned static WriteConcern
@@ -99,132 +103,249 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
      * @param factoryMethodName The name of the public static factory method belonging to the aforementioned factory
      *                          class.
      * @return a new MongoDB provider.
+     * @deprecated in 2.8; use {@link #newBuilder()} instead.
      */
     @PluginFactory
     public static MongoDbProvider createNoSqlProvider(
-            @PluginAttribute("collectionName") final String collectionName,
-            @PluginAttribute(value = "capped", defaultBoolean = false) final Boolean isCapped,
-            @PluginAttribute(value = "collectionSize", defaultInt = 536870912) final Integer collectionSize,
-            @PluginAttribute("writeConcernConstant") final String writeConcernConstant,
-            @PluginAttribute("writeConcernConstantClass") final String writeConcernConstantClassName,
-            @PluginAttribute("databaseName") final String databaseName,
-            @PluginAttribute(value = "server", defaultString = "localhost") @ValidHost final String server,
-            @PluginAttribute(value = "port", defaultString = "" + DEFAULT_PORT) @ValidPort final String port,
-            @PluginAttribute("userName") final String userName,
-            @PluginAttribute(value = "password", sensitive = true) final String password,
-            @PluginAttribute("factoryClassName") final String factoryClassName,
-            @PluginAttribute("factoryMethodName") final String factoryMethodName) {
-        DB database;
-        String description;
-        if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {
-            try {
-                final Class<?> factoryClass = LoaderUtil.loadClass(factoryClassName);
-                final Method method = factoryClass.getMethod(factoryMethodName);
-                final Object object = method.invoke(null);
+            final String collectionName,
+            final String writeConcernConstant,
+            final String writeConcernConstantClassName,
+            final String databaseName,
+            final String server,
+            final String port,
+            final String userName,
+            final String password,
+            final String factoryClassName,
+			final String factoryMethodName) {
+    	LOGGER.info("createNoSqlProvider");
+		return newBuilder().setCollectionName(collectionName).setWriteConcernConstant(writeConcernConstantClassName)
+				.setWriteConcernConstant(writeConcernConstant).setDatabaseName(databaseName).setServer(server)
+				.setPort(port).setUserName(userName).setPassword(password).setFactoryClassName(factoryClassName)
+				.setFactoryMethodName(factoryMethodName).build();
+	}
 
-                if (object instanceof DB) {
-                    database = (DB) object;
-                } else if (object instanceof MongoClient) {
-                    if (Strings.isNotEmpty(databaseName)) {
-                        database = ((MongoClient) object).getDB(databaseName);
-                    } else {
-                        LOGGER.error("The factory method [{}.{}()] returned a MongoClient so the database name is "
-                                + "required.", factoryClassName, factoryMethodName);
-                        return null;
-                    }
-                } else if (object == null) {
-                    LOGGER.error("The factory method [{}.{}()] returned null.", factoryClassName, factoryMethodName);
-                    return null;
-                } else {
-                    LOGGER.error("The factory method [{}.{}()] returned an unsupported type [{}].", factoryClassName,
-                            factoryMethodName, object.getClass().getName());
-                    return null;
-                }
+	@PluginBuilderFactory
+	public static <B extends Builder<B>> B newBuilder() {
+		return new Builder<B>().asBuilder();
+	}
 
-                description = "database=" + database.getName();
-                final List<ServerAddress> addresses = database.getMongo().getAllAddress();
-                if (addresses.size() == 1) {
-                    description += ", server=" + addresses.get(0).getHost() + ", port=" + addresses.get(0).getPort();
-                } else {
-                    description += ", servers=[";
-                    for (final ServerAddress address : addresses) {
-                        description += " { " + address.getHost() + ", " + address.getPort() + " } ";
-                    }
-                    description += "]";
-                }
-            } catch (final ClassNotFoundException e) {
-                LOGGER.error("The factory class [{}] could not be loaded.", factoryClassName, e);
-                return null;
-            } catch (final NoSuchMethodException e) {
-                LOGGER.error("The factory class [{}] does not have a no-arg method named [{}].", factoryClassName,
-                        factoryMethodName, e);
-                return null;
-            } catch (final Exception e) {
-                LOGGER.error("The factory method [{}.{}()] could not be invoked.", factoryClassName, factoryMethodName,
-                        e);
-                return null;
-            }
-        } else if (Strings.isNotEmpty(databaseName)) {
-            final List<MongoCredential> credentials = new ArrayList<>();
-            description = "database=" + databaseName;
-            if (Strings.isNotEmpty(userName) && Strings.isNotEmpty(password)) {
-                description += ", username=" + userName + ", passwordHash="
-                        + NameUtil.md5(password + MongoDbProvider.class.getName());
-                credentials.add(MongoCredential.createCredential(userName, databaseName, password.toCharArray()));
-            }
-            try {
-                final int portInt = TypeConverters.convert(port, int.class, DEFAULT_PORT);
-                description += ", server=" + server + ", port=" + portInt;
-                database = new MongoClient(new ServerAddress(server, portInt), credentials).getDB(databaseName);
-            } catch (final Exception e) {
-                LOGGER.error(
-                        "Failed to obtain a database instance from the MongoClient at server [{}] and " + "port [{}].",
-                        server, port);
-                return null;
-            }
-        } else {
-            LOGGER.error("No factory method was provided so the database name is required.");
-            return null;
-        }
+	public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
+			implements org.apache.logging.log4j.core.util.Builder<MongoDbProvider> {
 
-        try {
-            database.getCollectionNames(); // Check if the database actually requires authentication
-        } catch (final Exception e) {
-            LOGGER.error(
-                    "The database is not up, or you are not authenticated, try supplying a username and password to the MongoDB provider.",
-                    e);
-            return null;
-        }
+		@PluginBuilderAttribute
+		@ValidHost
+		private String server = "localhost";
 
-        final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
+		@PluginBuilderAttribute
+		@ValidPort
+		private String port = "" + DEFAULT_PORT;
 
-        return new MongoDbProvider(database, writeConcern, collectionName, isCapped, collectionSize, description);
-    }
+		@PluginBuilderAttribute
+		@Required(message = "No database name provided")
+		private String databaseName;
 
-    private static WriteConcern toWriteConcern(final String writeConcernConstant,
-            final String writeConcernConstantClassName) {
-        WriteConcern writeConcern;
-        if (Strings.isNotEmpty(writeConcernConstant)) {
-            if (Strings.isNotEmpty(writeConcernConstantClassName)) {
-                try {
-                    final Class<?> writeConcernConstantClass = LoaderUtil.loadClass(writeConcernConstantClassName);
-                    final Field field = writeConcernConstantClass.getField(writeConcernConstant);
-                    writeConcern = (WriteConcern) field.get(null);
-                } catch (final Exception e) {
-                    LOGGER.error("Write concern constant [{}.{}] not found, using default.",
-                            writeConcernConstantClassName, writeConcernConstant);
-                    writeConcern = DEFAULT_WRITE_CONCERN;
-                }
-            } else {
-                writeConcern = WriteConcern.valueOf(writeConcernConstant);
-                if (writeConcern == null) {
-                    LOGGER.warn("Write concern constant [{}] not found, using default.", writeConcernConstant);
-                    writeConcern = DEFAULT_WRITE_CONCERN;
-                }
-            }
-        } else {
-            writeConcern = DEFAULT_WRITE_CONCERN;
-        }
-        return writeConcern;
+		@PluginBuilderAttribute
+		@Required(message = "No collection name provided")
+		private String collectionName;
+
+		@PluginBuilderAttribute
+		private String userName;
+
+		@PluginBuilderAttribute(sensitive = true)
+		private String password;
+
+		@PluginBuilderAttribute("capped")
+		private boolean isCapped = false;
+
+		@PluginBuilderAttribute
+		private int collectionSize = DEFAULT_COLLECTION_SIZE;
+
+		@PluginBuilderAttribute
+		private String factoryClassName;
+
+		@PluginBuilderAttribute
+		private String factoryMethodName;
+
+		@PluginBuilderAttribute
+		private String writeConcernConstantClassName;
+
+		@PluginBuilderAttribute
+		private String writeConcernConstant;
+
+		public B setServer(String server) {
+			this.server = server;
+			return asBuilder();
+		}
+
+		public B setPort(String port) {
+			this.port = port;
+			return asBuilder();
+		}
+
+		public B setDatabaseName(String databaseName) {
+			this.databaseName = databaseName;
+			return asBuilder();
+		}
+
+		public B setCollectionName(String collectionName) {
+			this.collectionName = collectionName;
+			return asBuilder();
+		}
+
+		public B setUserName(String userName) {
+			this.userName = userName;
+			return asBuilder();
+		}
+
+		public B setPassword(String password) {
+			this.password = password;
+			return asBuilder();
+		}
+
+		public B setCapped(boolean isCapped) {
+			this.isCapped = isCapped;
+			return asBuilder();
+		}
+
+		public B setCollectionSize(int collectionSize) {
+			this.collectionSize = collectionSize;
+			return asBuilder();
+		}
+
+		public B setFactoryClassName(String factoryClassName) {
+			this.factoryClassName = factoryClassName;
+			return asBuilder();
+		}
+
+		public B setFactoryMethodName(String factoryMethodName) {
+			this.factoryMethodName = factoryMethodName;
+			return asBuilder();
+		}
+
+		public B setWriteConcernConstantClassName(String writeConcernConstantClassName) {
+			this.writeConcernConstantClassName = writeConcernConstantClassName;
+			return asBuilder();
+		}
+
+		public B setWriteConcernConstant(String writeConcernConstant) {
+			this.writeConcernConstant = writeConcernConstant;
+			return asBuilder();
+		}
+        
+		@Override
+		public MongoDbProvider build() {
+	        DB database;
+	        String description;
+	        if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {
+	            try {
+	                final Class<?> factoryClass = LoaderUtil.loadClass(factoryClassName);
+	                final Method method = factoryClass.getMethod(factoryMethodName);
+	                final Object object = method.invoke(null);
+
+	                if (object instanceof DB) {
+	                    database = (DB) object;
+	                } else if (object instanceof MongoClient) {
+	                    if (Strings.isNotEmpty(databaseName)) {
+	                        database = ((MongoClient) object).getDB(databaseName);
+	                    } else {
+	                        LOGGER.error("The factory method [{}.{}()] returned a MongoClient so the database name is "
+	                                + "required.", factoryClassName, factoryMethodName);
+	                        return null;
+	                    }
+	                } else if (object == null) {
+	                    LOGGER.error("The factory method [{}.{}()] returned null.", factoryClassName, factoryMethodName);
+	                    return null;
+	                } else {
+	                    LOGGER.error("The factory method [{}.{}()] returned an unsupported type [{}].", factoryClassName,
+	                            factoryMethodName, object.getClass().getName());
+	                    return null;
+	                }
+
+	                description = "database=" + database.getName();
+	                final List<ServerAddress> addresses = database.getMongo().getAllAddress();
+	                if (addresses.size() == 1) {
+	                    description += ", server=" + addresses.get(0).getHost() + ", port=" + addresses.get(0).getPort();
+	                } else {
+	                    description += ", servers=[";
+	                    for (final ServerAddress address : addresses) {
+	                        description += " { " + address.getHost() + ", " + address.getPort() + " } ";
+	                    }
+	                    description += "]";
+	                }
+	            } catch (final ClassNotFoundException e) {
+	                LOGGER.error("The factory class [{}] could not be loaded.", factoryClassName, e);
+	                return null;
+	            } catch (final NoSuchMethodException e) {
+	                LOGGER.error("The factory class [{}] does not have a no-arg method named [{}].", factoryClassName,
+	                        factoryMethodName, e);
+	                return null;
+	            } catch (final Exception e) {
+	                LOGGER.error("The factory method [{}.{}()] could not be invoked.", factoryClassName, factoryMethodName,
+	                        e);
+	                return null;
+	            }
+	        } else if (Strings.isNotEmpty(databaseName)) {
+	            final List<MongoCredential> credentials = new ArrayList<>();
+	            description = "database=" + databaseName;
+	            if (Strings.isNotEmpty(userName) && Strings.isNotEmpty(password)) {
+	                description += ", username=" + userName + ", passwordHash="
+	                        + NameUtil.md5(password + MongoDbProvider.class.getName());
+	                credentials.add(MongoCredential.createCredential(userName, databaseName, password.toCharArray()));
+	            }
+	            try {
+	                final int portInt = TypeConverters.convert(port, int.class, DEFAULT_PORT);
+	                description += ", server=" + server + ", port=" + portInt;
+	                database = new MongoClient(new ServerAddress(server, portInt), credentials).getDB(databaseName);
+	            } catch (final Exception e) {
+	                LOGGER.error(
+	                        "Failed to obtain a database instance from the MongoClient at server [{}] and " + "port [{}].",
+	                        server, port);
+	                return null;
+	            }
+	        } else {
+	            LOGGER.error("No factory method was provided so the database name is required.");
+	            return null;
+	        }
+
+	        try {
+	            database.getCollectionNames(); // Check if the database actually requires authentication
+	        } catch (final Exception e) {
+	            LOGGER.error(
+	                    "The database is not up, or you are not authenticated, try supplying a username and password to the MongoDB provider.",
+	                    e);
+	            return null;
+	        }
+
+	        final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
+
+	        return new MongoDbProvider(database, writeConcern, collectionName, isCapped, collectionSize, description);
+		}
+
+	    private static WriteConcern toWriteConcern(final String writeConcernConstant,
+	            final String writeConcernConstantClassName) {
+	        WriteConcern writeConcern;
+	        if (Strings.isNotEmpty(writeConcernConstant)) {
+	            if (Strings.isNotEmpty(writeConcernConstantClassName)) {
+	                try {
+	                    final Class<?> writeConcernConstantClass = LoaderUtil.loadClass(writeConcernConstantClassName);
+	                    final Field field = writeConcernConstantClass.getField(writeConcernConstant);
+	                    writeConcern = (WriteConcern) field.get(null);
+	                } catch (final Exception e) {
+	                    LOGGER.error("Write concern constant [{}.{}] not found, using default.",
+	                            writeConcernConstantClassName, writeConcernConstant);
+	                    writeConcern = DEFAULT_WRITE_CONCERN;
+	                }
+	            } else {
+	                writeConcern = WriteConcern.valueOf(writeConcernConstant);
+	                if (writeConcern == null) {
+	                    LOGGER.warn("Write concern constant [{}] not found, using default.", writeConcernConstant);
+	                    writeConcern = DEFAULT_WRITE_CONCERN;
+	                }
+	            }
+	        } else {
+	            writeConcern = DEFAULT_WRITE_CONCERN;
+	        }
+	        return writeConcern;
+	    }
     }
 }
