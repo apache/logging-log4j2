@@ -21,7 +21,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.8.2-SNAPSHOT</version>
+  <version>2.8.3-SNAPSHOT</version>
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
@@ -170,16 +170,16 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.8.1</Log4jReleaseVersion>
-    <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
-    <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
-    <!-- <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
-    <Log4jReleaseKey>FA1C814D</Log4jReleaseKey> -->
+    <Log4jReleaseVersion>2.8.2</Log4jReleaseVersion>
+    <!--<Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>-->
+    <!--<Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>-->
+    <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
+    <Log4jReleaseKey>FA1C814D</Log4jReleaseKey>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
     <slf4jVersion>1.7.24</slf4jVersion>
-    <logbackVersion>1.2.0</logbackVersion>
+    <logbackVersion>1.2.2</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.8.6</jackson2Version>
+    <jackson2Version>2.8.7</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion>
     <disruptorVersion>3.3.6</disruptorVersion>
@@ -211,7 +211,7 @@
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <osgi.api.version>4.3.1</osgi.api.version>
-    <activemq.version>5.14.1</activemq.version>
+    <activemq.version>5.14.4</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
@@ -571,7 +571,7 @@
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
-        <version>1.5.5</version>
+        <version>1.5.6</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.jms</groupId>
@@ -587,12 +587,12 @@
       <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
-        <version>0.10.1.1</version>
+        <version>0.10.2.0</version>
       </dependency>
       <dependency>
         <groupId>org.zeromq</groupId>
         <artifactId>jeromq</artifactId>
-        <version>0.3.6</version>
+        <version>0.4.0</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
@@ -829,7 +829,7 @@
             <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
-            <!--<additionalparam>-Xdoclint:none</additionalparam>-->
+            <additionalparam>${javadoc.opts}</additionalparam>
           </configuration>
         </plugin>
         <plugin>
@@ -1530,6 +1530,15 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>java8-doclint-disabled</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+      </properties>
     </profile>
   </profiles>
 </project>

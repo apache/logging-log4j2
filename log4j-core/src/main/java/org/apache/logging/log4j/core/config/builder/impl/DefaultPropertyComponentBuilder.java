@@ -14,24 +14,19 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.server;
+package org.apache.logging.log4j.core.config.builder.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder;
 
 /**
- * Listens for events over a secure socket connection (SSL/TLS).
- * 
- * @param <T>
- *        The kind of input stream read
+ * @since 2.9
  */
-public class SecureTcpSocketServer<T extends InputStream> extends TcpSocketServer<T> {
+class DefaultPropertyComponentBuilder extends DefaultComponentAndConfigurationBuilder<PropertyComponentBuilder>
+        implements PropertyComponentBuilder {
 
-    public SecureTcpSocketServer(final int port, final LogEventBridge<T> logEventInput,
-            final SslConfiguration sslConfig) throws IOException {
-        super(port, logEventInput, sslConfig.getSslServerSocketFactory().createServerSocket(port));
+    public DefaultPropertyComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
+                                           final String name, final String value) {
+        super(builder, name, "Property", value);
     }
-
 }

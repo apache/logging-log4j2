@@ -14,11 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.config.builder.impl;
+
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.builder.api.KeyValuePairComponentBuilder;
 
 /**
- * Standalone server classes for consuming log events over a network. Each of the various servers should be used with
- * another Log4j configuration to handle incoming {@link org.apache.logging.log4j.core.LogEvent}s. It is recommended
- * to consider using the <a href="../../../../../../../../../manual/appenders.html#FlumeAppender">Flume Appender</a>
- * for highly reliable networked logging.
+ * @since 2.9
  */
-package org.apache.logging.log4j.core.net.server;
+class DefaultKeyValuePairComponentBuilder extends DefaultComponentAndConfigurationBuilder<KeyValuePairComponentBuilder>
+        implements KeyValuePairComponentBuilder {
+
+    public DefaultKeyValuePairComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
+                                               final String key, final String value) {
+        super(builder,"KeyValuePair");
+        addAttribute("key", key);
+        addAttribute("value", value);
+    }
+}

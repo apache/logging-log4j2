@@ -14,31 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.server;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
+package org.apache.logging.log4j.core.config.builder.api;
 
 /**
- * Abstract class for implementations of {@link LogEventBridge}.
- * 
- * @param <T>
- *            The kind of input stream read
+ * Assembler for constructing Property Components.
+ * @since 2.9
  */
-public abstract class AbstractLogEventBridge<T extends InputStream> implements LogEventBridge<T> {
-
-    protected static final int END = -1;
-
-    protected static final Logger logger = StatusLogger.getLogger();
-
-    // The default is to return the same object as given.
-    @SuppressWarnings("unchecked")
-    @Override
-    public T wrapStream(final InputStream inputStream) throws IOException {
-        return (T) inputStream;
-    }
+public interface PropertyComponentBuilder extends ComponentBuilder<PropertyComponentBuilder> {
 
 }
