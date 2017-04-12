@@ -24,9 +24,6 @@ import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Loader;
 
-/**
- *
- */
 @Plugin(name = "JsonConfigurationFactory", category = ConfigurationFactory.CATEGORY)
 @Order(6)
 public class JsonConfigurationFactory extends ConfigurationFactory {
