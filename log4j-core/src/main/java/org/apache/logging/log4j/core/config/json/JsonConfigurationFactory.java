@@ -44,7 +44,7 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
     public JsonConfigurationFactory() {
         for (final String dependency : dependencies) {
             if (!Loader.isClassAvailable(dependency)) {
-                LOGGER.debug("Missing dependencies for Json support");
+                LOGGER.debug("Missing dependencies for Json support, ConfigurationFactory {} is inactive", getClass().getName());
                 isActive = false;
                 return;
             }
