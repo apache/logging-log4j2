@@ -111,10 +111,7 @@ public final class StructuredDataFilter extends MapFilter {
             result = new StringBuilder();
             threadLocalStringBuilder.set(result);
         }
-        if (result.length() > MAX_BUFFER_SIZE) {
-            result.setLength(MAX_BUFFER_SIZE);
-            result.trimToSize();
-        }
+        StringBuilders.trimToMaxSize(result, MAX_BUFFER_SIZE);
         result.setLength(0);
         return result;
     }
