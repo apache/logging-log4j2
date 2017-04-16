@@ -177,14 +177,14 @@
     <Log4jReleaseKey>FA1C814D</Log4jReleaseKey>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
     <slf4jVersion>1.7.24</slf4jVersion>
-    <logbackVersion>1.2.0</logbackVersion>
+    <logbackVersion>1.2.2</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.8.7</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion>
     <disruptorVersion>3.3.6</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion>
-    <compiler.plugin.version>3.6.0</compiler.plugin.version>
+    <compiler.plugin.version>3.6.1</compiler.plugin.version>
     <pmd.plugin.version>3.7</pmd.plugin.version>
     <findbugs.plugin.version>3.0.4</findbugs.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
@@ -393,7 +393,7 @@
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
-        <version>1.14</version>
+        <version>1.15</version>
         <optional>true</optional>
       </dependency>
       <dependency>
@@ -571,7 +571,7 @@
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
-        <version>1.5.5</version>
+        <version>1.5.6</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.jms</groupId>
@@ -587,7 +587,7 @@
       <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
-        <version>0.10.1.1</version>
+        <version>0.10.2.0</version>
       </dependency>
       <dependency>
         <groupId>org.zeromq</groupId>

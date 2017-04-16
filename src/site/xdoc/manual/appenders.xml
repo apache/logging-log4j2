@@ -3999,9 +3999,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <p>
             The <code>SocketAppender</code> is an OutputStreamAppender that writes its output to a remote destination
             specified by a host and port. The data can be sent over either TCP or UDP and can be sent in any format.
-            The default format is to send a Serialized LogEvent. Log4j 2 contains a SocketServer which is capable
-            of receiving serialized LogEvents and routing them through the logging system on the server. You can optionally
-            secure communication with SSL.
+            The default format is to send a Serialized LogEvent. You can optionally secure communication with SSL.
           </p>
           <table>
             <caption align="top"><code>SocketAppender</code> Parameters</caption>
