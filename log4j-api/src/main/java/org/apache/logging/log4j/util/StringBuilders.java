@@ -143,4 +143,18 @@ public final class StringBuilders {
         }
         return false;
     }
+
+    /**
+     * Ensures that the char[] array of the specified StringBuilder does not exceed the specified number of characters.
+     * This method is useful to ensure that excessively long char[] arrays are not kept in memory forever.
+     *
+     * @param stringBuilder the StringBuilder to check
+     * @param maxSize the maximum number of characters the StringBuilder is allowed to have
+     */
+    public static void trimToMaxSize(final StringBuilder stringBuilder, final int maxSize) {
+        if (stringBuilder != null && stringBuilder.length() > maxSize) {
+            stringBuilder.setLength(maxSize);
+            stringBuilder.trimToSize();
+        }
+    }
 }
