@@ -202,6 +202,11 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         write(bytes, 0, bytes.length, immediateFlush);
     }
 
+    @Override
+    public void writeBytes(final byte[] data, final int offset, final int length) {
+        write(data, offset, length, false);
+    }
+
     /**
      * Some output streams synchronize writes while others do not. Synchronizing here insures that
      * log events won't be intertwined.
@@ -210,9 +215,8 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param length The number of bytes to write.
      * @throws AppenderLoggingException if an error occurs.
      */
-    @Override
-    public void write(final byte[] bytes, final int offset, final int length) {
-        write(bytes, offset, length, false);
+    protected void write(final byte[] bytes, final int offset, final int length) {
+        writeBytes(bytes, offset, length);
     }
 
     /**
@@ -349,7 +353,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     }
 
     @Override
-    public void write(ByteBuffer data) {
+    public void writeBytes(ByteBuffer data) {
         if (data.remaining() == 0) {
           return;
         }

@@ -36,7 +36,7 @@ public class TextEncoderHelper {
     static void encodeTextFallBack(final Charset charset, final StringBuilder text,
             final ByteBufferDestination destination) {
         final byte[] bytes = text.toString().getBytes(charset);
-        destination.write(ByteBuffer.wrap(bytes));
+        destination.writeBytes(bytes, 0, bytes.length);
     }
 
     static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer byteBuf,
@@ -73,7 +73,7 @@ public class TextEncoderHelper {
         // destination.getByteBuffer() is not protected with the synchronization on the destination object.
         if (byteBuf != destination.getByteBuffer()) {
             byteBuf.flip();
-            destination.write(byteBuf);
+            destination.writeBytes(byteBuf);
             byteBuf.clear();
         }
     }

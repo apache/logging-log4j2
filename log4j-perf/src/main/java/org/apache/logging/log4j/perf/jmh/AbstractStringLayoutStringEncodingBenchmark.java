@@ -262,12 +262,12 @@ public class AbstractStringLayoutStringEncodingBenchmark {
         }
 
         @Override
-        public void write(ByteBuffer data) {
+        public void writeBytes(ByteBuffer data) {
             ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
         }
 
         @Override
-        public void write(final byte[] data, final int offset, final int length) {
+        public void writeBytes(final byte[] data, final int offset, final int length) {
             ByteBufferDestinationHelper.writeToUnsynchronized(data, offset, length, this);
         }
 

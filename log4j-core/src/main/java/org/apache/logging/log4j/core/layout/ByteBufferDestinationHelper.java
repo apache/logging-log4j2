@@ -25,7 +25,7 @@ public final class ByteBufferDestinationHelper {
 
     /**
      * Writes the specified data to the specified destination. Doesn't synchronize on the destination object. The helper
-     * method for {@link ByteBufferDestination#write(ByteBuffer)} implementations.
+     * method for {@link ByteBufferDestination#writeBytes(ByteBuffer)} implementations.
      *
      * @param data        the data to write
      * @param destination the {@code ByteBufferDestination} to write to
@@ -45,7 +45,7 @@ public final class ByteBufferDestinationHelper {
 
     /**
      * Writes the specified data to the specified destination. Doesn't synchronize on the destination object. The helper
-     * method for {@link ByteBufferDestination#write(byte[], int, int)} implementations.
+     * method for {@link ByteBufferDestination#writeBytes(byte[], int, int)} implementations.
      *
      * @param data        the data to write
      * @param offset      where to start in the specified data array

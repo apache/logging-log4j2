@@ -90,12 +90,12 @@ public class PatternLayoutTest {
         }
 
         @Override
-        public void write(final ByteBuffer data) {
+        public void writeBytes(final ByteBuffer data) {
             byteBuffer.put(data);
         }
 
         @Override
-        public void write(final byte[] data, final int offset, final int length) {
+        public void writeBytes(final byte[] data, final int offset, final int length) {
             byteBuffer.put(data, offset, length);
         }
     }

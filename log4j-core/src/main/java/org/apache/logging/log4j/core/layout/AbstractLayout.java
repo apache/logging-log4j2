@@ -208,6 +208,6 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
         final byte[] data = toByteArray(event);
-        destination.write(data, 0, data.length);
+        destination.writeBytes(data, 0, data.length);
     }
 }
