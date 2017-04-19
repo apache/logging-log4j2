@@ -734,10 +734,6 @@ public class Log4jLogEvent implements LogEvent {
         throw new InvalidObjectException("Proxy required");
     }
 
-    public LogEvent createMemento() {
-        return createMemento(this);
-    }
-    
     public static LogEvent createMemento(final LogEvent logEvent) {
         return new Log4jLogEvent.Builder(logEvent).build();
     }
