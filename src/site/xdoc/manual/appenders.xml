@@ -2739,7 +2739,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   <td>max</td>
                   <td>integer</td>
                   <td>The maximum value of the counter. Once this values is reached older archives will be
-                    deleted on subsequent rollovers.</td>
+                    deleted on subsequent rollovers. The default value is 7.</td>
                 </tr>
                 <tr>
                   <td>compressionLevel</td>
