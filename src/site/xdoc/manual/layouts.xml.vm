@@ -185,7 +185,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
         </subsection>
         <a name="GELFLayout"/>
         <subsection name="GELF Layout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.GELFLayout -->
+          <!-- From Javadoc of org.apache.logging.log4j.core.layout.GelfLayout -->
           <p>
             Lays out events in the Graylog Extended Log Format (GELF) 1.1.
           </p>
@@ -239,7 +239,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>boolean</td>
               <td>Whether to include thread context as additional fields (optional, default to true).</td>
             </tr>
-            <caption align="top">GELF Layout Parameters</caption>
+            <caption align="top">GelfLayout Parameters</caption>
           </table>
            <p>
              See also:
@@ -249,8 +249,8 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
            </ul>
         </subsection>
         <a name="HTMLLayout"/>
-        <subsection name="HTMLLayout">
-          <p>The HTMLLayout generates an HTML page and adds each LogEvent to a row in a table.
+        <subsection name="HTML Layout">
+          <p>The HtmlLayout generates an HTML page and adds each LogEvent to a row in a table.
           </p>
           <table>
             <tr>
@@ -285,12 +285,22 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>String</td>
               <td>A String that will appear as the HTML title.</td>
             </tr>
-            <caption align="top">HTML Layout Parameters</caption>
+            <tr>
+              <td>fontName</td>
+              <td>String</td>
+              <td>The <code>font-family</code> to use. The default is "arial,sans-serif".</td>
+            </tr>
+            <tr>
+              <td>fontSize</td>
+              <td>String</td>
+              <td>The <code>font-size</code> to use. The default is "small".</td>
+            </tr>
+            <caption align="top">HtmlLayout Parameters</caption>
           </table>
         </subsection>
         <a name="JSONLayout"/>
-        <subsection name="JSONLayout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.JSONLayout -->
+        <subsection name="JSON Layout">
+          <!-- From Javadoc of org.apache.logging.log4j.core.layout.JsonLayout -->
           <p>
           Appends a series of JSON events as strings serialized as bytes. This layout requires Jackson jar files
           (see pom.xml for details).
@@ -329,9 +339,6 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           <p>
           If <code>complete="false"</code>, the appender does not write the JSON open array character "[" at the start
           of the document, "]" and the end, nor comma "," between records.
-          </p>
-          <p>
-          This approach enforces the independence of the JSONLayout and the appender where you embed it.
           </p>
           <h4>Pretty vs. compact JSON</h4>
           <p>
@@ -396,11 +403,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
-            <caption align="top">JSON Layout Parameters</caption>
+            <caption align="top">JsonLayout Parameters</caption>
           </table>
         </subsection>
         <a name="PatternLayout"/>
-        <subsection name="PatternLayout">
+        <subsection name="Pattern Layout">
           <p>A flexible layout configurable with pattern string. The goal of this class is to format a LogEvent and
             return the results. The format of the result depends on the <em>conversion pattern</em>.
           </p>
@@ -1784,8 +1791,8 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
 </PatternLayout>]]></pre>
       </subsection>
         <a name="RFC5424Layout"/>
-        <subsection name="RFC5424Layout">
-          <p>As the name implies, the RFC5424Layout formats LogEvents in accordance with
+        <subsection name="RFC5424 Layout">
+          <p>As the name implies, the Rfc5424Layout formats LogEvents in accordance with
             <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>, the enhanced Syslog specification. Although the specification
             is primarily directed at sending messages via Syslog, this format is quite useful for
             other purposes since items are passed in the message as self-describing key/value pairs.
@@ -1909,17 +1916,17 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>String</td>
               <td>String that should be used to replace newlines within the message text.</td>
             </tr>
-            <caption align="top">RFC5424Layout Parameters</caption>
+            <caption align="top">Rfc5424Layout Parameters</caption>
           </table>
         </subsection>
         <a name="SerializedLayout"/>
-        <subsection name="SerializedLayout">
-          <p>The SerializedLayout simply serializes the LogEvent into a byte array. This is useful when
+        <subsection name="Serialized Layout">
+          <p>The SerializedLayout simply serializes the LogEvent into a byte array using Java Serialization. This is useful when
             sending messages via JMS or via a Socket connection. The SerializedLayout accepts no parameters.
           </p>
         </subsection>
         <a name="SyslogLayout"/>
-        <subsection name="SyslogLayout">
+        <subsection name="Syslog Layout">
           <p>The SyslogLayout formats the LogEvent as BSD Syslog records matching the same format used by
             Log4j 1.2.
           </p>
@@ -1957,8 +1964,8 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           </table>
         </subsection>
         <a name="XMLLayout"/>
-        <subsection name="XMLLayout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.XMLLayout -->
+        <subsection name="XML Layout">
+          <!-- From Javadoc of org.apache.logging.log4j.core.layout.XmlLayout -->
           <p>
             <!-- FIXME: log4j.dtd link is broken -->
           Appends a series of <code>Event</code> elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
@@ -1988,9 +1995,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>
           If <code>complete="false"</code>, the appender does not write the XML processing instruction and the root
           element.
-          </p>
-          <p>
-          This approach enforces the independence of the XMLLayout and the appender where you embed it.
           </p>
           <h4>Marker</h4>
           <p>Markers are represented by a <code>Marker</code> element within the <code>Event</code> element.
@@ -2046,11 +2050,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
-            <caption align="top">XML Layout Parameters</caption>
+            <caption align="top">XmlLayout Parameters</caption>
           </table>
         </subsection>
         <a name="YamlLayout"/>
-        <subsection name="YamlLayout">
+        <subsection name="YAML Layout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.YamlLayout -->
           <p>
             Appends a series of YAML events as strings serialized as bytes.
@@ -2220,7 +2224,7 @@ source:
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
-            <caption align="top">YAML Layout Parameters</caption>
+            <caption align="top">YamlLayout Parameters</caption>
           </table>
         </subsection>
         <a name="LocationInformation"/>
