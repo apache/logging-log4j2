@@ -85,6 +85,10 @@
               And <code>com.fasterxml.woodstox:woodstox-core:5.0.2</code></td>
         </tr>
         <tr>
+          <td>YAML Layout</td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core, databind</a> and <a href="https://github.com/FasterXML/jackson-dataformat-yaml">YAML data format</a></td>
+        </tr>
+        <tr>
           <td>Async Loggers</td>
           <td><a href="http://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a></td>
         </tr>

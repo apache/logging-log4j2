@@ -182,6 +182,9 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
         <pre class="prettyprint linenums">
 0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
 </pre>
+          <p>
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using CSV layouts.
+          </p>
         </subsection>
         <a name="GELFLayout"/>
         <subsection name="GELF Layout">
@@ -302,8 +305,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
         <subsection name="JSON Layout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.JsonLayout -->
           <p>
-          Appends a series of JSON events as strings serialized as bytes. This layout requires Jackson jar files
-          (see pom.xml for details).
+          Appends a series of JSON events as strings serialized as bytes.
           </p>
           <h4>Complete well-formed JSON vs. fragment JSON</h4>
           <p>
@@ -405,6 +407,9 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             </tr>
             <caption align="top">JsonLayout Parameters</caption>
           </table>
+          <p>
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using JsonLayout.
+          </p>
         </subsection>
         <a name="PatternLayout"/>
         <subsection name="Pattern Layout">
@@ -2052,6 +2057,9 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
             </tr>
             <caption align="top">XmlLayout Parameters</caption>
           </table>
+          <p>
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using XmlLayout.
+          </p>
         </subsection>
         <a name="YamlLayout"/>
         <subsection name="YAML Layout">
@@ -2226,6 +2234,9 @@ source:
             </tr>
             <caption align="top">YamlLayout Parameters</caption>
           </table>
+          <p>
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using YamlLayout.
+          </p>
         </subsection>
         <a name="LocationInformation"/>
         <subsection name="Location Information">
