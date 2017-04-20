@@ -53,7 +53,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         private String fileName;
 
         @PluginBuilderAttribute("append")
-        private boolean append;
+        private boolean append = true;
 
         @PluginBuilderAttribute("advertise")
         private boolean advertise;

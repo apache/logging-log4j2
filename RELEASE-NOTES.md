@@ -1,6 +1,6 @@
-# Apache Log4j 2.8.1 Release Notes
+# Apache Log4j 2.8.2 Release Notes
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.8.1 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.8.2 release!
 
 Apache Log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade
 to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
@@ -26,49 +26,57 @@ or
 
     logger.error((Marker) null, “This is the log message”, throwable);
 
-The Log4j 2.8.1 API, as well as many core components, maintains binary compatibility with previous releases.
+The Log4j 2.8.2 API, as well as many core components, maintains binary compatibility with previous releases.
 
-## GA Release 2.8.1
+## GA Release 2.8.2
 
 Changes in this version include:
 
 ### New Features
-* [LOG4J2-1823](https://issues.apache.org/jira/browse/LOG4J2-1823):
-Remove deprecation on MessageSupplier lambda functions in Logger API.
-* [LOG4J2-1807](https://issues.apache.org/jira/browse/LOG4J2-1807):
-[core] Add and implement LogEvent.toImmutable().
+* [LOG4J2-1863](https://issues.apache.org/jira/browse/LOG4J2-1863):
+Add support for filtering input in TcpSocketServer and UdpSocketServer.
+* [LOG4J2-1848](https://issues.apache.org/jira/browse/LOG4J2-1848):
+Add JSON encoding support to EncodingPatternConverter %encode{}.
+* [LOG4J2-1843](https://issues.apache.org/jira/browse/LOG4J2-1843):
+Add support for appending common suffix to each line of throwable stack trace. Thanks to Zilong Song.
+* [LOG4J2-1838](https://issues.apache.org/jira/browse/LOG4J2-1838):
+Add support for appending common suffix to each line of extended and root throwable stack trace. Thanks to Zilong Song.
 
 ### Fixed Bugs
-* [LOG4J2-1804](https://issues.apache.org/jira/browse/LOG4J2-1804):
-Allow %i in file pattern to be preceded with characters other than just '-'. Thanks to Pierrick Hymbert.
-* [LOG4J2-1816](https://issues.apache.org/jira/browse/LOG4J2-1816):
-Change minOccur to minOccurs in Log4j-config.xsd. Thanks to shubhankar1100.
-* [LOG4J2-1803](https://issues.apache.org/jira/browse/LOG4J2-1803):
-Fix Maven POM to ensure JMH generated classes in log4j-perf are included in benchmarks jar.
-* [LOG4J2-1800](https://issues.apache.org/jira/browse/LOG4J2-1800):
-Report errors when sending to Kafka when using syncSend=false. Thanks to Vincent Tieleman.
-* [LOG4J2-1805](https://issues.apache.org/jira/browse/LOG4J2-1805):
-Fixed rare race condition in FixedDateFormat, made FixedDateFormat::millisSinceMidnight method public.
-* [LOG4J2-1799](https://issues.apache.org/jira/browse/LOG4J2-1799):
-Fixed bug in PropertiesUtil::getCharsetProperty that caused UnsupportedCharsetException for ConsoleAppender. Thanks to Eduard Gizatullin.
-* [LOG4J2-1806](https://issues.apache.org/jira/browse/LOG4J2-1806):
-Fix Javadoc for DefaultRolloverStrategy::purgeAscending Thanks to challarao.
-* [LOG4J2-1818](https://issues.apache.org/jira/browse/LOG4J2-1818):
-Fix rollover to work when filePattern contains no directory components. Thanks to xkr47.
+* [LOG4J2-1861](https://issues.apache.org/jira/browse/LOG4J2-1861):
+Fix JavaDoc on org.apache.logging.log4j.ThreadContext about inheritance.
+* [LOG4J2-1862](https://issues.apache.org/jira/browse/LOG4J2-1862):
+Fix JavaDoc about @Order and OrderComparator ordering. Thanks to wangyuntao.
+* [LOG4J2-1849](https://issues.apache.org/jira/browse/LOG4J2-1849):
+Fixed daylight savings time issue with FixedDateFormat.
+* [LOG4J2-1850](https://issues.apache.org/jira/browse/LOG4J2-1850):
+Fix CassandraRule and unit tests on Windows. Thanks to Ludovic Hochet.
+* [LOG4J2-1840](https://issues.apache.org/jira/browse/LOG4J2-1840):
+Fix typo in %replace converter documentation. Thanks to Pradeep Balasundaram.
+* [LOG4J2-1846](https://issues.apache.org/jira/browse/LOG4J2-1846):
+Handle when LogEvent.getLoggerName() returns null in LoggerNameLevelRewritePolicy.
+* [LOG4J2-1845](https://issues.apache.org/jira/browse/LOG4J2-1845):
+Handle when LogEvent.getLoggerName() returns null in KafkaAppender.
+* [LOG4J2-1853](https://issues.apache.org/jira/browse/LOG4J2-1853):
+The default value of RandomAccessFileAppender.Builder append field is wrong. Thanks to wangyuntao.
+* [LOG4J2-1835](https://issues.apache.org/jira/browse/LOG4J2-1835):
+Fix documentation about the licensing for JeroMQ.
+* [LOG4J2-1836](https://issues.apache.org/jira/browse/LOG4J2-1836):
+Update the API version to 2.6.0.
+* [LOG4J2-1831](https://issues.apache.org/jira/browse/LOG4J2-1831):
+NullPointerException in HtmlLayout. Thanks to Edward Serebrinskiy.
+* [LOG4J2-1820](https://issues.apache.org/jira/browse/LOG4J2-1820):
+Log4j 2.8 can lose exceptions when a security manager is present. Thanks to Jason Tedor.
 
 ### Changes
-* [LOG4J2-1822](https://issues.apache.org/jira/browse/LOG4J2-1822):
-Update SLF4J to 1.7.24.
-* [LOG4J2-1812](https://issues.apache.org/jira/browse/LOG4J2-1812):
-Improved error message when log4j 2 configuration file not found.
-* [LOG4J2-1810](https://issues.apache.org/jira/browse/LOG4J2-1810):
-Update to use Logback 1.1.10 and then Logback 1.2 for tests.
-* [LOG4J2-1819](https://issues.apache.org/jira/browse/LOG4J2-1819):
-Update Jackson from 2.8.5 to 2.8.6.
+* [LOG4J2-1827](https://issues.apache.org/jira/browse/LOG4J2-1827):
+Move integration tests to their own module to speed up build.
+* [LOG4J2-1856](https://issues.apache.org/jira/browse/LOG4J2-1856):
+Update Jackson from 2.8.6 to 2.8.7.
 
 ---
 
-Apache Log4j 2.8.1 requires a minimum of Java 7 to build and run. Log4j 2.3 was the
+Apache Log4j 2.8.2 requires a minimum of Java 7 to build and run. Log4j 2.3 was the
 last release that supported Java 6.
 
 Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it

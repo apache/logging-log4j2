@@ -14,11 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.util;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
- * Standalone server classes for consuming log events over a network. Each of the various servers should be used with
- * another Log4j configuration to handle incoming {@link org.apache.logging.log4j.core.LogEvent}s. It is recommended
- * to consider using the <a href="../../../../../../../../../manual/appenders.html#FlumeAppender">Flume Appender</a>
- * for highly reliable networked logging.
+ * Tests the StringBuilders class.
  */
-package org.apache.logging.log4j.core.net.server;
+public class StringBuildersTest {
+    @Test
+    public void trimToMaxSize() throws Exception {
+        StringBuilder sb = new StringBuilder();
+        char[] value = new char[4 * 1024];
+        sb.append(value);
+
+        assertTrue("needs trimming", sb.length() > Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        StringBuilders.trimToMaxSize(sb, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        assertTrue("trimmed OK", sb.length() <= Constants.MAX_REUSABLE_MESSAGE_SIZE);
+    }
+}

@@ -43,6 +43,21 @@ public final class Constants {
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 
     /**
+     * Maximum size of the StringBuilders used in RingBuffer LogEvents to store the contents of reusable Messages.
+     * After a large message has been delivered to the appenders, the StringBuilder is trimmed to this size.
+     * <p>
+     * The default value is {@value}, which allows the StringBuilder to resize three times from its initial size.
+     * Users can override with system property "log4j.maxReusableMsgSize".
+     * </p>
+     * @since 2.9
+     */
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
+
+    private static int size(final String property, final int defaultValue) {
+        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    }
+
+    /**
      * Determines if a named Class can be loaded or not.
      *
      * @param className The class name.

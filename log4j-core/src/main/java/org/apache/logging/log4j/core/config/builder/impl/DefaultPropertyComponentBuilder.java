@@ -14,13 +14,19 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.config.builder.impl;
+
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder;
 
 /**
- * Supporting network code for JMS appenders.
- *
- * <p>Note that you can use JmsQueueReceiver or JmsTopicReceiver as executable main classes to receive log events over
- * JMS (sent via the appropriate JMS appender) that can be subsequently logged according to the configuration given to
- * the running process. Of course, use of these classes as standalone executables are entirely optional and can
- * be used directly in your application (e.g., through your Spring {@code beans.xml} configuration).</p>
+ * @since 2.9
  */
-package org.apache.logging.log4j.core.net.mom.jms;
+class DefaultPropertyComponentBuilder extends DefaultComponentAndConfigurationBuilder<PropertyComponentBuilder>
+        implements PropertyComponentBuilder {
+
+    public DefaultPropertyComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
+                                           final String name, final String value) {
+        super(builder, name, "Property", value);
+    }
+}

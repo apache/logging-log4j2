@@ -14,31 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.server;
+package org.apache.logging.log4j.core.config.builder.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.builder.api.KeyValuePairComponentBuilder;
 
 /**
- * Abstract class for implementations of {@link LogEventBridge}.
- * 
- * @param <T>
- *            The kind of input stream read
+ * @since 2.9
  */
-public abstract class AbstractLogEventBridge<T extends InputStream> implements LogEventBridge<T> {
+class DefaultKeyValuePairComponentBuilder extends DefaultComponentAndConfigurationBuilder<KeyValuePairComponentBuilder>
+        implements KeyValuePairComponentBuilder {
 
-    protected static final int END = -1;
-
-    protected static final Logger logger = StatusLogger.getLogger();
-
-    // The default is to return the same object as given.
-    @SuppressWarnings("unchecked")
-    @Override
-    public T wrapStream(final InputStream inputStream) throws IOException {
-        return (T) inputStream;
+    public DefaultKeyValuePairComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
+                                               final String key, final String value) {
+        super(builder,"KeyValuePair");
+        addAttribute("key", key);
+        addAttribute("value", value);
     }
-
 }
