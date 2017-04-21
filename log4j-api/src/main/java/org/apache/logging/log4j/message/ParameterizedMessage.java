@@ -18,7 +18,9 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Handles messages that consist of a format string containing '{}' to represent each replaceable token, and
@@ -200,6 +202,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
             final StringBuilder buffer = getThreadLocalStringBuilder();
             formatTo(buffer);
             formattedMessage = buffer.toString();
+            StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
         }
         return formattedMessage;
     }

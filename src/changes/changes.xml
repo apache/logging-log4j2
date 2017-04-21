@@ -31,6 +31,18 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1880" dev="mikes" type="add">
+        Warn when a configuration file for an inactive ConfigurationFactory is found.
+      </action>
+      <action issue="LOG4J2-1876" dev="mikes" type="fix">
+        More reliable checking for runtime dependencies.
+      </action>
+      <action issue="LOG4J2-1867" dev="mikes" type="fix">
+        Fix configuration documentation.
+      </action>
+      <action issue="LOG4J2-1858" dev="rpopma" type="fix">
+        Ensure the ThreadLocal StringBuilder in ParameterizedMessage won't hold excessively much memory after logging a long message.
+      </action>
       <action issue="LOG4J2-1851" dev="mikes" type="update">
         Move server components from log4j-core to new log4-server module.
       </action>
@@ -46,6 +58,12 @@
       <action issue="LOG4J2-1872" dev="ggregory" type="update">
 		Update JavaMail from 1.5.5 to 1.5.6.
       </action>
+      <action issue="LOG4J2-1879" dev="ggregory" type="update">
+		Update JAnsi from 1.14 to 1.15.
+      </action>
+      <action issue="LOG4J2-1877" dev="ggregory" type="update">
+		Missing documentation for Max index limit in DefaultRolloverStrategy.
+      </action>
     </release>
     <release version="2.8.2" date="2017-04-02" description="GA Release 2.8.2">
       <action issue="LOG4J2-1861" dev="mattsicker" type="fix">
@@ -55,7 +73,7 @@
         Fix JavaDoc about @Order and OrderComparator ordering.
       </action>
       <action issue="LOG4J2-1849" dev="rpopma" type="fix">
-        Fixed daylight savings time issue with FixedDateFormat.
+        Fixed daylight savings time (DST) issue with FixedDateFormat.
       </action>
       <action issue="LOG4J2-1850" dev="mattsicker" type="fix" due-to="Ludovic Hochet">
         Fix CassandraRule and unit tests on Windows.

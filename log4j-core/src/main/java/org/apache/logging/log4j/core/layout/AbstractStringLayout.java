@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -46,7 +47,7 @@ import org.apache.logging.log4j.util.Strings;
 public abstract class AbstractStringLayout extends AbstractLayout<String> implements StringLayout {
 
     public abstract static class Builder<B extends Builder<B>> extends AbstractLayout.Builder<B> {
-        
+
         @PluginBuilderAttribute(value = "charset")
         private Charset charset;
 
@@ -82,9 +83,9 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             this.headerSerializer = headerSerializer;
             return asBuilder();
         }
-        
+
     }
-    
+
     public interface Serializer {
         String toSerializable(final LogEvent event);
     }
@@ -140,10 +141,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     }
 
     protected static void trimToMaxSize(final StringBuilder stringBuilder) {
-        if (stringBuilder.length() > MAX_STRING_BUILDER_SIZE) {
-            stringBuilder.setLength(MAX_STRING_BUILDER_SIZE);
-            stringBuilder.trimToSize();
-        }
+        StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
     }
 
     private Encoder<StringBuilder> textEncoder;

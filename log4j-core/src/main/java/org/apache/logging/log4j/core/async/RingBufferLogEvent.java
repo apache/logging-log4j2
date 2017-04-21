@@ -23,19 +23,20 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.message.AsynchronouslyFormattable;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 
 import com.lmax.disruptor.EventFactory;
@@ -118,7 +119,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     public LogEvent toImmutable() {
         return createMemento();
     }
-    
+
     private void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
@@ -406,20 +407,13 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
             }
         }
 
-        trimMessageText();
+        // ensure that excessively long char[] arrays are not kept in memory forever
+        StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
 
         if (parameters != null) {
             for (int i = 0; i < parameters.length; i++) {
                 parameters[i] = null;
             }
-        }
-    }
-
-    // ensure that excessively long char[] arrays are not kept in memory forever
-    private void trimMessageText() {
-        if (messageText != null && messageText.length() > Constants.MAX_REUSABLE_MESSAGE_SIZE) {
-            messageText.setLength(Constants.MAX_REUSABLE_MESSAGE_SIZE);
-            messageText.trimToSize();
         }
     }
 
@@ -435,7 +429,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     public LogEvent createMemento() {
         return new Log4jLogEvent.Builder(this).build();
-        
+
     }
 
     /**

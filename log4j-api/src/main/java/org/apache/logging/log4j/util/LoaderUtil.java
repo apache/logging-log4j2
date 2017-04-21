@@ -114,7 +114,7 @@ public final class LoaderUtil {
         try {
             final Class<?> clazz = loadClass(className);
             return clazz != null;
-        } catch (final ClassNotFoundException e) {
+        } catch (final ClassNotFoundException | LinkageError e) {
             return false;
         } catch (final Throwable e) {
             LowLevelLogUtil.logException("Unknown error checking for existence of class: " + className, e);
