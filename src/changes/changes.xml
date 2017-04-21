@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1359" dev="rgoers" type="add">
+        Add support for Java 9 StackWalker.
+      </action>
       <action issue="LOG4J2-1880" dev="mikes" type="add">
         Warn when a configuration file for an inactive ConfigurationFactory is found.
       </action>
