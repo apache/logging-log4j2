@@ -22,7 +22,7 @@ Note that building the site requires Maven 3.0.5, while everything else works
 fine with any version of Maven 3.
 
 Log4j 2.x uses the Java 9 compiler in addition to 
-the Java version installed in the path. This is accomplished by usin Maven's toolchains support.
+the Java version installed in the path. This is accomplished by using Maven's toolchains support.
 Log4j 2 provides a sample toolchains XML file in the root folder. This may be used by
 modifying it and installing the file as toolchains.xml in the .m2 folder or by using 
 -t ./toolchains-sample.xml when invoking Maven.
