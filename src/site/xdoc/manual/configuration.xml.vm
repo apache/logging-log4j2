@@ -741,7 +741,7 @@ Configuration:
             also have an additivity attribute specified.  The level may be configured with one of TRACE,
             DEBUG, INFO, WARN, ERROR, ALL or OFF. If no level is specified it will default to ERROR. The
             additivity attribute may be assigned a value of true or false. If the attribute is omitted
-            the default value of false will be used.
+            the default value of true will be used.
           </p>
           <p>
             A LoggerConfig (including the root LoggerConfig) can be configured with properties that will be added

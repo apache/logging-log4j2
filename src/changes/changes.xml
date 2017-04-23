@@ -49,6 +49,9 @@
       <action issue="LOG4J2-1858" dev="rpopma" type="fix">
         Ensure the ThreadLocal StringBuilder in ParameterizedMessage won't hold excessively much memory after logging a long message.
       </action>
+      <action issue="LOG4J2-1885" dev="mattsicker" type="fix">
+        Fix documentation about default additivity value for loggers.
+      </action>
       <action issue="LOG4J2-1851" dev="mikes" type="update">
         Move server components from log4j-core to new log4-server module.
       </action>
