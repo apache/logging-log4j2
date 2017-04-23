@@ -64,7 +64,7 @@
       <action issue="LOG4J2-1879" dev="ggregory" type="update">
 		Update JAnsi from 1.14 to 1.15.
       </action>
-      <action issue="LOG4J2-1877" dev="ggregory" type="update">
+      <action issue="LOG4J2-1877" dev="ggregory" type="update" due-to="Chandra Tungathurthi">
 		Missing documentation for Max index limit in DefaultRolloverStrategy.
       </action>
     </release>
