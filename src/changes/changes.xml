@@ -37,6 +37,9 @@
       <action issue="LOG4J2-1880" dev="mikes" type="add">
         Warn when a configuration file for an inactive ConfigurationFactory is found.
       </action>
+      <action issue="LOG4J2-1855" dev="mattsicker" type="add" due-to="Anthony Maire">
+        Add an optional random delay in TimeBasedTriggeringPolicy
+      </action>
       <action issue="LOG4J2-1876" dev="mikes" type="fix">
         More reliable checking for runtime dependencies.
       </action>
