@@ -17,15 +17,13 @@
 # Building Log4j 2
   
 To build Log4j 2, you need a JDK implementation version 1.7 or greater, JDK 
-version 9, and Apache Maven.
-Note that building the site requires Maven 3.0.5, while everything else works
-fine with any version of Maven 3.
+version 9, and Apache Maven 3.x.
 
 Log4j 2.x uses the Java 9 compiler in addition to 
 the Java version installed in the path. This is accomplished by using Maven's toolchains support.
 Log4j 2 provides a sample toolchains XML file in the root folder. This may be used by
 modifying it and installing the file as toolchains.xml in the .m2 folder or by using 
--t ./toolchains-sample.xml when invoking Maven.
+`-t ./toolchains-sample.xml` when invoking Maven.
 
 To perform the license release audit, a.k.a. "RAT check", run.
 
