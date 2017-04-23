@@ -2599,6 +2599,14 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                       interval is 4 then the first rollover will occur at 4 am and then next ones will occur at
                       8 am, noon, 4pm, etc.</td>
                   </tr>
+                  <tr>
+                    <td>maxRandomDelay</td>
+                    <td>integer</td>
+                    <td>Indicates the maximum number of seconds to randomly delay a rollover. By default,
+                      this is 0 which indicates no delay. This setting is useful on servers where multiple
+                      applications are configured to rollover log files at the same time and can spread
+                      the load of doing so across time.</td>
+                  </tr>
                 </table>
           <a name="RolloverStrategies"/>
           <h4>Rollover Strategies</h4>
