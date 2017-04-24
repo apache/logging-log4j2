@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuild
 import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.maven.settings.building.StringSettingsSource;
 
 /**
  * Helper builder for parsing properties files into a PropertiesConfiguration.
@@ -241,7 +242,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             throw new ConfigurationException("No ref attribute provided for AppenderRef " + key);
         }
         final AppenderRefComponentBuilder appenderRefBuilder = builder.newAppenderRef(ref);
-        final String level = (String) properties.remove("level");
+        final String level = Strings.trimToNull((String) properties.remove("level"));
         if (!Strings.isEmpty(level)) {
             appenderRefBuilder.addAttribute("level", level);
         }
@@ -254,7 +255,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (Strings.isEmpty(name)) {
             throw new ConfigurationException("No name attribute provided for Logger " + key);
         }
-        final String level = (String) properties.remove("level");
+        final String level = Strings.trimToNull((String) properties.remove("level"));
         final String type = (String) properties.remove(CONFIG_TYPE);
         final LoggerComponentBuilder loggerBuilder;
         boolean includeLocation;
@@ -287,7 +288,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     }
 
     private RootLoggerComponentBuilder createRootLogger(final Properties properties) {
-        final String level = (String) properties.remove("level");
+        final String level = Strings.trimToNull((String) properties.remove("level"));
         final String type = (String) properties.remove(CONFIG_TYPE);
         final String location = (String) properties.remove("includeLocation");
         final boolean includeLocation;
