@@ -118,7 +118,10 @@
               contains a <code>Log4j1XmlLayout</code> which produce output in the format as in Log4j 1.x.
               The Log4j 1.x <code>SimpleLayout</code> can be emulated with PatternLayout "%level - %m%n".
               The Log4j 1.x <code>TTCCLayout</code> can be emulated with PatternLayout "%r [%t] %p %c %notEmpty{%ndc }- %m%n".
-              The log4j-1.2-api module contains two pattern conversions "%ndc" and "%properties" which
+            </p>
+            <p>
+              Both <code>PatternLayout</code> and <code>EnhancedPatternLayout</code> in Log4j 1.x can be replaced with
+              <code>PatternLayout</code> in Log4j 2. The log4j-1.2-api module contains two pattern conversions "%ndc" and "%properties" which
               can be used to emulate "%x" and "%X" in Log4j 1.x PatternLayout ("%x" and %X" in Log4j 2 have a slightly different format).
             </p>
             <p>
