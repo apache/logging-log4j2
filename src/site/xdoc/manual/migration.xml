@@ -114,6 +114,14 @@
               <code>${sys:catalina.base}</code>.
             </p>
             <p>
+              Log4j 1.x has a XMLLayout which is different from the XmlLayout in Log4j 2, the log4j-1.2-api module
+              contains a <code>Log4j1XmlLayout</code> which produce output in the format as in Log4j 1.x.
+              The Log4j 1.x <code>SimpleLayout</code> can be emulated with PatternLayout "%level - %m%n".
+              The Log4j 1.x <code>TTCCLayout</code> can be emulated with PatternLayout "%r [%t] %p %c %notEmpty{%ndc }- %m%n".
+              The log4j-1.2-api module contains two pattern conversions "%ndc" and "%properties" which
+              can be used to emulate "%x" and "%X" in Log4j 1.x PatternLayout ("%x" and %X" in Log4j 2 have a slightly different format).
+            </p>
+            <p>
               Below are the example configurations for Log4j 1.x and their counterparts in Log4j 2.
             </p>
 
@@ -151,7 +159,7 @@
   </Loggers>
 </Configuration>]]></pre>
 
-            <h4>Sample 2 - Simple configuration using a File Appender</h4>
+            <h4>Sample 2 - Simple configuration using a File Appender, XMLLayout and SimpleLayout</h4>
             <p>Log4j 1.x XML configuration</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
@@ -159,14 +167,10 @@
   <appender name="A1" class="org.apache.log4j.FileAppender">
     <param name="File"   value="A1.log" />
     <param name="Append" value="false" />
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%t %-5p %c{2} - %m%n"/>
-    </layout>
+    <layout class="org.apache.log4j.xml.XMLLayout" />
   </appender>
   <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
-    </layout>
+    <layout class="org.apache.log4j.SimpleLayout" />
   </appender>
   <category name="org.apache.log4j.xml">
     <priority value="debug" />
@@ -183,10 +187,10 @@
 <Configuration>
   <Appenders>
     <File name="A1" fileName="A1.log" append="false">
-      <PatternLayout pattern="%t %-5p %c{2} - %m%n"/>
+      <Log4j1XmlLayout />
     </File>
     <Console name="STDOUT" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
+      <PatternLayout pattern="%level - %m%n"/>
     </Console>
   </Appenders>
   <Loggers>
@@ -249,7 +253,7 @@
   </Loggers>
 </Configuration>]]></pre>
 
-            <h4>Sample 4 - AsyncAppender</h4>
+            <h4>Sample 4 - AsyncAppender and TTCCLayout</h4>
             <p>Log4j 1.x XML configuration using the AsyncAppender.</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
@@ -259,8 +263,10 @@
   </appender>
   <appender name="TEMP" class="org.apache.log4j.FileAppender">
     <param name="File" value="temp"/>
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
+    <layout class="org.apache.log4j.TTCCLayout">
+      <param name="ThreadPrinting" value="true"/>
+      <param name="CategoryPrefixing" value="true"/>
+      <param name="ContextPrinting" value="true"/>
     </layout>
   </appender>
   <root>
@@ -274,7 +280,7 @@
 <Configuration status="debug">
   <Appenders>
     <File name="TEMP" fileName="temp">
-      <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
+      <PatternLayout pattern="%r [%t] %p %c %notEmpty{%ndc }- %m%n"/>
     </File>
     <Async name="ASYNC">
       <AppenderRef ref="TEMP"/>
