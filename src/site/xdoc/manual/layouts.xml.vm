@@ -303,7 +303,6 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
         </subsection>
         <a name="JSONLayout"/>
         <subsection name="JSON Layout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.JsonLayout -->
           <p>
           Appends a series of JSON events as strings serialized as bytes.
           </p>
@@ -314,30 +313,56 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           separate file to form a well-formed JSON document.
           </p>
           <p>
-          A well-formed JSON document follows this pattern:
+          If <code>complete="false"</code>, the appender does not write the JSON open array character "[" at the start
+          of the document, "]" and the end, nor comma "," between records.
           </p>
-          <pre class="prettyprint linenums">[
-  {
-    "logger":"com.foo.Bar",
-    "timestamp":"1376681196470",
-    "level":"INFO",
-    "threadId":1,
-    "thread":"main",
-    "threadPriority":1,
-    "message":"Message flushed with immediate flush=true"
+          <p>
+          Log event follows this pattern:
+          </p>
+          <pre class="prettyprint linenums">{
+  "timeMillis" : 1493121664118,
+  "thread" : "main",
+  "level" : "INFO",
+  "loggerName" : "HelloWorld",
+  "marker" : {
+    "name" : "child",
+    "parents" : [ {
+      "name" : "parent",
+      "parents" : [ {
+        "name" : "grandparent"
+      } ]
+    } ]
   },
-  {
-    "logger":"com.foo.Bar",
-    "timestamp":"1376681196471",
-    "level":"ERROR",
-    "threadId":1,
-    "thread":"main",
-    "threadPriority":1,
-    "message":"Message flushed with immediate flush=true",
-    "throwable":"java.lang.IllegalArgumentException: badarg\\n\\tat org.apache.logging.log4j.core.appender.JSONCompleteFileAppenderTest.testFlushAtEndOfBatch(JSONCompleteFileAppenderTest.java:54)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)\\n\\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\\n\\tat java.lang.reflect.Method.invoke(Method.java:606)\\n\\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)\\n\\tat org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)\\n\\tat org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)\\n\\tat org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)\\n\\tat org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)\\n\\tat org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)\\n\\tat org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)\\n\\tat org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)\\n\\tat org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)\\n\\tat org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)\\n\\tat org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)\\n\\tat org.junit.runners.ParentRunner.run(ParentRunner.java:309)\\n\\tat org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)\\n\\tat org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)\\n"
+  "message" : "Hello, world!",
+  "thrown" : {
+    "commonElementCount" : 0,
+    "name" : "java.lang.RuntimeException",
+    "extendedStackTrace" : [ {
+      "class" : "logtest.Main",
+      "method" : "main",
+      "file" : "Main.java",
+      "line" : 29,
+      "exact" : true,
+      "location" : "classes/",
+      "version" : "?"
+    } ]
+  },
+  "contextStack" : [ "one", "two" ],
+  "endOfBatch" : false,
+  "loggerFqcn" : "org.apache.logging.log4j.spi.AbstractLogger",
+  "contextMap" : {
+    "bar" : "BAR",
+    "foo" : "FOO"
+  },
+  "threadId" : 1,
+  "threadPriority" : 5,
+  "source" : {
+    "class" : "logtest.Main",
+    "method" : "main",
+    "file" : "Main.java",
+    "line" : 29
   }
-]
-</pre>
+}</pre>
           <p>
           If <code>complete="false"</code>, the appender does not write the JSON open array character "[" at the start
           of the document, "]" and the end, nor comma "," between records.
@@ -1970,7 +1995,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         </subsection>
         <a name="XMLLayout"/>
         <subsection name="XML Layout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.XmlLayout -->
           <p>
             <!-- FIXME: log4j.dtd link is broken -->
           Appends a series of <code>Event</code> elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
@@ -1986,17 +2010,52 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>
           A well-formed XML document follows this pattern:
           </p>
-          <pre class="prettyprint linenums">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;Events xmlns=&quot;http://logging.apache.org/log4j/2.0/events&quot;&gt;
-  &lt;Event logger=&quot;com.foo.Bar&quot; timestamp=&quot;1373436580419&quot; level=&quot;INFO&quot; threadId=&quot;1&quot; thread=&quot;main&quot; threadPriority=&quot;1&quot;&gt;
-    &lt;Message&gt;&lt;![CDATA[This is a log message 1]]&gt;&lt;/Message&gt;
-    &lt;Marker parent=&quot;Parent Marker&quot;&gt;&lt;Child Marker&gt;&lt;/Marker&gt;
-  &lt;/Event&gt;
-  &lt;Event logger=&quot;com.foo.Baz&quot; timestamp=&quot;1373436580420&quot; level=&quot;INFO&quot; threadId=&quot;1&quot; thread=&quot;main&quot; threadPriority=&quot;1&quot;&gt;
-    &lt;Message&gt;&lt;![CDATA[This is a log message 2]]&gt;&lt;/Message&gt;
-    &lt;Marker&gt;&lt;The Marker Name&gt;&lt;/Marker&gt;
-  &lt;/Event&gt;
-&lt;/Events&gt;</pre>
+          <pre class="prettyprint linenums">&lt;Event xmlns="http://logging.apache.org/log4j/2.0/events"
+       timeMillis="1493122559666"
+       level="INFO"
+       loggerName="HelloWorld"
+       endOfBatch="false"
+       thread="main"
+       loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger"
+       threadId="1"
+       threadPriority="5"&gt;
+  &lt;Marker name="child"&gt;
+    &lt;Parents&gt;
+      &lt;Marker name="parent"&gt;
+        &lt;Parents&gt;
+          &lt;Marker name="grandparent"/&gt;
+        &lt;/Parents&gt;
+      &lt;/Marker&gt;
+    &lt;/Parents&gt;
+  &lt;/Marker&gt;
+  &lt;Message&gt;Hello, world!&lt;/Message&gt;
+  &lt;ContextMap&gt;
+    &lt;item key="bar" value="BAR"/&gt;
+    &lt;item key="foo" value="FOO"/&gt;
+  &lt;/ContextMap&gt;
+  &lt;ContextStack&gt;
+    &lt;ContextStackItem&gt;one&lt;/ContextStackItem&gt;
+    &lt;ContextStackItem&gt;two&lt;/ContextStackItem&gt;
+  &lt;/ContextStack&gt;
+  &lt;Source
+      class="logtest.Main"
+      method="main"
+      file="Main.java"
+      line="29"/&gt;
+  &lt;Thrown commonElementCount="0" name="java.lang.RuntimeException"&gt;
+    &lt;ExtendedStackTrace&gt;
+      &lt;ExtendedStackTraceItem
+          class="logtest.Main"
+          method="main"
+          file="Main.java"
+          line="29"
+          exact="true"
+          location="classes/"
+          version="?"/&gt;
+    &lt;/ExtendedStackTrace&gt;
+  &lt;/Thrown&gt;
+&lt;/Event&gt;
+</pre>
           <p>
           If <code>complete="false"</code>, the appender does not write the XML processing instruction and the root
           element.
@@ -2005,7 +2064,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>Markers are represented by a <code>Marker</code> element within the <code>Event</code> element.
           The <code>Marker</code> element appears only when a marker is used in the log message. The name of the marker's
           parent will be provided in the <code>parent</code> attribute of the <code>Marker</code> element.
-          Only the leaf marker is included, not the full hierarchy.
           </p>
           <h4>Pretty vs. compact XML</h4>
           <p>
@@ -2063,144 +2121,51 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         </subsection>
         <a name="YamlLayout"/>
         <subsection name="YAML Layout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.YamlLayout -->
           <p>
             Appends a series of YAML events as strings serialized as bytes.
           </p>
           <p>
             A YAML log event follows this pattern:
           </p>
-          <pre>---
-timeMillis: 1
-thread: "MyThreadName"
-level: "DEBUG"
-loggerName: "a.B"
+          <pre class="prettyprint linenums">---
+timeMillis: 1493122307075
+thread: "main"
+level: "INFO"
+loggerName: "HelloWorld"
 marker:
-  name: "Marker1"
-  parents:
-  - name: "ParentMarker1"
-    parents:
-    - name: "GrandMotherMarker"
-    - name: "GrandFatherMarker"
-  - name: "ParentMarker2"
-message: "Msg"
+ name: "child"
+ parents:
+ - name: "parent"
+   parents:
+   - name: "grandparent"
+message: "Hello, world!"
 thrown:
-  commonElementCount: 0
-  localizedMessage: "testIOEx"
-  message: "testIOEx"
-  name: "java.io.IOException"
-  cause:
-    commonElementCount: 27
-    localizedMessage: "testNPEx"
-    message: "testNPEx"
-    name: "java.lang.NullPointerException"
-    extendedStackTrace:
-    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-      method: "createLogEvent"
-      file: "LogEventFixtures.java"
-      line: 52
-      exact: false
-      location: "test-classes/"
-      version: "?"
-  extendedStackTrace:
-  - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-    method: "createLogEvent"
-    file: "LogEventFixtures.java"
-    line: 55
-    exact: true
-    location: "test-classes/"
-    version: "?"
-  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-    method: "testAllFeatures"
-    file: "YamlLayoutTest.java"
-    line: 109
-    exact: true
-    location: "test-classes/"
-    version: "?"
-  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-    method: "testLocationOnCompactOffEventEolOffMdcOn"
-    file: "YamlLayoutTest.java"
-    line: 280
-    exact: true
-    location: "test-classes/"
-    version: "?"
-
-...
-
-  suppressed:
-  - commonElementCount: 0
-    localizedMessage: "I am suppressed exception 1"
-    message: "I am suppressed exception 1"
-    name: "java.lang.IndexOutOfBoundsException"
-    extendedStackTrace:
-    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-      method: "createLogEvent"
-      file: "LogEventFixtures.java"
-      line: 56
-      exact: true
-      location: "test-classes/"
-      version: "?"
-    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-      method: "testAllFeatures"
-      file: "YamlLayoutTest.java"
-      line: 109
-      exact: true
-      location: "test-classes/"
-      version: "?"
-    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-      method: "testLocationOnCompactOffEventEolOffMdcOn"
-      file: "YamlLayoutTest.java"
-      line: 280
-      exact: true
-      location: "test-classes/"
-      version: "?"
-
-...
-
-  - commonElementCount: 0
-    localizedMessage: "I am suppressed exception 2"
-    message: "I am suppressed exception 2"
-    name: "java.lang.IndexOutOfBoundsException"
-    extendedStackTrace:
-    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-      method: "createLogEvent"
-      file: "LogEventFixtures.java"
-      line: 57
-      exact: true
-      location: "test-classes/"
-      version: "?"
-    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-      method: "testAllFeatures"
-      file: "YamlLayoutTest.java"
-      line: 109
-      exact: true
-      location: "test-classes/"
-      version: "?"
-    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-      method: "testLocationOnCompactOffEventEolOffMdcOn"
-      file: "YamlLayoutTest.java"
-      line: 280
-      exact: true
-      location: "test-classes/"
-      version: "?"
-
-...
-
+ commonElementCount: 0
+ name: "java.lang.RuntimeException"
+ extendedStackTrace:
+ - class: "logtest.Main"
+   method: "main"
+   file: "Main.java"
+   line: 29
+   exact: true
+   location: "classes/"
+   version: "?"
 contextStack:
-- "stack_msg1"
-- "stack_msg2"
+- "one"
+- "two"
 endOfBatch: false
-loggerFqcn: "f.q.c.n"
+loggerFqcn: "org.apache.logging.log4j.spi.AbstractLogger"
 contextMap:
-  MDC.B: "B_Value"
-  MDC.A: "A_Value"
+ bar: "BAR"
+ foo: "FOO"
 threadId: 1
 threadPriority: 5
 source:
-  class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-  method: "createLogEvent"
-  file: "LogEventFixtures.java"
-  line: 53</pre>
+ class: "logtest.Main"
+ method: "main"
+ file: "Main.java"
+ line: 29
+</pre>
           <table>
             <tr>
               <th>Parameter Name</th>
