@@ -786,9 +786,6 @@ import org.apache.logging.log4j.core.layout.SyslogLayout.Builder;
  * If {@code complete="false"}, the appender does not write the JSON open array character "[" at the start
  * of the document, "]" and the end, nor comma "," between records.
  * </p>
- * <p>
- * This approach enforces the independence of the JsonLayout and the appender where you embed it.
- * </p>
  * <h3>Encoding</h3>
  * <p>
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise

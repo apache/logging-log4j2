@@ -688,9 +688,6 @@ source:
   method: "createLogEvent"
   file: "LogEventFixtures.java"
   line: 53</pre>
- * <p>
- * This approach enforces the independence of the YamlLayout and the appender where you embed it.
- * </p>
  * <h3>Encoding</h3>
  * <p>
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
