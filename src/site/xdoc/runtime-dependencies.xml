@@ -121,11 +121,11 @@
         </tr>
         <tr>
           <td>NoSQL Appender with MongoDB provider</td>
-          <td>MongoDB Java Client driver</td>
+          <td>MongoDB Java Client driver and Log4j NoSQL library</td>
         </tr>
         <tr>
           <td>NoSQL Appender with Apache CouchDB provider</td>
-          <td>LightCouch CouchDB client library</td>
+          <td>LightCouch CouchDB client library and Log4j NoSQL library</td>
         </tr>
         <tr>
           <td>Cassandra Appender</td>
@@ -251,6 +251,10 @@
         <tr>
           <td>NoSQL Appender with <a href="https://couchdb.apache.org/">Apache CouchDB</a> provider</td>
           <td>the <a href="http://www.lightcouch.org/">LightCouch</a> CouchDB client library</td>
+        </tr>
+        <tr>
+          <td>Cassandra Appender</td>
+          <td>the <a href="http://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html">Datastax Cassandra driver</a></td>
         </tr>
       </table>
 
