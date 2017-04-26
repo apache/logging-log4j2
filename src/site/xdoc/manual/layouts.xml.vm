@@ -197,12 +197,12 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             (the <code>compressionThreshold</code>). This layout does not implement chunking.
           </p>
           <p>
-            Configure as follows to send to a Graylog2 server:
+            Configure as follows to send to a Graylog 2.x server:
           </p>
           <pre class="prettyprint linenums">
   &lt;Appenders&gt;
     &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
-        &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
+        &lt;GelfLayout host="someserver" compressionType="ZLIB" compressionThreshold="1024"&gt;
             &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
             &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
         &lt;/GelfLayout&gt;

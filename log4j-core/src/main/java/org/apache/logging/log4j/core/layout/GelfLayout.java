@@ -58,15 +58,15 @@ import org.apache.logging.log4j.util.TriConsumer;
  * This layout does not implement chunking.
  * </p>
  * <p>
- * Configure as follows to send to a Graylog2 server:
+ * Configure as follows to send to a Graylog 2.x server:
  * </p>
  *
  * <pre>
  * &lt;Appenders&gt;
  *        &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
- *            &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
+ *            &lt;GelfLayout host="someserver" compressionType="ZLIB" compressionThreshold="1024"&gt;
  *                &lt;KeyValuePair key="additionalField1" value="additional value 1"/&gt;
- *                &lt;KeyValuePair key="additionalField2" value="additional value 2"/&gt;
+ *                &lt;KeyValuePair key="additionalField2" value="$${ctx:key}"/&gt;
  *            &lt;/GelfLayout&gt;
  *        &lt;/Socket&gt;
  * &lt;/Appenders&gt;
