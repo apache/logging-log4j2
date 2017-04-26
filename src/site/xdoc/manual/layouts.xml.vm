@@ -197,12 +197,25 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             (the <code>compressionThreshold</code>). This layout does not implement chunking.
           </p>
           <p>
-            Configure as follows to send to a Graylog 2.x server:
+            Configure as follows to send to a Graylog 2.x server with UDP:
           </p>
           <pre class="prettyprint linenums">
   &lt;Appenders&gt;
     &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
         &lt;GelfLayout host="someserver" compressionType="ZLIB" compressionThreshold="1024"&gt;
+            &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
+            &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
+        &lt;/GelfLayout&gt;
+    &lt;/Socket&gt;
+  &lt;/Appenders&gt;
+</pre>
+          <p>
+            Configure as follows to send to a Graylog 2.x server with TCP:
+          </p>
+          <pre class="prettyprint linenums">
+  &lt;Appenders&gt;
+    &lt;Socket name="Graylog" protocol="tcp" host="graylog.domain.com" port="12201"&gt;
+        &lt;GelfLayout host="someserver" compressionType="OFF" includeNullDelimiter="true"&gt;
             &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
             &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
         &lt;/GelfLayout&gt;
@@ -241,6 +254,12 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>includeThreadContext</td>
               <td>boolean</td>
               <td>Whether to include thread context as additional fields (optional, default to true).</td>
+            </tr>
+            <tr>
+              <td>includeNullDelimiter</td>
+              <td>boolean</td>
+              <td>Whether to include NULL byte as delimiter after each event (optional, default to false).
+                  Useful for Graylog GELF TCP input.</td>
             </tr>
             <caption align="top">GelfLayout Parameters</caption>
           </table>
