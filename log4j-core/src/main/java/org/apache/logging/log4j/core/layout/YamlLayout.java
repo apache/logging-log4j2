@@ -16,22 +16,20 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -52,13 +50,43 @@ public final class YamlLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/yaml";
 
+    public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
+        implements org.apache.logging.log4j.core.util.Builder<YamlLayout> {
+
+        public Builder() {
+            super();
+            setCharset(StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public YamlLayout build() {
+            final String headerPattern = toStringOrNull(getHeader());
+            final String footerPattern = toStringOrNull(getFooter());
+            return new YamlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
+                isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(), isIncludeStacktrace(),
+                getAdditionalFields());
+        }
+    }
+
+    /**
+     * @deprecated Use {@link #newBuilder()} instead
+     */
+    @Deprecated
     protected YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
             final String footerPattern, final Charset charset, final boolean includeStacktrace) {
+        this(config, locationInfo, properties, complete, compact, eventEol, headerPattern, footerPattern, charset, includeStacktrace, null);
+    }
+
+    private YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
+                       final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
+                       final String footerPattern, final Charset charset, final boolean includeStacktrace,
+                       final KeyValuePair[] additionalFields) {
         super(config, new JacksonFactory.YAML(includeStacktrace).newWriter(locationInfo, properties, compact), charset, compact,
-                complete, eventEol,
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
+            complete, eventEol,
+            PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
+            PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
+            additionalFields);
     }
 
     /**
@@ -107,10 +135,10 @@ public final class YamlLayout extends AbstractJacksonLayout {
         return result;
     }
 
-    @Override
     /**
      * @return The content type.
      */
+    @Override
     public String getContentType() {
         return CONTENT_TYPE + "; charset=" + this.getCharset();
     }
@@ -133,8 +161,10 @@ public final class YamlLayout extends AbstractJacksonLayout {
      * @param includeStacktrace
      *            If "true", includes the stacktrace of any Throwable in the generated YAML, defaults to "true".
      * @return A YAML Layout.
+     *
+     * @deprecated Use {@link #newBuilder()} instead
      */
-    @PluginFactory
+    @Deprecated
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
             @PluginConfiguration final Configuration config,
@@ -150,6 +180,11 @@ public final class YamlLayout extends AbstractJacksonLayout {
                 charset, includeStacktrace);
     }
 
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
+
     /**
      * Creates a YAML Layout using the default settings. Useful for testing.
      *
@@ -157,14 +192,6 @@ public final class YamlLayout extends AbstractJacksonLayout {
      */
     public static AbstractJacksonLayout createDefaultLayout() {
         return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER,
-                DEFAULT_FOOTER, StandardCharsets.UTF_8, true);
-    }
-
-    @Override
-    public void toSerializable(final LogEvent event, final Writer writer) throws IOException {
-        if (complete && eventCount > 0) {
-            writer.append(", ");
-        }
-        super.toSerializable(event, writer);
+                DEFAULT_FOOTER, StandardCharsets.UTF_8, true, null);
     }
 }

@@ -23,7 +23,9 @@ import java.nio.charset.Charset;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
 import org.apache.logging.log4j.util.Strings;
 
@@ -47,6 +49,22 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private boolean complete;
 
+        @PluginBuilderAttribute
+        private boolean locationInfo;
+
+        @PluginBuilderAttribute
+        private boolean properties;
+
+        @PluginBuilderAttribute
+        private boolean includeStacktrace = true;
+
+        @PluginElement("AdditionalField")
+        private KeyValuePair[] additionalFields;
+
+        protected String toStringOrNull(final byte[] header) {
+            return header == null ? null : new String(header, Charset.defaultCharset());
+        }
+
         public boolean getEventEol() {
             return eventEol;
         }
@@ -57,6 +75,26 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         public boolean isComplete() {
             return complete;
+        }
+
+        public boolean isLocationInfo() {
+            return locationInfo;
+        }
+
+        public boolean isProperties() {
+            return properties;
+        }
+
+        /**
+         * If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".
+         * @return If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".
+         */
+        public boolean isIncludeStacktrace() {
+            return includeStacktrace;
+        }
+
+        public KeyValuePair[] getAdditionalFields() {
+            return additionalFields;
         }
 
         public B setEventEol(final boolean eventEol) {
@@ -74,21 +112,70 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
             return asBuilder();
         }
 
+        public B setLocationInfo(boolean locationInfo) {
+            this.locationInfo = locationInfo;
+            return asBuilder();
+        }
+
+        public B setProperties(boolean properties) {
+            this.properties = properties;
+            return asBuilder();
+        }
+
+        /**
+         * If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
+         * @param includeStacktrace If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
+         * @return this builder
+         */
+        public B setIncludeStacktrace(boolean includeStacktrace) {
+            this.includeStacktrace = includeStacktrace;
+            return asBuilder();
+        }
+
+        /**
+         * Additional fields to set on each log event.
+         *
+         * @return this builder
+         */
+        public B setAdditionalFields(KeyValuePair[] additionalFields) {
+            this.additionalFields = additionalFields;
+            return asBuilder();
+        }
     }
 
     protected final String eol;
     protected final ObjectWriter objectWriter;
     protected final boolean compact;
     protected final boolean complete;
+    protected final KeyValuePair[] additionalFields;
+
+    @Deprecated
+    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
+                                    final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
+                                    final Serializer footerSerializer) {
+        this(config, objectWriter, charset, compact, complete, eventEol, headerSerializer, footerSerializer, null);
+    }
 
     protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
             final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
-            final Serializer footerSerializer) {
+            final Serializer footerSerializer, final KeyValuePair[] additionalFields) {
         super(config, charset, headerSerializer, footerSerializer);
         this.objectWriter = objectWriter;
         this.compact = compact;
         this.complete = complete;
         this.eol = compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
+        this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
+        if (config == null) {
+            for (KeyValuePair additionalField : this.additionalFields) {
+                if (valueNeedsLookup(additionalField.getValue())) {
+                    throw new IllegalArgumentException("configuration needs to be set when there are additional fields with variables");
+                }
+            }
+        }
+    }
+
+    protected static boolean valueNeedsLookup(final String value) {
+        return value != null && value.contains("${");
     }
 
     /**

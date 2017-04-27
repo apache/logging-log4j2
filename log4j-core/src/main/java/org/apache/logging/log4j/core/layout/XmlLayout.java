@@ -22,11 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.jackson.XmlConstants;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 
 /**
  * Appends a series of {@code event} elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
@@ -57,10 +59,35 @@ public final class XmlLayout extends AbstractJacksonLayout {
 
     private static final String ROOT_TAG = "Events";
 
+    public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
+        implements org.apache.logging.log4j.core.util.Builder<XmlLayout> {
+
+        public Builder() {
+            super();
+            setCharset(StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public XmlLayout build() {
+            return new XmlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
+                isCompact(), getCharset(), isIncludeStacktrace(), getAdditionalFields());
+        }
+    }
+
+    /**
+     * @deprecated Use {@link #newBuilder()} instead
+     */
+    @Deprecated
     protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete,
                         final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        super(null, new JacksonFactory.XML(includeStacktrace).newWriter(
-                locationInfo, properties, compact), charset, compact, complete, false, null, null);
+        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace, null);
+    }
+
+    private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
+                      final boolean complete, final boolean compact, final Charset charset,
+                      final boolean includeStacktrace, final KeyValuePair[] additionalFields) {
+        super(config, new JacksonFactory.XML(includeStacktrace).newWriter(
+            locationInfo, properties, compact), charset, compact, complete, false, null, null, additionalFields);
     }
 
     /**
@@ -140,8 +167,10 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @param includeStacktrace
      *            If "true", includes the stacktrace of any Throwable in the generated XML, defaults to "true".
      * @return An XML Layout.
+     *
+     * @deprecated Use {@link #newBuilder()} instead
      */
-    @PluginFactory
+    @Deprecated
     public static XmlLayout createLayout(
             // @formatter:off
             @PluginAttribute(value = "locationInfo") final boolean locationInfo,
@@ -152,7 +181,12 @@ public final class XmlLayout extends AbstractJacksonLayout {
             @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace)
             // @formatter:on
     {
-        return new XmlLayout(locationInfo, properties, complete, compact, charset, includeStacktrace);
+        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, null);
+    }
+
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     /**
@@ -161,6 +195,6 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @return an XML Layout.
      */
     public static XmlLayout createDefaultLayout() {
-        return new XmlLayout(false, false, false, false, StandardCharsets.UTF_8, true);
+        return new XmlLayout(null, false, false, false, false, StandardCharsets.UTF_8, true, null);
     }
 }
