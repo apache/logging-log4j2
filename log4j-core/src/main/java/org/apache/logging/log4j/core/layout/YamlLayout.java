@@ -177,7 +177,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
             // @formatter:on
     ) {
         return new YamlLayout(config, locationInfo, properties, false, false, true, headerPattern, footerPattern,
-                charset, includeStacktrace);
+                charset, includeStacktrace, null);
     }
 
     @PluginBuilderFactory
