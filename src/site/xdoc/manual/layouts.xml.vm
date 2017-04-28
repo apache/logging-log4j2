@@ -259,7 +259,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>includeNullDelimiter</td>
               <td>boolean</td>
               <td>Whether to include NULL byte as delimiter after each event (optional, default to false).
-                  Useful for Graylog GELF TCP input.</td>
+                  Useful for Graylog GELF TCP input. Cannot be used with compression.</td>
             </tr>
             <caption align="top">GelfLayout Parameters</caption>
           </table>
