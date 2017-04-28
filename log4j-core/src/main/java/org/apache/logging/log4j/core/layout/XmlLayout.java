@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.jackson.XmlConstants;
-import org.apache.logging.log4j.core.util.KeyValuePair;
 
 /**
  * Appends a series of {@code event} elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
@@ -70,7 +69,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
         @Override
         public XmlLayout build() {
             return new XmlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
-                isCompact(), getCharset(), isIncludeStacktrace(), getAdditionalFields());
+                isCompact(), getCharset(), isIncludeStacktrace());
         }
     }
 
@@ -80,14 +79,14 @@ public final class XmlLayout extends AbstractJacksonLayout {
     @Deprecated
     protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete,
                         final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace, null);
+        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace);
     }
 
     private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
                       final boolean complete, final boolean compact, final Charset charset,
-                      final boolean includeStacktrace, final KeyValuePair[] additionalFields) {
+                      final boolean includeStacktrace) {
         super(config, new JacksonFactory.XML(includeStacktrace).newWriter(
-            locationInfo, properties, compact), charset, compact, complete, false, null, null, additionalFields);
+            locationInfo, properties, compact), charset, compact, complete, false, null, null);
     }
 
     /**
@@ -181,7 +180,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
             @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace)
             // @formatter:on
     {
-        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, null);
+        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace);
     }
 
     @PluginBuilderFactory
@@ -195,6 +194,6 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @return an XML Layout.
      */
     public static XmlLayout createDefaultLayout() {
-        return new XmlLayout(null, false, false, false, false, StandardCharsets.UTF_8, true, null);
+        return new XmlLayout(null, false, false, false, false, StandardCharsets.UTF_8, true);
     }
 }
