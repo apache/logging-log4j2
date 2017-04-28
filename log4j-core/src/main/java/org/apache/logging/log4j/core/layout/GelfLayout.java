@@ -28,10 +28,8 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -261,6 +259,9 @@ public final class GelfLayout extends AbstractStringLayout {
         this.includeStacktrace = includeStacktrace;
         this.includeThreadContext = includeThreadContext;
         this.includeNullDelimiter = includeNullDelimiter;
+        if (includeNullDelimiter && compressionType != CompressionType.OFF) {
+            throw new IllegalArgumentException("null delimiter cannot be used with compression");
+        }
     }
 
     /**
