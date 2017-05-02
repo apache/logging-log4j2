@@ -1900,12 +1900,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
                 a StructuredDataMessage the id from the Message will be used instead of this value.</td>
             </tr>
             <tr>
-              <td>immediateFlush</td>
-              <td>boolean</td>
-              <td>When set to true, each write will be followed by a flush. This will guarantee the data is written
-                to disk but could impact performance.</td>
-            </tr>
-            <tr>
               <td>includeMDC</td>
               <td>boolean</td>
               <td>Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog record.
