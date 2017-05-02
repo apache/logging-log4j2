@@ -73,6 +73,10 @@ public final class KafkaAppender extends AbstractAppender {
             return topic;
         }
 
+        public boolean isSyncSend() {
+            return syncSend;
+        }
+
         public Property[] getProperties() {
             return properties;
         }
