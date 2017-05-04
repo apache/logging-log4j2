@@ -1593,7 +1593,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>headers</td>
               <td>Property[]</td>
-              <td>Additional HTTP headers to use. The values support <a href="lookups.html">lookups</a></td>
+              <td>Additional HTTP headers to use. The values support <a href="lookups.html">lookups</a>.</td>
             </tr>
             <tr>
               <td>ignoreExceptions</td>
