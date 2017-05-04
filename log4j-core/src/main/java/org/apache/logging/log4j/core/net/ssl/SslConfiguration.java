@@ -275,4 +275,20 @@ public class SslConfiguration {
         }
         return true;
     }
+
+    public KeyStoreConfiguration getKeyStoreConfig() {
+        return keyStoreConfig;
+    }
+
+    public TrustStoreConfiguration getTrustStoreConfig() {
+        return trustStoreConfig;
+    }
+
+    public SSLContext getSslContext() {
+        return sslContext;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
 }
