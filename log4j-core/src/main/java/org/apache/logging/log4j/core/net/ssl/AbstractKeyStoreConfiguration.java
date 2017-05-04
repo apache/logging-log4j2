@@ -111,4 +111,8 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
         return true;
     }
 
+    public String getKeyStoreType() {
+        return keyStoreType;
+    }
+
 }

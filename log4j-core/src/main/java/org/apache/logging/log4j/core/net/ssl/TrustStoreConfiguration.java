@@ -102,4 +102,8 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
         }
         return true;
     }
+
+    public String getTrustManagerFactoryAlgorithm() {
+        return trustManagerFactoryAlgorithm;
+    }
 }
