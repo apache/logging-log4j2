@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.appender;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +64,7 @@ public final class HttpAppender extends AbstractAppender {
 
         @Override
         public HttpAppender build() {
-            final HttpManager httpManager = new HttpManager(getConfiguration(), getConfiguration().getLoggerContext(),
+            final HttpManager httpManager = new HttpURLConnectionManager(getConfiguration(), getConfiguration().getLoggerContext(),
                 getName(), url, method, connectTimeoutMillis, readTimeoutMillis, headers);
             return new HttpAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), httpManager);
         }
@@ -131,6 +130,12 @@ public final class HttpAppender extends AbstractAppender {
         super(name, filter, layout, ignoreExceptions);
         Objects.requireNonNull(layout, "layout");
         this.manager = Objects.requireNonNull(manager, "manager");
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        manager.startup();
     }
 
     @Override
