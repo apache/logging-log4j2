@@ -1538,6 +1538,84 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     ...
 }]]></pre>
         </subsection>
+        <a name="HttpAppender"/>
+        <subsection name="HttpAppender">
+          <p>
+            The HttpAppender sends log events over HTTP. A Layout must be provided to format the LogEvent.
+          </p>
+          <p>
+            Will set the <code>Content-Type</code> header according to the layout. Additional headers can be specified
+            with embedded Property elements.
+          </p>
+          <table>
+            <caption align="top">HttpAppender Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+                may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent.</td>
+            </tr>
+            <tr>
+              <td>url</td>
+              <td>string</td>
+              <td>The URL to use. The URL scheme must be "http" or "https".</td>
+            </tr>
+            <tr>
+              <td>method</td>
+              <td>string</td>
+              <td>The HTTP method to use. Optional, default is "POST".</td>
+            </tr>
+            <tr>
+              <td>connectTimeoutMillis</td>
+              <td>integer</td>
+              <td>The connect timeout in milliseconds. Optional, default is 0 (infinite timeout).</td>
+            </tr>
+            <tr>
+              <td>readTimeoutMillis</td>
+              <td>integer</td>
+              <td>The socket read timeout in milliseconds. Optional, default is 0 (infinite timeout).</td>
+            </tr>
+            <tr>
+              <td>headers</td>
+              <td>Property[]</td>
+              <td>Additional HTTP headers to use. The values support <a href="lookups.html">lookups</a></td>
+            </tr>
+            <tr>
+              <td>ignoreExceptions</td>
+              <td>boolean</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
+            </tr>
+          </table>
+          <p>
+            Here is a sample HttpAppender configuration snippet:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  ...
+  <Appenders>
+    <Http name="Http" url="http://localhost:9200/test/log4j/">
+      <Property name="X-Java-Runtime" value="$${java:runtime}" />
+      <JsonLayout properties="true"/>
+    </Http>
+  </Appenders>]]></pre>
+        </subsection>
         <a name="KafkaAppender"/>
         <subsection name="KafkaAppender">
           <p>

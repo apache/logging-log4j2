@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements. See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache license, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License. You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the license for the specific language governing permissions and
+  ~ limitations under the license.
+  -->
+<Configuration name="HttpAppenderTest" status="WARN">
+  <Appenders>
+    <Http name="HttpSuccess" url="http://localhost:9200/test/log4j/">
+      <Property name="X-Test" value="header value" />
+      <JsonLayout properties="true"/>
+    </Http>
+    <Http name="HttpErrorIgnore" url="http://localhost:9200/test/log4j/" method="PUT">
+      <JsonLayout properties="true"/>
+    </Http>
+    <Http name="HttpError" url="http://localhost:9200/test/log4j/" method="PUT" ignoreExceptions="false">
+      <JsonLayout properties="true"/>
+    </Http>
+    <Http name="HttpSubst" url="http://localhost:9200/test/log4j/">
+      <Property name="X-Test" value="$${java:runtime}" />
+      <JsonLayout properties="true"/>
+    </Http>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="HttpSuccess"/>
+      <AppenderRef ref="HttpErrorIgnore"/>
+      <AppenderRef ref="HttpError"/>
+      <AppenderRef ref="HttpSubst"/>
+    </Root>
+  </Loggers>
+</Configuration>
