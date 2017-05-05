@@ -29,7 +29,7 @@ most current source code can be found at
 obtained by downloading it using the instructions at [Log4j Downloads](download.html).
 
 Log4j 2.x uses Maven 3 as its build tool. Log4j 2.x uses the Java 9 compiler in addition to 
-the Java version installed in the path. This is accomplished by usin Maven's toolchains support.
+the Java version installed in the path. This is accomplished by using Maven's toolchains support.
 Log4j 2 provides sample toolchains XML files in the root folder. This may be used by
 modifying it and installing the file as toolchains.xml in the .m2 folder or by using the 
 following when invoking Maven.
@@ -37,6 +37,7 @@ following when invoking Maven.
 ```
 [Macintosh] -t ./toolchains-sample-mac.xml 
 [Windows] -t ./toolchains-sample-win.xml 
+[Linux] -t ./toolchains-sample-linux.xml 
 ```
 
 To build and install Log4j in your local Maven cache, from the parent project directory, and 
