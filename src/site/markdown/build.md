@@ -39,7 +39,8 @@ following when invoking Maven.
 [Windows] -t ./toolchains-sample-win.xml 
 ```
 
-To build and install Log4j in your local Maven cache, from the root directory run: `mvn install`
+To build and install Log4j in your local Maven cache, from the parent project directory, and 
+using Java 7 or 8, run: `mvn install`
 
 Note that if your `/etc/hosts` file does not include an entry for your computer's hostname, then
 many unit tests may execute slowly due to DNS lookups to translate your hostname to an IP address in
