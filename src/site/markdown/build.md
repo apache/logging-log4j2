@@ -30,12 +30,16 @@ obtained by downloading it using the instructions at [Log4j Downloads](download.
 
 Log4j 2.x uses Maven 3 as its build tool. Log4j 2.x uses the Java 9 compiler in addition to 
 the Java version installed in the path. This is accomplished by usin Maven's toolchains support.
-Log4j 2 provides a sample toolchains XML file in the root folder. This may be used by
-modifying it and installing the file as toolchains.xml in the .m2 folder or by using 
--t ./toolchains-sample.xml when invoking Maven.
+Log4j 2 provides sample toolchains XML files in the root folder. This may be used by
+modifying it and installing the file as toolchains.xml in the .m2 folder or by using the 
+following when invoking Maven.
 
-To build and install Log4j in your local Maven cache, from
-the root directory run: `mvn install`
+```
+[Macintosh] -t ./toolchains-sample-mac.xml 
+[Windows] -t ./toolchains-sample-win.xml 
+```
+
+To build and install Log4j in your local Maven cache, from the root directory run: `mvn install`
 
 Note that if your `/etc/hosts` file does not include an entry for your computer's hostname, then
 many unit tests may execute slowly due to DNS lookups to translate your hostname to an IP address in
