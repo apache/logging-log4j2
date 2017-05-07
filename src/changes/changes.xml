@@ -82,6 +82,9 @@
       <action issue="LOG4J2-1899" dev="ggregory" type="update">
         Add missing getters to classes in package org.apache.logging.log4j.core.net.ssl.
       </action>
+      <action issue="LOG4J2-1900" dev="ggregory" type="update">
+        Update JAnsi from 1.15 to 1.16.
+      </action>
     </release>
     <release version="2.8.2" date="2017-04-02" description="GA Release 2.8.2">
       <action issue="LOG4J2-1861" dev="mattsicker" type="fix">
