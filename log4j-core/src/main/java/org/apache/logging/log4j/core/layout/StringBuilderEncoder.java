@@ -38,6 +38,10 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
      * Where possible putting only JDK classes in ThreadLocals is preferable to avoid memory leaks in web containers:
      * the Log4j classes may be loaded by a separate class loader which cannot be garbage collected if a thread pool
      * threadlocal still has a reference to it.
+     *
+     * Using just one ThreadLocal instead of three separate ones is an optimization: {@link ThreadLocal.ThreadLocalMap}
+     * is polluted less, {@link ThreadLocal.ThreadLocalMap#get()} is called only once on each call to {@link #encode}
+     * instead of three times.
      */
     private final ThreadLocal<Object[]> threadLocal = new ThreadLocal<>();
     private final Charset charset;
