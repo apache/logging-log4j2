@@ -108,6 +108,7 @@ public class TextEncoderHelper {
             byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
                     result);
             while (!endOfInput) {
+                result = CoderResult.UNDERFLOW;
                 while (!endOfInput && result.isUnderflow()) {
                     charBuf.clear();
                     final int copied = copy(text, start, charBuf);
