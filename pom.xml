@@ -751,6 +751,13 @@
         <version>2.5</version>
         <scope>test</scope>
       </dependency>
+      <!-- Used for testing HttpAppender -->
+      <dependency>
+        <groupId>com.github.tomakehurst</groupId>
+        <artifactId>wiremock</artifactId>
+        <scope>test</scope>
+        <version>2.6.0</version>
+      </dependency>
       <!-- Used for compressing to formats other than zip and gz -->
       <dependency>
         <groupId>org.apache.commons</groupId>

@@ -18,10 +18,12 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
@@ -30,8 +32,11 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.IOUtils;
 
 public class HttpURLConnectionManager extends HttpManager {
+
+    private static final Charset CHARSET = Charset.forName("US-ASCII");
 
     private final URL url;
     private final String method;
@@ -69,13 +74,41 @@ public class HttpURLConnectionManager extends HttpManager {
                 header.getName(),
                 header.isValueNeedsLookup() ? getConfiguration().getStrSubstitutor().replace(event, header.getValue()) : header.getValue());
         }
+
         byte[] msg = layout.toByteArray(event);
         urlConnection.setFixedLengthStreamingMode(msg.length);
         urlConnection.connect();
         try (OutputStream os = urlConnection.getOutputStream()) {
             os.write(msg);
         }
-        urlConnection.getInputStream().close();
+
+        byte[] buffer = new byte[1024];
+        InputStream is = null;
+        try {
+            is = urlConnection.getInputStream();
+            while (IOUtils.EOF != is.read(buffer));
+        } catch (IOException e) {
+            StringBuilder errorMessage = new StringBuilder();
+            try (InputStream es = urlConnection.getErrorStream()) {
+                errorMessage.append(urlConnection.getResponseCode());
+                if (urlConnection.getResponseMessage() != null) {
+                    errorMessage.append(' ').append(urlConnection.getResponseMessage());
+                }
+                if (es != null) {
+                    errorMessage.append(" - ");
+                    int n;
+                    while (IOUtils.EOF != (n = es.read(buffer))) {
+                        errorMessage.append(new String(buffer, 0, n, CHARSET));
+                    }
+                }
+            }
+            if (urlConnection.getResponseCode() > -1)
+                throw new IOException(errorMessage.toString());
+            else
+                throw e;
+        } finally {
+            if (is != null) is.close();
+        }
     }
 
 }

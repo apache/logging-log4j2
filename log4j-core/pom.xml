@@ -324,6 +324,12 @@
       <version>2.4.7</version>
       <scope>test</scope>
     </dependency>
+    <!-- Used for testing HttpAppender -->
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- GC-free -->
     <dependency>
       <groupId>com.google.code.java-allocation-instrumenter</groupId>
