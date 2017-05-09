@@ -32,7 +32,14 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class StringBuilderEncoder implements Encoder<StringBuilder> {
 
     private static final int DEFAULT_BYTE_BUFFER_SIZE = 8 * 1024;
-    private final ThreadLocal<ThreadLocalState> threadLocal = new ThreadLocal<>();
+    /**
+     * This ThreadLocal uses raw and inconvenient Object[] to store three heterogeneous objects (CharEncoder, CharBuffer
+     * and ByteBuffer) instead of a custom class, because it needs to contain JDK classes, no custom (Log4j) classes.
+     * Where possible putting only JDK classes in ThreadLocals is preferable to avoid memory leaks in web containers:
+     * the Log4j classes may be loaded by a separate class loader which cannot be garbage collected if a thread pool
+     * threadlocal still has a reference to it.
+     */
+    private final ThreadLocal<Object[]> threadLocal = new ThreadLocal<>();
     private final Charset charset;
     private final int charBufferSize;
     private final int byteBufferSize;
@@ -50,24 +57,31 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
     @Override
     public void encode(final StringBuilder source, final ByteBufferDestination destination) {
         try {
-            ThreadLocalState threadLocalState = getThreadLocalState();
-            TextEncoderHelper.encodeText(threadLocalState.charsetEncoder, threadLocalState.charBuffer,
-                    threadLocalState.byteBuffer, source, destination);
+            Object[] threadLocalState = getThreadLocalState();
+            CharsetEncoder charsetEncoder = (CharsetEncoder) threadLocalState[0];
+            CharBuffer charBuffer = (CharBuffer) threadLocalState[1];
+            ByteBuffer byteBuffer = (ByteBuffer) threadLocalState[2];
+            TextEncoderHelper.encodeText(charsetEncoder, charBuffer, byteBuffer, source, destination);
         } catch (final Exception ex) {
             logEncodeTextException(ex, source, destination);
             TextEncoderHelper.encodeTextFallBack(charset, source, destination);
         }
     }
 
-    private ThreadLocalState getThreadLocalState() {
-        ThreadLocalState threadLocalState = threadLocal.get();
+    private Object[] getThreadLocalState() {
+        Object[] threadLocalState = threadLocal.get();
         if (threadLocalState == null) {
-            threadLocalState = new ThreadLocalState(charset, charBufferSize, byteBufferSize);
+            threadLocalState = new Object[] {
+                    charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
+                            .onUnmappableCharacter(CodingErrorAction.REPLACE),
+                    CharBuffer.allocate(charBufferSize),
+                    ByteBuffer.allocate(byteBufferSize)
+            };
             threadLocal.set(threadLocalState);
         } else {
-            threadLocalState.charsetEncoder.reset();
-            threadLocalState.charBuffer.clear();
-            threadLocalState.byteBuffer.clear();
+            ((CharsetEncoder) threadLocalState[0]).reset();
+            ((CharBuffer) threadLocalState[1]).clear();
+            ((ByteBuffer) threadLocalState[2]).clear();
         }
         return threadLocalState;
     }
@@ -75,18 +89,5 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
     private void logEncodeTextException(final Exception ex, final StringBuilder text,
             final ByteBufferDestination destination) {
         StatusLogger.getLogger().error("Recovering from StringBuilderEncoder.encode('{}') error: {}", text, ex, ex);
-    }
-
-    private static class ThreadLocalState {
-        private final CharsetEncoder charsetEncoder;
-        private final CharBuffer charBuffer;
-        private final ByteBuffer byteBuffer;
-
-        ThreadLocalState(Charset charset, int charBufferSize, int byteBufferSize) {
-            charsetEncoder = charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
-                    .onUnmappableCharacter(CodingErrorAction.REPLACE);
-            charBuffer = CharBuffer.allocate(charBufferSize);
-            byteBuffer = ByteBuffer.allocate(byteBufferSize);
-        }
     }
 }
