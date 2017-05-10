@@ -176,8 +176,8 @@
     <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
     <Log4jReleaseKey>FA1C814D</Log4jReleaseKey>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4jVersion>1.7.24</slf4jVersion>
-    <logbackVersion>1.2.2</logbackVersion>
+    <slf4jVersion>1.7.25</slf4jVersion>
+    <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.8.7</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
@@ -191,8 +191,8 @@
     <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
-    <surefire.plugin.version>2.19.1</surefire.plugin.version>
-    <failsafe.plugin.version>2.19.1</failsafe.plugin.version>
+    <surefire.plugin.version>2.20</surefire.plugin.version>
+    <failsafe.plugin.version>2.20</failsafe.plugin.version>
     <checkstyle.plugin.version>2.17</checkstyle.plugin.version>
     <rat.plugin.version>0.12</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
@@ -393,7 +393,7 @@
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
-        <version>1.15</version>
+        <version>1.16</version>
         <optional>true</optional>
       </dependency>
       <dependency>

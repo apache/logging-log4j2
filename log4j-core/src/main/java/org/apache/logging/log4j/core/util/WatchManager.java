@@ -119,4 +119,10 @@ public class WatchManager extends AbstractLifeCycle {
             this.lastModified = lastModified;
         }
     }
+
+    @Override
+    public String toString() {
+        return "WatchManager [intervalSeconds=" + intervalSeconds + ", watchers=" + watchers + ", scheduler="
+                + scheduler + ", future=" + future + "]";
+    }
 }
