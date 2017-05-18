@@ -45,6 +45,7 @@ public abstract class AbstractAsyncThreadContextTestBase {
 
     @BeforeClass
     public static void beforeClass() {
+        System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
         System.setProperty("AsyncLoggerConfig.RingBufferSize", "128"); // minimum ringbuffer size
     }

@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -45,6 +46,11 @@ import static org.junit.Assert.*;
  */
 public class NestedLoggingFromToStringTest {
 
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty("log4j2.is.webapp", "false");
+    }
+    
     @Rule
     public LoggerContextRule context = new LoggerContextRule("log4j-sync-to-list.xml");
     private ListAppender listAppender;
