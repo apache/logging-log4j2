@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import java.net.URL;
 import java.security.Permission;
 import java.util.List;
@@ -72,6 +73,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
     }
 
     private void loadProvider(final BundleWiring provider) {
+        ProviderUtil.loadProviders(provider.getClassLoader());
         final List<URL> urls = provider.findEntries("META-INF", "log4j-provider.properties", 0);
         for (final URL url : urls) {
             ProviderUtil.loadProvider(url, provider.getClassLoader());
@@ -83,7 +85,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         ProviderUtil.STARTUP_LOCK.lock();
         lockingProviderUtil = true;
         final BundleWiring self = context.getBundle().adapt(BundleWiring.class);
-        final List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());
+        List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());
         for (final BundleWire wire : required) {
             loadProvider(wire.getProviderWiring());
         }
