@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.IOUtils;
 
@@ -47,13 +48,16 @@ public class HttpURLConnectionManager extends HttpManager {
     private final int readTimeoutMillis;
     private final Property[] headers;
     private final SslConfiguration sslConfiguration;
+    private final boolean verifyHostname;
 
     public HttpURLConnectionManager(final Configuration configuration, LoggerContext loggerContext, final String name,
                                     final String url, final String method, final int connectTimeoutMillis,
                                     final int readTimeoutMillis,
                                     final Property[] headers,
-                                    SslConfiguration sslConfiguration) {
+                                    SslConfiguration sslConfiguration,
+                                    boolean verifyHostname) {
         super(configuration, loggerContext, name);
+        this.verifyHostname = verifyHostname;
         try {
             this.url = new URL(url);
         } catch (MalformedURLException e) {
@@ -66,6 +70,9 @@ public class HttpURLConnectionManager extends HttpManager {
         this.sslConfiguration = sslConfiguration;
         if (this.sslConfiguration != null && !this.url.getProtocol().equalsIgnoreCase("https")) {
             throw new ConfigurationException("SSL configuration can only be specified with URL scheme https");
+        }
+        if (!this.verifyHostname && !this.url.getProtocol().equalsIgnoreCase("https")) {
+            throw new ConfigurationException("verifyHostname=false can only be specified with URL scheme https");
         }
     }
 
@@ -86,6 +93,9 @@ public class HttpURLConnectionManager extends HttpManager {
         }
         if (sslConfiguration != null) {
             ((HttpsURLConnection)urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
+        }
+        if (!verifyHostname) {
+            ((HttpsURLConnection)urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
         }
 
         byte[] msg = layout.toByteArray(event);

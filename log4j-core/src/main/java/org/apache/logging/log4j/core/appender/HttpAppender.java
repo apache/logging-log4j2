@@ -66,10 +66,13 @@ public final class HttpAppender extends AbstractAppender {
         @PluginElement("SslConfiguration")
         private SslConfiguration sslConfiguration;
 
+        @PluginBuilderAttribute
+        private boolean verifyHostname = true;
+
         @Override
         public HttpAppender build() {
             final HttpManager httpManager = new HttpURLConnectionManager(getConfiguration(), getConfiguration().getLoggerContext(),
-                getName(), url, method, connectTimeoutMillis, readTimeoutMillis, headers, sslConfiguration);
+                getName(), url, method, connectTimeoutMillis, readTimeoutMillis, headers, sslConfiguration, verifyHostname);
             return new HttpAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), httpManager);
         }
 
@@ -95,6 +98,10 @@ public final class HttpAppender extends AbstractAppender {
 
         public SslConfiguration getSslConfiguration() {
             return sslConfiguration;
+        }
+
+        public boolean isVerifyHostname() {
+            return verifyHostname;
         }
 
         public B setUrl(final String url) {
@@ -124,6 +131,11 @@ public final class HttpAppender extends AbstractAppender {
 
         public B setSslConfiguration(final SslConfiguration sslConfiguration) {
             this.sslConfiguration = sslConfiguration;
+            return asBuilder();
+        }
+
+        public B setVerifyHostname(boolean verifyHostname) {
+            this.verifyHostname = verifyHostname;
             return asBuilder();
         }
     }

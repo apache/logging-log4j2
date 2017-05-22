@@ -13,6 +13,7 @@ import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.TestConstants;
+import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusData;
@@ -86,9 +87,10 @@ public class HttpAppenderTest {
             .withLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .setUrl("https://localhost:" + wireMockRule.httpsPort() + "/test/log4j/")
-            .setSslConfiguration(SslConfiguration.createSSLConfiguration("TLS",
+            .setSslConfiguration(SslConfiguration.createSSLConfiguration(null,
                 KeyStoreConfiguration.createKeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null),
-                null))
+                TrustStoreConfiguration.createKeyStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, TestConstants.TRUSTSTORE_TYPE, null)))
+            .setVerifyHostname(false)
             .build();
         appender.append(createLogEvent());
 
