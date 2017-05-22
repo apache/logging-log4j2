@@ -10,6 +10,9 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
+import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.TestConstants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusData;
@@ -22,7 +25,6 @@ import static org.junit.Assert.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
-// TODO test HTTPS
 public class HttpAppenderTest {
 
     private static final String LOG_MESSAGE = "Hello, world!";
@@ -50,7 +52,10 @@ public class HttpAppenderTest {
     public LoggerContextRule ctx = new LoggerContextRule("HttpAppenderTest.xml");
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort()
+        .keystorePath(TestConstants.KEYSTORE_FILE)
+        .keystorePassword(TestConstants.KEYSTORE_PWD)
+        .keystoreType(TestConstants.KEYSTORE_TYPE));
 
     @Test
     public void testAppend() throws Exception {
@@ -62,6 +67,28 @@ public class HttpAppenderTest {
             .withLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .setUrl("http://localhost:"+wireMockRule.port()+"/test/log4j/")
+            .build();
+        appender.append(createLogEvent());
+
+        wireMockRule.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
+            .withHeader("Host", containing("localhost"))
+            .withHeader("Content-Type", containing("application/json"))
+            .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
+    }
+
+    @Test
+    public void testAppendHttps() throws Exception {
+        wireMockRule.stubFor(post(urlEqualTo("/test/log4j/"))
+            .willReturn(SUCCESS_RESPONSE));
+
+        final Appender appender = HttpAppender.newBuilder()
+            .withName("Http")
+            .withLayout(JsonLayout.createDefaultLayout())
+            .setConfiguration(ctx.getConfiguration())
+            .setUrl("https://localhost:"+wireMockRule.httpsPort()+"/test/log4j/")
+            .setSslConfiguration(SslConfiguration.createSSLConfiguration("TLS",
+                KeyStoreConfiguration.createKeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null),
+                null))
             .build();
         appender.append(createLogEvent());
 

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 
 /**
  * Sends log events over HTTP.
@@ -62,10 +63,13 @@ public final class HttpAppender extends AbstractAppender {
         @PluginElement("Headers")
         private Property[] headers;
 
+        @PluginElement("SslConfiguration")
+        private SslConfiguration sslConfiguration;
+
         @Override
         public HttpAppender build() {
             final HttpManager httpManager = new HttpURLConnectionManager(getConfiguration(), getConfiguration().getLoggerContext(),
-                getName(), url, method, connectTimeoutMillis, readTimeoutMillis, headers);
+                getName(), url, method, connectTimeoutMillis, readTimeoutMillis, headers, sslConfiguration);
             return new HttpAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), httpManager);
         }
 
@@ -87,6 +91,10 @@ public final class HttpAppender extends AbstractAppender {
 
         public Property[] getHeaders() {
             return headers;
+        }
+
+        public SslConfiguration getSslConfiguration() {
+            return sslConfiguration;
         }
 
         public B setUrl(final String url) {
@@ -111,6 +119,11 @@ public final class HttpAppender extends AbstractAppender {
 
         public B setHeaders(final Property[] headers) {
             this.headers = headers;
+            return asBuilder();
+        }
+
+        public B setSslConfiguration(final SslConfiguration sslConfiguration) {
+            this.sslConfiguration = sslConfiguration;
             return asBuilder();
         }
     }

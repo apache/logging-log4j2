@@ -26,12 +26,15 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.IOUtils;
 
 public class HttpURLConnectionManager extends HttpManager {
@@ -43,10 +46,13 @@ public class HttpURLConnectionManager extends HttpManager {
     private final int connectTimeoutMillis;
     private final int readTimeoutMillis;
     private final Property[] headers;
+    private final SslConfiguration sslConfiguration;
 
     public HttpURLConnectionManager(final Configuration configuration, LoggerContext loggerContext, final String name,
-                                    final String url, final String method, final int connectTimeoutMillis, final int readTimeoutMillis,
-                                    final Property[] headers) {
+                                    final String url, final String method, final int connectTimeoutMillis,
+                                    final int readTimeoutMillis,
+                                    final Property[] headers,
+                                    SslConfiguration sslConfiguration) {
         super(configuration, loggerContext, name);
         try {
             this.url = new URL(url);
@@ -57,6 +63,10 @@ public class HttpURLConnectionManager extends HttpManager {
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.readTimeoutMillis = readTimeoutMillis;
         this.headers = headers != null ? headers : new Property[0];
+        this.sslConfiguration = sslConfiguration;
+        if (this.sslConfiguration != null && !this.url.getProtocol().equalsIgnoreCase("https")) {
+            throw new ConfigurationException("SSL configuration can only be specified with URL scheme https");
+        }
     }
 
     @Override
@@ -73,6 +83,9 @@ public class HttpURLConnectionManager extends HttpManager {
             urlConnection.setRequestProperty(
                 header.getName(),
                 header.isValueNeedsLookup() ? getConfiguration().getStrSubstitutor().replace(event, header.getValue()) : header.getValue());
+        }
+        if (sslConfiguration != null) {
+            ((HttpsURLConnection)urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
         }
 
         byte[] msg = layout.toByteArray(event);
