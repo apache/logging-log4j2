@@ -33,25 +33,34 @@
           <subsection name="LoggerContextFactory">
             <p>
               The <code>LoggerContextFactory</code> binds the Log4j API to its implementation. The Log4j
-              <code>LogManager</code> locates a <code>LoggerContextFactory</code> by locating all instances of
-              <code>META-INF/log4j-provider.properties</code>, a standard <code>java.util.Properties</code> file,
-              and then inspecting each to verify that it specifies a value for the <var>Log4jAPIVersion</var> property
-              that conforms to the version required by the <code>LogManager</code>. If more than one valid
-              implementation is located the value for <var>FactoryPriority</var> will be used to identify the factory
-              with the highest priority. Finally, the value of the <var>LoggerContextFactory</var> property will be
-              used to locate the <code>LoggerContextFactory</code>. In Log4j 2 this is provided by
-              <code>Log4jContextFactory</code>.
+              <code>LogManager</code> locates a <code>LoggerContextFactory</code> by using java.util.ServiceLoader
+              to locate all instances of <code>org.apache.logging.log4j.spi.Provider</code>. Each implementation must
+              provide a class that extends<code>org.apache.logging.log4j.spi.Provider</code> and should have a
+              no-arg constructor that delegates to Provider's constructor passing the <var>Priority</var>,
+              the API versions it is compatible with, and the class that implements
+              <code>org.apache.logging.log4j.spi.LoggerContextFactory</code>. Log4j will compare the current API
+              version and if it is compatible the implementation will be added to the list of providers. The
+              API version in <code>org.apache.logging.log4j.LogManager</code> is only changed when a feature is added
+              to the API that implementations need to be aware of. If more than one valid implementation is located
+              the value for the <var>Priority</var> will be used to identify the factory with the highest priority.
+              Finally, the class that implements <code>org.apache.logging.log4j.spi.LoggerContextFactory</code> will be
+              instantiated and bound to the LogManager. In Log4j 2 this is provided by <code>Log4jContextFactory</code>.
             </p>
             <p>
               Applications may change the LoggerContextFactory that will be used by
             </p>
             <ol>
-              <li>Implementing a new <code>LoggerContextFactory</code> and creating a <code>log4j-provider.properties</code>
-                to reference it making sure that it has the highest priority.
-              </li>
-              <li>Create a new <code>log4j-provider.xml</code> and configure it with the desired
-                <code>LoggerContextFactory</code> making sure that it has the highest priority.
-              </li>
+              <li>Create a binding to the logging implementation.
+              <ol style="list-style-type: lower-alpha">
+                <li>Implement a new <code>LoggerContextFactory</code>.</li>
+                <li>Implement a class that extends <code>org.apache.logging.spi.Provider.</code> with a no-arg
+                  constructor that calls super-class's constructor with the <var>Priority</var>, the API version(s),
+                  <code>LoggerContextFactory</code> class, and optinall, a <code>ThreadContextMap</code>
+                  implementation class.</li>
+                <li>Create a <code>META-INF/services/org.apache.logging.spi.Provider</code> file that contains the
+                  name of the class that implements <code>org.apache.logging.spi.Provider</code>.
+                </li>
+              </ol></li>
               <li>Setting the system property <var>log4j2.loggerContextFactory</var> to the name of the
                 <code>LoggerContextFactory</code> class to use.
               </li>

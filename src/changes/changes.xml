@@ -34,6 +34,9 @@
       <action issue="LOG4J2-1442" dev="mikes" type="add">
         Generic HTTP appender.
       </action>
+      <action issue="LOG4J2-1917" dev="rgoers" type="update">
+        Support using java.util.ServiceLoader to locate Log4j 2 API providers.
+      </action>
       <action issue="LOG4J2-1854" dev="mikes" type="add" due-to="Xavier Jodoin">
         Support null byte delimiter in GelfLayout.
       </action>
