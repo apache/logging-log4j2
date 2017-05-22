@@ -1547,6 +1547,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             Will set the <code>Content-Type</code> header according to the layout. Additional headers can be specified
             with embedded Property elements.
           </p>
+          <p>
+            Will wait for response from server, and throw error if no 2xx response is received.
+          </p>
+          <p>
+            Implemented with
+            <a href="https://docs.oracle.com/javase/7/docs/api/java/net/HttpURLConnection.html">HttpURLConnection</a>.
+          </p>
           <table>
             <caption align="top">HttpAppender Parameters</caption>
             <tr>
@@ -1569,6 +1576,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>layout</td>
               <td>Layout</td>
               <td>The Layout to use to format the LogEvent.</td>
+            </tr>
+            <tr>
+              <td>Ssl</td>
+              <td>SslConfiguration</td>
+              <td>Contains the configuration for the KeyStore and TrustStore for https.
+                  Optional, uses Java runtime defaults if not specified.</td>
             </tr>
             <tr>
               <td>url</td>
@@ -1610,9 +1623,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
   ...
   <Appenders>
-    <Http name="Http" url="http://localhost:9200/test/log4j/">
+    <Http name="Http" url="https://localhost:9200/test/log4j/">
       <Property name="X-Java-Runtime" value="$${java:runtime}" />
       <JsonLayout properties="true"/>
+      <Ssl>
+        <KeyStore location="log4j2-keystore.jks" password="changeme"/>
+        <TrustStore location="truststore.jks" password="changeme"/>
+      </Ssl>
     </Http>
   </Appenders>]]></pre>
         </subsection>
