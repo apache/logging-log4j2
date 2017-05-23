@@ -43,6 +43,7 @@ public class HttpURLConnectionManager extends HttpManager {
     private static final Charset CHARSET = Charset.forName("US-ASCII");
 
     private final URL url;
+    private final boolean isHttps;
     private final String method;
     private final int connectTimeoutMillis;
     private final int readTimeoutMillis;
@@ -63,16 +64,14 @@ public class HttpURLConnectionManager extends HttpManager {
         } catch (MalformedURLException e) {
             throw new ConfigurationException(e);
         }
+        this.isHttps = this.url.getProtocol().equalsIgnoreCase("https");
         this.method = Objects.requireNonNull(method, "method");
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.readTimeoutMillis = readTimeoutMillis;
         this.headers = headers != null ? headers : new Property[0];
         this.sslConfiguration = sslConfiguration;
-        if (this.sslConfiguration != null && !this.url.getProtocol().equalsIgnoreCase("https")) {
+        if (this.sslConfiguration != null && !isHttps) {
             throw new ConfigurationException("SSL configuration can only be specified with URL scheme https");
-        }
-        if (!this.verifyHostname && !this.url.getProtocol().equalsIgnoreCase("https")) {
-            throw new ConfigurationException("verifyHostname=false can only be specified with URL scheme https");
         }
     }
 
@@ -94,7 +93,7 @@ public class HttpURLConnectionManager extends HttpManager {
         if (sslConfiguration != null) {
             ((HttpsURLConnection)urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
         }
-        if (!verifyHostname) {
+        if (isHttps && !verifyHostname) {
             ((HttpsURLConnection)urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
         }
 
