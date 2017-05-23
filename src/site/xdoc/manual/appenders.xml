@@ -1632,10 +1632,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     <Http name="Http" url="https://localhost:9200/test/log4j/">
       <Property name="X-Java-Runtime" value="$${java:runtime}" />
       <JsonLayout properties="true"/>
-      <Ssl>
+      <SSL>
         <KeyStore location="log4j2-keystore.jks" password="changeme"/>
         <TrustStore location="truststore.jks" password="changeme"/>
-      </Ssl>
+      </SSL>
     </Http>
   </Appenders>]]></pre>
         </subsection>
