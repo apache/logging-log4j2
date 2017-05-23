@@ -1,6 +1,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
+import java.net.URL;
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -67,7 +68,7 @@ public class HttpAppenderTest {
             .withName("Http")
             .withLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
-            .setUrl("http://localhost:" + wireMockRule.port() + "/test/log4j/")
+            .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
             .build();
         appender.append(createLogEvent());
 
@@ -86,7 +87,7 @@ public class HttpAppenderTest {
             .withName("Http")
             .withLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
-            .setUrl("https://localhost:" + wireMockRule.httpsPort() + "/test/log4j/")
+            .setUrl(new URL("https://localhost:" + wireMockRule.httpsPort() + "/test/log4j/"))
             .setSslConfiguration(SslConfiguration.createSSLConfiguration(null,
                 KeyStoreConfiguration.createKeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null),
                 TrustStoreConfiguration.createKeyStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, TestConstants.TRUSTSTORE_TYPE, null)))
@@ -110,7 +111,7 @@ public class HttpAppenderTest {
             .withLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .setMethod("PUT")
-            .setUrl("http://localhost:" + wireMockRule.port() + "/test/log4j/1234")
+            .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/1234"))
             .build();
         appender.append(createLogEvent());
 
@@ -129,7 +130,7 @@ public class HttpAppenderTest {
             .withName("Http")
             .withLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
-            .setUrl("http://localhost:" + wireMockRule.port() + "/test/log4j/")
+            .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
             .setHeaders(new Property[] {
                 Property.createProperty("X-Test", "header value"),
                 Property.createProperty("X-Runtime", "${java:runtime}")
@@ -173,7 +174,7 @@ public class HttpAppenderTest {
             .withName("Http")
             .withLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
-            .setUrl("http://localhost:" + wireMockRule.port() + "/test/log4j/")
+            .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
             .build();
         appender.append(createLogEvent());
 
@@ -197,7 +198,7 @@ public class HttpAppenderTest {
             .withLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .withIgnoreExceptions(false)
-            .setUrl("http://localhost:" + wireMockRule.port() + "/test/log4j/")
+            .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
             .build();
         appender.append(createLogEvent());
     }
@@ -209,7 +210,7 @@ public class HttpAppenderTest {
             .withLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .withIgnoreExceptions(false)
-            .setUrl("http://localhost:"+(wireMockRule.port()+1)+"/test/log4j/")
+            .setUrl(new URL("http://localhost:"+(wireMockRule.port()+1)+"/test/log4j/"))
             .build();
         appender.append(createLogEvent());
     }

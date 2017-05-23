@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Objects;
@@ -52,17 +51,15 @@ public class HttpURLConnectionManager extends HttpManager {
     private final boolean verifyHostname;
 
     public HttpURLConnectionManager(final Configuration configuration, LoggerContext loggerContext, final String name,
-                                    final String url, final String method, final int connectTimeoutMillis,
+                                    final URL url, final String method, final int connectTimeoutMillis,
                                     final int readTimeoutMillis,
                                     final Property[] headers,
                                     SslConfiguration sslConfiguration,
                                     boolean verifyHostname) {
         super(configuration, loggerContext, name);
-        this.verifyHostname = verifyHostname;
-        try {
-            this.url = new URL(url);
-        } catch (MalformedURLException e) {
-            throw new ConfigurationException(e);
+        this.url = url;
+        if (!(url.getProtocol().equalsIgnoreCase("http") || url.getProtocol().equalsIgnoreCase("https"))) {
+            throw new ConfigurationException("URL must have scheme http or https");
         }
         this.isHttps = this.url.getProtocol().equalsIgnoreCase("https");
         this.method = Objects.requireNonNull(method, "method");
@@ -73,6 +70,7 @@ public class HttpURLConnectionManager extends HttpManager {
         if (this.sslConfiguration != null && !isHttps) {
             throw new ConfigurationException("SSL configuration can only be specified with URL scheme https");
         }
+        this.verifyHostname = verifyHostname;
     }
 
     @Override

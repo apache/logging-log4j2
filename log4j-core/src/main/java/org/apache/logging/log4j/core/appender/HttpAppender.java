@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +50,7 @@ public final class HttpAppender extends AbstractAppender {
 
         @PluginBuilderAttribute
         @Required(message = "No URL provided for HttpAppender")
-        private String url;
+        private URL url;
 
         @PluginBuilderAttribute
         private String method = "POST";
@@ -76,7 +77,7 @@ public final class HttpAppender extends AbstractAppender {
             return new HttpAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), httpManager);
         }
 
-        public String getUrl() {
+        public URL getUrl() {
             return url;
         }
 
@@ -104,7 +105,7 @@ public final class HttpAppender extends AbstractAppender {
             return verifyHostname;
         }
 
-        public B setUrl(final String url) {
+        public B setUrl(final URL url) {
             this.url = url;
             return asBuilder();
         }
