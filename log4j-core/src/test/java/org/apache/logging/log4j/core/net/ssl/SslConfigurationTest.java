@@ -31,7 +31,12 @@ public class SslConfigurationTest {
     private static final int TLS_TEST_PORT = 443;
 
     @Test
-    public void emptyConfigurationDoesntCauseNullSSLSocketFactory() {
+    public void equals() {
+        Assert.assertEquals(SslConfiguration.createSSLConfiguration(null, null, null), SslConfiguration.createSSLConfiguration(null, null, null));
+    }
+    
+    @Test
+        public void emptyConfigurationDoesntCauseNullSSLSocketFactory() {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
         Assert.assertNotNull(factory);
