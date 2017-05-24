@@ -103,9 +103,7 @@ public class HttpURLConnectionManager extends HttpManager {
         }
 
         byte[] buffer = new byte[1024];
-        InputStream is = null;
-        try {
-            is = urlConnection.getInputStream();
+        try (InputStream is = urlConnection.getInputStream()) {
             while (IOUtils.EOF != is.read(buffer));
         } catch (IOException e) {
             StringBuilder errorMessage = new StringBuilder();
@@ -126,8 +124,6 @@ public class HttpURLConnectionManager extends HttpManager {
                 throw new IOException(errorMessage.toString());
             else
                 throw e;
-        } finally {
-            if (is != null) is.close();
         }
     }
 
