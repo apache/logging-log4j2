@@ -30,10 +30,12 @@ final class Log4jXmlModule extends JacksonXmlModule {
 
     private static final long serialVersionUID = 1L;
     private final boolean includeStacktrace;
+    private final boolean stacktraceAsString;
 
-    Log4jXmlModule(final boolean includeStacktrace) {
+    Log4jXmlModule(final boolean includeStacktrace, final boolean stacktraceAsString) {
         super();
         this.includeStacktrace = includeStacktrace;
+        this.stacktraceAsString = stacktraceAsString;
         // MUST init here.
         // Calling this from setupModule is too late!
         new SimpleModuleInitializer().initialize(this);
@@ -43,6 +45,6 @@ final class Log4jXmlModule extends JacksonXmlModule {
     public void setupModule(final SetupContext context) {
         // Calling super is a MUST!
         super.setupModule(context);
-        new SetupContextInitializer().setupModule(context, includeStacktrace);
+        new SetupContextInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
     }
 }

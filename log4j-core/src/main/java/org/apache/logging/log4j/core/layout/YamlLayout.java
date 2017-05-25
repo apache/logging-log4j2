@@ -62,14 +62,14 @@ public final class YamlLayout extends AbstractJacksonLayout {
             final String headerPattern = toStringOrNull(getHeader());
             final String footerPattern = toStringOrNull(getFooter());
             return new YamlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
-                isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(), isIncludeStacktrace());
+                isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(), isIncludeStacktrace(), isStacktraceAsString());
         }
     }
 
     protected YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
-            final String footerPattern, final Charset charset, final boolean includeStacktrace) {
-        super(config, new JacksonFactory.YAML(includeStacktrace).newWriter(locationInfo, properties, compact), charset, compact,
+            final String footerPattern, final Charset charset, final boolean includeStacktrace, final boolean stacktraceAsString) {
+        super(config, new JacksonFactory.YAML(includeStacktrace, stacktraceAsString).newWriter(locationInfo, properties, compact), charset, compact,
             complete, eventEol,
             PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
             PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
@@ -146,6 +146,8 @@ public final class YamlLayout extends AbstractJacksonLayout {
      *            The character set to use, if {@code null}, uses "UTF-8".
      * @param includeStacktrace
      *            If "true", includes the stacktrace of any Throwable in the generated YAML, defaults to "true".
+     * @param stacktraceAsString
+     *            If "true", the stacktrace will be rendered as string, and not nested object, defaults to "false".
      * @return A YAML Layout.
      *
      * @deprecated Use {@link #newBuilder()} instead
@@ -159,11 +161,12 @@ public final class YamlLayout extends AbstractJacksonLayout {
             @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
             @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace
+            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace,
+            @PluginAttribute(value = "stacktraceAsString", defaultBoolean = false) final boolean stacktraceAsString
             // @formatter:on
     ) {
         return new YamlLayout(config, locationInfo, properties, false, false, true, headerPattern, footerPattern,
-                charset, includeStacktrace);
+                charset, includeStacktrace, stacktraceAsString);
     }
 
     @PluginBuilderFactory
@@ -178,6 +181,6 @@ public final class YamlLayout extends AbstractJacksonLayout {
      */
     public static AbstractJacksonLayout createDefaultLayout() {
         return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER,
-                DEFAULT_FOOTER, StandardCharsets.UTF_8, true);
+                DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false);
     }
 }

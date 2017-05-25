@@ -142,7 +142,7 @@ public class JsonLayoutTest {
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, locationInfo, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
-        final Log4jLogEvent actual = new Log4jJsonObjectMapper(contextMapAslist, includeStacktrace).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper(contextMapAslist, includeStacktrace, false).readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, locationInfo, includeContext, includeStacktrace);
         if (includeContext) {
             this.checkMapEntry("MDC.A", "A_Value", compact, str, contextMapAslist);
@@ -340,7 +340,7 @@ public class JsonLayoutTest {
         // @formatter:on
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("\"loggerName\":\"a.B\""));
-        final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
     }
@@ -368,6 +368,30 @@ public class JsonLayoutTest {
     @Test
     public void testExcludeStacktrace() throws Exception {
         this.testAllFeatures(false, false, false, false, false, false);
+    }
+
+    @Test
+    public void testStacktraceAsString() throws Exception {
+        final String str = prepareJSONForStacktraceTests(true);
+        assertTrue(str, str.contains("\"extendedStackTrace\":\""));
+    }
+
+    @Test
+    public void testStacktraceAsMap() throws Exception {
+        final String str = prepareJSONForStacktraceTests(false);
+        assertTrue(str, str.contains("\"extendedStackTrace\":["));
+    }
+
+    private String prepareJSONForStacktraceTests(final boolean stacktraceAsString) {
+        final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
+        // @formatter:off
+        final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setCompact(true)
+                .setIncludeStacktrace(true)
+                .setStacktraceAsString(stacktraceAsString)
+                .build();
+        // @formatter:off
+        return layout.toSerializable(expected);
     }
 
     private String toPropertySeparator(final boolean compact) {
