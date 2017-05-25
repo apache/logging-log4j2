@@ -13,6 +13,8 @@
 language: java
 # sudo enabled because sudo vms have more memory: https://docs.travis-ci.com/user/ci-environment/
 sudo: true
+# trusty required for oraclejdk9
+dist: trusty
 
 jdk:
   - oraclejdk7
@@ -20,11 +22,6 @@ jdk:
 env:
   global:
     JAVA_OPTS=-Xmx4g
-
-addons:
-  apt:
-    packages:
-      - oracle-java9-installer
 
 install:
   - ./mvnw --toolchains=./.travis-toolchains.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V

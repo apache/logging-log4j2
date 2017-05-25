@@ -100,6 +100,7 @@ public class SocketAppenderSocketOptionsTest {
     @Test
     public void testSocketTrafficClass() throws IOException {
         Assume.assumeTrue("Run only on Java 7", System.getProperty("java.specification.version").equals("1.7"));
+        Assume.assumeFalse("Do not run on Travis CI", "true".equals(System.getenv("TRAVIS")));
         final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
         final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
         final Socket socket = manager.getSocket();
