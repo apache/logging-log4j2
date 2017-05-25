@@ -44,10 +44,12 @@ abstract class JacksonFactory {
 
         private final boolean encodeThreadContextAsList;
         private final boolean includeStacktrace;
+        private final boolean stacktraceAsString;
 
-        public JSON(final boolean encodeThreadContextAsList, final boolean includeStacktrace) {
+        public JSON(final boolean encodeThreadContextAsList, final boolean includeStacktrace, final boolean stacktraceAsString) {
             this.encodeThreadContextAsList = encodeThreadContextAsList;
             this.includeStacktrace = includeStacktrace;
+            this.stacktraceAsString = stacktraceAsString;
         }
 
         @Override
@@ -72,7 +74,7 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jJsonObjectMapper(encodeThreadContextAsList, includeStacktrace);
+            return new Log4jJsonObjectMapper(encodeThreadContextAsList, includeStacktrace, stacktraceAsString);
         }
 
         @Override
@@ -86,9 +88,12 @@ abstract class JacksonFactory {
         static final int DEFAULT_INDENT = 1;
 
         private final boolean includeStacktrace;
+        private final boolean stacktraceAsString;
 
-        public XML(final boolean includeStacktrace) {
+
+        public XML(final boolean includeStacktrace, final boolean stacktraceAsString) {
             this.includeStacktrace = includeStacktrace;
+            this.stacktraceAsString = stacktraceAsString;
         }
 
         @Override
@@ -114,7 +119,7 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jXmlObjectMapper(includeStacktrace);
+            return new Log4jXmlObjectMapper(includeStacktrace, stacktraceAsString);
         }
 
         @Override
@@ -126,9 +131,12 @@ abstract class JacksonFactory {
     static class YAML extends JacksonFactory {
 
         private final boolean includeStacktrace;
+        private final boolean stacktraceAsString;
 
-        public YAML(final boolean includeStacktrace) {
+
+        public YAML(final boolean includeStacktrace, final boolean stacktraceAsString) {
             this.includeStacktrace = includeStacktrace;
+            this.stacktraceAsString = stacktraceAsString;
         }
 
         @Override
@@ -153,7 +161,7 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jYamlObjectMapper(false, includeStacktrace);
+            return new Log4jYamlObjectMapper(false, includeStacktrace, stacktraceAsString);
         }
 
         @Override

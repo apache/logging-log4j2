@@ -449,6 +449,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
+            <tr>
+              <td>stacktraceAsString</td>
+              <td>boolean</td>
+              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
             <caption align="top">JsonLayout Parameters</caption>
           </table>
           <p>
@@ -2126,6 +2131,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
+            <tr>
+              <td>stacktraceAsString</td>
+              <td>boolean</td>
+              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
             <caption align="top">XmlLayout Parameters</caption>
           </table>
           <p>
@@ -2209,6 +2219,11 @@ source:
               <td>includeStacktrace</td>
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
+            </tr>
+            <tr>
+              <td>stacktraceAsString</td>
+              <td>boolean</td>
+              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
             </tr>
             <caption align="top">YamlLayout Parameters</caption>
           </table>

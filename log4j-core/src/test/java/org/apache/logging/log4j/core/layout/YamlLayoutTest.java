@@ -116,14 +116,14 @@ public class YamlLayoutTest {
             final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace) throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = YamlLayout.createLayout(null, includeSource, includeContext, null, null,
-                StandardCharsets.UTF_8, includeStacktrace);
+                StandardCharsets.UTF_8, includeStacktrace, false);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         // Just check for \n since \r might or might not be there.
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace,false).readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext, includeStacktrace);
         if (includeContext) {
             this.checkMapEntry("MDC.A", "A_Value", compact, str);
@@ -195,7 +195,7 @@ public class YamlLayoutTest {
         }
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, null, null, null, true);
+        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, null, null, null, true, false);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -231,7 +231,7 @@ public class YamlLayoutTest {
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
         // Use [[ and ]] to test header and footer (instead of [ and ])
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, "[[", "]]", null, true);
+        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, "[[", "]]", null, true, false);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -270,7 +270,7 @@ public class YamlLayoutTest {
     @Test
     public void testLayoutLoggerName() throws Exception {
         final AbstractJacksonLayout layout = YamlLayout.createLayout(null, false, false, null, null,
-                StandardCharsets.UTF_8, true);
+                StandardCharsets.UTF_8, true, false);
         final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //
@@ -280,7 +280,7 @@ public class YamlLayoutTest {
                 .setTimeMillis(1).build();
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("loggerName: \"a.B\""));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper(false, true).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jYamlObjectMapper(false, true, false).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
     }

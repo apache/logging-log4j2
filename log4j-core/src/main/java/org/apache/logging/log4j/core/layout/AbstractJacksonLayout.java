@@ -56,6 +56,9 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private boolean includeStacktrace = true;
 
+        @PluginBuilderAttribute
+        private boolean stacktraceAsString = false;
+
         protected String toStringOrNull(final byte[] header) {
             return header == null ? null : new String(header, Charset.defaultCharset());
         }
@@ -86,6 +89,10 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
          */
         public boolean isIncludeStacktrace() {
             return includeStacktrace;
+        }
+
+        public boolean isStacktraceAsString() {
+            return stacktraceAsString;
         }
 
         public B setEventEol(final boolean eventEol) {
@@ -120,6 +127,11 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
          */
         public B setIncludeStacktrace(boolean includeStacktrace) {
             this.includeStacktrace = includeStacktrace;
+            return asBuilder();
+        }
+
+        public B setStacktraceAsString(boolean stacktraceAsString) {
+            this.stacktraceAsString = stacktraceAsString;
             return asBuilder();
         }
     }
