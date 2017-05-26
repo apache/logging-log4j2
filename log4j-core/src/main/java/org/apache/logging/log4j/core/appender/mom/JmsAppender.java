@@ -222,6 +222,19 @@ public class JmsAppender extends AbstractAppender {
             }
         }
 
+        /**
+         * Does not include the password.
+         */
+        @Override
+        public String toString() {
+            return "Builder [name=" + name + ", factoryName=" + factoryName + ", providerUrl=" + providerUrl
+                    + ", urlPkgPrefixes=" + urlPkgPrefixes + ", securityPrincipalName=" + securityPrincipalName
+                    + ", securityCredentials=" + securityCredentials + ", factoryBindingName=" + factoryBindingName
+                    + ", destinationBindingName=" + destinationBindingName + ", username=" + username + ", layout="
+                    + layout + ", filter=" + filter + ", ignoreExceptions=" + ignoreExceptions + ", jmsManager="
+                    + jmsManager + "]";
+        }
+
     }
 
 }

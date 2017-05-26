@@ -157,6 +157,15 @@ public class JmsManager extends AbstractManager {
             this.username = username;
             this.password = password;
         }
+
+        /**
+         * Does not include the password.
+         */
+        @Override
+        public String toString() {
+            return "JmsConfiguration [jndiManager=" + jndiManager + ", connectionFactoryName=" + connectionFactoryName
+                    + ", destinationName=" + destinationName + ", username=" + username + "]";
+        }
     }
 
     private static class JmsManagerFactory implements ManagerFactory<JmsManager, JmsConfiguration> {
