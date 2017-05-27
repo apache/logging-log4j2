@@ -169,7 +169,8 @@
           <p>
             The DynamicThresholdFilter allows filtering by log level based on specific attributes. For example,
             if the user's loginId is being captured in the ThreadContext Map then it is possible to enable
-            debug logging for only that user.
+            debug logging for only that user. If the log event does not contain the specified ThreadContext item
+            NEUTRAL will be returned.
           </p>
           <table>
             <caption align="top">Dynamic Threshold Filter Parameters</caption>
@@ -179,10 +180,16 @@
               <th>Description</th>
             </tr>
             <tr>
+              <td>key</td>
+              <td>String</td>
+              <td>The name of the item in the ThreadContext Map to compare.</td>
+            </tr>
+            <tr>
               <td>defaultThreshold</td>
               <td>String</td>
-              <td>Level of messages to be filtered. If there is no matching key in the key/value pairs
-                then this level will be compared against the event's level.
+              <td>Level of messages to be filtered. The default threshold only applies if the log event contains
+                the specified ThreadContext Map item and its value does not match any key in
+                the key/value pairs.
               </td>
             </tr>
             <tr>

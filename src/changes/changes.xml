@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1911" dev="rgoers" type="fix">
+        Improve the documentation of the DynamicThresholdFilter.
+      </action>
       <action issue="LOG4J2-1442" dev="mikes" type="add">
         Generic HTTP appender.
       </action>
