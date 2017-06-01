@@ -39,6 +39,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * When using asynchronous loggers and appenders it is not recommended to modify this message after the message is
  * logged, because it is undefined whether the logged message string will contain the old values or the modified
  * values.
+ * </p>
  */
 @PerformanceSensitive("allocation")
 @AsynchronouslyFormattable
@@ -48,10 +49,13 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
      * When set as the format specifier causes the Map to be formatted as XML.
      */
     public enum MapFormat {
+        
         /** The map should be formatted as XML. */
         XML,
+        
         /** The map should be formatted as JSON. */
         JSON,
+        
         /** The map should be formatted the same as documented by java.util.AbstractMap.toString(). */
         JAVA;
 
@@ -210,7 +214,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Formats the Structured data as described in RFC 5424.
+     * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
      *
      * @return The formatted String.
      */
@@ -218,6 +222,12 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         return format((MapFormat) null, new StringBuilder()).toString();
     }
 
+    /**
+     * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
+     *
+     * @param format The format identifier.
+     * @return The formatted String.
+     */
     public String asString(final String format) {
         try {
             return format(EnglishEnums.valueOf(MapFormat.class, format), new StringBuilder()).toString();
@@ -278,9 +288,9 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
     
     /**
-     * Formats the Structured data as described in RFC 5424.
+     * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
      *
-     * @param format The format identifier. Ignored in this implementation.
+     * @param format The format identifier.
      * @return The formatted String.
      */
     private StringBuilder format(final MapFormat format, final StringBuilder sb) {
@@ -308,6 +318,11 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         return sb;
     }
 
+    /**
+     * Formats this message as an XML fragment String into the given builder.
+     *
+     * @param sb format into this builder.
+     */
     public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
         for (int i = 0; i < data.size(); i++) {
@@ -328,9 +343,11 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
 
     /**
      *
-     * @param formats An array of Strings that provide extra information about how to format the message.
-     * MapMessage uses the first format specifier it recognizes. The supported formats are XML, JSON, and
-     * JAVA. The default format is key1="value1" key2="value2" as required by RFC 5424 messages.
+     * @param formats
+     *            An array of Strings that provide extra information about how to format the message. MapMessage uses
+     *            the first format specifier it recognizes. The supported formats are XML, JSON, and JAVA. The default
+     *            format is key1="value1" key2="value2" as required by <a href="https://tools.ietf.org/html/rfc5424">RFC
+     *            5424</a> messages.
      *
      * @return The formatted message.
      */
