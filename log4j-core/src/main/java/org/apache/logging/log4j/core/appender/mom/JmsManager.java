@@ -18,12 +18,14 @@
 package org.apache.logging.log4j.core.appender.mom;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
@@ -107,13 +109,23 @@ public class JmsManager extends AbstractManager {
     }
 
     /**
-     * Creates a TextMessage or ObjectMessage from a Serializable object. For instance, when using a text-based
-     * {@link org.apache.logging.log4j.core.Layout} such as {@link org.apache.logging.log4j.core.layout.PatternLayout},
-     * the {@link org.apache.logging.log4j.core.LogEvent} message will be serialized to a String. When using a
-     * layout such as {@link org.apache.logging.log4j.core.layout.SerializedLayout}, the LogEvent message will be
-     * serialized as a Java object.
+     * Creates a TextMessage, MapMessage, or ObjectMessage from a Serializable object.
+     * <p>
+     * For instance, when using a text-based {@link org.apache.logging.log4j.core.Layout} such as
+     * {@link org.apache.logging.log4j.core.layout.PatternLayout}, the {@link org.apache.logging.log4j.core.LogEvent}
+     * message will be serialized to a String.
+     * </p>
+     * <p>
+     * When using a layout such as {@link org.apache.logging.log4j.core.layout.SerializedLayout}, the LogEvent message
+     * will be serialized as a Java object.
+     * </p>
+     * <p>
+     * When using a layout such as {@link org.apache.logging.log4j.core.layout.MessageLayout} and the LogEvent message
+     * is a Log4j MapMessage, the message will be serialized as a JMS MapMessage.
+     * </p>
      *
-     * @param object The LogEvent or String message to wrap.
+     * @param object
+     *            The LogEvent or String message to wrap.
      * @return A new JMS message containing the provided object.
      * @throws JMSException
      */
@@ -121,7 +133,20 @@ public class JmsManager extends AbstractManager {
         if (object instanceof String) {
             return this.session.createTextMessage((String) object);
         }
+        else if (object instanceof org.apache.logging.log4j.message.MapMessage) {
+            return map((org.apache.logging.log4j.message.MapMessage) object, this.session.createMapMessage());
+        }
         return this.session.createObjectMessage(object);
+    }
+
+    private MapMessage map(org.apache.logging.log4j.message.MapMessage log4jMapMessage, MapMessage jmsMapMessage)
+            throws JMSException {
+        // Call getData() only once.
+        final Map<String, String> data = log4jMapMessage.getData();
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            jmsMapMessage.setString(entry.getKey(), entry.getValue());
+        }
+        return jmsMapMessage;
     }
 
     @Override

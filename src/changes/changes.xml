@@ -73,6 +73,9 @@
       <action issue="LOG4J2-1860" dev="mikes" type="add">
         Shortcut to add Property and KeyValuePair component in ConfigurationBuilder.
       </action>
+      <action issue="LOG4J2-1294" dev="ggregory" type="add">
+        The JMS Appender should use a JMS MapMessage for a Log4j MapMessage.
+      </action>
       <action issue="LOG4J2-1868" dev="ggregory" type="update">
         Update ZeroMQ's JeroMQ from 0.3.6 to 0.4.0.
       </action>
