@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.core.appender.mom;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.jms.Connection;
@@ -37,6 +36,7 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.BiConsumer;
 
 /**
  * JMS connection and session manager. Can be used to access MessageProducer, MessageConsumer, and Message objects
@@ -139,15 +139,22 @@ public class JmsManager extends AbstractManager {
         return this.session.createObjectMessage(object);
     }
 
-    private MapMessage map(final org.apache.logging.log4j.message.MapMessage log4jMapMessage, final MapMessage jmsMapMessage)
-            throws JMSException {
-        // Call getData() only once.
-        final Map<String, String> data = log4jMapMessage.getData();
-        for (Map.Entry<String, String> entry : data.entrySet()) {
-            jmsMapMessage.setString(entry.getKey(), entry.getValue());
-        }
+    private MapMessage map(final org.apache.logging.log4j.message.MapMessage log4jMapMessage, final MapMessage jmsMapMessage) {
+        // Map without calling rg.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
+        log4jMapMessage.forEach(new BiConsumer<String, String>() {
+            @Override
+            public void accept(final String key, final String value) {
+                try {
+                    jmsMapMessage.setString(key, value);
+                } catch (JMSException e) {
+                    throw new IllegalArgumentException(String.format("%s mapping key '%s' to value '%s': %s",
+                            e.getClass(), key, value, e.getLocalizedMessage()), e);
+                }
+            }
+        });
         return jmsMapMessage;
     }
+
 
     @Override
     protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {

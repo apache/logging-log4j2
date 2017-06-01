@@ -20,14 +20,17 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Represents a Message that consists of a Map.
@@ -211,6 +214,57 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         } catch (final IllegalArgumentException ex) {
             return asString();
         }
+    }
+    
+    /**
+     * Performs the given action for each key-value pair in this data structure
+     * until all entries have been processed or the action throws an exception.
+     * <p>
+     * Some implementations may not support structural modifications (adding new elements or removing elements) while
+     * iterating over the contents. In such implementations, attempts to add or remove elements from the
+     * {@code BiConsumer}'s {@link BiConsumer#accept(Object, Object)} accept} method may cause a
+     * {@code ConcurrentModificationException} to be thrown.
+     * </p>
+     *
+     * @param action The action to be performed for each key-value pair in this collection
+     * @param <V> type of the value
+     * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          {@link #forEach(TriConsumer, Object)}.
+     * @see ReadOnlyStringMap#forEach(BiConsumer)
+     * @since 2.9
+     */
+    public <V> void forEach(final BiConsumer<String, ? super V> action) {
+        data.forEach(action);
+    }
+
+    /**
+     * Performs the given action for each key-value pair in this data structure
+     * until all entries have been processed or the action throws an exception.
+     * <p>
+     * The third parameter lets callers pass in a stateful object to be modified with the key-value pairs,
+     * so the TriConsumer implementation itself can be stateless and potentially reusable.
+     * </p>
+     * <p>
+     * Some implementations may not support structural modifications (adding new elements or removing elements) while
+     * iterating over the contents. In such implementations, attempts to add or remove elements from the
+     * {@code TriConsumer}'s {@link TriConsumer#accept(Object, Object, Object) accept} method may cause a
+     * {@code ConcurrentModificationException} to be thrown.
+     * </p>
+     *
+     * @param action The action to be performed for each key-value pair in this collection
+     * @param state the object to be passed as the third parameter to each invocation on the specified
+     *          triconsumer
+     * @param <V> type of the value
+     * @param <S> type of the third parameter
+     * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          {@link #forEach(TriConsumer, Object)}.
+     * @see ReadOnlyStringMap#forEach(TriConsumer, Object)
+     * @since 2.9
+     */
+    public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
+        data.forEach(action, state);
     }
     
     /**
