@@ -498,6 +498,9 @@ public class SortedArrayStringMap implements IndexedStringMap {
     }
 
     private static byte[] marshall(Object obj) throws IOException {
+        if (obj == null) {
+            return null;
+        }
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(bout)) {
             oos.writeObject(obj);
