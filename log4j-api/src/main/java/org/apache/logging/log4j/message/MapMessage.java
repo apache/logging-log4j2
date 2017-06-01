@@ -212,6 +212,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
             return asString();
         }
     }
+    
     /**
      * Format the Structured data as described in RFC 5424.
      *
