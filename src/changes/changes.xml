@@ -34,6 +34,9 @@
       <action issue="LOG4J2-1911" dev="rgoers" type="fix">
         Improve the documentation of the DynamicThresholdFilter.
       </action>
+      <action issue="LOG4J2-1929" dev="ggregory" type="fix" due-to="Borys Sokolov">
+        EOFException with FormattedMessage.
+      </action>
       <action issue="LOG4J2-1442" dev="mikes" type="add">
         Generic HTTP appender.
       </action>
