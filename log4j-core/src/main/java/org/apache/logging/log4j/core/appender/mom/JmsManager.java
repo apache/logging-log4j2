@@ -139,7 +139,7 @@ public class JmsManager extends AbstractManager {
         return this.session.createObjectMessage(object);
     }
 
-    private MapMessage map(org.apache.logging.log4j.message.MapMessage log4jMapMessage, MapMessage jmsMapMessage)
+    private MapMessage map(final org.apache.logging.log4j.message.MapMessage log4jMapMessage, final MapMessage jmsMapMessage)
             throws JMSException {
         // Call getData() only once.
         final Map<String, String> data = log4jMapMessage.getData();
