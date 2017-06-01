@@ -1344,7 +1344,7 @@ public class ConnectionFactory {
             Here is a sample JMSAppender configuration:
           </p>
 
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
   <Appenders>
     <JMS name="jmsQueue" destinationBindingName="MyQueue"
@@ -1356,6 +1356,27 @@ public class ConnectionFactory {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+
+        <p>
+          To map your Log4j <code>MapMessage</code>s to JMS <code>javax.jms.MapMessage</code>s, set the 
+          layout of the appender to <code>MessageLayout</code> with <code>&lt;MessageLayout /&gt;</code> (Since 2.9.):
+        </p>
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <JMS name="jmsQueue" destinationBindingName="MyQueue"
+         factoryBindingName="MyQueueConnectionFactory">
+      <MessageLayout />
+    </JMS>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="jmsQueue"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+        
         </subsection>
         <a name="JPAAppender"/>
         <subsection name="JPAAppender">
