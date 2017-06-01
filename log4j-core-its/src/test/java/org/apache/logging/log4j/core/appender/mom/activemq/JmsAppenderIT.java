@@ -61,7 +61,7 @@ public class JmsAppenderIT {
     @BeforeClass
     public static void setUpClass() {
         System.setProperty(KEY_SERIALIZABLE_PACKAGES,
-                "org.apache.logging.log4j.core.impl,org.apache.logging.log4j.util,org.apache.logging.log4j");
+                "org.apache.logging.log4j.core.impl,org.apache.logging.log4j.util,org.apache.logging.log4j,java.rmi");
         final Properties additional = new Properties();
         additional.setProperty("queue.TestQueue", "TestQueue");
         final JndiManager jndiManager = JndiManager.getJndiManager(ActiveMQInitialContextFactory.class.getName(),
