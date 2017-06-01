@@ -382,6 +382,11 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         sb.append('}');
     }
 
+    /**
+     * Constructs a new instance based on an existing Map.
+     * @param map The Map.
+     * @return A new MapMessage
+     */
     public MapMessage newInstance(final Map<String, String> map) {
         return new MapMessage(map);
     }
