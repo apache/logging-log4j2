@@ -47,7 +47,6 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
      */
-
     public enum MapFormat {
         /** The map should be formatted as XML. */
         XML,
@@ -56,6 +55,12 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         /** The map should be formatted the same as documented by java.util.AbstractMap.toString(). */
         JAVA;
 
+        /**
+         * Maps a format name to an {@link MapFormat} while ignoring case.
+         * 
+         * @param format a MapFormat name
+         * @return a MapFormat
+         */
         public static MapFormat lookupIgnoreCase(final String format) {
             return XML.name().equalsIgnoreCase(format) ? XML //
                     : JSON.name().equalsIgnoreCase(format) ? JSON //
@@ -63,6 +68,11 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
                     : null;
         }
 
+        /**
+         * All {@code MapFormat} names.
+         * 
+         * @return All {@code MapFormat} names.
+         */
         public static String[] names() {
             return new String[] {XML.name(), JSON.name(), JAVA.name()};
         }
@@ -73,14 +83,14 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     private final IndexedStringMap data;
 
     /**
-     * Constructor.
+     * Constructs a new instance.
      */
     public MapMessage() {
         data = new SortedArrayStringMap();
     }
 
     /**
-     * Constructor based on an existing Map.
+     * Constructs a new instance based on an existing Map.
      * @param map The Map.
      */
     public MapMessage(final Map<String, String> map) {
@@ -142,7 +152,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Add an item to the data Map in fluent style.
+     * Adds an item to the data Map in fluent style.
      * @param key The name of the data item.
      * @param value The value of the data item.
      * @return {@code this}
@@ -153,7 +163,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Add an item to the data Map.
+     * Adds an item to the data Map.
      * @param key The name of the data item.
      * @param value The value of the data item.
      */
@@ -170,7 +180,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Add all the elements from the specified Map.
+     * Adds all the elements from the specified Map.
      * @param map The Map to add.
      */
     public void putAll(final Map<String, String> map) {
@@ -180,7 +190,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Retrieve the value of the element with the specified key or null if the key is not present.
+     * Retrieves the value of the element with the specified key or null if the key is not present.
      * @param key The name of the element.
      * @return The value of the element or null if the key is not present.
      */
@@ -189,7 +199,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Remove the element with the specified name.
+     * Removes the element with the specified name.
      * @param key The name of the element.
      * @return The previous value of the element.
      */
@@ -200,7 +210,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Format the Structured data as described in RFC 5424.
+     * Formats the Structured data as described in RFC 5424.
      *
      * @return The formatted String.
      */
@@ -268,7 +278,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
     
     /**
-     * Format the Structured data as described in RFC 5424.
+     * Formats the Structured data as described in RFC 5424.
      *
      * @param format The format identifier. Ignored in this implementation.
      * @return The formatted String.
@@ -308,7 +318,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Format the message and return it.
+     * Formats the message and return it.
      * @return the formatted message.
      */
     @Override
