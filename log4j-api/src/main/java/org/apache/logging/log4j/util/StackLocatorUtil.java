@@ -28,13 +28,15 @@ public final class StackLocatorUtil {
         try {
             final Class<?> stackLocatorClass = LoaderUtil.loadClass("org.apache.logging.log4j.util.StackWalkerStackLocator");
             stackLocator = (StackLocator) stackLocatorClass.newInstance();
-        } catch (ClassNotFoundException cnfe) {
+        } catch (NoClassDefFoundError e) {
+            // Ignore this error.
+        } catch (ClassNotFoundException e) {
             // Ignore this exception.
-        } catch (InstantiationException ie) {
+        } catch (InstantiationException e) {
             // Ignore this exception.
-        } catch (IllegalAccessException iae) {
+        } catch (IllegalAccessException e) {
             // Ignore this exception.
-        } catch (UnsupportedClassVersionError error) {
+        } catch (UnsupportedClassVersionError e) {
             // Ignore this error.
         }
         if (stackLocator == null) {
