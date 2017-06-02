@@ -156,6 +156,17 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
+     * Returns {@code true} if this data structure contains the specified key, {@code false} otherwise.
+     *
+     * @param key the key whose presence to check. May be {@code null}.
+     * @return {@code true} if this data structure contains the specified key, {@code false} otherwise
+     * @since 2.9
+     */
+    public boolean containsKey(final String key) {
+        return data.containsKey(key);
+    }
+
+    /**
      * Adds an item to the data Map in fluent style.
      * @param key The name of the data item.
      * @param value The value of the data item.

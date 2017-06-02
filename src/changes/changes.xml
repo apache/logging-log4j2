@@ -43,6 +43,9 @@
       <action issue="LOG4J2-1930" dev="ggregory" type="add">
         Add forEach() methods to org.apache.logging.log4j.message.MapMessage.
       </action>
+      <action issue="LOG4J2-1932" dev="ggregory" type="add">
+        Add containsKey() methods to org.apache.logging.log4j.message.MapMessage.
+      </action>
       <action issue="LOG4J2-1917" dev="rgoers" type="update">
         Support using java.util.ServiceLoader to locate Log4j 2 API providers.
       </action>
