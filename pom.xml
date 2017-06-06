@@ -1341,6 +1341,7 @@
     <module>log4j-iostreams</module>
     <module>log4j-jul</module>
     <module>log4j-liquibase</module>
+    <module>log4j-lucene5</module>
     <module>log4j-api-scala_2.10</module>
     <module>log4j-api-scala_2.11</module>
   </modules>

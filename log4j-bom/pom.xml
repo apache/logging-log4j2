@@ -108,6 +108,12 @@
         <artifactId>log4j-liquibase</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Apache Lucene 5 Appender -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-lucene5</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Scala 2.10 API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
