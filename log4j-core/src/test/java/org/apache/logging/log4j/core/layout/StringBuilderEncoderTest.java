@@ -189,7 +189,6 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
         helper.encode(text, destination);
 
-        assertEquals("drained", 7, destination.drainPoints.size());
         destination.drain(destination.getByteBuffer());
 
         final byte[] bytes = text.toString().getBytes(SHIFT_JIS);

@@ -51,43 +51,11 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
 
     @Override
     public void encode(final StringBuilder source, final ByteBufferDestination destination) {
-        final ByteBuffer temp = getByteBuffer();
-        temp.clear();
-        temp.limit(Math.min(temp.capacity(), destination.getByteBuffer().capacity()));
-        final CharsetEncoder charsetEncoder = getCharsetEncoder();
-
-        final int estimatedBytes = estimateBytes(source.length(), charsetEncoder.maxBytesPerChar());
-        if (temp.remaining() < estimatedBytes) {
-            encodeSynchronized(getCharsetEncoder(), getCharBuffer(), source, destination);
-        } else {
-            encodeWithThreadLocals(charsetEncoder, getCharBuffer(), temp, source, destination);
-        }
-    }
-
-    private void encodeWithThreadLocals(final CharsetEncoder charsetEncoder, final CharBuffer charBuffer,
-            final ByteBuffer temp, final StringBuilder source, final ByteBufferDestination destination) {
         try {
-            TextEncoderHelper.encodeTextWithCopy(charsetEncoder, charBuffer, temp, source, destination);
+            TextEncoderHelper.encodeText(getCharsetEncoder(), getCharBuffer(), getByteBuffer(), source, destination);
         } catch (final Exception ex) {
             logEncodeTextException(ex, source, destination);
             TextEncoderHelper.encodeTextFallBack(charset, source, destination);
-        }
-    }
-
-    private static int estimateBytes(final int charCount, final float maxBytesPerChar) {
-        return (int) (charCount * (double) maxBytesPerChar);
-    }
-
-    private void encodeSynchronized(final CharsetEncoder charsetEncoder, final CharBuffer charBuffer,
-            final StringBuilder source, final ByteBufferDestination destination) {
-        synchronized (destination) {
-            try {
-                TextEncoderHelper.encodeText(charsetEncoder, charBuffer, destination.getByteBuffer(), source,
-                        destination);
-            } catch (final Exception ex) {
-                logEncodeTextException(ex, source, destination);
-                TextEncoderHelper.encodeTextFallBack(charset, source, destination);
-            }
         }
     }
 
@@ -116,6 +84,8 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
         if (result == null) {
             result = ByteBuffer.wrap(new byte[byteBufferSize]);
             byteBufferThreadLocal.set(result);
+        } else {
+            result.clear();
         }
         return result;
     }
