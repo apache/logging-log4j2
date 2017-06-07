@@ -54,7 +54,13 @@
       <groupId>com.datastax.cassandra</groupId>
       <artifactId>cassandra-driver-core</artifactId>
       <optional>true</optional>
-    </dependency>
+    </dependency>    
+	<dependency>
+	    <groupId>org.apache.lucene</groupId>
+	    <artifactId>lucene-analyzers-common</artifactId>
+	    <version>5.5.4</version>
+	    <optional>true</optional>
+	</dependency>  
     <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
