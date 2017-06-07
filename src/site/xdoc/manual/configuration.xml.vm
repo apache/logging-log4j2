@@ -1044,7 +1044,12 @@ rootLogger.appenderRef.stdout.ref = STDOUT
               </tr>
               <tr>
                 <td>sys</td>
-                <td>System properties</td>
+                <td>
+                  System properties.
+                  Can be either a simple property key for <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/System.html#getProperty(java.lang.String)">System.getProperty(key)</a>
+                  or a series of pipe-separated property keys followed by a default value <tt>key<sub>1</sub>|key<sub>2</sub>|...|key<sub>n</sub>|defaultValue</tt>.
+                  Either the first existing property or the default value is used.
+                </td>
               </tr>
             </table>
           <p>
