@@ -42,11 +42,11 @@ public final class MapRewritePolicy implements RewritePolicy {
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final Map<String, String> map;
+    private final Map<String, Object> map;
 
     private final Mode mode;
 
-    private MapRewritePolicy(final Map<String, String> map, final Mode mode) {
+    private MapRewritePolicy(final Map<String, Object> map, final Mode mode) {
         this.map = map;
         this.mode = mode;
     }
@@ -64,21 +64,23 @@ public final class MapRewritePolicy implements RewritePolicy {
             return source;
         }
 
-        final Map<String, String> newMap = new HashMap<>(((MapMessage) msg).getData());
+        @SuppressWarnings("unchecked")
+        MapMessage<?, Object> mapMsg = (MapMessage<?, Object>) msg;
+        final Map<String, Object> newMap = new HashMap<>(mapMsg.getData());
         switch (mode) {
             case Add: {
                 newMap.putAll(map);
                 break;
             }
             default: {
-                for (final Map.Entry<String, String> entry : map.entrySet()) {
+                for (final Map.Entry<String, Object> entry : map.entrySet()) {
                     if (newMap.containsKey(entry.getKey())) {
                         newMap.put(entry.getKey(), entry.getValue());
                     }
                 }
             }
         }
-        final MapMessage message = ((MapMessage) msg).newInstance(newMap);
+        final Message message = mapMsg.newInstance(newMap);
         final LogEvent result = new Log4jLogEvent.Builder(source).setMessage(message).build();
         return result;
     }
@@ -104,7 +106,7 @@ public final class MapRewritePolicy implements RewritePolicy {
         sb.append("mode=").append(mode);
         sb.append(" {");
         boolean first = true;
-        for (final Map.Entry<String, String> entry : map.entrySet()) {
+        for (final Map.Entry<String, Object> entry : map.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }
@@ -130,7 +132,7 @@ public final class MapRewritePolicy implements RewritePolicy {
             LOGGER.error("keys and values must be specified for the MapRewritePolicy");
             return null;
         }
-        final Map<String, String> map = new HashMap<>();
+        final Map<String, Object> map = new HashMap<>();
         for (final KeyValuePair pair : pairs) {
             final String key = pair.getKey();
             if (key == null) {

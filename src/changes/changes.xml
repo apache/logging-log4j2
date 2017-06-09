@@ -40,6 +40,9 @@
       <action issue="LOG4J2-1442" dev="mikes" type="add">
         Generic HTTP appender.
       </action>
+      <action issue="LOG4J2-1935" dev="ggregory" type="add">
+        Add with(String, primitive) methods to org.apache.logging.log4j.message.MapMessage.
+      </action>
       <action issue="LOG4J2-1930" dev="ggregory" type="add">
         Add forEach() methods to org.apache.logging.log4j.message.MapMessage.
       </action>

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.util.Strings;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
@@ -70,7 +70,7 @@ public class GcFreeLoggingTestUtil {
         logger.fatal(test, "This message is logged to the console");
         logger.error("Sample error message");
         logger.error("Test parameterized message {}", "param");
-        logger.error(new MapMessage().with("eventId", "Login")); // initialize GelfLayout's messageStringBuilder
+        logger.error(new StringMapMessage().with("eventId", "Login")); // initialize GelfLayout's messageStringBuilder
         for (int i = 0; i < 256; i++) {
             logger.debug("ensure all ringbuffer slots have been used once"); // allocate MutableLogEvent.messageText
         }
@@ -105,7 +105,7 @@ public class GcFreeLoggingTestUtil {
             }
         };
         Thread.sleep(500);
-        final MapMessage mapMessage = new MapMessage().with("eventId", "Login");
+        final StringMapMessage mapMessage = new StringMapMessage().with("eventId", "Login");
         AllocationRecorder.addSampler(sampler);
 
         // now do some steady-state logging

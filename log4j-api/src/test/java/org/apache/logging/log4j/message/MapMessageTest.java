@@ -28,7 +28,7 @@ public class MapMessageTest {
     @Test
     public void testMap() {
         final String testMsg = "Test message {}";
-        final MapMessage msg = new MapMessage();
+        final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage();
@@ -39,7 +39,7 @@ public class MapMessageTest {
     @Test
     public void testBuilder() {
         final String testMsg = "Test message {}";
-        final MapMessage msg = new MapMessage()
+        final StringMapMessage msg = new StringMapMessage()
                 .with("message", testMsg)
                 .with("project", "Log4j");
         final String result = msg.getFormattedMessage();
@@ -50,7 +50,7 @@ public class MapMessageTest {
     @Test
     public void testXML() {
         final String testMsg = "Test message {}";
-        final MapMessage msg = new MapMessage();
+        final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage(new String[]{"XML"});
@@ -63,7 +63,7 @@ public class MapMessageTest {
     @Test
     public void testJSON() {
         final String testMsg = "Test message {}";
-        final MapMessage msg = new MapMessage();
+        final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
@@ -74,7 +74,7 @@ public class MapMessageTest {
     @Test
     public void testJava() {
         final String testMsg = "Test message {}";
-        final MapMessage msg = new MapMessage();
+        final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage(new String[]{"Java"});
@@ -84,7 +84,7 @@ public class MapMessageTest {
 
     @Test
     public void testMutableByDesign() { // LOG4J2-763
-        final MapMessage msg = new MapMessage();
+        final StringMapMessage msg = new StringMapMessage();
 
         // modify parameter before calling msg.getFormattedMessage
         msg.put("key1", "value1");

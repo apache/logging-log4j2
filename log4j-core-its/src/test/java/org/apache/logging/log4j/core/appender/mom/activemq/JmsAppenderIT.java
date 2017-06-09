@@ -44,7 +44,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.MessageLayout;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JndiManager;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.After;
 import org.junit.Assert;
@@ -108,7 +108,7 @@ public class JmsAppenderIT {
 			map.put("threadName", Thread.currentThread().getName());
 			final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(loggerName) //
 					.setLoggerFqcn(loggerName).setLevel(Level.INFO) //
-					.setMessage(new MapMessage(map)) //
+					.setMessage(new StringMapMessage(map)) //
 					.setTimeMillis(System.currentTimeMillis()).build();
 			appender.append(event);
 		}

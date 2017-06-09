@@ -25,7 +25,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
@@ -60,7 +60,7 @@ public class MapRewritePolicyTest {
                 .setTimeMillis(2).build();
 
         logEvent1 = ((Log4jLogEvent) logEvent0).asBuilder() //
-                .setMessage(new MapMessage(map)) //
+                .setMessage(new StringMapMessage(map)) //
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 29)) //
                 .build();
 
@@ -76,7 +76,7 @@ public class MapRewritePolicyTest {
         logEvent3 = ((Log4jLogEvent) logEvent0).asBuilder() //
                 .setContextStack(stack) //
                 .setLevel(Level.ALL) //
-                .setMessage(new MapMessage(map)) //
+                .setMessage(new StringMapMessage(map)) //
                 .setTimeMillis(Long.MAX_VALUE) //
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 31)) //
                 .build();
@@ -92,15 +92,15 @@ public class MapRewritePolicyTest {
 
         rewritten = addPolicy.rewrite(logEvent1);
         compareLogEvents(logEvent1, rewritten);
-        checkAdded(((MapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StringMapMessage)rewritten.getMessage()).getData());
 
         rewritten = addPolicy.rewrite(logEvent2);
         compareLogEvents(logEvent2, rewritten);
-        checkAdded(((MapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StructuredDataMessage)rewritten.getMessage()).getData());
 
         rewritten = addPolicy.rewrite(logEvent3);
         compareLogEvents(logEvent3, rewritten);
-        checkAdded(((MapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StringMapMessage)rewritten.getMessage()).getData());
     }
 
     @Test
@@ -112,15 +112,15 @@ public class MapRewritePolicyTest {
 
         rewritten = updatePolicy.rewrite(logEvent1);
         compareLogEvents(logEvent1, rewritten);
-        checkUpdated(((MapMessage)rewritten.getMessage()).getData());
+        checkUpdated(((StringMapMessage)rewritten.getMessage()).getData());
 
         rewritten = updatePolicy.rewrite(logEvent2);
         compareLogEvents(logEvent2, rewritten);
-        checkUpdated(((MapMessage)rewritten.getMessage()).getData());
+        checkUpdated(((StructuredDataMessage)rewritten.getMessage()).getData());
 
         rewritten = updatePolicy.rewrite(logEvent3);
         compareLogEvents(logEvent3, rewritten);
-        checkUpdated(((MapMessage)rewritten.getMessage()).getData());
+        checkUpdated(((StringMapMessage)rewritten.getMessage()).getData());
     }
 
     @Test
@@ -132,15 +132,15 @@ public class MapRewritePolicyTest {
 
         rewritten = addPolicy.rewrite(logEvent1);
         compareLogEvents(logEvent1, rewritten);
-        checkAdded(((MapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StringMapMessage)rewritten.getMessage()).getData());
 
         rewritten = addPolicy.rewrite(logEvent2);
         compareLogEvents(logEvent2, rewritten);
-        checkAdded(((MapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StructuredDataMessage)rewritten.getMessage()).getData());
 
         rewritten = addPolicy.rewrite(logEvent3);
         compareLogEvents(logEvent3, rewritten);
-        checkAdded(((MapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StringMapMessage)rewritten.getMessage()).getData());
     }
 
     private void checkAdded(final Map<String, String> addedMap) {

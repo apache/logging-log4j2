@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class MapFilterTest {
                                                     new KeyValuePair("ToAccount", "123456")};
         MapFilter filter = MapFilter.createFilter(pairs, "and", null, null);
         filter.start();
-        MapMessage msg = new MapMessage();
+        StringMapMessage msg = new StringMapMessage();
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
@@ -58,7 +58,7 @@ public class MapFilterTest {
         assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, msg, null));
         filter = MapFilter.createFilter(pairs, "or", null, null);
         filter.start();
-        msg = new MapMessage();
+        msg = new StringMapMessage();
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
@@ -85,7 +85,7 @@ public class MapFilterTest {
         final Logger logger = LogManager.getLogger(MapFilterTest.class);
         final Map<String, String> eventMap = new HashMap<>();
         eventMap.put("eventId", "Login");
-        logger.debug(new MapMessage(eventMap));
+        logger.debug(new StringMapMessage(eventMap));
         final ListAppender app = context.getListAppender("LIST");
         final List<String> msgs = app.getMessages();
         assertNotNull("No messages", msgs);

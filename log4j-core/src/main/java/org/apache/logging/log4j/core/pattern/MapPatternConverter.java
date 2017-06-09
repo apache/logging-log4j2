@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 
 /**
@@ -60,9 +60,9 @@ public final class MapPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        MapMessage msg;
-        if (event.getMessage() instanceof MapMessage) {
-            msg = (MapMessage) event.getMessage();
+        StringMapMessage msg;
+        if (event.getMessage() instanceof StringMapMessage) {
+            msg = (StringMapMessage) event.getMessage();
         } else {
             return;
         }
