@@ -112,6 +112,9 @@
       <action issue="LOG4J2-" dev="ggregory" type="update">
         Update SLF4J from 1.7.24 to 1.7.25.
       </action>
+      <action issue="LOG4J2-1938" dev="ggregory" type="update">
+        Update Jackson from 2.8.7 to 2.8.9.
+      </action>
     </release>
     <release version="2.8.2" date="2017-04-02" description="GA Release 2.8.2">
       <action issue="LOG4J2-1861" dev="mattsicker" type="fix">
