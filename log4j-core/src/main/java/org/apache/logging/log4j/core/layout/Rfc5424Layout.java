@@ -381,7 +381,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 union.union(contextMap);
                 sdElements.put(mdcSdIdStr, union);
             } else {
-                final StructuredDataElement formattedContextMap = new StructuredDataElement(contextMap, false);
+                final StructuredDataElement formattedContextMap = new StructuredDataElement(contextMap, mdcPrefix, false);
                 sdElements.put(mdcSdIdStr, formattedContextMap);
             }
         }
@@ -397,7 +397,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 union.union(map);
                 sdElements.put(sdId, union);
             } else {
-                final StructuredDataElement formattedData = new StructuredDataElement(map, false);
+                final StructuredDataElement formattedData = new StructuredDataElement(map, eventPrefix, false);
                 sdElements.put(sdId, formattedData);
             }
         }
@@ -408,7 +408,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         for (final Map.Entry<String, StructuredDataElement> entry : sdElements.entrySet()) {
-            formatStructuredElement(entry.getKey(), mdcPrefix, entry.getValue(), buffer, listChecker);
+            formatStructuredElement(entry.getKey(), entry.getValue(), buffer, listChecker);
         }
     }
 
@@ -492,7 +492,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         buf.append(Integer.toString(val));
     }
 
-    private void formatStructuredElement(final String id, final String prefix, final StructuredDataElement data,
+    private void formatStructuredElement(final String id, final StructuredDataElement data,
             final StringBuilder sb, final ListChecker checker) {
         if ((id == null && defaultId == null) || data.discard()) {
             return;
@@ -501,9 +501,9 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         sb.append('[');
         sb.append(id);
         if (!mdcSdId.toString().equals(id)) {
-            appendMap(prefix, data.getFields(), sb, noopChecker);
+            appendMap(data.getPrefix(), data.getFields(), sb, noopChecker);
         } else {
-            appendMap(prefix, data.getFields(), sb, checker);
+            appendMap(data.getPrefix(), data.getFields(), sb, checker);
         }
         sb.append(']');
     }
@@ -682,7 +682,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 }
                 map.put(entry.getKey(), buffer.toString());
             }
-            return new StructuredDataElement(map, discardIfEmpty);
+            return new StructuredDataElement(map, eventPrefix, discardIfEmpty);
         }
     }
 
@@ -690,10 +690,13 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         private final Map<String, String> fields;
         private final boolean discardIfEmpty;
+        private final String prefix;
 
-        public StructuredDataElement(final Map<String, String> fields, final boolean discardIfEmpty) {
+        public StructuredDataElement(final Map<String, String> fields, final String prefix,
+                                     final boolean discardIfEmpty) {
             this.discardIfEmpty = discardIfEmpty;
             this.fields = fields;
+            this.prefix = prefix;
         }
 
         boolean discard() {
@@ -716,6 +719,10 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         Map<String, String> getFields() {
             return this.fields;
+        }
+
+        String getPrefix() {
+            return prefix;
         }
     }
 
