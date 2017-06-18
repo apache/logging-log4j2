@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1945" dev="ggregory" type="add">
+        Generate source jas for all test jars.
+      </action>
       <action issue="LOG4J2-1874" dev="rpopma" type="add" due-to="Roman Leventov">
         Added methods ::writeBytes(ByteBuffer) and ::writeBytes(byte[], int, int) to ByteBufferDestination interface and use these methods in TextEncoderHelper where possible to prepare for future enhancements to reduce lock contention.
       </action>
