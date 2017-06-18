@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.util.Constants;
 
 /**
@@ -118,7 +119,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     protected OutputStream createOutputStream() throws IOException {
         throw new IllegalStateException(getClass().getCanonicalName() + " must implement createOutputStream()");
     }
-    
+
     /**
      * Indicate whether the footer should be skipped or not.
      * @param skipFooter true if the footer should be skipped.
@@ -201,6 +202,11 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         write(bytes, 0, bytes.length, immediateFlush);
     }
 
+    @Override
+    public void writeBytes(final byte[] data, final int offset, final int length) {
+        write(data, offset, length, false);
+    }
+
     /**
      * Some output streams synchronize writes while others do not. Synchronizing here insures that
      * log events won't be intertwined.
@@ -210,7 +216,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @throws AppenderLoggingException if an error occurs.
      */
     protected void write(final byte[] bytes, final int offset, final int length) {
-        write(bytes, offset, length, false);
+        writeBytes(bytes, offset, length);
     }
 
     /**
@@ -284,8 +290,8 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      */
     protected synchronized void flushBuffer(final ByteBuffer buf) {
         buf.flip();
-        if (buf.limit() > 0) {
-            writeToDestination(buf.array(), 0, buf.limit());
+        if (buf.remaining() > 0) {
+            writeToDestination(buf.array(), buf.arrayOffset() + buf.position(), buf.remaining());
         }
         buf.clear();
     }
@@ -344,5 +350,15 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     public ByteBuffer drain(final ByteBuffer buf) {
         flushBuffer(buf);
         return buf;
+    }
+
+    @Override
+    public void writeBytes(ByteBuffer data) {
+        if (data.remaining() == 0) {
+          return;
+        }
+        synchronized (this) {
+          ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+        }
     }
 }

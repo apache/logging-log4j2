@@ -39,7 +39,7 @@ public class RandomAccessFileManagerTest {
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.core.appender.RandomAccessFileManager#write(byte[], int, int)}
+     * {@link org.apache.logging.log4j.core.appender.RandomAccessFileManager#writeBytes(byte[], int, int)}
      * .
      */
     @Test
@@ -60,7 +60,7 @@ public class RandomAccessFileManagerTest {
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.core.appender.RandomAccessFileManager#write(byte[], int, int)}
+     * {@link org.apache.logging.log4j.core.appender.RandomAccessFileManager#writeBytes(byte[], int, int)}
      * .
      */
     @Test

@@ -44,7 +44,7 @@ public class RollingRandomAccessFileManagerTest {
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#write(byte[], int, int)}
+     * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#writeBytes(byte[], int, int)}
      */
     @Test
     public void testWrite_multiplesOfBufferSize() throws IOException {
@@ -73,7 +73,7 @@ public class RollingRandomAccessFileManagerTest {
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#write(byte[], int, int)} .
+     * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#writeBytes(byte[], int, int)} .
      */
     @Test
     public void testWrite_dataExceedingBufferSize() throws IOException {

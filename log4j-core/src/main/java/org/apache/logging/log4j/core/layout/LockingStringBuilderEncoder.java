@@ -51,15 +51,17 @@ public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
 
     @Override
     public void encode(final StringBuilder source, final ByteBufferDestination destination) {
-        synchronized (destination) {
-            try {
+        try {
+            // This synchronized is needed to be able to call destination.getByteBuffer()
+            synchronized (destination) {
                 TextEncoderHelper.encodeText(charsetEncoder, cachedCharBuffer, destination.getByteBuffer(), source,
-                        destination);
-            } catch (final Exception ex) {
-                logEncodeTextException(ex, source, destination);
-                TextEncoderHelper.encodeTextFallBack(charset, source, destination);
+                    destination);
             }
+        } catch (final Exception ex) {
+            logEncodeTextException(ex, source, destination);
+            TextEncoderHelper.encodeTextFallBack(charset, source, destination);
         }
+
     }
 
     private void logEncodeTextException(final Exception ex, final StringBuilder text,

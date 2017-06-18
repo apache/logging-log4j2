@@ -88,6 +88,16 @@ public class PatternLayoutTest {
         public ByteBuffer drain(final ByteBuffer buf) {
             throw new IllegalStateException("Unexpected message larger than 2048 bytes");
         }
+
+        @Override
+        public void writeBytes(final ByteBuffer data) {
+            byteBuffer.put(data);
+        }
+
+        @Override
+        public void writeBytes(final byte[] data, final int offset, final int length) {
+            byteBuffer.put(data, offset, length);
+        }
     }
 
     private void assertToByteArray(final String expectedStr, final PatternLayout layout, final LogEvent event) {
@@ -100,7 +110,8 @@ public class PatternLayoutTest {
         layout.encode(event, destination);
         final ByteBuffer byteBuffer = destination.getByteBuffer();
         byteBuffer.flip(); // set limit to position, position back to zero
-        assertEquals(expectedStr, new String(byteBuffer.array(), 0, byteBuffer.limit()));
+        assertEquals(expectedStr, new String(byteBuffer.array(), byteBuffer.arrayOffset() + byteBuffer.position(),
+                byteBuffer.remaining()));
     }
 
     @Test
@@ -246,8 +257,8 @@ public class PatternLayoutTest {
                 .setIncludeLocation(true)
                 .setMessage(new SimpleMessage("entry")).build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
-        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:248 entry ======%n");
-        assertTrue("Unexpected result: " + result1, result1.endsWith(expectSuffix1));
+        final String expectPattern1 = String.format(".*====== PatternLayoutTest.testPatternSelector:\\d+ entry ======%n");
+        assertTrue("Unexpected result: " + result1, result1.matches(expectPattern1));
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //

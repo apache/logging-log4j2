@@ -60,4 +60,14 @@ public class SpyByteBufferDestination implements ByteBufferDestination {
         buf.clear();
         return buf;
     }
+
+    @Override
+    public void writeBytes(final ByteBuffer data) {
+        ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+    }
+
+    @Override
+    public void writeBytes(final byte[] data, final int offset, final int length) {
+        ByteBufferDestinationHelper.writeToUnsynchronized(data, offset, length, this);
+    }
 }
