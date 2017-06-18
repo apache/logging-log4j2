@@ -51,6 +51,8 @@ public interface ByteBufferDestination {
      * Writes the given data to this ByteBufferDestination entirely. Call of this method should *not* be protected
      * with synchronized on this ByteBufferDestination instance. ByteBufferDestination implementations should
      * synchronize themselves inside this method, if needed.
+     *
+     * @since 2.9 (see LOG4J2-1874)
      */
     void writeBytes(ByteBuffer data);
 
@@ -65,6 +67,8 @@ public interface ByteBufferDestination {
      * This method is called writeBytes() to avoid clashing with {@link OutputStreamManager#write(byte[], int, int)},
      * which might be overridden in user-defined subclasses as protected, hence adding it to interface and requiring
      * the method to be public breaks source compatibility.
+     *
+     * @since 2.9 (see LOG4J2-1874)
      */
     void writeBytes(byte[] data, int offset, int length);
 }

@@ -18,6 +18,11 @@ package org.apache.logging.log4j.core.layout;
 
 import java.nio.ByteBuffer;
 
+/**
+ * Helper class for ByteBufferDestination implementors.
+ *
+ * @since 2.9 (see LOG4J2-1874)
+ */
 public final class ByteBufferDestinationHelper {
 
     private ByteBufferDestinationHelper() {
