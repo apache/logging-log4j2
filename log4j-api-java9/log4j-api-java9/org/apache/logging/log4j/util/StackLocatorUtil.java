@@ -24,8 +24,10 @@ import java.util.Stack;
 public final class StackLocatorUtil {
     private static StackLocator stackLocator = null;
 
+    private static final String EMPTY = "";
+
     static {
-        stackLocator = StackLocator.getInstance();
+        stackLocator = new StackWalkerStackLocator();
     }
 
     private StackLocatorUtil() {
@@ -35,7 +37,6 @@ public final class StackLocatorUtil {
     // (MS) I believe this would work without any modifications elsewhere, but I could be wrong
 
     // migrated from ReflectiveCallerClassUtility
-    @PerformanceSensitive
     public static Class<?> getCallerClass(final int depth) {
         return stackLocator.getCallerClass(depth + 1);
     }
@@ -44,25 +45,21 @@ public final class StackLocatorUtil {
         return stackLocator.getStackTraceElement(depth + 1);
     }
     // migrated from ClassLoaderContextSelector
-    @PerformanceSensitive
     public static Class<?> getCallerClass(final String fqcn) {
-        return getCallerClass(fqcn, Strings.EMPTY);
+        return getCallerClass(fqcn, EMPTY);
     }
 
     // migrated from Log4jLoggerFactory
-    @PerformanceSensitive
     public static Class<?> getCallerClass(final String fqcn, final String pkg) {
         return stackLocator.getCallerClass(fqcn, pkg);
     }
 
     // added for use in LoggerAdapter implementations mainly
-    @PerformanceSensitive
     public static Class<?> getCallerClass(final Class<?> anchor) {
         return stackLocator.getCallerClass(anchor);
     }
 
     // migrated from ThrowableProxy
-    @PerformanceSensitive
     public static Stack<Class<?>> getCurrentStackTrace() {
         return stackLocator.getCurrentStackTrace();
     }

@@ -191,6 +191,7 @@
     <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
+    <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
     <surefire.plugin.version>2.20</surefire.plugin.version>
     <failsafe.plugin.version>2.20</failsafe.plugin.version>
     <checkstyle.plugin.version>2.17</checkstyle.plugin.version>
@@ -299,6 +300,12 @@
         <version>${logbackVersion}</version>
         <type>test-jar</type>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api-java9</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -937,64 +944,6 @@
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>clean-java9</id>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <excludeDefaultDirectories>true</excludeDefaultDirectories>
-              <filesets>
-                <fileset>
-                  <directory>${project.build.directory}/classes</directory>
-                  <includes>
-                    <include>**/*.class</include>
-                  </includes>
-                  <excludes>
-                    <exclude>module-info.class</exclude>
-                  </excludes>
-                  <followSymlinks>false</followSymlinks>
-                </fileset>
-              </filesets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler.plugin.version}</version>
-        <executions>
-          <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>default-compile</id>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>java9-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>compile</phase>
-            <configuration>
-              <!-- compile everything to ensure module-info contains right entries -->
-              <!-- required when JAVA_HOME is JDK 8 or below -->
-              <jdkToolchain>
-                <version>9</version>
-              </jdkToolchain>
-              <release>9</release>
-              <proc>none</proc>
-              <includes>
-                <include>module-info.java</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1323,6 +1272,7 @@
     </site>
   </distributionManagement>
   <modules>
+    <module>log4j-api-java9</module>
     <module>log4j-api</module>
     <module>log4j-core</module>
     <module>log4j-core-its</module>

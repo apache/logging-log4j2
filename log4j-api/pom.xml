@@ -33,6 +33,12 @@
     <projectDir>/api</projectDir>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api-java9</artifactId>
+      <scope>provided</scope>
+      <type>zip</type>
+    </dependency>
     <!-- Place Felix before Equinox because Felix is signed. / also place it before org.osgi.core so that its versions of the OSGi classes are used -->
     <dependency>
       <groupId>org.apache.felix</groupId>
@@ -80,64 +86,49 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>3.0.0</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.1</version>
         <executions>
           <execution>
-            <id>clean-java9</id>
+            <id>unpack-classes</id>
+            <phase>prepare-package</phase>
             <goals>
-              <goal>clean</goal>
+              <goal>unpack</goal>
             </goals>
-            <phase>process-resources</phase>
             <configuration>
-              <excludeDefaultDirectories>true</excludeDefaultDirectories>
-              <filesets>
-                <fileset>
-                  <directory>${project.build.directory}/classes</directory>
-                  <includes>
-                    <include>**/*.class</include>
-                  </includes>
-                  <excludes>
-                    <exclude>module-info.class</exclude>
-                    <exclude>**/util/ClassNamePredicate.class</exclude>
-                    <exclude>**/util/ClassPredicate.class</exclude>
-                    <exclude>**/util/StackWalkerStackLocator.class</exclude>
-                  </excludes>
-                  <followSymlinks>false</followSymlinks>
-                </fileset>
-              </filesets>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-api-java9</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <overWrite>false</overWrite>
+                </artifactItem>
+              </artifactItems>
+              <includes>**/*.class</includes>
+              <excludes>**/*.java</excludes>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>org.apache.logging.log4j.*</Export-Package>
-            <Import-Package>
-              sun.reflect;resolution:=optional,
-              org.apache.logging.log4j.core.osgi;resolution:=optional,
-              org.apache.logging.log4j.core.util;resolution:=optional,
-              *
-            </Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
         <executions>
           <execution>
-            <phase>process-classes</phase>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
             <goals>
               <goal>add-source</goal>
             </goals>
             <configuration>
               <sources>
-                <source>src/main/java9</source>
+                <source>${project.build.directory}/log4j-api-java9</source>
               </sources>
             </configuration>
           </execution>
@@ -153,32 +144,6 @@
             <configuration>
               <source>1.7</source>
               <target>1.7</target>
-            </configuration>
-          </execution>
-          <execution>
-            <id>process-plugins</id>
-            <phase>none</phase>
-          </execution>
-          <execution>
-            <id>java9-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>process-classes</phase>
-            <configuration>
-              <!-- compile everything to ensure module-info contains right entries -->
-              <!-- required when JAVA_HOME is JDK 8 or below -->
-              <jdkToolchain>
-                <version>9</version>
-              </jdkToolchain>
-              <release>9</release>
-              <proc>none</proc>
-              <includes>
-                <include>module-info.java</include>
-                <include>**/util/ClassNamePredicate.java</include>
-                <include>**/util/ClassPredicate.java</include>
-                <include>**/util/StackWalkerStackLocator.java</include>
-              </includes>
             </configuration>
           </execution>
         </executions>
@@ -207,6 +172,7 @@
               <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
               <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
               <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+              <Multi-Release>true</Multi-Release>
             </manifestEntries>
           </archive>
         </configuration>
@@ -247,6 +213,14 @@
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
           </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.8.2</version>
+        <configuration>
+          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>
