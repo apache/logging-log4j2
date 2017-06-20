@@ -49,23 +49,23 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class FilePermissionsTest {
 
-  @Parameterized.Parameters(name = "{0} {1}")
-  public static Collection<Object[]> data() {
-      return Arrays.asList(new Object[][] { //
+    @Parameterized.Parameters(name = "{0} {1}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] { //
               // @formatter:off
              {"rwxrwxrwx", true},
              {"rw-rw-r--", false},
              {"rw-------", true},
               });
               // @formatter:on
-  }
+    }
 
-  private final boolean createOnDemand;
-  private final String filePermissions;
+    private final boolean createOnDemand;
+    private final String filePermissions;
 
-    public FilePermissionsTest(final String filePermissions,  final boolean createOnDemand) {
-      this.filePermissions = filePermissions;
-      this.createOnDemand = createOnDemand;
+    public FilePermissionsTest(final String filePermissions, final boolean createOnDemand) {
+        this.filePermissions = filePermissions;
+        this.createOnDemand = createOnDemand;
     }
 
     private static final String FILE_NAME = "target/fileAppenderTest.log";
@@ -82,10 +82,10 @@ public class FilePermissionsTest {
     @Test
     public void testFilePermissions() throws Exception {
         if (!FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
-          return;
+            return;
         }
         final Layout<String> layout = PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-            .build();
+                .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
             .withFileName(FILE_NAME)
@@ -123,8 +123,7 @@ public class FilePermissionsTest {
                 }
                 prevLen = curLen;
             }
-            assertEquals(filePermissions,
-                PosixFilePermissions.toString(Files.getPosixFilePermissions(PATH)));
+            assertEquals(filePermissions, PosixFilePermissions.toString(Files.getPosixFilePermissions(PATH)));
         } finally {
             appender.stop();
         }
