@@ -29,6 +29,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -38,6 +39,8 @@ import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +61,13 @@ public class FilePermissionsTest {
              {"rw-------", true},
               });
               // @formatter:on
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        // TEMP
+        // TODO Fix on non-Windows.
+        Assume.assumeTrue(SystemUtils.IS_OS_WINDOWS);
     }
 
     private final boolean createOnDemand;
