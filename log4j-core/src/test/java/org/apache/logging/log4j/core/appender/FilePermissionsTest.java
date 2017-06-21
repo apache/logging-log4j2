@@ -91,9 +91,7 @@ public class FilePermissionsTest {
 
     @Test
     public void testFilePermissions() throws Exception {
-        if (!FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
-            return;
-        }
+        Assume.assumeTrue(FileSystems.getDefault().supportedFileAttributeViews().contains("posix"));
         final Layout<String> layout = PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         // @formatter:off
