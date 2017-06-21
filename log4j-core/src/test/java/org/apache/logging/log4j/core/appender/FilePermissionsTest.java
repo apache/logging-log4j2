@@ -57,7 +57,7 @@ public class FilePermissionsTest {
         return Arrays.asList(new Object[][] { //
               // @formatter:off
              {"rwxrwxrwx", true},
-             {"rw-rw-r--", false},
+             {"rw-r--r--", false},
              {"rw-------", true},
               });
               // @formatter:on
@@ -67,7 +67,7 @@ public class FilePermissionsTest {
     public static void beforeClass() {
         // TEMP
         // TODO Fix on non-Windows.
-        Assume.assumeTrue(SystemUtils.IS_OS_WINDOWS);
+        // Assume.assumeTrue(SystemUtils.IS_OS_WINDOWS);
     }
 
     private final boolean createOnDemand;
