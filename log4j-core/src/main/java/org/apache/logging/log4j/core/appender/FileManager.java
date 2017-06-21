@@ -170,33 +170,31 @@ public class FileManager extends OutputStreamManager {
     }
 
     protected void definePathAttributeView(final Path path) throws IOException {
-      if (filePermissions != null || fileOwner != null || fileGroup != null) {
-        // FileOutputStream may not create new file on all jvm
-        path.toFile().createNewFile();
+        if (filePermissions != null || fileOwner != null || fileGroup != null) {
+            // FileOutputStream may not create new file on all jvm
+            path.toFile().createNewFile();
 
-        final PosixFileAttributeView view = Files.getFileAttributeView(path,
-            PosixFileAttributeView.class);
-        if (view != null) {
-          final UserPrincipalLookupService lookupService = FileSystems.getDefault()
-              .getUserPrincipalLookupService();
-          if (fileOwner != null) {
-            final UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(fileOwner);
-            if (userPrincipal != null) {
-              view.setOwner(userPrincipal);
+            final PosixFileAttributeView view = Files.getFileAttributeView(path, PosixFileAttributeView.class);
+            if (view != null) {
+                final UserPrincipalLookupService lookupService = FileSystems.getDefault()
+                        .getUserPrincipalLookupService();
+                if (fileOwner != null) {
+                    final UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(fileOwner);
+                    if (userPrincipal != null) {
+                        view.setOwner(userPrincipal);
+                    }
+                }
+                if (fileGroup != null) {
+                    final GroupPrincipal groupPrincipal = lookupService.lookupPrincipalByGroupName(fileGroup);
+                    if (groupPrincipal != null) {
+                        view.setGroup(groupPrincipal);
+                    }
+                }
+                if (filePermissions != null) {
+                    view.setPermissions(filePermissions);
+                }
             }
-          }
-          if (fileGroup != null) {
-            final GroupPrincipal groupPrincipal = lookupService
-                .lookupPrincipalByGroupName(fileGroup);
-            if (groupPrincipal != null) {
-              view.setGroup(groupPrincipal);
-            }
-          }
-          if (filePermissions != null) {
-            view.setPermissions(filePermissions);
-          }
         }
-      }
     }
 
     @Override
