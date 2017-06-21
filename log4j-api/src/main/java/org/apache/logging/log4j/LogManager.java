@@ -93,7 +93,7 @@ public class LogManager {
                         try {
                             factories.put(provider.getPriority(), factoryClass.newInstance());
                         } catch (final Exception e) {
-                            LOGGER.error("Unable to create class {} specified in {}", factoryClass.getName(), provider
+                            LOGGER.error("Unable to create class {} specified in provider URL {}", factoryClass.getName(), provider
                                     .getUrl(), e);
                         }
                     }
