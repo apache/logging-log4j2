@@ -25,15 +25,12 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.GroupPrincipal;
+import java.nio.file.attribute.FileOwnerAttributeView;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.nio.file.attribute.UserPrincipal;
-import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,6 +58,7 @@ public class FileManager extends OutputStreamManager {
     private final Set<PosixFilePermission> filePermissions;
     private final String fileOwner;
     private final String fileGroup;
+    private final boolean posixSupported;
 
     /**
      * @deprecated
@@ -89,6 +87,7 @@ public class FileManager extends OutputStreamManager {
         this.filePermissions = null;
         this.fileOwner = null;
         this.fileGroup = null;
+        this.posixSupported = false;
     }
 
     /**
@@ -108,6 +107,7 @@ public class FileManager extends OutputStreamManager {
         this.filePermissions = null;
         this.fileOwner = null;
         this.fileGroup = null;
+        this.posixSupported = false;
     }
 
     /**
@@ -128,7 +128,10 @@ public class FileManager extends OutputStreamManager {
         this.filePermissions = filePermissions != null && views.contains("posix")
                                 ? PosixFilePermissions.fromString(filePermissions) : null;
         this.fileOwner = views.contains("owner") ? fileOwner : null;
-        this.fileGroup = views.contains("group") ? fileGroup : null;
+        this.fileGroup = views.contains("posix") ? fileGroup : null;
+
+        // Supported and defined
+        this.posixSupported = filePermissions != null || fileOwner != null || fileGroup != null;
     }
 
     /**
@@ -170,32 +173,14 @@ public class FileManager extends OutputStreamManager {
     }
 
     protected void definePathAttributeView(final Path path) throws IOException {
-        if (filePermissions != null || fileOwner != null || fileGroup != null) {
+        if (posixSupported) {
             // FileOutputStream may not create new file on all jvm
             path.toFile().createNewFile();
 
-            final PosixFileAttributeView view = Files.getFileAttributeView(path, PosixFileAttributeView.class);
-            if (view != null) {
-                final UserPrincipalLookupService lookupService = FileSystems.getDefault()
-                        .getUserPrincipalLookupService();
-                if (fileOwner != null) {
-                    final UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(fileOwner);
-                    if (userPrincipal != null) {
-                        view.setOwner(userPrincipal);
-                    }
-                }
-                if (fileGroup != null) {
-                    final GroupPrincipal groupPrincipal = lookupService.lookupPrincipalByGroupName(fileGroup);
-                    if (groupPrincipal != null) {
-                        view.setGroup(groupPrincipal);
-                    }
-                }
-                if (filePermissions != null) {
-                    view.setPermissions(filePermissions);
-                }
-            }
+            FileUtils.defineFilePosixAttributeView(path, filePermissions, fileOwner, fileGroup);
         }
     }
+
 
     @Override
     protected synchronized void write(final byte[] bytes, final int offset, final int length,
@@ -263,7 +248,6 @@ public class FileManager extends OutputStreamManager {
     public String getFileName() {
         return getName();
     }
-
     /**
      * Returns the append status.
      * @return true if the file will be appended to, false if it is overwritten.
@@ -295,6 +279,45 @@ public class FileManager extends OutputStreamManager {
      */
     public int getBufferSize() {
         return bufferSize;
+    }
+    
+    /**
+     * Returns posix file permissions if defined and the OS supports posix file attribute,
+     * null otherwise.
+     * @return File posix permissions
+     * @see PosixFileAttributeView
+     */
+    public Set<PosixFilePermission> getFilePermissions() {
+        return filePermissions;
+    }
+    
+    /**
+     * Returns file owner if defined and the OS supports owner file attribute view,
+     * null otherwise. 
+     * @return File owner
+     * @see FileOwnerAttributeView
+     */
+    public String getFileOwner() {
+        return fileOwner;
+    }
+
+    /**
+     * Returns file group if defined and the OS supports posix/group file attribute view,
+     * null otherwise. 
+     * @return File group
+     * @see PosixFileAttributeView
+     */
+    public String getFileGroup() {
+        return fileGroup;
+    }
+
+    /**
+     * If posix file attribute view supported and defined.
+     *
+     * @return True if posix supported and defined false otherwise.
+     */
+    public boolean isPosixSupported() {
+        return posixSupported;
     }
 
     /**
@@ -376,9 +399,13 @@ public class FileManager extends OutputStreamManager {
                 final int actualSize = data.bufferedIo ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);
                 final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
-                return new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
+                FileManager fm = new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
                         data.createOnDemand, data.advertiseURI, data.layout,
                         data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, byteBuffer);
+                if (fos != null && fm.posixSupported) {
+                    fm.definePathAttributeView(file.toPath());
+                }
+                return fm;
             } catch (final IOException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex, ex);
             }

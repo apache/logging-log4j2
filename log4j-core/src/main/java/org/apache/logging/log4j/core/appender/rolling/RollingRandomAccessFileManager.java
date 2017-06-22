@@ -204,9 +204,13 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                     LOGGER.trace("RandomAccessFile {} set length to 0", name);
                     raf.setLength(0);
                 }
-                return new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
+                RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
                         NullOutputStream.getInstance(), data.append, data.immediateFlush, data.bufferSize, size, time, data.policy,
                         data.strategy, data.advertiseURI, data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader);
+                if (rrm.isPosixSupported()) {
+                    rrm.definePathAttributeView(file.toPath());
+                }
+                return rrm;
             } catch (final IOException ex) {
                 LOGGER.error("Cannot access RandomAccessFile " + ex, ex);
                 if (raf != null) {

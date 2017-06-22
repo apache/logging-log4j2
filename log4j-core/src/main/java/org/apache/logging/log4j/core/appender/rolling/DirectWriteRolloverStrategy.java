@@ -28,6 +28,9 @@ import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
+import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -182,12 +185,31 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         }
         Action compressAction = null;
         final String sourceName = currentFileName;
+        String compressedName = sourceName;
         currentFileName = null;
         nextIndex = fileIndex + 1;
         FileExtension fileExtension = manager.getFileExtension();
         if (fileExtension != null) {
-            compressAction = fileExtension.createCompressAction(sourceName, sourceName + fileExtension.getExtension(),
+            compressedName += fileExtension.getExtension();
+            compressAction = fileExtension.createCompressAction(sourceName, compressedName,
                     true, compressionLevel);
+        }
+
+        if (manager.isPosixSupported()) {
+            // Propagate posix attribute view to rolled/compressed file
+            Action posixAttributeViewAction = new PosixViewAttributeAction(compressedName,
+                                                                            false,
+                                                                            1,
+                                                                            new PathCondition[0],
+                                                                            getStrSubstitutor(),
+                                                                            manager.getFilePermissions(),
+                                                                            manager.getFileOwner(),
+                                                                            manager.getFileGroup());
+            if (compressAction == null) {
+                compressAction = posixAttributeViewAction;
+            } else {
+                compressAction = new CompositeAction(Arrays.asList(compressAction, posixAttributeViewAction), false);
+            }
         }
 
         final Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);

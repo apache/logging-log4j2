@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +30,10 @@ import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
+import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -350,6 +352,23 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         if (currentFileName.equals(renameTo)) {
             LOGGER.warn("Attempt to rename file {} to itself will be ignored", currentFileName);
             return new RolloverDescriptionImpl(currentFileName, false, null, null);
+        }
+
+        if (manager.isPosixSupported()) {
+            // Propagate posix attribute view to rolled/compressed file
+            Action posixAttributeViewAction = new PosixViewAttributeAction(compressedName,
+                                                                            false,
+                                                                            1,
+                                                                            new PathCondition[0],
+                                                                            getStrSubstitutor(),
+                                                                            manager.getFilePermissions(),
+                                                                            manager.getFileOwner(),
+                                                                            manager.getFileGroup());
+            if (compressAction == null) {
+                compressAction = posixAttributeViewAction;
+            } else {
+                compressAction = new CompositeAction(Arrays.asList(compressAction, posixAttributeViewAction), false);
+            }
         }
 
         final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo),

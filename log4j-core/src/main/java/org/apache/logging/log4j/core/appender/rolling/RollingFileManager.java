@@ -628,9 +628,14 @@ public class RollingFileManager extends FileManager {
                 final long time = data.createOnDemand || file == null ?
                         System.currentTimeMillis() : file.lastModified(); // LOG4J2-531 create file first so time has valid value
 
-                return new RollingFileManager(data.getLoggerContext(), data.fileName, data.pattern, os,
-                        data.append, data.createOnDemand, size, time, data.policy, data.strategy, data.advertiseURI,
-                        data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, buffer);
+                RollingFileManager rm = new RollingFileManager(data.getLoggerContext(), data.fileName, data.pattern, os,
+                    data.append, data.createOnDemand, size, time, data.policy, data.strategy, data.advertiseURI,
+                    data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, buffer);
+                if (os != null && rm.isPosixSupported()) {
+                    rm.definePathAttributeView(file.toPath());
+                }
+
+                return rm;
             } catch (final IOException ex) {
                 LOGGER.error("RollingFileManager (" + name + ") " + ex, ex);
             }
