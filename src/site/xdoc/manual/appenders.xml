@@ -2535,6 +2535,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             DefaultRolloverStrategy to run at rollover. Since 2.8 if no file name is configured then
             <a href="#DirectWriteRolloverStrategy">DirectWriteRolloverStrategy</a> will be used instead of
             DefaultRolloverStrategy.
+            Since log4j-2.8.3, a <a href="#CustomPosixViewAttributeOnRollover">custom posix file attribute view action</a> can be configured in the
+            DefaultRolloverStrategy to run at rollover, if not defined, inherited posix file attribute view from the RollingFileAppender will be applied.
           </p>
           <p>
             File locking is not supported by the RollingFileAppender.
@@ -3503,6 +3505,103 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       <AppenderRef ref="RollingFile"/>
     </Root>
   </Loggers>
+</Configuration>]]></pre>
+
+          <a name="CustomPosixViewAttributeOnRollover"/>
+          <h5>Log Archive File Attribute View Policy: Custom file attribute on Rollover</h5>
+          <p>
+            Log4j-2.8.3 introduces a <tt>PosixViewAttribute</tt> action that gives users more control
+            over which file attribute permissions, owner and group should be applied.
+            The PosixViewAttribute action lets users configure one or more conditions that select the eligible files
+            relative to a base directory.
+          </p>
+          <table>
+            <caption align="top">PosixViewAttribute Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>basePath</td>
+              <td>String</td>
+              <td><em>Required.</em> Base path from where to start scanning for files to apply attributes.</td>
+            </tr>
+            <tr>
+              <td>maxDepth</td>
+              <td>int</td>
+              <td>The maximum number of levels of directories to visit. A value of 0
+                  means that only the starting file (the base path itself) is visited,
+                  unless denied by the security manager. A value of
+                  Integer.MAX_VALUE indicates that all levels should be visited. The default is 1,
+                  meaning only the files in the specified base directory.</td>
+            </tr>
+            <tr>
+              <td>followLinks</td>
+              <td>boolean</td>
+              <td>Whether to follow symbolic links. Default is false.</td>
+            </tr>
+            <tr>
+              <td>pathConditions</td>
+              <td>PathCondition[]</td>
+              <td>see <a href="#DeletePathCondition">DeletePathCondition</a></td>
+            </tr>
+            <tr>
+              <td>filePermissions</td>
+              <td>String</td>
+              <td><p>File attribute permissions in posix format to apply when action is executed.</p>
+                  <p>Underlying files system shall support <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">posix</a> file attribute view.</p>
+              <p>Examples: rw------- or rw-rw-rw- etc...</p></td>
+            </tr>
+            <tr>
+              <td>fileOwner</td>
+              <td>String</td>
+              <td><p>File owner to define when action is executed.</p>
+                  <p>Changing file's owner may be restricted for security reason and Operation not permitted IOException thrown.
+                     Only processes with an effective user ID equal to the user ID
+                     of the file or with appropriate privileges may change the ownership of a file
+                     if <a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
+                  <p>Underlying files system shall support file <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a> attribute view.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>fileGroup</td>
+              <td>String</td>
+              <td><p>File group to define whene action is executed.</p>
+                  <p>Underlying files system shall support <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">posix</a> file attribute view.</p>
+              </td>
+            </tr>
+          </table>
+
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender and defines different posix file attribute view for current and rolled log files.
+          </p>
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="trace" name="MyApp" packages="">
+  <Properties>
+    <Property name="baseDir">logs</Property>
+  </Properties>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
+          		 filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyyMMdd}.log.gz"
+                 filePermissions="rw-------">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+      <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
+      <DefaultRolloverStrategy stopCustomActionsOnError="true">
+        <PosixViewAttribute basePath="${baseDir}/$${date:yyyy-MM}" filePermissions="r--r--r--">
+        	<IfFileName glob="*.gz" /> 
+        </PosixViewAttribute>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+
 </Configuration>]]></pre>
         </subsection>
 
