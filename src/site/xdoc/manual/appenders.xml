@@ -2533,7 +2533,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             is configured, RollingFileAppender will use the <a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
             Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> can be configured in the
             DefaultRolloverStrategy to run at rollover. Since 2.8 if no file name is configured then
-            <a href="DirectWriteRolloverStrategy">DirectWriteRolloverStrategy</a> will be used instead of
+            <a href="#DirectWriteRolloverStrategy">DirectWriteRolloverStrategy</a> will be used instead of
             DefaultRolloverStrategy.
           </p>
           <p>
