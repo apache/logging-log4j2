@@ -19,15 +19,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -49,6 +50,11 @@ public class RollingAppenderSizeCompressPermissionsTest {
 
     private Logger logger;
 
+    @BeforeClass
+    public static void beforeClass() {
+        Assume.assumeTrue(FileUtils.isFilePosixAttributeViewSupported());
+    }
+
     @Before
     public void setUp() throws Exception {
         this.logger = loggerContextRule.getLogger(RollingAppenderSizeCompressPermissionsTest.class.getName());
@@ -56,7 +62,6 @@ public class RollingAppenderSizeCompressPermissionsTest {
 
     @Test
     public void testAppenderCompressPermissions() throws Exception {
-        Assume.assumeTrue(FileSystems.getDefault().supportedFileAttributeViews().contains("posix"));
         for (int i = 0; i < 500; ++i) {
             String message = "This is test message number " + i;
             logger.debug(message);

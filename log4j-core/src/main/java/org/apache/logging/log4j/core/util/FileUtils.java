@@ -186,4 +186,13 @@ public final class FileUtils {
             }
         }
     }
+
+    /**
+     * Check if posix file attribute view is supported on the default FileSystem.
+     *
+     * @return true if posix file attribute view supported, false otherwise
+     */
+    public static boolean isFilePosixAttributeViewSupported() {
+        return FileSystems.getDefault().supportedFileAttributeViews().contains("posix");
+    }
 }
