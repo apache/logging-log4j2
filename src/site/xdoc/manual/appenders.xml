@@ -644,7 +644,6 @@ CREATE TABLE logs (
                 the file lock is "advisory" meaning that other applications can perform operations on the file
                 without acquiring a lock. The default value is false.</td>
             </tr>
-
             <tr>
               <td>name</td>
               <td>String</td>
@@ -657,6 +656,31 @@ CREATE TABLE logs (
                 internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
                 caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
+            </tr>
+            <tr>
+              <td>filePermissions</td>
+              <td>String</td>
+              <td><p>File attribute permissions in posix format to apply whenever the file is created.</p>
+                  <p>Underlying files system shall support <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">posix</a> file attribute view.</p>
+              <p>Examples: rw------- or rw-rw-rw- etc...</p></td>
+            </tr>
+            <tr>
+              <td>fileOwner</td>
+              <td>String</td>
+              <td><p>File owner to define whenever the file is created.</p>
+                  <p>Changing file's owner may be restricted for security reason and Operation not permitted IOException thrown.
+                     Only processes with an effective user ID equal to the user ID
+                     of the file or with appropriate privileges may change the ownership of a file
+                     if <a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
+                  <p>Underlying files system shall support file <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a> attribute view.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>fileGroup</td>
+              <td>String</td>
+              <td><p>File group to define whenever the file is created.</p>
+                  <p>Underlying files system shall support <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">posix</a> file attribute view.</p>
+              </td>
             </tr>
           </table>
           <p>
@@ -2613,6 +2637,31 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
+            <tr>
+              <td>filePermissions</td>
+              <td>String</td>
+              <td><p>File attribute permissions in posix format to apply whenever the file is created.</p>
+                  <p>Underlying files system shall support <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">posix</a> file attribute view.</p>
+              <p>Examples: rw------- or rw-rw-rw- etc...</p></td>
+            </tr>
+            <tr>
+              <td>fileOwner</td>
+              <td>String</td>
+              <td><p>File owner to define whenever the file is created.</p>
+                  <p>Changing file's owner may be restricted for security reason and Operation not permitted IOException thrown.
+                     Only processes with an effective user ID equal to the user ID
+                     of the file or with appropriate privileges may change the ownership of a file
+                     if <a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
+                  <p>Underlying files system shall support file <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a> attribute view.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>fileGroup</td>
+              <td>String</td>
+              <td><p>File group to define whenever the file is created.</p>
+                  <p>Underlying files system shall support <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">posix</a> file attribute view.</p>
+              </td>
+            </tr>
           </table>
           <a name="TriggeringPolicies"/>
           <h4>Triggering Policies</h4>
@@ -3602,6 +3651,31 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
               <a href="#FailoverAppender">FailoverAppender</a>.</td>
           </tr>
+            <tr>
+              <td>filePermissions</td>
+              <td>String</td>
+              <td><p>File attribute permissions in posix format to apply whenever the file is created.</p>
+                  <p>Underlying files system shall support <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">posix</a> file attribute view.</p>
+              <p>Examples: rw------- or rw-rw-rw- etc...</p></td>
+            </tr>
+            <tr>
+              <td>fileOwner</td>
+              <td>String</td>
+              <td><p>File owner to define whenever the file is created.</p>
+                  <p>Changing file's owner may be restricted for security reason and Operation not permitted IOException thrown.
+                     Only processes with an effective user ID equal to the user ID
+                     of the file or with appropriate privileges may change the ownership of a file
+                     if <a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
+                  <p>Underlying files system shall support file <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a> attribute view.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>fileGroup</td>
+              <td>String</td>
+              <td><p>File group to define whenever the file is created.</p>
+                  <p>Underlying files system shall support <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">posix</a> file attribute view.</p>
+              </td>
+            </tr>
 				</table>
 				<a name="FRFA_TriggeringPolicies" />
 				<h4>Triggering Policies</h4>
