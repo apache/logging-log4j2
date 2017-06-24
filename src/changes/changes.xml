@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1926" dev="rpopma" type="update">
+        Facilitate log4j use in Android applications: remove dependency on RMI and Management APIs from log4j-api.
+      </action>
       <action issue="LOG4J2-1699" dev="ggregory" type="add" due-to="Demetrios Dimatos, Pierrick HYMBERT">
         Configurable Log File Permissions with PosixFilePermission.
       </action>
