@@ -1236,6 +1236,16 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="Process ID" />
+                <b>pid</b>{[defaultValue]}<br />
+                <b>processId{[defaultValue]}</b>
+              </td>
+              <td><p>Outputs the process ID if supported by the underlying platform. An optional default value may be
+                specified to be shown if the platform does not support process IDs.</p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
               <a name="VariablesNotEmpty" />
                 <b>variablesNotEmpty</b>{pattern}<br />
                 <b>varsNotEmpty</b>{pattern}<br />
