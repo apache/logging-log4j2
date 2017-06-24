@@ -214,6 +214,7 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
+        @SuppressWarnings("resource") // actualJmsManager and jndiManager are managed by the JmsAppender
         @Override
         public JmsAppender build() {
             JmsManager actualJmsManager = jmsManager;
