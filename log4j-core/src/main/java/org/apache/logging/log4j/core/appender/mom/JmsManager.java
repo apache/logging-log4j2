@@ -76,15 +76,15 @@ public class JmsManager extends AbstractManager {
      * @param jndiManager           The JndiManager to look up JMS information through.
      * @param connectionFactoryName The binding name for the {@link javax.jms.ConnectionFactory}.
      * @param destinationName       The binding name for the {@link javax.jms.Destination}.
-     * @param username              The username to connect with or {@code null} for no authentication.
+     * @param userName              The username to connect with or {@code null} for no authentication.
      * @param password              The password to use with the given username or {@code null} for no authentication.
      * @return The JmsManager as configured.
      */
     public static JmsManager getJmsManager(final String name, final JndiManager jndiManager,
                                            final String connectionFactoryName, final String destinationName,
-                                           final String username, final String password) {
+                                           final String userName, final String password) {
         final JmsConfiguration configuration = new JmsConfiguration(jndiManager, connectionFactoryName, destinationName,
-            username, password);
+            userName, password);
         return getManager(name, FACTORY, configuration);
     }
 
@@ -177,15 +177,15 @@ public class JmsManager extends AbstractManager {
         private final JndiManager jndiManager;
         private final String connectionFactoryName;
         private final String destinationName;
-        private final String username;
+        private final String userName;
         private final String password;
 
         private JmsConfiguration(final JndiManager jndiManager, final String connectionFactoryName, final String destinationName,
-                                 final String username, final String password) {
+                                 final String userName, final String password) {
             this.jndiManager = jndiManager;
             this.connectionFactoryName = connectionFactoryName;
             this.destinationName = destinationName;
-            this.username = username;
+            this.userName = userName;
             this.password = password;
         }
 
@@ -195,7 +195,7 @@ public class JmsManager extends AbstractManager {
         @Override
         public String toString() {
             return "JmsConfiguration [jndiManager=" + jndiManager + ", connectionFactoryName=" + connectionFactoryName
-                    + ", destinationName=" + destinationName + ", username=" + username + "]";
+                    + ", destinationName=" + destinationName + ", username=" + userName + "]";
         }
     }
 
@@ -205,7 +205,7 @@ public class JmsManager extends AbstractManager {
         public JmsManager createManager(final String name, final JmsConfiguration data) {
             try {
                 return new JmsManager(name, data.jndiManager, data.connectionFactoryName, data.destinationName,
-                    data.username, data.password);
+                    data.userName, data.password);
             } catch (final Exception e) {
                 LOGGER.error("Error creating JmsManager using ConnectionFactory [{}] and Destination [{}].",
                     data.connectionFactoryName, data.destinationName, e);

@@ -141,4 +141,9 @@ public class JndiManager extends AbstractManager {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "JndiManager [context=" + context + "]";
+    }
 }

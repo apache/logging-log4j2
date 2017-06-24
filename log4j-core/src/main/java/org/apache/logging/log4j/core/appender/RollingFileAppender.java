@@ -28,11 +28,11 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
+import org.apache.logging.log4j.core.appender.rolling.DirectFileRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
-import org.apache.logging.log4j.core.appender.rolling.DirectFileRolloverStrategy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -89,6 +89,15 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         @PluginBuilderAttribute
         private boolean createOnDemand;
 
+        @PluginBuilderAttribute
+        private String filePermissions;
+
+        @PluginBuilderAttribute
+        private String fileOwner;
+
+        @PluginBuilderAttribute
+        private String fileGroup;
+
         @Override
         public RollingFileAppender build() {
             // Even though some variables may be annotated with @Required, we must still perform validation here for
@@ -130,7 +139,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             final Layout<? extends Serializable> layout = getOrCreateLayout();
             final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, append,
                     isBufferedIo, policy, strategy, advertiseUri, layout, bufferSize, isImmediateFlush(),
-                    createOnDemand, getConfiguration());
+                    createOnDemand, filePermissions, fileOwner, fileGroup, getConfiguration());
             if (manager == null) {
                 return null;
             }
@@ -163,6 +172,18 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
         public boolean isLocking() {
             return locking;
+        }
+
+        public String getFilePermissions() {
+            return filePermissions;
+        }
+
+        public String getFileOwner() {
+            return fileOwner;
+        }
+
+        public String getFileGroup() {
+            return fileGroup;
         }
 
         public B withAdvertise(final boolean advertise) {
@@ -219,6 +240,21 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
         public B withStrategy(final RolloverStrategy strategy) {
             this.strategy = strategy;
+            return asBuilder();
+        }
+
+        public B withFilePermissions(final String filePermissions) {
+            this.filePermissions = filePermissions;
+            return asBuilder();
+        }
+
+        public B withFileOwner(final String fileOwner) {
+            this.fileOwner = fileOwner;
+            return asBuilder();
+        }
+
+        public B withFileGroup(final String fileGroup) {
+            this.fileGroup = fileGroup;
             return asBuilder();
         }
 

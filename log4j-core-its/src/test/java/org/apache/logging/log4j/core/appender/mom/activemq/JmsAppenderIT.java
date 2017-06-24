@@ -70,6 +70,7 @@ public class JmsAppenderIT {
 				"org.apache.logging.log4j.core.impl,org.apache.logging.log4j.util,org.apache.logging.log4j,java.rmi");
 		final Properties additional = new Properties();
 		additional.setProperty("queue.TestQueue", "TestQueue");
+		@SuppressWarnings("resource") // jndiManager is closed in tearDownClass() through the jmsManager
 		final JndiManager jndiManager = JndiManager.getJndiManager(ActiveMQInitialContextFactory.class.getName(),
 				"vm://localhost?broker.persistent=false", null, null, null, additional);
 		jmsManager = JmsManager.getJmsManager("JmsManager", jndiManager, "ConnectionFactory", "TestQueue", null, null);
@@ -77,7 +78,9 @@ public class JmsAppenderIT {
 
 	@After
 	public void tearDownClass() {
-		jmsManager.close();
+		if (jmsManager != null) {
+			jmsManager.close();
+		}
 		System.getProperties().remove(KEY_SERIALIZABLE_PACKAGES);
 	}
 

@@ -24,7 +24,16 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.GroupPrincipal;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.UserPrincipal;
+import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -137,4 +146,53 @@ public final class FileUtils {
         }
     }
 
+    /**
+     * Define file posix attribute view on a path/file.
+     *
+     * @param path Target path
+     * @param filePermissions Permissions to apply
+     * @param fileOwner File owner
+     * @param fileGroup File group
+     * @throws IOException If IO error during definition of file attribute view
+     */
+    public static void defineFilePosixAttributeView(final Path path,
+            final Set<PosixFilePermission> filePermissions,
+            final String fileOwner,
+            final String fileGroup) throws IOException {
+        final PosixFileAttributeView view = Files.getFileAttributeView(path, PosixFileAttributeView.class);
+        if (view != null) {
+            final UserPrincipalLookupService lookupService = FileSystems.getDefault()
+                    .getUserPrincipalLookupService();
+            if (fileOwner != null) {
+                final UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(fileOwner);
+                if (userPrincipal != null) {
+                    // If not sudoers member, it will throw Operation not permitted
+                    // Only processes with an effective user ID equal to the user ID
+                    // of the file or with appropriate privileges may change the ownership of a file.
+                    // If _POSIX_CHOWN_RESTRICTED is in effect for path
+                    view.setOwner(userPrincipal);
+                }
+            }
+            if (fileGroup != null) {
+                final GroupPrincipal groupPrincipal = lookupService.lookupPrincipalByGroupName(fileGroup);
+                if (groupPrincipal != null) {
+                    // The current user id should be members of this group,
+                    // if not will raise Operation not permitted
+                    view.setGroup(groupPrincipal);
+                }
+            }
+            if (filePermissions != null) {
+                view.setPermissions(filePermissions);
+            }
+        }
+    }
+
+    /**
+     * Check if posix file attribute view is supported on the default FileSystem.
+     *
+     * @return true if posix file attribute view supported, false otherwise
+     */
+    public static boolean isFilePosixAttributeViewSupported() {
+        return FileSystems.getDefault().supportedFileAttributeViews().contains("posix");
+    }
 }

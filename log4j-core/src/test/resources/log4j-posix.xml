@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+  <Appenders>
+    <File name="File" fileName="target/permissions1/AppenderTest-1.log" immediateFlush="false" append="false"
+                 filePermissions="rw-------">
+    </File>
+  </Appenders>
+  
+  <Loggers>
+    <AsyncRoot level="info" includeLocation="false">
+      <AppenderRef ref="File"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>

@@ -281,7 +281,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.5</version>
+        <version>3.6</version>
       </dependency>
       <dependency>
         <groupId>com.beust</groupId>
@@ -933,6 +933,11 @@
               </goals>
             </execution>          
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.0.0</version>
         </plugin>
       </plugins>
     </pluginManagement>

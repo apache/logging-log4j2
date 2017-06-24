@@ -115,7 +115,7 @@ public class JmsAppender extends AbstractAppender {
         private String destinationBindingName;
 
         @PluginBuilderAttribute
-        private String username;
+        private String userName;
 
         @PluginBuilderAttribute(sensitive = true)
         private String password;
@@ -175,8 +175,17 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
+        /**
+         * @deprecated Use {@link #setUserName(String)}.
+         */
+        @Deprecated
         public Builder setUsername(final String username) {
-            this.username = username;
+            this.userName = username;
+            return this;
+        }
+
+        public Builder setUserName(final String userName) {
+            this.userName = userName;
             return this;
         }
 
@@ -205,19 +214,24 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
+        @SuppressWarnings("resource") // actualJmsManager and jndiManager are managed by the JmsAppender
         @Override
         public JmsAppender build() {
             JmsManager actualJmsManager = jmsManager;
+            JndiManager jndiManager = null;
             if (actualJmsManager == null) {
-            final JndiManager jndiManager = JndiManager.getJndiManager(factoryName, providerUrl, urlPkgPrefixes,
-                securityPrincipalName, securityCredentials, null);
-            actualJmsManager = JmsManager.getJmsManager(name, jndiManager, factoryBindingName,
-                destinationBindingName, username, password);
+                jndiManager = JndiManager.getJndiManager(factoryName, providerUrl, urlPkgPrefixes,
+                        securityPrincipalName, securityCredentials, null);
+                actualJmsManager = JmsManager.getJmsManager(name, jndiManager, factoryBindingName,
+                        destinationBindingName, userName, password);
             }
             try {
                 return new JmsAppender(name, filter, layout, ignoreExceptions, actualJmsManager);
             } catch (final JMSException e) {
                 LOGGER.error("Error creating JmsAppender [{}].", name, e);
+                if (jndiManager != null) {
+                    jndiManager.stop(500, TimeUnit.MILLISECONDS);
+                }
                 return null;
             }
         }
@@ -230,7 +244,7 @@ public class JmsAppender extends AbstractAppender {
             return "Builder [name=" + name + ", factoryName=" + factoryName + ", providerUrl=" + providerUrl
                     + ", urlPkgPrefixes=" + urlPkgPrefixes + ", securityPrincipalName=" + securityPrincipalName
                     + ", securityCredentials=" + securityCredentials + ", factoryBindingName=" + factoryBindingName
-                    + ", destinationBindingName=" + destinationBindingName + ", username=" + username + ", layout="
+                    + ", destinationBindingName=" + destinationBindingName + ", username=" + userName + ", layout="
                     + layout + ", filter=" + filter + ", ignoreExceptions=" + ignoreExceptions + ", jmsManager="
                     + jmsManager + "]";
         }
