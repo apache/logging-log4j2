@@ -43,6 +43,9 @@
       <action issue="LOG4J2-1943" dev="rgoers" type="fix">
         The eventPrefix attribute was being ignored in the RFC5424Layout.
       </action>
+      <action issue="LOG4J2-1953" dev="ggregory" type="fix">
+        JndiManager is not released when the JmsAppender builder catches an exception trying to build itself.
+      </action>
       <action issue="LOG4J2-1911" dev="rgoers" type="fix">
         Improve the documentation of the DynamicThresholdFilter.
       </action>

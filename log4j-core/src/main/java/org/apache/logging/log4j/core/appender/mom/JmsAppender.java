@@ -217,16 +217,20 @@ public class JmsAppender extends AbstractAppender {
         @Override
         public JmsAppender build() {
             JmsManager actualJmsManager = jmsManager;
+            JndiManager jndiManager = null;
             if (actualJmsManager == null) {
-            final JndiManager jndiManager = JndiManager.getJndiManager(factoryName, providerUrl, urlPkgPrefixes,
-                securityPrincipalName, securityCredentials, null);
-            actualJmsManager = JmsManager.getJmsManager(name, jndiManager, factoryBindingName,
-                destinationBindingName, userName, password);
+                jndiManager = JndiManager.getJndiManager(factoryName, providerUrl, urlPkgPrefixes,
+                        securityPrincipalName, securityCredentials, null);
+                actualJmsManager = JmsManager.getJmsManager(name, jndiManager, factoryBindingName,
+                        destinationBindingName, userName, password);
             }
             try {
                 return new JmsAppender(name, filter, layout, ignoreExceptions, actualJmsManager);
             } catch (final JMSException e) {
                 LOGGER.error("Error creating JmsAppender [{}].", name, e);
+                if (jndiManager != null) {
+                    jndiManager.stop(500, TimeUnit.MILLISECONDS);
+                }
                 return null;
             }
         }
