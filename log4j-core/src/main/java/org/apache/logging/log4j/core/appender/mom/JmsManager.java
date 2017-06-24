@@ -76,15 +76,15 @@ public class JmsManager extends AbstractManager {
      * @param jndiManager           The JndiManager to look up JMS information through.
      * @param connectionFactoryName The binding name for the {@link javax.jms.ConnectionFactory}.
      * @param destinationName       The binding name for the {@link javax.jms.Destination}.
-     * @param username              The username to connect with or {@code null} for no authentication.
+     * @param userName              The username to connect with or {@code null} for no authentication.
      * @param password              The password to use with the given username or {@code null} for no authentication.
      * @return The JmsManager as configured.
      */
     public static JmsManager getJmsManager(final String name, final JndiManager jndiManager,
                                            final String connectionFactoryName, final String destinationName,
-                                           final String username, final String password) {
+                                           final String userName, final String password) {
         final JmsConfiguration configuration = new JmsConfiguration(jndiManager, connectionFactoryName, destinationName,
-            username, password);
+            userName, password);
         return getManager(name, FACTORY, configuration);
     }
 
