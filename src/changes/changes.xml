@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1801" dev="rpopma" type="update">
+        Add more detail to WARN "Ignoring log event" messages printed to the console after log4j was shut down.
+      </action>
       <action issue="LOG4J2-1814" dev="rpopma" type="add">
         Added wrapper classes CustomLoggerGenerator and ExtendedLoggerGenerator to avoid class name with a dollar ($) character which has special meaning in many *nix command line environments.
       </action>

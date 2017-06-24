@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.ReusableMessage;
 
 import com.lmax.disruptor.EventFactory;
@@ -323,7 +324,9 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         } catch (final NullPointerException npe) {
             // Note: NPE prevents us from adding a log event to the disruptor after it was shut down,
             // which could cause the publishEvent method to hang and never return.
-            LOGGER.warn("Ignoring log event after log4j was shut down.");
+            LOGGER.warn("Ignoring log event after log4j was shut down: {} [{}] {}", event.getLevel(),
+                    event.getLoggerName(), event.getMessage().getFormattedMessage()
+                            + (event.getThrown() == null ? "" : Throwables.toStringList(event.getThrown())));
         }
     }
 

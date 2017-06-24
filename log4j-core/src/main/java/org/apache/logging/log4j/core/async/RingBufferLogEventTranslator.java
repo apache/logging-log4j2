@@ -37,7 +37,7 @@ public class RingBufferLogEventTranslator implements
 
     private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
     private AsyncLogger asyncLogger;
-    private String loggerName;
+    String loggerName;
     protected Marker marker;
     protected String fqcn;
     protected Level level;

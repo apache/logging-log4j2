@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.core.util.Throwables;
 
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
@@ -139,7 +140,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             temp.shutdown(timeout, timeUnit);
         } catch (final TimeoutException e) {
             temp.shutdown();
-        } 
+        }
 
         LOGGER.trace("[{}] AsyncLoggerDisruptor: shutting down disruptor executor.", contextName);
         // finally, kill the processor thread
@@ -204,7 +205,9 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         try {
             return disruptor.getRingBuffer().tryPublishEvent(translator);
         } catch (final NullPointerException npe) {
-            LOGGER.warn("[{}] Ignoring log event after log4j was shut down.", contextName);
+            LOGGER.warn("[{}] Ignoring log event after log4j was shut down: {} [{}] {}", contextName,
+                    translator.level, translator.loggerName, translator.message.getFormattedMessage()
+                            + (translator.thrown == null ? "" : Throwables.toStringList(translator.thrown)));
             return false;
         }
     }
@@ -217,7 +220,9 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             // was shut down, which could cause the publishEvent method to hang and never return.
             disruptor.publishEvent(translator);
         } catch (final NullPointerException npe) {
-            LOGGER.warn("[{}] Ignoring log event after log4j was shut down.", contextName);
+            LOGGER.warn("[{}] Ignoring log event after log4j was shut down: {} [{}] {}", contextName,
+                    translator.level, translator.loggerName, translator.message.getFormattedMessage()
+                            + (translator.thrown == null ? "" : Throwables.toStringList(translator.thrown)));
         }
     }
 
