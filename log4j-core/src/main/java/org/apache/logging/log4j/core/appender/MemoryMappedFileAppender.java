@@ -40,7 +40,7 @@ import org.apache.logging.log4j.core.util.Integers;
  * @since 2.1
  */
 @Plugin(name = "MemoryMappedFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
-public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender<MemoryMappedFileManager> {
+public final class MemoryMappedFileAppender extends AbstractByteBufferDestinationAppender<MemoryMappedFileManager> {
 
     /**
      * Builds RandomAccessFileAppender instances.

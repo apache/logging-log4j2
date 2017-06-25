@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.util.Constants;
 
@@ -33,7 +32,7 @@ import org.apache.logging.log4j.core.util.Constants;
  * Manages an OutputStream so that it can be shared by multiple Appenders and will
  * allow appenders to reconfigure without requiring a new stream.
  */
-public class OutputStreamManager extends AbstractManager implements ByteBufferDestination {
+public class OutputStreamManager extends ByteBufferDestinationManager {
     protected final Layout<?> layout;
     protected ByteBuffer byteBuffer;
     private volatile OutputStream os;
@@ -333,10 +332,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * Drains the ByteBufferDestination's buffer into the destination. By default this calls
      * {@link #flushBuffer(ByteBuffer)} with the specified buffer. Subclasses may override.
      * <p>
-     * Do not call this method lightly! For some subclasses this is a very expensive operation. For example,
-     * {@link MemoryMappedFileManager} will assume this method was called because the end of the mapped region
-     * was reached during a text encoding operation and will {@linkplain MemoryMappedFileManager#remap() remap} its
-     * buffer.
+     * Do not call this method lightly! For some subclasses this is a very expensive operation.
      * </p><p>
      * To just flush the buffered contents to the underlying stream, call
      * {@link #flushBuffer(ByteBuffer)} directly instead.

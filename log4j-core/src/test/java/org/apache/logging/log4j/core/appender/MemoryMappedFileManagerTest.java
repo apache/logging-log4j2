@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +23,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests the MemoryMappedFileManager class.
@@ -49,7 +47,8 @@ public class MemoryMappedFileManagerTest {
             byte[] msg;
             for (int i = 0; i < 1000; i++) {
                 msg = ("Message " + i + "\n").getBytes();
-                manager.write(msg, 0, msg.length, false);
+                System.out.println(i);
+                manager.writeBytes(msg, 0, msg.length);
             }
 
         }

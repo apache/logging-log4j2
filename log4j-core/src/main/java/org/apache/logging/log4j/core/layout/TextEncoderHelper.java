@@ -22,6 +22,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Helper class to encode text to binary data without allocating temporary objects.
@@ -51,18 +52,18 @@ public class TextEncoderHelper {
      * @throws CharacterCodingException if conversion failed
      */
     static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer byteBuf,
-            final StringBuilder text, final ByteBufferDestination destination)
+            final StringBuilder text, final ByteBufferDestination destination, boolean destinationIsLocked)
             throws CharacterCodingException {
         charsetEncoder.reset();
         if (text.length() > charBuf.capacity()) {
-            encodeChunkedText(charsetEncoder, charBuf, byteBuf, text, destination);
+            encodeChunkedText(charsetEncoder, charBuf, byteBuf, text, destination, destinationIsLocked);
             return;
         }
         charBuf.clear();
         text.getChars(0, text.length(), charBuf.array(), charBuf.arrayOffset());
         charBuf.limit(text.length());
         CoderResult result = charsetEncoder.encode(charBuf, byteBuf, true);
-        writeEncodedText(charsetEncoder, charBuf, byteBuf, destination, result);
+        writeEncodedText(charsetEncoder, charBuf, byteBuf, destination, result, destinationIsLocked);
     }
 
     /**
@@ -74,27 +75,40 @@ public class TextEncoderHelper {
      * @since 2.9
      */
     private static void writeEncodedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final ByteBuffer byteBuf, final ByteBufferDestination destination, CoderResult result) {
+            final ByteBuffer byteBuf, final ByteBufferDestination destination, CoderResult result,
+            final boolean destinationIsLocked) {
         if (!result.isUnderflow()) {
             writeChunkedEncodedText(charsetEncoder, charBuf, destination, byteBuf, result);
             return;
         }
         result = charsetEncoder.flush(byteBuf);
         if (!result.isUnderflow()) {
-            synchronized (destination) {
-                flushRemainingBytes(charsetEncoder, destination, byteBuf);
-            }
+            flushRemainingBytesSynchronized(charsetEncoder, byteBuf, destination);
             return;
         }
-        // Thread-safety note: no explicit synchronization on ByteBufferDestination below. This is safe, because
-        // if the byteBuf is actually the destination's buffer, this method call should be protected with
-        // synchronization on the destination object at some level, so the call to destination.getByteBuffer() should
-        // be safe. If the byteBuf is an unrelated buffer, the comparison between the buffers should fail despite
-        // destination.getByteBuffer() is not protected with the synchronization on the destination object.
-        if (byteBuf != destination.getByteBuffer()) {
+        // If destination is not locked, current byteBuf couldn't be equal to destination.getByteBuffer(), because
+        // destination.getByteBuffer() couldn't be called before.
+        if (!destinationIsLocked || byteBuf != destination.getByteBuffer()) {
             byteBuf.flip();
             destination.writeBytes(byteBuf);
             byteBuf.clear();
+        }
+    }
+
+    private static void flushRemainingBytesSynchronized(final CharsetEncoder charsetEncoder, final ByteBuffer byteBuf,
+            final ByteBufferDestination destination) {
+        if (destination instanceof LockableByteBufferDestination) {
+            Lock lock = ((LockableByteBufferDestination) destination).getDestinationLock();
+            lock.lock();
+            try {
+                flushRemainingBytes(charsetEncoder, destination, byteBuf);
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            synchronized (destination) {
+                flushRemainingBytes(charsetEncoder, destination, byteBuf);
+            }
         }
     }
 
@@ -108,10 +122,22 @@ public class TextEncoderHelper {
      */
     private static void writeChunkedEncodedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
             final ByteBufferDestination destination, ByteBuffer byteBuf, final CoderResult result) {
-        synchronized (destination) {
-            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf,
+        if (destination instanceof LockableByteBufferDestination) {
+            Lock lock = ((LockableByteBufferDestination) destination).getDestinationLock();
+            lock.lock();
+            try {
+                byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf,
                     result);
-            flushRemainingBytes(charsetEncoder, destination, byteBuf);
+                flushRemainingBytes(charsetEncoder, destination, byteBuf);
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            synchronized (destination) {
+                byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf,
+                    result);
+                flushRemainingBytes(charsetEncoder, destination, byteBuf);
+            }
         }
     }
 
@@ -124,7 +150,8 @@ public class TextEncoderHelper {
      * @since 2.9
      */
     private static void encodeChunkedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            ByteBuffer byteBuf, final StringBuilder text, final ByteBufferDestination destination) {
+            ByteBuffer byteBuf, final StringBuilder text, final ByteBufferDestination destination,
+            boolean destinationIsLocked) {
 
         // LOG4J2-1874 ByteBuffer, CharBuffer and CharsetEncoder are thread-local, so no need to synchronize while
         // modifying these objects. Postpone synchronization until accessing the ByteBufferDestination.
@@ -140,27 +167,44 @@ public class TextEncoderHelper {
             result = charsetEncoder.encode(charBuf, byteBuf, endOfInput);
         }
         if (endOfInput) {
-            writeEncodedText(charsetEncoder, charBuf, byteBuf, destination, result);
+            writeEncodedText(charsetEncoder, charBuf, byteBuf, destination, result, destinationIsLocked);
             return;
         }
-        synchronized (destination) {
-            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
+        if (destination instanceof LockableByteBufferDestination) {
+            Lock lock = ((LockableByteBufferDestination) destination).getDestinationLock();
+            lock.lock();
+            try {
+                encodeAndWriteChunkedTextLoopUnsynchronized(charsetEncoder, charBuf, byteBuf, text, destination, start,
                     result);
-            while (!endOfInput) {
-                result = CoderResult.UNDERFLOW;
-                while (!endOfInput && result.isUnderflow()) {
-                    charBuf.clear();
-                    final int copied = copy(text, start, charBuf);
-                    start += copied;
-                    endOfInput = start >= text.length();
-                    charBuf.flip();
-                    result = charsetEncoder.encode(charBuf, byteBuf, endOfInput);
-                }
-                byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
-                        result);
+            } finally {
+                lock.unlock();
             }
-            flushRemainingBytes(charsetEncoder, destination, byteBuf);
+        } else {
+            synchronized (destination) {
+                encodeAndWriteChunkedTextLoopUnsynchronized(charsetEncoder, charBuf, byteBuf, text, destination, start,
+                    result);
+            }
         }
+    }
+
+    private static void encodeAndWriteChunkedTextLoopUnsynchronized(final CharsetEncoder charsetEncoder,
+            final CharBuffer charBuf, ByteBuffer byteBuf, final StringBuilder text,
+            final ByteBufferDestination destination, int start, CoderResult result) {
+        byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, false, destination, byteBuf, result);
+        boolean endOfInput = false;
+        while (!endOfInput) {
+            result = CoderResult.UNDERFLOW;
+            while (!endOfInput && result.isUnderflow()) {
+                charBuf.clear();
+                final int copied = copy(text, start, charBuf);
+                start += copied;
+                endOfInput = start >= text.length();
+                charBuf.flip();
+                result = charsetEncoder.encode(charBuf, byteBuf, endOfInput);
+            }
+            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf, result);
+        }
+        flushRemainingBytes(charsetEncoder, destination, byteBuf);
     }
 
     /**
@@ -170,11 +214,26 @@ public class TextEncoderHelper {
     public static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
             final ByteBufferDestination destination) {
         charsetEncoder.reset();
-        synchronized (destination) {
-            ByteBuffer byteBuf = destination.getByteBuffer();
-            byteBuf = encodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf);
-            flushRemainingBytes(charsetEncoder, destination, byteBuf);
+        if (destination instanceof LockableByteBufferDestination) {
+            Lock lock = ((LockableByteBufferDestination) destination).getDestinationLock();
+            lock.lock();
+            try {
+                doEncodeText(charsetEncoder, charBuf, destination);
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            synchronized (destination) {
+                doEncodeText(charsetEncoder, charBuf, destination);
+            }
         }
+    }
+
+    private static void doEncodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
+            final ByteBufferDestination destination) {
+        ByteBuffer byteBuf = destination.getByteBuffer();
+        byteBuf = encodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf);
+        flushRemainingBytes(charsetEncoder, destination, byteBuf);
     }
 
     /**
