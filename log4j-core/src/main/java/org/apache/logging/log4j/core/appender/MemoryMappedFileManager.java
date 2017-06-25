@@ -295,6 +295,10 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             // a caller of getStableBufferWatermark() could starve, being not able to read a "stable" (i. e. with zero
             // concurrent writers) state while unsuccessful writers are constantly increasing and decreasing the
             // concurrent writer count (keeping it above zero) in tryWrite().
+
+            // It's important to check the "closed" flag first and then "locked", because they may appear to be set at
+            // the same time when tryLock() sets the "locked" flag speculatively using addAndGet(). If the flags are set
+            // at the same time, the "closed" flag is "real" and the "locked" is going to be rolled back.
             if (isClosed(currentState)) {
                 nextRegionCreated.await();
                 return false;
@@ -329,7 +333,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
 
         /** Returns true if could proceed writing the data to the buffer. See the {@link Region} class comment */
         private boolean checkStateAfterUpdatingAndRollbackIfNeeded(long newState, final long dataLength) {
-            // Same checks of the "closed" and "locked"q flags and almost the same reasoning as in
+            // Same checks of the "closed" and "locked" flags and almost the same reasoning as in
             // checkStateBeforeUpdating().
             if (isClosed(newState)) {
                 rollbackBufferWatermarkAndDecrementConcurrentWriterCount(dataLength);
@@ -402,6 +406,11 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
          * As explained in the {@link Region} class comment, actual closing and switching region should be performed
          * only once from a single thread, so this method actually *tries* to close, but the fail means that some other
          * thread has succeed to close.
+         *
+         * If the caller of this method was attempting to write large data, the retry loop inside this method may fail
+         * until concurrent threads push the buffer watermark until the end of the region, writing small pieces of data.
+         * This is another reason to limit the data size that could be written using the wait-free way, see {@link
+         * #computeLockedWriteThreshold(int)}.
          */
         private void closeAndSwitchRegion() {
             while (true) {
@@ -415,6 +424,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                     doCloseAndSwitchRegionExclusively();
                     return;
                 }
+                ThreadHints.onSpinWait();
             }
         }
 
@@ -424,7 +434,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
          */
         void closeAndSwitchRegionWhileLocked() {
             manager.verifyDestinationLockHeld();
-            // Retry loop and CAS update is needed despite we are holding the lock, because concurrent (unsuccessful)
+            // CAS update with retry loop is needed despite we are holding the lock, because concurrent (unsuccessful)
             // writers could still increment and decrement the buffer watermark and the writer count, so if the state is
             // changed here without CAS, invariants could be broken, e. g. the concurrent writer count could underflow.
             while (true) {
@@ -433,6 +443,10 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                     doCloseAndSwitchRegionExclusively();
                     return;
                 }
+                // The above CAS may fail if other threads on are stopped after successful checkStateBeforeUpdating()
+                // and before actually updating the state, and it's more a theoretical case that it may fail more than
+                // 1 or 2 times, so starvation is not possible here. Adding ThreadHints.onSpinWait() just in case.
+                ThreadHints.onSpinWait();
             }
         }
 
@@ -492,24 +506,32 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         }
 
         private boolean tryLock() {
-            while (true) {
-                final long state = this.state.get();
-                // The "locked" flag may already be set, because manager.destinationLock (it calls tryLock()) is
-                // reentrant. Reenter count is kept in manager.destinationLock.byteBufferApiLock.
-                if (isLocked(state)) {
-                    return true;
-                }
-                if (isClosed(state)) {
-                    return false;
-                }
-                if (this.state.compareAndSet(state, state | LOCKED)) {
-                    // Prepare the mappedBuffer to be used via ByteBufferDestination.getByteBuffer(), actualize it's
-                    // position.
-                    int stableBufferWatermark = getStableBufferWatermark();
-                    mappedBuffer.position(stableBufferWatermark);
-                    return true;
-                }
+            final long state = this.state.get();
+            if (isClosed(state)) {
+                return false;
             }
+            // The "locked" flag may already be set, because manager.destinationLock (it calls tryLock()) is
+            // reentrant. Reenter count is kept in manager.destinationLock.byteBufferApiLock.
+            if (isLocked(state)) {
+                return true;
+            }
+            // This addAndGet() couldn't lead to "conversion" of the "locked" flag into "closed"
+            // (LOCKED + LOCKED = CLOSED), because tryLock() could be called only from a single thread (it' protected by
+            // manager.destinationLock.byteBufferApiLock) and it's checked above that the locked flag is not set
+            // already.
+            long newState = this.state.addAndGet(LOCKED);
+            // If while doing addAndGet() some other thread has set the "closed" flag, give it the priority, the
+            // "locked" and "closed" flags couldn't be set at the same time. See the Region class comment.
+            if (isClosed(newState)) {
+                // Rollback the "locked" flag.
+                this.state.addAndGet(-LOCKED);
+                return false;
+            }
+            // Prepare the mappedBuffer to be used via ByteBufferDestination.getByteBuffer(), actualize it's
+            // position.
+            int stableBufferWatermark = getStableBufferWatermark();
+            mappedBuffer.position(stableBufferWatermark);
+            return true;
         }
 
         private void unlock() {
@@ -527,6 +549,10 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                 if (noWriters(state) && this.state.compareAndSet(state, newState)) {
                     return;
                 }
+                // The above CAS may fail if other threads on are stopped after successful checkStateBeforeUpdating()
+                // and before actually updating the state, and it's more a theoretical case that it may fail more than
+                // 1 or 2 times, so starvation is not possible here. Adding ThreadHints.onSpinWait() just in case.
+                ThreadHints.onSpinWait();
             }
         }
 
@@ -654,8 +680,9 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
      * #destinationLock}) rather than using the concurrent wait-free path.
      *
      * There are three factors limiting this threshold:
-     *  - Minimizing possible spin-wait time in {@link Region#getStableBufferWatermark()}, see comments to this method
-     *  for explanation, and {@link #SPIN_WAIT_MINIMIZING_LOCKED_WRITE_THRESHOLD}.
+     *  - Minimizing possible spin-wait time in {@link Region#getStableBufferWatermark()} and {@link
+     *  Region#closeAndSwitchRegion()}, see comments to these methods for explanation, and also {@link
+     *  #SPIN_WAIT_MINIMIZING_LOCKED_WRITE_THRESHOLD}.
      *  - If there are several threads which frequently write large data, so that number of threads * the size of data
      *  exceeds the {@link #regionLength}, wait-free writes could turn into contention on spin-locking {@link
      *  Region#closeAndSwitchRegion}, that may result in higher pauses, than with proper locking. So we prohibit this
@@ -1073,12 +1100,28 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             lockCurrentRegion();
         }
 
+        /**
+         * lockCurrentRegion() must not fail if the region is null, because it would leave the DestinationLock
+         * in a bad state, because the byteBufferApiLock is already locked. So DestinationLock lets the caller
+         * to fail later, when calling getByteBuffer() or drain():
+         *
+         * destinationLock.lock(); // successful
+         * try {
+         *     // IllegalStateException: MemoryMappedFileManager is closing or failed to map file into memory
+         *     ByteBuffer buffer = destination.getByteBuffer();
+         * } finally {
+         *     destinationLock.unlock(); // successful
+         * }
+         */
         private void lockCurrentRegion() {
             while (true) {
                 Region region = MemoryMappedFileManager.this.region;
                 if (region == null || region.tryLock()) {
                     return;
                 }
+                // The above region.tryLock() may fail only if the region is closed at the same time, so it's pretty
+                // much impossible that it fails more than once. Adding ThreadHints.onSpinWait() just in case.
+                ThreadHints.onSpinWait();
             }
         }
 
