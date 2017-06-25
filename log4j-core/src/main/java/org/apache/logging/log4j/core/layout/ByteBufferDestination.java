@@ -22,11 +22,39 @@ import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
 /**
  * ByteBufferDestination is the destination that {@link Encoder}s write binary data to. It encapsulates a
- * {@code ByteBuffer} and a {@code drain()} method the producer can call when the {@code ByteBuffer} is full.
+ * {@code ByteBuffer} and a {@code drain()} method the producer can call when the {@code ByteBuffer} is full. Calls to
+ * {@link #getByteBuffer()} and {@link #drain(ByteBuffer)} *must* be protected with synchronized block on the
+ * ByteBufferDestination object (or the {@link LockableByteBufferDestination#getDestinationLock()} must be obtained, if
+ * the ByteBufferDestination object is an instance of LockableByteBufferDestination), otherwise the results of those
+ * calls are undefined, they may return some random object, null, or throw an exception. ByteBufferDestination should be
+ * used like:
+ * <pre>{@code
+ * if (destination instanceof LockableByteBufferDestination) {
+ *     Lock destinationLock = destination.getDestinationLock();
+ *     destinationLock.lock();
+ *     try {
+ *         ByteBuffer buffer = destination.getByteBuffer();
+ *         ...
+ *         buffer = destination.drain(buffer);
+ *         ...
+ *     } finally {
+ *         destinationLock.unlock();
+ *     }
+ * } else {
+ *     synchronized (destination) {
+ *         ByteBuffer buffer = destination.getByteBuffer();
+ *         ...
+ *         buffer = destination.drain(buffer);
+ *         ...
+ *     }
+ * }
+ * }</pre>
+ *
  * <p>
  * This interface allows a producer to write arbitrary amounts of data to a destination.
  * </p>
  * @since 2.6
+ * @see LockableByteBufferDestination
  */
 public interface ByteBufferDestination {
     /**
