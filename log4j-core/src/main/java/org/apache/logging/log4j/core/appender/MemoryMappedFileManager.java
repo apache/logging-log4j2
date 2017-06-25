@@ -295,14 +295,13 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             // a caller of getStableBufferWatermark() could starve, being not able to read a "stable" (i. e. with zero
             // concurrent writers) state while unsuccessful writers are constantly increasing and decreasing the
             // concurrent writer count (keeping it above zero) in tryWrite().
-
-            // It's important to check the "closed" flag first and then "locked", because they may appear to be set at
-            // the same time when tryLock() sets the "locked" flag speculatively using addAndGet(). If the flags are set
-            // at the same time, the "closed" flag is "real" and the "locked" is going to be rolled back.
             if (isClosed(currentState)) {
                 nextRegionCreated.await();
                 return false;
             }
+            // It's important to check the "closed" flag first and then "locked", because they may appear to be set at
+            // the same time when tryLock() sets the "locked" flag speculatively using addAndGet(). If the flags are set
+            // at the same time, the "closed" flag is "real" and the "locked" is going to be rolled back.
             if (isLocked(currentState)) {
                 manager.destinationLock.awaitUnlocked();
                 return false;
@@ -457,6 +456,9 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             } else {
                 finalBufferWatermark = getStableBufferWatermark();
             }
+            // It's important to call switchRegion() before unmapMappedBuffer(), not to make spin-looping threads in
+            // manager.writeBytes() to wait for potentially long unmap operation before the region is switched and they
+            // may to proceed.
             switchRegion(finalBufferWatermark);
             // It is safe to unmap the mappedBuffer, because getStableBufferWatermark() is called above and upon
             // it's return it is guaranteed that all concurrent writers has completed.
