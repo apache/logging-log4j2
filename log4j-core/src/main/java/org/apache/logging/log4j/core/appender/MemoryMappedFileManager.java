@@ -300,7 +300,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                 return false;
             }
             if (isLocked(currentState)) {
-                manager.byteBufferApiLock.awaitUnlocked();
+                manager.destinationLock.awaitUnlocked();
                 return false;
             }
             int currentBufferWatermark = bufferWatermark(currentState);
@@ -338,7 +338,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             }
             if (isLocked(newState)) {
                 rollbackBufferWatermarkAndDecrementConcurrentWriterCount(dataLength);
-                manager.byteBufferApiLock.awaitUnlocked();
+                manager.destinationLock.awaitUnlocked();
                 return false;
             }
             int bufferWatermark = bufferWatermark(newState);
@@ -423,7 +423,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
          * Region} class comment).
          */
         void closeAndSwitchRegionWhileLocked() {
-            manager.verifyByteBufferApiLockHeld();
+            manager.verifyDestinationLockHeld();
             // Retry loop and CAS update is needed despite we are holding the lock, because concurrent (unsuccessful)
             // writers could still increment and decrement the buffer watermark and the writer count, so if the state is
             // changed here without CAS, invariants could be broken, e. g. the concurrent writer count could underflow.
@@ -438,7 +438,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
 
         private void doCloseAndSwitchRegionExclusively() {
             final int finalBufferWatermark;
-            if (manager.byteBufferApiLock.isHeldByCurrentThread()) {
+            if (manager.destinationLock.isHeldByCurrentThread()) {
                 finalBufferWatermark = mappedBuffer.position();
             } else {
                 finalBufferWatermark = getStableBufferWatermark();
@@ -468,7 +468,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                     throw new Error("nextRegionBufferWatermark: " + nextRegionBufferWatermark);
                 }
                 final long nextRegionState;
-                if (manager.byteBufferApiLock.isHeldByCurrentThread()) {
+                if (manager.destinationLock.isHeldByCurrentThread()) {
                     nextRegion.mappedBuffer.position((int) nextRegionBufferWatermark);
                     nextRegionState = LOCKED;
                 } else {
@@ -495,7 +495,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             while (true) {
                 final long state = this.state.get();
                 // The "locked" flag may already be set, because manager.destinationLock (it calls tryLock()) is
-                // reentrant. Reenter count is kept in manager.byteBufferApiLock.
+                // reentrant. Reenter count is kept in manager.destinationLock.byteBufferApiLock.
                 if (isLocked(state)) {
                     return true;
                 }
@@ -513,7 +513,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         }
 
         private void unlock() {
-            manager.verifyByteBufferApiLockHeld();
+            manager.verifyDestinationLockHeld();
             int bufferWatermark = mappedBuffer.position();
             // While the Region was locked and mappedBuffer was updated directly, nextRegionCreationWatermark was
             // not checked, so need to check it now.
@@ -598,11 +598,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
     private final String advertiseURI;
     private final RandomAccessFile randomAccessFile;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
-    /**
-     * byteBufferApiLock implements the actual locking for {@link #destinationLock}.
-     */
-    private final UnlockedAwaitableReentrantLock byteBufferApiLock = new UnlockedAwaitableReentrantLock();
-    private final Lock destinationLock = new DestinationLock();
+    private final DestinationLock destinationLock = new DestinationLock();
     /**
      * The {@code region} field needs to be volatile to ensure safe publication and visibility of the new Region from
      * threads spinning in {@link #writeBytes} methods. Update itself is done in {@link Region#switchRegion}, no other
@@ -730,7 +726,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
      */
     @Override
     public void writeBytes(final byte[] data, final int offset, final int length) {
-        if (byteBufferApiLock.isHeldByCurrentThread()) {
+        if (destinationLock.isHeldByCurrentThread()) {
             // If we are in exclusive write mode, write the data using the ByteBufferDestination's getByteBuffer() API.
             ByteBufferDestinationHelper.writeToUnsynchronized(data, offset, length, this);
             return;
@@ -768,7 +764,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
      */
     @Override
     public void writeBytes(final ByteBuffer data) {
-        if (byteBufferApiLock.isHeldByCurrentThread()) {
+        if (destinationLock.isHeldByCurrentThread()) {
             // If we are in exclusive write mode, write the data using the ByteBufferDestination's getByteBuffer() API.
             ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
             return;
@@ -890,7 +886,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             if (closing) {
                 throw new IllegalStateException("doClose() called the second time");
             }
-            byteBufferApiLock.memoryMappedFileManagerIsClosing = true;
+            destinationLock.setClosing();
             closing = true;
             final Region region = this.region;
             if (region != null) {
@@ -1015,25 +1011,25 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
 
     @Override
     public ByteBuffer getByteBuffer() {
-        checkByteBufferApiLockHeld();
+        checkDestinationLockHeld();
         return getCurrentRegionChecked().mappedBuffer;
     }
 
-    private void checkByteBufferApiLockHeld() {
-        if (!byteBufferApiLock.isHeldByCurrentThread()) {
-            throw new IllegalStateException();
+    private void checkDestinationLockHeld() {
+        if (!destinationLock.isHeldByCurrentThread()) {
+            throw new IllegalStateException("destinationLock must be held");
         }
     }
 
-    private void verifyByteBufferApiLockHeld() {
-        if (!byteBufferApiLock.isHeldByCurrentThread()) {
-            throw new Error("byteBufferApiLock is not held");
+    private void verifyDestinationLockHeld() {
+        if (!destinationLock.isHeldByCurrentThread()) {
+            throw new Error("destinationLock is not held");
         }
     }
 
     @Override
     public ByteBuffer drain(final ByteBuffer buf) {
-        checkByteBufferApiLockHeld();
+        checkDestinationLockHeld();
         Region currentRegion = getCurrentRegionChecked();
         if (currentRegion.mappedBuffer.remaining() >= regionLength) {
             // Don't switch the region, if it's remaining capacity is still bigger, than the nominal regionLength.
@@ -1048,6 +1044,11 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
      * The reentrant lock implementation for {@link #getDestinationLock()}. See {@link LockableByteBufferDestination}.
      */
     private class DestinationLock implements Lock {
+        /**
+         * Implements the actual reentrant lock mechanics of the DestinationLock.
+         */
+        private final UnlockedAwaitableReentrantLock byteBufferApiLock = new UnlockedAwaitableReentrantLock();
+
         @Override
         public void lock() {
             byteBufferApiLock.lock();
@@ -1096,6 +1097,18 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                 region.unlock();
             }
             byteBufferApiLock.unlock();
+        }
+
+        private void setClosing() {
+            byteBufferApiLock.memoryMappedFileManagerIsClosing = true;
+        }
+
+        private boolean isHeldByCurrentThread() {
+            return byteBufferApiLock.isHeldByCurrentThread();
+        }
+
+        private void awaitUnlocked() {
+            byteBufferApiLock.awaitUnlocked();
         }
 
         @Override
