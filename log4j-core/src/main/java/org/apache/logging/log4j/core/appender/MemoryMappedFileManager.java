@@ -537,9 +537,6 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         private void unlock() {
             manager.verifyDestinationLockHeld();
             int bufferWatermark = mappedBuffer.position();
-            // While the Region was locked and mappedBuffer was updated directly, nextRegionCreationWatermark was
-            // not checked, so need to check it now.
-            tryCreateNextRegionIfNeeded(bufferWatermark);
             long newState = clearStateWithBufferWatermark(bufferWatermark);
             while (true) {
                 long state = this.state.get();
@@ -547,13 +544,16 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                 // watermark is not corrupted under a race. The comment to getStableBufferWatermark() explains it in
                 // more details.
                 if (noWriters(state) && this.state.compareAndSet(state, newState)) {
-                    return;
+                    break;
                 }
                 // The above CAS may fail if other threads on are stopped after successful checkStateBeforeUpdating()
                 // and before actually updating the state, and it's more a theoretical case that it may fail more than
                 // 1 or 2 times, so starvation is not possible here. Adding ThreadHints.onSpinWait() just in case.
                 ThreadHints.onSpinWait();
             }
+            // While the Region was locked and mappedBuffer was updated directly, nextRegionCreationWatermark was
+            // not checked, so need to check it now.
+            tryCreateNextRegionIfNeeded(bufferWatermark);
         }
 
         /**
