@@ -54,13 +54,13 @@ public class JmsManager extends AbstractManager {
     private final Destination destination;
 
     private JmsManager(final String name, final JndiManager jndiManager, final String connectionFactoryName,
-                       final String destinationName, final String username, final String password)
+                       final String destinationName, final String userName, final String password)
         throws NamingException, JMSException {
         super(null, name);
         this.jndiManager = jndiManager;
         final ConnectionFactory connectionFactory = this.jndiManager.lookup(connectionFactoryName);
-        if (username != null && password != null) {
-            this.connection = connectionFactory.createConnection(username, password);
+        if (userName != null && password != null) {
+            this.connection = connectionFactory.createConnection(userName, password);
         } else {
             this.connection = connectionFactory.createConnection();
         }
@@ -76,8 +76,8 @@ public class JmsManager extends AbstractManager {
      * @param jndiManager           The JndiManager to look up JMS information through.
      * @param connectionFactoryName The binding name for the {@link javax.jms.ConnectionFactory}.
      * @param destinationName       The binding name for the {@link javax.jms.Destination}.
-     * @param userName              The username to connect with or {@code null} for no authentication.
-     * @param password              The password to use with the given username or {@code null} for no authentication.
+     * @param userName              The userName to connect with or {@code null} for no authentication.
+     * @param password              The password to use with the given userName or {@code null} for no authentication.
      * @return The JmsManager as configured.
      */
     public static JmsManager getJmsManager(final String name, final JndiManager jndiManager,
@@ -195,7 +195,7 @@ public class JmsManager extends AbstractManager {
         @Override
         public String toString() {
             return "JmsConfiguration [jndiManager=" + jndiManager + ", connectionFactoryName=" + connectionFactoryName
-                    + ", destinationName=" + destinationName + ", username=" + userName + "]";
+                    + ", destinationName=" + destinationName + ", userName=" + userName + "]";
         }
     }
 
