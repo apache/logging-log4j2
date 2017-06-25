@@ -742,7 +742,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             }
             // tryWrite() could fail for one of the following reasons:
             //  1. The region is closed. In this case we spin, waiting for the thread which calls
-            //     region.doCloseExclusively() to set the next region to the region field.
+            //     region.doCloseAndSwitchRegionExclusively() to set the next region to the region field.
             //  2. The region was locked. Unlock is already awaited inside tryWrite(). Call tryWrite() again in a spin
             //     loop.
             //  3. False positive buffer watermark overflow check in Region.checkStateBeforeUpdating(), because some
