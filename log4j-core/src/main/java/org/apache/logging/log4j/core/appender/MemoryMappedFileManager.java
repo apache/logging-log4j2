@@ -575,6 +575,8 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         }
 
         private void forceMappedBuffer() {
+            // MappedByteBuffer.force() is called under read lock, i. e. concurrent calls to force() are allowed,
+            // because nothing in it's Javadoc says that it shouldn't be ok.
             if (!mappedBufferSystemOperationsLock.readLock().tryLock()) {
                 // mappedBufferSystemOperationsLock.readLock is not available means that unmapMappedBuffer() is in
                 // progress (i. e. this Region is in the process of closing) that is equivalent to forcing.
@@ -850,6 +852,22 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             millis);
     }
 
+    /**
+     * The implementation of this method guarantees that only pieces of data that are written to this
+     * MemoryMappedFileManager from the current thread are fully flushed to the disk behind the {@link
+     * #randomAccessFile}. Data pieces that are written concurrently from other threads and may appear intermittent with
+     * the data pieces written from the current thread may be flushed half-baked, so areas of garbage or zero bytes may
+     * appear both before and after the last data piece, written from the current thread:
+     * [A Message written from the current thread]
+     * [Message written from other threa..]
+     * [Last message written from the current thread]
+     * [Messa^&%$#1..]
+     *
+     * This is due to concurrent non-blocking nature of MemoryMappedFileManager and cannot be fixed without taking the
+     * {@link #destinationLock} on each flush, that would make MemoryMappedFileManager to behave essentially as a
+     * blocking synchronized manager, if {@link #immediateFlush} is true.
+     *
+     */
     @Override
     public void flush() {
         Region region = this.region;
