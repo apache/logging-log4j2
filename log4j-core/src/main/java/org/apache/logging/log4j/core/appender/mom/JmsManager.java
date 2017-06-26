@@ -49,10 +49,10 @@ public class JmsManager extends AbstractManager {
         private final String connectionFactoryName;
         private final String destinationName;
         private final String userName;
-        private final String password;
+        private final char[] password;
 
-        JmsManagerConfiguration(final JndiManager jndiManager, final String connectionFactoryName, final String destinationName,
-                                 final String userName, final String password) {
+        JmsManagerConfiguration(final JndiManager jndiManager, final String connectionFactoryName,
+                final String destinationName, final String userName, final char[] password) {
             this.jndiManager = jndiManager;
             this.connectionFactoryName = connectionFactoryName;
             this.destinationName = destinationName;
@@ -85,28 +85,62 @@ public class JmsManager extends AbstractManager {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     static final JmsManagerFactory FACTORY = new JmsManagerFactory();
+
     /**
      * Gets a JmsManager using the specified configuration parameters.
      *
-     * @param name                  The name to use for this JmsManager.
-     * @param jndiManager           The JndiManager to look up JMS information through.
-     * @param connectionFactoryName The binding name for the {@link javax.jms.ConnectionFactory}.
-     * @param destinationName       The binding name for the {@link javax.jms.Destination}.
-     * @param userName              The userName to connect with or {@code null} for no authentication.
-     * @param password              The password to use with the given userName or {@code null} for no authentication.
+     * @param name
+     *            The name to use for this JmsManager.
+     * @param jndiManager
+     *            The JndiManager to look up JMS information through.
+     * @param connectionFactoryName
+     *            The binding name for the {@link javax.jms.ConnectionFactory}.
+     * @param destinationName
+     *            The binding name for the {@link javax.jms.Destination}.
+     * @param userName
+     *            The userName to connect with or {@code null} for no authentication.
+     * @param password
+     *            The password to use with the given userName or {@code null} for no authentication.
+     * @return The JmsManager as configured.
+     * @deprecated Use the other getJmsManager() method
+     */
+    @Deprecated
+    public static JmsManager getJmsManager(final String name, final JndiManager jndiManager,
+            final String connectionFactoryName, final String destinationName, final String userName,
+            final String password) {
+        final JmsManagerConfiguration configuration = new JmsManagerConfiguration(jndiManager, connectionFactoryName,
+                destinationName, userName, password == null ? null : password.toCharArray());
+        return getManager(name, FACTORY, configuration);
+    }
+
+    /**
+     * Gets a JmsManager using the specified configuration parameters.
+     *
+     * @param name
+     *            The name to use for this JmsManager.
+     * @param jndiManager
+     *            The JndiManager to look up JMS information through.
+     * @param connectionFactoryName
+     *            The binding name for the {@link javax.jms.ConnectionFactory}.
+     * @param destinationName
+     *            The binding name for the {@link javax.jms.Destination}.
+     * @param userName
+     *            The userName to connect with or {@code null} for no authentication.
+     * @param password
+     *            The password to use with the given userName or {@code null} for no authentication.
      * @return The JmsManager as configured.
      */
     public static JmsManager getJmsManager(final String name, final JndiManager jndiManager,
-                                           final String connectionFactoryName, final String destinationName,
-                                           final String userName, final String password) {
-        final JmsManagerConfiguration configuration = new JmsManagerConfiguration(jndiManager, connectionFactoryName, destinationName,
-            userName, password);
+            final String connectionFactoryName, final String destinationName, final String userName,
+            final char[] password) {
+        final JmsManagerConfiguration configuration = new JmsManagerConfiguration(jndiManager, connectionFactoryName,
+                destinationName, userName, password);
         return getManager(name, FACTORY, configuration);
     }
+
     private final JndiManager jndiManager;
     private final Connection connection;
     private final Session session;
-
 
     private final Destination destination;
 
@@ -115,13 +149,14 @@ public class JmsManager extends AbstractManager {
     private final MessageProducer producer;
 
     private JmsManager(final String name, final JmsManagerConfiguration configuration)
-        throws NamingException, JMSException {
+            throws NamingException, JMSException {
         super(null, name);
         this.configuration = configuration;
         this.jndiManager = configuration.jndiManager;
         final ConnectionFactory connectionFactory = this.jndiManager.lookup(configuration.connectionFactoryName);
         if (configuration.userName != null && configuration.password != null) {
-            this.connection = connectionFactory.createConnection(configuration.userName, configuration.password);
+            this.connection = connectionFactory.createConnection(configuration.userName,
+                    configuration.password == null ? null : String.valueOf(configuration.password));
         } else {
             this.connection = connectionFactory.createConnection();
         }
@@ -171,7 +206,6 @@ public class JmsManager extends AbstractManager {
         return this.session.createConsumer(this.destination);
     }
 
-
     /**
      * Creates a MessageProducer on this Destination using the current Session.
      *
@@ -186,7 +220,8 @@ public class JmsManager extends AbstractManager {
         return configuration;
     }
 
-    private MapMessage map(final org.apache.logging.log4j.message.MapMessage<?, ?> log4jMapMessage, final MapMessage jmsMapMessage) {
+    private MapMessage map(final org.apache.logging.log4j.message.MapMessage<?, ?> log4jMapMessage,
+            final MapMessage jmsMapMessage) {
         // Map without calling rg.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
         log4jMapMessage.forEach(new BiConsumer<String, Object>() {
             @Override

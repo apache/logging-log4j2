@@ -52,6 +52,9 @@
       <action issue="LOG4J2-1934" dev="ggregory" type="add">
         JMS Appender does not know how to recover from a broken connection.
       </action>
+      <action issue="LOG4J2-1956" dev="ggregory" type="update">
+        JMS Appender broker password should be a char[], not a String.
+      </action>
       <action issue="LOG4J2-1874" dev="rpopma" type="add" due-to="Roman Leventov">
         Added methods ::writeBytes(ByteBuffer) and ::writeBytes(byte[], int, int) to ByteBufferDestination interface and use these methods in TextEncoderHelper where possible to prepare for future enhancements to reduce lock contention.
       </action>

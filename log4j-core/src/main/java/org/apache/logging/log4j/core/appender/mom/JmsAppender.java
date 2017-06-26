@@ -85,7 +85,7 @@ public class JmsAppender extends AbstractAppender {
         private String userName;
 
         @PluginBuilderAttribute(sensitive = true)
-        private String password;
+        private char[] password;
 
         @PluginElement("Layout")
         private Layout<? extends Serializable> layout = SerializedLayout.createLayout();
@@ -172,8 +172,17 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
-        public Builder setPassword(final String password) {
+        public Builder setPassword(final char[] password) {
             this.password = password;
+            return this;
+        }
+
+        /**
+         * @deprecated Use setPassword(char[])
+         */
+        @Deprecated
+        public Builder setPassword(final String password) {
+            this.password = password == null ? null : password.toCharArray();
             return this;
         }
 
