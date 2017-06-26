@@ -407,7 +407,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
          * thread has succeed to close.
          *
          * If the caller of this method was attempting to write large data, the retry loop inside this method may fail
-         * until concurrent threads push the buffer watermark until the end of the region, writing small pieces of data.
+         * until concurrent threads push the buffer watermark up to the end of the region, writing small pieces of data.
          * This is another reason to limit the data size that could be written using the wait-free way, see {@link
          * #computeLockedWriteThreshold(int)}.
          */
@@ -442,9 +442,9 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                     doCloseAndSwitchRegionExclusively();
                     return;
                 }
-                // The above CAS may fail if other threads on are stopped after successful checkStateBeforeUpdating()
-                // and before actually updating the state, and it's more a theoretical case that it may fail more than
-                // 1 or 2 times, so starvation is not possible here. Adding ThreadHints.onSpinWait() just in case.
+                // The above CAS may fail if other threads are stopped after successful checkStateBeforeUpdating() and
+                // before actually updating the state, and it's more a theoretical case that it may fail more than 1 or
+                // 2 times, so starvation is not possible here. Adding ThreadHints.onSpinWait() just in case.
                 ThreadHints.onSpinWait();
             }
         }
@@ -548,13 +548,15 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                 if (noWriters(state) && this.state.compareAndSet(state, newState)) {
                     break;
                 }
-                // The above CAS may fail if other threads on are stopped after successful checkStateBeforeUpdating()
-                // and before actually updating the state, and it's more a theoretical case that it may fail more than
-                // 1 or 2 times, so starvation is not possible here. Adding ThreadHints.onSpinWait() just in case.
+                // The above CAS may fail if other threads are stopped after successful checkStateBeforeUpdating() and
+                // before actually updating the state, and it's more a theoretical case that it may fail more than 1 or
+                // 2 times, so starvation is not possible here. Adding ThreadHints.onSpinWait() just in case.
                 ThreadHints.onSpinWait();
             }
-            // While the Region was locked and mappedBuffer was updated directly, nextRegionCreationWatermark was
-            // not checked, so need to check it now.
+            // While the Region was locked and the mappedBuffer was updated directly, nextRegionCreationWatermark was
+            // not checked, so need to check it now. It's important to call tryCreateNextRegionIfNeeded() after
+            // the actual unlocking (switching the state), to minimize the time when the manager is locked, because
+            // tryCreateNextRegionIfNeeded() could take long time.
             tryCreateNextRegionIfNeeded(bufferWatermark);
         }
 
@@ -809,7 +811,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             if (region.tryWrite(data)) {
                 return;
             }
-            // See a big comment at the same place in writeBytes(byte[], int, int, boolean)
+            // See a big comment at the same place in writeBytes(byte[], int, int)
 
             ThreadHints.onSpinWait();
         }
@@ -1079,7 +1081,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         checkDestinationLockHeld();
         Region currentRegion = getCurrentRegionChecked();
         if (currentRegion.mappedBuffer.remaining() >= regionLength) {
-            // Don't switch the region, if it's remaining capacity is still bigger, than the nominal regionLength.
+            // Don't switch the region, if it's remaining capacity is still bigger than the nominal regionLength.
             return currentRegion.mappedBuffer;
         }
         currentRegion.closeAndSwitchRegionWhileLocked();
