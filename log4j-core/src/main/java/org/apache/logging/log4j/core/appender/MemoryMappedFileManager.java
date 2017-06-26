@@ -433,20 +433,17 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
          */
         void closeAndSwitchRegionWhileLocked() {
             manager.verifyDestinationLockHeld();
-            // CAS update with retry loop is needed despite we are holding the lock, because concurrent (unsuccessful)
-            // writers could still increment and decrement the buffer watermark and the writer count, so if the state is
-            // changed here without CAS, invariants could be broken, e. g. the concurrent writer count could underflow.
-            while (true) {
-                final long state = this.state.get();
-                if (this.state.compareAndSet(state, (state & ~LOCKED) | CLOSED)) {
-                    doCloseAndSwitchRegionExclusively();
-                    return;
-                }
-                // The above CAS may fail if other threads are stopped after successful checkStateBeforeUpdating() and
-                // before actually updating the state, and it's more a theoretical case that it may fail more than 1 or
-                // 2 times, so starvation is not possible here. Adding ThreadHints.onSpinWait() just in case.
-                ThreadHints.onSpinWait();
+            final long state = this.state.get();
+            if (!isLocked(state) || isClosed(state)) {
+                throw new Error("The region is expected to be locked and not closed, state: " + state);
             }
+            // This is a hack, LOCKED + LOCKED = CLOSED, so addAndGet(LOCKED) switches from LOCKED to CLOSED atomically.
+            // Plain AtomicLong.set() couldn't be used, despite we are holding the lock, because concurrent
+            // (unsuccessful) writers may still increment and decrement the buffer watermark and the writer count, so if
+            // the state is changed here not atomically, invariants could be broken, e. g. the concurrent writer count
+            // could underflow.
+            this.state.addAndGet(LOCKED);
+            doCloseAndSwitchRegionExclusively();
         }
 
         private void doCloseAndSwitchRegionExclusively() {
