@@ -125,11 +125,15 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
             if (strategy == null) {
                 if (fileName != null) {
-                    strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
-                            String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, getConfiguration());
+                    strategy = DefaultRolloverStrategy.newBuilder()
+                                        .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                                        .withConfig(getConfiguration())
+                                        .build();
                 } else {
-                    strategy = DirectWriteRolloverStrategy.createStrategy(null,
-                            String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, getConfiguration());
+                    strategy = DirectWriteRolloverStrategy.newBuilder()
+                                        .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                                        .withConfig(getConfiguration())
+                                        .build();
                 }
             } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
                 LOGGER.error("RollingFileAppender '{}': When no file name is provided a DirectFilenameRolloverStrategy must be configured");
