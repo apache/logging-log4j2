@@ -2930,6 +2930,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     Only implemented for ZIP files.
                   </td>
                 </tr>
+                <tr>
+                  <td>tempCompressedFilePattern</td>
+                  <td>String</td>
+                  <td>The pattern of the file name of the archived log file during compression.</td>
+                </tr>
               </table>
           <a name="DirectWriteRolloverStrategy"/>
           <h5>DirectWrite Rollover Strategy</h5>
@@ -2967,6 +2972,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   Sets the compression level, 0-9, where 0 = none, 1 = best speed, through 9 = best compression.
                   Only implemented for ZIP files.
                 </td>
+              </tr>
+              <tr>
+                <td>tempCompressedFilePattern</td>
+                <td>String</td>
+                <td>The pattern of the file name of the archived log file during compression.</td>
               </tr>
             </table>
           <p>
