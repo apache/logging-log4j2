@@ -70,7 +70,7 @@ public class JmsAppenderConnectReConnectIT {
 				.startBrokerService(JmsAppenderConnectReConnectIT.class.getName(), brokerUrlString, port);
 		// Start appender
 		final JmsClientTestConfig jmsClientTestConfig = new JmsClientTestConfig(ActiveMQInitialContextFactory.class.getName(),
-				brokerUrlString, "admin", "admin");
+				brokerUrlString, "admin", "admin".toCharArray());
 		jmsClientTestConfig.start();
 		final JmsAppender appender = jmsClientTestConfig.createAppender(MessageLayout.createLayout());
 		// Log message

@@ -16,11 +16,11 @@ class JmsClientTestConfig {
 	private JmsAppender jmsAppender;
 	private final String jmsInitialContextFactoryClassName;
 	private JmsManager jmsManager;
-	private final String jmsPassword;
+	private final char[] jmsPassword;
 	private final String jmsProviderUrlStr;
 	private final String jmsUserName;
 
-	JmsClientTestConfig(final String jmsInitialContextFactoryClassName, final String jmsProviderUrlStr, final String jmsUserName, final String jmsPassword) {
+	JmsClientTestConfig(final String jmsInitialContextFactoryClassName, final String jmsProviderUrlStr, final String jmsUserName, final char[] jmsPassword) {
 		this.jmsInitialContextFactoryClassName = jmsInitialContextFactoryClassName;
 		this.jmsProviderUrlStr = jmsProviderUrlStr;
 		this.jmsUserName = jmsUserName;
@@ -52,7 +52,7 @@ class JmsClientTestConfig {
 		return jmsManager;
 	}
 
-	String getJmsPassword() {
+	char[] getJmsPassword() {
 		return jmsPassword;
 	}
 

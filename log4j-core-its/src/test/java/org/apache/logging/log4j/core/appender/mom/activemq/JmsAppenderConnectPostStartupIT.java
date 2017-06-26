@@ -55,7 +55,7 @@ public class JmsAppenderConnectPostStartupIT extends AbstractJmsAppenderIT {
 
 	// "admin"/"admin" are the default Apache Active MQ creds.
 	private static final JmsClientTestConfigRule jmsClientTestConfigRule = new JmsClientTestConfigRule(
-			ActiveMQInitialContextFactory.class.getName(), "tcp://localhost:" + portRule.getPort(), "admin", "admin");
+			ActiveMQInitialContextFactory.class.getName(), "tcp://localhost:" + portRule.getPort(), "admin", "admin".toCharArray());
 
 	/**
 	 * Assign the port and client ONCE for the whole test suite.

@@ -50,7 +50,7 @@ public class JmsAppenderITcpConnectionIT extends AbstractJmsAppenderIT {
 
 	// "admin"/"admin" are the default Apache Active MQ creds.
 	public static final JmsClientTestConfigRule jmsClientTestConfigRule = new JmsClientTestConfigRule(
-			activeMqBrokerServiceRule, ActiveMQInitialContextFactory.class.getName(), "admin", "admin");
+			activeMqBrokerServiceRule, ActiveMQInitialContextFactory.class.getName(), "admin", "admin".toCharArray());
 
 	/**
 	 * We assign a port only ONCE ands start the broker ONCE for the whole test
