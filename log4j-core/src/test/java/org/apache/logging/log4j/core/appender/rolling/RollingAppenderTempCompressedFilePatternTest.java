@@ -25,6 +25,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +49,7 @@ import org.junit.rules.RuleChain;
 /**
  * LOG4J2-1766.
  */
-public class RollingAppenderTmpCompressFilePatternTest {
+public class RollingAppenderTempCompressedFilePatternTest {
 
   private static final String CONFIG = "log4j-rolling-gz-tmp-compress.xml";
 
@@ -59,11 +65,16 @@ public class RollingAppenderTmpCompressFilePatternTest {
 
     @Before
     public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingAppenderTmpCompressFilePatternTest.class.getName());
+        this.logger = loggerContextRule.getLogger(RollingAppenderTempCompressedFilePatternTest.class.getName());
     }
 
     @Test
     public void testAppender() throws Exception {
+        final File dirTmp = new File(DIR_TMP);
+        dirTmp.mkdirs();
+        WatchService watcher = FileSystems.getDefault().newWatchService();
+        WatchKey key = dirTmp.toPath().register(watcher , StandardWatchEventKinds.ENTRY_CREATE);
+        
       List<String> messages = new ArrayList<>();
         for (int i=0; i < 500; ++i) {
           String message = "This is test message number " + i;
@@ -78,8 +89,6 @@ public class RollingAppenderTmpCompressFilePatternTest {
         }
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists());
-        final File dirTmp = new File(DIR_TMP);
-        assertTrue("Tmp directory not created", dirTmp.exists());
         final File[] files = dir.listFiles();
         assertNotNull(files);
         int gzippedFiles = 0;
@@ -122,5 +131,19 @@ public class RollingAppenderTmpCompressFilePatternTest {
         assertTrue("Log messages lost : " + messages.size(), messages.isEmpty());
         assertTrue("Files not rolled : " + files.length, files.length > 2);
         assertTrue("Files gzipped not rolled : " + gzippedFiles, gzippedFiles > 0);
+
+        int temporaryFilesCreated = 0;
+        key = watcher.take();
+
+        for (WatchEvent<?> event: key.pollEvents()) {
+            WatchEvent.Kind<?> kind = event.kind();
+            WatchEvent<Path> ev = (WatchEvent<Path>)event;
+            Path filename = ev.context();
+            if (filename.toString().endsWith(".tmp")) {
+                temporaryFilesCreated++;
+            }
+        }
+        assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
+        assertTrue("Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/" + gzippedFiles, gzippedFiles == temporaryFilesCreated);
     }
 }

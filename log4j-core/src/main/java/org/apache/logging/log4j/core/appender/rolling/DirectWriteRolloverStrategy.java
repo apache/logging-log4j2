@@ -77,8 +77,8 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         @PluginBuilderAttribute(value = "stopCustomActionsOnError")
         private boolean stopCustomActionsOnError = true;
 
-        @PluginBuilderAttribute(value = "compressTmpFilePattern")
-        private String compressTmpFilePattern;
+        @PluginBuilderAttribute(value = "tempCompressedFilePattern")
+        private String tempCompressedFilePattern;
 
         @PluginConfiguration
         private Configuration config;
@@ -97,7 +97,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             }
             final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
             return new DirectWriteRolloverStrategy(maxIndex, compressionLevel, config.getStrSubstitutor(),
-                    customActions, stopCustomActionsOnError, compressTmpFilePattern);
+                    customActions, stopCustomActionsOnError, tempCompressedFilePattern);
         }
 
         public String getMaxFiles() {
@@ -105,7 +105,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         }
 
         /**
-         * Define the maximum number of files to keep.
+         * Defines the maximum number of files to keep.
          *
          * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
          * @return This builder for chaining convenience
@@ -120,7 +120,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         }
 
         /**
-         * Define compression level.
+         * Defines compression level.
          *
          * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
          * @return This builder for chaining convenience
@@ -135,7 +135,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         }
 
         /**
-         * Define custom actions.
+         * Defines custom actions.
          *
          * @param customActions custom actions to perform asynchronously after rollover
          * @return This builder for chaining convenience
@@ -150,7 +150,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         }
 
         /**
-         * Define whether to stop executing asynchronous actions if an error occurs.
+         * Defines whether to stop executing asynchronous actions if an error occurs.
          *
          * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
          * @return This builder for chaining convenience
@@ -160,18 +160,18 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             return this;
         }
 
-        public String getCompressTmpFilePattern() {
-            return compressTmpFilePattern;
+        public String getTempCompressedFilePattern() {
+            return tempCompressedFilePattern;
         }
 
         /**
-         * Define temporary compression file pattern.
+         * Defines temporary compression file pattern.
          *
-         * @param compressTmpFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
+         * @param tempCompressedFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
          * @return This builder for chaining convenience
          */
-        public Builder withCompressTmpFilePattern(String compressTmpFilePattern) {
-            this.compressTmpFilePattern = compressTmpFilePattern;
+        public Builder withTempCompressedFilePattern(String tempCompressedFilePattern) {
+            this.tempCompressedFilePattern = tempCompressedFilePattern;
             return this;
         }
 
@@ -180,7 +180,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         }
 
         /**
-         * Define configuration.
+         * Defines configuration.
          * 
          * @param config The Configuration.
          * @return This builder for chaining convenience
@@ -205,7 +205,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
      * @param config The Configuration.
      * @return A DirectWriteRolloverStrategy.
-     * @deprecated Since log4j-2.8.3 Usage of Builder API is preferable
+     * @deprecated Since 2.9 Usage of Builder API is preferable
      */
     @Deprecated
     @PluginFactory
@@ -235,7 +235,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     private final boolean stopCustomActionsOnError;
     private volatile String currentFileName;
     private int nextIndex = -1;
-    private final PatternProcessor compressTmpFilePattern;
+    private final PatternProcessor tempCompressedFilePattern;
 
     /**
      * Constructs a new instance.
@@ -243,7 +243,9 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
      * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
      * @param customActions custom actions to perform asynchronously after rollover
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
+     * @deprecated Since 2.9 Added tempCompressedFilePatternString parameter
      */
+    @Deprecated
     protected DirectWriteRolloverStrategy(final int maxFiles, final int compressionLevel,
                                           final StrSubstitutor strSubstitutor, final Action[] customActions,
                                           final boolean stopCustomActionsOnError) {
@@ -256,19 +258,19 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
      * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
      * @param customActions custom actions to perform asynchronously after rollover
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     * @param compressTmpFilePatternString File pattern of the working file
+     * @param tempCompressedFilePatternString File pattern of the working file
      *                                     used during compression, if null no temporary file are used
      */
     protected DirectWriteRolloverStrategy(final int maxFiles, final int compressionLevel,
                                           final StrSubstitutor strSubstitutor, final Action[] customActions,
-                                          final boolean stopCustomActionsOnError, final String compressTmpFilePatternString) {
+                                          final boolean stopCustomActionsOnError, final String tempCompressedFilePatternString) {
         super(strSubstitutor);
         this.maxFiles = maxFiles;
         this.compressionLevel = compressionLevel;
         this.stopCustomActionsOnError = stopCustomActionsOnError;
         this.customActions = customActions == null ? Collections.<Action> emptyList() : Arrays.asList(customActions);
-        this.compressTmpFilePattern =
-                compressTmpFilePatternString != null ? new PatternProcessor(compressTmpFilePatternString) : null;
+        this.tempCompressedFilePattern =
+                tempCompressedFilePatternString != null ? new PatternProcessor(tempCompressedFilePatternString) : null;
     }
 
     public int getCompressionLevel() {
@@ -287,8 +289,8 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         return stopCustomActionsOnError;
     }
 
-    public PatternProcessor getCompressTmpFilePattern() {
-        return compressTmpFilePattern;
+    public PatternProcessor getTempCompressedFilePattern() {
+        return tempCompressedFilePattern;
     }
 
     private int purge(final RollingFileManager manager) {
@@ -347,9 +349,9 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         FileExtension fileExtension = manager.getFileExtension();
         if (fileExtension != null) {
             compressedName += fileExtension.getExtension();            
-            if (compressTmpFilePattern != null) {
+            if (tempCompressedFilePattern != null) {
                 StringBuilder buf = new StringBuilder();
-                compressTmpFilePattern.formatFileName(strSubstitutor, buf, fileIndex);
+                tempCompressedFilePattern.formatFileName(strSubstitutor, buf, fileIndex);
                 String tmpCompressedName = buf.toString();
                 final File tmpCompressedNameFile = new File(tmpCompressedName);
                 if (tmpCompressedNameFile.getParentFile() != null) {

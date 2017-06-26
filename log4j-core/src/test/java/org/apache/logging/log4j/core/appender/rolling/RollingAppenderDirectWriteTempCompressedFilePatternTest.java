@@ -25,6 +25,12 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -36,7 +42,7 @@ import org.junit.rules.RuleChain;
 /**
  * LOG4J2-1766.
  */
-public class RollingAppenderDirectWriteTmpCompressFilePatternTest {
+public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
 
     private static final String CONFIG = "log4j-rolling-direct-tmp-compress-folder.xml";
 
@@ -56,14 +62,36 @@ public class RollingAppenderDirectWriteTmpCompressFilePatternTest {
 
     @Test
     public void testAppender() throws Exception {
+        final File dir = new File(DIR);
+        dir.mkdirs();
+        WatchService watcher = FileSystems.getDefault().newWatchService();
+        WatchKey key = dir.toPath().register(watcher , StandardWatchEventKinds.ENTRY_CREATE);
+        
         for (int i=0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
         Thread.sleep(50);
-        final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
+
+        int temporaryFilesCreated = 0;
+        int compressedFiles = 0;
+        key = watcher.take();
+
+        for (WatchEvent<?> event: key.pollEvents()) {
+            WatchEvent.Kind<?> kind = event.kind();
+            WatchEvent<Path> ev = (WatchEvent<Path>)event;
+            Path filename = ev.context();
+            if (filename.toString().endsWith(".tmp")) {
+                temporaryFilesCreated++;
+            }
+            if (filename.toString().endsWith(".gz")) {
+                compressedFiles++;
+            }
+        }
+        assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
+        assertTrue("Temporarys file created not equals to compressed files", compressedFiles == temporaryFilesCreated);
     }
 }

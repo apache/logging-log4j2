@@ -106,8 +106,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         @PluginBuilderAttribute(value = "stopCustomActionsOnError")
         private boolean stopCustomActionsOnError = true;
 
-        @PluginBuilderAttribute(value = "compressTmpFilePattern")
-        private String compressTmpFilePattern;
+        @PluginBuilderAttribute(value = "tempCompressedFilePattern")
+        private String tempCompressedFilePattern;
 
         @PluginConfiguration
         private Configuration config;
@@ -143,7 +143,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             }
             final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
             return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, config.getStrSubstitutor(),
-                    customActions, stopCustomActionsOnError, compressTmpFilePattern);
+                    customActions, stopCustomActionsOnError, tempCompressedFilePattern);
         }
 
         public String getMax() {
@@ -151,7 +151,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * Define the maximum number of files to keep.
+         * Defines the maximum number of files to keep.
          *
          * @param max The maximum number of files to keep.
          * @return This builder for chaining convenience
@@ -166,7 +166,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * Define the minimum number of files to keep.
+         * Defines the minimum number of files to keep.
          *
          * @param min The minimum number of files to keep.
          * @return This builder for chaining convenience
@@ -181,7 +181,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * Define the file index for rolling strategy.
+         * Defines the file index for rolling strategy.
          *
          * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a smaller
          *            index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
@@ -197,7 +197,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * Define compression level.
+         * Defines compression level.
          *
          * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
          * @return This builder for chaining convenience
@@ -212,7 +212,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * Define custom actions.
+         * Defines custom actions.
          *
          * @param customActions custom actions to perform asynchronously after rollover
          * @return This builder for chaining convenience
@@ -227,7 +227,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * Define whether to stop executing asynchronous actions if an error occurs.
+         * Defines whether to stop executing asynchronous actions if an error occurs.
          *
          * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
          * @return This builder for chaining convenience
@@ -237,18 +237,18 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             return this;
         }
 
-        public String getCompressTmpFilePattern() {
-            return compressTmpFilePattern;
+        public String getTempCompressedFilePattern() {
+            return tempCompressedFilePattern;
         }
 
         /**
-         * Define temporary compression file pattern.
+         * Defines temporary compression file pattern.
          *
-         * @param compressTmpFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
+         * @param tempCompressedFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
          * @return This builder for chaining convenience
          */
-        public Builder withCompressTmpFilePattern(String compressTmpFilePattern) {
-            this.compressTmpFilePattern = compressTmpFilePattern;
+        public Builder withTempCompressedFilePattern(String tempCompressedFilePattern) {
+            this.tempCompressedFilePattern = tempCompressedFilePattern;
             return this;
         }
 
@@ -257,7 +257,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * Define configuration.
+         * Defines configuration.
          * 
          * @param config The Configuration.
          * @return This builder for chaining convenience
@@ -285,7 +285,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
      * @param config The Configuration.
      * @return A DefaultRolloverStrategy.
-     * @deprecated Since log4j-2.8.3 Usage of Builder API is preferable
+     * @deprecated Since 2.9 Usage of Builder API is preferable
      */
     @PluginFactory
     @Deprecated
@@ -324,7 +324,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     private final int compressionLevel;
     private final List<Action> customActions;
     private final boolean stopCustomActionsOnError;
-    private final PatternProcessor compressTmpFilePattern;
+    private final PatternProcessor tempCompressedFilePattern;
 
     /**
      * Constructs a new instance.
@@ -333,7 +333,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @param maxIndex The maximum index.
      * @param customActions custom actions to perform asynchronously after rollover
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
+     * @deprecated Since 2.9 Added tempCompressedFilePatternString parameter
      */
+    @Deprecated
     protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
             final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
             final boolean stopCustomActionsOnError) {
@@ -348,12 +350,12 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @param maxIndex The maximum index.
      * @param customActions custom actions to perform asynchronously after rollover
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     * @param compressTmpFilePatternString File pattern of the working file
+     * @param tempCompressedFilePatternString File pattern of the working file
      *                                     used during compression, if null no temporary file are used
      */
     protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
             final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
-            final boolean stopCustomActionsOnError, final String compressTmpFilePatternString) {
+            final boolean stopCustomActionsOnError, final String tempCompressedFilePatternString) {
         super(strSubstitutor);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
@@ -361,8 +363,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         this.compressionLevel = compressionLevel;
         this.stopCustomActionsOnError = stopCustomActionsOnError;
         this.customActions = customActions == null ? Collections.<Action> emptyList() : Arrays.asList(customActions);
-        this.compressTmpFilePattern =
-                compressTmpFilePatternString != null ? new PatternProcessor(compressTmpFilePatternString) : null;
+        this.tempCompressedFilePattern =
+                tempCompressedFilePatternString != null ? new PatternProcessor(tempCompressedFilePatternString) : null;
     }
 
     public int getCompressionLevel() {
@@ -389,8 +391,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         return useMax;
     }
 
-    public PatternProcessor getCompressTmpFilePattern() {
-        return compressTmpFilePattern;
+    public PatternProcessor getTempCompressedFilePattern() {
+        return tempCompressedFilePattern;
     }
 
     private int purge(final int lowIndex, final int highIndex, final RollingFileManager manager) {
@@ -542,9 +544,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         if (fileExtension != null) {
             final File renameToFile = new File(renameTo);
             renameTo = renameTo.substring(0, renameTo.length() - fileExtension.length());
-            if (compressTmpFilePattern != null) {
+            if (tempCompressedFilePattern != null) {
                 buf.delete(0, buf.length());
-                compressTmpFilePattern.formatFileName(strSubstitutor, buf, fileIndex);
+                tempCompressedFilePattern.formatFileName(strSubstitutor, buf, fileIndex);
                 String tmpCompressedName = buf.toString();
                 final File tmpCompressedNameFile = new File(tmpCompressedName);
                 if (tmpCompressedNameFile.getParentFile() != null) {

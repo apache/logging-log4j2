@@ -35,7 +35,7 @@
       <SizeBasedTriggeringPolicy size="500" />
       <DefaultRolloverStrategy
       	 fileIndex="nomax"
-      	 compressTmpFilePattern="target/rolling-tmp/test1-$${date:MM-dd-yyyy}-%i.log.gz.tmp"/>
+      	 tempCompressedFilePattern="target/rolling-tmp/test1-$${date:MM-dd-yyyy}-%i.log.gz.tmp"/>
     </RollingFile>
     <List name="List">
       <ThresholdFilter level="error"/>

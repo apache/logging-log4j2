@@ -2931,7 +2931,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   </td>
                 </tr>
                 <tr>
-                  <td>compressTmpFilePattern</td>
+                  <td>tempCompressedFilePattern</td>
                   <td>String</td>
                   <td>The pattern of the file name of the archived log file during compression.</td>
                 </tr>
@@ -2974,7 +2974,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 </td>
               </tr>
               <tr>
-                <td>compressTmpFilePattern</td>
+                <td>tempCompressedFilePattern</td>
                 <td>String</td>
                 <td>The pattern of the file name of the archived log file during compression.</td>
               </tr>

@@ -35,7 +35,7 @@
         <SizeBasedTriggeringPolicy size="500" />
       </Policies>
       <DirectWriteRolloverStrategy 
-      	 compressTmpFilePattern="${logDir}/test1-%d{MM-dd-yy-HH-mm}-%i.log.gz.tmp"/>
+      	 tempCompressedFilePattern="${logDir}/test1-%d{MM-dd-yy-HH-mm}-%i.log.gz.tmp"/>
     </RollingFile>
   </Appenders>
 
