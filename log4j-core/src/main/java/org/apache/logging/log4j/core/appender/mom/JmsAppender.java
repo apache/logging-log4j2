@@ -124,7 +124,6 @@ public class JmsAppender extends AbstractAppender {
                         userName, password);
                 actualJmsManager = AbstractManager.getManager(name, JmsManager.FACTORY, configuration);
             }
-            // TODO Try to reconnect later by letting the manager be null?
             if (actualJmsManager == null) {
                 // JmsManagerFactory has already logged an ERROR.
                 return null;
