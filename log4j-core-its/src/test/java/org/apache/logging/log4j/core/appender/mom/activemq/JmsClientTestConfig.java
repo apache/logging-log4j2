@@ -8,34 +8,34 @@ import org.apache.logging.log4j.core.appender.mom.JmsManager;
 import org.apache.logging.log4j.core.net.JndiManager;
 
 /**
- * All the JMS information and state needed to configure and get a test
- * going.
+ * All the JMS information and state needed to configure and get a test going.
  */
 class JmsClientTestConfig {
 
-	private JmsAppender jmsAppender;
-	private final String jmsInitialContextFactoryClassName;
-	private JmsManager jmsManager;
-	private final char[] jmsPassword;
-	private final String jmsProviderUrlStr;
-	private final String jmsUserName;
+    private JmsAppender jmsAppender;
+    private final String jmsInitialContextFactoryClassName;
+    private JmsManager jmsManager;
+    private final char[] jmsPassword;
+    private final String jmsProviderUrlStr;
+    private final String jmsUserName;
 
-	JmsClientTestConfig(final String jmsInitialContextFactoryClassName, final String jmsProviderUrlStr, final String jmsUserName, final char[] jmsPassword) {
-		this.jmsInitialContextFactoryClassName = jmsInitialContextFactoryClassName;
-		this.jmsProviderUrlStr = jmsProviderUrlStr;
-		this.jmsUserName = jmsUserName;
-		this.jmsPassword = jmsPassword;
-	}
+    JmsClientTestConfig(final String jmsInitialContextFactoryClassName, final String jmsProviderUrlStr,
+            final String jmsUserName, final char[] jmsPassword) {
+        this.jmsInitialContextFactoryClassName = jmsInitialContextFactoryClassName;
+        this.jmsProviderUrlStr = jmsProviderUrlStr;
+        this.jmsUserName = jmsUserName;
+        this.jmsPassword = jmsPassword;
+    }
 
-	JmsAppender createAppender(final Layout<?> layout) {
-		// @formatter:off
+    JmsAppender createAppender(final Layout<?> layout) {
+        // @formatter:off
 		jmsAppender = JmsAppender.newBuilder()
 				.setName("JmsAppender")
 				.setLayout(layout)
 				.setIgnoreExceptions(true)
 				.setJmsManager(jmsManager)
 				.build();
-		// @formatter:off
+		// @formatter:on
 		jmsAppender.start();
 		return jmsAppender;
 	}
