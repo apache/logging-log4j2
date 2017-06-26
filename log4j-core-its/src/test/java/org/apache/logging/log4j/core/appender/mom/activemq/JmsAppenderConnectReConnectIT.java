@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.MessageLayout;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.AvailablePortFinder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,7 +40,6 @@ import org.junit.experimental.categories.Category;
  * connection. See https://issues.apache.org/jira/browse/LOG4J2-1934
  * </p>
  */
-@Ignore
 @Category(Appenders.Jms.class)
 public class JmsAppenderConnectReConnectIT {
 
@@ -64,7 +62,6 @@ public class JmsAppenderConnectReConnectIT {
 	}
 
 	@Test
-	@Ignore
 	public void testConnectReConnect() throws Exception {
 		// Start broker
 		final int port = AvailablePortFinder.getNextAvailable();

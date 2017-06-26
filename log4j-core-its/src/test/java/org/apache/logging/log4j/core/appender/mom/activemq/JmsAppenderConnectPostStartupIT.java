@@ -44,14 +44,14 @@ import org.junit.rules.RuleChain;
  */
 @Ignore
 @Category(Appenders.Jms.class)
-public class JmsAppenderReConnectionIT extends AbstractJmsAppenderIT {
+public class JmsAppenderConnectPostStartupIT extends AbstractJmsAppenderIT {
 
 	public static final AvailablePortSystemPropertyRule portRule = AvailablePortSystemPropertyRule
 			.create(ActiveMqBrokerServiceRule.PORT_PROPERTY_NAME);
 
 	@Rule
 	public final ActiveMqBrokerServiceRule activeMqBrokerServiceRule = new ActiveMqBrokerServiceRule(
-			JmsAppenderReConnectionIT.class.getName(), portRule.getName());
+			JmsAppenderConnectPostStartupIT.class.getName(), portRule.getName());
 
 	// "admin"/"admin" are the default Apache Active MQ creds.
 	private static final JmsClientTestConfigRule jmsClientTestConfigRule = new JmsClientTestConfigRule(
@@ -73,7 +73,7 @@ public class JmsAppenderReConnectionIT extends AbstractJmsAppenderIT {
 		jmsClientTestConfigRule.getJmsClientTestConfig().start();
 	}
 
-	public JmsAppenderReConnectionIT() {
+	public JmsAppenderConnectPostStartupIT() {
 		super(jmsClientTestConfigRule);
 	}
 }
