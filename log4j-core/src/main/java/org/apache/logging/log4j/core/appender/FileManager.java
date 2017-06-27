@@ -125,10 +125,28 @@ public class FileManager extends OutputStreamManager {
         this.bufferSize = buffer.capacity();
 
         final Set<String> views = FileSystems.getDefault().supportedFileAttributeViews();
-        this.filePermissions = filePermissions != null && views.contains("posix")
-                                ? PosixFilePermissions.fromString(filePermissions) : null;
-        this.fileOwner = views.contains("owner") ? fileOwner : null;
-        this.fileGroup = views.contains("posix") ? fileGroup : null;
+        if (views.contains("posix")) {
+            this.filePermissions = filePermissions != null ? PosixFilePermissions.fromString(filePermissions) : null;
+            this.fileGroup = fileGroup;
+        } else {
+            this.filePermissions = null;
+            this.fileGroup = null;
+            if (filePermissions != null) {
+                LOGGER.warn("Posix file attribute permissions defined but it is not supported by this files system.");
+            }
+            if (fileGroup != null) {
+                LOGGER.warn("Posix file attribute group defined but it is not supported by this files system.");
+            }
+        }
+
+        if (views.contains("owner")) {
+            this.fileOwner = fileOwner;
+        } else {
+            this.fileOwner = null;
+            if (fileOwner != null) {
+                LOGGER.warn("Owner file attribute defined but it is not supported by this files system.");
+            }
+        }
 
         // Supported and defined
         this.posixSupported = filePermissions != null || fileOwner != null || fileGroup != null;
