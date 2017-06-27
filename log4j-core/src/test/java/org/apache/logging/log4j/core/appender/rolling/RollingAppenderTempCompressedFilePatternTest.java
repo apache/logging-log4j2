@@ -136,7 +136,6 @@ public class RollingAppenderTempCompressedFilePatternTest {
             key = watcher.take();
 
             for (final WatchEvent<?> event : key.pollEvents()) {
-                final WatchEvent.Kind<?> kind = event.kind();
                 final WatchEvent<Path> ev = (WatchEvent<Path>) event;
                 final Path filename = ev.context();
                 if (filename.toString().endsWith(".tmp")) {
