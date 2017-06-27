@@ -198,7 +198,7 @@ public class FileManager extends OutputStreamManager {
 
                 FileUtils.defineFilePosixAttributeView(path, filePermissions, fileOwner, fileGroup);
             } catch (final Exception e) {
-                LOGGER.error("Could not define path attribute view on \"{}\" got {}", path, e.getMessage(), e);
+                LOGGER.error("Could not define attribute view on path \"{}\" got {}", path, e.getMessage(), e);
             }
         }
     }
