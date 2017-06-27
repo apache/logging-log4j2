@@ -73,79 +73,79 @@ public class RollingAppenderTempCompressedFilePatternTest {
     public void testAppender() throws Exception {
         final File dirTmp = new File(DIR_TMP);
         dirTmp.mkdirs();
-        final WatchService watcher = FileSystems.getDefault().newWatchService();
-        WatchKey key = dirTmp.toPath().register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
+        try (final WatchService watcher = FileSystems.getDefault().newWatchService()) {
+            WatchKey key = dirTmp.toPath().register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
 
-        final List<String> messages = new ArrayList<>();
-        for (int i = 0; i < 500; ++i) {
-            final String message = "This is test message number " + i;
-            messages.add(message);
-            logger.debug(message);
-            if (i % 100 == 0) {
-                Thread.sleep(500);
-            }
-        }
-        if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
-            System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
-        }
-        final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists());
-        final File[] files = dir.listFiles();
-        assertNotNull(files);
-        int gzippedFiles = 0;
-        for (final File file : files) {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            InputStream in = null;
-            final FileExtension ext = FileExtension.lookupForFile(file.getName());
-            try {
-                try (FileInputStream fis = new FileInputStream(file)) {
-                    if (ext != null) {
-                        gzippedFiles++;
-                        try {
-                            in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(),
-                                    fis);
-                        } catch (final CompressorException ce) {
-                            ce.printStackTrace();
-                            fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
-                        }
-                    } else {
-                        in = new FileInputStream(file);
-                    }
-                    assertNotNull("No input stream for " + file.getName(), in);
-                    try {
-                        IOUtils.copy(in, baos);
-                    } catch (final Exception ex) {
-                        ex.printStackTrace();
-                        fail("Unable to decompress " + file.getAbsolutePath());
-                    }
+            final List<String> messages = new ArrayList<>();
+            for (int i = 0; i < 500; ++i) {
+                final String message = "This is test message number " + i;
+                messages.add(message);
+                logger.debug(message);
+                if (i % 100 == 0) {
+                    Thread.sleep(500);
                 }
-            } finally {
-                Closer.close(in);
             }
-            final String text = new String(baos.toByteArray(), Charset.defaultCharset());
-            final String[] lines = text.split("[\\r\\n]+");
-            for (final String line : lines) {
-                messages.remove(line);
+            if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
+                System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
             }
-        }
-        assertTrue("Log messages lost : " + messages.size(), messages.isEmpty());
-        assertTrue("Files not rolled : " + files.length, files.length > 2);
-        assertTrue("Files gzipped not rolled : " + gzippedFiles, gzippedFiles > 0);
+            final File dir = new File(DIR);
+            assertTrue("Directory not created", dir.exists());
+            final File[] files = dir.listFiles();
+            assertNotNull(files);
+            int gzippedFiles = 0;
+            for (final File file : files) {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                InputStream in = null;
+                final FileExtension ext = FileExtension.lookupForFile(file.getName());
+                try {
+                    try (FileInputStream fis = new FileInputStream(file)) {
+                        if (ext != null) {
+                            gzippedFiles++;
+                            try {
+                                in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(),
+                                        fis);
+                            } catch (final CompressorException ce) {
+                                ce.printStackTrace();
+                                fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
+                            }
+                        } else {
+                            in = new FileInputStream(file);
+                        }
+                        assertNotNull("No input stream for " + file.getName(), in);
+                        try {
+                            IOUtils.copy(in, baos);
+                        } catch (final Exception ex) {
+                            ex.printStackTrace();
+                            fail("Unable to decompress " + file.getAbsolutePath());
+                        }
+                    }
+                } finally {
+                    Closer.close(in);
+                }
+                final String text = new String(baos.toByteArray(), Charset.defaultCharset());
+                final String[] lines = text.split("[\\r\\n]+");
+                for (final String line : lines) {
+                    messages.remove(line);
+                }
+            }
+            assertTrue("Log messages lost : " + messages.size(), messages.isEmpty());
+            assertTrue("Files not rolled : " + files.length, files.length > 2);
+            assertTrue("Files gzipped not rolled : " + gzippedFiles, gzippedFiles > 0);
 
-        int temporaryFilesCreated = 0;
-        key = watcher.take();
+            int temporaryFilesCreated = 0;
+            key = watcher.take();
 
-        for (final WatchEvent<?> event : key.pollEvents()) {
-            final WatchEvent.Kind<?> kind = event.kind();
-            final WatchEvent<Path> ev = (WatchEvent<Path>) event;
-            final Path filename = ev.context();
-            if (filename.toString().endsWith(".tmp")) {
-                temporaryFilesCreated++;
+            for (final WatchEvent<?> event : key.pollEvents()) {
+                final WatchEvent.Kind<?> kind = event.kind();
+                final WatchEvent<Path> ev = (WatchEvent<Path>) event;
+                final Path filename = ev.context();
+                if (filename.toString().endsWith(".tmp")) {
+                    temporaryFilesCreated++;
+                }
             }
+            assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
+            assertTrue("Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
+                    + gzippedFiles, gzippedFiles == temporaryFilesCreated);
         }
-        assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
-        assertTrue(
-                "Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/" + gzippedFiles,
-                gzippedFiles == temporaryFilesCreated);
     }
 }
