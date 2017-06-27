@@ -2535,7 +2535,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             DefaultRolloverStrategy to run at rollover. Since 2.8 if no file name is configured then
             <a href="#DirectWriteRolloverStrategy">DirectWriteRolloverStrategy</a> will be used instead of
             DefaultRolloverStrategy.
-            Since log4j-2.8.3, a <a href="#CustomPosixViewAttributeOnRollover">custom POSIX file attribute view action</a> can be configured in the
+            Since log4j-2.9, a <a href="#CustomPosixViewAttributeOnRollover">custom POSIX file attribute view action</a> can be configured in the
             DefaultRolloverStrategy to run at rollover, if not defined, inherited POSIX file attribute view from the RollingFileAppender will be applied.
           </p>
           <p>
@@ -3520,7 +3520,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <a name="CustomPosixViewAttributeOnRollover"/>
           <h5>Log Archive File Attribute View Policy: Custom file attribute on Rollover</h5>
           <p>
-            Log4j-2.8.3 introduces a <tt>PosixViewAttribute</tt> action that gives users more control
+            Log4j-2.9 introduces a <tt>PosixViewAttribute</tt> action that gives users more control
             over which file attribute permissions, owner and group should be applied.
             The PosixViewAttribute action lets users configure one or more conditions that select the eligible files
             relative to a base directory.

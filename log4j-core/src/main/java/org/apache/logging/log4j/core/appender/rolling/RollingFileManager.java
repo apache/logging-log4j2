@@ -119,7 +119,7 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
-     * @since 2.8.3
+     * @since 2.9
      */
     protected RollingFileManager(final LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
             final boolean append, final boolean createOnDemand, final long size, final long time,

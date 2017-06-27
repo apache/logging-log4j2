@@ -111,7 +111,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * @since 2.8.3
+     * @since 2.9
      */
     protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
