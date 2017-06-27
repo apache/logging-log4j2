@@ -369,8 +369,8 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             }
         }
 
-        if (manager.isPosixSupported()) {
-            // Propagate posix attribute view to rolled/compressed file
+        if (compressAction != null && manager.isAttributeViewEnabled()) {
+            // Propagate posix attribute view to compressed file
             // @formatter:off
             Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
                                                     .withBasePath(compressedName)
@@ -383,11 +383,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
                                                     .withFileGroup(manager.getFileGroup())
                                                     .build();
             // @formatter:on
-            if (compressAction == null) {
-                compressAction = posixAttributeViewAction;
-            } else {
-                compressAction = new CompositeAction(Arrays.asList(compressAction, posixAttributeViewAction), false);
-            }
+            compressAction = new CompositeAction(Arrays.asList(compressAction, posixAttributeViewAction), false);
         }
 
         final Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
