@@ -569,7 +569,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             return new RolloverDescriptionImpl(currentFileName, false, null, null);
         }
 
-        if (manager.isPosixSupported()) {
+        if (compressAction != null && manager.isPosixSupported()) {
             // Propagate posix attribute view to rolled/compressed file
             // @formatter:off
             Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
@@ -583,11 +583,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                                                         .withFileGroup(manager.getFileGroup())
                                                         .build();
             // @formatter:on
-            if (compressAction == null) {
-                compressAction = posixAttributeViewAction;
-            } else {
-                compressAction = new CompositeAction(Arrays.asList(compressAction, posixAttributeViewAction), false);
-            }
+            compressAction = new CompositeAction(Arrays.asList(compressAction, posixAttributeViewAction), false);
         }
 
         final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo),
