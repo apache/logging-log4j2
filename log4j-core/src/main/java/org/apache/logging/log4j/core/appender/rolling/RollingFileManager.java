@@ -631,8 +631,8 @@ public class RollingFileManager extends FileManager {
                 RollingFileManager rm = new RollingFileManager(data.getLoggerContext(), data.fileName, data.pattern, os,
                     data.append, data.createOnDemand, size, time, data.policy, data.strategy, data.advertiseURI,
                     data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, buffer);
-                if (os != null && rm.isPosixSupported()) {
-                    rm.definePathAttributeView(file.toPath());
+                if (os != null && rm.isAttributeViewEnabled()) {
+                    rm.defineAttributeView(file.toPath());
                 }
 
                 return rm;

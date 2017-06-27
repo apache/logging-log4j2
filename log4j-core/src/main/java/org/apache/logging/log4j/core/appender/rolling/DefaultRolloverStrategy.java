@@ -569,7 +569,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             return new RolloverDescriptionImpl(currentFileName, false, null, null);
         }
 
-        if (compressAction != null && manager.isPosixSupported()) {
+        if (compressAction != null && manager.isAttributeViewEnabled()) {
             // Propagate posix attribute view to rolled/compressed file
             // @formatter:off
             Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
