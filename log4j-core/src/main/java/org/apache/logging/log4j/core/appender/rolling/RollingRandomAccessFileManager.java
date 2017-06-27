@@ -207,8 +207,8 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                 RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
                         NullOutputStream.getInstance(), data.append, data.immediateFlush, data.bufferSize, size, time, data.policy,
                         data.strategy, data.advertiseURI, data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader);
-                if (rrm.isPosixSupported()) {
-                    rrm.definePathAttributeView(file.toPath());
+                if (rrm.isAttributeViewEnabled()) {
+                    rrm.defineAttributeView(file.toPath());
                 }
                 return rrm;
             } catch (final IOException ex) {
