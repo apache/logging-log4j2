@@ -185,7 +185,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         final MappedByteBuffer mappedBuffer;
         /**
          * This lock is used to prohibit concurrent calls to {@link MappedByteBuffer#force()} and {@link
-         * #unmap(MappedByteBuffer)}, because the latter in unspecified.
+         * #unmap(MappedByteBuffer)}, because the latter is unspecified.
          */
         final ReadWriteLock mappedBufferSystemOperationsLock = new ReentrantReadWriteLock();
         boolean mappedBufferUnmapped = false;
@@ -493,14 +493,15 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                 if (nextRegionObject instanceof Region) {
                     ((Region) nextRegionObject).unmapMappedBuffer();
                 }
+                // Used in manager.doClose(). It's important to set these fields before setting manager.region = null
+                // to ensure visibility of the values in manager.doClose(), where the region field is read first.
+                manager.finalRegionMappingOffset = mappingOffsetInFile;
+                manager.finalRegionBufferWatermark = finalBufferWatermark;
                 // The nextRegionObject is not an instance of Region means that the nextRegionObject is null, if
                 // manager.createNextRegion() returned null, either because it is closing or because buffer mapping for
                 // the next region has failed. Handle this in the methods of MemoryMappedFileManager by checking that
                 // the manager.region field is not null.
                 manager.region = null;
-                // Used in manager.doClose()
-                manager.finalRegionMappingOffset = mappingOffsetInFile;
-                manager.finalRegionBufferWatermark = finalBufferWatermark;
             }
         }
 
@@ -633,6 +634,10 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
      * threads spinning in {@link #writeBytes} methods. Update itself is done in {@link Region#switchRegion}, no other
      * synchronization actions are done in {@link Region#switchRegion} to ensure safe publication and visibility of
      * the new Region, when it is assigned to this field.
+     *
+     * Volatile assignment of the region field is also used to ensure visibility of {@link #finalRegionMappingOffset}
+     * and {@link #finalRegionBufferWatermark} assignments (made in {@link Region#switchRegion(int)}) in {@link
+     * #doClose()}.
      */
     private volatile Region region;
     private boolean closing = false;
