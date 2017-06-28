@@ -111,8 +111,10 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             }
 
             if (strategy == null) {
-                strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
-                        String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, getConfiguration());
+                strategy = DefaultRolloverStrategy.newBuilder()
+                                .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                                .withConfig(getConfiguration())
+                                .build();
             }
 
             final Layout<? extends Serializable> layout = getOrCreateLayout();

@@ -34,6 +34,9 @@
       <action issue="LOG4J2-1958" dev="mikes" type="update">
         Deprecate SerializedLayout and remove it as default.
       </action>
+      <action issue="LOG4J2-1766" dev="ggregory" type="add" due-to="Pierrick HYMBERT">
+        Temporary compress directory during rollover (#88).
+      </action>
       <action issue="LOG4J2-1950" dev="ggregory" type="update" due-to="Pierrick HYMBERT">
         Fix docker build with jdk9 requirements (#84).
       </action>
