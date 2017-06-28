@@ -358,6 +358,11 @@ public class Bar {
         <a name="ConfigurationSyntax"/>
         <subsection name="Configuration Syntax">
           <p>
+            As of version 2.9, for security reasons, Log4j does not process DTDs in XML files.
+            If you want to split the configuration in multiple files, use <a href="#XInclude">XInclude</a> or
+            <a href="#CompositeConfiguration">Composite Configuration</a>.
+          </p>
+          <p>
             As the previous examples have shown as well as those to follow, Log4j allows you to easily
             redefine logging behavior without needing to modify your application. It is possible to
             disable logging for certain parts of the application, log only when specific criteria are met such
