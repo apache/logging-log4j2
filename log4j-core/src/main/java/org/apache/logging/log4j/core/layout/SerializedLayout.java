@@ -29,7 +29,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
  * Formats a {@link LogEvent} in its Java serialized form.
+ *
+ * @deprecated Java Serialization has inherent security weaknesses, using this layout is no longer recommended.
+ * An alternative layout containing the same information is {@link JsonLayout} when configured with properties="true".
  */
+@Deprecated
 @Plugin(name = "SerializedLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
@@ -47,6 +51,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
     private SerializedLayout() {
         super(null, null, null);
+        LOGGER.warn("SerializedLayout is deprecated due to the inherent security weakness in Java Serialization. Consider using another layout, e.g. JsonLayout");
     }
 
     /**
@@ -82,6 +87,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      * Creates a SerializedLayout.
      * @return A SerializedLayout.
      */
+    @Deprecated
     @PluginFactory
     public static SerializedLayout createLayout() {
         return new SerializedLayout();

@@ -1295,8 +1295,7 @@ public class ConnectionFactory {
               <td>layout</td>
               <td>Layout</td>
               <td>
-                The Layout to use to format the LogEvent. If you do not specify a layout,
-                this appender will use a <a href="layouts.html#SerializedLayout">SerializedLayout</a>.
+                The Layout to use to format the LogEvent. Required, there is no default.
               </td>
             </tr>
             <tr>
@@ -1372,7 +1371,9 @@ public class ConnectionFactory {
 <Configuration status="warn" name="MyApp">
   <Appenders>
     <JMS name="jmsQueue" destinationBindingName="MyQueue"
-         factoryBindingName="MyQueueConnectionFactory"/>
+         factoryBindingName="MyQueueConnectionFactory">
+      <JsonLayout properties="true"/>
+    </JMS>
   </Appenders>
   <Loggers>
     <Root level="error">
@@ -4302,7 +4303,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <p>
             The <code>SocketAppender</code> is an OutputStreamAppender that writes its output to a remote destination
             specified by a host and port. The data can be sent over either TCP or UDP and can be sent in any format.
-            The default format is to send a Serialized LogEvent. You can optionally secure communication with SSL.
+            You can optionally secure communication with SSL.
           </p>
           <table>
             <caption align="top"><code>SocketAppender</code> Parameters</caption>
@@ -4369,7 +4370,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent. The default is SerializedLayout.</td>
+              <td>The Layout to use to format the LogEvent. Required, there is no default.</td>
             </tr>
             <tr>
               <td>reconnectionDelayMillis</td>
@@ -4402,7 +4403,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
-      <SerializedLayout />
+      <JsonLayout properties="true"/>
     </Socket>
   </Appenders>
   <Loggers>
@@ -4419,7 +4420,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
-      <SerializedLayout />
+      <JsonLayout properties="true"/>
       <SSL>
         <KeyStore location="log4j2-keystore.jks" password="changeme"/>
         <TrustStore location="truststore.jks" password="changeme"/>

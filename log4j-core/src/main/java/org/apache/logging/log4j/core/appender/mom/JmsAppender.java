@@ -39,7 +39,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -88,7 +87,7 @@ public class JmsAppender extends AbstractAppender {
         private char[] password;
 
         @PluginElement("Layout")
-        private Layout<? extends Serializable> layout = SerializedLayout.createLayout();
+        private Layout<? extends Serializable> layout;
 
         @PluginElement("Filter")
         private Filter filter;
@@ -126,6 +125,10 @@ public class JmsAppender extends AbstractAppender {
             }
             if (actualJmsManager == null) {
                 // JmsManagerFactory has already logged an ERROR.
+                return null;
+            }
+            if (layout == null) {
+                LOGGER.error("No layout provided for JmsAppender");
                 return null;
             }
             return new JmsAppender(name, filter, layout, ignoreExceptions, reconnectOnExceptionMessages,
