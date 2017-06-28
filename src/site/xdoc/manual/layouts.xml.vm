@@ -1978,9 +1978,9 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           The SerializedLayout accepts no parameters.
           </p>
           <p>
-          Java Serialization has inherent security weaknesses, using this layout is no longer recommended.
-          An alternative layout containing the same information is <a href="#JSONLayout">JsonLayout</a>,
-          when configured with <code>properties="true"</code>.
+          This layout is deprecated since version 2.9. Java Serialization has inherent security weaknesses,
+          using this layout is no longer recommended. An alternative layout containing the same information
+          is <a href="#JSONLayout">JsonLayout</a>, configured with <code>properties="true"</code>.
           </p>
         </subsection>
         <a name="SyslogLayout"/>

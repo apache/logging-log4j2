@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  *
  * @deprecated Java Serialization has inherent security weaknesses, using this layout is no longer recommended.
  * An alternative layout containing the same information is {@link JsonLayout} when configured with properties="true".
+ * Deprecated since 2.9.
  */
 @Deprecated
 @Plugin(name = "SerializedLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)

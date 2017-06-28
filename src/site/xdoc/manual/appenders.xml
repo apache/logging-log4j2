@@ -1296,6 +1296,7 @@ public class ConnectionFactory {
               <td>Layout</td>
               <td>
                 The Layout to use to format the LogEvent. Required, there is no default.
+                <em>New since 2.9, in previous versions SerializedLayout was default.</em>
               </td>
             </tr>
             <tr>
@@ -4380,7 +4381,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent. Required, there is no default.</td>
+              <td>The Layout to use to format the LogEvent. Required, there is no default.
+                  <em>New since 2.9, in previous versions SerializedLayout was default.</em></td>
             </tr>
             <tr>
               <td>reconnectionDelayMillis</td>
