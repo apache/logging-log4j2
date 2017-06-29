@@ -31,14 +31,15 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import javax.jms.TextMessage;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.mom.JmsAppender;
 import org.apache.logging.log4j.core.appender.mom.JmsManager;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.layout.MessageLayout;
-import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.Assert;
@@ -83,6 +84,8 @@ public abstract class AbstractJmsAppenderIT {
                     if (message instanceof ObjectMessage) {
                         event = ((ObjectMessage) message).getObject();
                     } else if (message instanceof javax.jms.MapMessage) {
+                        event = message;
+                    } else if (message instanceof javax.jms.TextMessage) {
                         event = message;
                     } else {
                         Assert.fail("Unexpected Message type: " + message);
@@ -151,11 +154,11 @@ public abstract class AbstractJmsAppenderIT {
 
     @Test
     public void testLogObjectMessageToQueue() throws Exception {
-        getJmsTestConfig().createAppender(SerializedLayout.createLayout());
+        getJmsTestConfig().createAppender(JsonLayout.createDefaultLayout());
         final int messageCount = 100;
         final MessageConsumer messageConsumer = getJmsManager().createMessageConsumer();
         try {
-            final JmsQueueConsumer consumer = new JmsQueueConsumer(messageCount, ObjectMessage.class);
+            final JmsQueueConsumer consumer = new JmsQueueConsumer(messageCount, TextMessage.class);
             messageConsumer.setMessageListener(consumer);
             final String messageText = "Hello, World!";
             final String loggerName = this.getClass().getName();
