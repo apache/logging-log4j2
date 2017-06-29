@@ -50,6 +50,9 @@ temporary objects) while logging. In addition, Log4j 2 will not lose events whil
 This release primarily contains bugfixes and minor enhancements. More details on the new features and
 fixes are itemized below.
 
+Note that subsequent to the 2.9 release, for security reasons, Log4j does not process DTD in XML files.
+If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.
+
 Note that subsequent to the 2.6 release a minor source incompatibility was found due to the
 addition of new methods to the Logger interface. If you have code that does:
 
