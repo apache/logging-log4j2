@@ -307,6 +307,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 try {
                     sleep(reconnectionDelay);
                     final Socket sock = createSocket(inetAddress, port);
+                    @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
                     final OutputStream newOS = sock.getOutputStream();
                     synchronized (owner) {
                         try {
