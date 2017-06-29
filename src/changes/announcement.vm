@@ -50,6 +50,30 @@ temporary objects) while logging. In addition, Log4j 2 will not lose events whil
 This release primarily contains bugfixes and minor enhancements. More details on the new features and
 fixes are itemized below.
 
+Note that subsequent to the 2.9 release, for security reasons, SerializedLayout is deprecated and no
+longer used as default in the Socket and JMS appenders. SerializedLayout can still be used as before,
+but has to be specified explicitly. To retain old behaviour, you have to change configuration like:
+
+    <Appenders>
+      <Socket name="socket" host="localhost" port="9500"/>
+    </Appenders>
+
+into:
+
+    <Appenders>
+      <Socket name="socket" host="localhost" port="9500">
+        <SerializedLayout/>
+      </Socket>
+    </Appenders>
+
+We do, however, discourage the use of SerializedLayout and recommend JsonLayout as a replacement:
+
+    <Appenders>
+      <Socket name="socket" host="localhost" port="9500">
+        <JsonLayout properties="true"/>
+      </Socket>
+    </Appenders>
+
 Note that subsequent to the 2.9 release, for security reasons, Log4j does not process DTD in XML files.
 If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.
 
