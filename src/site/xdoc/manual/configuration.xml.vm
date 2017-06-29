@@ -358,7 +358,7 @@ public class Bar {
         <a name="ConfigurationSyntax"/>
         <subsection name="Configuration Syntax">
           <p>
-            As of version 2.9, for security reasons, Log4j does not process DTDs in XML files.
+            As of version 2.9, for security reasons, Log4j does not process DTD in XML files.
             If you want to split the configuration in multiple files, use <a href="#XInclude">XInclude</a> or
             <a href="#CompositeConfiguration">Composite Configuration</a>.
           </p>

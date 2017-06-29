@@ -42,6 +42,7 @@ import org.junit.experimental.categories.Category;
  * connection. See https://issues.apache.org/jira/browse/LOG4J2-1934
  * </p>
  */
+@Ignore
 @Category(Appenders.Jms.class)
 public class JmsAppenderConnectLaterIT {
 
