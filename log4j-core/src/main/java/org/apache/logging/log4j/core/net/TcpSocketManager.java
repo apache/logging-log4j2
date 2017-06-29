@@ -310,12 +310,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
                     final OutputStream newOS = sock.getOutputStream();
                     synchronized (owner) {
-                        try {
-                            getOutputStream().close();
-                        } catch (final IOException ioe) {
-                            // Ignore this.
-                        }
-
+                        Closer.closeSilently(getOutputStream());
                         setOutputStream(newOS);
                         socket = sock;
                         reconnector = null;
