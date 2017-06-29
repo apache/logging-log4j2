@@ -202,6 +202,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
     }
 
+    @SuppressWarnings("sync-override") // synchronization on "this" is done within the method 
     @Override
     protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         if (socket == null) {
@@ -215,6 +216,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
         synchronized (this) {
             try {
+                @SuppressWarnings("resource") // outputStream is managed by this class 
                 final OutputStream outputStream = getOutputStream();
                 outputStream.write(bytes, offset, length);
                 if (immediateFlush) {
