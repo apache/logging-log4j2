@@ -45,6 +45,9 @@ public final class LoggersPlugin {
         for (final LoggerConfig logger : loggers) {
             if (logger != null) {
                 if (logger.getName().isEmpty()) {
+                    if (root != null) {
+                        throw new IllegalStateException("Configuration has multiple root loggers. There can be only one.");
+                    }
                     root = logger;
                 }
                 loggerMap.put(logger.getName(), logger);

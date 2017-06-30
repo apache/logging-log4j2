@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1954" dev="rpopma" type="update">
+        Configurations with multiple root loggers now fail loudly.
+      </action>
       <action issue="LOG4J2-1958" dev="mikes" type="update">
         Deprecate SerializedLayout and remove it as default.
       </action>

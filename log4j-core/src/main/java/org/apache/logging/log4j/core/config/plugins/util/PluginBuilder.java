@@ -122,8 +122,9 @@ public class PluginBuilder implements Builder<Object> {
                 return builder.build();
             }
         } catch (final Exception e) {
-            LOGGER.error("Unable to inject fields into builder class for plugin type {}, element {}.", this.clazz,
-                node.getName(), e);
+            LOGGER.error("Unable to inject fields into builder class for plugin type {}, element {}: {}",
+                    this.clazz, node.getName(),
+                    (e instanceof InvocationTargetException ? ((InvocationTargetException) e).getCause() : e).toString(), e);
         }
         // or fall back to factory method if no builder class is available
         try {
@@ -131,8 +132,9 @@ public class PluginBuilder implements Builder<Object> {
             final Object[] params = generateParameters(factory);
             return factory.invoke(null, params);
         } catch (final Exception e) {
-            LOGGER.error("Unable to invoke factory method in class {} for element {}.", this.clazz, this.node.getName(),
-                e);
+            LOGGER.error("Unable to invoke factory method in {} for element {}: {}",
+                    this.clazz, this.node.getName(),
+                    (e instanceof InvocationTargetException ? ((InvocationTargetException) e).getCause() : e).toString(), e);
             return null;
         }
     }
