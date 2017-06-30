@@ -140,7 +140,7 @@
         Update ZeroMQ's JeroMQ from 0.3.6 to 0.4.0.
       </action>
       <action issue="LOG4J2-1960" dev="ggregory" type="update">
-        Update ZeroMQ's JeroMQ from 0.4.1 to 0.4.1.
+        Update ZeroMQ's JeroMQ from 0.4.0 to 0.4.1.
       </action>
       <action issue="LOG4J2-1869" dev="ggregory" type="update">
 		Update Kafka client from 0.10.1.1 to 0.10.2.0
