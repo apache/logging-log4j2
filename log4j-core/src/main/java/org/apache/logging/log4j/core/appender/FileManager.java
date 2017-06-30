@@ -177,8 +177,8 @@ public class FileManager extends OutputStreamManager {
         if (locking && bufferedIo) {
             locking = false;
         }
-        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
-                createOnDemand, advertiseUri, layout, filePermissions, fileOwner, fileGroup, configuration), FACTORY);
+        return narrow(FileManager.class, getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
+                createOnDemand, advertiseUri, layout, filePermissions, fileOwner, fileGroup, configuration), FACTORY));
     }
 
     @Override
@@ -301,7 +301,7 @@ public class FileManager extends OutputStreamManager {
     public int getBufferSize() {
         return bufferSize;
     }
-    
+
     /**
      * Returns posix file permissions if defined and the OS supports posix file attribute,
      * null otherwise.
@@ -311,10 +311,10 @@ public class FileManager extends OutputStreamManager {
     public Set<PosixFilePermission> getFilePermissions() {
         return filePermissions;
     }
-    
+
     /**
      * Returns file owner if defined and the OS supports owner file attribute view,
-     * null otherwise. 
+     * null otherwise.
      * @return File owner
      * @see FileOwnerAttributeView
      */
@@ -324,7 +324,7 @@ public class FileManager extends OutputStreamManager {
 
     /**
      * Returns file group if defined and the OS supports posix/group file attribute view,
-     * null otherwise. 
+     * null otherwise.
      * @return File group
      * @see PosixFileAttributeView
      */

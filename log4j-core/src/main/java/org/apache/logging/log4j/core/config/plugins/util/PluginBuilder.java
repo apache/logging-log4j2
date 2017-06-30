@@ -121,8 +121,11 @@ public class PluginBuilder implements Builder<Object> {
                 injectFields(builder);
                 return builder.build();
             }
+        } catch (final ConfigurationException e) {
+            LOGGER.error("Could not create plugin of type {} for element {}", this.clazz, node.getName(), e);
+            return null; // no point in trying the factory method
         } catch (final Exception e) {
-            LOGGER.error("Unable to inject fields into builder class for plugin type {}, element {}: {}",
+            LOGGER.error("Could not create plugin of type {} for element {}: {}",
                     this.clazz, node.getName(),
                     (e instanceof InvocationTargetException ? ((InvocationTargetException) e).getCause() : e).toString(), e);
         }

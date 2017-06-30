@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.util.Constants;
@@ -113,6 +114,24 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     public static <T> OutputStreamManager getManager(final String name, final T data,
                                                  final ManagerFactory<? extends OutputStreamManager, T> factory) {
         return AbstractManager.getManager(name, factory, data);
+    }
+
+    /**
+     * Returns the specified manager, cast to the specified narrow type.
+     * @param narrowClass the type to cast to
+     * @param manager the manager object to return
+     * @param <M> the narrow type
+     * @return the specified manager, cast to the specified narrow type
+     * @throws ConfigurationException if the manager cannot be cast to the specified type, which only happens when
+     *          the configuration has multiple incompatible appenders writing to the same file
+     */
+    protected static <M extends OutputStreamManager> M narrow(
+            final Class<M> narrowClass, final OutputStreamManager manager) {
+        if (narrowClass.isAssignableFrom(manager.getClass())) {
+            return (M) manager;
+        }
+        throw new ConfigurationException(
+                "Configuration has multiple incompatible Appenders pointing to the same file " + manager.getName());
     }
 
     @SuppressWarnings("unused")

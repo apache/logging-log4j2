@@ -101,8 +101,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     public static MemoryMappedFileManager getFileManager(final String fileName, final boolean append,
             final boolean immediateFlush, final int regionLength, final String advertiseURI,
             final Layout<? extends Serializable> layout) {
-        return (MemoryMappedFileManager) getManager(fileName, new FactoryData(append, immediateFlush, regionLength,
-                advertiseURI, layout), FACTORY);
+        return narrow(MemoryMappedFileManager.class, getManager(fileName, new FactoryData(append, immediateFlush,
+                regionLength, advertiseURI, layout), FACTORY));
     }
 
     public Boolean isEndOfBatch() {

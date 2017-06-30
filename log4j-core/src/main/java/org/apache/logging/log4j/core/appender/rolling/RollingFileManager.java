@@ -177,9 +177,9 @@ public class RollingFileManager extends FileManager {
             final String filePermissions, final String fileOwner, final String fileGroup,
             final Configuration configuration) {
         final String name = fileName == null ? pattern : fileName;
-        return (RollingFileManager) getManager(name, new FactoryData(fileName, pattern, append,
+        return narrow(RollingFileManager.class, getManager(name, new FactoryData(fileName, pattern, append,
             bufferedIO, policy, strategy, advertiseURI, layout, bufferSize, immediateFlush, createOnDemand,
-            filePermissions, fileOwner, fileGroup, configuration), factory);
+            filePermissions, fileOwner, fileGroup, configuration), factory));
     }
 
     /**
@@ -646,7 +646,7 @@ public class RollingFileManager extends FileManager {
     private static class EmptyQueue extends ArrayBlockingQueue<Runnable> {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 

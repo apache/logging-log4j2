@@ -71,8 +71,8 @@ public class RandomAccessFileManager extends OutputStreamManager {
     public static RandomAccessFileManager getFileManager(final String fileName, final boolean append,
             final boolean isFlush, final int bufferSize, final String advertiseURI,
             final Layout<? extends Serializable> layout, final Configuration configuration) {
-        return (RandomAccessFileManager) getManager(fileName, new FactoryData(append,
-                isFlush, bufferSize, advertiseURI, layout, configuration), FACTORY);
+        return narrow(RandomAccessFileManager.class, getManager(fileName, new FactoryData(append,
+                isFlush, bufferSize, advertiseURI, layout, configuration), FACTORY));
     }
 
     public Boolean isEndOfBatch() {
