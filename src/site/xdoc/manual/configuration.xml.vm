@@ -425,11 +425,15 @@ public class Bar {
               </tr>
               <tr>
                 <td>status</td>
-                <td>The level of internal Log4j events that should be logged to the console.
+                <td><p>The level of internal Log4j events that should be logged to the console.
                 Valid values for this attribute are "trace", "debug", "info", "warn", "error" and "fatal".
                 Log4j will log details about initialization, rollover and other internal actions to the status logger.
                 Setting <tt>status="trace"</tt> is one of the first tools available to you if you need to
-                troubleshoot log4j.</td>
+                troubleshoot log4j.
+                </p><p>
+                  (Alternatively, setting system property <tt>log4j2.debug</tt> will also print internal Log4j2 logging
+                  to the console, including internal logging that took place before the configuration file was found.)
+                </p></td>
               </tr>
               <tr>
                 <td>strict</td>
@@ -1315,6 +1319,9 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             <tr>
             <td>
             <b>Troubleshooting tip for the impatient:</b>
+              <p>From log4j-2.9 onward, log4j2 will print all internal logging to the console if system property
+                <tt>log4j2.debug</tt> is defined (with any or no value).</p>
+              <p>Prior to log4j-2.9, there are two places where internal logging can be controlled:</p>
             <ul>
               <li>Before a configuration is found, status logger level can be controlled with system
               property <code>org.apache.logging.log4j.simplelog.StatusLogger.level</code>.</li>
@@ -1575,12 +1582,21 @@ public class AwesomeTest {
     <th>Default Value</th>
     <th>Description</th>
   </tr>
+
   <tr>
     <td><a name="log4j.configurationFile"/>log4j.configurationFile</td>
     <td>&nbsp;</td>
     <td>
       Path to an XML or JSON Log4j 2 configuration file. May also contain a comma separated list of configuration
       file names.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.debug"/>log4j2.debug</td>
+    <td>&nbsp;</td>
+    <td>
+      Log4j2 will print all internal logging to the console if system property
+      <tt>log4j2.debug</tt> is defined (with any or no value).
     </td>
   </tr>
   <tr>

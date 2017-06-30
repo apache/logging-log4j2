@@ -53,6 +53,17 @@ public final class Constants {
      */
     public static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
 
+    /**
+     * Name of the system property that will turn on TRACE level internal log4j2 status logging.
+     * <p>
+     * If system property {@value} is defined, regardless of the property value, all internal log4j2 logging will be
+     * printed to the console. The presence of this system property overrides any value set in the configuration's
+     * {@code <Configuration status="<level>" ...>} status attribute, as well as any value set for
+     * system property {@code org.apache.logging.log4j.simplelog.StatusLogger.level}.
+     * </p>
+     */
+    public static final String LOG4J2_DEBUG = "log4j2.debug";
+
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
     }
