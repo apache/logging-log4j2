@@ -276,7 +276,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     /**
-     * Handles reconnecting to a Thread.
+     * Handles reconnecting to a Socket on a Thread.
      */
     private class Reconnector extends Log4jThread {
 
