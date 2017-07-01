@@ -318,7 +318,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                         reconnector = null;
                         shutdown = true;
                     }
-                    LOGGER.debug("Connection to {}:{} reestablished", host, port);
+                    LOGGER.debug("Connection to {}:{} reestablished: {}", host, port, socket);
                 } catch (final InterruptedException ie) {
                     LOGGER.debug("Reconnection interrupted.");
                 } catch (final ConnectException ex) {
