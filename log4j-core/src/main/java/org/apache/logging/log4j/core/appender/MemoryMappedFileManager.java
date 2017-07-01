@@ -367,6 +367,8 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             MappedByteBuffer buffer = this.mappedBuffer;
             // As long as we cannot use sun.misc.Unsafe and even wrap the data array as ByteBuffer, and duplicate() the
             // mappedBuffer (because we don't want to create garbage), byte-by-byte copying is the only option left.
+            // Byte-by-byte copy also appears to be faster than copy with composing longs from array manually, see
+            // ByteArrayToByteBufferCopyBenchmark.
             for (int i = 0; i < dataLength; i++) {
                 buffer.put(bufferOffset + i, data[dataOffset + i]);
             }
