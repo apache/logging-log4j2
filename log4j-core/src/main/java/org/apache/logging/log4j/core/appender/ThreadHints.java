@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
 /**
  * This class captures possible performance hints that may be used by some
  * runtimes to improve code performance. It is intended to capture hinting
@@ -28,19 +32,17 @@ package org.apache.logging.log4j.core.appender;
  */
 final class ThreadHints {
 
-    private static final boolean okToInvokeThreadHintsMHCaller;
+    private static final MethodHandle onSpinWaitMH;
 
     static {
-        boolean okToInvokeMHCaller;
-
+        MethodHandle mh;
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
         try {
-            Class.forName("java.lang.invoke.MethodHandle");
-            okToInvokeMHCaller = true;
+            mh = lookup.findStatic(java.lang.Thread.class, "onSpinWait", MethodType.methodType(void.class));
         } catch (Exception e) {
-            okToInvokeMHCaller = false;
+            mh = null;
         }
-        // okToInvokeThreadHintsMHCaller will be false for e.g. Java SE 6 and earlier:
-        okToInvokeThreadHintsMHCaller = okToInvokeMHCaller;
+        onSpinWaitMH = mh;
     }
 
     // prevent construction...
@@ -56,8 +58,14 @@ final class ThreadHints {
      * constructions.
      */
     public static void onSpinWait() {
-        if (okToInvokeThreadHintsMHCaller) {
-            ThreadHintsMH.onSpinWait();
+        // Call java.lang.Runtime.onSpinWait() on Java SE versions that support it. Do nothing otherwise.
+        // This should optimize away to either nothing or to an inlining of java.lang.Runtime.onSpinWait()
+        if (onSpinWaitMH != null) {
+            try {
+                onSpinWaitMH.invokeExact();
+            } catch (Throwable throwable) {
+                // Nothing to do here...
+            }
         }
     }
 }
