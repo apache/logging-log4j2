@@ -318,13 +318,13 @@ public class TcpSocketManager extends AbstractSocketManager {
                         reconnector = null;
                         shutdown = true;
                     }
-                    LOGGER.debug("Connection to " + host + ':' + port + " reestablished.");
+                    LOGGER.debug("Connection to {}:{} reestablished", host, port);
                 } catch (final InterruptedException ie) {
                     LOGGER.debug("Reconnection interrupted.");
                 } catch (final ConnectException ex) {
-                    LOGGER.debug(host + ':' + port + " refused connection");
+                    LOGGER.debug("{}:{} refused connection", host, port);
                 } catch (final IOException ioe) {
-                    LOGGER.debug("Unable to reconnect to " + host + ':' + port);
+                    LOGGER.debug("Unable to reconnect to {}:{}", host, port);
                 } finally {
                     latch.countDown();
                 }
