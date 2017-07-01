@@ -34,6 +34,9 @@
       <action issue="LOG4J2-1813" dev="rpopma" type="add">
         Log4j2 will now print all internal logging to the console if system property `log4j2.debug` is defined with any value (or no value).
       </action>
+      <action issue="LOG4J2-1261" dev="rpopma" type="update">
+        Async Loggers no longer use deprecated LMAX Disruptor APIs. (Disruptor-3.3.3 or higher is now required.)
+      </action>
       <action issue="LOG4J2-1908" dev="rpopma" type="update">
         Improved error message when misconfigured with multiple incompatible appenders targeting same file.
       </action>
