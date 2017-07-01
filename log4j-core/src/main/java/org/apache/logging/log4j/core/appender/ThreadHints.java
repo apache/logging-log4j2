@@ -58,8 +58,8 @@ final class ThreadHints {
      * constructions.
      */
     public static void onSpinWait() {
-        // Call java.lang.Runtime.onSpinWait() on Java SE versions that support it. Do nothing otherwise.
-        // This should optimize away to either nothing or to an inlining of java.lang.Runtime.onSpinWait()
+        // Call java.lang.Thread.onSpinWait() on Java SE versions that support it. Do nothing otherwise.
+        // This should optimize away to either nothing or to an inlining of java.lang.Thread.onSpinWait()
         if (onSpinWaitMH != null) {
             try {
                 onSpinWaitMH.invokeExact();
