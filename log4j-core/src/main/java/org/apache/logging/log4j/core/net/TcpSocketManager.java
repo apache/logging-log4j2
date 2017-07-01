@@ -53,7 +53,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     private static final TcpSocketManagerFactory FACTORY = new TcpSocketManagerFactory();
 
-    private final int reconnectionDelay;
+    private final int reconnectionDelayMillis;
 
     private Reconnector reconnector;
 
@@ -84,7 +84,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      *            The port number on the host.
      * @param connectTimeoutMillis
      *            the connect timeout in milliseconds.
-     * @param delay
+     * @param reconnectionDelayMillis
      *            Reconnection interval.
      * @param immediateFail
      *            True if the write should fail if no socket is immediately available.
@@ -98,9 +98,9 @@ public class TcpSocketManager extends AbstractSocketManager {
     @Deprecated
     public TcpSocketManager(final String name, final OutputStream os, final Socket socket,
             final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
-            final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout,
+            final int reconnectionDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
             final int bufferSize) {
-        this(name, os, socket, inetAddress, host, port, connectTimeoutMillis, delay, immediateFail, layout, bufferSize,
+        this(name, os, socket, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize,
                 null);
     }
 
@@ -121,7 +121,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      *            The port number on the host.
      * @param connectTimeoutMillis
      *            the connect timeout in milliseconds.
-     * @param delay
+     * @param reconnectionDelayMillis
      *            Reconnection interval.
      * @param immediateFail
      *            True if the write should fail if no socket is immediately available.
@@ -132,14 +132,14 @@ public class TcpSocketManager extends AbstractSocketManager {
      */
     public TcpSocketManager(final String name, final OutputStream os, final Socket socket,
             final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
-            final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout,
+            final int reconnectionDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
             final int bufferSize, final SocketOptions socketOptions) {
         super(name, os, inetAddress, host, port, layout, true, bufferSize);
         this.connectTimeoutMillis = connectTimeoutMillis;
-        this.reconnectionDelay = delay;
+        this.reconnectionDelayMillis = reconnectionDelayMillis;
         this.socket = socket;
         this.immediateFail = immediateFail;
-        retry = delay > 0;
+        retry = reconnectionDelayMillis > 0;
         if (socket == null) {
             reconnector = createReconnector();
             reconnector.start();
@@ -307,7 +307,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         public void run() {
             while (!shutdown) {
                 try {
-                    sleep(reconnectionDelay);
+                    sleep(reconnectionDelayMillis);
                     final Socket sock = createSocket(inetAddress, port);
                     @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
                     final OutputStream newOS = sock.getOutputStream();
