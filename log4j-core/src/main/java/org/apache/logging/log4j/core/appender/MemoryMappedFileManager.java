@@ -372,12 +372,23 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             }
         }
 
-        private void copyDataToBuffer(int bufferOffset, ByteBuffer data) {
-            MappedByteBuffer mappedBuffer = this.mappedBuffer;
-            int dataLength = data.remaining();
+        private void copyDataToBuffer(final int bufferOffset, final ByteBuffer data) {
+            final MappedByteBuffer mappedBuffer = this.mappedBuffer;
+            final int dataLength = data.remaining();
+            final ByteOrder originalDataByteOrder = data.order();
             int i = 0;
-            for (; i < dataLength - 7; i += 8) {
-                mappedBuffer.putLong(bufferOffset + i, data.getLong());
+            try {
+                // Match the mappedBuffer's order
+                if (originalDataByteOrder != ByteOrder.nativeOrder()) {
+                    data.order(ByteOrder.nativeOrder());
+                }
+                for (; i < dataLength - 7; i += 8) {
+                    mappedBuffer.putLong(bufferOffset + i, data.getLong());
+                }
+            } finally {
+                if (originalDataByteOrder != ByteOrder.nativeOrder()) {
+                    data.order(originalDataByteOrder);
+                }
             }
             for (; i < dataLength; i++) {
                 mappedBuffer.put(bufferOffset + i, data.get());
