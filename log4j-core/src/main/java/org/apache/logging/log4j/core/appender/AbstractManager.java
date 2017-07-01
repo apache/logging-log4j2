@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -57,7 +58,7 @@ public abstract class AbstractManager implements AutoCloseable {
     protected int count;
 
     private final String name;
-    
+
     private final LoggerContext loggerContext;
 
     protected AbstractManager(final LoggerContext loggerContext, final String name) {
@@ -144,6 +145,26 @@ public abstract class AbstractManager implements AutoCloseable {
     }
 
     /**
+     * Returns the specified manager, cast to the specified narrow type.
+     * @param narrowClass the type to cast to
+     * @param manager the manager object to return
+     * @param <M> the narrow type
+     * @return the specified manager, cast to the specified narrow type
+     * @throws ConfigurationException if the manager cannot be cast to the specified type, which only happens when
+     *          the configuration has multiple incompatible appenders pointing to the same resource
+     * @since 2.9
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1908">LOG4J2-1908</a>
+     */
+    protected static <M extends AbstractManager> M narrow(final Class<M> narrowClass, final AbstractManager manager) {
+        if (narrowClass.isAssignableFrom(manager.getClass())) {
+            return (M) manager;
+        }
+        throw new ConfigurationException(
+                "Configuration has multiple incompatible Appenders pointing to the same resource '" +
+                        manager.getName() + "'");
+    }
+
+    /**
      * May be overridden by managers to perform processing while the manager is being released and the
      * lock is held. A timeout is passed for implementors to use as they see fit.
      * @param timeout timeout
@@ -163,7 +184,7 @@ public abstract class AbstractManager implements AutoCloseable {
      * Gets the logger context used to create this instance or null. The logger context is usually set when an appender
      * creates a manager and that appender is given a Configuration. Not all appenders are given a Configuration by
      * their factory method or builder.
-     * 
+     *
      * @return the logger context used to create this instance or null.
      */
     public LoggerContext getLoggerContext() {

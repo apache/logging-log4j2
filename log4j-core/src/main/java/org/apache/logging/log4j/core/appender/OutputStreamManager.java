@@ -116,26 +116,6 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         return AbstractManager.getManager(name, factory, data);
     }
 
-    /**
-     * Returns the specified manager, cast to the specified narrow type.
-     * @param narrowClass the type to cast to
-     * @param manager the manager object to return
-     * @param <M> the narrow type
-     * @return the specified manager, cast to the specified narrow type
-     * @throws ConfigurationException if the manager cannot be cast to the specified type, which only happens when
-     *          the configuration has multiple incompatible appenders writing to the same file
-     * @since 2.9
-     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1908">LOG4J2-1908</a>
-     */
-    protected static <M extends OutputStreamManager> M narrow(
-            final Class<M> narrowClass, final OutputStreamManager manager) {
-        if (narrowClass.isAssignableFrom(manager.getClass())) {
-            return (M) manager;
-        }
-        throw new ConfigurationException(
-                "Configuration has multiple incompatible Appenders pointing to the same file " + manager.getName());
-    }
-
     @SuppressWarnings("unused")
     protected OutputStream createOutputStream() throws IOException {
         throw new IllegalStateException(getClass().getCanonicalName() + " must implement createOutputStream()");
