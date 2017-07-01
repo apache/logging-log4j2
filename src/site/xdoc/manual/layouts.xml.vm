@@ -1974,8 +1974,13 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         </subsection>
         <a name="SerializedLayout"/>
         <subsection name="Serialized Layout">
-          <p>The SerializedLayout simply serializes the LogEvent into a byte array using Java Serialization. This is useful when
-            sending messages via JMS or via a Socket connection. The SerializedLayout accepts no parameters.
+          <p>The SerializedLayout simply serializes the LogEvent into a byte array using Java Serialization.
+          The SerializedLayout accepts no parameters.
+          </p>
+          <p>
+          This layout is deprecated since version 2.9. Java Serialization has inherent security weaknesses,
+          using this layout is no longer recommended. An alternative layout containing the same information
+          is <a href="#JSONLayout">JsonLayout</a>, configured with <code>properties="true"</code>.
           </p>
         </subsection>
         <a name="SyslogLayout"/>

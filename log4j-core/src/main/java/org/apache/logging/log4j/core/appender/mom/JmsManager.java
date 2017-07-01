@@ -44,68 +44,126 @@ import org.apache.logging.log4j.util.BiConsumer;
  */
 public class JmsManager extends AbstractManager {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
+    static class JmsManagerConfiguration {
+        private final JndiManager jndiManager;
+        private final String connectionFactoryName;
+        private final String destinationName;
+        private final String userName;
+        private final char[] password;
 
-    private static final JmsManagerFactory FACTORY = new JmsManagerFactory();
-
-    private final JndiManager jndiManager;
-    private final Connection connection;
-    private final Session session;
-    private final Destination destination;
-
-    private JmsManager(final String name, final JndiManager jndiManager, final String connectionFactoryName,
-                       final String destinationName, final String username, final String password)
-        throws NamingException, JMSException {
-        super(null, name);
-        this.jndiManager = jndiManager;
-        final ConnectionFactory connectionFactory = this.jndiManager.lookup(connectionFactoryName);
-        if (username != null && password != null) {
-            this.connection = connectionFactory.createConnection(username, password);
-        } else {
-            this.connection = connectionFactory.createConnection();
+        JmsManagerConfiguration(final JndiManager jndiManager, final String connectionFactoryName,
+                final String destinationName, final String userName, final char[] password) {
+            this.jndiManager = jndiManager;
+            this.connectionFactoryName = connectionFactoryName;
+            this.destinationName = destinationName;
+            this.userName = userName;
+            this.password = password;
         }
-        this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        this.destination = this.jndiManager.lookup(destinationName);
-        this.connection.start();
+
+        /**
+         * Does not include the password.
+         */
+        @Override
+        public String toString() {
+            return "JmsConfiguration [jndiManager=" + jndiManager + ", connectionFactoryName=" + connectionFactoryName
+                    + ", destinationName=" + destinationName + ", userName=" + userName + "]";
+        }
+    }
+
+    private static class JmsManagerFactory implements ManagerFactory<JmsManager, JmsManagerConfiguration> {
+
+        @Override
+        public JmsManager createManager(final String name, final JmsManagerConfiguration data) {
+            try {
+                return new JmsManager(name, data);
+            } catch (final Exception e) {
+                LOGGER.error("Error creating JmsManager using JmsManagerConfiguration [{}]", data, e);
+                return null;
+            }
+        }
+    }
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    static final JmsManagerFactory FACTORY = new JmsManagerFactory();
+
+    /**
+     * Gets a JmsManager using the specified configuration parameters.
+     *
+     * @param name
+     *            The name to use for this JmsManager.
+     * @param jndiManager
+     *            The JndiManager to look up JMS information through.
+     * @param connectionFactoryName
+     *            The binding name for the {@link javax.jms.ConnectionFactory}.
+     * @param destinationName
+     *            The binding name for the {@link javax.jms.Destination}.
+     * @param userName
+     *            The userName to connect with or {@code null} for no authentication.
+     * @param password
+     *            The password to use with the given userName or {@code null} for no authentication.
+     * @return The JmsManager as configured.
+     * @deprecated Use the other getJmsManager() method
+     */
+    @Deprecated
+    public static JmsManager getJmsManager(final String name, final JndiManager jndiManager,
+            final String connectionFactoryName, final String destinationName, final String userName,
+            final String password) {
+        final JmsManagerConfiguration configuration = new JmsManagerConfiguration(jndiManager, connectionFactoryName,
+                destinationName, userName, password == null ? null : password.toCharArray());
+        return getManager(name, FACTORY, configuration);
     }
 
     /**
      * Gets a JmsManager using the specified configuration parameters.
      *
-     * @param name                  The name to use for this JmsManager.
-     * @param jndiManager           The JndiManager to look up JMS information through.
-     * @param connectionFactoryName The binding name for the {@link javax.jms.ConnectionFactory}.
-     * @param destinationName       The binding name for the {@link javax.jms.Destination}.
-     * @param userName              The username to connect with or {@code null} for no authentication.
-     * @param password              The password to use with the given username or {@code null} for no authentication.
+     * @param name
+     *            The name to use for this JmsManager.
+     * @param jndiManager
+     *            The JndiManager to look up JMS information through.
+     * @param connectionFactoryName
+     *            The binding name for the {@link javax.jms.ConnectionFactory}.
+     * @param destinationName
+     *            The binding name for the {@link javax.jms.Destination}.
+     * @param userName
+     *            The userName to connect with or {@code null} for no authentication.
+     * @param password
+     *            The password to use with the given userName or {@code null} for no authentication.
      * @return The JmsManager as configured.
      */
     public static JmsManager getJmsManager(final String name, final JndiManager jndiManager,
-                                           final String connectionFactoryName, final String destinationName,
-                                           final String userName, final String password) {
-        final JmsConfiguration configuration = new JmsConfiguration(jndiManager, connectionFactoryName, destinationName,
-            userName, password);
+            final String connectionFactoryName, final String destinationName, final String userName,
+            final char[] password) {
+        final JmsManagerConfiguration configuration = new JmsManagerConfiguration(jndiManager, connectionFactoryName,
+                destinationName, userName, password);
         return getManager(name, FACTORY, configuration);
     }
 
-    /**
-     * Creates a MessageConsumer on this Destination using the current Session.
-     *
-     * @return A MessageConsumer on this Destination.
-     * @throws JMSException
-     */
-    public MessageConsumer createMessageConsumer() throws JMSException {
-        return this.session.createConsumer(this.destination);
-    }
+    private final JndiManager jndiManager;
+    private final Connection connection;
+    private final Session session;
 
-    /**
-     * Creates a MessageProducer on this Destination using the current Session.
-     *
-     * @return A MessageProducer on this Destination.
-     * @throws JMSException
-     */
-    public MessageProducer createMessageProducer() throws JMSException {
-        return this.session.createProducer(this.destination);
+    private final Destination destination;
+
+    private final JmsManagerConfiguration configuration;
+
+    private final MessageProducer producer;
+
+    private JmsManager(final String name, final JmsManagerConfiguration configuration)
+            throws NamingException, JMSException {
+        super(null, name);
+        this.configuration = configuration;
+        this.jndiManager = configuration.jndiManager;
+        final ConnectionFactory connectionFactory = this.jndiManager.lookup(configuration.connectionFactoryName);
+        if (configuration.userName != null && configuration.password != null) {
+            this.connection = connectionFactory.createConnection(configuration.userName,
+                    configuration.password == null ? null : String.valueOf(configuration.password));
+        } else {
+            this.connection = connectionFactory.createConnection();
+        }
+        this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        this.destination = this.jndiManager.lookup(configuration.destinationName);
+        this.producer = createMessageProducer();
+        this.connection.start();
     }
 
     /**
@@ -138,14 +196,39 @@ public class JmsManager extends AbstractManager {
         return this.session.createObjectMessage(object);
     }
 
-    private MapMessage map(final org.apache.logging.log4j.message.MapMessage<?, ?> log4jMapMessage, final MapMessage jmsMapMessage) {
+    /**
+     * Creates a MessageConsumer on this Destination using the current Session.
+     *
+     * @return A MessageConsumer on this Destination.
+     * @throws JMSException
+     */
+    public MessageConsumer createMessageConsumer() throws JMSException {
+        return this.session.createConsumer(this.destination);
+    }
+
+    /**
+     * Creates a MessageProducer on this Destination using the current Session.
+     *
+     * @return A MessageProducer on this Destination.
+     * @throws JMSException
+     */
+    public MessageProducer createMessageProducer() throws JMSException {
+        return this.session.createProducer(this.destination);
+    }
+
+    JmsManagerConfiguration getJmsManagerConfiguration() {
+        return configuration;
+    }
+
+    private MapMessage map(final org.apache.logging.log4j.message.MapMessage<?, ?> log4jMapMessage,
+            final MapMessage jmsMapMessage) {
         // Map without calling rg.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
         log4jMapMessage.forEach(new BiConsumer<String, Object>() {
             @Override
             public void accept(final String key, final Object value) {
                 try {
                     jmsMapMessage.setObject(key, value);
-                } catch (JMSException e) {
+                } catch (final JMSException e) {
                     throw new IllegalArgumentException(String.format("%s mapping key '%s' to value '%s': %s",
                             e.getClass(), key, value, e.getLocalizedMessage()), e);
                 }
@@ -153,7 +236,6 @@ public class JmsManager extends AbstractManager {
         });
         return jmsMapMessage;
     }
-
 
     @Override
     protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
@@ -173,45 +255,8 @@ public class JmsManager extends AbstractManager {
         return closed && this.jndiManager.stop(timeout, timeUnit);
     }
 
-    private static class JmsConfiguration {
-        private final JndiManager jndiManager;
-        private final String connectionFactoryName;
-        private final String destinationName;
-        private final String userName;
-        private final String password;
-
-        private JmsConfiguration(final JndiManager jndiManager, final String connectionFactoryName, final String destinationName,
-                                 final String userName, final String password) {
-            this.jndiManager = jndiManager;
-            this.connectionFactoryName = connectionFactoryName;
-            this.destinationName = destinationName;
-            this.userName = userName;
-            this.password = password;
-        }
-
-        /**
-         * Does not include the password.
-         */
-        @Override
-        public String toString() {
-            return "JmsConfiguration [jndiManager=" + jndiManager + ", connectionFactoryName=" + connectionFactoryName
-                    + ", destinationName=" + destinationName + ", username=" + userName + "]";
-        }
-    }
-
-    private static class JmsManagerFactory implements ManagerFactory<JmsManager, JmsConfiguration> {
-
-        @Override
-        public JmsManager createManager(final String name, final JmsConfiguration data) {
-            try {
-                return new JmsManager(name, data.jndiManager, data.connectionFactoryName, data.destinationName,
-                    data.userName, data.password);
-            } catch (final Exception e) {
-                LOGGER.error("Error creating JmsManager using ConnectionFactory [{}] and Destination [{}].",
-                    data.connectionFactoryName, data.destinationName, e);
-                return null;
-            }
-        }
+    void send(final Message message) throws JMSException {
+        producer.send(message);
     }
 
 }

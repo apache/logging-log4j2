@@ -17,14 +17,12 @@
 
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
-import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 
@@ -46,7 +44,6 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
 
     private volatile Disruptor<RingBufferLogEvent> disruptor;
-    private ExecutorService executor;
     private String contextName;
 
     private boolean useThreadLocalTranslator = true;
@@ -86,15 +83,22 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
-        executor = Executors.newSingleThreadExecutor(Log4jThreadFactory.createDaemonThreadFactory("AsyncLogger[" + contextName + "]"));
-        backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
+
+        final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLogger[" + contextName + "]", true, Thread.NORM_PRIORITY) {
+            @Override
+            public Thread newThread(final Runnable r) {
+                final Thread result = super.newThread(r);
+                backgroundThreadId = result.getId();
+                return result;
+            }
+        };
         asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
-        disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
+        disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, threadFactory, ProducerType.MULTI,
                 waitStrategy);
 
         final ExceptionHandler<RingBufferLogEvent> errorHandler = DisruptorUtil.getAsyncLoggerExceptionHandler();
-        disruptor.handleExceptionsWith(errorHandler);
+        disruptor.setDefaultExceptionHandler(errorHandler);
 
         final RingBufferLogEventHandler[] handlers = {new RingBufferLogEventHandler()};
         disruptor.handleEventsWith(handlers);
@@ -136,16 +140,14 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             }
         }
         try {
-            // busy-spins until all events currently in the disruptor have been processed
+            // busy-spins until all events currently in the disruptor have been processed, or timeout
             temp.shutdown(timeout, timeUnit);
         } catch (final TimeoutException e) {
-            temp.shutdown();
+            LOGGER.warn("[{}] AsyncLoggerDisruptor: shutdown timed out after {} {}", contextName, timeout, timeUnit);
+            temp.halt(); // give up on remaining log events, if any
         }
 
-        LOGGER.trace("[{}] AsyncLoggerDisruptor: shutting down disruptor executor.", contextName);
-        // finally, kill the processor thread
-        ExecutorServices.shutdown(executor, timeout, timeUnit, toString());
-        executor = null;
+        LOGGER.trace("[{}] AsyncLoggerDisruptor: disruptor has been shut down.", contextName);
 
         if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {
             LOGGER.trace("AsyncLoggerDisruptor: {} discarded {} events.", asyncQueueFullPolicy,

@@ -119,7 +119,7 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
-     * @since 2.8.3
+     * @since 2.9
      */
     protected RollingFileManager(final LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
             final boolean append, final boolean createOnDemand, final long size, final long time,
@@ -177,9 +177,9 @@ public class RollingFileManager extends FileManager {
             final String filePermissions, final String fileOwner, final String fileGroup,
             final Configuration configuration) {
         final String name = fileName == null ? pattern : fileName;
-        return (RollingFileManager) getManager(name, new FactoryData(fileName, pattern, append,
+        return narrow(RollingFileManager.class, getManager(name, new FactoryData(fileName, pattern, append,
             bufferedIO, policy, strategy, advertiseURI, layout, bufferSize, immediateFlush, createOnDemand,
-            filePermissions, fileOwner, fileGroup, configuration), factory);
+            filePermissions, fileOwner, fileGroup, configuration), factory));
     }
 
     /**
@@ -631,8 +631,8 @@ public class RollingFileManager extends FileManager {
                 RollingFileManager rm = new RollingFileManager(data.getLoggerContext(), data.fileName, data.pattern, os,
                     data.append, data.createOnDemand, size, time, data.policy, data.strategy, data.advertiseURI,
                     data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, buffer);
-                if (os != null && rm.isPosixSupported()) {
-                    rm.definePathAttributeView(file.toPath());
+                if (os != null && rm.isAttributeViewEnabled()) {
+                    rm.defineAttributeView(file.toPath());
                 }
 
                 return rm;
@@ -646,7 +646,7 @@ public class RollingFileManager extends FileManager {
     private static class EmptyQueue extends ArrayBlockingQueue<Runnable> {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 

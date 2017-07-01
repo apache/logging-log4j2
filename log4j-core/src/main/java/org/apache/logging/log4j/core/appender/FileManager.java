@@ -58,7 +58,7 @@ public class FileManager extends OutputStreamManager {
     private final Set<PosixFilePermission> filePermissions;
     private final String fileOwner;
     private final String fileGroup;
-    private final boolean posixSupported;
+    private final boolean attributeViewEnabled;
 
     /**
      * @deprecated
@@ -87,7 +87,7 @@ public class FileManager extends OutputStreamManager {
         this.filePermissions = null;
         this.fileOwner = null;
         this.fileGroup = null;
-        this.posixSupported = false;
+        this.attributeViewEnabled = false;
     }
 
     /**
@@ -107,11 +107,11 @@ public class FileManager extends OutputStreamManager {
         this.filePermissions = null;
         this.fileOwner = null;
         this.fileGroup = null;
-        this.posixSupported = false;
+        this.attributeViewEnabled = false;
     }
 
     /**
-     * @since 2.8.3
+     * @since 2.9
      */
     protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
@@ -125,13 +125,31 @@ public class FileManager extends OutputStreamManager {
         this.bufferSize = buffer.capacity();
 
         final Set<String> views = FileSystems.getDefault().supportedFileAttributeViews();
-        this.filePermissions = filePermissions != null && views.contains("posix")
-                                ? PosixFilePermissions.fromString(filePermissions) : null;
-        this.fileOwner = views.contains("owner") ? fileOwner : null;
-        this.fileGroup = views.contains("posix") ? fileGroup : null;
+        if (views.contains("posix")) {
+            this.filePermissions = filePermissions != null ? PosixFilePermissions.fromString(filePermissions) : null;
+            this.fileGroup = fileGroup;
+        } else {
+            this.filePermissions = null;
+            this.fileGroup = null;
+            if (filePermissions != null) {
+                LOGGER.warn("Posix file attribute permissions defined but it is not supported by this files system.");
+            }
+            if (fileGroup != null) {
+                LOGGER.warn("Posix file attribute group defined but it is not supported by this files system.");
+            }
+        }
+
+        if (views.contains("owner")) {
+            this.fileOwner = fileOwner;
+        } else {
+            this.fileOwner = null;
+            if (fileOwner != null) {
+                LOGGER.warn("Owner file attribute defined but it is not supported by this files system.");
+            }
+        }
 
         // Supported and defined
-        this.posixSupported = filePermissions != null || fileOwner != null || fileGroup != null;
+        this.attributeViewEnabled = this.filePermissions != null || this.fileOwner != null || this.fileGroup != null;
     }
 
     /**
@@ -159,8 +177,8 @@ public class FileManager extends OutputStreamManager {
         if (locking && bufferedIo) {
             locking = false;
         }
-        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
-                createOnDemand, advertiseUri, layout, filePermissions, fileOwner, fileGroup, configuration), FACTORY);
+        return narrow(FileManager.class, getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
+                createOnDemand, advertiseUri, layout, filePermissions, fileOwner, fileGroup, configuration), FACTORY));
     }
 
     @Override
@@ -168,19 +186,22 @@ public class FileManager extends OutputStreamManager {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
         final FileOutputStream fos = new FileOutputStream(filename, isAppend);
-        definePathAttributeView(Paths.get(filename));
+        defineAttributeView(Paths.get(filename));
         return fos;
     }
 
-    protected void definePathAttributeView(final Path path) throws IOException {
-        if (posixSupported) {
-            // FileOutputStream may not create new file on all jvm
-            path.toFile().createNewFile();
+    protected void defineAttributeView(final Path path) {
+        if (attributeViewEnabled) {
+            try {
+                // FileOutputStream may not create new file on all jvm
+                path.toFile().createNewFile();
 
-            FileUtils.defineFilePosixAttributeView(path, filePermissions, fileOwner, fileGroup);
+                FileUtils.defineFilePosixAttributeView(path, filePermissions, fileOwner, fileGroup);
+            } catch (final Exception e) {
+                LOGGER.error("Could not define attribute view on path \"{}\" got {}", path, e.getMessage(), e);
+            }
         }
     }
-
 
     @Override
     protected synchronized void write(final byte[] bytes, final int offset, final int length,
@@ -280,7 +301,7 @@ public class FileManager extends OutputStreamManager {
     public int getBufferSize() {
         return bufferSize;
     }
-    
+
     /**
      * Returns posix file permissions if defined and the OS supports posix file attribute,
      * null otherwise.
@@ -290,10 +311,10 @@ public class FileManager extends OutputStreamManager {
     public Set<PosixFilePermission> getFilePermissions() {
         return filePermissions;
     }
-    
+
     /**
      * Returns file owner if defined and the OS supports owner file attribute view,
-     * null otherwise. 
+     * null otherwise.
      * @return File owner
      * @see FileOwnerAttributeView
      */
@@ -303,7 +324,7 @@ public class FileManager extends OutputStreamManager {
 
     /**
      * Returns file group if defined and the OS supports posix/group file attribute view,
-     * null otherwise. 
+     * null otherwise.
      * @return File group
      * @see PosixFileAttributeView
      */
@@ -312,12 +333,12 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * If posix file attribute view supported and defined.
+     * Returns true if file attribute view enabled for this file manager.
      *
-     * @return True if posix supported and defined false otherwise.
+     * @return True if posix or owner supported and defined false otherwise.
      */
-    public boolean isPosixSupported() {
-        return posixSupported;
+    public boolean isAttributeViewEnabled() {
+        return attributeViewEnabled;
     }
 
     /**
@@ -402,8 +423,8 @@ public class FileManager extends OutputStreamManager {
                 FileManager fm = new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
                         data.createOnDemand, data.advertiseURI, data.layout,
                         data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, byteBuffer);
-                if (fos != null && fm.posixSupported) {
-                    fm.definePathAttributeView(file.toPath());
+                if (fos != null && fm.attributeViewEnabled) {
+                    fm.defineAttributeView(file.toPath());
                 }
                 return fm;
             } catch (final IOException ex) {

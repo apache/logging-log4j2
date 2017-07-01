@@ -101,6 +101,15 @@ public final class PropertiesUtil {
     }
 
     /**
+     * Returns {@code true} if the specified property is defined, regardless of its value (it may not have a value).
+     * @param name the name of the property to verify
+     * @return {@code true} if the specified property is defined, regardless of its value
+     */
+    public boolean hasProperty(final String name) {
+        return System.getProperties().containsKey(name) || props.containsKey(name);
+    }
+
+    /**
      * Gets the named property as a boolean value. If the property matches the string {@code "true"} (case-insensitive),
      * then it is returned as the boolean value {@code true}. Any other non-{@code null} text in the property is
      * considered {@code false}.

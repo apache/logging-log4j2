@@ -21,10 +21,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
@@ -36,6 +35,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
@@ -43,6 +44,9 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
+import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Throwables;
@@ -128,6 +132,7 @@ public class SocketAppenderTest {
                 .withName("test")
                 .withImmediateFail(false)
                 .withBufferSize(bufferSize)
+                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -174,6 +179,7 @@ public class SocketAppenderTest {
                 .withReconnectDelayMillis(-1)
                 .withName("test")
                 .withImmediateFail(false)
+                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         assertNotNull(appender);
@@ -195,6 +201,7 @@ public class SocketAppenderTest {
                 .withReconnectDelayMillis(-1)
                 .withName("test")
                 .withImmediateFail(false)
+                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -220,6 +227,7 @@ public class SocketAppenderTest {
                 .withReconnectDelayMillis(100)
                 .withName("test")
                 .withImmediateFail(false)
+                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -251,6 +259,7 @@ public class SocketAppenderTest {
                 .withName("test")
                 .withImmediateFail(false)
                 .withIgnoreExceptions(false)
+                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -277,6 +286,7 @@ public class SocketAppenderTest {
         private final CountDownLatch latch = new CountDownLatch(1);
         private volatile int count = 0;
         private final BlockingQueue<LogEvent> queue;
+        private final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
 
         public UdpSocketTestServer() throws IOException {
             this.sock = new DatagramSocket(PORT);
@@ -302,10 +312,8 @@ public class SocketAppenderTest {
                 while (!shutdown) {
                     latch.countDown();
                     sock.receive(packet);
-                    final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
                     ++count;
-                    final Object received = ois.readObject(); // separate lines for debugging
-                    final LogEvent event = (LogEvent) received;
+                    final LogEvent event = objectMapper.readValue(packet.getData(), Log4jLogEvent.class);
                     queue.add(event);
                 }
             } catch (final Throwable e) {
@@ -331,6 +339,7 @@ public class SocketAppenderTest {
         private volatile boolean shutdown = false;
         private volatile int count = 0;
         private final BlockingQueue<LogEvent> queue;
+        private final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
 
         @SuppressWarnings("resource")
         public TcpSocketTestServer(final int port) throws IOException {
@@ -361,10 +370,13 @@ public class SocketAppenderTest {
             try {
                 try (final Socket socket = serverSocket.accept()) {
                     if (socket != null) {
-                        final ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                        final InputStream is = socket.getInputStream();
                         while (!shutdown) {
-                            queue.add((LogEvent) ois.readObject());
-                            ++count;
+                            final MappingIterator<LogEvent> mappingIterator = objectMapper.readerFor(Log4jLogEvent.class).readValues(is);
+                            while (mappingIterator.hasNextValue()) {
+                                queue.add(mappingIterator.nextValue());
+                                ++count;
+                            }
                         }
                     }
                 }

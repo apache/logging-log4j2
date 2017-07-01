@@ -122,13 +122,13 @@ public class PosixViewAttributeAction extends AbstractPathAction {
 
             if (filePermissions == null && Strings.isEmpty(filePermissionsString)
                         && Strings.isEmpty(fileOwner) && Strings.isEmpty(fileGroup)) {
-                LOGGER.error("Posix file attribute view not valid because nor permissions, user and group defined.");
+                LOGGER.error("Posix file attribute view not valid because nor permissions, user or group defined.");
                 return null;
             }
 
             if (!FileUtils.isFilePosixAttributeViewSupported()) {
-                LOGGER.warn("Posix file attribute view defined but it is not supported by this file system.");
-//                return null; // FIXME Should we avoid operations not permitted or unsupported exception ?
+                LOGGER.warn("Posix file attribute view defined but it is not supported by this files system.");
+                return null;
             }
 
             return new PosixViewAttributeAction(basePath, followLinks, maxDepth, pathConditions,

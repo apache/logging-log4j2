@@ -31,6 +31,30 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1813" dev="rpopma" type="add">
+        Log4j2 will now print all internal logging to the console if system property `log4j2.debug` is defined with any value (or no value).
+      </action>
+      <action issue="LOG4J2-1261" dev="rpopma" type="update">
+        Async Loggers no longer use deprecated LMAX Disruptor APIs. (Disruptor-3.3.3 or higher is now required.)
+      </action>
+      <action issue="LOG4J2-1908" dev="rpopma" type="update">
+        Improved error message when misconfigured with multiple incompatible appenders targeting same file.
+      </action>
+      <action issue="LOG4J2-1954" dev="rpopma" type="update">
+        Configurations with multiple root loggers now fail loudly.
+      </action>
+      <action issue="LOG4J2-1958" dev="mikes" type="update">
+        Deprecate SerializedLayout and remove it as default.
+      </action>
+      <action issue="LOG4J2-1959" dev="mikes" type="update">
+        Disable DTD processing in XML configuration files.
+      </action>
+      <action issue="LOG4J2-1766" dev="ggregory" type="add" due-to="Pierrick HYMBERT">
+        Temporary compress directory during rollover (#88).
+      </action>
+      <action issue="LOG4J2-1950" dev="ggregory" type="update" due-to="Pierrick HYMBERT">
+        Fix docker build with jdk9 requirements (#84).
+      </action>
       <action issue="LOG4J2-1801" dev="rpopma" type="update">
         Add more detail to WARN "Ignoring log event" messages printed to the console after log4j was shut down.
       </action>
@@ -48,6 +72,12 @@
       </action>
       <action issue="LOG4J2-1945" dev="ggregory" type="add">
         Generate source jas for all test jars.
+      </action>
+      <action issue="LOG4J2-1934" dev="ggregory" type="add">
+        JMS Appender does not know how to recover from a broken connection.
+      </action>
+      <action issue="LOG4J2-1956" dev="ggregory" type="update">
+        JMS Appender broker password should be a char[], not a String.
       </action>
       <action issue="LOG4J2-1874" dev="rpopma" type="add" due-to="Roman Leventov">
         Added methods ::writeBytes(ByteBuffer) and ::writeBytes(byte[], int, int) to ByteBufferDestination interface and use these methods in TextEncoderHelper where possible to prepare for future enhancements to reduce lock contention.
@@ -121,8 +151,14 @@
       <action issue="LOG4J2-1868" dev="ggregory" type="update">
         Update ZeroMQ's JeroMQ from 0.3.6 to 0.4.0.
       </action>
+      <action issue="LOG4J2-1960" dev="ggregory" type="update">
+        Update ZeroMQ's JeroMQ from 0.4.0 to 0.4.1.
+      </action>
       <action issue="LOG4J2-1869" dev="ggregory" type="update">
 		Update Kafka client from 0.10.1.1 to 0.10.2.0
+      </action>
+      <action issue="LOG4J2-1962" dev="ggregory" type="update">
+        Update Kafka client from 0.10.2.0 to 0.11.0.0
       </action>
       <action issue="LOG4J2-1872" dev="ggregory" type="update">
 		Update JavaMail from 1.5.5 to 1.5.6.

@@ -727,8 +727,8 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
     public static MemoryMappedFileManager getFileManager(final String fileName, final boolean append,
             final boolean immediateFlush, final int regionLength, final String advertiseURI,
             final Layout<? extends Serializable> layout) {
-        return getManager(fileName, FACTORY,
-                new FactoryData(append, immediateFlush, regionLength, advertiseURI, layout));
+        return narrow(MemoryMappedFileManager.class, getManager(fileName, FACTORY,
+                new FactoryData(append, immediateFlush, regionLength, advertiseURI, layout)));
     }
 
     private Region getCurrentRegionChecked() {

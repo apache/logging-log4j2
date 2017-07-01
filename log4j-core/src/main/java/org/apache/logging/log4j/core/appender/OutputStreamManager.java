@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.util.Constants;
 public class OutputStreamManager extends ByteBufferDestinationManager {
     protected final Layout<?> layout;
     protected ByteBuffer byteBuffer;
-    private volatile OutputStream os;
+    private volatile OutputStream outputStream;
     private boolean skipFooter;
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
@@ -58,7 +58,7 @@ public class OutputStreamManager extends ByteBufferDestinationManager {
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader, final ByteBuffer byteBuffer) {
         super(null, streamName);
-        this.os = os;
+        this.outputStream = os;
         this.layout = layout;
         if (writeHeader && layout != null) {
             final byte[] header = layout.getHeader();
@@ -87,7 +87,7 @@ public class OutputStreamManager extends ByteBufferDestinationManager {
         }
         this.layout = layout;
         this.byteBuffer = Objects.requireNonNull(byteBuffer, "byteBuffer");
-        this.os = os;
+        this.outputStream = os;
         if (writeHeader && layout != null) {
             final byte[] header = layout.getHeader();
             if (header != null) {
@@ -158,14 +158,14 @@ public class OutputStreamManager extends ByteBufferDestinationManager {
     }
 
     public boolean hasOutputStream() {
-        return os != null;
+        return outputStream != null;
     }
 
     protected OutputStream getOutputStream() throws IOException {
-        if (os == null) {
-            os = createOutputStream();
+        if (outputStream == null) {
+            outputStream = createOutputStream();
         }
-        return os;
+        return outputStream;
     }
 
     protected void setOutputStream(final OutputStream os) {
@@ -173,12 +173,12 @@ public class OutputStreamManager extends ByteBufferDestinationManager {
         if (header != null) {
             try {
                 os.write(header, 0, header.length);
-                this.os = os; // only update field if os.write() succeeded
+                this.outputStream = os; // only update field if os.write() succeeded
             } catch (final IOException ioe) {
                 logError("Unable to write header", ioe);
             }
         } else {
-            this.os = os;
+            this.outputStream = os;
         }
     }
 
@@ -269,7 +269,7 @@ public class OutputStreamManager extends ByteBufferDestinationManager {
      * @since 2.6
      */
     protected synchronized void flushDestination() {
-        final OutputStream stream = os; // access volatile field only once per method
+        final OutputStream stream = outputStream; // access volatile field only once per method
         if (stream != null) {
             try {
                 stream.flush();
@@ -305,7 +305,7 @@ public class OutputStreamManager extends ByteBufferDestinationManager {
 
     protected synchronized boolean closeOutputStream() {
         flush();
-        final OutputStream stream = os; // access volatile field only once per method
+        final OutputStream stream = outputStream; // access volatile field only once per method
         if (stream == null || stream == System.out || stream == System.err) {
             return true;
         }

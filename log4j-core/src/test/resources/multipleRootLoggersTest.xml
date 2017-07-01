@@ -15,19 +15,18 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="MyApp">
+<Configuration status="ERROR">
   <Appenders>
-    <Socket name="socket" host="localhost" port="${sys:SocketAppenderSocketOptionsTest.port}" protocol="TCP" ignoreExceptions="false">
-      <JsonLayout properties="true"/>
-      <SocketOptions keepAlive="false" oobInline="false" receiveBufferSize="10000" reuseAddress="false"
-        rfc1349TrafficClass="IPTOS_LOWCOST" sendBufferSize="8000" soLinger="12345" soTimeout="54321" tcpNoDelay="false">
-        <SocketPerformancePreferences bandwidth="100" connectionTime="100" latency="100" />
-      </SocketOptions>
-    </Socket>
+    <List name="List">
+      <PatternLayout pattern="1=${sys:elementKey},2=${sys:emptyElementKey},a=${sys:emptyAttributeKey},b=${sys:emptyAttributeKey2},3=${sys:attributeKey},4=${sys:attributeWithEmptyElementKey},5=${sys:bothElementAndAttributeKey},m=%m" />
+    </List>
   </Appenders>
   <Loggers>
-    <Root level="debug">
-      <AppenderRef ref="socket" />
+    <Root level="trace">
+      <AppenderRef ref="List" />
+    </Root>
+    <Root level="trace">
+      <AppenderRef ref="List" />
     </Root>
   </Loggers>
 </Configuration>

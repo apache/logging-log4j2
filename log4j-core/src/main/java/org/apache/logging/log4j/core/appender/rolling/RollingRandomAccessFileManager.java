@@ -101,9 +101,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
             final Layout<? extends Serializable> layout, final String filePermissions, final String fileOwner, final String fileGroup,
             final Configuration configuration) {
-        return (RollingRandomAccessFileManager) getManager(fileName, new FactoryData(filePattern, isAppend,
+        return narrow(RollingRandomAccessFileManager.class, getManager(fileName, new FactoryData(filePattern, isAppend,
                 immediateFlush, bufferSize, policy, strategy, advertiseURI, layout,
-                filePermissions, fileOwner, fileGroup, configuration), FACTORY);
+                filePermissions, fileOwner, fileGroup, configuration), FACTORY));
     }
 
     public Boolean isEndOfBatch() {
@@ -207,8 +207,8 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                 RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
                         NullOutputStream.getInstance(), data.append, data.immediateFlush, data.bufferSize, size, time, data.policy,
                         data.strategy, data.advertiseURI, data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader);
-                if (rrm.isPosixSupported()) {
-                    rrm.definePathAttributeView(file.toPath());
+                if (rrm.isAttributeViewEnabled()) {
+                    rrm.defineAttributeView(file.toPath());
                 }
                 return rrm;
             } catch (final IOException ex) {

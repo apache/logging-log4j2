@@ -15,11 +15,11 @@ class JmsClientTestConfigRule implements TestRule {
 	final String brokerUrlStr;
 	private JmsClientTestConfig jmsClientTestConfig;
 	final String jmsInitialContextFactoryClassName;
-	final String password;
+	final char[] password;
 	final String userName;
 
 	public JmsClientTestConfigRule(final ActiveMqBrokerServiceRule activeMqBrokerServiceRule,
-			final String jmsInitialContextFactoryClassName, final String userName, final String password) {
+			final String jmsInitialContextFactoryClassName, final String userName, final char[] password) {
 		this.activeMqBrokerServiceRule = activeMqBrokerServiceRule;
 		this.jmsInitialContextFactoryClassName = jmsInitialContextFactoryClassName;
 		this.brokerUrlStr = null;
@@ -28,7 +28,7 @@ class JmsClientTestConfigRule implements TestRule {
 	}
 
 	public JmsClientTestConfigRule(final String jmsInitialContextFactoryClassName, final String brokerUrlStr, final String userName,
-			final String password) {
+			final char[] password) {
 		this.activeMqBrokerServiceRule = null;
 		this.jmsInitialContextFactoryClassName = jmsInitialContextFactoryClassName;
 		this.brokerUrlStr = brokerUrlStr;
@@ -73,7 +73,7 @@ class JmsClientTestConfigRule implements TestRule {
 		return jmsInitialContextFactoryClassName;
 	}
 
-	String getPassword() {
+	char[] getPassword() {
 		return password;
 	}
 
