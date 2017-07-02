@@ -31,6 +31,8 @@ import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,6 +47,7 @@ import org.apache.logging.log4j.core.layout.LockableByteBufferDestination;
 import org.apache.logging.log4j.core.layout.TextEncoderHelper;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 
 //Lines too long...
 //CHECKSTYLE:OFF
@@ -75,6 +78,9 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
      * Region#getStableBufferWatermark()}, on the other hand, we don't want logging of "normal" entries to require
      * acquiring a lock. 32 KB is chosen as the longest reasonable stack trace (300 frames * 100 symbols in a frame),
      * because stack traces appear in log entries often.
+     *
+     * However, effectively this threshold doesn't work and the actual threshold is {@link
+     * org.apache.logging.log4j.core.layout.StringBuilderEncoder#DEFAULT_BYTE_BUFFER_SIZE}.
      */
     private static final int SPIN_WAIT_MINIMIZING_LOCKED_WRITE_THRESHOLD = 32 * 1024;
 
@@ -408,9 +414,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         /** See {@link #nextRegion} field comment */
         private void tryCreateNextRegion(int bufferWatermark) {
             if (nextRegion.compareAndSet(NEXT_REGION_INITIAL, NEXT_REGION_PLACEHOLDER)) {
-                // manager.createNextRegion() could return null, account for that in switchRegion().
-                nextRegion.set(manager.createNextRegion(this, mappingOffsetInFile + bufferWatermark));
-                nextRegionCreated.countDown();
+                manager.asyncCreateNextRegion(this, mappingOffsetInFile + bufferWatermark);
             }
         }
 
@@ -642,6 +646,9 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
     private final RandomAccessFile randomAccessFile;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
     private final DestinationLock destinationLock = new DestinationLock();
+    private final Executor nextRegionCreationExecutor = Executors.newSingleThreadExecutor(
+            Log4jThreadFactory.createDaemonThreadFactory("MemoryMappedFileManager-nextRegionCreationExecutor"));
+    private int dummy;
     /**
      * The {@code region} field needs to be volatile to ensure safe publication and visibility of the new Region from
      * threads spinning in {@link #writeBytes} methods. Update itself is done in {@link Region#switchRegion}, no other
@@ -848,6 +855,23 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         } finally {
             destinationLock.unlock();
         }
+    }
+
+    private void asyncCreateNextRegion(final Region currentRegion, final long newMappingOffsetInFile) {
+        nextRegionCreationExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                // manager.createNextRegion() could return null, account for that in Region.switchRegion().
+                Region nextRegion = createNextRegion(currentRegion, newMappingOffsetInFile);
+                currentRegion.nextRegion.set(nextRegion);
+                currentRegion.nextRegionCreated.countDown();
+                if (nextRegion != null) {
+                    dummy ^= nextRegion.mappedBuffer.get(nextRegion.mappedBuffer.capacity() - 1);
+                    // For some reason, it imposes much worse worse tail latency, up to 300 milliseconds on MBP
+//                    nextRegion.mappedBuffer.load();
+                }
+            }
+        });
     }
 
     /**
