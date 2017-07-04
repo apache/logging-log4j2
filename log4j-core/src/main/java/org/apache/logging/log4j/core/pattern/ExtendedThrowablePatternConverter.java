@@ -36,6 +36,7 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
 
     /**
      * Private constructor.
+     * 
      * @param config
      * @param options options, may be null.
      */
