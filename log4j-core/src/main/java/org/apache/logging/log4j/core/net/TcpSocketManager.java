@@ -139,10 +139,10 @@ public class TcpSocketManager extends AbstractSocketManager {
         this.reconnectionDelayMillis = reconnectionDelayMillis;
         this.socket = socket;
         this.immediateFail = immediateFail;
-        retry = reconnectionDelayMillis > 0;
+        this.retry = reconnectionDelayMillis > 0;
         if (socket == null) {
-            reconnector = createReconnector();
-            reconnector.start();
+            this.reconnector = createReconnector();
+            this.reconnector.start();
         }
         this.socketOptions = socketOptions;
     }
