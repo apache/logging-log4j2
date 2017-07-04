@@ -210,8 +210,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 reconnector.latch();
             }
             if (socket == null) {
-                final String msg = "Error writing to " + getName() + ": socket not available";
-                throw new AppenderLoggingException(msg);
+                throw new AppenderLoggingException("Error writing to " + getName() + ": socket not available");
             }
         }
         synchronized (this) {
@@ -227,8 +226,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     reconnector = createReconnector();
                     reconnector.start();
                 }
-                final String msg = "Error writing to " + getName();
-                throw new AppenderLoggingException(msg, ex);
+                throw new AppenderLoggingException("Error writing to " + getName(), ex);
             }
         }
     }
