@@ -1299,6 +1299,7 @@
     <module>log4j-liquibase</module>
     <module>log4j-api-scala_2.10</module>
     <module>log4j-api-scala_2.11</module>
+      <module>failing-test</module>
   </modules>
   <profiles>
     <profile>

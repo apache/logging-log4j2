@@ -1,0 +1,28 @@
+{
+  "configuration": {
+    "status": "error",
+    "name": "LoggerBootstrapConfig",
+    "appenders": {
+      "Console": {
+        "name": "STDOUT",
+        "PatternLayout": {
+          "pattern": "${layout}"
+        }
+      }
+    },
+    "loggers": {
+      "root": {
+        "level": "info",
+        "AppenderRef": {
+          "ref": "STDOUT"
+        }
+      }
+    },
+    "properties": {
+      "property": {
+        "name": "layout",
+        "value": "%-5p [%d{ISO8601}] %c{2} %m%n"
+      }
+    }
+  }
+}
