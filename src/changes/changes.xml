@@ -112,6 +112,9 @@
       <action issue="LOG4J2-1917" dev="rgoers" type="update">
         Support using java.util.ServiceLoader to locate Log4j 2 API providers.
       </action>
+      <action issue="LOG4J2-1966" dev="ggregory" type="update" due-to="M Sazzadul Hoque">
+        Include separator option of PatternLayout in manual (and other updates).
+      </action>
       <action issue="LOG4J2-1854" dev="mikes" type="add" due-to="Xavier Jodoin">
         Support null byte delimiter in GelfLayout.
       </action>
