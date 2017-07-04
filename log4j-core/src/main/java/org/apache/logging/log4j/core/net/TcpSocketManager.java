@@ -210,7 +210,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 reconnector.latch();
             }
             if (socket == null) {
-                final String msg = "Error writing to " + getName() + " socket not available";
+                final String msg = "Error writing to " + getName() + ": socket not available";
                 throw new AppenderLoggingException(msg);
             }
         }
