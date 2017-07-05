@@ -147,8 +147,7 @@ public class JndiContextSelector implements NamedContextSelector {
 
     @Override
     public List<LoggerContext> getLoggerContexts() {
-        final List<LoggerContext> list = new ArrayList<>(CONTEXT_MAP.values());
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(new ArrayList<>(CONTEXT_MAP.values()));
     }
 
 }
