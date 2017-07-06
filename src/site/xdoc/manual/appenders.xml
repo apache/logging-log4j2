@@ -1351,6 +1351,20 @@ public class ConnectionFactory {
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
+              <td>immediateFail</td>
+              <td>boolean</td>
+              <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
+              JMS resources are not available. New in 2.9.</td>
+            </tr>
+            <tr>
+              <td>reconnectIntervalMillis</td>
+              <td>long</td>
+              <td>If set to a value greater than 0, after an error, the JMSManager will attempt to reconnect to
+                the broker after waiting the specified number of milliseconds. If the reconnect fails then
+                an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is
+                set to <code>false</code>). New in 2.9.</td>
+            </tr>
+            <tr>
               <td>urlPkgPrefixes</td>
               <td>String</td>
               <td>A colon-separated list of package prefixes for the class name of the factory class that will create

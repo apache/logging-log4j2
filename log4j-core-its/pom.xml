@@ -201,6 +201,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
+          <additionalClasspathElements>
+            <additionalClasspathElement>${project.basedir}/src/test/resources</additionalClasspathElement>
+          </additionalClasspathElements>
           <includes>
             <include>**/*.java</include>
           </includes>
@@ -208,7 +211,8 @@
             <exclude>**/ForceNoDefClassFoundError.*</exclude>
           </excludes>
           <groups>
-            org.apache.logging.log4j.categories.PerformanceTests
+            org.apache.logging.log4j.categories.PerformanceTests,
+            org.apache.logging.log4j.categories.Appenders$Jms
           </groups>
         </configuration>
       </plugin>

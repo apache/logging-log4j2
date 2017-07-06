@@ -26,23 +26,26 @@ import org.apache.activemq.broker.BrokerService;
  */
 public class ActiveMqBrokerServiceHelper {
 
-	static BrokerService startBrokerService(final String brokerName, String brokerUrlString, final int port) throws Exception {
-		// TODO Abstract out scheme
-		brokerUrlString = "tcp://localhost:" + port;
-		final BrokerService broker = new BrokerService();
-		// configure the Broker
-		broker.setBrokerName(brokerName);
-		broker.addConnector(brokerUrlString);
-		broker.setPersistent(false);
-		broker.start();
-		broker.waitUntilStarted();
-		return broker;
-	}
+    static BrokerService startBrokerService(final String brokerName, String brokerUrlString, final int port)
+            throws Exception {
+        // TODO Abstract out scheme
+        brokerUrlString = "tcp://localhost:" + port;
+        final BrokerService broker = new BrokerService();
+        // configure the Broker
+        broker.setBrokerName(brokerName);
+        broker.addConnector(brokerUrlString);
+        broker.setPersistent(false);
+        broker.start();
+        broker.waitUntilStarted();
+        return broker;
+    }
 
-	static void stopBrokerService(final BrokerService broker) throws IOException, Exception {
-		broker.deleteAllMessages();
-		broker.stop();
-		broker.waitUntilStopped();
-	}
+    static void stopBrokerService(final BrokerService brokerService) throws IOException, Exception {
+        if (brokerService != null) {
+            brokerService.deleteAllMessages();
+            brokerService.stop();
+            brokerService.waitUntilStopped();
+        }
+    }
 
 }
