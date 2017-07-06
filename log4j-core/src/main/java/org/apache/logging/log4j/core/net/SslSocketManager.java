@@ -59,6 +59,7 @@ public class SslSocketManager extends TcpSocketManager {
     * @param bufferSize The buffer size.
     * @deprecated Use {@link #SslSocketManager(String, OutputStream, Socket, SslConfiguration, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
     */
+   @Deprecated
    public SslSocketManager(final String name, final OutputStream os, final Socket sock,
            final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
            final int connectTimeoutMillis, final int reconnectionDelayMillis, final boolean immediateFail,
