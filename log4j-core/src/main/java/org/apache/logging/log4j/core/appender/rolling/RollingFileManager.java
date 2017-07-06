@@ -56,7 +56,7 @@ public class RollingFileManager extends FileManager {
 
     protected long size;
     private long initialTime;
-    private final PatternProcessor patternProcessor;
+    private volatile PatternProcessor patternProcessor;
     private final Semaphore semaphore = new Semaphore(1);
     private final Log4jThreadFactory threadFactory = Log4jThreadFactory.createThreadFactory("RollingFileManager");
     private volatile TriggeringPolicy triggeringPolicy;
@@ -76,6 +76,9 @@ public class RollingFileManager extends FileManager {
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, RolloverStrategy> rolloverStrategyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, RolloverStrategy.class, "rolloverStrategy");
+
+    private static final AtomicReferenceFieldUpdater<RollingFileManager, PatternProcessor> patternProcessorUpdater =
+            AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, PatternProcessor.class, "patternProcessor");
 
     @Deprecated
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
@@ -351,6 +354,10 @@ public class RollingFileManager extends FileManager {
         rolloverStrategyUpdater.compareAndSet(this, this.rolloverStrategy, rolloverStrategy);
     }
 
+    public void setPatternProcessor(PatternProcessor patternProcessor) {
+        patternProcessorUpdater.compareAndSet(this, this.patternProcessor, patternProcessor);
+    }
+
     /**
      * Returns the triggering policy.
      * @param <T> TriggeringPolicy type
@@ -541,14 +548,16 @@ public class RollingFileManager extends FileManager {
             this.fileGroup = fileGroup;
         }
 
-        public TriggeringPolicy getTriggeringPolicy()
-        {
+        public TriggeringPolicy getTriggeringPolicy() {
             return this.policy;
         }
 
-        public RolloverStrategy getRolloverStrategy()
-        {
+        public RolloverStrategy getRolloverStrategy() {
             return this.strategy;
+        }
+
+        public String getPattern() {
+            return pattern;
         }
 
         @Override
@@ -581,11 +590,11 @@ public class RollingFileManager extends FileManager {
     }
 
     @Override
-    public void updateData(final Object data)
-    {
+    public void updateData(final Object data) {
         final FactoryData factoryData = (FactoryData) data;
         setRolloverStrategy(factoryData.getRolloverStrategy());
         setTriggeringPolicy(factoryData.getTriggeringPolicy());
+        setPatternProcessor(new PatternProcessor(factoryData.getPattern(), getPatternProcessor()));
     }
 
     /**
