@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" monitorInterval="10">
+  <Properties>
+    <Property name="logFilePath">${sys:logfile}</Property>
+  </Properties>
+  <Appenders>
+    <Console name="CONSOLE" target="SYSTEM_OUT">
+      <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
+    </Console>
+    <RollingFile name="LOG_FILE" fileName="${logFilePath}.log" filePattern="${logFilePath}.%i.log"
+      immediateFlush="true">
+      <PatternLayout pattern="[%d{yyyyMMdd.HH:mm:ss.SSS}:%-5level][%-17t][%-30c][%m]%n" />
+      <Policies>
+        <SizeBasedTriggeringPolicy size="100MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="1000" />
+    </RollingFile>
+    <RollingFile name="ERROR_FILE" fileName="${logFilePath}.error.log" filePattern="${logFilePath}.error.%i.log"
+      immediateFlush="true">
+      <PatternLayout pattern="[%d{yyyyMMdd.HH:mm:ss.SSS}:%-5level][%-17t][%-30c{2}][%m]%n" />
+      <Policies>
+        <SizeBasedTriggeringPolicy size="100MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="1000" />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="a" level="warn" additivity="false" />
+    <Logger name="b" level="warn" additivity="false" />
+    <Logger name="c" level="warn" additivity="false" />
+    <Logger name="d" level="warn" additivity="false" />
+    <Logger name="e" level="warn" additivity="false" />
+
+    <Root level="debug" additivity="false">
+      <AppenderRef ref="LOG_FILE" level="debug" />
+      <AppenderRef ref="ERROR_FILE" level="error" />
+    </Root>
+  </Loggers>
+</Configuration>
