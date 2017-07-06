@@ -80,9 +80,15 @@ public class HttpURLConnectionManager extends HttpManager {
         urlConnection.setDoOutput(true);
         urlConnection.setDoInput(true);
         urlConnection.setRequestMethod(method);
-        if (connectTimeoutMillis > 0) urlConnection.setConnectTimeout(connectTimeoutMillis);
-        if (readTimeoutMillis > 0) urlConnection.setReadTimeout(readTimeoutMillis);
-        if (layout.getContentType() != null) urlConnection.setRequestProperty("Content-Type", layout.getContentType());
+        if (connectTimeoutMillis > 0) {
+            urlConnection.setConnectTimeout(connectTimeoutMillis);
+        }
+        if (readTimeoutMillis > 0) {
+            urlConnection.setReadTimeout(readTimeoutMillis);
+        }
+        if (layout.getContentType() != null) {
+            urlConnection.setRequestProperty("Content-Type", layout.getContentType());
+        }
         for (Property header : headers) {
             urlConnection.setRequestProperty(
                 header.getName(),
@@ -104,7 +110,9 @@ public class HttpURLConnectionManager extends HttpManager {
 
         byte[] buffer = new byte[1024];
         try (InputStream is = urlConnection.getInputStream()) {
-            while (IOUtils.EOF != is.read(buffer));
+            while (IOUtils.EOF != is.read(buffer)) {
+                ;
+            }
         } catch (IOException e) {
             StringBuilder errorMessage = new StringBuilder();
             try (InputStream es = urlConnection.getErrorStream()) {
@@ -120,10 +128,11 @@ public class HttpURLConnectionManager extends HttpManager {
                     }
                 }
             }
-            if (urlConnection.getResponseCode() > -1)
+            if (urlConnection.getResponseCode() > -1) {
                 throw new IOException(errorMessage.toString());
-            else
+            } else {
                 throw e;
+            }
         }
     }
 
