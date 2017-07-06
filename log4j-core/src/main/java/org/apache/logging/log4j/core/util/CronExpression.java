@@ -1570,14 +1570,14 @@ public final class CronExpression {
     }
 
     protected Date getTimeBefore(final Date targetDate) {
-        Calendar cl = Calendar.getInstance(getTimeZone());
+        final Calendar cl = Calendar.getInstance(getTimeZone());
 
         // to match this
         Date start = targetDate;
-        long minIncrement = findMinIncrement();
+        final long minIncrement = findMinIncrement();
         Date prevFireTime;
         do {
-            Date prevCheckDate = new Date(start.getTime() - minIncrement);
+            final Date prevCheckDate = new Date(start.getTime() - minIncrement);
             prevFireTime = getTimeAfter(prevCheckDate);
             if (prevFireTime == null || prevFireTime.before(MIN_DATE)) {
                 return null;
@@ -1614,13 +1614,13 @@ public final class CronExpression {
         int previous = 0;
         int min = Integer.MAX_VALUE;
         boolean first = true;
-        for (int value : set) {
+        for (final int value : set) {
             if (first) {
                 previous = value;
                 first = false;
                 continue;
             } else {
-                int diff = value - previous;
+                final int diff = value - previous;
                 if (diff < min) {
                     min = diff;
                 }

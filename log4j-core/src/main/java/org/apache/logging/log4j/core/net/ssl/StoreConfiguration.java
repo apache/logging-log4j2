@@ -81,7 +81,7 @@ public class StoreConfiguration<T> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        StoreConfiguration other = (StoreConfiguration) obj;
+        final StoreConfiguration other = (StoreConfiguration) obj;
         if (location == null) {
             if (other.location != null) {
                 return false;

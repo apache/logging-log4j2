@@ -204,7 +204,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                     LOGGER.trace("RandomAccessFile {} set length to 0", name);
                     raf.setLength(0);
                 }
-                RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
+                final RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
                         NullOutputStream.getInstance(), data.append, data.immediateFlush, data.bufferSize, size, time, data.policy,
                         data.strategy, data.advertiseURI, data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader);
                 if (rrm.isAttributeViewEnabled()) {

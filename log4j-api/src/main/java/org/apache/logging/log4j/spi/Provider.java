@@ -192,7 +192,7 @@ public class Provider {
     
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder("Provider[");
+        final StringBuilder result = new StringBuilder("Provider[");
         if (!DEFAULT_PRIORITY.equals(priority)) {
             result.append("priority=").append(priority).append(", ");
         }

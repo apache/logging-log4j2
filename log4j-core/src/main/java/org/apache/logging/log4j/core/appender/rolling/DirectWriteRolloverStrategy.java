@@ -294,14 +294,14 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     }
 
     private int purge(final RollingFileManager manager) {
-        SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
+        final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
         LOGGER.debug("Found {} eligible files, max is  {}", eligibleFiles.size(), maxFiles);
         while (eligibleFiles.size() >= maxFiles) {
             try {
-                Integer key = eligibleFiles.firstKey();
+                final Integer key = eligibleFiles.firstKey();
                 Files.delete(eligibleFiles.get(key));
                 eligibleFiles.remove(key);
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOGGER.error("Unable to delete {}", eligibleFiles.firstKey(), ioe);
                 break;
             }
@@ -312,12 +312,12 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     @Override
     public String getCurrentFileName(final RollingFileManager manager) {
         if (currentFileName == null) {
-            SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
+            final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
             final int fileIndex = eligibleFiles.size() > 0 ? (nextIndex > 0 ? nextIndex : eligibleFiles.size()) : 1;
             final StringBuilder buf = new StringBuilder(255);
             manager.getPatternProcessor().formatFileName(strSubstitutor, buf, true, fileIndex);
-            int suffixLength = suffixLength(buf.toString());
-            String name = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
+            final int suffixLength = suffixLength(buf.toString());
+            final String name = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
             currentFileName = name;
         }
         return currentFileName;
@@ -347,13 +347,13 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         String compressedName = sourceName;
         currentFileName = null;
         nextIndex = fileIndex + 1;
-        FileExtension fileExtension = manager.getFileExtension();
+        final FileExtension fileExtension = manager.getFileExtension();
         if (fileExtension != null) {
             compressedName += fileExtension.getExtension();            
             if (tempCompressedFilePattern != null) {
-                StringBuilder buf = new StringBuilder();
+                final StringBuilder buf = new StringBuilder();
                 tempCompressedFilePattern.formatFileName(strSubstitutor, buf, fileIndex);
-                String tmpCompressedName = buf.toString();
+                final String tmpCompressedName = buf.toString();
                 final File tmpCompressedNameFile = new File(tmpCompressedName);
                 if (tmpCompressedNameFile.getParentFile() != null) {
                     tmpCompressedNameFile.getParentFile().mkdirs();
@@ -373,7 +373,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         if (compressAction != null && manager.isAttributeViewEnabled()) {
             // Propagate posix attribute view to compressed file
             // @formatter:off
-            Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
+            final Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
                                                     .withBasePath(compressedName)
                                                     .withFollowLinks(false)
                                                     .withMaxDepth(1)

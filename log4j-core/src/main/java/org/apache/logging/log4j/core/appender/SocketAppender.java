@@ -194,7 +194,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         public SocketAppender build() {
             boolean immediateFlush = isImmediateFlush();
             final boolean bufferedIo = isBufferedIo();
-            Layout<? extends Serializable> layout = getLayout();
+            final Layout<? extends Serializable> layout = getLayout();
             if (layout == null) {
                 AbstractLifeCycle.LOGGER.error("No layout provided for SocketAppender");
                 return null;

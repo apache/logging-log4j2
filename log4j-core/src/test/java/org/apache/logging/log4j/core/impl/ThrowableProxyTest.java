@@ -82,8 +82,8 @@ public class ThrowableProxyTest {
     }
 
     private boolean allLinesContain(final String text, final String containedText) {
-        String[] lines = text.split("\n");
-        for (String line : lines) {
+        final String[] lines = text.split("\n");
+        for (final String line : lines) {
             if (line.isEmpty()) {
                 continue;
             }
@@ -298,7 +298,7 @@ public class ThrowableProxyTest {
         final Throwable throwable = new IllegalArgumentException("This is a test");
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
-        String suffix = "some suffix";
+        final String suffix = "some suffix";
         assertTrue(allLinesContain(proxy.getExtendedStackTraceAsString(suffix), suffix));
     }
 
@@ -307,18 +307,18 @@ public class ThrowableProxyTest {
         final Throwable throwable = new RuntimeException(new IllegalArgumentException("This is a test"));
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
-        String suffix = "some suffix";
+        final String suffix = "some suffix";
         assertTrue(allLinesContain(proxy.getExtendedStackTraceAsString(suffix), suffix));
     }
 
     @Test
     public void testSuffix_getExtendedStackTraceAsStringWithSuppressedThrowable() throws Exception {
-        IllegalArgumentException cause = new IllegalArgumentException("This is a test");
+        final IllegalArgumentException cause = new IllegalArgumentException("This is a test");
         final Throwable throwable = new RuntimeException(cause);
         throwable.addSuppressed(new IOException("This is a test"));
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
-        String suffix = "some suffix";
+        final String suffix = "some suffix";
         assertTrue(allLinesContain(proxy.getExtendedStackTraceAsString(suffix), suffix));
     }
 
@@ -327,7 +327,7 @@ public class ThrowableProxyTest {
         final Throwable throwable = new IllegalArgumentException("This is a test");
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
-        String suffix = "some suffix";
+        final String suffix = "some suffix";
         assertTrue(allLinesContain(proxy.getCauseStackTraceAsString(suffix), suffix));
     }
 
@@ -336,18 +336,18 @@ public class ThrowableProxyTest {
         final Throwable throwable = new RuntimeException(new IllegalArgumentException("This is a test"));
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
-        String suffix = "some suffix";
+        final String suffix = "some suffix";
         assertTrue(allLinesContain(proxy.getCauseStackTraceAsString(suffix), suffix));
     }
 
     @Test
     public void testSuffix_getCauseStackTraceAsStringWithSuppressedThrowable() throws Exception {
-        IllegalArgumentException cause = new IllegalArgumentException("This is a test");
+        final IllegalArgumentException cause = new IllegalArgumentException("This is a test");
         final Throwable throwable = new RuntimeException(cause);
         throwable.addSuppressed(new IOException("This is a test"));
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
-        String suffix = "some suffix";
+        final String suffix = "some suffix";
         assertTrue(allLinesContain(proxy.getCauseStackTraceAsString(suffix), suffix));
     }
 

@@ -90,8 +90,8 @@ public final class ProviderUtil {
     }
 
     protected static void loadProviders(final ClassLoader cl) {
-        ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, cl);
-        for (Provider provider : serviceLoader) {
+        final ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, cl);
+        for (final Provider provider : serviceLoader) {
             if (validVersion(provider.getVersions())) {
                 PROVIDERS.add(provider);
             }

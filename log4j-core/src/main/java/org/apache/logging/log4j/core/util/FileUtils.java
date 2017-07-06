@@ -140,7 +140,7 @@ public final class FileUtils {
      * @throws IOException
      */
     public static void makeParentDirs(final File file) throws IOException {
-        File parent = Objects.requireNonNull(file, "file").getCanonicalFile().getParentFile();
+        final File parent = Objects.requireNonNull(file, "file").getCanonicalFile().getParentFile();
         if (parent != null) {
             mkdir(parent, true);
         }

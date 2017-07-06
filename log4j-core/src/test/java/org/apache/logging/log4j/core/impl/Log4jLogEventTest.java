@@ -94,7 +94,7 @@ public class Log4jLogEventTest {
     @Test
     public void testToImmutableNotSame() {
         final LogEvent logEvent = new Log4jLogEvent.Builder().setMessage(new ReusableObjectMessage()).build();
-        LogEvent immutable = logEvent.toImmutable();
+        final LogEvent immutable = logEvent.toImmutable();
         Assert.assertSame(logEvent, immutable);
         Assert.assertFalse(immutable.getMessage() instanceof ReusableMessage);
     }

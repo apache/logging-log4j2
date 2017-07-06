@@ -159,7 +159,7 @@ public class ThreadDumpMessageTest {
             started.countDown();
             try {
                 keepAlive.await();
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 // ignored
             }
             finished = true;

@@ -53,9 +53,9 @@ public class FileAppenderPermissionsXmlConfigTest {
 
     @Test
     public void testFilePermissions() throws Exception {
-        Logger logger = loggerContextRule.getLogger(FileAppenderPermissionsTest.class);
+        final Logger logger = loggerContextRule.getLogger(FileAppenderPermissionsTest.class);
         for (int i = 0; i < 1000; ++i) {
-            String message = "This is test message number " + i;
+            final String message = "This is test message number " + i;
             logger.debug(message);
         }
         assertEquals("rw-------", PosixFilePermissions.toString(

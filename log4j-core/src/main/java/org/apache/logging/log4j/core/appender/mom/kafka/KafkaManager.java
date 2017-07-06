@@ -96,9 +96,9 @@ public class KafkaManager extends AbstractManager {
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
-            ProducerRecord<byte[], byte[]> newRecord = new ProducerRecord<>(topic, msg);
+            final ProducerRecord<byte[], byte[]> newRecord = new ProducerRecord<>(topic, msg);
             if (syncSend) {
-                Future<RecordMetadata> response = producer.send(newRecord);
+                final Future<RecordMetadata> response = producer.send(newRecord);
                 response.get(timeoutMillis, TimeUnit.MILLISECONDS);
             } else {
                 producer.send(newRecord, new Callback() {

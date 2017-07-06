@@ -35,7 +35,7 @@ public class CronRolloverApp {
                 logger.info("Hello");
                 Thread.sleep(1 * 1000);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             //e.printStackTrace();
             logger.error("Excepcion general", e);
         }

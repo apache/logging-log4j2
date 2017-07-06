@@ -38,7 +38,7 @@ public final class ByteBufferDestinationHelper {
     public static void writeToUnsynchronized(final ByteBuffer source, final ByteBufferDestination destination) {
         ByteBuffer destBuff = destination.getByteBuffer();
         while (source.remaining() > destBuff.remaining()) {
-            int originalLimit = source.limit();
+            final int originalLimit = source.limit();
             source.limit(Math.min(source.limit(), source.position() + destBuff.remaining()));
             destBuff.put(source);
             source.limit(originalLimit);
@@ -61,7 +61,7 @@ public final class ByteBufferDestinationHelper {
             final ByteBufferDestination destination) {
         ByteBuffer buffer = destination.getByteBuffer();
         while (length > buffer.remaining()) {
-            int chunk = buffer.remaining();
+            final int chunk = buffer.remaining();
             buffer.put(data, offset, chunk);
             offset += chunk;
             length -= chunk;

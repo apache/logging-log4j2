@@ -26,8 +26,8 @@ import static org.junit.Assert.*;
 public class StringBuildersTest {
     @Test
     public void trimToMaxSize() throws Exception {
-        StringBuilder sb = new StringBuilder();
-        char[] value = new char[4 * 1024];
+        final StringBuilder sb = new StringBuilder();
+        final char[] value = new char[4 * 1024];
         sb.append(value);
 
         assertTrue("needs trimming", sb.length() > Constants.MAX_REUSABLE_MESSAGE_SIZE);

@@ -84,7 +84,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         ProviderUtil.STARTUP_LOCK.lock();
         lockingProviderUtil = true;
         final BundleWiring self = context.getBundle().adapt(BundleWiring.class);
-        List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());
+        final List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());
         for (final BundleWire wire : required) {
             loadProvider(wire.getProviderWiring());
         }

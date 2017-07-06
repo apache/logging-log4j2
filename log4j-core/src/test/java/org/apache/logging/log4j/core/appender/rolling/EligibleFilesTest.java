@@ -31,9 +31,9 @@ public class EligibleFilesTest {
 
     @Test
     public void runTest() throws Exception {
-        String path = "target/test-classes/rolloverPath/log4j.txt.20170112_09-" + NotANumber.VALUE + ".gz";
-        TestRolloverStrategy strategy = new TestRolloverStrategy();
-        Map<Integer, Path> files = strategy.findFilesInPath(path);
+        final String path = "target/test-classes/rolloverPath/log4j.txt.20170112_09-" + NotANumber.VALUE + ".gz";
+        final TestRolloverStrategy strategy = new TestRolloverStrategy();
+        final Map<Integer, Path> files = strategy.findFilesInPath(path);
         assertTrue("No files found", files.size() > 0);
         assertTrue("Incorrect number of files found. Should be 30, was " + files.size(), files.size() == 30);
     }

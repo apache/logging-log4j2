@@ -20,17 +20,17 @@ public class Base64Converter {
         try {
             // Base64 is available in Java 8 and up.
             Class<?> clazz = LoaderUtil.loadClass("java.util.Base64");
-            Method getDecoder = clazz.getMethod("getDecoder", null);
+            final Method getDecoder = clazz.getMethod("getDecoder", null);
             decoder = getDecoder.invoke(null, null);
             clazz = decoder.getClass();
             method = clazz.getMethod("decode", String.class);
-        } catch (ClassNotFoundException ex) {
+        } catch (final ClassNotFoundException ex) {
 
-        } catch (NoSuchMethodException ex) {
+        } catch (final NoSuchMethodException ex) {
 
-        } catch (IllegalAccessException ex) {
+        } catch (final IllegalAccessException ex) {
 
-        } catch (InvocationTargetException ex) {
+        } catch (final InvocationTargetException ex) {
 
         }
         if (method == null) {
@@ -38,9 +38,9 @@ public class Base64Converter {
                 // DatatypeConverter is not in the default module in Java 9.
                 final Class<?> clazz = LoaderUtil.loadClass("javax.xml.bind.DatatypeConverter");
                 method = clazz.getMethod("parseBase64Binary", String.class);
-            } catch (ClassNotFoundException ex) {
+            } catch (final ClassNotFoundException ex) {
                 LOGGER.error("No Base64 Converter is available");
-            } catch (NoSuchMethodException ex) {
+            } catch (final NoSuchMethodException ex) {
 
             }
         }
@@ -52,9 +52,9 @@ public class Base64Converter {
         } else {
             try {
                 return (byte[]) method.invoke(decoder, encoded);
-            } catch (IllegalAccessException ex) {
+            } catch (final IllegalAccessException ex) {
                 LOGGER.error("Error decoding string - " + ex.getMessage());
-            } catch (InvocationTargetException ex) {
+            } catch (final InvocationTargetException ex) {
                 LOGGER.error("Error decoding string - " + ex.getMessage());
             }
         }

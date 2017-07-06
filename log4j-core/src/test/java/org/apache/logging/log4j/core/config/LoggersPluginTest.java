@@ -41,7 +41,7 @@ public class LoggersPluginTest {
     public void testEmptyAttribute() throws Exception {
         final Logger logger = LogManager.getLogger();
         logger.info("Test");
-        StatusData data = StatusLogger.getLogger().getStatusData().get(0);
+        final StatusData data = StatusLogger.getLogger().getStatusData().get(0);
         //System.out.println(data.getFormattedStatus());
 
         assertEquals(Level.ERROR, data.getLevel());

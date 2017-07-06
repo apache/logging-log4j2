@@ -154,7 +154,7 @@ public class LogEventTest {
 
     @Test
     public void testLocation() {
-        StackTraceElement ste = TESTER.getEventSource(this.getClass().getName());
+        final StackTraceElement ste = TESTER.getEventSource(this.getClass().getName());
         assertNotNull("No StackTraceElement", ste);
         assertEquals("Incorrect event", this.getClass().getName(), ste.getClassName());
     }

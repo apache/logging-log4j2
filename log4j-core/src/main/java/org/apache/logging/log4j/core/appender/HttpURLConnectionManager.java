@@ -75,7 +75,7 @@ public class HttpURLConnectionManager extends HttpManager {
 
     @Override
     public void send(final Layout<?> layout, final LogEvent event) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+        final HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
         urlConnection.setAllowUserInteraction(false);
         urlConnection.setDoOutput(true);
         urlConnection.setDoInput(true);
@@ -89,7 +89,7 @@ public class HttpURLConnectionManager extends HttpManager {
         if (layout.getContentType() != null) {
             urlConnection.setRequestProperty("Content-Type", layout.getContentType());
         }
-        for (Property header : headers) {
+        for (final Property header : headers) {
             urlConnection.setRequestProperty(
                 header.getName(),
                 header.isValueNeedsLookup() ? getConfiguration().getStrSubstitutor().replace(event, header.getValue()) : header.getValue());
@@ -101,20 +101,20 @@ public class HttpURLConnectionManager extends HttpManager {
             ((HttpsURLConnection)urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
         }
 
-        byte[] msg = layout.toByteArray(event);
+        final byte[] msg = layout.toByteArray(event);
         urlConnection.setFixedLengthStreamingMode(msg.length);
         urlConnection.connect();
         try (OutputStream os = urlConnection.getOutputStream()) {
             os.write(msg);
         }
 
-        byte[] buffer = new byte[1024];
+        final byte[] buffer = new byte[1024];
         try (InputStream is = urlConnection.getInputStream()) {
             while (IOUtils.EOF != is.read(buffer)) {
                 ;
             }
-        } catch (IOException e) {
-            StringBuilder errorMessage = new StringBuilder();
+        } catch (final IOException e) {
+            final StringBuilder errorMessage = new StringBuilder();
             try (InputStream es = urlConnection.getErrorStream()) {
                 errorMessage.append(urlConnection.getResponseCode());
                 if (urlConnection.getResponseMessage() != null) {

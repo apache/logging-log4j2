@@ -41,9 +41,9 @@ public class OutputStreamManagerTest {
 
     @Test
     public void narrow() throws Exception {
-        Logger logger = LogManager.getLogger(OutputStreamManagerTest.class);
+        final Logger logger = LogManager.getLogger(OutputStreamManagerTest.class);
         logger.info("test");
-        List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
+        final List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
         StatusData data = statusData.get(0);
         if (data.getMessage().getFormattedMessage().contains("WindowsAnsiOutputStream")) {
             data = statusData.get(1);

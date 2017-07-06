@@ -47,7 +47,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         
         @Override
         public TimeBasedTriggeringPolicy build() {
-            long maxRandomDelayMillis = TimeUnit.SECONDS.toMillis(maxRandomDelay);
+            final long maxRandomDelayMillis = TimeUnit.SECONDS.toMillis(maxRandomDelay);
             return new TimeBasedTriggeringPolicy(interval, modulate, maxRandomDelayMillis);
         }
 

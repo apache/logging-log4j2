@@ -248,7 +248,7 @@ public final class GelfLayout extends AbstractStringLayout {
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
         if (config == null) {
-            for (KeyValuePair additionalField : this.additionalFields) {
+            for (final KeyValuePair additionalField : this.additionalFields) {
                 if (valueNeedsLookup(additionalField.getValue())) {
                     throw new IllegalArgumentException("configuration needs to be set when there are additional fields with variables");
                 }

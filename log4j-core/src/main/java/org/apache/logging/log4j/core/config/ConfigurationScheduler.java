@@ -186,7 +186,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             if (scheduledItems > 0) {
                 LOGGER.debug("{} starting {} threads", SIMPLE_NAME, scheduledItems);
                 scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
-                ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems,
+                final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems,
                         Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
                 executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
                 executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
@@ -217,12 +217,12 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         @Override
         public void run() {
             try {
-                long millis = scheduledFuture.getFireTime().getTime() - System.currentTimeMillis();
+                final long millis = scheduledFuture.getFireTime().getTime() - System.currentTimeMillis();
                 if (millis > 0) {
                     LOGGER.debug("Cron thread woke up {} millis early. Sleeping", millis);
                     try {
                         Thread.sleep(millis);
-                    } catch (InterruptedException ie) {
+                    } catch (final InterruptedException ie) {
                         // Ignore the interruption.
                     }
                 }
@@ -246,10 +246,10 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("ConfigurationScheduler {");
-        Queue<Runnable> queue = ((ScheduledThreadPoolExecutor) executorService).getQueue();
+        final StringBuilder sb = new StringBuilder("ConfigurationScheduler {");
+        final Queue<Runnable> queue = ((ScheduledThreadPoolExecutor) executorService).getQueue();
         boolean first = true;
-        for (Runnable runnable : queue) {
+        for (final Runnable runnable : queue) {
             if (!first) {
                 sb.append(", ");
             }

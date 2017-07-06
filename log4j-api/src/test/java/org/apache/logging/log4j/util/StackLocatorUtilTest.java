@@ -91,8 +91,8 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testLocateClass() {
-        ClassLocator locator = new ClassLocator();
-        Class<?> clazz = locator.locateClass();
+        final ClassLocator locator = new ClassLocator();
+        final Class<?> clazz = locator.locateClass();
         assertNotNull("Could not locate class", clazz);
         assertEquals("Incorrect class", this.getClass(), clazz);
     }

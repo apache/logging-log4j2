@@ -82,7 +82,7 @@ public class JndiManager extends AbstractManager {
             final String securityPrincipal,
             final String securityCredentials,
             final Properties additionalProperties) {
-        Properties properties = createProperties(initialContextFactoryName, providerURL, urlPkgPrefixes,
+        final Properties properties = createProperties(initialContextFactoryName, providerURL, urlPkgPrefixes,
                 securityPrincipal, securityCredentials, additionalProperties);
         return getManager(createManagerName(), FACTORY, properties);
     }

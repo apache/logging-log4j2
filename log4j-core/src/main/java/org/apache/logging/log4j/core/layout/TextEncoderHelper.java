@@ -61,7 +61,7 @@ public class TextEncoderHelper {
         charBuf.clear();
         text.getChars(0, text.length(), charBuf.array(), charBuf.arrayOffset());
         charBuf.limit(text.length());
-        CoderResult result = charsetEncoder.encode(charBuf, byteBuf, true);
+        final CoderResult result = charsetEncoder.encode(charBuf, byteBuf, true);
         writeEncodedText(charsetEncoder, charBuf, byteBuf, destination, result);
     }
 
@@ -212,7 +212,7 @@ public class TextEncoderHelper {
     private static void throwException(final CoderResult result) {
         try {
             result.throwException();
-        } catch (CharacterCodingException e) {
+        } catch (final CharacterCodingException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -250,7 +250,7 @@ public class TextEncoderHelper {
             // all callers already synchronize on destination but for safety ensure we are synchronized because
             // below calls to drain() may cause destination to swap in a new ByteBuffer object
             synchronized (destination) {
-                ByteBuffer destinationBuffer = destination.getByteBuffer();
+                final ByteBuffer destinationBuffer = destination.getByteBuffer();
                 if (destinationBuffer != temp) {
                     temp.flip();
                     ByteBufferDestinationHelper.writeToUnsynchronized(temp, destination);
