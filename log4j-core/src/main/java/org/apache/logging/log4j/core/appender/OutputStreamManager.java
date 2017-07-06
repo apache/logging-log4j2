@@ -353,7 +353,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     }
 
     @Override
-    public void writeBytes(ByteBuffer data) {
+    public void writeBytes(final ByteBuffer data) {
         if (data.remaining() == 0) {
           return;
         }

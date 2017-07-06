@@ -92,7 +92,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
             return propertiesAsList;
         }
 
-        public B setPropertiesAsList(boolean propertiesAsList) {
+        public B setPropertiesAsList(final boolean propertiesAsList) {
             this.propertiesAsList = propertiesAsList;
             return asBuilder();
         }

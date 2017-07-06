@@ -92,11 +92,11 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         return getEligibleFiles(buf.toString(), pattern, isAscending);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(String path, String pattern) {
+    protected SortedMap<Integer, Path> getEligibleFiles(final String path, final String pattern) {
         return getEligibleFiles(path, pattern, true);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(String path, String logfilePattern, boolean isAscending) {
+    protected SortedMap<Integer, Path> getEligibleFiles(final String path, final String logfilePattern, final boolean isAscending) {
         TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
         File file = new File(path);
         File parent = file.getParentFile();

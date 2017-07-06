@@ -211,7 +211,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         return true;
     }
 
-    protected String getSuffix(LogEvent event) {
+    protected String getSuffix(final LogEvent event) {
         //noinspection ForLoopReplaceableByForEach
         StringBuilder toAppendTo = new StringBuilder();
         for (int i = 0, size = formatters.size(); i <  size; i++) {

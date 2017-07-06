@@ -24,7 +24,7 @@ public class CustomLoggerGenerator {
      * Delegates to {@link Generate.CustomLogger#main(String[])}
      * @param args the command line arguments to pass on
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Generate.CustomLogger.main(args);
     }
 }

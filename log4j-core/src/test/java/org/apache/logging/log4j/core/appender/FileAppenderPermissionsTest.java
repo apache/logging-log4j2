@@ -187,7 +187,7 @@ public class FileAppenderPermissionsTest {
         assertFalse("Appender did not stop", appender.isStarted());
     }
 
-    public static String findAGroup(String user) throws IOException {
+    public static String findAGroup(final String user) throws IOException {
         String group = user;
         try (FileInputStream fis = new FileInputStream("/etc/group")) {
             List<String> groups = org.apache.commons.io.IOUtils.readLines(fis, Charset.defaultCharset());

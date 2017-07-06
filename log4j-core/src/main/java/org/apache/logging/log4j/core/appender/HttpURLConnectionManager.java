@@ -50,12 +50,12 @@ public class HttpURLConnectionManager extends HttpManager {
     private final SslConfiguration sslConfiguration;
     private final boolean verifyHostname;
 
-    public HttpURLConnectionManager(final Configuration configuration, LoggerContext loggerContext, final String name,
+    public HttpURLConnectionManager(final Configuration configuration, final LoggerContext loggerContext, final String name,
                                     final URL url, final String method, final int connectTimeoutMillis,
                                     final int readTimeoutMillis,
                                     final Property[] headers,
-                                    SslConfiguration sslConfiguration,
-                                    boolean verifyHostname) {
+                                    final SslConfiguration sslConfiguration,
+                                    final boolean verifyHostname) {
         super(configuration, loggerContext, name);
         this.url = url;
         if (!(url.getProtocol().equalsIgnoreCase("http") || url.getProtocol().equalsIgnoreCase("https"))) {

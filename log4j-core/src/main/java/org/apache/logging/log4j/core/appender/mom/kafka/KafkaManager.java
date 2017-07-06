@@ -103,7 +103,7 @@ public class KafkaManager extends AbstractManager {
             } else {
                 producer.send(newRecord, new Callback() {
                     @Override
-                    public void onCompletion(RecordMetadata metadata, Exception e) {
+                    public void onCompletion(final RecordMetadata metadata, final Exception e) {
                         if (e != null) {
                             LOGGER.error("Unable to write to Kafka in appender [" + getName() + "]", e);
                         }

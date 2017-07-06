@@ -96,7 +96,7 @@ public class Log4jLogEventBenchmark {
     private static class TestClass {
         private static final String FQCN = TestClass.class.getName();
 
-        public StackTraceElement getEventSource(String loggerName) {
+        public StackTraceElement getEventSource(final String loggerName) {
             final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(loggerName)
                     .setLoggerFqcn(FQCN).setLevel(Level.INFO).setMessage(MESSAGE).build();
             event.setIncludeLocation(true);

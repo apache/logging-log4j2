@@ -27,7 +27,7 @@ public class CronRolloverApp {
 
     private static Logger logger;
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         System.setProperty("log4j.configurationFile", "target/test-classes/log4j-cronRolloverApp.xml");
         logger = LogManager.getLogger(CronRolloverApp.class);
         try {

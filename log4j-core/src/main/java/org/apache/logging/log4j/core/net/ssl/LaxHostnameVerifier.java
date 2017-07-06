@@ -32,7 +32,7 @@ public final class LaxHostnameVerifier implements HostnameVerifier {
     }
 
     @Override
-    public boolean verify(String s, SSLSession sslSession) {
+    public boolean verify(final String s, final SSLSession sslSession) {
         return true;
     }
 }

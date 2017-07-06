@@ -66,15 +66,15 @@ public class Provider {
         versions = null;
     }
 
-    public Provider(Integer priority, String versions,
-                    Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
+    public Provider(final Integer priority, final String versions,
+                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
         this(priority, versions, loggerContextFactoryClass, null);
     }
 
 
-    public Provider(Integer priority, String versions,
-                    Class<? extends LoggerContextFactory> loggerContextFactoryClass,
-                    Class<? extends ThreadContextMap> threadContextMapClass) {
+    public Provider(final Integer priority, final String versions,
+                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass,
+                    final Class<? extends ThreadContextMap> threadContextMapClass) {
         this.url = null;
         this.classLoader = null;
         this.priority = priority;

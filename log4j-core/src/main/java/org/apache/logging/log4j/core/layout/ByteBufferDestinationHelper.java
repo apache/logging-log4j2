@@ -35,7 +35,7 @@ public final class ByteBufferDestinationHelper {
      * @param source        the data to write
      * @param destination the {@code ByteBufferDestination} to write to
      */
-    public static void writeToUnsynchronized(ByteBuffer source, ByteBufferDestination destination) {
+    public static void writeToUnsynchronized(final ByteBuffer source, final ByteBufferDestination destination) {
         ByteBuffer destBuff = destination.getByteBuffer();
         while (source.remaining() > destBuff.remaining()) {
             int originalLimit = source.limit();

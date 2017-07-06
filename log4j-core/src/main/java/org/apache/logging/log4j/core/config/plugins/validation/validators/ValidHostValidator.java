@@ -37,12 +37,12 @@ public class ValidHostValidator implements ConstraintValidator<ValidHost> {
     private ValidHost annotation;
 
     @Override
-    public void initialize(ValidHost annotation) {
+    public void initialize(final ValidHost annotation) {
         this.annotation = annotation;
     }
 
     @Override
-    public boolean isValid(String name, Object value) {
+    public boolean isValid(final String name, final Object value) {
         if (value == null) {
             LOGGER.error(annotation.message());
             return false;

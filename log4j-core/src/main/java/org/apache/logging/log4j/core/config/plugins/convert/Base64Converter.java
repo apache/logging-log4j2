@@ -46,7 +46,7 @@ public class Base64Converter {
         }
     }
 
-    public static byte[] parseBase64Binary(String encoded) {
+    public static byte[] parseBase64Binary(final String encoded) {
         if (method == null) {
             LOGGER.error("No base64 converter");
         } else {

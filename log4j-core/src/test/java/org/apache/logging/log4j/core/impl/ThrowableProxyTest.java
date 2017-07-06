@@ -151,7 +151,7 @@ public class ThrowableProxyTest {
             System.setSecurityManager(
                     new SecurityManager() {
                         @Override
-                        public void checkPermission(Permission perm) {
+                        public void checkPermission(final Permission perm) {
                             if (perm instanceof RuntimePermission) {
                                 // deny access to the class to trigger the security exception
                                 if ("accessClassInPackage.sun.nio.ch".equals(perm.getName())) {
@@ -178,7 +178,7 @@ public class ThrowableProxyTest {
             System.setSecurityManager(
                     new SecurityManager() {
                         @Override
-                        public void checkPermission(Permission perm) {
+                        public void checkPermission(final Permission perm) {
                             if (perm instanceof RuntimePermission) {
                                 // deny access to the classloader to trigger the security exception
                                 if ("getClassLoader".equals(perm.getName())) {

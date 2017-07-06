@@ -111,7 +111,7 @@ public class CassandraRule extends ExternalResource {
             try {
                 final SecurityManager securityManager = new SecurityManager() {
                     @Override
-                    public void checkPermission(Permission permission) {
+                    public void checkPermission(final Permission permission) {
                         String permissionName = permission.getName();
                         if (permissionName != null && permissionName.startsWith("exitVM")) {
                             throw new SecurityException("test");

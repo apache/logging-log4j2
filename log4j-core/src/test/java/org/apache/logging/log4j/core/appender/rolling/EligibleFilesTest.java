@@ -45,11 +45,11 @@ public class EligibleFilesTest {
         }
 
         @Override
-        public RolloverDescription rollover(RollingFileManager manager) throws SecurityException {
+        public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
             return null;
         }
 
-        public Map<Integer, Path> findFilesInPath(String path) {
+        public Map<Integer, Path> findFilesInPath(final String path) {
             return getEligibleFiles(path, "log4j.txt.%d{yyyyMMdd}-%i.gz");
         }
     }

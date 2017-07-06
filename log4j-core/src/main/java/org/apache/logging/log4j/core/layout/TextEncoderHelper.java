@@ -244,7 +244,7 @@ public class TextEncoderHelper {
      * @param result the CoderResult from the CharsetEncoder
      * @return the ByteBuffer to encode into for the remainder of the text
      */
-    private static ByteBuffer drainIfByteBufferFull(final ByteBufferDestination destination, ByteBuffer temp,
+    private static ByteBuffer drainIfByteBufferFull(final ByteBufferDestination destination, final ByteBuffer temp,
             final CoderResult result) {
         if (result.isOverflow()) { // byte buffer full
             // all callers already synchronize on destination but for safety ensure we are synchronized because

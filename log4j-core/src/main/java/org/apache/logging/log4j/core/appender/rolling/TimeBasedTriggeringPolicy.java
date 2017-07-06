@@ -63,17 +63,17 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
             return maxRandomDelay;
         }
         
-        public Builder withInterval(int interval){
+        public Builder withInterval(final int interval){
             this.interval = interval;
             return this;
         }
         
-        public Builder withModulate(boolean modulate){
+        public Builder withModulate(final boolean modulate){
             this.modulate = modulate;
             return this;
         }
         
-        public Builder withMaxRandomDelay(int maxRandomDelay){
+        public Builder withMaxRandomDelay(final int maxRandomDelay){
             this.maxRandomDelay = maxRandomDelay;
             return this;
         }

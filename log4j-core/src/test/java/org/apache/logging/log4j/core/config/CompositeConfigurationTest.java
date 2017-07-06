@@ -177,7 +177,7 @@ public class CompositeConfigurationTest {
         runTest(lcr, test);
     }
 
-    private AppenderRef getAppenderRef(List<AppenderRef> appenderRefList, String refName) {
+    private AppenderRef getAppenderRef(final List<AppenderRef> appenderRefList, final String refName) {
         for (AppenderRef ref : appenderRefList) {
             if (ref.getRef().equalsIgnoreCase(refName)) {
                 return ref;

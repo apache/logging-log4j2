@@ -497,7 +497,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
-    private static byte[] marshall(Object obj) throws IOException {
+    private static byte[] marshall(final Object obj) throws IOException {
         if (obj == null) {
             return null;
         }
@@ -509,7 +509,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
-    private static Object unmarshall(byte[] data) throws IOException, ClassNotFoundException {
+    private static Object unmarshall(final byte[] data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream bin = new ByteArrayInputStream(data);
         try (ObjectInputStream ois = new ObjectInputStream(bin)) {
             return ois.readObject();

@@ -156,7 +156,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param max The maximum number of files to keep.
          * @return This builder for chaining convenience
          */
-        public Builder withMax(String max) {
+        public Builder withMax(final String max) {
             this.max = max;
             return this;
         }
@@ -171,7 +171,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param min The minimum number of files to keep.
          * @return This builder for chaining convenience
          */
-        public Builder withMin(String min) {
+        public Builder withMin(final String min) {
             this.min = min;
             return this;
         }
@@ -187,7 +187,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *            index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
          * @return This builder for chaining convenience
          */
-        public Builder withFileIndex(String fileIndex) {
+        public Builder withFileIndex(final String fileIndex) {
             this.fileIndex = fileIndex;
             return this;
         }
@@ -202,7 +202,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
          * @return This builder for chaining convenience
          */
-        public Builder withCompressionLevelStr(String compressionLevelStr) {
+        public Builder withCompressionLevelStr(final String compressionLevelStr) {
             this.compressionLevelStr = compressionLevelStr;
             return this;
         }
@@ -217,7 +217,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param customActions custom actions to perform asynchronously after rollover
          * @return This builder for chaining convenience
          */
-        public Builder withCustomActions(Action[] customActions) {
+        public Builder withCustomActions(final Action[] customActions) {
             this.customActions = customActions;
             return this;
         }
@@ -232,7 +232,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
          * @return This builder for chaining convenience
          */
-        public Builder withStopCustomActionsOnError(boolean stopCustomActionsOnError) {
+        public Builder withStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
             this.stopCustomActionsOnError = stopCustomActionsOnError;
             return this;
         }
@@ -247,7 +247,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param tempCompressedFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
          * @return This builder for chaining convenience
          */
-        public Builder withTempCompressedFilePattern(String tempCompressedFilePattern) {
+        public Builder withTempCompressedFilePattern(final String tempCompressedFilePattern) {
             this.tempCompressedFilePattern = tempCompressedFilePattern;
             return this;
         }
@@ -262,7 +262,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param config The Configuration.
          * @return This builder for chaining convenience
          */
-        public Builder withConfig(Configuration config) {
+        public Builder withConfig(final Configuration config) {
             this.config = config;
             return this;
         }

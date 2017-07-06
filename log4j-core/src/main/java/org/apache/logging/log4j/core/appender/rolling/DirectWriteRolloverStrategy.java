@@ -110,7 +110,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
          * @return This builder for chaining convenience
          */
-        public Builder withMaxFiles(String maxFiles) {
+        public Builder withMaxFiles(final String maxFiles) {
             this.maxFiles = maxFiles;
             return this;
         }
@@ -125,7 +125,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
          * @return This builder for chaining convenience
          */
-        public Builder withCompressionLevelStr(String compressionLevelStr) {
+        public Builder withCompressionLevelStr(final String compressionLevelStr) {
             this.compressionLevelStr = compressionLevelStr;
             return this;
         }
@@ -140,7 +140,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param customActions custom actions to perform asynchronously after rollover
          * @return This builder for chaining convenience
          */
-        public Builder withCustomActions(Action[] customActions) {
+        public Builder withCustomActions(final Action[] customActions) {
             this.customActions = customActions;
             return this;
         }
@@ -155,7 +155,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
          * @return This builder for chaining convenience
          */
-        public Builder withStopCustomActionsOnError(boolean stopCustomActionsOnError) {
+        public Builder withStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
             this.stopCustomActionsOnError = stopCustomActionsOnError;
             return this;
         }
@@ -170,7 +170,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param tempCompressedFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
          * @return This builder for chaining convenience
          */
-        public Builder withTempCompressedFilePattern(String tempCompressedFilePattern) {
+        public Builder withTempCompressedFilePattern(final String tempCompressedFilePattern) {
             this.tempCompressedFilePattern = tempCompressedFilePattern;
             return this;
         }
@@ -185,7 +185,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param config The Configuration.
          * @return This builder for chaining convenience
          */
-        public Builder withConfig(Configuration config) {
+        public Builder withConfig(final Configuration config) {
             this.config = config;
             return this;
         }

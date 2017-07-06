@@ -166,7 +166,7 @@ public class HttpAppenderTest {
 
         StatusLogger.getLogger().registerListener(new StatusListener() {
             @Override
-            public void log(StatusData data) {
+            public void log(final StatusData data) {
                 error = data;
             }
 

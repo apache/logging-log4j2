@@ -6,7 +6,7 @@ package org.apache.logging.log4j.core.config.plugins.convert;
  */
 public class HexConverter {
 
-    public static byte[] parseHexBinary(String s) {
+    public static byte[] parseHexBinary(final String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {

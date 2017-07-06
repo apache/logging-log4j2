@@ -103,12 +103,12 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
             return asBuilder();
         }
 
-        public B setLocationInfo(boolean locationInfo) {
+        public B setLocationInfo(final boolean locationInfo) {
             this.locationInfo = locationInfo;
             return asBuilder();
         }
 
-        public B setProperties(boolean properties) {
+        public B setProperties(final boolean properties) {
             this.properties = properties;
             return asBuilder();
         }
@@ -118,7 +118,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
          * @param includeStacktrace If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
          * @return this builder
          */
-        public B setIncludeStacktrace(boolean includeStacktrace) {
+        public B setIncludeStacktrace(final boolean includeStacktrace) {
             this.includeStacktrace = includeStacktrace;
             return asBuilder();
         }
