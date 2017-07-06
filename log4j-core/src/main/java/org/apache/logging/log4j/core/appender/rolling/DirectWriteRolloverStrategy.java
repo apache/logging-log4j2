@@ -342,7 +342,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             LOGGER.trace("DirectWriteRolloverStrategy.purge() took {} milliseconds", durationMillis);
         }
         Action compressAction = null;
-        final String sourceName = currentFileName;
+        final String sourceName = getCurrentFileName(manager);
         String compressedName = sourceName;
         currentFileName = null;
         nextIndex = fileIndex + 1;

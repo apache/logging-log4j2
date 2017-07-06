@@ -91,6 +91,9 @@
       <action issue="LOG4J2-1964" dev="ggregory" type="fix" due-to="Pierrick HYMBERT">
         Dynamic reconfiguration does not work for filePattern of RollingFile.
       </action>
+      <action issue="LOG4J2-1961" dev="ggregory" type="fix" due-to="Christian Vent">
+        Reconfigure breaks DirectWriteRolloverStrategy.
+      </action>
       <action issue="LOG4J2-1943" dev="rgoers" type="fix">
         The eventPrefix attribute was being ignored in the RFC5424Layout.
       </action>
