@@ -85,6 +85,9 @@
       <action issue="LOG4J2-1874" dev="rpopma" type="add" due-to="Roman Leventov">
         Added methods ::writeBytes(ByteBuffer) and ::writeBytes(byte[], int, int) to ByteBufferDestination interface and use these methods in TextEncoderHelper where possible to prepare for future enhancements to reduce lock contention.
       </action>
+      <action issue="LOG4J2-1964" dev="ggregory" type="fix" due-to="Pierrick HYMBERT">
+        Dynamic reconfiguration does not work for filePattern of RollingFile.
+      </action>
       <action issue="LOG4J2-1943" dev="rgoers" type="fix">
         The eventPrefix attribute was being ignored in the RFC5424Layout.
       </action>
