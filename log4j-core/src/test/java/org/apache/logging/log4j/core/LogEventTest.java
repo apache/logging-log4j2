@@ -27,7 +27,6 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 

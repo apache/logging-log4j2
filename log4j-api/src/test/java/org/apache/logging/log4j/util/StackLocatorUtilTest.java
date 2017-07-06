@@ -25,7 +25,6 @@ import org.junit.runners.ParentRunner;
 import sun.reflect.Reflection;
 
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {

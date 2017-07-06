@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;

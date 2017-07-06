@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.layout;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,7 +28,6 @@ import java.util.Set;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 

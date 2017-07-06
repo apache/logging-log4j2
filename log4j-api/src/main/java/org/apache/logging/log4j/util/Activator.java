@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import java.net.URL;
 import java.security.Permission;
 import java.util.List;
