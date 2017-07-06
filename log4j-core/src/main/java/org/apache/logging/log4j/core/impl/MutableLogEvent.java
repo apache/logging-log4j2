@@ -75,6 +75,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         this.parameters = replacementParameters;
     }
 
+    @Override
     public Log4jLogEvent toImmutable() {
         return createMemento();
     }

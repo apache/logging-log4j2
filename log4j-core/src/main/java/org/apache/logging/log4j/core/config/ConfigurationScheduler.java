@@ -239,11 +239,13 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             }
         }
 
+        @Override
         public String toString() {
             return "CronRunnable{" + cronExpression.getCronExpression() + " - " + scheduledFuture.getFireTime();
         }
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ConfigurationScheduler {");
         Queue<Runnable> queue = ((ScheduledThreadPoolExecutor) executorService).getQueue();

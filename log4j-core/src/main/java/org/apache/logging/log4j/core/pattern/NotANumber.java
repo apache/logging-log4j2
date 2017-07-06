@@ -26,6 +26,7 @@ public final class NotANumber {
     private NotANumber() {
     }
 
+    @Override
     public String toString() {
         return VALUE;
     }

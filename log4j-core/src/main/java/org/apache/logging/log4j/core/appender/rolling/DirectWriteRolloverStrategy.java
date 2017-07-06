@@ -309,6 +309,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         return eligibleFiles.size() > 0 ? eligibleFiles.lastKey() : 1;
     }
 
+    @Override
     public String getCurrentFileName(final RollingFileManager manager) {
         if (currentFileName == null) {
             SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);

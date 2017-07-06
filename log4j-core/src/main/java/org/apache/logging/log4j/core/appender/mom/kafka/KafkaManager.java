@@ -102,6 +102,7 @@ public class KafkaManager extends AbstractManager {
                 response.get(timeoutMillis, TimeUnit.MILLISECONDS);
             } else {
                 producer.send(newRecord, new Callback() {
+                    @Override
                     public void onCompletion(RecordMetadata metadata, Exception e) {
                         if (e != null) {
                             LOGGER.error("Unable to write to Kafka in appender [" + getName() + "]", e);
