@@ -58,6 +58,7 @@ abstract class ThrowableProxyWithStacktraceAsStringMixIn {
     public abstract String getCauseStackTraceAsString();
 
     @JsonProperty(JsonConstants.ELT_EXTENDED_STACK_TRACE)
+    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_EXTENDED_STACK_TRACE)
     public abstract String getExtendedStackTraceAsString();
 
     @JsonIgnore
