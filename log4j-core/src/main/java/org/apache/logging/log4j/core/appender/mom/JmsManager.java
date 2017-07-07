@@ -261,7 +261,7 @@ public class JmsManager extends AbstractManager {
             return true;
         } catch (final JMSException e) {
             StatusLogger.getLogger().debug(
-                    "Caught exception closing JMS Connection: {} ({}); contiuing JMS manager shutdown",
+                    "Caught exception closing JMS Connection: {} ({}); continuing JMS manager shutdown",
                     e.getLocalizedMessage(), temp, e);
             return false;
         }
@@ -288,7 +288,7 @@ public class JmsManager extends AbstractManager {
             return true;
         } catch (final JMSException e) {
             StatusLogger.getLogger().debug(
-                    "Caught exception closing JMS MessageProducer: {} ({}); contiuing JMS manager shutdown",
+                    "Caught exception closing JMS MessageProducer: {} ({}); continuing JMS manager shutdown",
                     e.getLocalizedMessage(), temp, e);
             return false;
         }
@@ -305,7 +305,7 @@ public class JmsManager extends AbstractManager {
             return true;
         } catch (final JMSException e) {
             StatusLogger.getLogger().debug(
-                    "Caught exception closing JMS Session: {} ({}); contiuing JMS manager shutdown",
+                    "Caught exception closing JMS Session: {} ({}); continuing JMS manager shutdown",
                     e.getLocalizedMessage(), temp, e);
             return false;
         }
