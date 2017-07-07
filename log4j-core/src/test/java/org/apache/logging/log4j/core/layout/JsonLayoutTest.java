@@ -373,11 +373,11 @@ public class JsonLayoutTest {
     @Test
     public void testStacktraceAsString() throws Exception {
         final String str = prepareJSONForStacktraceTests(true);
-        assertTrue(str, str.contains("\"extendedStackTrace\":\""));
+        assertTrue(str, str.contains("\"extendedStackTrace\":\"java.lang.NullPointerException"));
     }
 
     @Test
-    public void testStacktraceAsMap() throws Exception {
+    public void testStacktraceAsNonString() throws Exception {
         final String str = prepareJSONForStacktraceTests(false);
         assertTrue(str, str.contains("\"extendedStackTrace\":["));
     }

@@ -318,4 +318,28 @@ public class XmlLayoutTest {
     public void testExcludeStacktrace() throws Exception {
         this.testAllFeatures(false, false, false, false);
     }
+
+    @Test
+    public void testStacktraceAsString() throws Exception {
+        final String str = prepareXMLForStacktraceTests(true);
+        assertTrue(str, str.contains("<ExtendedStackTrace>java.lang.NullPointerException"));
+    }
+
+    @Test
+    public void testStacktraceAsNonString() throws Exception {
+        final String str = prepareXMLForStacktraceTests(false);
+        assertTrue(str, str.contains("<ExtendedStackTrace><ExtendedStackTraceItem"));
+    }
+
+    private String prepareXMLForStacktraceTests(final boolean stacktraceAsString) {
+        final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
+        // @formatter:off
+        final AbstractJacksonLayout layout = XmlLayout.newBuilder()
+                .setCompact(true)
+                .setIncludeStacktrace(true)
+                .setStacktraceAsString(stacktraceAsString)
+                .build();
+        // @formatter:off
+        return layout.toSerializable(expected);
+    }
 }

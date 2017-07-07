@@ -314,6 +314,29 @@ public class YamlLayoutTest {
         this.testAllFeatures(false, false, false, false, false, false);
     }
 
+    @Test
+    public void testStacktraceAsString() throws Exception {
+        final String str = prepareYAMLForStacktraceTests(true);
+        assertTrue(str, str.contains("extendedStackTrace: \"java.lang.NullPointerException"));
+    }
+
+    @Test
+    public void testStacktraceAsNonString() throws Exception {
+        final String str = prepareYAMLForStacktraceTests(false);
+        assertTrue(str, str.contains("extendedStackTrace:\n    - "));
+    }
+
+    private String prepareYAMLForStacktraceTests(final boolean stacktraceAsString) {
+        final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
+        // @formatter:off
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setIncludeStacktrace(true)
+                .setStacktraceAsString(stacktraceAsString)
+                .build();
+        // @formatter:off
+        return layout.toSerializable(expected);
+    }
+
     private String toPropertySeparator(final boolean compact, final boolean value) {
         return value ? ": " : ":";
     }
