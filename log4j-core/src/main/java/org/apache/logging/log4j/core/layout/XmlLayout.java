@@ -78,8 +78,8 @@ public final class XmlLayout extends AbstractJacksonLayout {
      */
     @Deprecated
     protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-                        final boolean compact, final Charset charset, final boolean includeStacktrace, final boolean stacktraceAsString) {
-        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace, stacktraceAsString);
+                        final boolean compact, final Charset charset, final boolean includeStacktrace) {
+        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false);
     }
 
     private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
@@ -165,7 +165,6 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @param charset The character set to use, if {@code null}, uses "UTF-8".
      * @param includeStacktrace
      *            If "true", includes the stacktrace of any Throwable in the generated XML, defaults to "true".
-     * @param stacktraceAsString If "true", the stacktrace will be rendered as string, and not nested object, defaults to "false".
      * @return An XML Layout.
      *
      * @deprecated Use {@link #newBuilder()} instead
@@ -178,12 +177,11 @@ public final class XmlLayout extends AbstractJacksonLayout {
             @PluginAttribute(value = "complete") final boolean complete,
             @PluginAttribute(value = "compact") final boolean compact,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace,
-            @PluginAttribute(value = "stacktraceAsString", defaultBoolean = false) final boolean stacktraceAsString
+            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace
     )
             // @formatter:on
     {
-        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, stacktraceAsString);
+        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false);
     }
 
     @PluginBuilderFactory

@@ -115,8 +115,12 @@ public class YamlLayoutTest {
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol,
             final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace) throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(null, includeSource, includeContext, null, null,
-                StandardCharsets.UTF_8, includeStacktrace, false);
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setLocationInfo(includeSource)
+                .setProperties(includeContext)
+                .setIncludeStacktrace(includeStacktrace)
+                .setCharset(StandardCharsets.UTF_8)
+                .build();
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         // Just check for \n since \r might or might not be there.
@@ -195,7 +199,13 @@ public class YamlLayoutTest {
         }
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, null, null, null, true, false);
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setLocationInfo(true)
+                .setProperties(true)
+                .setIncludeStacktrace(true)
+                .setConfiguration(configuration)
+                .build();
+
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -231,7 +241,7 @@ public class YamlLayoutTest {
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
         // Use [[ and ]] to test header and footer (instead of [ and ])
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, "[[", "]]", null, true, false);
+        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, "[[", "]]", null, true);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -269,8 +279,12 @@ public class YamlLayoutTest {
 
     @Test
     public void testLayoutLoggerName() throws Exception {
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(null, false, false, null, null,
-                StandardCharsets.UTF_8, true, false);
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setLocationInfo(false)
+                .setProperties(false)
+                .setIncludeStacktrace(true)
+                .setCharset(StandardCharsets.UTF_8)
+                .build();
         final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //

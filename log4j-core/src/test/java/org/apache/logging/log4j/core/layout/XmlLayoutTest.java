@@ -128,7 +128,14 @@ public class XmlLayoutTest {
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext, final boolean includeStacktrace) throws IOException,
             JsonParseException, JsonMappingException {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final XmlLayout layout = XmlLayout.createLayout(includeSource, includeContext, false, compact, StandardCharsets.UTF_8, includeStacktrace, false);
+        final XmlLayout layout = XmlLayout.newBuilder()
+                .setLocationInfo(includeSource)
+                .setProperties(includeContext)
+                .setComplete(false)
+                .setCompact(compact)
+                .setIncludeStacktrace(includeStacktrace)
+                .setCharset(StandardCharsets.UTF_8)
+                .build();
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         assertEquals(str, !compact, str.contains("\n"));
@@ -222,7 +229,14 @@ public class XmlLayoutTest {
             this.rootLogger.removeAppender(appender);
         }
         // set up appender
-        final XmlLayout layout = XmlLayout.createLayout(true, true, true, false, null, true, false);
+        final XmlLayout layout = XmlLayout.newBuilder()
+                .setLocationInfo(true)
+                .setProperties(true)
+                .setComplete(true)
+                .setCompact(false)
+                .setIncludeStacktrace(true)
+                .build();
+
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -271,7 +285,14 @@ public class XmlLayoutTest {
 
     @Test
     public void testLayoutLoggerName() {
-        final XmlLayout layout = XmlLayout.createLayout(false, true, true, false, null, true, false);
+        final XmlLayout layout = XmlLayout.newBuilder()
+                .setLocationInfo(false)
+                .setProperties(true)
+                .setComplete(true)
+                .setCompact(false)
+                .setIncludeStacktrace(true)
+                .build();
+
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //
