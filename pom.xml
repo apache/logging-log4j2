@@ -792,7 +792,7 @@
       <dependency>
         <groupId>org.hdrhistogram</groupId>
         <artifactId>HdrHistogram</artifactId>
-        <version>2.1.8</version>
+        <version>2.1.9</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -931,7 +931,7 @@
               <goals>
                 <goal>report</goal>
               </goals>
-            </execution>          
+            </execution>
           </executions>
         </plugin>
         <plugin>
