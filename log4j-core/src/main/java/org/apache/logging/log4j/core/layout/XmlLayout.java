@@ -171,16 +171,12 @@ public final class XmlLayout extends AbstractJacksonLayout {
      */
     @Deprecated
     public static XmlLayout createLayout(
-            // @formatter:off
-            @PluginAttribute(value = "locationInfo") final boolean locationInfo,
-            @PluginAttribute(value = "properties") final boolean properties,
-            @PluginAttribute(value = "complete") final boolean complete,
-            @PluginAttribute(value = "compact") final boolean compact,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace
-    )
-            // @formatter:on
-    {
+            final boolean locationInfo,
+            final boolean properties,
+            final boolean complete,
+            final boolean compact,
+            final Charset charset,
+            final boolean includeStacktrace) {
         return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false);
     }
 

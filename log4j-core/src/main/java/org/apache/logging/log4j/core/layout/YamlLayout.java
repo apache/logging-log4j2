@@ -165,16 +165,13 @@ public final class YamlLayout extends AbstractJacksonLayout {
      */
     @Deprecated
     public static AbstractJacksonLayout createLayout(
-            // @formatter:off
-            @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "locationInfo") final boolean locationInfo,
-            @PluginAttribute(value = "properties") final boolean properties,
-            @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
-            @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace
-            // @formatter:on
-    ) {
+            final Configuration config,
+            final boolean locationInfo,
+            final boolean properties,
+            final String headerPattern,
+            final String footerPattern,
+            final Charset charset,
+            final boolean includeStacktrace) {
         return new YamlLayout(config, locationInfo, properties, false, false, true, headerPattern, footerPattern,
                 charset, includeStacktrace, false);
     }

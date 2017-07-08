@@ -212,20 +212,17 @@ public final class JsonLayout extends AbstractJacksonLayout {
      */
     @Deprecated
     public static JsonLayout createLayout(
-            // @formatter:off
-            @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "locationInfo") final boolean locationInfo,
-            @PluginAttribute(value = "properties") final boolean properties,
-            @PluginAttribute(value = "propertiesAsList") final boolean propertiesAsList,
-            @PluginAttribute(value = "complete") final boolean complete,
-            @PluginAttribute(value = "compact") final boolean compact,
-            @PluginAttribute(value = "eventEol") final boolean eventEol,
-            @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
-            @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace
-            // @formatter:on
-    ) {
+            final Configuration config,
+            final boolean locationInfo,
+            final boolean properties,
+            final boolean propertiesAsList,
+            final boolean complete,
+            final boolean compact,
+            final boolean eventEol,
+            final String headerPattern,
+            final String footerPattern,
+            final Charset charset,
+            final boolean includeStacktrace) {
         final boolean encodeThreadContextAsList = properties && propertiesAsList;
         return new JsonLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
                 headerPattern, footerPattern, charset, includeStacktrace, false);
