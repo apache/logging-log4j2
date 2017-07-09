@@ -1252,7 +1252,7 @@ public class ConnectionFactory {
         <!-- cool URLs don't change, so here are some old anchors -->
         <a name="JMSQueueAppender"/>
         <a name="JMSTopicAppender"/>
-        <subsection name="JMSAppender">
+        <subsection name="JMS Appender">
           <p>The JMS Appender sends the formatted log event to a JMS Destination.</p>
           <p>
             Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender. Starting
