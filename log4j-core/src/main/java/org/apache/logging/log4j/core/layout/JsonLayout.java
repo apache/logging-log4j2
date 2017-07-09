@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -35,7 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 
 /**
@@ -77,8 +74,6 @@ public final class JsonLayout extends AbstractJacksonLayout {
     private static final String DEFAULT_HEADER = "[";
 
     static final String CONTENT_TYPE = "application/json";
-
-    protected final ResolvableKeyValuePair[] additionalFields;
 
     public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<JsonLayout> {
@@ -137,9 +132,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
                 charset, compact, complete, eventEol,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
-                false);
-
-        this.additionalFields = new ResolvableKeyValuePair[0];
+                false, null);
     }
 
     private JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
@@ -154,21 +147,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
                 charset, compact, complete, eventEol,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
-                includeNullDelimiter);
-
-        if (additionalFields != null && additionalFields.length > 0) {
-            // Convert to specific class which already determines whether values needs lookup during serialization
-            final ResolvableKeyValuePair[] resolvableFields = new ResolvableKeyValuePair[additionalFields.length];
-
-            for (int i = 0; i < additionalFields.length; i++) {
-                resolvableFields[i] = new ResolvableKeyValuePair(additionalFields[i]);
-            }
-
-            this.additionalFields = resolvableFields;
-        } else {
-            // No fields set
-            this.additionalFields = new ResolvableKeyValuePair[0];
-        }
+                includeNullDelimiter,
+                additionalFields);
     }
 
     /**
@@ -296,71 +276,5 @@ public final class JsonLayout extends AbstractJacksonLayout {
             writer.append(", ");
         }
         super.toSerializable(event, writer);
-    }
-
-    @Override
-    protected Object wrapLogEvent(LogEvent event) {
-        Object result = super.wrapLogEvent(event);
-
-        if (additionalFields.length > 0) {
-            // Construct map for serialization - note that we are intentionally using original LogEvent
-            Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
-            // This class combines LogEvent with AdditionalFields during serialization
-            return new LogEventWithAdditionalFields(result, additionalFieldsMap);
-        } else {
-            // No additional fields, return original object
-            return result;
-        }
-    }
-
-    private Map<String,String> resolveAdditionalFields(LogEvent logEvent) {
-        final Map<String,String> additionalFieldsMap = new LinkedHashMap<>();
-        final StrSubstitutor strSubstitutor = configuration.getStrSubstitutor();
-
-        for (ResolvableKeyValuePair pair : additionalFields) {
-            if (pair.valueNeedsLookup) {
-                // Resolve value
-                additionalFieldsMap.put(pair.key, strSubstitutor.replace(logEvent, pair.value));
-            } else {
-                // Plain text value
-                additionalFieldsMap.put(pair.key, pair.value);
-            }
-        }
-
-        return additionalFieldsMap;
-    }
-
-    public static class LogEventWithAdditionalFields {
-
-        private final Object logEvent;
-        private final Map<String, String> additionalFields;
-
-        public LogEventWithAdditionalFields(Object logEvent, Map<String, String> additionalFields) {
-            this.logEvent = logEvent;
-            this.additionalFields = additionalFields;
-        }
-
-        @JsonUnwrapped
-        public Object getLogEvent() {
-            return logEvent;
-        }
-
-        @JsonAnyGetter
-        public Map<String, String> getAdditionalFields() {
-            return additionalFields;
-        }
-    }
-
-    private static class ResolvableKeyValuePair {
-
-        final String key;
-        final String value;
-        final boolean valueNeedsLookup;
-
-        ResolvableKeyValuePair(KeyValuePair pair) {
-            this.key = pair.getKey();
-            this.value = pair.getValue();
-            this.valueNeedsLookup = this.value != null && this.value.contains("${");
-        }
     }
 }

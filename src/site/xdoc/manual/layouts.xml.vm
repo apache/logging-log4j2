@@ -463,6 +463,16 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <caption align="top">JsonLayout Parameters</caption>
           </table>
           <p>
+              To include any custom field in the output, use following syntax:
+              <pre class="prettyprint linenums">
+  &lt;JsonLayout&gt;
+    &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
+    &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
+  &lt;/JsonLayout&gt;
+</pre>
+              Custom fields are always last, in the order they are declared.
+          </p>
+          <p>
             Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using JsonLayout.
           </p>
         </subsection>
@@ -2202,6 +2212,16 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
             <caption align="top">XmlLayout Parameters</caption>
           </table>
           <p>
+              To include any custom field in the output, use following syntax:
+              <pre class="prettyprint linenums">
+  &lt;YamlLayout&gt;
+    &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
+    &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
+  &lt;/YamlLayout&gt;
+</pre>
+              Custom fields are always last, in the order they are declared.
+          </p>
+          <p>
             Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using XmlLayout.
           </p>
         </subsection>
@@ -2296,6 +2316,16 @@ source:
             </tr>
             <caption align="top">YamlLayout Parameters</caption>
           </table>
+          <p>
+              To include any custom field in the output, use following syntax:
+              <pre class="prettyprint linenums">
+  &lt;YamlLayout&gt;
+    &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
+    &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
+  &lt;/YamlLayout&gt;
+</pre>
+              Custom fields are always last, in the order they are declared.
+          </p>
           <p>
             Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using YamlLayout.
           </p>
