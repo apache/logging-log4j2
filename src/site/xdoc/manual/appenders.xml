@@ -1253,16 +1253,16 @@ public class ConnectionFactory {
         <a name="JMSQueueAppender"/>
         <a name="JMSTopicAppender"/>
         <subsection name="JMSAppender">
-          <p>The JMSAppender sends the formatted log event to a JMS Destination.</p>
+          <p>The JMS Appender sends the formatted log event to a JMS Destination.</p>
           <p>
             Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender. Starting
-            in Log4j 2.1, these appenders were combined into the JMSAppender which makes no distinction between queues
+            in Log4j 2.1, these appenders were combined into the JMS Appender which makes no distinction between queues
             and topics. However, configurations written for 2.0 which use the <code>&lt;JMSQueue/&gt;</code> or
             <code>&lt;JMSTopic/&gt;</code> elements will continue to work with the new <code>&lt;JMS/&gt;</code>
             configuration element.
           </p>
           <table>
-            <caption align="top">JMSAppender Parameters</caption>
+            <caption align="top">JMS Appender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1395,7 +1395,7 @@ public class ConnectionFactory {
             </tr>
           </table>
           <p>
-            Here is a sample JMSAppender configuration:
+            Here is a sample JMS Appender configuration:
           </p>
 
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
