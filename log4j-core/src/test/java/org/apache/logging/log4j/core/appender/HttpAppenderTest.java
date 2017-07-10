@@ -37,7 +37,7 @@ import org.junit.Test;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
-@Ignore
+//@Ignore("Fails often on Windows")
 public class HttpAppenderTest {
 
     private static final String LOG_MESSAGE = "Hello, world!";
