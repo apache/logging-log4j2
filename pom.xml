@@ -701,7 +701,7 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.4.193</version>
+        <version>1.4.196</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
