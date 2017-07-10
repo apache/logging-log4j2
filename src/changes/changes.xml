@@ -109,6 +109,9 @@
       <action issue="LOG4J2-1948" dev="ggregory" type="fix" due-to="Michael Lück">
         Trim levels read from properties file to remove trailing spaces.
       </action>
+      <action issue="LOG4J2-1971" dev="ggregory" type="fix" due-to="liwenxian2017">
+        ClassCastException: org.eclipse.osgi.internal.loader.SystemBundleLoader$1 cannot be cast to java.lang.ClassLoader.
+      </action>
       <action issue="LOG4J2-1442" dev="mikes" type="add">
         Generic HTTP appender.
       </action>
