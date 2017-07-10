@@ -29,7 +29,7 @@ package org.apache.logging.log4j.core.async.perftest;
  * @see <a href="https://github.com/real-logic/Agrona/blob/master/src/main/java/org/agrona/concurrent/IdleStrategy.java">
  *     https://github.com/real-logic/Agrona/blob/master/src/main/java/org/agrona/concurrent/IdleStrategy.java</a>
  */
-interface IdleStrategy {
+public interface IdleStrategy {
     /**
      * Perform current idle action (e.g. nothing/yield/sleep).
      */

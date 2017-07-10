@@ -25,3 +25,4 @@ target/
 velocity.log
 felix-cache/
 bin/
+**/.DS_Store

@@ -31,8 +31,10 @@ import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -89,6 +91,17 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
     private static final MemoryMappedFileManagerFactory FACTORY = new MemoryMappedFileManagerFactory();
     private static final double NANOS_PER_MILLISEC = 1000.0 * 1000.0;
 
+    private static final int MAX_WRITE_TOUCH_REGION_LENGTH = 1024 * 1024;
+    private static MappedByteBufferWriteTouch mappedByteBufferWriteTouch;
+    static {
+        try {
+            mappedByteBufferWriteTouch = new UnsafeMappedByteBufferWriteTouch();
+        } catch (Throwable t) {
+            LOGGER.info("Unable to initialize UnsafeMappedByteBufferWriteTouch, using fallback");
+            mappedByteBufferWriteTouch = new FallbackMappedByteBufferWriteTouch();
+        }
+    }
+
     /**
      * Region is a wrapped ByteBuffer of {@link #regionLength} (actually may vary - see {@link #createNextRegion}) with
      * the fields and state to support lock-free concurrent writes.
@@ -135,7 +148,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
      * {@link #unmap(MappedByteBuffer)} on the {@link #mappedBuffer}, while the locking thread is going to use this
      * buffer.
      */
-    private static class Region {
+    static class Region {
         private static final int WRITERS_SHIFT = 32;
         private static final long WRITER = 1L << WRITERS_SHIFT;
         private static final long LOCKED = 1L << 62;
@@ -267,7 +280,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             int offsetToBufferAreaReservedForWrite = bufferWatermark - dataLength;
             copyDataToBuffer(offsetToBufferAreaReservedForWrite, data, offset, dataLength);
             decrementConcurrentWriterCount();
-            tryCreateNextRegionIfNeeded(bufferWatermark);
+            postWriteTriggers(bufferWatermark);
             return true;
         }
 
@@ -289,7 +302,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             int offsetToBufferAreaReservedForWrite = bufferWatermark - dataLength;
             copyDataToBuffer(offsetToBufferAreaReservedForWrite, data);
             decrementConcurrentWriterCount();
-            tryCreateNextRegionIfNeeded(bufferWatermark);
+            postWriteTriggers(bufferWatermark);
             return true;
         }
 
@@ -403,6 +416,11 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             }
         }
 
+        private void postWriteTriggers(int bufferWatermark) {
+            tryCreateNextRegionIfNeeded(bufferWatermark);
+            manager.scheduleWriteTouchIfNeeded(mappingOffsetInFile + bufferWatermark);
+        }
+
         /** See {@link #nextRegion} field comment */
         private void tryCreateNextRegionIfNeeded(int bufferWatermark) {
             if (bufferWatermark >= initialBufferCapacityOverRegionLength + manager.nextRegionCreationWatermark &&
@@ -476,7 +494,16 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             switchRegion(finalBufferWatermark);
             // It is safe to unmap the mappedBuffer, because getStableBufferWatermark() is called above and upon
             // it's return it is guaranteed that all concurrent writers has completed.
-            unmapMappedBuffer();
+            if (manager.closing) {
+                unmapMappedBuffer();
+            } else {
+                manager.backgroundTaskExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        unmapMappedBuffer();
+                    }
+                });
+            }
         }
 
         private void switchRegion(final int finalBufferWatermark) {
@@ -572,7 +599,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             // not checked, so need to check it now. It's important to call tryCreateNextRegionIfNeeded() after
             // the actual unlocking (switching the state), to minimize the time when the manager is locked, because
             // tryCreateNextRegionIfNeeded() could take long time.
-            tryCreateNextRegionIfNeeded(bufferWatermark);
+            postWriteTriggers(bufferWatermark);
         }
 
         /**
@@ -607,6 +634,7 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
             mappedBufferSystemOperationsLock.writeLock().lock();
             try {
                 try {
+                    mappedBuffer.force();
                     unmap(mappedBuffer);
                 } catch (final Exception ex) {
                     manager.logError("Unable to unmap MappedBuffer", ex);
@@ -637,6 +665,16 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         }
     }
 
+    private static class WriteTouchEntry {
+        final Future<?> writeTaskFuture;
+        final long endOffsetInFile;
+
+        private WriteTouchEntry(final Future<?> writeTaskFuture, final long endOffsetInFile) {
+            this.writeTaskFuture = writeTaskFuture;
+            this.endOffsetInFile = endOffsetInFile;
+        }
+    }
+
     private final Layout<?> layout;
     private final boolean immediateFlush;
     private final int regionLength;
@@ -646,9 +684,11 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
     private final RandomAccessFile randomAccessFile;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
     private final DestinationLock destinationLock = new DestinationLock();
-    private final Executor nextRegionCreationExecutor = Executors.newSingleThreadExecutor(
-            Log4jThreadFactory.createDaemonThreadFactory("MemoryMappedFileManager-nextRegionCreationExecutor"));
-    private int dummy;
+    private final ExecutorService backgroundTaskExecutor = Executors.newFixedThreadPool(2,
+            Log4jThreadFactory.createDaemonThreadFactory("MemoryMappedFileManager-backgroundTaskExecutor"));
+    private final int writeTouchBlockLength;
+    private final ConcurrentLinkedQueue<WriteTouchEntry> writeTouchEntries = new ConcurrentLinkedQueue<>();
+    private final AtomicLong writeTouchEndOffsetInFile;
     /**
      * The {@code region} field needs to be volatile to ensure safe publication and visibility of the new Region from
      * threads spinning in {@link #writeBytes} methods. Update itself is done in {@link Region#switchRegion}, no other
@@ -676,6 +716,8 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         this.lengthThresholdForExclusiveWrite = computeLockedWriteThreshold(regionLength);
         this.advertiseURI = advertiseURI;
         this.isEndOfBatch.set(Boolean.FALSE);
+        this.writeTouchBlockLength = Math.min(regionLength, MAX_WRITE_TOUCH_REGION_LENGTH);
+        this.writeTouchEndOffsetInFile = new AtomicLong(position);
         MappedByteBuffer mappedBuffer = mmap(randomAccessFile.getChannel(), getFileName(), position, regionLength);
         region = new Region(this, mappedBuffer, position);
 
@@ -857,19 +899,86 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
         }
     }
 
+    private void scheduleWriteTouchIfNeeded(long bufferWatermarkOffsetInFile) {
+        long currentWriteTouchEndOffsetInFile = writeTouchEndOffsetInFile.get();
+        if (bufferWatermarkOffsetInFile + writeTouchBlockLength > currentWriteTouchEndOffsetInFile) {
+            scheduleWriteTouch(bufferWatermarkOffsetInFile, currentWriteTouchEndOffsetInFile + writeTouchBlockLength);
+        }
+    }
+
+    private void scheduleWriteTouch(final long bufferWatermarkOffsetInFile, final long newWriteTouchEndOffsetInFile) {
+        while (true) {
+            final long currentWriteTouchEndOffsetInFile = writeTouchEndOffsetInFile.get();
+            if (currentWriteTouchEndOffsetInFile >= newWriteTouchEndOffsetInFile) {
+                return;
+            }
+            if (writeTouchEndOffsetInFile.compareAndSet(currentWriteTouchEndOffsetInFile,
+                    newWriteTouchEndOffsetInFile)) {
+                if (cancelLateWriteTouchTasks(bufferWatermarkOffsetInFile)) {
+                    // If we really have to cancel write touch tasks, it means that the logging rate is so high that
+                    // write touch even doesn't stay ahead of it, so it's pointless, so not scheduling new tasks now.
+                }
+                final Region currentRegion = this.region;
+                if (currentRegion != null) {
+                    long currentRegionMappingEnd =
+                            currentRegion.mappingOffsetInFile + currentRegion.mappedBuffer.capacity();
+                    if (currentRegionMappingEnd > currentWriteTouchEndOffsetInFile) {
+                        scheduleWriteTouchEntry(currentRegion, currentWriteTouchEndOffsetInFile,
+                                newWriteTouchEndOffsetInFile);
+                    }
+                    if (newWriteTouchEndOffsetInFile > currentRegionMappingEnd) {
+                        Object nextRegionObject = currentRegion.nextRegion.get();
+                        if (nextRegionObject instanceof Region) {
+                            scheduleWriteTouchEntry((Region) nextRegionObject,
+                                    Math.max(currentWriteTouchEndOffsetInFile, currentRegionMappingEnd),
+                                    newWriteTouchEndOffsetInFile);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void scheduleWriteTouchEntry(final Region region, final long writeTouchStart, final long writeTouchEnd) {
+        writeTouchEntries.add(new WriteTouchEntry(
+                backgroundTaskExecutor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        int bufferOffset = (int) Math.max(0, writeTouchStart - region.mappingOffsetInFile);
+                        int len = (int) Math.min(region.mappedBuffer.capacity(), writeTouchEnd - writeTouchStart);
+                        mappedByteBufferWriteTouch.writeTouch(region, bufferOffset, len);
+                    }
+                }),
+                writeTouchEnd
+        ));
+    }
+
+    private boolean cancelLateWriteTouchTasks(long bufferWatermarkOffsetInFile) {
+        boolean cancelled = false;
+        while (true) {
+            WriteTouchEntry writeTouchEntry = writeTouchEntries.peek();
+            if (writeTouchEntry == null || writeTouchEntry.endOffsetInFile > bufferWatermarkOffsetInFile) {
+                return cancelled;
+            }
+            cancelled |= writeTouchEntry.writeTaskFuture.cancel(true);
+            writeTouchEntries.remove(writeTouchEntry);
+        }
+    }
+
+    private void drainWriteTouchTasks() {
+        for (WriteTouchEntry writeTouchEntry; (writeTouchEntry = writeTouchEntries.poll()) != null;) {
+            writeTouchEntry.writeTaskFuture.cancel(true);
+        }
+    }
+
     private void asyncCreateNextRegion(final Region currentRegion, final long newMappingOffsetInFile) {
-        nextRegionCreationExecutor.execute(new Runnable() {
+        backgroundTaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 // manager.createNextRegion() could return null, account for that in Region.switchRegion().
                 Region nextRegion = createNextRegion(currentRegion, newMappingOffsetInFile);
                 currentRegion.nextRegion.set(nextRegion);
                 currentRegion.nextRegionCreated.countDown();
-                if (nextRegion != null) {
-                    dummy ^= nextRegion.mappedBuffer.get(nextRegion.mappedBuffer.capacity() - 1);
-                    // For some reason, it imposes much worse worse tail latency, up to 300 milliseconds on MBP
-//                    nextRegion.mappedBuffer.load();
-                }
             }
         });
     }
@@ -982,6 +1091,8 @@ public class MemoryMappedFileManager extends ByteBufferDestinationManager implem
                 // Region.switchRegion(). If the region is null, this is already done.
                 region.closeAndSwitchRegionWhileLocked();
             }
+            drainWriteTouchTasks();
+            backgroundTaskExecutor.shutdown();
             final long fileLength = finalRegionMappingOffset + finalRegionBufferWatermark;
             try {
                 LOGGER.debug("MMapAppender closing. Setting {} length to {} (offset {} + position {})", getFileName(),
