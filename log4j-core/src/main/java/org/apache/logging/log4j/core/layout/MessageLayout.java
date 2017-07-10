@@ -35,7 +35,7 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "MessageLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class MessageLayout extends AbstractLayout<Message> {
 
-    public MessageLayout(Configuration configuration, byte[] header, byte[] footer) {
+    public MessageLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
         super(configuration, header, footer);
     }
 
@@ -44,12 +44,12 @@ public class MessageLayout extends AbstractLayout<Message> {
     }
 
     @Override
-    public byte[] toByteArray(LogEvent event) {
+    public byte[] toByteArray(final LogEvent event) {
         return null;
     }
 
     @Override
-    public Message toSerializable(LogEvent event) {
+    public Message toSerializable(final LogEvent event) {
         return event.getMessage();
     }
 

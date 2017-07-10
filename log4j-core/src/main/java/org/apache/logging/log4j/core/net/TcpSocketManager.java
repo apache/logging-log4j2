@@ -139,10 +139,10 @@ public class TcpSocketManager extends AbstractSocketManager {
         this.reconnectionDelayMillis = reconnectionDelayMillis;
         this.socket = socket;
         this.immediateFail = immediateFail;
-        retry = reconnectionDelayMillis > 0;
+        this.retry = reconnectionDelayMillis > 0;
         if (socket == null) {
-            reconnector = createReconnector();
-            reconnector.start();
+            this.reconnector = createReconnector();
+            this.reconnector.start();
         }
         this.socketOptions = socketOptions;
     }
@@ -210,8 +210,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 reconnector.latch();
             }
             if (socket == null) {
-                final String msg = "Error writing to " + getName() + " socket not available";
-                throw new AppenderLoggingException(msg);
+                throw new AppenderLoggingException("Error writing to " + getName() + ": socket not available");
             }
         }
         synchronized (this) {
@@ -227,8 +226,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     reconnector = createReconnector();
                     reconnector.start();
                 }
-                final String msg = "Error writing to " + getName();
-                throw new AppenderLoggingException(msg, ex);
+                throw new AppenderLoggingException("Error writing to " + getName(), ex);
             }
         }
     }

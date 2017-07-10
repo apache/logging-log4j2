@@ -34,14 +34,14 @@ public class Log4jXmlObjectMapper extends XmlMapper {
      * Create a new instance using the {@link Log4jXmlModule}.
      */
     public Log4jXmlObjectMapper() {
-        this(true);
+        this(true, false);
     }
 
     /**
      * Create a new instance using the {@link Log4jXmlModule}.
      */
-    public Log4jXmlObjectMapper(final boolean includeStacktrace) {
-        super(new Log4jXmlModule(includeStacktrace));
+    public Log4jXmlObjectMapper(final boolean includeStacktrace, final boolean stacktraceAsString) {
+        super(new Log4jXmlModule(includeStacktrace, stacktraceAsString));
         this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 

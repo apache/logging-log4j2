@@ -62,7 +62,7 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
     }
 
     @Override
-    public void writeBytes(ByteBuffer data) {
+    public void writeBytes(final ByteBuffer data) {
         ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
     }
 

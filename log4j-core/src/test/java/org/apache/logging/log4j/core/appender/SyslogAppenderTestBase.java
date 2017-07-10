@@ -111,7 +111,7 @@ public abstract class SyslogAppenderTestBase {
                 sentMessages.size(), getReceivedMessages(DEFAULT_TIMEOUT_IN_MS).size());
     }
 
-    protected void checkTheEqualityOfSentAndReceivedMessages(Level expectedLevel) throws InterruptedException {
+    protected void checkTheEqualityOfSentAndReceivedMessages(final Level expectedLevel) throws InterruptedException {
         final List<String> receivedMessages = getReceivedMessages(DEFAULT_TIMEOUT_IN_MS);
 
         assertNotNull("No messages received", receivedMessages);
@@ -153,7 +153,7 @@ public abstract class SyslogAppenderTestBase {
         return Facility.LOCAL0;
     }
 
-    protected void validate(SyslogAppender syslogAppender) {
+    protected void validate(final SyslogAppender syslogAppender) {
         final Layout<? extends Serializable> layout = syslogAppender.getLayout();
         if (layout instanceof SyslogLayout) {
             validate((SyslogLayout) layout);
@@ -164,11 +164,11 @@ public abstract class SyslogAppenderTestBase {
         }
     }
 
-    protected void validate(Rfc5424Layout layout) {
+    protected void validate(final Rfc5424Layout layout) {
         Assert.assertEquals(getExpectedFacility(), layout.getFacility());
     }
 
-    protected void validate(SyslogLayout layout) {
+    protected void validate(final SyslogLayout layout) {
         Assert.assertEquals(getExpectedFacility(), layout.getFacility());
     }
 }

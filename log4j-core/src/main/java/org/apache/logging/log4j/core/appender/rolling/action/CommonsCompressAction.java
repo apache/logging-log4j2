@@ -120,7 +120,7 @@ public final class CommonsCompressAction extends AbstractAction {
                 } else {
                     LOGGER.warn("Unable to delete {} after {} compression. File did not exist", source.toString(), name);
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.warn("Unable to delete {} after {} compression, {}", source.toString(), name, ex.getMessage());
             }
         }

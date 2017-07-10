@@ -24,7 +24,7 @@ public class ExtendedLoggerGenerator {
      * Delegates to {@link Generate.ExtendedLogger#main(String[])}
      * @param args the command line arguments to pass on
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Generate.ExtendedLogger.main(args);
     }
 }

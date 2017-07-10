@@ -47,7 +47,7 @@ public class ValidPortValidator implements ConstraintValidator<ValidPort> {
             LOGGER.error(annotation.message());
             return false;
         }
-        int port = (int) value;
+        final int port = (int) value;
         if (port < 0 || port > 65535) {
             LOGGER.error(annotation.message());
             return false;

@@ -28,7 +28,7 @@ public class XmlConigurationSecurity {
 
     @Test(timeout = 5000L)
     public void xmlSecurity() throws IOException {
-        LoggerContext context = Configurator.initialize("XmlConfigurationSecurity", "XmlConfigurationSecurity.xml");
+        final LoggerContext context = Configurator.initialize("XmlConfigurationSecurity", "XmlConfigurationSecurity.xml");
         assertNotNull(context.getConfiguration().getAppender("list"));
     }
 

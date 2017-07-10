@@ -14,66 +14,61 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.mom.activemq;
 
 import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
 import org.apache.logging.log4j.categories.Appenders;
-import org.apache.logging.log4j.test.AvailablePortSystemPropertyRule;
-import org.apache.logging.log4j.test.RuleChainFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Rule;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.layout.MessageLayout;
+import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.rules.RuleChain;
 
 /**
- * Integration test for JmsAppender using an embedded ActiveMQ broker with in
- * socket communications between clients and broker. This test manages a client
- * connection to JMS like a Appender would. This test appender is managed at the
- * class level by a JmsTestConfigRule.
+ * Tests that a JMS Appender start when there is no broker and connect the broker when it is started later..
  * <p>
- * Tests that a JMS appender can connect to a broker AFTER Log4j startup.
+ * LOG4J2-1934 JMS Appender does not know how to recover from a broken connection. See
+ * https://issues.apache.org/jira/browse/LOG4J2-1934
  * </p>
  * <p>
- * LOG4J2-1934 JMS Appender does not know how to recover from a broken
- * connection. See https://issues.apache.org/jira/browse/LOG4J2-1934
+ * This test class' single test method performs the following:
  * </p>
+ * <ol>
+ * <li>Starts a JMS Appender</li>
+ * <li>Logs an event (fails and starts the reconnect thread)</li>
+ * <li>Starts Apache ActiveMQ</li>
+ * <li>Logs an event successfully</li>
+ * </ol>
  */
-@Ignore
 @Category(Appenders.Jms.class)
-public class JmsAppenderConnectPostStartupIT extends AbstractJmsAppenderIT {
+public class JmsAppenderConnectPostStartupIT extends AbstractJmsAppenderReconnectIT {
 
-	public static final AvailablePortSystemPropertyRule portRule = AvailablePortSystemPropertyRule
-			.create(ActiveMqBrokerServiceRule.PORT_PROPERTY_NAME);
-
-	@Rule
-	public final ActiveMqBrokerServiceRule activeMqBrokerServiceRule = new ActiveMqBrokerServiceRule(
-			JmsAppenderConnectPostStartupIT.class.getName(), portRule.getName());
-
-	// "admin"/"admin" are the default Apache Active MQ creds.
-	private static final JmsClientTestConfigRule jmsClientTestConfigRule = new JmsClientTestConfigRule(
-			ActiveMQInitialContextFactory.class.getName(), "tcp://localhost:" + portRule.getPort(), "admin", "admin".toCharArray());
-
-	/**
-	 * Assign the port and client ONCE for the whole test suite.
-	 */
-	@ClassRule
-	public static final RuleChain ruleChain = RuleChainFactory.create(portRule, jmsClientTestConfigRule);
-
-	@AfterClass
-	public static void afterClass() {
-		jmsClientTestConfigRule.getJmsClientTestConfig().stop();
-	}
-
-	@BeforeClass
-	public static void beforeClass() {
-		jmsClientTestConfigRule.getJmsClientTestConfig().start();
-	}
-
-	public JmsAppenderConnectPostStartupIT() {
-		super(jmsClientTestConfigRule);
-	}
+    @Test
+    public void testConnectPostStartup() throws Exception {
+        //
+        // Start appender
+        final int port = AvailablePortFinder.getNextAvailable();
+        final String brokerUrlString = "tcp://localhost:" + port;
+        jmsClientTestConfig = new JmsClientTestConfig(ActiveMQInitialContextFactory.class.getName(), brokerUrlString,
+                "admin", "admin".toCharArray());
+        jmsClientTestConfig.start();
+        appender = jmsClientTestConfig.createAppender(MessageLayout.createLayout());
+        //
+        // Logging will fail but the JMS manager is now running a reconnect thread.
+        try {
+            appendEvent(appender);
+            Assert.fail("Expected to catch a " + AppenderLoggingException.class.getName());
+        } catch (final AppenderLoggingException e) {
+            // Expected.
+        }
+        //
+        // Start broker
+        brokerService = ActiveMqBrokerServiceHelper.startBrokerService(JmsAppenderConnectPostStartupIT.class.getName(),
+                brokerUrlString, port);
+        //
+        // Logging now should just work
+        Thread.sleep(appender.getManager().getJmsManagerConfiguration().getReconnectIntervalMillis());
+        appendEvent(appender);
+    }
 }

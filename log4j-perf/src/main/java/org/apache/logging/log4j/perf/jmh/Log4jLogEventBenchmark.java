@@ -72,7 +72,7 @@ public class Log4jLogEventBenchmark {
     @Benchmark
     public Serializable createSerializableLogEventProxyWithoutException(final Blackhole bh) {
         final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
-        Serializable obj = Log4jLogEvent.serialize(event, false);
+        final Serializable obj = Log4jLogEvent.serialize(event, false);
         bh.consume(obj);
         return obj;
     }
@@ -80,7 +80,7 @@ public class Log4jLogEventBenchmark {
     @Benchmark
     public Serializable createSerializableLogEventProxyWithoutExceptionWithLocation(final Blackhole bh) {
         final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
-        Serializable obj = Log4jLogEvent.serialize(event, true);
+        final Serializable obj = Log4jLogEvent.serialize(event, true);
         bh.consume(obj);
         return obj;
     }
@@ -88,7 +88,7 @@ public class Log4jLogEventBenchmark {
     @Benchmark
     public Serializable createSerializableLogEventProxyWithException(final Blackhole bh) {
         final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, ERROR);
-        Serializable obj = Log4jLogEvent.serialize(event, false);
+        final Serializable obj = Log4jLogEvent.serialize(event, false);
         bh.consume(obj);
         return obj;
     }
@@ -96,7 +96,7 @@ public class Log4jLogEventBenchmark {
     private static class TestClass {
         private static final String FQCN = TestClass.class.getName();
 
-        public StackTraceElement getEventSource(String loggerName) {
+        public StackTraceElement getEventSource(final String loggerName) {
             final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(loggerName)
                     .setLoggerFqcn(FQCN).setLevel(Level.INFO).setMessage(MESSAGE).build();
             event.setIncludeLocation(true);

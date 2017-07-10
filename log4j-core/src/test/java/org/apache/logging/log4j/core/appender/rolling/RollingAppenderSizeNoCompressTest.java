@@ -59,9 +59,9 @@ public class RollingAppenderSizeNoCompressTest {
 
     @Test
     public void testAppender() throws Exception {
-      List<String> messages = new ArrayList<>();
+      final List<String> messages = new ArrayList<>();
         for (int i=0; i < 1000; ++i) {
-          String message = "This is test message number " + i;
+          final String message = "This is test message number " + i;
           messages.add(message);
             logger.debug(message);
             if (i % 100 == 0) {
@@ -75,7 +75,7 @@ public class RollingAppenderSizeNoCompressTest {
         assertTrue("Directory not created", dir.exists());
         final File[] files = dir.listFiles();
         assertNotNull(files);
-        for (File file : files) {
+        for (final File file : files) {
           final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try (FileInputStream fis = new FileInputStream(file)) {
               try {

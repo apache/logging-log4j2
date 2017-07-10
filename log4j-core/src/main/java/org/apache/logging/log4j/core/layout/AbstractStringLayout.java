@@ -69,17 +69,17 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             return headerSerializer;
         }
 
-        public B setCharset(Charset charset) {
+        public B setCharset(final Charset charset) {
             this.charset = charset;
             return asBuilder();
         }
 
-        public B setFooterSerializer(Serializer footerSerializer) {
+        public B setFooterSerializer(final Serializer footerSerializer) {
             this.footerSerializer = footerSerializer;
             return asBuilder();
         }
 
-        public B setHeaderSerializer(Serializer headerSerializer) {
+        public B setHeaderSerializer(final Serializer headerSerializer) {
             this.headerSerializer = headerSerializer;
             return asBuilder();
         }

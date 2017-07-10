@@ -64,6 +64,7 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
      * @param map The Map.
      * @return A new StringMapMessage
      */
+    @Override
     public StringMapMessage newInstance(final Map<String, String> map) {
         return new StringMapMessage(map);
     }

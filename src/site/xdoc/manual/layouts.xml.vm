@@ -449,6 +449,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
+            <tr>
+              <td>stacktraceAsString</td>
+              <td>boolean</td>
+              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
             <caption align="top">JsonLayout Parameters</caption>
           </table>
           <p>
@@ -838,60 +843,71 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>ex</b>|<b>exception</b>|<b>throwable</b><br />
-                &nbsp;&nbsp;{["none"<br />
-                &nbsp;&nbsp;|"full"<br />
-                &nbsp;&nbsp;|depth<br />
-                &nbsp;&nbsp;|"short"<br />
-                &nbsp;&nbsp;|"short.className"<br />
-                &nbsp;&nbsp;|"short.fileName"<br />
-                &nbsp;&nbsp;|"short.lineNumber"<br />
-                &nbsp;&nbsp;|"short.methodName"<br />
-                &nbsp;&nbsp;|"short.message"<br />
-                &nbsp;&nbsp;|"short.localizedMessage"]}<br />
-                &nbsp;&nbsp;{suffix(<i>pattern</i>)}
-                <!-- TODO: there are actually more options available in ThrowableFormatOptions that apply here -->
-                <!-- separator(), filters(), and ansi() -->
+				<b>ex</b>|<b>exception</b>|<b>throwable</b><br/>
+                {<br/>
+                &nbsp;&nbsp;[ "none"<br />
+                &nbsp;&nbsp;&nbsp;| "full"<br />
+                &nbsp;&nbsp;&nbsp;| depth<br />
+                &nbsp;&nbsp;&nbsp;| "short"<br />
+                &nbsp;&nbsp;&nbsp;| "short.className"<br />
+                &nbsp;&nbsp;&nbsp;| "short.fileName"<br />
+                &nbsp;&nbsp;&nbsp;| "short.lineNumber"<br />
+                &nbsp;&nbsp;&nbsp;| "short.methodName"<br />
+                &nbsp;&nbsp;&nbsp;| "short.message"<br />
+                &nbsp;&nbsp;&nbsp;| "short.localizedMessage"]}<br />
+                &nbsp;&nbsp;[,filters(package,package,...)]<br/>
+                &nbsp;&nbsp;[,separator(<i>separator</i>)]<br/>
+                }<br/>
+                {suffix(<i>pattern</i>)<br/>
+                }<br/>
               </td>
               <td>
                 <p>
-                  Outputs the Throwable trace bound to the LoggingEvent, by default this will output the full trace
-                  as one would normally find with a call to Throwable.printStackTrace().
+                  Outputs the Throwable trace bound to the logging event, by default this will output the full trace
+                  as one would normally find with a call to <code>Throwable.printStackTrace()</code>.
                 </p>
                 <p>
-                  You can follow the throwable conversion word with an option in the form <b>%throwable{option}</b>.
+                  You can follow the throwable conversion word with an option in the form <code>%throwable{option}</code>.
                 </p>
                 <p>
-                  <b>%throwable{short}</b> outputs the first line of the Throwable.
+                  <code>%throwable{short}</code> outputs the first line of the Throwable.
                 </p>
                 <p>
-                  <b>%throwable{short.className}</b> outputs the name of the class where the exception occurred.
+                  <code>%throwable{short.className}</code> outputs the name of the class where the exception occurred.
                 </p>
                 <p>
-                  <b>%throwable{short.methodName}</b> outputs the method name where the exception occurred.
+                  <code>%throwable{short.methodName}</code> outputs the method name where the exception occurred.
                 </p>
                 <p>
-                  <b>%throwable{short.fileName}</b> outputs the name of the class where the exception occurred.
+                  <code>%throwable{short.fileName}</code> outputs the name of the class where the exception occurred.
                 </p>
                 <p>
-                  <b>%throwable{short.lineNumber}</b> outputs the line number where the exception occurred.
+                  <code>%throwable{short.lineNumber}</code> outputs the line number where the exception occurred.
                 </p>
                 <p>
-                  <b>%throwable{short.message}</b> outputs the message.
+                  <code>%throwable{short.message}</code> outputs the message.
                 </p>
                 <p>
-                  <b>%throwable{short.localizedMessage}</b> outputs the localized message.
+                  <code>%throwable{short.localizedMessage}</code> outputs the localized message.
                 </p>
                 <p>
-                  <b>%throwable{n}</b> outputs the first n lines of the stack trace.
+                  <code>%throwable{n}</code> outputs the first n lines of the stack trace.
                 </p>
                 <p>
-                  Specifying <b>%throwable{none}</b> or <b>%throwable{0}</b> suppresses output of the exception.
+                  Specifying <code>%throwable{none}</code> or <code>%throwable{0}</code> suppresses output of the exception.
+                </p>
+                <p> 
+                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to 
+                  suppress matching stack frames from stack traces.
                 </p>
                 <p>
-                  Specifying <b>%throwable{suffix{<i>pattern</i>}</b> adds the output of <i>pattern</i> to the
-                  output only if there is a throwable to print. This option is orthogonal with the above
-                  conversions.
+                  Use a <code>separator</code> string to separate the lines of a stack trace. For example: 
+                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property, 
+                  which is operating system dependent.
+                </p>
+                <p>
+                  Use <code>ex{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only 
+                  when there is a throwable to print.
                 </p>
               </td>
             </tr>
@@ -1327,27 +1343,44 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternException"/>
-                <b>rEx</b>{["none"|"short"|"full"|depth]}{[filters(packages)]}{suffix(<i>pattern</i>)}<br />
-                <b>rException</b>{["none"|"short"|"full"|depth]}{[filters(packages)]}{suffix(<i>pattern</i>)}<br />
-                <b>rThrowable</b>{["none"|"short"|"full"|depth]}{[filters(packages)]}{suffix(<i>pattern</i>)}
-                <!-- TODO: more options are available in ThrowableFormatOptions -->
-                <!-- FIXME: these options are confusing! -->
+                <b>rEx</b>|<b>rException</b>|<b>rThrowable</b><br/>
+                &nbsp;&nbsp;{<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;["none" | "short" | "full" | depth]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;[,filters(package,package,...)]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;[,separator(<i>separator</i>)]<br/>
+                &nbsp;&nbsp;}<br/>
+                &nbsp;&nbsp;{ansi(<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;...)<br/>
+                &nbsp;&nbsp;}<br/>
+                &nbsp;&nbsp;{suffix(<i>pattern</i>)}<br/>
               </td>
               <td>
-                <p>The same as the %throwable conversion word but the stack trace is printed starting with the
+                <p>
+                  The same as the %throwable conversion word but the stack trace is printed starting with the
                   first exception that was thrown followed by each subsequent wrapping exception.
                 </p>
-                <p>The throwable conversion word can be followed by an option in the form
-                  <b>%rEx{short}</b>
-                  which will only output the first line of the Throwable or <b>%rEx{n}</b> where
-                  the first n lines of the stacktrace will be printed. The conversion word can also be
-                  followed by "filters(packages)" where packages is a list of package names that should
-                  be suppressed from stack traces. Specifying <b>%rEx{none}</b>
-                  or <b>%rEx{0}</b> will suppress printing of the exception.
+                <p>
+                  The throwable conversion word can be followed by an option in the form
+                  <code>%rEx{short}</code> which will only output the first line of the Throwable or 
+                  <code>%rEx{n}</code> where the first n lines of the stack trace will be printed.
+                </p>
+                <p> 
+                  Specifying <code>%rEx{none}</code> or <code>%rEx{0}</code> will suppress printing of the exception.
+                </p>
+                <p> 
+                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to 
+                  suppress matching stack frames from stack traces.
                 </p>
                 <p>
-                  As with the %throwable conversion, using <b>rEx{suffix(<i>pattern</i>)</b> will add the output
-                  of <i>pattern</i> to the output only if there is a throwable to print.
+                  Use a <code>separator</code> string to separate the lines of a stack trace. For example: 
+                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property, 
+                  which is operating system dependent.
+                </p>
+                <p>
+                  Use <code>rEx{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only 
+                  when there is a throwable to print.
                 </p>
               </td>
             </tr>
@@ -1570,8 +1603,9 @@ WARN  [main]: Message 2</pre>
                 <a name="PatternExtendedException"/>
                 <b>xEx</b>|<b>xException</b>|<b>xThrowable</b><br/>
                 &nbsp;&nbsp;{<br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;["none"|"short"|"full"|depth]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;["none" | "short" | "full" | depth]<br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;[,filters(package,package,...)]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;[,separator(<i>separator</i>)]<br/>
                 &nbsp;&nbsp;}<br/>
                 &nbsp;&nbsp;{ansi(<br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
@@ -1583,18 +1617,26 @@ WARN  [main]: Message 2</pre>
               <td>
                 <p>The same as the %throwable conversion word but also includes class packaging information.
                 </p>
-                <p>At the end of each stack element of the exception, a string containing the name of the jar file
+                <p>
+                  At the end of each stack element of the exception, a string containing the name of the jar file
                   that contains the class or the directory the class is located in and the "Implementation-Version"
                   as found in that jar's manifest will be added. If the information is uncertain, then the class
                   packaging data will be preceded by a tilde, i.e. the '~' character.
                 </p>
                 <p>The throwable conversion word can be followed by an option in the form
-                  <b>%xEx{short}</b>
-                  which will only output the first line of the Throwable or <b>%xEx{n}</b> where
-                  the first n lines of the stacktrace will be printed. The conversion word can also be
-                  followed by "filters(packages)" where packages is a comma-sepaarted list of package names that
-                  should be suppressed from stack traces. Specifying <b>%xEx{none}</b>
-                  or <b>%xEx{0}</b> will suppress printing of the exception.
+                  <code>%xEx{short}</code>
+                  which will only output the first line of the Throwable or <code>%xEx{n}</code> where
+                  the first n lines of the stack trace will be printed. Specifying <code>%xEx{none}</code>
+                  or <code>%xEx{0}</code> will suppress printing of the exception.
+                </p>
+                <p> 
+                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to 
+                  suppress matching stack frames from stack traces.
+                </p>
+                <p>
+                  Use a <code>separator</code> string to separate the lines of a stack trace. For example: 
+                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property, 
+                  which is operating system dependent.
                 </p>
                 <p>
                  The <code>ansi</code> option renders stack traces with ANSI escapes code using the JAnsi library.
@@ -1632,7 +1674,7 @@ WARN  [main]: Message 2</pre>
                   class like <code>blue</code>, <code>bg_red</code>, and so on (Log4j ignores case.)
                 </p>
                 <p>
-                  The special key <code>StyleMapName</code> can be set to one of the following prefedined maps:
+                  The special key <code>StyleMapName</code> can be set to one of the following predefined maps:
                   <code>Spock</code>, <code>Kirk</code>.
                 </p>
                 <p>
@@ -2141,6 +2183,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
+            <tr>
+              <td>stacktraceAsString</td>
+              <td>boolean</td>
+              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
             <caption align="top">XmlLayout Parameters</caption>
           </table>
           <p>
@@ -2224,6 +2271,11 @@ source:
               <td>includeStacktrace</td>
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
+            </tr>
+            <tr>
+              <td>stacktraceAsString</td>
+              <td>boolean</td>
+              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
             </tr>
             <caption align="top">YamlLayout Parameters</caption>
           </table>

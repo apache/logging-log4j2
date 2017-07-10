@@ -71,21 +71,27 @@ public class StoreConfiguration<T> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        StoreConfiguration other = (StoreConfiguration) obj;
+        }
+        final StoreConfiguration other = (StoreConfiguration) obj;
         if (location == null) {
-            if (other.location != null)
+            if (other.location != null) {
                 return false;
-        } else if (!location.equals(other.location))
+            }
+        } else if (!location.equals(other.location)) {
             return false;
-        if (!Arrays.equals(password, other.password))
+        }
+        if (!Arrays.equals(password, other.password)) {
             return false;
+        }
         return true;
     }    
 }

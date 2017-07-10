@@ -93,11 +93,24 @@ public class PatternProcessor {
         }
     }
 
+    /**
+     * Copy constructor with another pattern as source.
+     *
+     * @param pattern  The file pattern.
+     * @param copy Source pattern processor
+     */
+    public PatternProcessor(final String pattern, final PatternProcessor copy) {
+        this(pattern);
+        this.prevFileTime = copy.prevFileTime;
+        this.nextFileTime = copy.nextFileTime;
+        this.currentFileTime = copy.currentFileTime;
+    }
+
     public long getCurrentFileTime() {
         return currentFileTime;
     }
 
-    public void setCurrentFileTime(long currentFileTime) {
+    public void setCurrentFileTime(final long currentFileTime) {
         this.currentFileTime = currentFileTime;
     }
 
@@ -331,4 +344,5 @@ public class PatternProcessor {
     public long getNextFileTime() {
         return nextFileTime;
     }
+
 }

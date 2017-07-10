@@ -51,8 +51,8 @@ public class RollingAppenderCronEvery2DirectTest {
     public void testAppender() throws Exception {
         // TODO Is there a better way to test than putting the thread to sleep all over the place?
         final Logger logger = loggerContextRule.getLogger();
-        long end = System.currentTimeMillis() + 5000;
-        Random rand = new SecureRandom();
+        final long end = System.currentTimeMillis() + 5000;
+        final Random rand = new SecureRandom();
         rand.setSeed(end);
         int count = 1;
         do {

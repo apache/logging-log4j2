@@ -63,10 +63,10 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     }
 
     private static ThreadInfoFactory initFactory(final ClassLoader classLoader) {
-        ServiceLoader<ThreadInfoFactory> serviceLoader = ServiceLoader.load(ThreadInfoFactory.class, classLoader);
+        final ServiceLoader<ThreadInfoFactory> serviceLoader = ServiceLoader.load(ThreadInfoFactory.class, classLoader);
         ThreadInfoFactory result = null;
         try {
-            Iterator<ThreadInfoFactory> iterator = serviceLoader.iterator();
+            final Iterator<ThreadInfoFactory> iterator = serviceLoader.iterator();
             while (result == null && iterator.hasNext()) {
                 result = iterator.next();
             }

@@ -165,7 +165,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setHost(String host) {
+        public B setHost(final String host) {
             this.host = host;
             return asBuilder();
         }
@@ -175,7 +175,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setCompressionType(CompressionType compressionType) {
+        public B setCompressionType(final CompressionType compressionType) {
             this.compressionType = compressionType;
             return asBuilder();
         }
@@ -185,7 +185,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setCompressionThreshold(int compressionThreshold) {
+        public B setCompressionThreshold(final int compressionThreshold) {
             this.compressionThreshold = compressionThreshold;
             return asBuilder();
         }
@@ -196,7 +196,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setIncludeStacktrace(boolean includeStacktrace) {
+        public B setIncludeStacktrace(final boolean includeStacktrace) {
             this.includeStacktrace = includeStacktrace;
             return asBuilder();
         }
@@ -206,7 +206,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setIncludeThreadContext(boolean includeThreadContext) {
+        public B setIncludeThreadContext(final boolean includeThreadContext) {
             this.includeThreadContext = includeThreadContext;
             return asBuilder();
         }
@@ -217,7 +217,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setIncludeNullDelimiter(boolean includeNullDelimiter) {
+        public B setIncludeNullDelimiter(final boolean includeNullDelimiter) {
             this.includeNullDelimiter = includeNullDelimiter;
             return asBuilder();
         }
@@ -227,7 +227,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setAdditionalFields(KeyValuePair[] additionalFields) {
+        public B setAdditionalFields(final KeyValuePair[] additionalFields) {
             this.additionalFields = additionalFields;
             return asBuilder();
         }
@@ -248,7 +248,7 @@ public final class GelfLayout extends AbstractStringLayout {
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
         if (config == null) {
-            for (KeyValuePair additionalField : this.additionalFields) {
+            for (final KeyValuePair additionalField : this.additionalFields) {
                 if (valueNeedsLookup(additionalField.getValue())) {
                     throw new IllegalArgumentException("configuration needs to be set when there are additional fields with variables");
                 }

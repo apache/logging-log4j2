@@ -151,7 +151,7 @@ public class Timer implements Serializable, StringBuilderFormattable
     }
 
     @Override
-    public void formatTo(StringBuilder buffer) {
+    public void formatTo(final StringBuilder buffer) {
         buffer.append("Timer ").append(name);
         switch (status) {
             case "Start":

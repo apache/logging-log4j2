@@ -20,7 +20,6 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -42,7 +41,7 @@ public class LoggersPluginTest {
     public void testEmptyAttribute() throws Exception {
         final Logger logger = LogManager.getLogger();
         logger.info("Test");
-        StatusData data = StatusLogger.getLogger().getStatusData().get(0);
+        final StatusData data = StatusLogger.getLogger().getStatusData().get(0);
         //System.out.println(data.getFormattedStatus());
 
         assertEquals(Level.ERROR, data.getLevel());

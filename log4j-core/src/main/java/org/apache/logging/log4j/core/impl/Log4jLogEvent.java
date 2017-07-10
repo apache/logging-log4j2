@@ -471,6 +471,7 @@ public class Log4jLogEvent implements LogEvent {
         return new Builder(this);
     }
 
+    @Override
     public Log4jLogEvent toImmutable() {
         if (getMessage() instanceof ReusableMessage) {
             makeMessageImmutable();

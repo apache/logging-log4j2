@@ -135,9 +135,9 @@ public class FileAppenderPermissionsTest {
     public void testFileUserGroupAPI() throws Exception {
         final File file = new File(DIR, "AppenderTest-" + (1000 + fileIndex) + ".log");
         final Path path = file.toPath();
-        String user = findAUser();
+        final String user = findAUser();
         assertNotNull(user);
-        String group = findAGroup(user);
+        final String group = findAGroup(user);
         assertNotNull(group);
 
         final Layout<String> layout = PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
@@ -187,12 +187,12 @@ public class FileAppenderPermissionsTest {
         assertFalse("Appender did not stop", appender.isStarted());
     }
 
-    public static String findAGroup(String user) throws IOException {
+    public static String findAGroup(final String user) throws IOException {
         String group = user;
         try (FileInputStream fis = new FileInputStream("/etc/group")) {
-            List<String> groups = org.apache.commons.io.IOUtils.readLines(fis, Charset.defaultCharset());
+            final List<String> groups = org.apache.commons.io.IOUtils.readLines(fis, Charset.defaultCharset());
             for (int i = 0; i < groups.size(); i++) {
-                String aGroup = groups.get(i);
+                final String aGroup = groups.get(i);
                 if (!aGroup.startsWith(user) && aGroup.contains(user)) {
                     group = aGroup.split(":")[0];
                     break;

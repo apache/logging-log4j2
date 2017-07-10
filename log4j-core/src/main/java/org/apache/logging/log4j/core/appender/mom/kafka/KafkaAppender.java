@@ -82,17 +82,17 @@ public final class KafkaAppender extends AbstractAppender {
             return properties;
         }
 
-        public B setTopic(String topic) {
+        public B setTopic(final String topic) {
             this.topic = topic;
             return asBuilder();
         }
 
-        public B setSyncSend(boolean syncSend) {
+        public B setSyncSend(final boolean syncSend) {
             this.syncSend = syncSend;
             return asBuilder();
         }
 
-        public B setProperties(Property[] properties) {
+        public B setProperties(final Property[] properties) {
             this.properties = properties;
             return asBuilder();
         }
@@ -141,7 +141,7 @@ public final class KafkaAppender extends AbstractAppender {
         }
     }
 
-    private void tryAppend(LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
+    private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
         final Layout<? extends Serializable> layout = getLayout();
         byte[] data;
         if (layout != null) {

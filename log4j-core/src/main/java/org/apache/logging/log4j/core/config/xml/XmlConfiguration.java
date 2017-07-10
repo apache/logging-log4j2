@@ -199,7 +199,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         return factory.newDocumentBuilder();
     }
 
-    private static void disableDtdProcessing(DocumentBuilderFactory factory) throws ParserConfigurationException {
+    private static void disableDtdProcessing(final DocumentBuilderFactory factory) throws ParserConfigurationException {
         factory.setValidating(false);
         factory.setExpandEntityReferences(false);
         factory.setFeature("http://xml.org/sax/features/external-general-entities", false);

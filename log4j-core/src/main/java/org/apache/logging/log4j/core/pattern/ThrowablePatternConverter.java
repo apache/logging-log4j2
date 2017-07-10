@@ -62,10 +62,10 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
         if (this.options.getSuffix() != null) {
             final PatternParser parser = PatternLayout.createPatternParser(config);
-            List<PatternFormatter> parsedFormatters = parser.parse(this.options.getSuffix());
+            final List<PatternFormatter> parsedFormatters = parser.parse(this.options.getSuffix());
             // filter out nested formatters that will handle throwable
             boolean hasThrowableFormatter = false;
-            for (PatternFormatter formatter : parsedFormatters) {
+            for (final PatternFormatter formatter : parsedFormatters) {
                 if (formatter.handlesThrowable()) {
                     hasThrowableFormatter = true;
                 }
@@ -73,8 +73,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             if (!hasThrowableFormatter) {
                 this.formatters = parsedFormatters;
             } else {
-                List<PatternFormatter> formatters = new ArrayList<>();
-                for (PatternFormatter formatter : parsedFormatters) {
+                final List<PatternFormatter> formatters = new ArrayList<>();
+                for (final PatternFormatter formatter : parsedFormatters) {
                     if (!formatter.handlesThrowable()) {
                         formatters.add(formatter);
                     }
@@ -211,9 +211,9 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         return true;
     }
 
-    protected String getSuffix(LogEvent event) {
+    protected String getSuffix(final LogEvent event) {
         //noinspection ForLoopReplaceableByForEach
-        StringBuilder toAppendTo = new StringBuilder();
+        final StringBuilder toAppendTo = new StringBuilder();
         for (int i = 0, size = formatters.size(); i <  size; i++) {
             formatters.get(i).format(event, toAppendTo);
         }

@@ -85,7 +85,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
     public static CouchDbProvider createNoSqlProvider(
             @PluginAttribute("databaseName") final String databaseName,
             @PluginAttribute("protocol") String protocol,
-            @PluginAttribute(value = "server", defaultString = "localhost") @ValidHost String server,
+            @PluginAttribute(value = "server", defaultString = "localhost") @ValidHost final String server,
             @PluginAttribute(value = "port", defaultString = "0") @ValidPort final String port,
             @PluginAttribute("username") final String username,
             @PluginAttribute(value = "password", sensitive = true) final String password,

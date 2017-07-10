@@ -107,12 +107,12 @@ public class CassandraRule extends ExternalResource {
         }
 
         private void cancelOnWindows() {
-            SecurityManager currentSecurityManager = System.getSecurityManager();
+            final SecurityManager currentSecurityManager = System.getSecurityManager();
             try {
                 final SecurityManager securityManager = new SecurityManager() {
                     @Override
-                    public void checkPermission(Permission permission) {
-                        String permissionName = permission.getName();
+                    public void checkPermission(final Permission permission) {
+                        final String permissionName = permission.getName();
                         if (permissionName != null && permissionName.startsWith("exitVM")) {
                             throw new SecurityException("test");
                         }
@@ -120,7 +120,7 @@ public class CassandraRule extends ExternalResource {
                 };
                 System.setSecurityManager(securityManager);
                 daemon.stop();
-            } catch (SecurityException ex) {
+            } catch (final SecurityException ex) {
                 // ignore
             } finally {
                 System.setSecurityManager(currentSecurityManager);

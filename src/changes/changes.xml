@@ -76,11 +76,23 @@
       <action issue="LOG4J2-1934" dev="ggregory" type="add">
         JMS Appender does not know how to recover from a broken connection.
       </action>
+      <action issue="LOG4J2-1955" dev="ggregory" type="add">
+        JMS Appender should be able connect to a broker (later) even it is not present at configuration time.
+      </action>
       <action issue="LOG4J2-1956" dev="ggregory" type="update">
         JMS Appender broker password should be a char[], not a String.
       </action>
       <action issue="LOG4J2-1874" dev="rpopma" type="add" due-to="Roman Leventov">
         Added methods ::writeBytes(ByteBuffer) and ::writeBytes(byte[], int, int) to ByteBufferDestination interface and use these methods in TextEncoderHelper where possible to prepare for future enhancements to reduce lock contention.
+      </action>
+      <action issue="LOG4J2-1912" dev="ggregory" type="fix" due-to="R Ri">
+        CompositeConfiguration logs warning "Unable to determine URI for configuration." However, the reconfiguration is completed.
+      </action>
+      <action issue="LOG4J2-1964" dev="ggregory" type="fix" due-to="Pierrick HYMBERT">
+        Dynamic reconfiguration does not work for filePattern of RollingFile.
+      </action>
+      <action issue="LOG4J2-1961" dev="ggregory" type="fix" due-to="Christian Vent">
+        Reconfigure breaks DirectWriteRolloverStrategy.
       </action>
       <action issue="LOG4J2-1943" dev="rgoers" type="fix">
         The eventPrefix attribute was being ignored in the RFC5424Layout.
@@ -111,6 +123,9 @@
       </action>
       <action issue="LOG4J2-1917" dev="rgoers" type="update">
         Support using java.util.ServiceLoader to locate Log4j 2 API providers.
+      </action>
+      <action issue="LOG4J2-1966" dev="ggregory" type="update" due-to="M Sazzadul Hoque">
+        Include separator option of PatternLayout in manual (and other updates).
       </action>
       <action issue="LOG4J2-1854" dev="mikes" type="add" due-to="Xavier Jodoin">
         Support null byte delimiter in GelfLayout.
@@ -180,6 +195,9 @@
       </action>
       <action issue="LOG4J2-1938" dev="ggregory" type="update">
         Update Jackson from 2.8.7 to 2.8.9.
+      </action>
+      <action issue="LOG4J2-1970" dev="rpopma" type="update">
+        Update HdrHistogram from 2.1.8 to 2.1.9.
       </action>
     </release>
     <release version="2.8.2" date="2017-04-02" description="GA Release 2.8.2">

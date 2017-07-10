@@ -145,7 +145,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param configuration {@link AbstractPathAction#getStrSubstitutor()}
          * @return This builder
          */
-        public Builder withConfiguration(Configuration configuration) {
+        public Builder withConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
@@ -156,7 +156,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param subst {@link AbstractPathAction#getStrSubstitutor()}
          * @return This builder
          */
-        public Builder withSubst(StrSubstitutor subst) {
+        public Builder withSubst(final StrSubstitutor subst) {
             this.subst = subst;
             return this;
         }
@@ -166,7 +166,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param basePath {@link AbstractPathAction#getBasePath()}
          * @return This builder
          */
-        public Builder withBasePath(String basePath) {
+        public Builder withBasePath(final String basePath) {
             this.basePath = basePath;
             return this;
         }
@@ -176,7 +176,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param followLinks Follow synonyms links
          * @return This builder
          */
-        public Builder withFollowLinks(boolean followLinks) {
+        public Builder withFollowLinks(final boolean followLinks) {
             this.followLinks = followLinks;
             return this;
         }
@@ -186,7 +186,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param maxDepth Max search depth 
          * @return This builder
          */
-        public Builder withMaxDepth(int maxDepth) {
+        public Builder withMaxDepth(final int maxDepth) {
             this.maxDepth = maxDepth;
             return this;
         }
@@ -197,7 +197,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param pathConditions {@link AbstractPathAction#getPathConditions()}
          * @return This builder
          */
-        public Builder withPathConditions(PathCondition[] pathConditions) {
+        public Builder withPathConditions(final PathCondition[] pathConditions) {
             this.pathConditions = pathConditions;
             return this;
         }
@@ -211,7 +211,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param filePermissionsString Permissions to apply
          * @return This builder
          */
-        public Builder withFilePermissionsString(String filePermissionsString) {
+        public Builder withFilePermissionsString(final String filePermissionsString) {
             this.filePermissionsString = filePermissionsString;
             return this;
         }
@@ -221,7 +221,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param filePermissions Permissions to apply
          * @return This builder
          */
-        public Builder withFilePermissions(Set<PosixFilePermission> filePermissions) {
+        public Builder withFilePermissions(final Set<PosixFilePermission> filePermissions) {
             this.filePermissions = filePermissions;
             return this;
         }
@@ -231,7 +231,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param fileOwner File owner
          * @return This builder
          */
-        public Builder withFileOwner(String fileOwner) {
+        public Builder withFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return this;
         }
@@ -241,7 +241,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param fileGroup File group
          * @return This builder
          */
-        public Builder withFileGroup(String fileGroup) {
+        public Builder withFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return this;
         }

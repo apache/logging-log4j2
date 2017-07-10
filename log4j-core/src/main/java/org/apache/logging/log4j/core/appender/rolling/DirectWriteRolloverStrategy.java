@@ -110,7 +110,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
          * @return This builder for chaining convenience
          */
-        public Builder withMaxFiles(String maxFiles) {
+        public Builder withMaxFiles(final String maxFiles) {
             this.maxFiles = maxFiles;
             return this;
         }
@@ -125,7 +125,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
          * @return This builder for chaining convenience
          */
-        public Builder withCompressionLevelStr(String compressionLevelStr) {
+        public Builder withCompressionLevelStr(final String compressionLevelStr) {
             this.compressionLevelStr = compressionLevelStr;
             return this;
         }
@@ -140,7 +140,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param customActions custom actions to perform asynchronously after rollover
          * @return This builder for chaining convenience
          */
-        public Builder withCustomActions(Action[] customActions) {
+        public Builder withCustomActions(final Action[] customActions) {
             this.customActions = customActions;
             return this;
         }
@@ -155,7 +155,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
          * @return This builder for chaining convenience
          */
-        public Builder withStopCustomActionsOnError(boolean stopCustomActionsOnError) {
+        public Builder withStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
             this.stopCustomActionsOnError = stopCustomActionsOnError;
             return this;
         }
@@ -170,7 +170,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param tempCompressedFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
          * @return This builder for chaining convenience
          */
-        public Builder withTempCompressedFilePattern(String tempCompressedFilePattern) {
+        public Builder withTempCompressedFilePattern(final String tempCompressedFilePattern) {
             this.tempCompressedFilePattern = tempCompressedFilePattern;
             return this;
         }
@@ -185,7 +185,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param config The Configuration.
          * @return This builder for chaining convenience
          */
-        public Builder withConfig(Configuration config) {
+        public Builder withConfig(final Configuration config) {
             this.config = config;
             return this;
         }
@@ -294,14 +294,14 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     }
 
     private int purge(final RollingFileManager manager) {
-        SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
+        final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
         LOGGER.debug("Found {} eligible files, max is  {}", eligibleFiles.size(), maxFiles);
         while (eligibleFiles.size() >= maxFiles) {
             try {
-                Integer key = eligibleFiles.firstKey();
+                final Integer key = eligibleFiles.firstKey();
                 Files.delete(eligibleFiles.get(key));
                 eligibleFiles.remove(key);
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOGGER.error("Unable to delete {}", eligibleFiles.firstKey(), ioe);
                 break;
             }
@@ -309,14 +309,15 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         return eligibleFiles.size() > 0 ? eligibleFiles.lastKey() : 1;
     }
 
+    @Override
     public String getCurrentFileName(final RollingFileManager manager) {
         if (currentFileName == null) {
-            SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
+            final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
             final int fileIndex = eligibleFiles.size() > 0 ? (nextIndex > 0 ? nextIndex : eligibleFiles.size()) : 1;
             final StringBuilder buf = new StringBuilder(255);
             manager.getPatternProcessor().formatFileName(strSubstitutor, buf, true, fileIndex);
-            int suffixLength = suffixLength(buf.toString());
-            String name = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
+            final int suffixLength = suffixLength(buf.toString());
+            final String name = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
             currentFileName = name;
         }
         return currentFileName;
@@ -342,17 +343,17 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             LOGGER.trace("DirectWriteRolloverStrategy.purge() took {} milliseconds", durationMillis);
         }
         Action compressAction = null;
-        final String sourceName = currentFileName;
+        final String sourceName = getCurrentFileName(manager);
         String compressedName = sourceName;
         currentFileName = null;
         nextIndex = fileIndex + 1;
-        FileExtension fileExtension = manager.getFileExtension();
+        final FileExtension fileExtension = manager.getFileExtension();
         if (fileExtension != null) {
             compressedName += fileExtension.getExtension();            
             if (tempCompressedFilePattern != null) {
-                StringBuilder buf = new StringBuilder();
+                final StringBuilder buf = new StringBuilder();
                 tempCompressedFilePattern.formatFileName(strSubstitutor, buf, fileIndex);
-                String tmpCompressedName = buf.toString();
+                final String tmpCompressedName = buf.toString();
                 final File tmpCompressedNameFile = new File(tmpCompressedName);
                 if (tmpCompressedNameFile.getParentFile() != null) {
                     tmpCompressedNameFile.getParentFile().mkdirs();
@@ -372,7 +373,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         if (compressAction != null && manager.isAttributeViewEnabled()) {
             // Propagate posix attribute view to compressed file
             // @formatter:off
-            Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
+            final Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
                                                     .withBasePath(compressedName)
                                                     .withFollowLinks(false)
                                                     .withMaxDepth(1)

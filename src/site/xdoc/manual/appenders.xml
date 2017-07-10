@@ -1252,73 +1252,82 @@ public class ConnectionFactory {
         <!-- cool URLs don't change, so here are some old anchors -->
         <a name="JMSQueueAppender"/>
         <a name="JMSTopicAppender"/>
-        <subsection name="JMSAppender">
-          <p>The JMSAppender sends the formatted log event to a JMS Destination.</p>
+        <subsection name="JMS Appender">
+          <p>The JMS Appender sends the formatted log event to a JMS Destination.</p>
           <p>
             Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender. Starting
-            in Log4j 2.1, these appenders were combined into the JMSAppender which makes no distinction between queues
+            in Log4j 2.1, these appenders were combined into the JMS Appender which makes no distinction between queues
             and topics. However, configurations written for 2.0 which use the <code>&lt;JMSQueue/&gt;</code> or
             <code>&lt;JMSTopic/&gt;</code> elements will continue to work with the new <code>&lt;JMS/&gt;</code>
             configuration element.
           </p>
           <table>
-            <caption align="top">JMSAppender Parameters</caption>
+            <caption align="top">JMS Appender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
+              <th>Default</th>
               <th>Description</th>
             </tr>
             <tr>
               <td>factoryBindingName</td>
               <td>String</td>
+              <td><em>Required</em></td>
               <td>The name to locate in the Context that provides the
                 <a class="javadoc" href="http://download.oracle.com/javaee/5/api/javax/jms/ConnectionFactory.html">ConnectionFactory</a>.
-                This can be any subinterface of <code>ConnectionFactory</code> as well. This attribute is required.
+                This can be any subinterface of <code>ConnectionFactory</code> as well.
               </td>
             </tr>
             <tr>
               <td>factoryName</td>
               <td>String</td>
+              <td><em>Required</em></td>
               <td>The fully qualified class name that should be used to define the Initial Context Factory as defined in
-                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
-                If no value is provided the
-                default InitialContextFactory will be used. If a factoryName is specified without a providerURL
-                a warning message will be logged as this is likely to cause problems.</td>
+                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
+                If a factoryName is specified without a providerURL a warning message will be logged as this is 
+                likely to cause problems.
+              </td>
             </tr>
             <tr>
               <td>filter</td>
               <td>Filter</td>
+              <td>null</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
               may be used by using a CompositeFilter.</td>
             </tr>
             <tr>
               <td>layout</td>
               <td>Layout</td>
+              <td><em>Required</em></td>
               <td>
-                The Layout to use to format the LogEvent. Required, there is no default.
+                The Layout to use to format the LogEvent.
                 <em>New since 2.9, in previous versions SerializedLayout was default.</em>
               </td>
             </tr>
             <tr>
               <td>name</td>
               <td>String</td>
-              <td>The name of the Appender. Required.</td>
+              <td><em>Required</em></td>
+              <td>The name of the Appender. </td>
             </tr>
             <tr>
               <td>password</td>
               <td>String</td>
+              <td>null</td>
               <td>The password to use to create the JMS connection.</td>
             </tr>
             <tr>
               <td>providerURL</td>
               <td>String</td>
+              <td><em>Required</em></td>
               <td>The URL of the provider to use as defined by
-                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
-                If this value is null the default system provider will be used.</td>
+                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
+              </td>
             </tr>
             <tr>
               <td>destinationBindingName</td>
               <td>String</td>
+              <td><em>Required</em></td>
               <td>
                 The name to use to locate the
                 <a class="javadoc" href="http://download.oracle.com/javaee/5/api/javax/jms/Destination.html">Destination</a>.
@@ -1330,42 +1339,63 @@ public class ConnectionFactory {
             <tr>
               <td>securityPrincipalName</td>
               <td>String</td>
+              <td>null</td>
               <td>The name of the identity of the Principal as specified by
-                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>.
+                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>.
                 If a securityPrincipalName is specified without securityCredentials a warning message will be
                 logged as this is likely to cause problems.</td>
             </tr>
             <tr>
               <td>securityCredentials</td>
               <td>String</td>
+              <td>null</td>
               <td>The security credentials for the principal as specified by
-                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.
+                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.
               </td>
             </tr>
             <tr>
               <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
-                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
-                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+              <td>true</td>
+              <td>When <code>true</code>, exceptions caught while appending events are
+                internally logged and then ignored. When <code>false</code> exceptions are propagated to the
+                caller. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
+            </tr>
+            <tr>
+              <td>immediateFail</td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
+              JMS resources are not available. New in 2.9.</td>
+            </tr>
+            <tr>
+              <td>reconnectIntervalMillis</td>
+              <td>long</td>
+              <td>5000</td>
+              <td>If set to a value greater than 0, after an error, the JMSManager will attempt to reconnect to
+                the broker after waiting the specified number of milliseconds. If the reconnect fails then
+                an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is
+                set to <code>false</code>). New in 2.9.</td>
             </tr>
             <tr>
               <td>urlPkgPrefixes</td>
               <td>String</td>
+              <td>null</td>
               <td>A colon-separated list of package prefixes for the class name of the factory class that will create
                 a URL context factory as defined by
-                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.
+                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.
               </td>
             </tr>
             <tr>
               <td>userName</td>
               <td>String</td>
+              <td>null</td>
               <td>The user id used to create the JMS connection.</td>
             </tr>
           </table>
           <p>
-            Here is a sample JMSAppender configuration:
+            Here is a sample JMS Appender configuration:
           </p>
 
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2593,7 +2623,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The pattern of the file name of the archived log file. The format of the pattern is
                 dependent on the RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
                 a date/time pattern compatible with
-                <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
+                <a href="http://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
                 and/or a %i which represents an integer counter. The pattern also supports interpolation at
                 runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a>) can
                 be included in the pattern.</td>
@@ -3699,7 +3729,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 							a date/time
 							pattern compatible with
 							<a
-								href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
+								href="http://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">
 								SimpleDateFormat</a>
 
 							and/or a %i which represents an integer counter. The pattern
@@ -4475,7 +4505,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the syslog String to a byte array. The String must be
-                a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
+                a valid <a href="http://download.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>.
                 If not specified, the default system Charset will be used.</td>
             </tr>
             <tr>

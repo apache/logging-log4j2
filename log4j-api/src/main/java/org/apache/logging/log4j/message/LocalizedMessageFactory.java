@@ -67,7 +67,7 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
      * @since 2.8
      */
     @Override
-    public Message newMessage(String key) {
+    public Message newMessage(final String key) {
         if (resourceBundle == null) {
             return new LocalizedMessage(baseName,  key);
         }

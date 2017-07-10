@@ -272,7 +272,7 @@ public class FixedDateFormatTest {
                 { "2017-03-13 06:00:00,000", "2017-03-13 11:00:00,000" }, //
         };
 
-        TimeZone tz = TimeZone.getTimeZone("US/Central");
+        final TimeZone tz = TimeZone.getTimeZone("US/Central");
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
             assertEquals("SimpleDateFormat TZ=US Central", expectedDstAndNoDst[i][0], usCentral.format(date));
@@ -337,7 +337,7 @@ public class FixedDateFormatTest {
                 { "2017-11-06 05:00:00,000", "2017-11-06 11:00:00,000" }, //
         };
 
-        TimeZone tz = TimeZone.getTimeZone("US/Central");
+        final TimeZone tz = TimeZone.getTimeZone("US/Central");
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
             //System.out.println(usCentral.format(date) + ", Fixed: " + fixedUsCentral.format(date.getTime()) + ", utc: " + utc.format(date));

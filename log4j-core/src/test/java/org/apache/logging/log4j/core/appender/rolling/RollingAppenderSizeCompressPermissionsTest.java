@@ -63,7 +63,7 @@ public class RollingAppenderSizeCompressPermissionsTest {
     @Test
     public void testAppenderCompressPermissions() throws Exception {
         for (int i = 0; i < 500; ++i) {
-            String message = "This is test message number " + i;
+            final String message = "This is test message number " + i;
             logger.debug(message);
             if (i % 100 == 0) {
                 Thread.sleep(500);
@@ -78,8 +78,8 @@ public class RollingAppenderSizeCompressPermissionsTest {
         assertNotNull(files);
         int gzippedFiles1 = 0;
         int gzippedFiles2 = 0;
-        for (File file : files) {
-            FileExtension ext = FileExtension.lookupForFile(file.getName());
+        for (final File file : files) {
+            final FileExtension ext = FileExtension.lookupForFile(file.getName());
             if (ext != null) {
                 if (file.getName().startsWith("test1")) {
                     gzippedFiles1++;

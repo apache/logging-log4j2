@@ -41,7 +41,7 @@ public class AsyncAppenderNoLocationTest {
             static {
                 try {
                     init = new LoggerContextRule("log4j-asynch-no-location.xml");
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -51,7 +51,7 @@ public class AsyncAppenderNoLocationTest {
                 try {
                     this.app = (ListAppender) init.getAppender("List");
                     assertNotNull("No List appender found", app);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     System.out.println("init = " + init == null ? "null" : init);
 
                 }

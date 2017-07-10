@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.Objects;
+
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.Logger;
@@ -51,8 +53,7 @@ public class JndiLookup extends AbstractLookup {
         }
         final String jndiName = convertJndiName(key);
         try (final JndiManager jndiManager = JndiManager.getDefaultManager()) {
-            final Object value = jndiManager.lookup(jndiName);
-            return value == null ? null : String.valueOf(value);
+            return Objects.toString(jndiManager.lookup(jndiName), null);
         } catch (final NamingException e) {
             LOGGER.warn(LOOKUP, "Error looking up JNDI resource [{}].", jndiName, e);
             return null;

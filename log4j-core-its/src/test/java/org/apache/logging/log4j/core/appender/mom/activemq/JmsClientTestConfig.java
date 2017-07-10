@@ -34,62 +34,63 @@ class JmsClientTestConfig {
 				.setLayout(layout)
 				.setIgnoreExceptions(true)
 				.setJmsManager(jmsManager)
+				.setReconnectIntervalMillis(2000)
 				.build();
 		// @formatter:on
-		jmsAppender.start();
-		return jmsAppender;
-	}
+        jmsAppender.start();
+        return jmsAppender;
+    }
 
-	JmsAppender getJmsAppender() {
-		return jmsAppender;
-	}
+    JmsAppender getJmsAppender() {
+        return jmsAppender;
+    }
 
-	String getJmsInitialContextFactoryClassName() {
-		return jmsInitialContextFactoryClassName;
-	}
+    String getJmsInitialContextFactoryClassName() {
+        return jmsInitialContextFactoryClassName;
+    }
 
-	JmsManager getJmsManager() {
-		return jmsManager;
-	}
+    JmsManager getJmsManager() {
+        return jmsManager;
+    }
 
-	char[] getJmsPassword() {
-		return jmsPassword;
-	}
+    char[] getJmsPassword() {
+        return jmsPassword;
+    }
 
-	String getJmsProviderUrlStr() {
-		return jmsProviderUrlStr;
-	}
+    String getJmsProviderUrlStr() {
+        return jmsProviderUrlStr;
+    }
 
-	String getJmsUserName() {
-		return jmsUserName;
-	}
+    String getJmsUserName() {
+        return jmsUserName;
+    }
 
-	void setJmsAppender(final JmsAppender jmsAppender) {
-		this.jmsAppender = jmsAppender;
-	}
+    void setJmsAppender(final JmsAppender jmsAppender) {
+        this.jmsAppender = jmsAppender;
+    }
 
-	void setJmsManager(final JmsManager jmsManager) {
-		this.jmsManager = jmsManager;
-	}
+    void setJmsManager(final JmsManager jmsManager) {
+        this.jmsManager = jmsManager;
+    }
 
-	void start() {
-		System.setProperty(AbstractJmsAppenderIT.KEY_SERIALIZABLE_PACKAGES,
-				"org.apache.logging.log4j.core.impl,org.apache.logging.log4j.util,org.apache.logging.log4j,java.rmi");
-		final Properties additional = new Properties();
-		additional.setProperty("queue.TestQueue", "TestQueue");
-		// jndiManager is closed in stop() through the jmsManager
-		@SuppressWarnings("resource")
-		final JndiManager jndiManager = JndiManager.getJndiManager(jmsInitialContextFactoryClassName,
-				jmsProviderUrlStr, null, null, null, additional);
-		jmsManager = JmsManager.getJmsManager("JmsManager", jndiManager, "ConnectionFactory", "TestQueue",
-				jmsUserName, jmsPassword);
-	}
+    void start() {
+        System.setProperty(AbstractJmsAppenderIT.KEY_SERIALIZABLE_PACKAGES,
+                "org.apache.logging.log4j.core.impl,org.apache.logging.log4j.util,org.apache.logging.log4j,java.rmi");
+        final Properties additional = new Properties();
+        additional.setProperty("queue.TestQueue", "TestQueue");
+        // jndiManager is closed in stop() through the jmsManager
+        final Properties jndiProperties = JndiManager.createProperties(jmsInitialContextFactoryClassName,
+                jmsProviderUrlStr, null, null, null, additional);
+        final String name = JmsManager.class.getName() + "-" + getClass().getSimpleName() + "@" + hashCode();
+        jmsManager = JmsManager.getJmsManager(name, jndiProperties, "ConnectionFactory", "TestQueue", jmsUserName,
+                jmsPassword, false, JmsAppender.Builder.DEFAULT_RECONNECT_INTERVAL_MILLIS);
+    }
 
-	void stop() {
-		if (jmsManager != null) {
-			jmsManager.close();
-			jmsManager = null;
-		}
-		System.getProperties().remove(AbstractJmsAppenderIT.KEY_SERIALIZABLE_PACKAGES);
-	}
+    void stop() {
+        if (jmsManager != null) {
+            jmsManager.close();
+            jmsManager = null;
+        }
+        System.getProperties().remove(AbstractJmsAppenderIT.KEY_SERIALIZABLE_PACKAGES);
+    }
 }

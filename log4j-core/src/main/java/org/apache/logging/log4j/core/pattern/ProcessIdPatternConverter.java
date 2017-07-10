@@ -32,7 +32,7 @@ public final class ProcessIdPatternConverter extends LogEventPatternConverter {
     /**
      * Private constructor.
      */
-    private ProcessIdPatternConverter(String... options) {
+    private ProcessIdPatternConverter(final String... options) {
         super("Process ID", "pid");
         final String defaultValue = options.length > 0 ? options[0] : DEFAULT_DEFAULT_VALUE;
         String discoveredPid = null;
@@ -54,7 +54,7 @@ public final class ProcessIdPatternConverter extends LogEventPatternConverter {
         return pid;
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         System.out.println(new ProcessIdPatternConverter().pid);
     }
 

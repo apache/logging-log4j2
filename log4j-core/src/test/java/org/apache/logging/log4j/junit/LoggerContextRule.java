@@ -272,6 +272,10 @@ public class LoggerContextRule implements TestRule {
         return loggerContext.getRootLogger();
     }
 
+    public void reconfigure() {
+        loggerContext.reconfigure();
+    }
+    
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();

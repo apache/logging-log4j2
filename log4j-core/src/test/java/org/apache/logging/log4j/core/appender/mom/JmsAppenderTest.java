@@ -61,16 +61,16 @@ public class JmsAppenderTest {
     private static final String TOPIC_NAME = "jms/topic";
     private static final String LOG_MESSAGE = "Hello, world!";
 
-    private ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
-    private Connection connection = mock(Connection.class);
-    private Session session = mock(Session.class);
-    private Destination destination = mock(Destination.class);
-    private MessageProducer messageProducer = mock(MessageProducer.class);
-    private TextMessage textMessage = mock(TextMessage.class);
-    private ObjectMessage objectMessage = mock(ObjectMessage.class);
+    private final ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
+    private final Connection connection = mock(Connection.class);
+    private final Session session = mock(Session.class);
+    private final Destination destination = mock(Destination.class);
+    private final MessageProducer messageProducer = mock(MessageProducer.class);
+    private final TextMessage textMessage = mock(TextMessage.class);
+    private final ObjectMessage objectMessage = mock(ObjectMessage.class);
 
-    private JndiRule jndiRule = new JndiRule(createBindings());
-    private LoggerContextRule ctx = new LoggerContextRule("JmsAppenderTest.xml");
+    private final JndiRule jndiRule = new JndiRule(createBindings());
+    private final LoggerContextRule ctx = new LoggerContextRule("JmsAppenderTest.xml");
 
     @Rule
     public RuleChain rules = RuleChain.outerRule(jndiRule).around(ctx);

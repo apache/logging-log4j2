@@ -381,7 +381,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     @Override
-    protected void validate(String key, boolean value) {
+    protected void validate(final String key, final boolean value) {
         validateKey(key);
     }
 
@@ -389,7 +389,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9
      */
     @Override
-    protected void validate(String key, byte value) {
+    protected void validate(final String key, final byte value) {
         validateKey(key);
     }
 
@@ -397,7 +397,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9
      */
     @Override
-    protected void validate(String key, char value) {
+    protected void validate(final String key, final char value) {
         validateKey(key);
     }
     
@@ -405,7 +405,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9
      */
     @Override
-    protected void validate(String key, double value) {
+    protected void validate(final String key, final double value) {
         validateKey(key);
     }
     
@@ -413,7 +413,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9
      */
     @Override
-    protected void validate(String key, float value) {
+    protected void validate(final String key, final float value) {
         validateKey(key);
     }
 
@@ -421,7 +421,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9
      */
     @Override
-    protected void validate(String key, int value) {
+    protected void validate(final String key, final int value) {
         validateKey(key);
     }
 
@@ -429,7 +429,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9
      */
     @Override
-    protected void validate(String key, long value) {
+    protected void validate(final String key, final long value) {
         validateKey(key);
     }
 
@@ -437,7 +437,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9
      */
     @Override
-    protected void validate(String key, Object value) {
+    protected void validate(final String key, final Object value) {
         validateKey(key);
     }
 
@@ -445,7 +445,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9
      */
     @Override
-    protected void validate(String key, short value) {
+    protected void validate(final String key, final short value) {
         validateKey(key);
     }
 

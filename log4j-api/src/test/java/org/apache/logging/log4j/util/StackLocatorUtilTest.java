@@ -25,7 +25,6 @@ import org.junit.runners.ParentRunner;
 import sun.reflect.Reflection;
 
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {
@@ -92,8 +91,8 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testLocateClass() {
-        ClassLocator locator = new ClassLocator();
-        Class<?> clazz = locator.locateClass();
+        final ClassLocator locator = new ClassLocator();
+        final Class<?> clazz = locator.locateClass();
         assertNotNull("Could not locate class", clazz);
         assertEquals("Incorrect class", this.getClass(), clazz);
     }

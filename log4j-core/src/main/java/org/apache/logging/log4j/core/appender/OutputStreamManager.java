@@ -349,7 +349,7 @@ public class OutputStreamManager extends ByteBufferDestinationManager {
     }
 
     @Override
-    public void writeBytes(ByteBuffer data) {
+    public void writeBytes(final ByteBuffer data) {
         if (data.remaining() == 0) {
           return;
         }
