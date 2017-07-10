@@ -30,11 +30,11 @@ import org.junit.experimental.categories.Category;
 import static org.junit.Assert.*;
 
 @Category(Appenders.Jpa.class)
-public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
+public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
     private static final String PASSWORD = Strings.EMPTY;
 
-    public JpaHyperSqlAppenderTest() {
+    public JpaHsqldbAppenderTest() {
         super("hsqldb");
     }
 

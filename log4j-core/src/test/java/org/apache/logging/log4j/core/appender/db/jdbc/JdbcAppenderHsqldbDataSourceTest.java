@@ -25,26 +25,20 @@ import org.apache.logging.log4j.junit.JdbcRule;
 /**
  *
  */
-public class JdbcAppenderHsqlFactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
-    public JdbcAppenderHsqlFactoryMethodTest() {
+public class JdbcAppenderHsqldbDataSourceTest extends AbstractJdbcAppenderDataSourceTest {
+    public JdbcAppenderHsqldbDataSourceTest() {
         super(new JdbcRule(
-                new ConnectionSource() {
-                    @Override
-                    public Connection getConnection() throws SQLException {
-                        return JdbcAppenderHsqlFactoryMethodTest.getConnection();
-                    }
-                },
-                "CREATE TABLE fmLogEntry (" +
-                    "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), " +
-                    "logger VARCHAR(255), message VARCHAR(1024), exception CLOB, anotherDate TIMESTAMP" +
-                    ")",
-                "DROP TABLE fmLogEntry"
-            ),
-            "hsqldb"
-        );
-    }
-
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");
+            new ConnectionSource() {
+                @Override
+                public Connection getConnection() throws SQLException {
+                    return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");
+                }
+            },
+            "CREATE TABLE dsLogEntry (" +
+                "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), " +
+                "logger VARCHAR(255), message VARCHAR(1024), exception CLOB, anotherDate TIMESTAMP" +
+                ")",
+            "DROP TABLE dsLogEntry"
+        ));
     }
 }
