@@ -211,7 +211,7 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
-    <osgi.api.version>4.3.1</osgi.api.version>
+    <osgi.api.version>6.0.0</osgi.api.version>
     <activemq.version>5.14.5</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
@@ -261,12 +261,12 @@
       <dependency>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
-        <version>3.11.2.v20161107-1947</version>
+        <version>3.12.0.v20170512-1932</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.framework</artifactId>
-        <version>5.6.1</version>
+        <version>5.6.4</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
