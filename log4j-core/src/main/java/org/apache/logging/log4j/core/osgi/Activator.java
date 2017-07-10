@@ -57,18 +57,19 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     private static void scanInstalledBundlesForPlugins(final BundleContext context) {
         final Bundle[] bundles = context.getBundles();
         for (final Bundle bundle : bundles) {
-            // LOG4J2-920: don't scan system bundle for plugins
-            if (bundle.getState() == Bundle.ACTIVE && bundle.getBundleId() != 0) {
-                // TODO: bundle state can change during this
-                scanBundleForPlugins(bundle);
-            }
+            // TODO: bundle state can change during this
+            scanBundleForPlugins(bundle);
         }
     }
 
     private static void scanBundleForPlugins(final Bundle bundle) {
-        LOGGER.trace("Scanning bundle [{}] for plugins.", bundle.getSymbolicName());
-        PluginRegistry.getInstance().loadFromBundle(bundle.getBundleId(),
-            bundle.adapt(BundleWiring.class).getClassLoader());
+        long bundleId = bundle.getBundleId();
+        // LOG4J2-920: don't scan system bundle for plugins
+        if (bundle.getState() == Bundle.ACTIVE && bundleId != 0) {
+            LOGGER.trace("Scanning bundle [{}, id=%d] for plugins.", bundle.getSymbolicName(), bundleId);
+            PluginRegistry.getInstance().loadFromBundle(bundleId,
+                    bundle.adapt(BundleWiring.class).getClassLoader());
+        }
     }
 
     private static void stopBundlePlugins(final Bundle bundle) {
