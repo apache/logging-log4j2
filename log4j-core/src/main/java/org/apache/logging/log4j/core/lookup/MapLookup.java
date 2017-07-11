@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 
 /**
  * A map-based lookup.
@@ -118,7 +118,7 @@ public class MapLookup implements StrLookup {
 
     @Override
     public String lookup(final LogEvent event, final String key) {
-        final boolean isMapMessage = event != null && event.getMessage() instanceof MapMessage;
+        final boolean isMapMessage = event != null && event.getMessage() instanceof StringMapMessage;
         if (map == null && !isMapMessage) {
             return null;
         }
@@ -129,7 +129,7 @@ public class MapLookup implements StrLookup {
             }
         }
         if (isMapMessage) {
-            return ((MapMessage) event.getMessage()).get(key);
+            return ((StringMapMessage) event.getMessage()).get(key);
         }
         return null;
     }

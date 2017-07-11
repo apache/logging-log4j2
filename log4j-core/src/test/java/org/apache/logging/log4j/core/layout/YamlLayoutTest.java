@@ -115,15 +115,19 @@ public class YamlLayoutTest {
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol,
             final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace) throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(null, includeSource, includeContext, null, null,
-                StandardCharsets.UTF_8, includeStacktrace);
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setLocationInfo(includeSource)
+                .setProperties(includeContext)
+                .setIncludeStacktrace(includeStacktrace)
+                .setCharset(StandardCharsets.UTF_8)
+                .build();
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         // Just check for \n since \r might or might not be there.
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace,false).readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext, includeStacktrace);
         if (includeContext) {
             this.checkMapEntry("MDC.A", "A_Value", compact, str);
@@ -195,7 +199,13 @@ public class YamlLayoutTest {
         }
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, null, null, null, true);
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setLocationInfo(true)
+                .setProperties(true)
+                .setIncludeStacktrace(true)
+                .setConfiguration(configuration)
+                .build();
+
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -269,8 +279,12 @@ public class YamlLayoutTest {
 
     @Test
     public void testLayoutLoggerName() throws Exception {
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(null, false, false, null, null,
-                StandardCharsets.UTF_8, true);
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setLocationInfo(false)
+                .setProperties(false)
+                .setIncludeStacktrace(true)
+                .setCharset(StandardCharsets.UTF_8)
+                .build();
         final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //
@@ -280,7 +294,7 @@ public class YamlLayoutTest {
                 .setTimeMillis(1).build();
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("loggerName: \"a.B\""));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper(false, true).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jYamlObjectMapper(false, true, false).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
     }
@@ -298,6 +312,29 @@ public class YamlLayoutTest {
     @Test
     public void testExcludeStacktrace() throws Exception {
         this.testAllFeatures(false, false, false, false, false, false);
+    }
+
+    @Test
+    public void testStacktraceAsString() throws Exception {
+        final String str = prepareYAMLForStacktraceTests(true);
+        assertTrue(str, str.contains("extendedStackTrace: \"java.lang.NullPointerException"));
+    }
+
+    @Test
+    public void testStacktraceAsNonString() throws Exception {
+        final String str = prepareYAMLForStacktraceTests(false);
+        assertTrue(str, str.contains("extendedStackTrace:\n    - "));
+    }
+
+    private String prepareYAMLForStacktraceTests(final boolean stacktraceAsString) {
+        final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
+        // @formatter:off
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setIncludeStacktrace(true)
+                .setStacktraceAsString(stacktraceAsString)
+                .build();
+        // @formatter:off
+        return layout.toSerializable(expected);
     }
 
     private String toPropertySeparator(final boolean compact, final boolean value) {

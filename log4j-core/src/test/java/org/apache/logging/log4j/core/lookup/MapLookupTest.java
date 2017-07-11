@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.Test;
 
 /**
@@ -73,7 +73,7 @@ public class MapLookupTest {
       map.put("A", "B");
       final HashMap<String, String> eventMap = new HashMap<>();
       eventMap.put("A1", "B1");
-      final MapMessage message = new MapMessage(eventMap);
+      final StringMapMessage message = new StringMapMessage(eventMap);
       final LogEvent event = Log4jLogEvent.newBuilder()
                 .setMessage(message)
                 .build();

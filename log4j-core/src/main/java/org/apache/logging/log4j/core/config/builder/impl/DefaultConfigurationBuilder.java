@@ -41,8 +41,10 @@ import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.CustomLevelComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.KeyValuePairComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
@@ -410,6 +412,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         return new DefaultComponentBuilder<>(this, name, type, value);
     }
 
+    @Override
+    public PropertyComponentBuilder newProperty(final String name, final String value) {
+        return new DefaultPropertyComponentBuilder(this, name, value);
+    }
+
+    @Override
+    public KeyValuePairComponentBuilder newKeyValuePair(final String key, final String value) {
+        return new DefaultKeyValuePairComponentBuilder(this, key, value);
+    }
 
     @Override
     public CustomLevelComponentBuilder newCustomLevel(final String name, final int level) {

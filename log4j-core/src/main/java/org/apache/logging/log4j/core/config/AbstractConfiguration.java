@@ -211,7 +211,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
         subst.setConfiguration(this);
-        scriptManager = new ScriptManager(this, watchManager);
+        try {
+            scriptManager = new ScriptManager(this, watchManager);
+        } catch (final LinkageError | Exception e) {
+            // LOG4J2-1920 ScriptEngineManager is not available in Android
+            LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
+        }
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
         levelPlugins.collectPlugins(pluginPackages);
@@ -515,8 +520,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         LOGGER.error("Script reference to {} not added. Scripts definition cannot contain script references",
                                 script.getName());
                     } else {
-                        scriptManager.addScript(script);
-                    }
+                        if (scriptManager != null) {
+                            scriptManager.addScript(script);
+                        }}
                 }
             } else if (child.getName().equalsIgnoreCase("Appenders")) {
                 appenders = child.getObject();

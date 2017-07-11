@@ -69,17 +69,17 @@ public class PropertiesUtilTest {
 
     @Test
     public void testGetCharsetProperty() throws Exception {
-        Properties p = new Properties();
+        final Properties p = new Properties();
         p.setProperty("e.1", StandardCharsets.US_ASCII.name());
         p.setProperty("e.2", "wrong-charset-name");
-        PropertiesUtil pu = new PropertiesUtil(p);
+        final PropertiesUtil pu = new PropertiesUtil(p);
 
         assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.0"));
         assertEquals(StandardCharsets.US_ASCII, pu.getCharsetProperty("e.1"));
         try {
             pu.getCharsetProperty("e.2");
             fail("No expected UnsupportedCharsetException");
-        } catch (UnsupportedCharsetException ignored) {
+        } catch (final UnsupportedCharsetException ignored) {
         }
     }
 }

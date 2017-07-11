@@ -43,6 +43,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -470,6 +471,7 @@ public class Log4jLogEvent implements LogEvent {
         return new Builder(this);
     }
 
+    @Override
     public Log4jLogEvent toImmutable() {
         if (getMessage() instanceof ReusableMessage) {
             makeMessageImmutable();
@@ -625,25 +627,8 @@ public class Log4jLogEvent implements LogEvent {
         if (loggerFqcn == null || !includeLocation) {
             return null;
         }
-        source = calcLocation(loggerFqcn);
+        source = StackLocatorUtil.calcLocation(loggerFqcn);
         return source;
-    }
-
-    public static StackTraceElement calcLocation(final String fqcnOfLogger) {
-        if (fqcnOfLogger == null) {
-            return null;
-        }
-        // LOG4J2-1029 new Throwable().getStackTrace is faster than Thread.currentThread().getStackTrace().
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        StackTraceElement last = null;
-        for (int i = stackTrace.length - 1; i > 0; i--) {
-            final String className = stackTrace[i].getClassName();
-            if (fqcnOfLogger.equals(className)) {
-                return last;
-            }
-            last = stackTrace[i];
-        }
-        return null;
     }
 
     @Override
@@ -734,10 +719,6 @@ public class Log4jLogEvent implements LogEvent {
         throw new InvalidObjectException("Proxy required");
     }
 
-    public LogEvent createMemento() {
-        return createMemento(this);
-    }
-    
     public static LogEvent createMemento(final LogEvent logEvent) {
         return new Log4jLogEvent.Builder(logEvent).build();
     }

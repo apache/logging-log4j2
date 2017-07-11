@@ -83,7 +83,7 @@ public class MemoryMappedFileManagerTest {
         final boolean immediateFlush = false;
         try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(file.getAbsolutePath(),
                 isAppend, immediateFlush, MemoryMappedFileManager.DEFAULT_REGION_LENGTH, null, null)) {
-            manager.write(new byte[initialLength], 0, initialLength);
+            manager.writeBytes(new byte[initialLength], 0, initialLength);
         }
         final int expected = initialLength * 2;
         assertEquals("appended, not overwritten", expected, file.length());

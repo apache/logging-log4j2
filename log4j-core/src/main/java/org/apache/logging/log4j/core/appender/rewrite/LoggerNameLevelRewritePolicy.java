@@ -77,7 +77,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     @Override
     public LogEvent rewrite(final LogEvent event) {
-        if (!event.getLoggerName().startsWith(loggerName)) {
+        if (event.getLoggerName() == null || !event.getLoggerName().startsWith(loggerName)) {
             return event;
         }
         final Level sourceLevel = event.getLevel();

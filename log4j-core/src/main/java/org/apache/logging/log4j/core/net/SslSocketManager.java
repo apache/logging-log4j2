@@ -53,17 +53,18 @@ public class SslSocketManager extends TcpSocketManager {
     * @param host          The name of the host.
     * @param port          The port number on the host.
     * @param connectTimeoutMillis the connect timeout in milliseconds.
-    * @param delay         Reconnection interval.
+    * @param reconnectionDelayMillis         Reconnection interval.
     * @param immediateFail
     * @param layout        The Layout.
     * @param bufferSize The buffer size.
     * @deprecated Use {@link #SslSocketManager(String, OutputStream, Socket, SslConfiguration, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
     */
+   @Deprecated
    public SslSocketManager(final String name, final OutputStream os, final Socket sock,
            final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
-           final int connectTimeoutMillis, final int delay, final boolean immediateFail,
+           final int connectTimeoutMillis, final int reconnectionDelayMillis, final boolean immediateFail,
            final Layout<? extends Serializable> layout, final int bufferSize) {
-       super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, delay, immediateFail, layout, bufferSize, null);
+       super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize, null);
        this.sslConfig = sslConfig;
    }
 
@@ -77,16 +78,16 @@ public class SslSocketManager extends TcpSocketManager {
    * @param host          The name of the host.
    * @param port          The port number on the host.
    * @param connectTimeoutMillis the connect timeout in milliseconds.
-   * @param delay         Reconnection interval.
+   * @param reconnectionDelayMillis         Reconnection interval.
    * @param immediateFail
    * @param layout        The Layout.
    * @param bufferSize The buffer size.
    */
   public SslSocketManager(final String name, final OutputStream os, final Socket sock,
           final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
-          final int connectTimeoutMillis, final int delay, final boolean immediateFail,
+          final int connectTimeoutMillis, final int reconnectionDelayMillis, final boolean immediateFail,
           final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
-      super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, delay, immediateFail, layout, bufferSize, socketOptions);
+      super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize, socketOptions);
       this.sslConfig = sslConfig;
   }
 

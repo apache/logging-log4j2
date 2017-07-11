@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -134,7 +134,7 @@ public class ThrowableProxy implements Serializable {
         this.message = throwable.getMessage();
         this.localizedMessage = throwable.getLocalizedMessage();
         final Map<String, CacheEntry> map = new HashMap<>();
-        final Stack<Class<?>> stack = ReflectionUtil.getCurrentStackTrace();
+        final Stack<Class<?>> stack = StackLocatorUtil.getCurrentStackTrace();
         this.extendedStackTrace = this.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
         final Set<Throwable> causeVisited = new HashSet<>(1);
@@ -422,6 +422,16 @@ public class ThrowableProxy implements Serializable {
      */
     public ExtendedStackTraceElement[] getExtendedStackTrace() {
         return this.extendedStackTrace;
+    }
+
+    /**
+     * Format the stack trace including packaging information.
+     *
+     * @return The formatted stack trace including packaging information.
+     * @param suffix
+     */
+    public String getExtendedStackTraceAsString() {
+        return this.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), "");
     }
 
     /**

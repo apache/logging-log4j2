@@ -20,14 +20,17 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Represents a Message that consists of a Map.
@@ -36,23 +39,39 @@ import org.apache.logging.log4j.util.Strings;
  * When using asynchronous loggers and appenders it is not recommended to modify this message after the message is
  * logged, because it is undefined whether the logged message string will contain the old values or the modified
  * values.
+ * </p>
+ * <p>
+ * This class was pulled up from {@link StringMapMessage} to allow for Objects as values.
+ * </p>
+ * @param <M> Allow subclasses to use fluent APIs and override methods that return instances of subclasses.
+ * @param <V> The value type
  */
 @PerformanceSensitive("allocation")
 @AsynchronouslyFormattable
-public class MapMessage implements MultiformatMessage, StringBuilderFormattable {
+public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMessage, StringBuilderFormattable {
+
+    private static final long serialVersionUID = -5031471831131487120L;    
 
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
      */
-
     public enum MapFormat {
+        
         /** The map should be formatted as XML. */
         XML,
+        
         /** The map should be formatted as JSON. */
         JSON,
+        
         /** The map should be formatted the same as documented by java.util.AbstractMap.toString(). */
         JAVA;
 
+        /**
+         * Maps a format name to an {@link MapFormat} while ignoring case.
+         * 
+         * @param format a MapFormat name
+         * @return a MapFormat
+         */
         public static MapFormat lookupIgnoreCase(final String format) {
             return XML.name().equalsIgnoreCase(format) ? XML //
                     : JSON.name().equalsIgnoreCase(format) ? JSON //
@@ -60,27 +79,39 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
                     : null;
         }
 
+        /**
+         * All {@code MapFormat} names.
+         * 
+         * @return All {@code MapFormat} names.
+         */
         public static String[] names() {
             return new String[] {XML.name(), JSON.name(), JAVA.name()};
         }
     }
 
-    private static final long serialVersionUID = -5031471831131487120L;
-
     private final IndexedStringMap data;
 
     /**
-     * Constructor.
+     * Constructs a new instance.
      */
     public MapMessage() {
         data = new SortedArrayStringMap();
     }
 
     /**
-     * Constructor based on an existing Map.
+     * Constructs a new instance.
+     * 
+     * @param  initialCapacity the initial capacity.
+     */
+    public MapMessage(final int initialCapacity) {
+        data = new SortedArrayStringMap(initialCapacity);
+    }
+
+    /**
+     * Constructs a new instance based on an existing Map.
      * @param map The Map.
      */
-    public MapMessage(final Map<String, String> map) {
+    public MapMessage(final Map<String, V> map) {
         this.data = new SortedArrayStringMap(map);
     }
 
@@ -115,10 +146,12 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
      * Returns the message data as an unmodifiable Map.
      * @return the message data as an unmodifiable map.
      */
-    public Map<String, String> getData() {
-        final TreeMap<String, String> result = new TreeMap<>(); // returned map must be sorted
+    @SuppressWarnings("unchecked")
+    public Map<String, V> getData() {
+        final TreeMap<String, V> result = new TreeMap<>(); // returned map must be sorted
         for (int i = 0; i < data.size(); i++) {
-            result.put(data.getKeyAt(i), (String) data.getValueAt(i));
+            // The Eclipse compiler does not need the typecast to V, but the Oracle compiler sure does.
+            result.put(data.getKeyAt(i), (V) data.getValueAt(i));
         }
         return Collections.unmodifiableMap(result);
     }
@@ -139,18 +172,18 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Add an item to the data Map in fluent style.
-     * @param key The name of the data item.
-     * @param value The value of the data item.
-     * @return {@code this}
+     * Returns {@code true} if this data structure contains the specified key, {@code false} otherwise.
+     *
+     * @param key the key whose presence to check. May be {@code null}.
+     * @return {@code true} if this data structure contains the specified key, {@code false} otherwise
+     * @since 2.9
      */
-    public MapMessage with(final String key, final String value) {
-        put(key, value);
-        return this;
+    public boolean containsKey(final String key) {
+        return data.containsKey(key);
     }
 
     /**
-     * Add an item to the data Map.
+     * Adds an item to the data Map.
      * @param key The name of the data item.
      * @param value The value of the data item.
      */
@@ -162,12 +195,8 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         data.putValue(key, value);
     }
 
-    protected void validate(final String key, final String value) {
-
-    }
-
     /**
-     * Add all the elements from the specified Map.
+     * Adds all the elements from the specified Map.
      * @param map The Map to add.
      */
     public void putAll(final Map<String, String> map) {
@@ -177,7 +206,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Retrieve the value of the element with the specified key or null if the key is not present.
+     * Retrieves the value of the element with the specified key or null if the key is not present.
      * @param key The name of the element.
      * @return The value of the element or null if the key is not present.
      */
@@ -186,7 +215,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Remove the element with the specified name.
+     * Removes the element with the specified name.
      * @param key The name of the element.
      * @return The previous value of the element.
      */
@@ -197,7 +226,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     }
 
     /**
-     * Format the Structured data as described in RFC 5424.
+     * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
      *
      * @return The formatted String.
      */
@@ -205,6 +234,12 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         return format((MapFormat) null, new StringBuilder()).toString();
     }
 
+    /**
+     * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
+     *
+     * @param format The format identifier.
+     * @return The formatted String.
+     */
     public String asString(final String format) {
         try {
             return format(EnglishEnums.valueOf(MapFormat.class, format), new StringBuilder()).toString();
@@ -212,10 +247,62 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
             return asString();
         }
     }
+    
     /**
-     * Format the Structured data as described in RFC 5424.
+     * Performs the given action for each key-value pair in this data structure
+     * until all entries have been processed or the action throws an exception.
+     * <p>
+     * Some implementations may not support structural modifications (adding new elements or removing elements) while
+     * iterating over the contents. In such implementations, attempts to add or remove elements from the
+     * {@code BiConsumer}'s {@link BiConsumer#accept(Object, Object)} accept} method may cause a
+     * {@code ConcurrentModificationException} to be thrown.
+     * </p>
      *
-     * @param format The format identifier. Ignored in this implementation.
+     * @param action The action to be performed for each key-value pair in this collection
+     * @param <CV> type of the consumer value
+     * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          {@link #forEach(TriConsumer, Object)}.
+     * @see ReadOnlyStringMap#forEach(BiConsumer)
+     * @since 2.9
+     */
+    public <CV> void forEach(final BiConsumer<String, ? super CV> action) {
+        data.forEach(action);
+    }
+
+    /**
+     * Performs the given action for each key-value pair in this data structure
+     * until all entries have been processed or the action throws an exception.
+     * <p>
+     * The third parameter lets callers pass in a stateful object to be modified with the key-value pairs,
+     * so the TriConsumer implementation itself can be stateless and potentially reusable.
+     * </p>
+     * <p>
+     * Some implementations may not support structural modifications (adding new elements or removing elements) while
+     * iterating over the contents. In such implementations, attempts to add or remove elements from the
+     * {@code TriConsumer}'s {@link TriConsumer#accept(Object, Object, Object) accept} method may cause a
+     * {@code ConcurrentModificationException} to be thrown.
+     * </p>
+     *
+     * @param action The action to be performed for each key-value pair in this collection
+     * @param state the object to be passed as the third parameter to each invocation on the specified
+     *          triconsumer
+     * @param <CV> type of the consumer value
+     * @param <S> type of the third parameter
+     * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
+     *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or
+     *          {@link #forEach(TriConsumer, Object)}.
+     * @see ReadOnlyStringMap#forEach(TriConsumer, Object)
+     * @since 2.9
+     */
+    public <CV, S> void forEach(final TriConsumer<String, ? super CV, S> action, final S state) {
+        data.forEach(action, state);
+    }
+    
+    /**
+     * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
+     *
+     * @param format The format identifier.
      * @return The formatted String.
      */
     private StringBuilder format(final MapFormat format, final StringBuilder sb) {
@@ -243,17 +330,22 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         return sb;
     }
 
+    /**
+     * Formats this message as an XML fragment String into the given builder.
+     *
+     * @param sb format into this builder.
+     */
     public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
         for (int i = 0; i < data.size(); i++) {
-            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">").append(data.getValueAt(i))
+            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">").append((String)data.getValueAt(i))
                     .append("</Entry>\n");
         }
         sb.append("</Map>");
     }
 
     /**
-     * Format the message and return it.
+     * Formats the message and return it.
      * @return the formatted message.
      */
     @Override
@@ -263,9 +355,11 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
 
     /**
      *
-     * @param formats An array of Strings that provide extra information about how to format the message.
-     * MapMessage uses the first format specifier it recognizes. The supported formats are XML, JSON, and
-     * JAVA. The default format is key1="value1" key2="value2" as required by RFC 5424 messages.
+     * @param formats
+     *            An array of Strings that provide extra information about how to format the message. MapMessage uses
+     *            the first format specifier it recognizes. The supported formats are XML, JSON, and JAVA. The default
+     *            format is key1="value1" key2="value2" as required by <a href="https://tools.ietf.org/html/rfc5424">RFC
+     *            5424</a> messages.
      *
      * @return The formatted message.
      */
@@ -317,8 +411,14 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
         sb.append('}');
     }
 
-    public MapMessage newInstance(final Map<String, String> map) {
-        return new MapMessage(map);
+    /**
+     * Constructs a new instance based on an existing Map.
+     * @param map The Map.
+     * @return A new MapMessage
+     */
+    @SuppressWarnings("unchecked")
+    public M newInstance(final Map<String, V> map) {
+        return (M) new MapMessage<>(map);
     }
 
     @Override
@@ -340,7 +440,7 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
             return false;
         }
 
-        final MapMessage that = (MapMessage) o;
+        final MapMessage<?, ?> that = (MapMessage<?, ?>) o;
 
         return this.data.equals(that.data);
     }
@@ -359,4 +459,213 @@ public class MapMessage implements MultiformatMessage, StringBuilderFormattable 
     public Throwable getThrowable() {
         return null;
     }
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final boolean value) {
+        // do nothing
+    }
+
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final byte value) {
+        // do nothing
+    }
+
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final char value) {
+        // do nothing
+    }
+
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final double value) {
+        // do nothing
+    }
+
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final float value) {
+        // do nothing
+    }
+    
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final int value) {
+        // do nothing
+    }
+
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final long value) {
+        // do nothing
+    }
+    
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final Object value) {
+        // do nothing
+    }
+
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final short value) {
+        // do nothing
+    }
+
+    /**
+     * @since 2.9
+     */
+    protected void validate(final String key, final String value) {
+        // do nothing
+    }
+
+    /**
+     * Adds an item to the data Map.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return this object
+     * @since 2.9
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final boolean value) {
+        validate(key, value);
+        data.putValue(key, value);
+        return (M) this;
+    }
+
+    /**
+     * Adds an item to the data Map.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return this object
+     * @since 2.9
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final byte value) {
+        validate(key, value);
+        data.putValue(key, value);
+        return (M) this;
+    }
+
+    /**
+     * Adds an item to the data Map.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return this object
+     * @since 2.9
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final char value) {
+        validate(key, value);
+        data.putValue(key, value);
+        return (M) this;
+    }
+
+
+    /**
+     * Adds an item to the data Map.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return this object
+     * @since 2.9
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final double value) {
+        validate(key, value);
+        data.putValue(key, value);
+        return (M) this;
+    }
+
+    /**
+     * Adds an item to the data Map.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return this object
+     * @since 2.9
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final float value) {
+        validate(key, value);
+        data.putValue(key, value);
+        return (M) this;
+    }
+
+    /**
+     * Adds an item to the data Map.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return this object
+     * @since 2.9
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final int value) {
+        validate(key, value);
+        data.putValue(key, value);
+        return (M) this;
+    }
+
+    /**
+     * Adds an item to the data Map.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return this object
+     * @since 2.9
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final long value) {
+        validate(key, value);
+        data.putValue(key, value);
+        return (M) this;
+    }
+
+    /**
+     * Adds an item to the data Map.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return this object
+     * @since 2.9
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final Object value) {
+        validate(key, value);
+        data.putValue(key, value);
+        return (M) this;
+    }
+
+    /**
+     * Adds an item to the data Map.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return this object
+     * @since 2.9
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final short value) {
+        validate(key, value);
+        data.putValue(key, value);
+        return (M) this;
+    }
+
+    /**
+     * Adds an item to the data Map in fluent style.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return {@code this}
+     */
+    @SuppressWarnings("unchecked")
+    public M with(final String key, final String value) {
+        put(key, value);
+        return (M) this;
+    }
+
 }

@@ -38,7 +38,6 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
 
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
     private static final int DEFAULT_STRING_BUILDER_SIZE = 64;
-    private static final int MAX_STRING_BUILDER_SIZE = Constants.MAX_REUSABLE_MESSAGE_SIZE;
 
     /**
      * Name of property to output.
@@ -165,9 +164,6 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
     }
 
     private static void trimToMaxSize(final StringBuilder stringBuilder) {
-        if (stringBuilder.length() > MAX_STRING_BUILDER_SIZE) {
-            stringBuilder.setLength(MAX_STRING_BUILDER_SIZE);
-            stringBuilder.trimToSize();
-        }
+        StringBuilders.trimToMaxSize(stringBuilder, Constants.MAX_REUSABLE_MESSAGE_SIZE);
     }
 }

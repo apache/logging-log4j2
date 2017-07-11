@@ -32,7 +32,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -93,8 +93,8 @@ public class LogManager {
                         try {
                             factories.put(provider.getPriority(), factoryClass.newInstance());
                         } catch (final Exception e) {
-                            LOGGER.error("Unable to create class {} specified in {}", factoryClass.getName(), provider
-                                    .getUrl().toString(), e);
+                            LOGGER.error("Unable to create class {} specified in provider URL {}", factoryClass.getName(), provider
+                                    .getUrl(), e);
                         }
                     }
                 }
@@ -418,7 +418,7 @@ public class LogManager {
      * @since 2.4
      */
     public static Logger getFormatterLogger() {
-        return getFormatterLogger(ReflectionUtil.getCallerClass(2));
+        return getFormatterLogger(StackLocatorUtil.getCallerClass(2));
     }
 
     /**
@@ -449,7 +449,7 @@ public class LogManager {
      * @see StringFormatterMessageFactory
      */
     public static Logger getFormatterLogger(final Class<?> clazz) {
-        return getLogger(clazz != null ? clazz : ReflectionUtil.getCallerClass(2),
+        return getLogger(clazz != null ? clazz : StackLocatorUtil.getCallerClass(2),
                 StringFormatterMessageFactory.INSTANCE);
     }
 
@@ -481,7 +481,7 @@ public class LogManager {
      * @see StringFormatterMessageFactory
      */
     public static Logger getFormatterLogger(final Object value) {
-        return getLogger(value != null ? value.getClass() : ReflectionUtil.getCallerClass(2),
+        return getLogger(value != null ? value.getClass() : StackLocatorUtil.getCallerClass(2),
                 StringFormatterMessageFactory.INSTANCE);
     }
 
@@ -512,7 +512,7 @@ public class LogManager {
      * @see StringFormatterMessageFactory
      */
     public static Logger getFormatterLogger(final String name) {
-        return name == null ? getFormatterLogger(ReflectionUtil.getCallerClass(2)) : getLogger(name,
+        return name == null ? getFormatterLogger(StackLocatorUtil.getCallerClass(2)) : getLogger(name,
                 StringFormatterMessageFactory.INSTANCE);
     }
 
@@ -520,7 +520,7 @@ public class LogManager {
         if (clazz != null) {
             return clazz;
         }
-        final Class<?> candidate = ReflectionUtil.getCallerClass(3);
+        final Class<?> candidate = StackLocatorUtil.getCallerClass(3);
         if (candidate == null) {
             throw new UnsupportedOperationException("No class provided, and an appropriate one cannot be found.");
         }
@@ -534,7 +534,7 @@ public class LogManager {
      * @throws UnsupportedOperationException if the calling class cannot be determined.
      */
     public static Logger getLogger() {
-        return getLogger(ReflectionUtil.getCallerClass(2));
+        return getLogger(StackLocatorUtil.getCallerClass(2));
     }
 
     /**
@@ -576,7 +576,7 @@ public class LogManager {
      * @throws UnsupportedOperationException if the calling class cannot be determined.
      */
     public static Logger getLogger(final MessageFactory messageFactory) {
-        return getLogger(ReflectionUtil.getCallerClass(2), messageFactory);
+        return getLogger(StackLocatorUtil.getCallerClass(2), messageFactory);
     }
 
     /**
@@ -589,7 +589,7 @@ public class LogManager {
      *             determined.
      */
     public static Logger getLogger(final Object value) {
-        return getLogger(value != null ? value.getClass() : ReflectionUtil.getCallerClass(2));
+        return getLogger(value != null ? value.getClass() : StackLocatorUtil.getCallerClass(2));
     }
 
     /**
@@ -604,7 +604,7 @@ public class LogManager {
      *             determined.
      */
     public static Logger getLogger(final Object value, final MessageFactory messageFactory) {
-        return getLogger(value != null ? value.getClass() : ReflectionUtil.getCallerClass(2), messageFactory);
+        return getLogger(value != null ? value.getClass() : StackLocatorUtil.getCallerClass(2), messageFactory);
     }
 
     /**
@@ -615,7 +615,7 @@ public class LogManager {
      * @throws UnsupportedOperationException if {@code name} is {@code null} and the calling class cannot be determined.
      */
     public static Logger getLogger(final String name) {
-        return name != null ? getContext(false).getLogger(name) : getLogger(ReflectionUtil.getCallerClass(2));
+        return name != null ? getContext(false).getLogger(name) : getLogger(StackLocatorUtil.getCallerClass(2));
     }
 
     /**
@@ -629,7 +629,7 @@ public class LogManager {
      */
     public static Logger getLogger(final String name, final MessageFactory messageFactory) {
         return name != null ? getContext(false).getLogger(name, messageFactory) : getLogger(
-                ReflectionUtil.getCallerClass(2), messageFactory);
+                StackLocatorUtil.getCallerClass(2), messageFactory);
     }
 
     /**

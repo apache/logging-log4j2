@@ -69,7 +69,7 @@
         </tr>
         <tr>
           <td>YAML configuration</td>
-          <td><a href="https://github.com/FasterXML/jackson-dataformat-yaml">Jackson YAML data format</a></td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson databind</a> and <a href="https://github.com/FasterXML/jackson-dataformat-yaml">YAML data format</a></td>
         </tr>
         <tr>
           <td>CSV Layout</td>
@@ -83,6 +83,10 @@
           <td>XML Layout</td>
           <td><a href="https://github.com/FasterXML/jackson">Jackson core, databind and dataformat XML</a><br />
               And <code>com.fasterxml.woodstox:woodstox-core:5.0.2</code></td>
+        </tr>
+        <tr>
+          <td>YAML Layout</td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core, databind</a> and <a href="https://github.com/FasterXML/jackson-dataformat-yaml">YAML data format</a></td>
         </tr>
         <tr>
           <td>Async Loggers</td>
@@ -117,11 +121,11 @@
         </tr>
         <tr>
           <td>NoSQL Appender with MongoDB provider</td>
-          <td>MongoDB Java Client driver</td>
+          <td>MongoDB Java Client driver and Log4j NoSQL library</td>
         </tr>
         <tr>
           <td>NoSQL Appender with Apache CouchDB provider</td>
-          <td>LightCouch CouchDB client library</td>
+          <td>LightCouch CouchDB client library and Log4j NoSQL library</td>
         </tr>
         <tr>
           <td>Cassandra Appender</td>
@@ -140,13 +144,6 @@
             licensed under the terms of the Mozilla Public License Version 2.0 (MPLv2). For details see the
             file <a href="https://github.com/zeromq/jeromq/blob/master/LICENSE">LICENSE</a> included with the JeroMQ
             distribution.
-          </td>
-        </tr>
-        <tr>
-          <td>TcpSocketServer and UdpSocketServer</td>
-          <td>
-            TcpSocketServer and UdpSocketServer use the <a href="http://www.jcommander.org/">JCommander</a> library 
-            which is licensed under the terms of the Apache License version 2.0.
           </td>
         </tr>
       </table>
@@ -254,6 +251,10 @@
         <tr>
           <td>NoSQL Appender with <a href="https://couchdb.apache.org/">Apache CouchDB</a> provider</td>
           <td>the <a href="http://www.lightcouch.org/">LightCouch</a> CouchDB client library</td>
+        </tr>
+        <tr>
+          <td>Cassandra Appender</td>
+          <td>the <a href="http://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html">Datastax Cassandra driver</a></td>
         </tr>
       </table>
 

@@ -95,6 +95,8 @@ Apache Log4j 2 is distributed under the [Apache License, version 2.0](http://www
 
 [How to download Log4j](http://logging.apache.org/log4j/2.x/download.html),
 and [how to use it from Maven, Ivy and Gradle](http://logging.apache.org/log4j/2.x/maven-artifacts.html).
+You can access the latest development snapshot by using the Maven repository `https://repository.apache.org/snapshots`, 
+see [Snapshot builds](https://logging.apache.org/log4j/2.x/maven-artifacts.html#Snapshot_builds).
 
 ## Issue Tracking
 

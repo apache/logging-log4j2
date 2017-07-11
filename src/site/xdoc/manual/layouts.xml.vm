@@ -182,10 +182,13 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
         <pre class="prettyprint linenums">
 0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
 </pre>
+          <p>
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using CSV layouts.
+          </p>
         </subsection>
         <a name="GELFLayout"/>
         <subsection name="GELF Layout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.GELFLayout -->
+          <!-- From Javadoc of org.apache.logging.log4j.core.layout.GelfLayout -->
           <p>
             Lays out events in the Graylog Extended Log Format (GELF) 1.1.
           </p>
@@ -194,12 +197,25 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             (the <code>compressionThreshold</code>). This layout does not implement chunking.
           </p>
           <p>
-            Configure as follows to send to a Graylog2 server:
+            Configure as follows to send to a Graylog 2.x server with UDP:
           </p>
           <pre class="prettyprint linenums">
   &lt;Appenders&gt;
     &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
-        &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
+        &lt;GelfLayout host="someserver" compressionType="ZLIB" compressionThreshold="1024"&gt;
+            &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
+            &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
+        &lt;/GelfLayout&gt;
+    &lt;/Socket&gt;
+  &lt;/Appenders&gt;
+</pre>
+          <p>
+            Configure as follows to send to a Graylog 2.x server with TCP:
+          </p>
+          <pre class="prettyprint linenums">
+  &lt;Appenders&gt;
+    &lt;Socket name="Graylog" protocol="tcp" host="graylog.domain.com" port="12201"&gt;
+        &lt;GelfLayout host="someserver" compressionType="OFF" includeNullDelimiter="true"&gt;
             &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
             &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
         &lt;/GelfLayout&gt;
@@ -239,7 +255,13 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>boolean</td>
               <td>Whether to include thread context as additional fields (optional, default to true).</td>
             </tr>
-            <caption align="top">GELF Layout Parameters</caption>
+            <tr>
+              <td>includeNullDelimiter</td>
+              <td>boolean</td>
+              <td>Whether to include NULL byte as delimiter after each event (optional, default to false).
+                  Useful for Graylog GELF TCP input. Cannot be used with compression.</td>
+            </tr>
+            <caption align="top">GelfLayout Parameters</caption>
           </table>
            <p>
              See also:
@@ -249,8 +271,8 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
            </ul>
         </subsection>
         <a name="HTMLLayout"/>
-        <subsection name="HTMLLayout">
-          <p>The HTMLLayout generates an HTML page and adds each LogEvent to a row in a table.
+        <subsection name="HTML Layout">
+          <p>The HtmlLayout generates an HTML page and adds each LogEvent to a row in a table.
           </p>
           <table>
             <tr>
@@ -285,15 +307,23 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>String</td>
               <td>A String that will appear as the HTML title.</td>
             </tr>
-            <caption align="top">HTML Layout Parameters</caption>
+            <tr>
+              <td>fontName</td>
+              <td>String</td>
+              <td>The <code>font-family</code> to use. The default is "arial,sans-serif".</td>
+            </tr>
+            <tr>
+              <td>fontSize</td>
+              <td>String</td>
+              <td>The <code>font-size</code> to use. The default is "small".</td>
+            </tr>
+            <caption align="top">HtmlLayout Parameters</caption>
           </table>
         </subsection>
         <a name="JSONLayout"/>
-        <subsection name="JSONLayout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.JSONLayout -->
+        <subsection name="JSON Layout">
           <p>
-          Appends a series of JSON events as strings serialized as bytes. This layout requires Jackson jar files
-          (see pom.xml for details).
+          Appends a series of JSON events as strings serialized as bytes.
           </p>
           <h4>Complete well-formed JSON vs. fragment JSON</h4>
           <p>
@@ -302,36 +332,59 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           separate file to form a well-formed JSON document.
           </p>
           <p>
-          A well-formed JSON document follows this pattern:
-          </p>
-          <pre class="prettyprint linenums">[
-  {
-    "logger":"com.foo.Bar",
-    "timestamp":"1376681196470",
-    "level":"INFO",
-    "threadId":1,
-    "thread":"main",
-    "threadPriority":1,
-    "message":"Message flushed with immediate flush=true"
-  },
-  {
-    "logger":"com.foo.Bar",
-    "timestamp":"1376681196471",
-    "level":"ERROR",
-    "threadId":1,
-    "thread":"main",
-    "threadPriority":1,
-    "message":"Message flushed with immediate flush=true",
-    "throwable":"java.lang.IllegalArgumentException: badarg\\n\\tat org.apache.logging.log4j.core.appender.JSONCompleteFileAppenderTest.testFlushAtEndOfBatch(JSONCompleteFileAppenderTest.java:54)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)\\n\\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\\n\\tat java.lang.reflect.Method.invoke(Method.java:606)\\n\\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)\\n\\tat org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)\\n\\tat org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)\\n\\tat org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)\\n\\tat org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)\\n\\tat org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)\\n\\tat org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)\\n\\tat org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)\\n\\tat org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)\\n\\tat org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)\\n\\tat org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)\\n\\tat org.junit.runners.ParentRunner.run(ParentRunner.java:309)\\n\\tat org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)\\n\\tat org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)\\n"
-  }
-]
-</pre>
-          <p>
           If <code>complete="false"</code>, the appender does not write the JSON open array character "[" at the start
           of the document, "]" and the end, nor comma "," between records.
           </p>
           <p>
-          This approach enforces the independence of the JSONLayout and the appender where you embed it.
+          Log event follows this pattern:
+          </p>
+          <pre class="prettyprint linenums">{
+  "timeMillis" : 1493121664118,
+  "thread" : "main",
+  "level" : "INFO",
+  "loggerName" : "HelloWorld",
+  "marker" : {
+    "name" : "child",
+    "parents" : [ {
+      "name" : "parent",
+      "parents" : [ {
+        "name" : "grandparent"
+      } ]
+    } ]
+  },
+  "message" : "Hello, world!",
+  "thrown" : {
+    "commonElementCount" : 0,
+    "name" : "java.lang.RuntimeException",
+    "extendedStackTrace" : [ {
+      "class" : "logtest.Main",
+      "method" : "main",
+      "file" : "Main.java",
+      "line" : 29,
+      "exact" : true,
+      "location" : "classes/",
+      "version" : "?"
+    } ]
+  },
+  "contextStack" : [ "one", "two" ],
+  "endOfBatch" : false,
+  "loggerFqcn" : "org.apache.logging.log4j.spi.AbstractLogger",
+  "contextMap" : {
+    "bar" : "BAR",
+    "foo" : "FOO"
+  },
+  "threadId" : 1,
+  "threadPriority" : 5,
+  "source" : {
+    "class" : "logtest.Main",
+    "method" : "main",
+    "file" : "Main.java",
+    "line" : 29
+  }
+}</pre>
+          <p>
+          If <code>complete="false"</code>, the appender does not write the JSON open array character "[" at the start
+          of the document, "]" and the end, nor comma "," between records.
           </p>
           <h4>Pretty vs. compact JSON</h4>
           <p>
@@ -396,11 +449,19 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
-            <caption align="top">JSON Layout Parameters</caption>
+            <tr>
+              <td>stacktraceAsString</td>
+              <td>boolean</td>
+              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
+            <caption align="top">JsonLayout Parameters</caption>
           </table>
+          <p>
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using JsonLayout.
+          </p>
         </subsection>
         <a name="PatternLayout"/>
-        <subsection name="PatternLayout">
+        <subsection name="Pattern Layout">
           <p>A flexible layout configurable with pattern string. The goal of this class is to format a LogEvent and
             return the results. The format of the result depends on the <em>conversion pattern</em>.
           </p>
@@ -703,36 +764,66 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>enc</b>{pattern}<br />
-                <b>encode</b>{pattern}
+                <b>enc</b>{<i>pattern</i>}{[HTML|JSON]}<br />
+                <b>encode</b>{<i>pattern</i>}{[HTML|JSON]}
               </td>
               <td>
                 <p>
-                  Encodes special characters such as '\n' and HTML characters to help prevent log forging
-                  and some XSS attacks that could occur when displaying logs in a web browser. Anytime
-                  user provided data is logged, this can provide a safeguard.
+                  Encodes and escapes special characters suitable for output in specific markup languages.
+                  By default, this encodes for HTML if only one option is specified. The second option is used to
+                  specify which encoding format should be used. This converter is particularly useful for encoding
+                  user provided data so that the output data is not written improperly or insecurely.
                 </p>
                 <p>
                   A typical usage would encode the message
-                  <pre>%enc{%m}</pre>
+                  <code>%enc{%m}</code>
                   but user input could come from other locations as well, such as the MDC
-                  <pre>%enc{%mdc{key}}</pre>
+                  <code>%enc{%mdc{key}}</code>
                 </p>
-                <p>The replaced characters are:
-                 <table>
-                   <tr>
-                     <th>Character</th>
-                     <th>Replacement</th>
-                   </tr>
-                   <tr>
-                     <th>'\r', '\n'</th>
-                     <th>Removed from the pattern</th>
-                   </tr>
-                   <tr>
-                     <td>&amp;, &lt;, &gt;, &quot;, &apos;, &#x2F;</td>
-                     <td>Replaced with the corresponding HTML entity</td>
-                   </tr>
-                 </table>
+                <p>Using the HTML encoding format, the following characters are replaced:</p>
+                <table>
+                  <tr>
+                    <th>Character</th>
+                    <th>Replacement</th>
+                  </tr>
+                  <tr>
+                    <td>'\r', '\n'</td>
+                    <td>Converted into escaped strings "\\r" and "\\n" respectively</td>
+                  </tr>
+                  <tr>
+                    <td>&amp;, &lt;, &gt;, &quot;, &apos;, &#x2F;</td>
+                    <td>Replaced with the corresponding HTML entity</td>
+                  </tr>
+                </table>
+                <p>
+                  Using the JSON encoding format, this follows the escaping rules specified by
+                  <a href="https://www.ietf.org/rfc/rfc4627.txt">RFC 4627 section 2.5</a>:
+                </p>
+                <table>
+                  <tr>
+                    <th>Character</th>
+                    <th>Replacement</th>
+                  </tr>
+                  <tr>
+                    <td>U+0000 - U+001F</td>
+                    <td>\u0000 - \u001F</td>
+                  </tr>
+                  <tr>
+                    <td>Any other control characters</td>
+                    <td>Encoded into its <code>\uABCD</code> equivalent escaped code point</td>
+                  </tr>
+                  <tr>
+                    <td>&quot;</td>
+                    <td>\&quot;</td>
+                  </tr>
+                  <tr>
+                    <td>\</td>
+                    <td>\\</td>
+                  </tr>
+                </table>
+                <p>
+                  For example, the pattern <code>{"message": "%enc{%m}{JSON}"}</code> could be used to output a
+                  valid JSON document containing the log message as a string value.
                 </p>
               </td>
             </tr>
@@ -752,60 +843,71 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>ex</b>|<b>exception</b>|<b>throwable</b><br />
-                &nbsp;&nbsp;{["none"<br />
-                &nbsp;&nbsp;|"full"<br />
-                &nbsp;&nbsp;|depth<br />
-                &nbsp;&nbsp;|"short"<br />
-                &nbsp;&nbsp;|"short.className"<br />
-                &nbsp;&nbsp;|"short.fileName"<br />
-                &nbsp;&nbsp;|"short.lineNumber"<br />
-                &nbsp;&nbsp;|"short.methodName"<br />
-                &nbsp;&nbsp;|"short.message"<br />
-                &nbsp;&nbsp;|"short.localizedMessage"]}<br />
-                &nbsp;&nbsp;{suffix(<i>pattern</i>)}
-                <!-- TODO: there are actually more options available in ThrowableFormatOptions that apply here -->
-                <!-- separator(), filters(), and ansi() -->
+				<b>ex</b>|<b>exception</b>|<b>throwable</b><br/>
+                {<br/>
+                &nbsp;&nbsp;[ "none"<br />
+                &nbsp;&nbsp;&nbsp;| "full"<br />
+                &nbsp;&nbsp;&nbsp;| depth<br />
+                &nbsp;&nbsp;&nbsp;| "short"<br />
+                &nbsp;&nbsp;&nbsp;| "short.className"<br />
+                &nbsp;&nbsp;&nbsp;| "short.fileName"<br />
+                &nbsp;&nbsp;&nbsp;| "short.lineNumber"<br />
+                &nbsp;&nbsp;&nbsp;| "short.methodName"<br />
+                &nbsp;&nbsp;&nbsp;| "short.message"<br />
+                &nbsp;&nbsp;&nbsp;| "short.localizedMessage"]}<br />
+                &nbsp;&nbsp;[,filters(package,package,...)]<br/>
+                &nbsp;&nbsp;[,separator(<i>separator</i>)]<br/>
+                }<br/>
+                {suffix(<i>pattern</i>)<br/>
+                }<br/>
               </td>
               <td>
                 <p>
-                  Outputs the Throwable trace bound to the LoggingEvent, by default this will output the full trace
-                  as one would normally find with a call to Throwable.printStackTrace().
+                  Outputs the Throwable trace bound to the logging event, by default this will output the full trace
+                  as one would normally find with a call to <code>Throwable.printStackTrace()</code>.
                 </p>
                 <p>
-                  You can follow the throwable conversion word with an option in the form <b>%throwable{option}</b>.
+                  You can follow the throwable conversion word with an option in the form <code>%throwable{option}</code>.
                 </p>
                 <p>
-                  <b>%throwable{short}</b> outputs the first line of the Throwable.
+                  <code>%throwable{short}</code> outputs the first line of the Throwable.
                 </p>
                 <p>
-                  <b>%throwable{short.className}</b> outputs the name of the class where the exception occurred.
+                  <code>%throwable{short.className}</code> outputs the name of the class where the exception occurred.
                 </p>
                 <p>
-                  <b>%throwable{short.methodName}</b> outputs the method name where the exception occurred.
+                  <code>%throwable{short.methodName}</code> outputs the method name where the exception occurred.
                 </p>
                 <p>
-                  <b>%throwable{short.fileName}</b> outputs the name of the class where the exception occurred.
+                  <code>%throwable{short.fileName}</code> outputs the name of the class where the exception occurred.
                 </p>
                 <p>
-                  <b>%throwable{short.lineNumber}</b> outputs the line number where the exception occurred.
+                  <code>%throwable{short.lineNumber}</code> outputs the line number where the exception occurred.
                 </p>
                 <p>
-                  <b>%throwable{short.message}</b> outputs the message.
+                  <code>%throwable{short.message}</code> outputs the message.
                 </p>
                 <p>
-                  <b>%throwable{short.localizedMessage}</b> outputs the localized message.
+                  <code>%throwable{short.localizedMessage}</code> outputs the localized message.
                 </p>
                 <p>
-                  <b>%throwable{n}</b> outputs the first n lines of the stack trace.
+                  <code>%throwable{n}</code> outputs the first n lines of the stack trace.
                 </p>
                 <p>
-                  Specifying <b>%throwable{none}</b> or <b>%throwable{0}</b> suppresses output of the exception.
+                  Specifying <code>%throwable{none}</code> or <code>%throwable{0}</code> suppresses output of the exception.
+                </p>
+                <p> 
+                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to 
+                  suppress matching stack frames from stack traces.
                 </p>
                 <p>
-                  Specifying <b>%throwable{suffix{<i>pattern</i>}</b> adds the output of <i>pattern</i> to the
-                  output only if there is a throwable to print. This option is orthogonal with the above
-                  conversions.
+                  Use a <code>separator</code> string to separate the lines of a stack trace. For example: 
+                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property, 
+                  which is operating system dependent.
+                </p>
+                <p>
+                  Use <code>ex{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only 
+                  when there is a throwable to print.
                 </p>
               </td>
             </tr>
@@ -1150,6 +1252,16 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="Process ID" />
+                <b>pid</b>{[defaultValue]}<br />
+                <b>processId</b>{[defaultValue]}
+              </td>
+              <td><p>Outputs the process ID if supported by the underlying platform. An optional default value may be
+                specified to be shown if the platform does not support process IDs.</p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
               <a name="VariablesNotEmpty" />
                 <b>variablesNotEmpty</b>{pattern}<br />
                 <b>varsNotEmpty</b>{pattern}<br />
@@ -1219,7 +1331,7 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>Replaces occurrences of 'regex', a regular expression, with its replacement 'substitution' in the
-                  string resulting from evaluation of the pattern. For example, "%replace(%msg}{\s}{}" will remove
+                  string resulting from evaluation of the pattern. For example, "%replace{%msg}{\s}{}" will remove
                   all spaces contained in the event message.
                 </p>
                 <p>The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.
@@ -1231,27 +1343,44 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternException"/>
-                <b>rEx</b>{["none"|"short"|"full"|depth]}{[filters(packages)]}{suffix(<i>pattern</i>)}<br />
-                <b>rException</b>{["none"|"short"|"full"|depth]}{[filters(packages)]}{suffix(<i>pattern</i>)}<br />
-                <b>rThrowable</b>{["none"|"short"|"full"|depth]}{[filters(packages)]}{suffix(<i>pattern</i>)}
-                <!-- TODO: more options are available in ThrowableFormatOptions -->
-                <!-- FIXME: these options are confusing! -->
+                <b>rEx</b>|<b>rException</b>|<b>rThrowable</b><br/>
+                &nbsp;&nbsp;{<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;["none" | "short" | "full" | depth]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;[,filters(package,package,...)]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;[,separator(<i>separator</i>)]<br/>
+                &nbsp;&nbsp;}<br/>
+                &nbsp;&nbsp;{ansi(<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;...)<br/>
+                &nbsp;&nbsp;}<br/>
+                &nbsp;&nbsp;{suffix(<i>pattern</i>)}<br/>
               </td>
               <td>
-                <p>The same as the %throwable conversion word but the stack trace is printed starting with the
+                <p>
+                  The same as the %throwable conversion word but the stack trace is printed starting with the
                   first exception that was thrown followed by each subsequent wrapping exception.
                 </p>
-                <p>The throwable conversion word can be followed by an option in the form
-                  <b>%rEx{short}</b>
-                  which will only output the first line of the Throwable or <b>%rEx{n}</b> where
-                  the first n lines of the stacktrace will be printed. The conversion word can also be
-                  followed by "filters(packages)" where packages is a list of package names that should
-                  be suppressed from stack traces. Specifying <b>%rEx{none}</b>
-                  or <b>%rEx{0}</b> will suppress printing of the exception.
+                <p>
+                  The throwable conversion word can be followed by an option in the form
+                  <code>%rEx{short}</code> which will only output the first line of the Throwable or 
+                  <code>%rEx{n}</code> where the first n lines of the stack trace will be printed.
+                </p>
+                <p> 
+                  Specifying <code>%rEx{none}</code> or <code>%rEx{0}</code> will suppress printing of the exception.
+                </p>
+                <p> 
+                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to 
+                  suppress matching stack frames from stack traces.
                 </p>
                 <p>
-                  As with the %throwable conversion, using <b>rEx{suffix(<i>pattern</i>)</b> will add the output
-                  of <i>pattern</i> to the output only if there is a throwable to print.
+                  Use a <code>separator</code> string to separate the lines of a stack trace. For example: 
+                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property, 
+                  which is operating system dependent.
+                </p>
+                <p>
+                  Use <code>rEx{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only 
+                  when there is a throwable to print.
                 </p>
               </td>
             </tr>
@@ -1474,8 +1603,9 @@ WARN  [main]: Message 2</pre>
                 <a name="PatternExtendedException"/>
                 <b>xEx</b>|<b>xException</b>|<b>xThrowable</b><br/>
                 &nbsp;&nbsp;{<br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;["none"|"short"|"full"|depth]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;["none" | "short" | "full" | depth]<br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;[,filters(package,package,...)]<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;[,separator(<i>separator</i>)]<br/>
                 &nbsp;&nbsp;}<br/>
                 &nbsp;&nbsp;{ansi(<br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;Key=Value,Value,...<br/>
@@ -1487,18 +1617,26 @@ WARN  [main]: Message 2</pre>
               <td>
                 <p>The same as the %throwable conversion word but also includes class packaging information.
                 </p>
-                <p>At the end of each stack element of the exception, a string containing the name of the jar file
+                <p>
+                  At the end of each stack element of the exception, a string containing the name of the jar file
                   that contains the class or the directory the class is located in and the "Implementation-Version"
                   as found in that jar's manifest will be added. If the information is uncertain, then the class
                   packaging data will be preceded by a tilde, i.e. the '~' character.
                 </p>
                 <p>The throwable conversion word can be followed by an option in the form
-                  <b>%xEx{short}</b>
-                  which will only output the first line of the Throwable or <b>%xEx{n}</b> where
-                  the first n lines of the stacktrace will be printed. The conversion word can also be
-                  followed by "filters(packages)" where packages is a comma-sepaarted list of package names that
-                  should be suppressed from stack traces. Specifying <b>%xEx{none}</b>
-                  or <b>%xEx{0}</b> will suppress printing of the exception.
+                  <code>%xEx{short}</code>
+                  which will only output the first line of the Throwable or <code>%xEx{n}</code> where
+                  the first n lines of the stack trace will be printed. Specifying <code>%xEx{none}</code>
+                  or <code>%xEx{0}</code> will suppress printing of the exception.
+                </p>
+                <p> 
+                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to 
+                  suppress matching stack frames from stack traces.
+                </p>
+                <p>
+                  Use a <code>separator</code> string to separate the lines of a stack trace. For example: 
+                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property, 
+                  which is operating system dependent.
                 </p>
                 <p>
                  The <code>ansi</code> option renders stack traces with ANSI escapes code using the JAnsi library.
@@ -1536,7 +1674,7 @@ WARN  [main]: Message 2</pre>
                   class like <code>blue</code>, <code>bg_red</code>, and so on (Log4j ignores case.)
                 </p>
                 <p>
-                  The special key <code>StyleMapName</code> can be set to one of the following prefedined maps:
+                  The special key <code>StyleMapName</code> can be set to one of the following predefined maps:
                   <code>Spock</code>, <code>Kirk</code>.
                 </p>
                 <p>
@@ -1754,8 +1892,8 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
 </PatternLayout>]]></pre>
       </subsection>
         <a name="RFC5424Layout"/>
-        <subsection name="RFC5424Layout">
-          <p>As the name implies, the RFC5424Layout formats LogEvents in accordance with
+        <subsection name="RFC5424 Layout">
+          <p>As the name implies, the Rfc5424Layout formats LogEvents in accordance with
             <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>, the enhanced Syslog specification. Although the specification
             is primarily directed at sending messages via Syslog, this format is quite useful for
             other purposes since items are passed in the message as self-describing key/value pairs.
@@ -1812,12 +1950,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>String</td>
               <td>The default structured data id to use when formatting according to RFC 5424. If the LogEvent contains
                 a StructuredDataMessage the id from the Message will be used instead of this value.</td>
-            </tr>
-            <tr>
-              <td>immediateFlush</td>
-              <td>boolean</td>
-              <td>When set to true, each write will be followed by a flush. This will guarantee the data is written
-                to disk but could impact performance.</td>
             </tr>
             <tr>
               <td>includeMDC</td>
@@ -1879,17 +2011,22 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>String</td>
               <td>String that should be used to replace newlines within the message text.</td>
             </tr>
-            <caption align="top">RFC5424Layout Parameters</caption>
+            <caption align="top">Rfc5424Layout Parameters</caption>
           </table>
         </subsection>
         <a name="SerializedLayout"/>
-        <subsection name="SerializedLayout">
-          <p>The SerializedLayout simply serializes the LogEvent into a byte array. This is useful when
-            sending messages via JMS or via a Socket connection. The SerializedLayout accepts no parameters.
+        <subsection name="Serialized Layout">
+          <p>The SerializedLayout simply serializes the LogEvent into a byte array using Java Serialization.
+          The SerializedLayout accepts no parameters.
+          </p>
+          <p>
+          This layout is deprecated since version 2.9. Java Serialization has inherent security weaknesses,
+          using this layout is no longer recommended. An alternative layout containing the same information
+          is <a href="#JSONLayout">JsonLayout</a>, configured with <code>properties="true"</code>.
           </p>
         </subsection>
         <a name="SyslogLayout"/>
-        <subsection name="SyslogLayout">
+        <subsection name="Syslog Layout">
           <p>The SyslogLayout formats the LogEvent as BSD Syslog records matching the same format used by
             Log4j 1.2.
           </p>
@@ -1927,8 +2064,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           </table>
         </subsection>
         <a name="XMLLayout"/>
-        <subsection name="XMLLayout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.XMLLayout -->
+        <subsection name="XML Layout">
           <p>
             <!-- FIXME: log4j.dtd link is broken -->
           Appends a series of <code>Event</code> elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
@@ -1944,29 +2080,60 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>
           A well-formed XML document follows this pattern:
           </p>
-          <pre class="prettyprint linenums">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;Events xmlns=&quot;http://logging.apache.org/log4j/2.0/events&quot;&gt;
-  &lt;Event logger=&quot;com.foo.Bar&quot; timestamp=&quot;1373436580419&quot; level=&quot;INFO&quot; threadId=&quot;1&quot; thread=&quot;main&quot; threadPriority=&quot;1&quot;&gt;
-    &lt;Message&gt;&lt;![CDATA[This is a log message 1]]&gt;&lt;/Message&gt;
-    &lt;Marker parent=&quot;Parent Marker&quot;&gt;&lt;Child Marker&gt;&lt;/Marker&gt;
-  &lt;/Event&gt;
-  &lt;Event logger=&quot;com.foo.Baz&quot; timestamp=&quot;1373436580420&quot; level=&quot;INFO&quot; threadId=&quot;1&quot; thread=&quot;main&quot; threadPriority=&quot;1&quot;&gt;
-    &lt;Message&gt;&lt;![CDATA[This is a log message 2]]&gt;&lt;/Message&gt;
-    &lt;Marker&gt;&lt;The Marker Name&gt;&lt;/Marker&gt;
-  &lt;/Event&gt;
-&lt;/Events&gt;</pre>
+          <pre class="prettyprint linenums">&lt;Event xmlns="http://logging.apache.org/log4j/2.0/events"
+       timeMillis="1493122559666"
+       level="INFO"
+       loggerName="HelloWorld"
+       endOfBatch="false"
+       thread="main"
+       loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger"
+       threadId="1"
+       threadPriority="5"&gt;
+  &lt;Marker name="child"&gt;
+    &lt;Parents&gt;
+      &lt;Marker name="parent"&gt;
+        &lt;Parents&gt;
+          &lt;Marker name="grandparent"/&gt;
+        &lt;/Parents&gt;
+      &lt;/Marker&gt;
+    &lt;/Parents&gt;
+  &lt;/Marker&gt;
+  &lt;Message&gt;Hello, world!&lt;/Message&gt;
+  &lt;ContextMap&gt;
+    &lt;item key="bar" value="BAR"/&gt;
+    &lt;item key="foo" value="FOO"/&gt;
+  &lt;/ContextMap&gt;
+  &lt;ContextStack&gt;
+    &lt;ContextStackItem&gt;one&lt;/ContextStackItem&gt;
+    &lt;ContextStackItem&gt;two&lt;/ContextStackItem&gt;
+  &lt;/ContextStack&gt;
+  &lt;Source
+      class="logtest.Main"
+      method="main"
+      file="Main.java"
+      line="29"/&gt;
+  &lt;Thrown commonElementCount="0" name="java.lang.RuntimeException"&gt;
+    &lt;ExtendedStackTrace&gt;
+      &lt;ExtendedStackTraceItem
+          class="logtest.Main"
+          method="main"
+          file="Main.java"
+          line="29"
+          exact="true"
+          location="classes/"
+          version="?"/&gt;
+    &lt;/ExtendedStackTrace&gt;
+  &lt;/Thrown&gt;
+&lt;/Event&gt;
+</pre>
           <p>
           If <code>complete="false"</code>, the appender does not write the XML processing instruction and the root
           element.
-          </p>
-          <p>
-          This approach enforces the independence of the XMLLayout and the appender where you embed it.
           </p>
           <h4>Marker</h4>
           <p>Markers are represented by a <code>Marker</code> element within the <code>Event</code> element.
           The <code>Marker</code> element appears only when a marker is used in the log message. The name of the marker's
           parent will be provided in the <code>parent</code> attribute of the <code>Marker</code> element.
-          Only the leaf marker is included, not the full hierarchy.
           </p>
           <h4>Pretty vs. compact XML</h4>
           <p>
@@ -2016,149 +2183,64 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
-            <caption align="top">XML Layout Parameters</caption>
+            <tr>
+              <td>stacktraceAsString</td>
+              <td>boolean</td>
+              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
+            <caption align="top">XmlLayout Parameters</caption>
           </table>
+          <p>
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using XmlLayout.
+          </p>
         </subsection>
         <a name="YamlLayout"/>
-        <subsection name="YamlLayout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.YamlLayout -->
+        <subsection name="YAML Layout">
           <p>
             Appends a series of YAML events as strings serialized as bytes.
           </p>
           <p>
             A YAML log event follows this pattern:
           </p>
-          <pre>---
-timeMillis: 1
-thread: "MyThreadName"
-level: "DEBUG"
-loggerName: "a.B"
+          <pre class="prettyprint linenums">---
+timeMillis: 1493122307075
+thread: "main"
+level: "INFO"
+loggerName: "HelloWorld"
 marker:
-  name: "Marker1"
-  parents:
-  - name: "ParentMarker1"
-    parents:
-    - name: "GrandMotherMarker"
-    - name: "GrandFatherMarker"
-  - name: "ParentMarker2"
-message: "Msg"
+ name: "child"
+ parents:
+ - name: "parent"
+   parents:
+   - name: "grandparent"
+message: "Hello, world!"
 thrown:
-  commonElementCount: 0
-  localizedMessage: "testIOEx"
-  message: "testIOEx"
-  name: "java.io.IOException"
-  cause:
-    commonElementCount: 27
-    localizedMessage: "testNPEx"
-    message: "testNPEx"
-    name: "java.lang.NullPointerException"
-    extendedStackTrace:
-    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-      method: "createLogEvent"
-      file: "LogEventFixtures.java"
-      line: 52
-      exact: false
-      location: "test-classes/"
-      version: "?"
-  extendedStackTrace:
-  - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-    method: "createLogEvent"
-    file: "LogEventFixtures.java"
-    line: 55
-    exact: true
-    location: "test-classes/"
-    version: "?"
-  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-    method: "testAllFeatures"
-    file: "YamlLayoutTest.java"
-    line: 109
-    exact: true
-    location: "test-classes/"
-    version: "?"
-  - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-    method: "testLocationOnCompactOffEventEolOffMdcOn"
-    file: "YamlLayoutTest.java"
-    line: 280
-    exact: true
-    location: "test-classes/"
-    version: "?"
-
-...
-
-  suppressed:
-  - commonElementCount: 0
-    localizedMessage: "I am suppressed exception 1"
-    message: "I am suppressed exception 1"
-    name: "java.lang.IndexOutOfBoundsException"
-    extendedStackTrace:
-    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-      method: "createLogEvent"
-      file: "LogEventFixtures.java"
-      line: 56
-      exact: true
-      location: "test-classes/"
-      version: "?"
-    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-      method: "testAllFeatures"
-      file: "YamlLayoutTest.java"
-      line: 109
-      exact: true
-      location: "test-classes/"
-      version: "?"
-    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-      method: "testLocationOnCompactOffEventEolOffMdcOn"
-      file: "YamlLayoutTest.java"
-      line: 280
-      exact: true
-      location: "test-classes/"
-      version: "?"
-
-...
-
-  - commonElementCount: 0
-    localizedMessage: "I am suppressed exception 2"
-    message: "I am suppressed exception 2"
-    name: "java.lang.IndexOutOfBoundsException"
-    extendedStackTrace:
-    - class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-      method: "createLogEvent"
-      file: "LogEventFixtures.java"
-      line: 57
-      exact: true
-      location: "test-classes/"
-      version: "?"
-    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-      method: "testAllFeatures"
-      file: "YamlLayoutTest.java"
-      line: 109
-      exact: true
-      location: "test-classes/"
-      version: "?"
-    - class: "org.apache.logging.log4j.core.layout.YamlLayoutTest"
-      method: "testLocationOnCompactOffEventEolOffMdcOn"
-      file: "YamlLayoutTest.java"
-      line: 280
-      exact: true
-      location: "test-classes/"
-      version: "?"
-
-...
-
+ commonElementCount: 0
+ name: "java.lang.RuntimeException"
+ extendedStackTrace:
+ - class: "logtest.Main"
+   method: "main"
+   file: "Main.java"
+   line: 29
+   exact: true
+   location: "classes/"
+   version: "?"
 contextStack:
-- "stack_msg1"
-- "stack_msg2"
+- "one"
+- "two"
 endOfBatch: false
-loggerFqcn: "f.q.c.n"
+loggerFqcn: "org.apache.logging.log4j.spi.AbstractLogger"
 contextMap:
-  MDC.B: "B_Value"
-  MDC.A: "A_Value"
+ bar: "BAR"
+ foo: "FOO"
 threadId: 1
 threadPriority: 5
 source:
-  class: "org.apache.logging.log4j.core.layout.LogEventFixtures"
-  method: "createLogEvent"
-  file: "LogEventFixtures.java"
-  line: 53</pre>
+ class: "logtest.Main"
+ method: "main"
+ file: "Main.java"
+ line: 29
+</pre>
           <table>
             <tr>
               <th>Parameter Name</th>
@@ -2190,8 +2272,16 @@ source:
               <td>boolean</td>
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
-            <caption align="top">YAML Layout Parameters</caption>
+            <tr>
+              <td>stacktraceAsString</td>
+              <td>boolean</td>
+              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
+            <caption align="top">YamlLayout Parameters</caption>
           </table>
+          <p>
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using YamlLayout.
+          </p>
         </subsection>
         <a name="LocationInformation"/>
         <subsection name="Location Information">

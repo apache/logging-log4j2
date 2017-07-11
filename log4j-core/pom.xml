@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.8.2-SNAPSHOT</version>
+    <version>2.9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-core</artifactId>
@@ -324,6 +324,12 @@
       <version>2.4.7</version>
       <scope>test</scope>
     </dependency>
+    <!-- Used for testing HttpAppender -->
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- GC-free -->
     <dependency>
       <groupId>com.google.code.java-allocation-instrumenter</groupId>
@@ -345,11 +351,10 @@
           <execution>
             <!-- disable annotation processing for first pass -->
             <id>default-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>compile</phase>
             <configuration>
+              <excludes>
+                <exclude>module-info.java</exclude>
+              </excludes>
               <proc>none</proc>
             </configuration>
           </execution>
@@ -361,6 +366,9 @@
             </goals>
             <phase>process-classes</phase>
             <configuration>
+              <excludes>
+                <exclude>module-info.java</exclude>
+              </excludes>
               <proc>only</proc>
             </configuration>
           </execution>
@@ -389,6 +397,22 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${manifestfile}</manifestFile>
+            <manifestEntries>
+              <Specification-Title>${project.name}</Specification-Title>
+              <Specification-Version>${project.version}</Specification-Version>
+              <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+              <Implementation-Title>${project.name}</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+              <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+              <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+              <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+              <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+            </manifestEntries>
+          </archive>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -451,6 +475,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.plugin.version}</version>
         <configuration>
+          <failOnError>false</failOnError>
           <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>

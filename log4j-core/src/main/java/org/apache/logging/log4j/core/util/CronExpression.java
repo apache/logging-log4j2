@@ -1569,15 +1569,15 @@ public final class CronExpression {
         }
     }
 
-    protected Date getTimeBefore(Date targetDate) {
-        Calendar cl = Calendar.getInstance(getTimeZone());
+    protected Date getTimeBefore(final Date targetDate) {
+        final Calendar cl = Calendar.getInstance(getTimeZone());
 
         // to match this
         Date start = targetDate;
-        long minIncrement = findMinIncrement();
+        final long minIncrement = findMinIncrement();
         Date prevFireTime;
         do {
-            Date prevCheckDate = new Date(start.getTime() - minIncrement);
+            final Date prevCheckDate = new Date(start.getTime() - minIncrement);
             prevFireTime = getTimeAfter(prevCheckDate);
             if (prevFireTime == null || prevFireTime.before(MIN_DATE)) {
                 return null;
@@ -1587,7 +1587,7 @@ public final class CronExpression {
         return prevFireTime;
     }
 
-    public Date getPrevFireTime(Date targetDate) {
+    public Date getPrevFireTime(final Date targetDate) {
         return getTimeBefore(targetDate);
     }
 
@@ -1610,17 +1610,17 @@ public final class CronExpression {
         return 86400000;
     }
 
-    private int minInSet(TreeSet<Integer> set) {
+    private int minInSet(final TreeSet<Integer> set) {
         int previous = 0;
         int min = Integer.MAX_VALUE;
         boolean first = true;
-        for (int value : set) {
+        for (final int value : set) {
             if (first) {
                 previous = value;
                 first = false;
                 continue;
             } else {
-                int diff = value - previous;
+                final int diff = value - previous;
                 if (diff < min) {
                     min = diff;
                 }

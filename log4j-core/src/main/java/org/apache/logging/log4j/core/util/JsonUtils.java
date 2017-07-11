@@ -31,7 +31,7 @@ public final class JsonUtils {
      */
     private static final int[] ESC_CODES;
     static {
-        int[] table = new int[128];
+        final int[] table = new int[128];
         // Control chars need generic escape sequence
         for (int i = 0; i < 32; ++i) {
             // 04-Mar-2011, tatu: Used to use "-(i + 1)", replaced with constant

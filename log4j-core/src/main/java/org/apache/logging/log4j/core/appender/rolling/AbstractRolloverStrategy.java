@@ -22,10 +22,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -34,10 +31,7 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
-import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.NotANumber;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -93,18 +87,18 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
     protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager,
                                                         final boolean isAscending) {
         final StringBuilder buf = new StringBuilder();
-        String pattern = manager.getPatternProcessor().getPattern();
+        final String pattern = manager.getPatternProcessor().getPattern();
         manager.getPatternProcessor().formatFileName(strSubstitutor, buf, NotANumber.NAN);
         return getEligibleFiles(buf.toString(), pattern, isAscending);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(String path, String pattern) {
+    protected SortedMap<Integer, Path> getEligibleFiles(final String path, final String pattern) {
         return getEligibleFiles(path, pattern, true);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(String path, String logfilePattern, boolean isAscending) {
-        TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
-        File file = new File(path);
+    protected SortedMap<Integer, Path> getEligibleFiles(final String path, final String logfilePattern, final boolean isAscending) {
+        final TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
+        final File file = new File(path);
         File parent = file.getParentFile();
         if (parent == null) {
             parent = new File(".");
@@ -114,24 +108,24 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         if (!logfilePattern.contains("%i")) {
             return eligibleFiles;
         }
-        Path dir = parent.toPath();
+        final Path dir = parent.toPath();
         String fileName = file.getName();
-        int suffixLength = suffixLength(fileName);
+        final int suffixLength = suffixLength(fileName);
         if (suffixLength > 0) {
             fileName = fileName.substring(0, fileName.length() - suffixLength) + ".*";
         }
-        String filePattern = fileName.replace(NotANumber.VALUE, "(\\d+)");
-        Pattern pattern = Pattern.compile(filePattern);
+        final String filePattern = fileName.replace(NotANumber.VALUE, "(\\d+)");
+        final Pattern pattern = Pattern.compile(filePattern);
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-            for (Path entry: stream) {
-                Matcher matcher = pattern.matcher(entry.toFile().getName());
+            for (final Path entry: stream) {
+                final Matcher matcher = pattern.matcher(entry.toFile().getName());
                 if (matcher.matches()) {
-                    Integer index = Integer.parseInt(matcher.group(1));
+                    final Integer index = Integer.parseInt(matcher.group(1));
                     eligibleFiles.put(index, entry);
                 }
             }
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             throw new LoggingException("Error reading folder " + dir + " " + ioe.getMessage(), ioe);
         }
         return isAscending? eligibleFiles : eligibleFiles.descendingMap();

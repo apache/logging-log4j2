@@ -28,10 +28,8 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -57,20 +55,6 @@ import org.apache.logging.log4j.util.TriConsumer;
  * log event data is larger than 1024 bytes (the {@code compressionThreshold}).
  * This layout does not implement chunking.
  * </p>
- * <p>
- * Configure as follows to send to a Graylog2 server:
- * </p>
- *
- * <pre>
- * &lt;Appenders&gt;
- *        &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
- *            &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
- *                &lt;KeyValuePair key="additionalField1" value="additional value 1"/&gt;
- *                &lt;KeyValuePair key="additionalField2" value="additional value 2"/&gt;
- *            &lt;/GelfLayout&gt;
- *        &lt;/Socket&gt;
- * &lt;/Appenders&gt;
- * </pre>
  *
  * @see <a href="http://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a>
  */
@@ -113,6 +97,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final String host;
     private final boolean includeStacktrace;
     private final boolean includeThreadContext;
+    private final boolean includeNullDelimiter;
 
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
         implements org.apache.logging.log4j.core.util.Builder<GelfLayout> {
@@ -135,6 +120,9 @@ public final class GelfLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private boolean includeThreadContext = true;
 
+        @PluginBuilderAttribute
+        private boolean includeNullDelimiter = false;
+
         public Builder() {
             super();
             setCharset(StandardCharsets.UTF_8);
@@ -142,7 +130,8 @@ public final class GelfLayout extends AbstractStringLayout {
 
         @Override
         public GelfLayout build() {
-            return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold, includeStacktrace, includeThreadContext);
+            return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
+                includeStacktrace, includeThreadContext, includeNullDelimiter);
         }
 
         public String getHost() {
@@ -165,6 +154,8 @@ public final class GelfLayout extends AbstractStringLayout {
             return includeThreadContext;
         }
 
+        public boolean isIncludeNullDelimiter() { return includeNullDelimiter; }
+
         public KeyValuePair[] getAdditionalFields() {
             return additionalFields;
         }
@@ -174,7 +165,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setHost(String host) {
+        public B setHost(final String host) {
             this.host = host;
             return asBuilder();
         }
@@ -184,7 +175,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setCompressionType(CompressionType compressionType) {
+        public B setCompressionType(final CompressionType compressionType) {
             this.compressionType = compressionType;
             return asBuilder();
         }
@@ -194,7 +185,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setCompressionThreshold(int compressionThreshold) {
+        public B setCompressionThreshold(final int compressionThreshold) {
             this.compressionThreshold = compressionThreshold;
             return asBuilder();
         }
@@ -205,7 +196,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setIncludeStacktrace(boolean includeStacktrace) {
+        public B setIncludeStacktrace(final boolean includeStacktrace) {
             this.includeStacktrace = includeStacktrace;
             return asBuilder();
         }
@@ -215,8 +206,19 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setIncludeThreadContext(boolean includeThreadContext) {
+        public B setIncludeThreadContext(final boolean includeThreadContext) {
             this.includeThreadContext = includeThreadContext;
+            return asBuilder();
+        }
+
+        /**
+         * Whether to include NULL byte as delimiter after each event (optional, default to false).
+         * Useful for Graylog GELF TCP input.
+         *
+         * @return this builder
+         */
+        public B setIncludeNullDelimiter(final boolean includeNullDelimiter) {
+            this.includeNullDelimiter = includeNullDelimiter;
             return asBuilder();
         }
 
@@ -225,7 +227,7 @@ public final class GelfLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setAdditionalFields(KeyValuePair[] additionalFields) {
+        public B setAdditionalFields(final KeyValuePair[] additionalFields) {
             this.additionalFields = additionalFields;
             return asBuilder();
         }
@@ -237,16 +239,16 @@ public final class GelfLayout extends AbstractStringLayout {
     @Deprecated
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
                       final int compressionThreshold, final boolean includeStacktrace) {
-        this(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true);
+        this(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true, false);
     }
 
     private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
-               final int compressionThreshold, final boolean includeStacktrace, final boolean includeThreadContext) {
+               final int compressionThreshold, final boolean includeStacktrace, final boolean includeThreadContext, final boolean includeNullDelimiter) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
         if (config == null) {
-            for (KeyValuePair additionalField : this.additionalFields) {
+            for (final KeyValuePair additionalField : this.additionalFields) {
                 if (valueNeedsLookup(additionalField.getValue())) {
                     throw new IllegalArgumentException("configuration needs to be set when there are additional fields with variables");
                 }
@@ -256,6 +258,10 @@ public final class GelfLayout extends AbstractStringLayout {
         this.compressionThreshold = compressionThreshold;
         this.includeStacktrace = includeStacktrace;
         this.includeThreadContext = includeThreadContext;
+        this.includeNullDelimiter = includeNullDelimiter;
+        if (includeNullDelimiter && compressionType != CompressionType.OFF) {
+            throw new IllegalArgumentException("null delimiter cannot be used with compression");
+        }
     }
 
     /**
@@ -273,7 +279,7 @@ public final class GelfLayout extends AbstractStringLayout {
             @PluginAttribute(value = "includeStacktrace",
                 defaultBoolean = true) final boolean includeStacktrace) {
             // @formatter:on
-        return new GelfLayout(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true);
+        return new GelfLayout(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true, false);
     }
 
     @PluginBuilderFactory
@@ -393,6 +399,9 @@ public final class GelfLayout extends AbstractStringLayout {
         }
         builder.append(Q);
         builder.append('}');
+        if (includeNullDelimiter) {
+            builder.append('\0');
+        }
         return builder;
     }
 

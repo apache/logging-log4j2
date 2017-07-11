@@ -33,8 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.layout.SyslogLayout.Builder;
 
 /**
  * Appends a series of JSON events as strings serialized as bytes.
@@ -46,755 +44,15 @@ import org.apache.logging.log4j.core.layout.SyslogLayout.Builder;
  * well-formed JSON document.
  * </p>
  * <p>
- * A well-formed JSON event follows this pattern:
- * </p>
- *
- * <pre>
- * {
-  "timeMillis": 1,
-  "thread": "MyThreadName",
-  "level": "DEBUG",
-  "loggerName": "a.B",
-  "marker": {
-    "name": "Marker1",
-    "parents": [{
-      "name": "ParentMarker1",
-      "parents": [{
-        "name": "GrandMotherMarker"
-      }, {
-        "name": "GrandFatherMarker"
-      }]
-    }, {
-      "name": "GrandFatherMarker"
-    }]
-  },
-  "message": "Msg",
-  "thrown": {
-    "cause": {
-      "commonElementCount": 27,
-      "extendedStackTrace": [{
-        "class": "org.apache.logging.log4j.core.layout.LogEventFixtures",
-        "method": "createLogEvent",
-        "file": "LogEventFixtures.java",
-        "line": 53,
-        "exact": false,
-        "location": "test-classes/",
-        "version": "?"
-      }],
-      "localizedMessage": "testNPEx",
-      "message": "testNPEx",
-      "name": "java.lang.NullPointerException"
-    },
-    "commonElementCount": 0,
-    "extendedStackTrace": [{
-      "class": "org.apache.logging.log4j.core.layout.LogEventFixtures",
-      "method": "createLogEvent",
-      "file": "LogEventFixtures.java",
-      "line": 56,
-      "exact": true,
-      "location": "test-classes/",
-      "version": "?"
-    }, {
-      "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
-      "method": "testAllFeatures",
-      "file": "JsonLayoutTest.java",
-      "line": 105,
-      "exact": true,
-      "location": "test-classes/",
-      "version": "?"
-    }, {
-      "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
-      "method": "testLocationOnCompactOnMdcOn",
-      "file": "JsonLayoutTest.java",
-      "line": 268,
-      "exact": true,
-      "location": "test-classes/",
-      "version": "?"
-    }, {
-      "class": "sun.reflect.NativeMethodAccessorImpl",
-      "method": "invoke",
-      "line": -1,
-      "exact": false,
-      "location": "?",
-      "version": "1.7.0_55"
-    }, {
-      "class": "sun.reflect.NativeMethodAccessorImpl",
-      "method": "invoke",
-      "line": -1,
-      "exact": false,
-      "location": "?",
-      "version": "1.7.0_55"
-    }, {
-      "class": "sun.reflect.DelegatingMethodAccessorImpl",
-      "method": "invoke",
-      "line": -1,
-      "exact": false,
-      "location": "?",
-      "version": "1.7.0_55"
-    }, {
-      "class": "java.lang.reflect.Method",
-      "method": "invoke",
-      "line": -1,
-      "exact": false,
-      "location": "?",
-      "version": "1.7.0_55"
-    }, {
-      "class": "org.junit.runners.model.FrameworkMethod$1",
-      "method": "runReflectiveCall",
-      "file": "FrameworkMethod.java",
-      "line": 47,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.internal.runners.model.ReflectiveCallable",
-      "method": "run",
-      "file": "ReflectiveCallable.java",
-      "line": 12,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.model.FrameworkMethod",
-      "method": "invokeExplosively",
-      "file": "FrameworkMethod.java",
-      "line": 44,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.internal.runners.statements.InvokeMethod",
-      "method": "evaluate",
-      "file": "InvokeMethod.java",
-      "line": 17,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.ParentRunner",
-      "method": "runLeaf",
-      "file": "ParentRunner.java",
-      "line": 271,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.BlockJUnit4ClassRunner",
-      "method": "runChild",
-      "file": "BlockJUnit4ClassRunner.java",
-      "line": 70,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.BlockJUnit4ClassRunner",
-      "method": "runChild",
-      "file": "BlockJUnit4ClassRunner.java",
-      "line": 50,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.ParentRunner$3",
-      "method": "run",
-      "file": "ParentRunner.java",
-      "line": 238,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.ParentRunner$1",
-      "method": "schedule",
-      "file": "ParentRunner.java",
-      "line": 63,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.ParentRunner",
-      "method": "runChildren",
-      "file": "ParentRunner.java",
-      "line": 236,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.ParentRunner",
-      "method": "access$000",
-      "file": "ParentRunner.java",
-      "line": 53,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.ParentRunner$2",
-      "method": "evaluate",
-      "file": "ParentRunner.java",
-      "line": 229,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.internal.runners.statements.RunBefores",
-      "method": "evaluate",
-      "file": "RunBefores.java",
-      "line": 26,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.internal.runners.statements.RunAfters",
-      "method": "evaluate",
-      "file": "RunAfters.java",
-      "line": 27,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.junit.runners.ParentRunner",
-      "method": "run",
-      "file": "ParentRunner.java",
-      "line": 309,
-      "exact": true,
-      "location": "junit-4.11.jar",
-      "version": "?"
-    }, {
-      "class": "org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference",
-      "method": "run",
-      "file": "JUnit4TestReference.java",
-      "line": 50,
-      "exact": true,
-      "location": ".cp/",
-      "version": "?"
-    }, {
-      "class": "org.eclipse.jdt.internal.junit.runner.TestExecution",
-      "method": "run",
-      "file": "TestExecution.java",
-      "line": 38,
-      "exact": true,
-      "location": ".cp/",
-      "version": "?"
-    }, {
-      "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-      "method": "runTests",
-      "file": "RemoteTestRunner.java",
-      "line": 467,
-      "exact": true,
-      "location": ".cp/",
-      "version": "?"
-    }, {
-      "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-      "method": "runTests",
-      "file": "RemoteTestRunner.java",
-      "line": 683,
-      "exact": true,
-      "location": ".cp/",
-      "version": "?"
-    }, {
-      "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-      "method": "run",
-      "file": "RemoteTestRunner.java",
-      "line": 390,
-      "exact": true,
-      "location": ".cp/",
-      "version": "?"
-    }, {
-      "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-      "method": "main",
-      "file": "RemoteTestRunner.java",
-      "line": 197,
-      "exact": true,
-      "location": ".cp/",
-      "version": "?"
-    }],
-    "localizedMessage": "testIOEx",
-    "message": "testIOEx",
-    "name": "java.io.IOException",
-    "suppressed": [{
-      "commonElementCount": 0,
-      "extendedStackTrace": [{
-        "class": "org.apache.logging.log4j.core.layout.LogEventFixtures",
-        "method": "createLogEvent",
-        "file": "LogEventFixtures.java",
-        "line": 57,
-        "exact": true,
-        "location": "test-classes/",
-        "version": "?"
-      }, {
-        "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
-        "method": "testAllFeatures",
-        "file": "JsonLayoutTest.java",
-        "line": 105,
-        "exact": true,
-        "location": "test-classes/",
-        "version": "?"
-      }, {
-        "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
-        "method": "testLocationOnCompactOnMdcOn",
-        "file": "JsonLayoutTest.java",
-        "line": 268,
-        "exact": true,
-        "location": "test-classes/",
-        "version": "?"
-      }, {
-        "class": "sun.reflect.NativeMethodAccessorImpl",
-        "method": "invoke",
-        "line": -1,
-        "exact": false,
-        "location": "?",
-        "version": "1.7.0_55"
-      }, {
-        "class": "sun.reflect.NativeMethodAccessorImpl",
-        "method": "invoke",
-        "line": -1,
-        "exact": false,
-        "location": "?",
-        "version": "1.7.0_55"
-      }, {
-        "class": "sun.reflect.DelegatingMethodAccessorImpl",
-        "method": "invoke",
-        "line": -1,
-        "exact": false,
-        "location": "?",
-        "version": "1.7.0_55"
-      }, {
-        "class": "java.lang.reflect.Method",
-        "method": "invoke",
-        "line": -1,
-        "exact": false,
-        "location": "?",
-        "version": "1.7.0_55"
-      }, {
-        "class": "org.junit.runners.model.FrameworkMethod$1",
-        "method": "runReflectiveCall",
-        "file": "FrameworkMethod.java",
-        "line": 47,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.internal.runners.model.ReflectiveCallable",
-        "method": "run",
-        "file": "ReflectiveCallable.java",
-        "line": 12,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.model.FrameworkMethod",
-        "method": "invokeExplosively",
-        "file": "FrameworkMethod.java",
-        "line": 44,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.internal.runners.statements.InvokeMethod",
-        "method": "evaluate",
-        "file": "InvokeMethod.java",
-        "line": 17,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner",
-        "method": "runLeaf",
-        "file": "ParentRunner.java",
-        "line": 271,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.BlockJUnit4ClassRunner",
-        "method": "runChild",
-        "file": "BlockJUnit4ClassRunner.java",
-        "line": 70,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.BlockJUnit4ClassRunner",
-        "method": "runChild",
-        "file": "BlockJUnit4ClassRunner.java",
-        "line": 50,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner$3",
-        "method": "run",
-        "file": "ParentRunner.java",
-        "line": 238,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner$1",
-        "method": "schedule",
-        "file": "ParentRunner.java",
-        "line": 63,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner",
-        "method": "runChildren",
-        "file": "ParentRunner.java",
-        "line": 236,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner",
-        "method": "access$000",
-        "file": "ParentRunner.java",
-        "line": 53,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner$2",
-        "method": "evaluate",
-        "file": "ParentRunner.java",
-        "line": 229,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.internal.runners.statements.RunBefores",
-        "method": "evaluate",
-        "file": "RunBefores.java",
-        "line": 26,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.internal.runners.statements.RunAfters",
-        "method": "evaluate",
-        "file": "RunAfters.java",
-        "line": 27,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner",
-        "method": "run",
-        "file": "ParentRunner.java",
-        "line": 309,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference",
-        "method": "run",
-        "file": "JUnit4TestReference.java",
-        "line": 50,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.TestExecution",
-        "method": "run",
-        "file": "TestExecution.java",
-        "line": 38,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-        "method": "runTests",
-        "file": "RemoteTestRunner.java",
-        "line": 467,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-        "method": "runTests",
-        "file": "RemoteTestRunner.java",
-        "line": 683,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-        "method": "run",
-        "file": "RemoteTestRunner.java",
-        "line": 390,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-        "method": "main",
-        "file": "RemoteTestRunner.java",
-        "line": 197,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }],
-      "localizedMessage": "I am suppressed exception 1",
-      "message": "I am suppressed exception 1",
-      "name": "java.lang.IndexOutOfBoundsException"
-    }, {
-      "commonElementCount": 0,
-      "extendedStackTrace": [{
-        "class": "org.apache.logging.log4j.core.layout.LogEventFixtures",
-        "method": "createLogEvent",
-        "file": "LogEventFixtures.java",
-        "line": 58,
-        "exact": true,
-        "location": "test-classes/",
-        "version": "?"
-      }, {
-        "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
-        "method": "testAllFeatures",
-        "file": "JsonLayoutTest.java",
-        "line": 105,
-        "exact": true,
-        "location": "test-classes/",
-        "version": "?"
-      }, {
-        "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
-        "method": "testLocationOnCompactOnMdcOn",
-        "file": "JsonLayoutTest.java",
-        "line": 268,
-        "exact": true,
-        "location": "test-classes/",
-        "version": "?"
-      }, {
-        "class": "sun.reflect.NativeMethodAccessorImpl",
-        "method": "invoke",
-        "line": -1,
-        "exact": false,
-        "location": "?",
-        "version": "1.7.0_55"
-      }, {
-        "class": "sun.reflect.NativeMethodAccessorImpl",
-        "method": "invoke",
-        "line": -1,
-        "exact": false,
-        "location": "?",
-        "version": "1.7.0_55"
-      }, {
-        "class": "sun.reflect.DelegatingMethodAccessorImpl",
-        "method": "invoke",
-        "line": -1,
-        "exact": false,
-        "location": "?",
-        "version": "1.7.0_55"
-      }, {
-        "class": "java.lang.reflect.Method",
-        "method": "invoke",
-        "line": -1,
-        "exact": false,
-        "location": "?",
-        "version": "1.7.0_55"
-      }, {
-        "class": "org.junit.runners.model.FrameworkMethod$1",
-        "method": "runReflectiveCall",
-        "file": "FrameworkMethod.java",
-        "line": 47,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.internal.runners.model.ReflectiveCallable",
-        "method": "run",
-        "file": "ReflectiveCallable.java",
-        "line": 12,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.model.FrameworkMethod",
-        "method": "invokeExplosively",
-        "file": "FrameworkMethod.java",
-        "line": 44,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.internal.runners.statements.InvokeMethod",
-        "method": "evaluate",
-        "file": "InvokeMethod.java",
-        "line": 17,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner",
-        "method": "runLeaf",
-        "file": "ParentRunner.java",
-        "line": 271,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.BlockJUnit4ClassRunner",
-        "method": "runChild",
-        "file": "BlockJUnit4ClassRunner.java",
-        "line": 70,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.BlockJUnit4ClassRunner",
-        "method": "runChild",
-        "file": "BlockJUnit4ClassRunner.java",
-        "line": 50,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner$3",
-        "method": "run",
-        "file": "ParentRunner.java",
-        "line": 238,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner$1",
-        "method": "schedule",
-        "file": "ParentRunner.java",
-        "line": 63,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner",
-        "method": "runChildren",
-        "file": "ParentRunner.java",
-        "line": 236,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner",
-        "method": "access$000",
-        "file": "ParentRunner.java",
-        "line": 53,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner$2",
-        "method": "evaluate",
-        "file": "ParentRunner.java",
-        "line": 229,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.internal.runners.statements.RunBefores",
-        "method": "evaluate",
-        "file": "RunBefores.java",
-        "line": 26,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.internal.runners.statements.RunAfters",
-        "method": "evaluate",
-        "file": "RunAfters.java",
-        "line": 27,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.junit.runners.ParentRunner",
-        "method": "run",
-        "file": "ParentRunner.java",
-        "line": 309,
-        "exact": true,
-        "location": "junit-4.11.jar",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference",
-        "method": "run",
-        "file": "JUnit4TestReference.java",
-        "line": 50,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.TestExecution",
-        "method": "run",
-        "file": "TestExecution.java",
-        "line": 38,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-        "method": "runTests",
-        "file": "RemoteTestRunner.java",
-        "line": 467,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-        "method": "runTests",
-        "file": "RemoteTestRunner.java",
-        "line": 683,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-        "method": "run",
-        "file": "RemoteTestRunner.java",
-        "line": 390,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }, {
-        "class": "org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
-        "method": "main",
-        "file": "RemoteTestRunner.java",
-        "line": 197,
-        "exact": true,
-        "location": ".cp/",
-        "version": "?"
-      }],
-      "localizedMessage": "I am suppressed exception 2",
-      "message": "I am suppressed exception 2",
-      "name": "java.lang.IndexOutOfBoundsException"
-    }]
-  },
-  "loggerFQCN": "f.q.c.n",
-  "endOfBatch": false,
-  "contextMap": [{
-    "key": "MDC.B",
-    "value": "B_Value"
-  }, {
-    "key": "MDC.A",
-    "value": "A_Value"
-  }],
-  "contextStack": ["stack_msg1", "stack_msg2"],
-  "source": {
-    "class": "org.apache.logging.log4j.core.layout.LogEventFixtures",
-    "method": "createLogEvent",
-    "file": "LogEventFixtures.java",
-    "line": 54
-  }
-}
- * </pre>
- * <p>
  * If {@code complete="false"}, the appender does not write the JSON open array character "[" at the start
  * of the document, "]" and the end, nor comma "," between records.
- * </p>
- * <p>
- * This approach enforces the independence of the JsonLayout and the appender where you embed it.
  * </p>
  * <h3>Encoding</h3>
  * <p>
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
  * events containing non ASCII characters could result in corrupted log files.
  * </p>
- * <h3>Pretty vs. compact XML</h3>
+ * <h3>Pretty vs. compact JSON</h3>
  * <p>
  * By default, the JSON layout is not compact (a.k.a. "pretty") with {@code compact="false"}, which means the
  * appender uses end-of-line characters and indents lines to format the text. If {@code compact="true"}, then no
@@ -814,17 +72,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
             implements org.apache.logging.log4j.core.util.Builder<JsonLayout> {
 
         @PluginBuilderAttribute
-        private boolean locationInfo;
-        
-        @PluginBuilderAttribute
-        private boolean properties;
-        
-        @PluginBuilderAttribute
         private boolean propertiesAsList;
         
-        @PluginBuilderAttribute
-        private boolean includeStacktrace = true;
-
         public Builder() {
             super();
             setCharset(StandardCharsets.UTF_8);
@@ -832,72 +81,47 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
         @Override
         public JsonLayout build() {
-            final boolean encodeThreadContextAsList = properties && propertiesAsList;
+            final boolean encodeThreadContextAsList = isProperties() && propertiesAsList;
             final String headerPattern = toStringOrNull(getHeader());
             final String footerPattern = toStringOrNull(getFooter());
-            return new JsonLayout(getConfiguration(), locationInfo, properties, encodeThreadContextAsList, isComplete(),
-                    isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(), includeStacktrace);
-        }
-
-        private String toStringOrNull(final byte[] header) {
-            return header == null ? null : new String(header, Charset.defaultCharset());
-        }
-
-        public boolean isLocationInfo() {
-            return locationInfo;
-        }
-
-        public boolean isProperties() {
-            return properties;
+            return new JsonLayout(getConfiguration(), isLocationInfo(), isProperties(), encodeThreadContextAsList, isComplete(),
+                    isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(), isIncludeStacktrace(), isStacktraceAsString());
         }
 
         public boolean isPropertiesAsList() {
             return propertiesAsList;
         }
 
-        /**
-         * If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
-         * @return If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
-         */
-        public boolean isIncludeStacktrace() {
-            return includeStacktrace;
-        }
-
-        public B setLocationInfo(boolean locationInfo) {
-            this.locationInfo = locationInfo;
-            return asBuilder();
-        }
-
-        public B setProperties(boolean properties) {
-            this.properties = properties;
-            return asBuilder();
-        }
-
-        public B setPropertiesAsList(boolean propertiesAsList) {
+        public B setPropertiesAsList(final boolean propertiesAsList) {
             this.propertiesAsList = propertiesAsList;
-            return asBuilder();
-        }
-
-        /**
-         * If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
-         * @param includeStacktrace If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
-         * @return this builder
-         */
-        public B setIncludeStacktrace(boolean includeStacktrace) {
-            this.includeStacktrace = includeStacktrace;
             return asBuilder();
         }
     }
 
+    /**
+     * @deprecated Use {@link #newBuilder()} instead
+     */
+    @Deprecated
     protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean encodeThreadContextAsList,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
             final String footerPattern, final Charset charset, final boolean includeStacktrace) {
-        super(config, new JacksonFactory.JSON(encodeThreadContextAsList, includeStacktrace).newWriter(
-                    locationInfo, properties, compact),
-                charset, compact, complete, eventEol,
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
+        super(config, new JacksonFactory.JSON(encodeThreadContextAsList, includeStacktrace, false).newWriter(
+            locationInfo, properties, compact),
+            charset, compact, complete, eventEol,
+            PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
+            PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
+    }
+
+    private JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
+            final boolean encodeThreadContextAsList,
+            final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
+            final String footerPattern, final Charset charset, final boolean includeStacktrace, final boolean stacktraceAsString) {
+        super(config, new JacksonFactory.JSON(encodeThreadContextAsList, includeStacktrace, stacktraceAsString).newWriter(
+            locationInfo, properties, compact),
+            charset, compact, complete, eventEol,
+            PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
+            PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
     }
 
     /**
@@ -946,10 +170,10 @@ public final class JsonLayout extends AbstractJacksonLayout {
         return result;
     }
 
-    @Override
     /**
      * @return The content type.
      */
+    @Override
     public String getContentType() {
         return CONTENT_TYPE + "; charset=" + this.getCharset();
     }
@@ -983,26 +207,25 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @param includeStacktrace
      *            If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
      * @return A JSON Layout.
+     *
+     * @deprecated Use {@link #newBuilder()} instead
      */
     @Deprecated
     public static JsonLayout createLayout(
-            // @formatter:off
-            @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "locationInfo") final boolean locationInfo,
-            @PluginAttribute(value = "properties") final boolean properties,
-            @PluginAttribute(value = "propertiesAsList") final boolean propertiesAsList,
-            @PluginAttribute(value = "complete") final boolean complete,
-            @PluginAttribute(value = "compact") final boolean compact,
-            @PluginAttribute(value = "eventEol") final boolean eventEol,
-            @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
-            @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace
-            // @formatter:on
-    ) {
+            final Configuration config,
+            final boolean locationInfo,
+            final boolean properties,
+            final boolean propertiesAsList,
+            final boolean complete,
+            final boolean compact,
+            final boolean eventEol,
+            final String headerPattern,
+            final String footerPattern,
+            final Charset charset,
+            final boolean includeStacktrace) {
         final boolean encodeThreadContextAsList = properties && propertiesAsList;
         return new JsonLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
-                headerPattern, footerPattern, charset, includeStacktrace);
+                headerPattern, footerPattern, charset, includeStacktrace, false);
     }
 
     @PluginBuilderFactory
@@ -1017,7 +240,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      */
     public static JsonLayout createDefaultLayout() {
         return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, false,
-                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, true);
+                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false);
     }
 
     @Override

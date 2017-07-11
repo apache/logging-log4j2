@@ -20,14 +20,15 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Property;
@@ -73,21 +74,25 @@ public final class KafkaAppender extends AbstractAppender {
             return topic;
         }
 
+        public boolean isSyncSend() {
+            return syncSend;
+        }
+
         public Property[] getProperties() {
             return properties;
         }
 
-        public B setTopic(String topic) {
+        public B setTopic(final String topic) {
             this.topic = topic;
             return asBuilder();
         }
 
-        public B setSyncSend(boolean syncSend) {
+        public B setSyncSend(final boolean syncSend) {
             this.syncSend = syncSend;
             return asBuilder();
         }
 
-        public B setProperties(Property[] properties) {
+        public B setProperties(final Property[] properties) {
             this.properties = properties;
             return asBuilder();
         }
@@ -125,31 +130,34 @@ public final class KafkaAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        if (event.getLoggerName().startsWith("org.apache.kafka")) {
+        if (event.getLoggerName() != null && event.getLoggerName().startsWith("org.apache.kafka")) {
             LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
         } else {
             try {
-                final Layout<? extends Serializable> layout = getLayout();
-                byte[] data;
-                if (layout != null) {
-                    if (layout instanceof SerializedLayout) {
-                        final byte[] header = layout.getHeader();
-                        final byte[] body = layout.toByteArray(event);
-                        data = new byte[header.length + body.length];
-                        System.arraycopy(header, 0, data, 0, header.length);
-                        System.arraycopy(body, 0, data, header.length, body.length);
-                    } else {
-                        data = layout.toByteArray(event);
-                    }
-                } else {
-                    data = StringEncoder.toBytes(event.getMessage().getFormattedMessage(), StandardCharsets.UTF_8);
-                }
-                manager.send(data);
+                tryAppend(event);
             } catch (final Exception e) {
-                LOGGER.error("Unable to write to Kafka [{}] for appender [{}].", manager.getName(), getName(), e);
-                throw new AppenderLoggingException("Unable to write to Kafka in appender: " + e.getMessage(), e);
+                error("Unable to write to Kafka in appender [" + getName() + "]", event, e);
             }
         }
+    }
+
+    private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
+        final Layout<? extends Serializable> layout = getLayout();
+        byte[] data;
+        if (layout != null) {
+            if (layout instanceof SerializedLayout) {
+                final byte[] header = layout.getHeader();
+                final byte[] body = layout.toByteArray(event);
+                data = new byte[header.length + body.length];
+                System.arraycopy(header, 0, data, 0, header.length);
+                System.arraycopy(body, 0, data, header.length, body.length);
+            } else {
+                data = layout.toByteArray(event);
+            }
+        } else {
+            data = StringEncoder.toBytes(event.getMessage().getFormattedMessage(), StandardCharsets.UTF_8);
+        }
+        manager.send(data);
     }
 
     @Override

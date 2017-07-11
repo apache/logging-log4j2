@@ -19,12 +19,13 @@ package org.apache.logging.log4j;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  *
  */
-public class Timer implements Serializable
+public class Timer implements Serializable, StringBuilderFormattable
 {
     private static final long serialVersionUID = 9175191792439630013L;
 
@@ -144,16 +145,23 @@ public class Timer implements Serializable
     @Override
     public String toString()
     {
-        final StringBuilder result = new StringBuilder("Timer ").append(name);
+        final StringBuilder result = new StringBuilder();
+        formatTo(result);
+        return result.toString();
+    }
+
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        buffer.append("Timer ").append(name);
         switch (status) {
             case "Start":
-                result.append(" started");
+                buffer.append(" started");
                 break;
             case "Pause":
-                result.append(" paused");
+                buffer.append(" paused");
                 break;
             case "Resume":
-                result.append(" resumed");
+                buffer.append(" resumed");
                 break;
             case "Stop":
                 long nanoseconds = elapsedTime;
@@ -184,7 +192,7 @@ public class Timer implements Serializable
                 elapsed += numFormat.format(seconds) + '.';
                 numFormat = new DecimalFormat("000000000");
                 elapsed += numFormat.format(nanoseconds) + " seconds";
-                result.append(" stopped. Elapsed time: ").append(elapsed);
+                buffer.append(" stopped. Elapsed time: ").append(elapsed);
                 if (iterations > 0) {
                     nanoseconds = elapsedTime / iterations;
                     // Get elapsed hours
@@ -213,14 +221,13 @@ public class Timer implements Serializable
                     elapsed += numFormat.format(seconds) + '.';
                     numFormat = new DecimalFormat("000000000");
                     elapsed += numFormat.format(nanoseconds) + " seconds";
-                    result.append(" Average per iteration: ").append(elapsed);
+                    buffer.append(" Average per iteration: ").append(elapsed);
                 }
                 break;
             default:
-                result.append(' ').append(status);
+                buffer.append(' ').append(status);
                 break;
         }
-        return result.toString();
     }
 
     @Override

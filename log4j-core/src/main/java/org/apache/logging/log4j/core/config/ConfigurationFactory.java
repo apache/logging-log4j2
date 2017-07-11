@@ -465,8 +465,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             }
             LOGGER.error("No log4j2 configuration file found. " +
                     "Using default configuration: logging only errors to the console. " +
-                    "Set system property 'org.apache.logging.log4j.simplelog.StatusLogger.level'" +
-                    " to TRACE to show Log4j2 internal initialization logging.");
+                    "Set system property 'log4j2.debug' " +
+                    "to show Log4j2 internal initialization logging.");
             return new DefaultConfiguration();
         }
 
@@ -519,6 +519,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
                     final ConfigurationSource source = getInputFromResource(configName, loader);
                     if (source != null) {
+                        if (!factory.isActive()) {
+                            LOGGER.warn("Found configuration file {} for inactive ConfigurationFactory {}", configName, factory.getClass().getName());
+                        }
                         return factory.getConfiguration(loggerContext, source);
                     }
                 }

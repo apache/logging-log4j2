@@ -17,6 +17,17 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.hamcrest.FileMatchers.beforeNow;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.isEmpty;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.lastModified;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,14 +40,6 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
-import static org.apache.logging.log4j.hamcrest.FileMatchers.beforeNow;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.isEmpty;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.lastModified;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.*;
-
 /**
  * Tests the RollingRandomAccessFileManager class.
  */
@@ -44,7 +47,7 @@ public class RollingRandomAccessFileManagerTest {
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#write(byte[], int, int)}
+     * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#writeBytes(byte[], int, int)}
      */
     @Test
     public void testWrite_multiplesOfBufferSize() throws IOException {
@@ -60,7 +63,8 @@ public class RollingRandomAccessFileManagerTest {
             final RolloverStrategy rolloverStrategy = null;
             final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(null, raf,
                     file.getName(), Strings.EMPTY, os, append, flushNow,
-                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, time, triggerPolicy, rolloverStrategy, null, null, true);
+                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, time, triggerPolicy, rolloverStrategy,
+                    null, null, null, null, null, true);
 
             final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
             final byte[] data = new byte[size];
@@ -73,7 +77,7 @@ public class RollingRandomAccessFileManagerTest {
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#write(byte[], int, int)} .
+     * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#writeBytes(byte[], int, int)} .
      */
     @Test
     public void testWrite_dataExceedingBufferSize() throws IOException {
@@ -89,7 +93,8 @@ public class RollingRandomAccessFileManagerTest {
             final RolloverStrategy rolloverStrategy = null;
             final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(null, raf,
                     file.getName(), Strings.EMPTY, os, append, flushNow,
-                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, time, triggerPolicy, rolloverStrategy, null, null, true);
+                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, time, triggerPolicy, rolloverStrategy,
+                    null, null, null, null, null, true);
 
             final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             final byte[] data = new byte[size];
@@ -117,7 +122,7 @@ public class RollingRandomAccessFileManagerTest {
             final RolloverStrategy rolloverStrategy = null;
             final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(null, raf,
                     file.getName(), Strings.EMPTY, os, append, flushNow, bufferSize, triggerSize, time, triggerPolicy,
-                    rolloverStrategy, null, null, true);
+                    rolloverStrategy, null, null, null, null, null, true);
 
             // check the resulting buffer size is what was requested
             assertEquals(bufferSize, manager.getBufferSize());
@@ -149,7 +154,7 @@ public class RollingRandomAccessFileManagerTest {
                 //
                 file.getAbsolutePath(), Strings.EMPTY, isAppend, immediateFlush,
                 RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
-                null, null, null, null);
+                null, null, null, null, null, null, null);
         manager.write(bytes, 0, bytes.length, immediateFlush);
         final int expected = bytes.length * 2;
         assertThat("appended, not overwritten", file, hasLength(expected));
@@ -171,7 +176,7 @@ public class RollingRandomAccessFileManagerTest {
                 //
                 file.getAbsolutePath(), Strings.EMPTY, isAppend, true,
                 RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
-                null, null, null, null);
+                null, null, null, null, null, null, null);
         assertTrue(manager.getFileTime() < expectedMax);
         assertTrue(manager.getFileTime() >= expectedMin);
     }
@@ -189,7 +194,7 @@ public class RollingRandomAccessFileManagerTest {
                 //
                 file.getAbsolutePath(), Strings.EMPTY, isAppend, true,
                 RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
-                null, null, null, null);
+                null, null, null, null, null, null, null);
         assertThat(file, lastModified(equalTo(manager.getFileTime())));
     }
 

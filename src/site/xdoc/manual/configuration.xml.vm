@@ -358,6 +358,11 @@ public class Bar {
         <a name="ConfigurationSyntax"/>
         <subsection name="Configuration Syntax">
           <p>
+            As of version 2.9, for security reasons, Log4j does not process DTD in XML files.
+            If you want to split the configuration in multiple files, use <a href="#XInclude">XInclude</a> or
+            <a href="#CompositeConfiguration">Composite Configuration</a>.
+          </p>
+          <p>
             As the previous examples have shown as well as those to follow, Log4j allows you to easily
             redefine logging behavior without needing to modify your application. It is possible to
             disable logging for certain parts of the application, log only when specific criteria are met such
@@ -420,11 +425,15 @@ public class Bar {
               </tr>
               <tr>
                 <td>status</td>
-                <td>The level of internal Log4j events that should be logged to the console.
+                <td><p>The level of internal Log4j events that should be logged to the console.
                 Valid values for this attribute are "trace", "debug", "info", "warn", "error" and "fatal".
                 Log4j will log details about initialization, rollover and other internal actions to the status logger.
                 Setting <tt>status="trace"</tt> is one of the first tools available to you if you need to
-                troubleshoot log4j.</td>
+                troubleshoot log4j.
+                </p><p>
+                  (Alternatively, setting system property <tt>log4j2.debug</tt> will also print internal Log4j2 logging
+                  to the console, including internal logging that took place before the configuration file was found.)
+                </p></td>
               </tr>
               <tr>
                 <td>strict</td>
@@ -551,8 +560,6 @@ public class Bar {
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </Layout>
     </Appender>
-    <Appender type="List" name="List">
-    </Appender>
   </Appenders>
 
   <Loggers>
@@ -568,7 +575,7 @@ public class Bar {
     </Logger>
 
     <Root level="trace">
-      <AppenderRef ref="List"/>
+      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
 
@@ -594,9 +601,7 @@ public class Bar {
     "ThresholdFilter": { "level": "debug" },
     "appenders": {
       "Console": { "name": "STDOUT",
-        "PatternLayout": { "pattern": "%m%n" }
-      },
-      "List": { "name": "List",
+        "PatternLayout": { "pattern": "%m%n" },
         "ThresholdFilter": { "level": "debug" }
       },
       "Routing": { "name": "Routing",
@@ -610,8 +615,7 @@ public class Bar {
                 "SizeBasedTriggeringPolicy": { "size": "500" }
               }
             },
-            { "AppenderRef": "STDOUT", "key": "Audit"},
-            { "AppenderRef": "List", "key": "Service"}
+            { "AppenderRef": "STDOUT", "key": "Audit"}
           ]
         }
       }
@@ -642,8 +646,7 @@ public class Bar {
     "ThresholdFilter": { "level": "debug" },
     "appenders": {
       "appender": [
-         { "type": "Console", "name": "STDOUT", "PatternLayout": { "pattern": "%m%n" }},
-         { "type": "List", "name": "List", "ThresholdFilter": { "level": "debug" }},
+         { "type": "Console", "name": "STDOUT", "PatternLayout": { "pattern": "%m%n" }, "ThresholdFilter": { "level": "debug" }},
          { "type": "Routing",  "name": "Routing",
           "Routes": { "pattern": "${dollar}${dollar}{sd:type}",
             "Route": [
@@ -655,8 +658,7 @@ public class Bar {
                   "SizeBasedTriggeringPolicy": { "size": "500" }
                 }
               },
-              { "AppenderRef": "STDOUT", "key": "Audit"},
-              { "AppenderRef": "List", "key": "Service"}
+              { "AppenderRef": "STDOUT", "key": "Audit"}
             ]
           }
         }
@@ -667,7 +669,7 @@ public class Bar {
         { "name": "EventLogger", "level": "info", "additivity": "false",
           "AppenderRef": { "ref": "Routing" }},
         { "name": "com.foo.bar", "level": "error", "additivity": "false",
-          "AppenderRef": { "ref": "Console" }}
+          "AppenderRef": { "ref": "STDOUT" }}
       ],
       "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
     }
@@ -675,28 +677,9 @@ public class Bar {
 }
 ]]></pre>
           <p>
-            The JSON support uses the Jackson Data Processor to parse the JSON files. These dependencies must be added
-            to a project that wants to use JSON for configuration:
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using
+            JSON configuration files.
           </p>
-          <pre class="prettyprint linenums"><![CDATA[
-<dependency>
-  <groupId>com.fasterxml.jackson.core</groupId>
-  <artifactId>jackson-core</artifactId>
-  <version>${jackson2Version}</version>
-</dependency>
-
-<dependency>
-  <groupId>com.fasterxml.jackson.core</groupId>
-  <artifactId>jackson-databind</artifactId>
-  <version>${jackson2Version}</version>
-</dependency>
-
-<dependency>
-  <groupId>com.fasterxml.jackson.core</groupId>
-  <artifactId>jackson-annotations</artifactId>
-  <version>${jackson2Version}</version>
-</dependency>
-]]></pre>
           <a name="YAML"/>
           <h4>Configuration with YAML</h4>
           <p>
@@ -721,11 +704,8 @@ Configuration:
     File:
       name: File
       fileName: ${dollar}{filename}
-      bufferedIO: false
       PatternLayout:
         Pattern: "%d %p %C{1.} [%t] %m%n"
-    List:
-      name: List
       Filters:
         ThresholdFilter:
           level: error
@@ -754,15 +734,9 @@ Configuration:
         ref: STDOUT
           ]]></pre>
           <p>
-            In order to use YAML configuration files, the Jackson YAML data format must be included:
+            Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using
+            YAML configuration files.
           </p>
-          <pre class="prettyprint linenums"><![CDATA[
-<dependency>
-    <groupId>com.fasterxml.jackson.dataformat</groupId>
-    <artifactId>jackson-dataformat-yaml</artifactId>
-    <version>${jackson2Version}</version>
-</dependency>
-          ]]></pre>
         <a name="Loggers"/>
           <h4>Configuring loggers</h4>
           <p>
@@ -776,7 +750,7 @@ Configuration:
             also have an additivity attribute specified.  The level may be configured with one of TRACE,
             DEBUG, INFO, WARN, ERROR, ALL or OFF. If no level is specified it will default to ERROR. The
             additivity attribute may be assigned a value of true or false. If the attribute is omitted
-            the default value of false will be used.
+            the default value of true will be used.
           </p>
           <p>
             A LoggerConfig (including the root LoggerConfig) can be configured with properties that will be added
@@ -859,8 +833,6 @@ Configuration:
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
     </File>
-    <List name="List">
-    </List>
   </Appenders>
 
   <Loggers>
@@ -882,7 +854,7 @@ Configuration:
     </Logger>
 
     <Root level="trace">
-      <AppenderRef ref="List"/>
+      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
 
@@ -935,6 +907,8 @@ appender.console.type = Console
 appender.console.name = STDOUT
 appender.console.layout.type = PatternLayout
 appender.console.layout.pattern = %m%n
+appender.console.filter.threshold.type = ThresholdFilter
+appender.console.filter.threshold.level = error
 
 appender.rolling.type = RollingFile
 appender.rolling.name = RollingFile
@@ -950,11 +924,6 @@ appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
 appender.rolling.policies.size.size=100MB
 appender.rolling.strategy.type = DefaultRolloverStrategy
 appender.rolling.strategy.max = 5
-
-appender.list.type = List
-appender.list.name = List
-appender.list.filter.threshold.type = ThresholdFilter
-appender.list.filter.threshold.level = error
 
 logger.rolling.name = com.example.my.app
 logger.rolling.level = debug
@@ -989,10 +958,8 @@ rootLogger.appenderRef.stdout.ref = STDOUT
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
-    </Console>
-    <List name="List">
       <ThresholdFilter level="debug"/>
-    </List>
+    </Console>
     <Routing name="Routing">
       <Routes pattern="${dollar}${dollar}{sd:type}">
         <Route>
@@ -1005,7 +972,6 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           </RollingFile>
         </Route>
         <Route ref="STDOUT" key="Audit"/>
-        <Route ref="List" key="Service"/>
       </Routes>
     </Routing>
   </Appenders>
@@ -1353,6 +1319,9 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             <tr>
             <td>
             <b>Troubleshooting tip for the impatient:</b>
+              <p>From log4j-2.9 onward, log4j2 will print all internal logging to the console if system property
+                <tt>log4j2.debug</tt> is defined (with any or no value).</p>
+              <p>Prior to log4j-2.9, there are two places where internal logging can be controlled:</p>
             <ul>
               <li>Before a configuration is found, status logger level can be controlled with system
               property <code>org.apache.logging.log4j.simplelog.StatusLogger.level</code>.</li>
@@ -1385,7 +1354,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           </p>
 
           <pre class="prettyprint linenums"><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>;
+<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug" name="RoutingTest">
   <Properties>
     <Property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</Property>
@@ -1395,10 +1364,8 @@ rootLogger.appenderRef.stdout.ref = STDOUT
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
-    </Console>
-    <List name="List">
       <ThresholdFilter level="debug"/>
-    </List>
+    </Console>
     <Routing name="Routing">
       <Routes pattern="${dollar}${dollar}{sd:type}">
         <Route>
@@ -1411,7 +1378,6 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           </RollingFile>
         </Route>
         <Route ref="STDOUT" key="Audit"/>
-        <Route ref="List" key="Service"/>
       </Routes>
     </Routing>
   </Appenders>
@@ -1454,26 +1420,19 @@ rootLogger.appenderRef.stdout.ref = STDOUT
 2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.
        filter.ThresholdFilter for element ThresholdFilter with params(level="debug",
        onMatch="null", onMismatch="null")
-2011-11-23 17:08:00,806 DEBUG Calling createAppender on class org.apache.logging.log4j.test.
-       appender.ListAppender for element List with params(name="List", entryPerNewLine="null",
-       raw="null", null, ThresholdFilter(DEBUG))
 2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
        routing.Route for element Route with params(AppenderRef="null", key="null", Node=Route)
 2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
        routing.Route for element Route with params(AppenderRef="STDOUT", key="Audit", Node=Route)
-2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
-       routing.Route for element Route with params(AppenderRef="List", key="Service", Node=Route)
 2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.
        routing.Routes for element Routes with params(pattern="${dollar}{sd:type}",
-       routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'),
-       Route(type=static Reference=List key='Service')})
+       routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'))})
 2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.
        routing.RoutingAppender for element Routing with params(name="Routing",
       ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static
-       Reference=STDOUT key='Audit'),
-       Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
+       Reference=STDOUT key='Audit')}), Configuration(RoutingTest), null, null)
 2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.
-       plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
+       plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, Routing})
 2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.
        config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="Routing")
 2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.
@@ -1520,13 +1479,11 @@ rootLogger.appenderRef.stdout.ref = STDOUT
 2011-11-23 17:08:00,802 DEBUG Generated plugins in 0.001349000 seconds
 2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null, target="null", name="STDOUT", ignoreExceptions="null")
 2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
-2011-11-23 17:08:00,806 DEBUG Calling createAppender on class org.apache.logging.log4j.test.appender.ListAppender for element List with params(name="List", entryPerNewLine="null", raw="null", null, ThresholdFilter(DEBUG))
 2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="null", key="null", Node=Route)
 2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="STDOUT", key="Audit", Node=Route)
-2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="List", key="Service", Node=Route)
-2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${dollar}{sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'), Route(type=static Reference=List key='Service')})
-2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit'),Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
-2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
+2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${dollar}{sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit')})
+2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit')}), Configuration(RoutingTest), null, null)
+2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.AppendersPlugin for element appenders with params(appenders={STDOUT, Routing})
 2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="Routing")
 2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", AppenderRef={Routing}, null)
 2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="STDOUT")
@@ -1625,12 +1582,21 @@ public class AwesomeTest {
     <th>Default Value</th>
     <th>Description</th>
   </tr>
+
   <tr>
     <td><a name="log4j.configurationFile"/>log4j.configurationFile</td>
     <td>&nbsp;</td>
     <td>
       Path to an XML or JSON Log4j 2 configuration file. May also contain a comma separated list of configuration
       file names.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.debug"/>log4j2.debug</td>
+    <td>&nbsp;</td>
+    <td>
+      Log4j2 will print all internal logging to the console if system property
+      <tt>log4j2.debug</tt> is defined (with any or no value).
     </td>
   </tr>
   <tr>

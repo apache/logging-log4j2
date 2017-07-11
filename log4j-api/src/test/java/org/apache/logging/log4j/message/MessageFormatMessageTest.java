@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.junit.Mutable;
+import org.apache.logging.log4j.util.Constants;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,6 +29,8 @@ import java.util.Locale;
  *
  */
 public class MessageFormatMessageTest {
+
+    private static final String SPACE = Constants.JAVA_MAJOR_VERSION < 9 ? " " : "\u00a0";
 
     private static final int LOOP_CNT = 500;
     String[] array = new String[LOOP_CNT];
@@ -69,7 +72,7 @@ public class MessageFormatMessageTest {
         final String testMsg = "Test message {0,number,currency}";
         final MessageFormatMessage msg = new MessageFormatMessage(Locale.FRANCE, testMsg, 1234567890);
         final String result = msg.getFormattedMessage();
-        final String expected = "Test message 1 234 567 890,00 €";
+        final String expected = "Test message 1 234 567 890,00" + SPACE + "€";
         assertEquals(expected, result);
     }
 

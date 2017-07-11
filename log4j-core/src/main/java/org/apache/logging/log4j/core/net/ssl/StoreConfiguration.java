@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.util.Arrays;
+
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -25,11 +27,11 @@ public class StoreConfiguration<T> {
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private String location;
-    private String password;
+    private char[] password;
 
     public StoreConfiguration(final String location, final String password) {
         this.location = location;
-        this.password = password;
+        this.password = password == null ? null : password.toCharArray();
     }
 
     public String getLocation() {
@@ -41,15 +43,15 @@ public class StoreConfiguration<T> {
     }
 
     public String getPassword() {
-        return this.password;
+        return String.valueOf(this.password);
     }
 
     public char[] getPasswordAsCharArray() {
-        return this.password == null ? null : this.password.toCharArray();
+        return this.password;
     }
 
     public void setPassword(final String password) {
-        this.password = password;
+        this.password = password == null ? null : password.toCharArray();
     }
 
     /**
@@ -63,8 +65,8 @@ public class StoreConfiguration<T> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.location == null) ? 0 : this.location.hashCode());
-        result = prime * result + ((this.password == null) ? 0 : this.password.hashCode());
+        result = prime * result + ((location == null) ? 0 : location.hashCode());
+        result = prime * result + Arrays.hashCode(password);
         return result;
     }
 
@@ -76,22 +78,18 @@ public class StoreConfiguration<T> {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof StoreConfiguration)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        final StoreConfiguration<?> other = (StoreConfiguration<?>) obj;
-        if (this.location == null) {
+        final StoreConfiguration other = (StoreConfiguration) obj;
+        if (location == null) {
             if (other.location != null) {
                 return false;
             }
-        } else if (!this.location.equals(other.location)) {
+        } else if (!location.equals(other.location)) {
             return false;
         }
-        if (this.password == null) {
-            if (other.password != null) {
-                return false;
-            }
-        } else if (!this.password.equals(other.password)) {
+        if (!Arrays.equals(password, other.password)) {
             return false;
         }
         return true;

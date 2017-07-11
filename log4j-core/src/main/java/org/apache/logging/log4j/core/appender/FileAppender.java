@@ -70,6 +70,15 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         @PluginBuilderAttribute
         private boolean createOnDemand;
 
+        @PluginBuilderAttribute
+        private String filePermissions;
+
+        @PluginBuilderAttribute
+        private String fileOwner;
+
+        @PluginBuilderAttribute
+        private String fileGroup;
+
         @Override
         public FileAppender build() {
             boolean bufferedIo = isBufferedIo();
@@ -84,7 +93,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             final Layout<? extends Serializable> layout = getOrCreateLayout();
 
             final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
-                    advertiseUri, layout, bufferSize, getConfiguration());
+                    advertiseUri, layout, bufferSize, filePermissions, fileOwner, fileGroup, getConfiguration());
             if (manager == null) {
                 return null;
             }
@@ -117,6 +126,18 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return locking;
         }
 
+        public String getFilePermissions() {
+            return filePermissions;
+        }
+
+        public String getFileOwner() {
+            return fileOwner;
+        }
+
+        public String getFileGroup() {
+            return fileGroup;
+        }
+
         public B withAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
@@ -144,6 +165,21 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
         public B withLocking(final boolean locking) {
             this.locking = locking;
+            return asBuilder();
+        }
+
+        public B withFilePermissions(final String filePermissions) {
+            this.filePermissions = filePermissions;
+            return asBuilder();
+        }
+
+        public B withFileOwner(final String fileOwner) {
+            this.fileOwner = fileOwner;
+            return asBuilder();
+        }
+
+        public B withFileGroup(final String fileGroup) {
+            this.fileGroup = fileGroup;
             return asBuilder();
         }
 

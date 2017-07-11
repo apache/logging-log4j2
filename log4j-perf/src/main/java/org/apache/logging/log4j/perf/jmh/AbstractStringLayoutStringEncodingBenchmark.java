@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -194,9 +195,9 @@ public class AbstractStringLayoutStringEncodingBenchmark {
         return checksum;
     }
 
-    private static long consume(final byte[] bytes, final int offset, final int length) {
+    private static long consume(final byte[] bytes, final int offset, final int limit) {
         long checksum = 0;
-        for (int i = offset; i < length; i++) {
+        for (int i = offset; i < limit; i++) {
             checksum += bytes[i];
         }
         return checksum;
@@ -255,9 +256,19 @@ public class AbstractStringLayoutStringEncodingBenchmark {
         @Override
         public ByteBuffer drain(final ByteBuffer buf) {
             buf.flip();
-            consume(buf.array(), buf.position(), buf.limit());
+            consume(buf.array(), buf.arrayOffset() + buf.position(), buf.arrayOffset() + buf.limit());
             buf.clear();
             return buf;
+        }
+
+        @Override
+        public void writeBytes(final ByteBuffer data) {
+            ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+        }
+
+        @Override
+        public void writeBytes(final byte[] data, final int offset, final int length) {
+            ByteBufferDestinationHelper.writeToUnsynchronized(data, offset, length, this);
         }
 
         public void reset() {

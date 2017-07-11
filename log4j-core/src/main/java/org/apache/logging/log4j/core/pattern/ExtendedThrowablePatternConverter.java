@@ -36,6 +36,7 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
 
     /**
      * Private constructor.
+     * 
      * @param config
      * @param options options, may be null.
      */
@@ -67,7 +68,7 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
                 super.format(event, toAppendTo);
                 return;
             }
-            String suffix = getSuffix(event);
+            final String suffix = getSuffix(event);
             final String extStackTrace = proxy.getExtendedStackTraceAsString(options.getIgnorePackages(), options.getTextRenderer(), suffix);
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {

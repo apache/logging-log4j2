@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers assigned
@@ -69,7 +69,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
         } else if (loader != null) {
             return locateContext(loader, configLocation);
         } else {
-            final Class<?> clazz = ReflectionUtil.getCallerClass(fqcn);
+            final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
             if (clazz != null) {
                 return locateContext(clazz.getClassLoader(), configLocation);
             }

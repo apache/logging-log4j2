@@ -151,7 +151,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             final ConfigurationSource source = config.getConfigurationSource();
             final URI sourceURI = source.getURI();
             Configuration currentConfig;
-            if (sourceURI != null) {
+            if (sourceURI == null) {
                 LOGGER.warn("Unable to determine URI for configuration {}, changes to it will be ignored",
                         config.getName());
                 currentConfig = factory.getConfiguration(getLoggerContext(), config.getName(), sourceURI);

@@ -16,13 +16,19 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Locale;
+
 import org.apache.logging.log4j.junit.Mutable;
 import org.apache.logging.log4j.util.Constants;
+import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-import java.util.Locale;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -149,5 +155,21 @@ public class FormattedMessageTest {
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
         assertEquals("Should use initial param value", "Test message abc", actual);
+    }
+
+    @Test
+    public void testSerialization() throws IOException, ClassNotFoundException {
+        final FormattedMessage expected = new FormattedMessage("Msg", "a", "b", "c");
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {
+            out.writeObject(expected);
+        }
+        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        final ObjectInputStream in = new ObjectInputStream(bais);
+        final FormattedMessage actual = (FormattedMessage) in.readObject();
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected.getFormat(), actual.getFormat());
+        Assert.assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
+        Assert.assertArrayEquals(expected.getParameters(), actual.getParameters());
     }
 }

@@ -18,7 +18,9 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Reusable parameterized message. This message is mutable and is not safe to be accessed or modified by multiple
@@ -288,7 +290,9 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     public String getFormattedMessage() {
         final StringBuilder sb = getBuffer();
         formatTo(sb);
-        return sb.toString();
+        final String result = sb.toString();
+        StringBuilders.trimToMaxSize(sb, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        return result;
     }
 
     private StringBuilder getBuffer() {
@@ -298,7 +302,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         StringBuilder result = buffer.get();
         if (result == null) {
             final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
-            result = new StringBuilder(Math.min(MIN_BUILDER_SIZE, currentPatternLength * 2));
+            result = new StringBuilder(Math.max(MIN_BUILDER_SIZE, currentPatternLength * 2));
             buffer.set(result);
         }
         result.setLength(0);

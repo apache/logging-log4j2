@@ -16,9 +16,20 @@
 -->
 # Building Log4j 2
   
-To build Log4j 2, you need a JDK implementation version 1.7 or greater, and Apache Maven.
-Note that building the site requires Maven 3.0.5, while everything else works
-fine with any version of Maven 3.
+To build Log4j 2, you need a JDK implementation version 1.7 or greater, JDK 
+version 9, and Apache Maven 3.x.
+
+Log4j 2.x uses the Java 9 compiler in addition to 
+the Java version installed in the path. This is accomplished by using Maven's toolchains support.
+Log4j 2 provides sample toolchains XML files in the root folder. This may be used by 
+modifying it and installing the file as toolchains.xml in the .m2 folder or by using the 
+following when invoking Maven.
+
+```
+[Macintosh] -t ./toolchains-sample-mac.xml 
+[Windows] -t ./toolchains-sample-win.xml 
+[Linux] -t ./toolchains-sample-linux.xml 
+```
 
 To perform the license release audit, a.k.a. "RAT check", run.
 
@@ -30,7 +41,7 @@ To perform a Clirr check on the API module, run
 
 To build the site with Java 7, make sure you give Maven enough memory using 
 `MAVEN_OPTS` with options appropriate for your JVM. Alternatively, you can 
-build with Java 8 and not deal with `MAVEN_OPTS`.
+build with Java 8 and not deal with `MAVEN_OPTS`. 
 
 To install the jars in your local Maven repository, from a command line, run:
 
@@ -50,7 +61,7 @@ If Java 7 runs out of memory building the site, you will need:
 
 On Windows, use a local staging directory, for example:
 
-    mvn site:stage-deploy -DstagingSiteURL=file:///%HOME%/log4j
+    mvn site:stage-deploy -DstagingSiteURL=file:///%HOMEDRIVE%%HOMEPATH%/log4j
 
 On UNIX, use a local staging directory, for example:
 

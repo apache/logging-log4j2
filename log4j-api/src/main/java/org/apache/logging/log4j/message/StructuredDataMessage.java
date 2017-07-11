@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
 @AsynchronouslyFormattable
-public class StructuredDataMessage extends MapMessage implements StringBuilderFormattable {
+public class StructuredDataMessage extends MapMessage<StructuredDataMessage, String> implements StringBuilderFormattable {
 
     private static final long serialVersionUID = 1703221292892071920L;
     private static final int MAX_LENGTH = 32;
@@ -134,18 +134,6 @@ public class StructuredDataMessage extends MapMessage implements StringBuilderFo
     }
 
     /**
-     * Add an item to the data Map in fluent style.
-     * @param key The name of the data item.
-     * @param value The value of the data item.
-     * @return {@code this}
-     */
-    @Override
-    public StructuredDataMessage with(final String key, final String value) {
-        put(key, value);
-        return this;
-    }
-
-    /**
      * Returns the supported formats.
      * @return An array of the supported format names.
      */
@@ -214,25 +202,6 @@ public class StructuredDataMessage extends MapMessage implements StringBuilderFo
 
     protected void setMessageFormat(final String msg) {
         this.message = msg;
-    }
-
-
-    @Override
-    protected void validate(final String key, final String value) {
-        validateKey(key);
-    }
-
-    private void validateKey(final String key) {
-        if (key.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("Structured data keys are limited to 32 characters. key: " + key);
-        }
-        for (int i = 0; i < key.length(); i++) {
-            final char c = key.charAt(i);
-            if (c < '!' || c > '~' || c == '=' || c == ']' || c == '"') {
-                throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters" +
-                        "and may not contain a space, =, ], or \"");
-            }
-        }
     }
 
     /**
@@ -371,7 +340,7 @@ public class StructuredDataMessage extends MapMessage implements StringBuilderFo
 
 
     @Override
-    public MapMessage newInstance(final Map<String, String> map) {
+    public StructuredDataMessage newInstance(final Map<String, String> map) {
         return new StructuredDataMessage(this, map);
     }
 
@@ -410,4 +379,92 @@ public class StructuredDataMessage extends MapMessage implements StringBuilderFo
         result = HASHVAL * result + (message != null ? message.hashCode() : 0);
         return result;
     }
+
+    @Override
+    protected void validate(final String key, final boolean value) {
+        validateKey(key);
+    }
+
+    /**
+     * @since 2.9
+     */
+    @Override
+    protected void validate(final String key, final byte value) {
+        validateKey(key);
+    }
+
+    /**
+     * @since 2.9
+     */
+    @Override
+    protected void validate(final String key, final char value) {
+        validateKey(key);
+    }
+    
+    /**
+     * @since 2.9
+     */
+    @Override
+    protected void validate(final String key, final double value) {
+        validateKey(key);
+    }
+    
+    /**
+     * @since 2.9
+     */
+    @Override
+    protected void validate(final String key, final float value) {
+        validateKey(key);
+    }
+
+    /**
+     * @since 2.9
+     */
+    @Override
+    protected void validate(final String key, final int value) {
+        validateKey(key);
+    }
+
+    /**
+     * @since 2.9
+     */
+    @Override
+    protected void validate(final String key, final long value) {
+        validateKey(key);
+    }
+
+    /**
+     * @since 2.9
+     */
+    @Override
+    protected void validate(final String key, final Object value) {
+        validateKey(key);
+    }
+
+    /**
+     * @since 2.9
+     */
+    @Override
+    protected void validate(final String key, final short value) {
+        validateKey(key);
+    }
+
+    @Override
+    protected void validate(final String key, final String value) {
+        validateKey(key);
+    }
+
+    private void validateKey(final String key) {
+        if (key.length() > MAX_LENGTH) {
+            throw new IllegalArgumentException("Structured data keys are limited to 32 characters. key: " + key);
+        }
+        for (int i = 0; i < key.length(); i++) {
+            final char c = key.charAt(i);
+            if (c < '!' || c > '~' || c == '=' || c == ']' || c == '"') {
+                throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters" +
+                        "and may not contain a space, =, ], or \"");
+            }
+        }
+    }
+
 }

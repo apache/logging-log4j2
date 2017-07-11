@@ -22,13 +22,12 @@ import java.util.Random;
 
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import sun.reflect.Reflection;
 
 /**
  * <p>
@@ -85,13 +84,9 @@ public class ReflectionBenchmark {
 
     @Benchmark
     public String test03_getCallerClassNameReflectively() {
-        return ReflectionUtil.getCallerClass(3).getName();
+        return StackLocatorUtil.getCallerClass(3).getName();
     }
 
-    @Benchmark
-    public String test04_getCallerClassNameSunReflection() {
-        return Reflection.getCallerClass(3).getName();
-    }
 
     @Benchmark
     public Class<?> test05_getStackTraceClassForClassName() throws ClassNotFoundException {
@@ -105,12 +100,7 @@ public class ReflectionBenchmark {
 
     @Benchmark
     public Class<?> test07_getReflectiveCallerClassUtility() {
-        return ReflectionUtil.getCallerClass(3);
-    }
-
-    @Benchmark
-    public Class<?> test08_getDirectSunReflection() {
-        return Reflection.getCallerClass(3);
+        return StackLocatorUtil.getCallerClass(3);
     }
 
     @Benchmark
@@ -131,7 +121,7 @@ public class ReflectionBenchmark {
         // let's not benchmark LinkedList or anything here
         final Class<?>[] classes = new Class<?>[100];
         Class<?> clazz;
-        for (int i = 0; null != (clazz = ReflectionUtil.getCallerClass(i)); i++) {
+        for (int i = 0; null != (clazz = StackLocatorUtil.getCallerClass(i)); i++) {
             classes[i] = clazz;
         }
         return classes;
@@ -140,6 +130,47 @@ public class ReflectionBenchmark {
     @Benchmark
     public Class<?>[] test12_getClassContextViaSecurityManager(final ClassContextManager classContextManager) {
         return classContextManager.getClassContext();
+    }
+
+
+    @Benchmark
+    public Class<?> reflectionUtilGetClass() {
+        return new ClassLocator().findClass(4);
+    }
+
+    @Benchmark
+    public String locationLocatorGetMethod() {
+        return new MethodLocator().findMethodName(4);
+    }
+
+    private static class ClassLocator {
+
+        private Class<?> findClass(final int depth) {
+            if (depth == 1) {
+                return locateCaller();
+            } else {
+                return findClass(depth - 1);
+            }
+        }
+
+        private Class<?> locateCaller() {
+            return StackLocatorUtil.getCallerClass(ClassLocator.class.getName());
+        }
+    }
+
+    private static class MethodLocator {
+
+        private String findMethodName(final int depth) {
+            if (depth == 1) {
+                return locateMethodName();
+            } else {
+                return findMethodName(depth - 1);
+            }
+        }
+
+        private String locateMethodName() {
+            return StackLocatorUtil.calcLocation(MethodLocator.class.getName()).getMethodName();
+        }
     }
 
 }

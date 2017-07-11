@@ -32,9 +32,18 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class StringBuilderEncoder implements Encoder<StringBuilder> {
 
     private static final int DEFAULT_BYTE_BUFFER_SIZE = 8 * 1024;
-    private final ThreadLocal<CharBuffer> charBufferThreadLocal = new ThreadLocal<>();
-    private final ThreadLocal<ByteBuffer> byteBufferThreadLocal = new ThreadLocal<>();
-    private final ThreadLocal<CharsetEncoder> charsetEncoderThreadLocal = new ThreadLocal<>();
+    /**
+     * This ThreadLocal uses raw and inconvenient Object[] to store three heterogeneous objects (CharEncoder, CharBuffer
+     * and ByteBuffer) instead of a custom class, because it needs to contain JDK classes, no custom (Log4j) classes.
+     * Where possible putting only JDK classes in ThreadLocals is preferable to avoid memory leaks in web containers:
+     * the Log4j classes may be loaded by a separate class loader which cannot be garbage collected if a thread pool
+     * threadlocal still has a reference to it.
+     *
+     * Using just one ThreadLocal instead of three separate ones is an optimization: {@link ThreadLocal.ThreadLocalMap}
+     * is polluted less, {@link ThreadLocal.ThreadLocalMap#get()} is called only once on each call to {@link #encode}
+     * instead of three times.
+     */
+    private final ThreadLocal<Object[]> threadLocal = new ThreadLocal<>();
     private final Charset charset;
     private final int charBufferSize;
     private final int byteBufferSize;
@@ -51,77 +60,38 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
 
     @Override
     public void encode(final StringBuilder source, final ByteBufferDestination destination) {
-        final ByteBuffer temp = getByteBuffer();
-        temp.clear();
-        temp.limit(Math.min(temp.capacity(), destination.getByteBuffer().capacity()));
-        final CharsetEncoder charsetEncoder = getCharsetEncoder();
-
-        final int estimatedBytes = estimateBytes(source.length(), charsetEncoder.maxBytesPerChar());
-        if (temp.remaining() < estimatedBytes) {
-            encodeSynchronized(getCharsetEncoder(), getCharBuffer(), source, destination);
-        } else {
-            encodeWithThreadLocals(charsetEncoder, getCharBuffer(), temp, source, destination);
-        }
-    }
-
-    private void encodeWithThreadLocals(final CharsetEncoder charsetEncoder, final CharBuffer charBuffer,
-            final ByteBuffer temp, final StringBuilder source, final ByteBufferDestination destination) {
         try {
-            TextEncoderHelper.encodeTextWithCopy(charsetEncoder, charBuffer, temp, source, destination);
+            final Object[] threadLocalState = getThreadLocalState();
+            final CharsetEncoder charsetEncoder = (CharsetEncoder) threadLocalState[0];
+            final CharBuffer charBuffer = (CharBuffer) threadLocalState[1];
+            final ByteBuffer byteBuffer = (ByteBuffer) threadLocalState[2];
+            TextEncoderHelper.encodeText(charsetEncoder, charBuffer, byteBuffer, source, destination);
         } catch (final Exception ex) {
             logEncodeTextException(ex, source, destination);
             TextEncoderHelper.encodeTextFallBack(charset, source, destination);
         }
     }
 
-    private static int estimateBytes(final int charCount, final float maxBytesPerChar) {
-        return (int) (charCount * (double) maxBytesPerChar);
-    }
-
-    private void encodeSynchronized(final CharsetEncoder charsetEncoder, final CharBuffer charBuffer,
-            final StringBuilder source, final ByteBufferDestination destination) {
-        synchronized (destination) {
-            try {
-                TextEncoderHelper.encodeText(charsetEncoder, charBuffer, destination.getByteBuffer(), source,
-                        destination);
-            } catch (final Exception ex) {
-                logEncodeTextException(ex, source, destination);
-                TextEncoderHelper.encodeTextFallBack(charset, source, destination);
-            }
+    private Object[] getThreadLocalState() {
+        Object[] threadLocalState = threadLocal.get();
+        if (threadLocalState == null) {
+            threadLocalState = new Object[] {
+                    charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
+                            .onUnmappableCharacter(CodingErrorAction.REPLACE),
+                    CharBuffer.allocate(charBufferSize),
+                    ByteBuffer.allocate(byteBufferSize)
+            };
+            threadLocal.set(threadLocalState);
+        } else {
+            ((CharsetEncoder) threadLocalState[0]).reset();
+            ((CharBuffer) threadLocalState[1]).clear();
+            ((ByteBuffer) threadLocalState[2]).clear();
         }
-    }
-
-    private CharsetEncoder getCharsetEncoder() {
-        CharsetEncoder result = charsetEncoderThreadLocal.get();
-        if (result == null) {
-            result = charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
-                    .onUnmappableCharacter(CodingErrorAction.REPLACE);
-            charsetEncoderThreadLocal.set(result);
-        }
-        return result;
-    }
-
-
-    private CharBuffer getCharBuffer() {
-        CharBuffer result = charBufferThreadLocal.get();
-        if (result == null) {
-            result = CharBuffer.wrap(new char[charBufferSize]);
-            charBufferThreadLocal.set(result);
-        }
-        return result;
-    }
-
-    private ByteBuffer getByteBuffer() {
-        ByteBuffer result = byteBufferThreadLocal.get();
-        if (result == null) {
-            result = ByteBuffer.wrap(new byte[byteBufferSize]);
-            byteBufferThreadLocal.set(result);
-        }
-        return result;
+        return threadLocalState;
     }
 
     private void logEncodeTextException(final Exception ex, final StringBuilder text,
-                                        final ByteBufferDestination destination) {
+            final ByteBufferDestination destination) {
         StatusLogger.getLogger().error("Recovering from StringBuilderEncoder.encode('{}') error: {}", text, ex, ex);
     }
 }

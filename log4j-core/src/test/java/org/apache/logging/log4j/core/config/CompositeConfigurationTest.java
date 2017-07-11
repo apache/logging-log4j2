@@ -168,8 +168,8 @@ public class CompositeConfigurationTest {
             public void evaluate() throws Throwable {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
 
-                List<AppenderRef> appenderRefList = config.getLogger("cat1").getAppenderRefs();
-                AppenderRef appenderRef = getAppenderRef(appenderRefList, "STDOUT");
+                final List<AppenderRef> appenderRefList = config.getLogger("cat1").getAppenderRefs();
+                final AppenderRef appenderRef = getAppenderRef(appenderRefList, "STDOUT");
                 assertTrue("Expected cat1 STDOUT appenderRef to have a regex filter",
                         appenderRef.getFilter() != null && appenderRef.getFilter() instanceof RegexFilter);
             }
@@ -177,8 +177,8 @@ public class CompositeConfigurationTest {
         runTest(lcr, test);
     }
 
-    private AppenderRef getAppenderRef(List<AppenderRef> appenderRefList, String refName) {
-        for (AppenderRef ref : appenderRefList) {
+    private AppenderRef getAppenderRef(final List<AppenderRef> appenderRefList, final String refName) {
+        for (final AppenderRef ref : appenderRefList) {
             if (ref.getRef().equalsIgnoreCase(refName)) {
                 return ref;
             }

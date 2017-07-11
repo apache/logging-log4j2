@@ -67,7 +67,7 @@ public class MapFilter extends AbstractFilter {
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
                          final Throwable t) {
         if (msg instanceof MapMessage) {
-            return filter((MapMessage) msg) ? onMatch : onMismatch;
+            return filter((MapMessage<?, ?>) msg) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
     }
@@ -76,12 +76,12 @@ public class MapFilter extends AbstractFilter {
     public Result filter(final LogEvent event) {
         final Message msg = event.getMessage();
         if (msg instanceof MapMessage) {
-            return filter((MapMessage) msg) ? onMatch : onMismatch;
+            return filter((MapMessage<?, ?>) msg) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
     }
 
-    protected boolean filter(final MapMessage mapMessage) {
+    protected boolean filter(final MapMessage<?, ?> mapMessage) {
         boolean match = false;
         for (int i = 0; i < map.size(); i++) {
             final String toMatch = mapMessage.get(map.getKeyAt(i));

@@ -29,8 +29,8 @@ public class JsonUtilsTest {
     @Test
     public void testQuoteCharSequenceAsString() throws Exception
     {
-        StringBuilder output = new StringBuilder();
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder output = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("foobar");
         JsonUtils.quoteAsString(builder, output);
         assertEquals("foobar", output.toString());
@@ -45,14 +45,14 @@ public class JsonUtilsTest {
     @Test
     public void testQuoteLongCharSequenceAsString() throws Exception
     {
-        StringBuilder output = new StringBuilder();
-        StringBuilder input = new StringBuilder();
-        StringBuilder sb2 = new StringBuilder();
+        final StringBuilder output = new StringBuilder();
+        final StringBuilder input = new StringBuilder();
+        final StringBuilder sb2 = new StringBuilder();
         for (int i = 0; i < 1111; ++i) {
             input.append('"');
             sb2.append("\\\"");
         }
-        String exp = sb2.toString();
+        final String exp = sb2.toString();
         JsonUtils.quoteAsString(input, output);
         assertEquals(2*input.length(), output.length());
         assertEquals(exp, output.toString());
@@ -63,10 +63,10 @@ public class JsonUtilsTest {
     @Test
     public void testCharSequenceWithCtrlChars() throws Exception
     {
-        char[] input = new char[] { 0, 1, 2, 3, 4 };
-        StringBuilder builder = new StringBuilder();
+        final char[] input = new char[] { 0, 1, 2, 3, 4 };
+        final StringBuilder builder = new StringBuilder();
         builder.append(input);
-        StringBuilder output = new StringBuilder();
+        final StringBuilder output = new StringBuilder();
         JsonUtils.quoteAsString(builder, output);
         assertEquals("\\u0000\\u0001\\u0002\\u0003\\u0004", output.toString());
     }

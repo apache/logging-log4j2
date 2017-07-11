@@ -24,9 +24,6 @@ import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Loader;
 
-/**
- *
- */
 @Plugin(name = "JsonConfigurationFactory", category = ConfigurationFactory.CATEGORY)
 @Order(6)
 public class JsonConfigurationFactory extends ConfigurationFactory {
@@ -47,7 +44,7 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
     public JsonConfigurationFactory() {
         for (final String dependency : dependencies) {
             if (!Loader.isClassAvailable(dependency)) {
-                LOGGER.debug("Missing dependencies for Json support");
+                LOGGER.debug("Missing dependencies for Json support, ConfigurationFactory {} is inactive", getClass().getName());
                 isActive = false;
                 return;
             }

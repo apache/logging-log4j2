@@ -36,11 +36,26 @@ public class AsyncAppenderNoLocationTest {
     private ListAppender app;
 
     @ClassRule
-    public static LoggerContextRule init = new LoggerContextRule("log4j-asynch-no-location.xml");
+    public static LoggerContextRule init = null;
+
+            static {
+                try {
+                    init = new LoggerContextRule("log4j-asynch-no-location.xml");
+                } catch (final Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
 
     @Before
     public void setUp() throws Exception {
-        this.app = (ListAppender) init.getAppender("List");
+                try {
+                    this.app = (ListAppender) init.getAppender("List");
+                    assertNotNull("No List appender found", app);
+                } catch (final Exception ex) {
+                    System.out.println("init = " + init == null ? "null" : init);
+
+                }
+
     }
 
     @After
@@ -56,6 +71,7 @@ public class AsyncAppenderNoLocationTest {
         logger.error("This is a test");
         logger.warn("Hello world!");
         Thread.sleep(100);
+        System.out.println("app = " + app == null ? "null" : app);
         final List<String> list = app.getMessages();
         assertNotNull("No events generated", list);
         assertEquals("Incorrect number of events. Expected 2, got " + list.size(), list.size(), 2);

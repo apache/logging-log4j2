@@ -36,6 +36,7 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -109,11 +110,20 @@ public class SecureSocketAppenderSocketOptionsTest {
         Assert.assertEquals(false, socket.getKeepAlive());
         Assert.assertEquals(false, socket.getReuseAddress());
         Assert.assertEquals(false, socket.getTcpNoDelay());
-        Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(), socket.getTrafficClass());
         // Assert.assertEquals(10000, socket.getReceiveBufferSize());
         // This settings changes while we are running, so we cannot assert it.
         // Assert.assertEquals(8000, socket.getSendBufferSize());
         Assert.assertEquals(12345, socket.getSoLinger());
         Assert.assertEquals(54321, socket.getSoTimeout());
+    }
+
+    @Test
+    public void testSocketTrafficClass() throws IOException {
+        Assume.assumeTrue("Run only on Java 7", System.getProperty("java.specification.version").equals("1.7"));
+        Assume.assumeFalse("Do not run on Travis CI", "true".equals(System.getenv("TRAVIS")));
+        final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
+        final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
+        final Socket socket = manager.getSocket();
+        Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(), socket.getTrafficClass());
     }
 }

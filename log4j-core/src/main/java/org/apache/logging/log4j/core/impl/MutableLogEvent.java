@@ -32,6 +32,8 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 
@@ -73,6 +75,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         this.parameters = replacementParameters;
     }
 
+    @Override
     public Log4jLogEvent toImmutable() {
         return createMemento();
     }
@@ -137,7 +140,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         // where this instance is kept in a ThreadLocal, so it usually does not change.
         // threadName = null; // no need to clear threadName
 
-        trimMessageText();
+        // ensure that excessively long char[] arrays are not kept in memory forever
+        StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+
         if (parameters != null) {
             for (int i = 0; i < parameters.length; i++) {
                 parameters[i] = null;
@@ -151,14 +156,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         //includeLocation;
         //endOfBatch;
         //nanoTime;
-    }
-
-    // ensure that excessively long char[] arrays are not kept in memory forever
-    private void trimMessageText() {
-        if (messageText != null && messageText.length() > Constants.MAX_REUSABLE_MESSAGE_SIZE) {
-            messageText.setLength(Constants.MAX_REUSABLE_MESSAGE_SIZE);
-            messageText.trimToSize();
-        }
     }
 
     @Override
@@ -353,7 +350,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         if (loggerFqcn == null || !includeLocation) {
             return null;
         }
-        source = Log4jLogEvent.calcLocation(loggerFqcn);
+        source = StackLocatorUtil.calcLocation(loggerFqcn);
         return source;
     }
 

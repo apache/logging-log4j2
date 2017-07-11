@@ -11,10 +11,23 @@
 #   limitations under the License.
 
 language: java
-sudo: false
+# sudo enabled because sudo vms have more memory: https://docs.travis-ci.com/user/ci-environment/
+sudo: true
+# trusty required for oraclejdk9
+dist: trusty
 
 jdk:
   - oraclejdk7
 
+env:
+  global:
+    JAVA_OPTS=-Xmx4g
+
+install:
+  - ./mvnw --toolchains=./.travis-toolchains.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+script:
+  - ./mvnw --toolchains=./.travis-toolchains.xml test -B
+
 after_success:
-  - mvn --show-version -pl !log4j-bom jacoco:prepare-agent test jacoco:report coveralls:report
+  - ./mvnw --show-version -pl !log4j-bom jacoco:prepare-agent test jacoco:report coveralls:report

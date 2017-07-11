@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.8.2-SNAPSHOT</version>
+    <version>2.9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-core-its</artifactId>
@@ -42,10 +42,6 @@
       <artifactId>log4j-api</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -109,14 +105,6 @@
     </dependency>
 
     <!-- TEST DEPENDENCIES -->
-
-    <!-- Pull in useful test classes from API -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
     <!-- Log4j 1.2 tests -->
     <dependency>
       <groupId>log4j</groupId>
@@ -213,6 +201,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
+          <additionalClasspathElements>
+            <additionalClasspathElement>${project.basedir}/src/test/resources</additionalClasspathElement>
+          </additionalClasspathElements>
           <includes>
             <include>**/*.java</include>
           </includes>
@@ -220,7 +211,8 @@
             <exclude>**/ForceNoDefClassFoundError.*</exclude>
           </excludes>
           <groups>
-            org.apache.logging.log4j.categories.PerformanceTests
+            org.apache.logging.log4j.categories.PerformanceTests,
+            org.apache.logging.log4j.categories.Appenders$Jms
           </groups>
         </configuration>
       </plugin>

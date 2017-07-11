@@ -62,10 +62,10 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
         if (this.options.getSuffix() != null) {
             final PatternParser parser = PatternLayout.createPatternParser(config);
-            List<PatternFormatter> parsedFormatters = parser.parse(this.options.getSuffix());
+            final List<PatternFormatter> parsedFormatters = parser.parse(this.options.getSuffix());
             // filter out nested formatters that will handle throwable
             boolean hasThrowableFormatter = false;
-            for (PatternFormatter formatter : parsedFormatters) {
+            for (final PatternFormatter formatter : parsedFormatters) {
                 if (formatter.handlesThrowable()) {
                     hasThrowableFormatter = true;
                 }
@@ -73,8 +73,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             if (!hasThrowableFormatter) {
                 this.formatters = parsedFormatters;
             } else {
-                List<PatternFormatter> formatters = new ArrayList<>();
-                for (PatternFormatter formatter : parsedFormatters) {
+                final List<PatternFormatter> formatters = new ArrayList<>();
+                for (final PatternFormatter formatter : parsedFormatters) {
                     if (!formatter.handlesThrowable()) {
                         formatters.add(formatter);
                     }
@@ -108,10 +108,10 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         final Throwable t = event.getThrown();
 
         if (isSubShortOption()) {
-            formatSubShortOption(t, buffer);
+            formatSubShortOption(t, getSuffix(event), buffer);
         }
         else if (t != null && options.anyLines()) {
-            formatOption(t, buffer);
+            formatOption(t, getSuffix(event), buffer);
         }
     }
 
@@ -124,7 +124,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
                 ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption);
     }
 
-    private void formatSubShortOption(final Throwable t, final StringBuilder buffer) {
+    private void formatSubShortOption(final Throwable t, final String suffix, final StringBuilder buffer) {
         StackTraceElement[] trace;
         StackTraceElement throwingMethod = null;
         int len;
@@ -163,10 +163,15 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
                 buffer.append(' ');
             }
             buffer.append(toAppend);
+
+            if (Strings.isNotBlank(suffix)) {
+                buffer.append(' ');
+                buffer.append(suffix);
+            }
         }
     }
 
-    private void formatOption(final Throwable throwable, final StringBuilder buffer) {
+    private void formatOption(final Throwable throwable, final String suffix, final StringBuilder buffer) {
         final StringWriter w = new StringWriter();
 
         throwable.printStackTrace(new PrintWriter(w));
@@ -174,12 +179,17 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
             buffer.append(' ');
         }
-        if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator())) {
+        if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator()) || Strings.isNotBlank(suffix)) {
             final StringBuilder sb = new StringBuilder();
             final String[] array = w.toString().split(Strings.LINE_SEPARATOR);
             final int limit = options.minLines(array.length) - 1;
+            final boolean suffixNotBlank = Strings.isNotBlank(suffix);
             for (int i = 0; i <= limit; ++i) {
                 sb.append(array[i]);
+                if (suffixNotBlank) {
+                    sb.append(' ');
+                    sb.append(suffix);
+                }
                 if (i < limit) {
                     sb.append(options.getSeparator());
                 }
@@ -201,9 +211,9 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         return true;
     }
 
-    protected String getSuffix(LogEvent event) {
+    protected String getSuffix(final LogEvent event) {
         //noinspection ForLoopReplaceableByForEach
-        StringBuilder toAppendTo = new StringBuilder();
+        final StringBuilder toAppendTo = new StringBuilder();
         for (int i = 0, size = formatters.size(); i <  size; i++) {
             formatters.get(i).format(event, toAppendTo);
         }

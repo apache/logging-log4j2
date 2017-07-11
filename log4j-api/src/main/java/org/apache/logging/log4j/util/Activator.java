@@ -72,6 +72,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
     }
 
     private void loadProvider(final BundleWiring provider) {
+        ProviderUtil.loadProviders(provider.getClassLoader());
         final List<URL> urls = provider.findEntries("META-INF", "log4j-provider.properties", 0);
         for (final URL url : urls) {
             ProviderUtil.loadProvider(url, provider.getClassLoader());

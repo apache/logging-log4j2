@@ -47,6 +47,22 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private boolean complete;
 
+        @PluginBuilderAttribute
+        private boolean locationInfo;
+
+        @PluginBuilderAttribute
+        private boolean properties;
+
+        @PluginBuilderAttribute
+        private boolean includeStacktrace = true;
+
+        @PluginBuilderAttribute
+        private boolean stacktraceAsString = false;
+
+        protected String toStringOrNull(final byte[] header) {
+            return header == null ? null : new String(header, Charset.defaultCharset());
+        }
+
         public boolean getEventEol() {
             return eventEol;
         }
@@ -57,6 +73,26 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         public boolean isComplete() {
             return complete;
+        }
+
+        public boolean isLocationInfo() {
+            return locationInfo;
+        }
+
+        public boolean isProperties() {
+            return properties;
+        }
+
+        /**
+         * If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".
+         * @return If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".
+         */
+        public boolean isIncludeStacktrace() {
+            return includeStacktrace;
+        }
+
+        public boolean isStacktraceAsString() {
+            return stacktraceAsString;
         }
 
         public B setEventEol(final boolean eventEol) {
@@ -74,6 +110,30 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
             return asBuilder();
         }
 
+        public B setLocationInfo(final boolean locationInfo) {
+            this.locationInfo = locationInfo;
+            return asBuilder();
+        }
+
+        public B setProperties(final boolean properties) {
+            this.properties = properties;
+            return asBuilder();
+        }
+
+        /**
+         * If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
+         * @param includeStacktrace If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
+         * @return this builder
+         */
+        public B setIncludeStacktrace(final boolean includeStacktrace) {
+            this.includeStacktrace = includeStacktrace;
+            return asBuilder();
+        }
+
+        public B setStacktraceAsString(boolean stacktraceAsString) {
+            this.stacktraceAsString = stacktraceAsString;
+            return asBuilder();
+        }
     }
 
     protected final String eol;

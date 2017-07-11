@@ -15,11 +15,11 @@ package org.apache.logging.log4j.core.layout;/*
  * limitations under the license.
  */
 
-import org.junit.Test;
-
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -181,6 +181,23 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
+    public void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_DoesntFitTempByteBuff_BytesDontFitDestinationByteBuff() throws Exception {
+        final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 5);
+        final StringBuilder text = new StringBuilder( // 日本語テスト文章日本語テスト文章
+                "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
+        final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
+        helper.encode(text, destination);
+
+        assertEquals("drained", 15, destination.drainPoints.size());
+        destination.drain(destination.getByteBuffer());
+
+        final byte[] utf8 = text.toString().getBytes(StandardCharsets.UTF_8);
+        for (int i = 0; i < utf8.length; i++) {
+            assertEquals("byte at " + i, utf8[i], destination.drained.get(i));
+        }
+    }
+
+    @Test
     public void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
         final Charset SHIFT_JIS = Charset.forName("Shift_JIS");
         final StringBuilderEncoder helper = new StringBuilderEncoder(SHIFT_JIS, 4, 8 * 1024);
@@ -189,7 +206,23 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
         helper.encode(text, destination);
 
-        assertEquals("drained", 7, destination.drainPoints.size());
+        destination.drain(destination.getByteBuffer());
+
+        final byte[] bytes = text.toString().getBytes(SHIFT_JIS);
+        for (int i = 0; i < bytes.length; i++) {
+            assertEquals("byte at " + i, bytes[i], destination.drained.get(i));
+        }
+    }
+
+    @Test
+    public void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_DoesntFitTempByteBuff_BytesDontFitDestinationByteBuff() throws Exception {
+        final Charset SHIFT_JIS = Charset.forName("Shift_JIS");
+        final StringBuilderEncoder helper = new StringBuilderEncoder(SHIFT_JIS, 4, 5);
+        final StringBuilder text = new StringBuilder( // 日本語テスト文章日本語テスト文章
+                "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
+        final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
+        helper.encode(text, destination);
+
         destination.drain(destination.getByteBuffer());
 
         final byte[] bytes = text.toString().getBytes(SHIFT_JIS);

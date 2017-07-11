@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InvalidObjectException;
-import java.rmi.MarshalledObject;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -485,12 +488,31 @@ public class SortedArrayStringMap implements IndexedStringMap {
             for (int i = 0; i < size; i++) {
                 s.writeObject(keys[i]);
                 try {
-                    s.writeObject(new MarshalledObject<>(values[i]));
+                    s.writeObject(marshall(values[i]));
                 } catch (final Exception e) {
                     handleSerializationException(e, i, keys[i]);
                     s.writeObject(null);
                 }
             }
+        }
+    }
+
+    private static byte[] marshall(final Object obj) throws IOException {
+        if (obj == null) {
+            return null;
+        }
+        final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(bout)) {
+            oos.writeObject(obj);
+            oos.flush();
+            return bout.toByteArray();
+        }
+    }
+
+    private static Object unmarshall(final byte[] data) throws IOException, ClassNotFoundException {
+        final ByteArrayInputStream bin = new ByteArrayInputStream(data);
+        try (ObjectInputStream ois = new ObjectInputStream(bin)) {
+            return ois.readObject();
         }
     }
 
@@ -542,8 +564,8 @@ public class SortedArrayStringMap implements IndexedStringMap {
         for (int i = 0; i < mappings; i++) {
             keys[i] = (String) s.readObject();
             try {
-                final MarshalledObject<Object> marshalledObject = (MarshalledObject<Object>) s.readObject();
-                values[i] = marshalledObject == null ? null : marshalledObject.get();
+                final byte[] marshalledObject = (byte[]) s.readObject();
+                values[i] = marshalledObject == null ? null : unmarshall(marshalledObject);
             } catch (final Exception | LinkageError error) {
                 handleSerializationException(error, i, keys[i]);
                 values[i] = null;

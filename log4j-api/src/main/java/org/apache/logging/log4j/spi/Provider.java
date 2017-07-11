@@ -47,7 +47,10 @@ public class Provider {
 
     private final Integer priority;
     private final String className;
+    private final Class<? extends LoggerContextFactory> loggerContextFactoryClass;
     private final String threadContextMap;
+    private final Class<? extends ThreadContextMap> threadContextMapClass;
+    private final String versions;
     private final URL url;
     private final WeakReference<ClassLoader> classLoader;
 
@@ -58,6 +61,36 @@ public class Provider {
         priority = weight == null ? DEFAULT_PRIORITY : Integer.valueOf(weight);
         className = props.getProperty(LOGGER_CONTEXT_FACTORY);
         threadContextMap = props.getProperty(THREAD_CONTEXT_MAP);
+        loggerContextFactoryClass = null;
+        threadContextMapClass = null;
+        versions = null;
+    }
+
+    public Provider(final Integer priority, final String versions,
+                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
+        this(priority, versions, loggerContextFactoryClass, null);
+    }
+
+
+    public Provider(final Integer priority, final String versions,
+                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass,
+                    final Class<? extends ThreadContextMap> threadContextMapClass) {
+        this.url = null;
+        this.classLoader = null;
+        this.priority = priority;
+        this.loggerContextFactoryClass = loggerContextFactoryClass;
+        this.threadContextMapClass = threadContextMapClass;
+        this.className = null;
+        this.threadContextMap = null;
+        this.versions = versions;
+    }
+
+    /**
+     * Returns the Log4j API versions supported by the implementation.
+     * @return A String containing the Log4j versions supported.
+     */
+    public String getVersions() {
+        return versions;
     }
 
     /**
@@ -76,6 +109,9 @@ public class Provider {
      * @return the class name of a LoggerContextFactory implementation
      */
     public String getClassName() {
+        if (loggerContextFactoryClass != null) {
+            return loggerContextFactoryClass.getName();
+        }
         return className;
     }
 
@@ -85,6 +121,9 @@ public class Provider {
      * @return the LoggerContextFactory implementation class or {@code null} if there was an error loading it
      */
     public Class<? extends LoggerContextFactory> loadLoggerContextFactory() {
+        if (loggerContextFactoryClass != null) {
+            return loggerContextFactoryClass;
+        }
         if (className == null) {
             return null;
         }
@@ -109,6 +148,9 @@ public class Provider {
      * @return the class name of a ThreadContextMap implementation
      */
     public String getThreadContextMap() {
+        if (threadContextMapClass != null) {
+            return threadContextMapClass.getName();
+        }
         return threadContextMap;
     }
 
@@ -118,6 +160,9 @@ public class Provider {
      * @return the ThreadContextMap implementation class or {@code null} if there was an error loading it
      */
     public Class<? extends ThreadContextMap> loadThreadContextMap() {
+        if (threadContextMapClass != null) {
+            return threadContextMapClass;
+        }
         if (threadContextMap == null) {
             return null;
         }
@@ -147,24 +192,30 @@ public class Provider {
     
     @Override
     public String toString() {
-        String result = "Provider[";
+        final StringBuilder result = new StringBuilder("Provider[");
         if (!DEFAULT_PRIORITY.equals(priority)) {
-            result += "priority=" + priority + ", ";
+            result.append("priority=").append(priority).append(", ");
         }
         if (threadContextMap != null) {
-            result += "threadContextMap=" + threadContextMap + ", ";
+            result.append("threadContextMap=").append(threadContextMap).append(", ");
+        } else if (threadContextMapClass != null) {
+            result.append("threadContextMapClass=").append(threadContextMapClass.getName());
         }
         if (className != null) {
-            result += "className=" + className + ", ";
+            result.append("className=").append(className).append(", ");
+        } else if (loggerContextFactoryClass != null) {
+            result.append("class=").append(loggerContextFactoryClass.getName());
         }
-        result += "url=" + url;
-        final ClassLoader loader = classLoader.get();
-        if (loader == null) {
-            result += ", classLoader=null(not reachable)";
+        if (url != null) {
+            result.append("url=").append(url);
+        }
+        final ClassLoader loader;
+        if (classLoader == null || (loader = classLoader.get()) == null) {
+            result.append(", classLoader=null(not reachable)");
         } else {
-            result += ", classLoader=" + loader;
+            result.append(", classLoader=").append(loader);
         }
-        result += "]";
-        return result;
+        result.append("]");
+        return result.toString();
     }
 }

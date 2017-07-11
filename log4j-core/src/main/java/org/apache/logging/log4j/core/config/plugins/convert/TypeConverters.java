@@ -32,7 +32,6 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -113,10 +112,10 @@ public final class TypeConverters {
                 bytes = new byte[0];
             } else if (value.startsWith(PREFIX_BASE64)) {
                 final String lexicalXSDBase64Binary = value.substring(PREFIX_BASE64.length());
-                bytes = DatatypeConverter.parseBase64Binary(lexicalXSDBase64Binary);
+                bytes = Base64Converter.parseBase64Binary(lexicalXSDBase64Binary);
             } else if (value.startsWith(PREFIX_0x)) {
                 final String lexicalXSDHexBinary = value.substring(PREFIX_0x.length());
-                bytes = DatatypeConverter.parseHexBinary(lexicalXSDHexBinary);
+                bytes = HexConverter.parseHexBinary(lexicalXSDHexBinary);
             } else {
                 bytes = value.getBytes(Charset.defaultCharset());
             }

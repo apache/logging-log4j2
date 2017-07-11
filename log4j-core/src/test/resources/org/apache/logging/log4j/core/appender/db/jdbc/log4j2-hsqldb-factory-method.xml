@@ -22,7 +22,7 @@
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
     <Jdbc name="databaseAppender" tableName="fmLogEntry" ignoreExceptions="false">
-      <ConnectionFactory class="org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppenderHsqlFactoryMethodTest"
+      <ConnectionFactory class="org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppenderHsqldbFactoryMethodTest"
                          method="getConnection" />
       <Column name="eventDate" isEventTimestamp="true" />
       <Column name="literalColumn" literal="'Some Other Literal Value'" />

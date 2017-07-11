@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
 
 /**
- * JNDI {@link javax.naming.Context} manager.
+ * Manages a JNDI {@link javax.naming.Context}.
  *
  * @since 2.1
  */
@@ -55,6 +55,7 @@ public class JndiManager extends AbstractManager {
 
     /**
      * Gets a named JndiManager using the default {@link javax.naming.InitialContext}.
+     * 
      * @param name the name of the JndiManager instance to create or use if available
      * @return a default JndiManager
      */
@@ -76,22 +77,64 @@ public class JndiManager extends AbstractManager {
      * @return the JndiManager for the provided parameters.
      */
     public static JndiManager getJndiManager(final String initialContextFactoryName,
-                                             final String providerURL,
-                                             final String urlPkgPrefixes,
-                                             final String securityPrincipal,
-                                             final String securityCredentials,
-                                             final Properties additionalProperties) {
-        final String name = JndiManager.class.getName() + '@' + JndiManager.class.hashCode();
+            final String providerURL,
+            final String urlPkgPrefixes,
+            final String securityPrincipal,
+            final String securityCredentials,
+            final Properties additionalProperties) {
+        final Properties properties = createProperties(initialContextFactoryName, providerURL, urlPkgPrefixes,
+                securityPrincipal, securityCredentials, additionalProperties);
+        return getManager(createManagerName(), FACTORY, properties);
+    }
+
+    /**
+     * Gets a JndiManager with the provided configuration information.
+     * 
+     * @param properties JNDI properties, usually created by calling {@link #createProperties(String, String, String, String, String, Properties)}.
+     * @return the JndiManager for the provided parameters.
+     * @see #createProperties(String, String, String, String, String, Properties)
+     * @since 2.9
+     */
+    public static JndiManager getJndiManager(final Properties properties) {
+        return getManager(createManagerName(), FACTORY, properties);
+    }
+
+    private static String createManagerName() {
+        return JndiManager.class.getName() + '@' + JndiManager.class.hashCode();
+    }
+
+    /**
+     * Creates JNDI Properties with the provided configuration information.
+     *
+     * @param initialContextFactoryName
+     *            Fully qualified class name of an implementation of {@link javax.naming.spi.InitialContextFactory}.
+     * @param providerURL
+     *            The provider URL to use for the JNDI connection (specific to the above factory).
+     * @param urlPkgPrefixes
+     *            A colon-separated list of package prefixes for the class name of the factory class that will create a
+     *            URL context factory
+     * @param securityPrincipal
+     *            The name of the identity of the Principal.
+     * @param securityCredentials
+     *            The security credentials of the Principal.
+     * @param additionalProperties
+     *            Any additional JNDI environment properties to set or {@code null} for none.
+     * @return the Properties for the provided parameters.
+     * @since 2.9
+     */
+    public static Properties createProperties(final String initialContextFactoryName, final String providerURL,
+            final String urlPkgPrefixes, final String securityPrincipal, final String securityCredentials,
+            final Properties additionalProperties) {
         if (initialContextFactoryName == null) {
-            return getManager(name, FACTORY, null);
+            return null;
         }
         final Properties properties = new Properties();
         properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
         if (providerURL != null) {
             properties.setProperty(Context.PROVIDER_URL, providerURL);
         } else {
-            LOGGER.warn("The JNDI InitialContextFactory class name [{}] was provided, but there was no associated " +
-                "provider URL. This is likely to cause problems.", initialContextFactoryName);
+            LOGGER.warn("The JNDI InitialContextFactory class name [{}] was provided, but there was no associated "
+                    + "provider URL. This is likely to cause problems.", initialContextFactoryName);
         }
         if (urlPkgPrefixes != null) {
             properties.setProperty(Context.URL_PKG_PREFIXES, urlPkgPrefixes);
@@ -102,13 +145,13 @@ public class JndiManager extends AbstractManager {
                 properties.setProperty(Context.SECURITY_CREDENTIALS, securityCredentials);
             } else {
                 LOGGER.warn("A security principal [{}] was provided, but with no corresponding security credentials.",
-                    securityPrincipal);
+                        securityPrincipal);
             }
         }
         if (additionalProperties != null) {
             properties.putAll(additionalProperties);
         }
-        return getManager(name, FACTORY, properties);
+        return properties;
     }
 
     @Override
@@ -122,7 +165,7 @@ public class JndiManager extends AbstractManager {
      * @param name name of the object to look up.
      * @param <T>  the type of the object.
      * @return the named object if it could be located.
-     * @throws NamingException
+     * @throws  NamingException if a naming exception is encountered
      */
     @SuppressWarnings("unchecked")
     public <T> T lookup(final String name) throws NamingException {
@@ -141,4 +184,10 @@ public class JndiManager extends AbstractManager {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "JndiManager [context=" + context + ", count=" + count + "]";
+    }
+
 }

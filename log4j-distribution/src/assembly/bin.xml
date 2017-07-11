@@ -48,9 +48,9 @@ limitations under the License.
     </fileSets>
     <files>
          <file>
-            <source>../RELEASE-NOTES.txt</source>
+            <source>../RELEASE-NOTES.md</source>
             <outputDirectory>.</outputDirectory>
-            <destName>RELEASE-NOTES.txt</destName>
+            <destName>RELEASE-NOTES.md</destName>
         </file>
     </files>
 </assembly>

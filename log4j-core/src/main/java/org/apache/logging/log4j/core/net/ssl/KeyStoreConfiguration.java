@@ -107,4 +107,8 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
         }
         return true;
     }
+
+    public String getKeyManagerFactoryAlgorithm() {
+        return keyManagerFactoryAlgorithm;
+    }
 }
