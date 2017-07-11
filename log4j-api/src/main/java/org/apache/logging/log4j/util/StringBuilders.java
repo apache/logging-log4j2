@@ -153,7 +153,7 @@ public final class StringBuilders {
      * @since 2.9
      */
     public static void trimToMaxSize(final StringBuilder stringBuilder, final int maxSize) {
-        if (stringBuilder != null && stringBuilder.length() > maxSize) {
+        if (stringBuilder != null && stringBuilder.capacity() > maxSize) {
             stringBuilder.setLength(maxSize);
             stringBuilder.trimToSize();
         }
