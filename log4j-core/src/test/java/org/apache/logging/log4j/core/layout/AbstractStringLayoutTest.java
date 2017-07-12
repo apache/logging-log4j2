@@ -59,12 +59,14 @@ public class AbstractStringLayoutTest {
         final int LARGE = 4096;
         final String largeMessage = new String(new char[LARGE]);
         final StringBuilder sb2 = ConcreteStringLayout.getStringBuilder();
-        assertEquals("resized capacity", GROWN, sb2.capacity());
+        assertTrue("reset capacity", sb2.capacity() <= AbstractStringLayout.MAX_STRING_BUILDER_SIZE);
         assertEquals("empty, ready for use", 0, sb2.length());
         sb2.append(largeMessage);
         assertTrue("capacity grown to fit msg length", sb2.capacity() >= LARGE);
         assertEquals("length=msg length", LARGE, sb2.length());
 
+        sb2.setLength(0);
+        assertEquals("empty, cleared", 0, sb2.length());
         final StringBuilder next = ConcreteStringLayout.getStringBuilder();
         assertEquals("max capacity", ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, next.capacity());
         assertEquals("empty, ready for use", 0, next.length());
