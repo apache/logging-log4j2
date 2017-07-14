@@ -177,7 +177,7 @@ public class ResolverUtil {
         try {
             urls = loader.getResources(packageName);
         } catch (final IOException ioe) {
-            LOGGER.warn("Could not read package: " + packageName, ioe);
+            LOGGER.warn("Could not read package: {}", packageName, ioe);
             return;
         }
 
@@ -186,7 +186,7 @@ public class ResolverUtil {
                 final URL url = urls.nextElement();
                 final String urlPath = extractPath(url);
 
-                LOGGER.info("Scanning for classes in [" + urlPath + "] matching criteria: " + test);
+                LOGGER.info("Scanning for classes in '{}' matching criteria {}", urlPath , test);
                 // Check for a jar in a war in JBoss
                 if (VFSZIP.equals(url.getProtocol())) {
                     final String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
@@ -316,17 +316,13 @@ public class ResolverUtil {
      *        the jar file to be examined for classes
      */
     private void loadImplementationsInJar(final Test test, final String parent, final File jarFile) {
-        @SuppressWarnings("resource")
         JarInputStream jarStream = null;
         try {
             jarStream = new JarInputStream(new FileInputStream(jarFile));
             loadImplementationsInJar(test, parent, jarFile.getPath(), jarStream);
-        } catch (final FileNotFoundException ex) {
-            LOGGER.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
-                    + " file not found", ex);
-        } catch (final IOException ioe) {
-            LOGGER.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
-                    + " due to an IOException", ioe);
+        } catch (final IOException ex) {
+            LOGGER.error("Could not search JAR file '{}' for classes matching criteria {}, file not found", jarFile,
+                    test, ex);
         } finally {
             close(jarStream, jarFile);
         }
@@ -370,8 +366,8 @@ public class ResolverUtil {
                 }
             }
         } catch (final IOException ioe) {
-            LOGGER.error("Could not search jar file '" + path + "' for classes matching criteria: " + test
-                    + " due to an IOException", ioe);
+            LOGGER.error("Could not search JAR file '{}' for classes matching criteria {} due to an IOException", path,
+                    test, ioe);
         }
     }
 
@@ -390,7 +386,7 @@ public class ResolverUtil {
             if (test.doesMatchClass()) {
                 final String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Checking to see if class " + externalName + " matches criteria [" + test + ']');
+                    LOGGER.debug("Checking to see if class {} matches criteria {}", externalName, test);
                 }
 
                 final Class<?> type = loader.loadClass(externalName);
@@ -408,7 +404,7 @@ public class ResolverUtil {
                 }
             }
         } catch (final Throwable t) {
-            LOGGER.warn("Could not examine class '" + fqn, t);
+            LOGGER.warn("Could not examine class {}", fqn, t);
         }
     }
 
