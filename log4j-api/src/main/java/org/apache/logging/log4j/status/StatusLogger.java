@@ -108,7 +108,7 @@ public final class StatusLogger extends AbstractLogger {
 
     // LOG4J2-1813 if system property "log4j2.debug" is defined, print all status logging
     private boolean isDebugPropertyEnabled() {
-        return PropertiesUtil.getProperties().hasProperty(Constants.LOG4J2_DEBUG);
+        return PropertiesUtil.getProperties().getBooleanProperty(Constants.LOG4J2_DEBUG, false, true);
     }
 
     /**
