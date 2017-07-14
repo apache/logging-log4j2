@@ -39,17 +39,18 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Manages the scripts use by the Configuration.
  */
 public class ScriptManager implements FileWatcher, Serializable {
-    
+
     private abstract class AbstractScriptRunner implements ScriptRunner {
-        
+
         private static final String KEY_STATUS_LOGGER = "statusLogger";
         private static final String KEY_CONFIGURATION = "configuration";
-        
+
         @Override
         public Bindings createBindings() {
             final SimpleBindings bindings = new SimpleBindings();
@@ -63,7 +64,7 @@ public class ScriptManager implements FileWatcher, Serializable {
     private static final long serialVersionUID = -2534169384971965196L;
     private static final String KEY_THREADING = "THREADING";
     private static final Logger logger = StatusLogger.getLogger();
-    
+
     private final Configuration configuration;
     private final ScriptEngineManager manager = new ScriptEngineManager();
     private final ConcurrentMap<String, ScriptRunner> scriptRunners = new ConcurrentHashMap<>();
@@ -76,14 +77,16 @@ public class ScriptManager implements FileWatcher, Serializable {
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
-            logger.debug("Installed script engines");
+            int factorySize = factories.size();
+            logger.debug("Installed {} script engine{}", factorySize, factorySize != 1 ? "s" : Strings.EMPTY);
             for (final ScriptEngineFactory factory : factories) {
                 String threading = (String) factory.getParameter(KEY_THREADING);
                 if (threading == null) {
                     threading = "Not Thread Safe";
                 }
                 final StringBuilder names = new StringBuilder();
-                for (final String name : factory.getNames()) {
+                List<String> languageNames = factory.getNames();
+                for (final String name : languageNames) {
                     if (names.length() > 0) {
                         names.append(", ");
                     }
@@ -94,9 +97,9 @@ public class ScriptManager implements FileWatcher, Serializable {
                 }
                 sb.append(names);
                 final boolean compiled = factory.getScriptEngine() instanceof Compilable;
-                logger.debug(factory.getEngineName() + " Version: " + factory.getEngineVersion() +
-                    ", Language: " + factory.getLanguageName() + ", Threading: " + threading +
-                    ", Compile: " + compiled + ", Names: {" + names.toString() + "}");
+                logger.debug("{} version: {}, language: {}, threading: {}, compile: {}, names: {}, factory class: {}",
+                        factory.getEngineName(), factory.getEngineVersion(), factory.getLanguageName(), threading,
+                        compiled, languageNames, factory.getClass().getName());
             }
             languages = sb.toString();
         } else {
@@ -116,8 +119,8 @@ public class ScriptManager implements FileWatcher, Serializable {
     public void addScript(final AbstractScript script) {
         final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
         if (engine == null) {
-            logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: " +
-                    languages);
+            logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: "
+                    + languages);
             return;
         }
         if (engine.getFactory().getParameter(KEY_THREADING) == null) {
@@ -178,7 +181,7 @@ public class ScriptManager implements FileWatcher, Serializable {
     private interface ScriptRunner {
 
         Bindings createBindings();
-        
+
         Object execute(Bindings bindings);
 
         AbstractScript getScript();
@@ -203,10 +206,10 @@ public class ScriptManager implements FileWatcher, Serializable {
                         try {
                             return ((Compilable) scriptEngine).compile(script.getScriptText());
                         } catch (final Throwable ex) {
-                                /* ScriptException is what really should be caught here. However, beanshell's
-                                 * ScriptEngine implements Compilable but then throws Error when the compile method
-                                 * is called!
-                                 */
+                            /*
+                             * ScriptException is what really should be caught here. However, beanshell's ScriptEngine
+                             * implements Compilable but then throws Error when the compile method is called!
+                             */
                             logger.warn("Error compiling script", ex);
                             return null;
                         }
@@ -233,7 +236,7 @@ public class ScriptManager implements FileWatcher, Serializable {
             }
             try {
                 return scriptEngine.eval(script.getScriptText(), bindings);
-            }   catch (final ScriptException ex) {
+            } catch (final ScriptException ex) {
                 logger.error("Error running script " + script.getName(), ex);
                 return null;
             }
@@ -249,7 +252,8 @@ public class ScriptManager implements FileWatcher, Serializable {
         private final AbstractScript script;
 
         private final ThreadLocal<MainScriptRunner> runners = new ThreadLocal<MainScriptRunner>() {
-            @Override protected MainScriptRunner initialValue() {
+            @Override
+            protected MainScriptRunner initialValue() {
                 final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
                 return new MainScriptRunner(engine, script);
             }
@@ -268,7 +272,8 @@ public class ScriptManager implements FileWatcher, Serializable {
         public AbstractScript getScript() {
             return script;
         }
-       @Override
+
+        @Override
         public ScriptEngine getScriptEngine() {
             return runners.get().getScriptEngine();
         }
