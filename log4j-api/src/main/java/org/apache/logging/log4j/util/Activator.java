@@ -18,10 +18,12 @@ package org.apache.logging.log4j.util;
 
 import java.net.URL;
 import java.security.Permission;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.AdaptPermission;
 import org.osgi.framework.AdminPermission;
@@ -29,6 +31,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
@@ -63,7 +67,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         try {
             checkPermission(new AdminPermission(bundle, AdminPermission.RESOURCE));
             checkPermission(new AdaptPermission(BundleWiring.class.getName(), bundle, AdaptPermission.ADAPT));
-            loadProvider(bundle.adapt(BundleWiring.class));
+            loadProvider(bundle.getBundleContext(), bundle.adapt(BundleWiring.class));
         } catch (final SecurityException e) {
             LOGGER.debug("Cannot access bundle [{}] contents. Ignoring.", bundle.getSymbolicName(), e);
         } catch (final Exception e) {
@@ -71,8 +75,23 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         }
     }
 
-    private void loadProvider(final BundleWiring bundleWiring) {
-        ProviderUtil.loadProviders(bundleWiring.getClassLoader());
+    private void loadProvider(final BundleContext context, final BundleWiring bundleWiring) {
+        String filter = "(APIVersion>=2.60)";
+        try {
+            Collection<ServiceReference<Provider>> serviceReferences = context.getServiceReferences(Provider.class, filter);
+            Provider maxProvider = null;
+            for (ServiceReference<Provider> serviceReference : serviceReferences) {
+                Provider provider = context.getService(serviceReference);
+                if (maxProvider == null || provider.getPriority() > maxProvider.getPriority()) {
+                    maxProvider = provider;
+                }
+            }
+            if (maxProvider != null) {
+                ProviderUtil.addProvider(maxProvider);
+            }
+        } catch (InvalidSyntaxException ex) {
+            LOGGER.error("Invalid service filter: " + filter, ex);
+        }
         final List<URL> urls = bundleWiring.findEntries("META-INF", "log4j-provider.properties", 0);
         for (final URL url : urls) {
             ProviderUtil.loadProvider(url, bundleWiring.getClassLoader());
@@ -86,7 +105,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         final BundleWiring self = context.getBundle().adapt(BundleWiring.class);
         final List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());
         for (final BundleWire wire : required) {
-            loadProvider(wire.getProviderWiring());
+            loadProvider(context, wire.getProviderWiring());
         }
         context.addBundleListener(this);
         final Bundle[] bundles = context.getBundles();

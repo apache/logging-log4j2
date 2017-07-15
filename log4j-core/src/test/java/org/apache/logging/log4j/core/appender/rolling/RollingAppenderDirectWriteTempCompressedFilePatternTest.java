@@ -32,8 +32,10 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -58,6 +60,8 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
 
     @Before
     public void setUp() throws Exception {
+        // Disable this test on MacOS. FileWatcher isn't fast enough to work properly.
+        Assume.assumeTrue(!SystemUtils.IS_OS_MAC_OSX);
         this.logger = loggerContextRule.getLogger(RollingAppenderDirectWriteTest.class.getName());
     }
 

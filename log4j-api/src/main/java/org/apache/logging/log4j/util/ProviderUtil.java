@@ -69,6 +69,11 @@ public final class ProviderUtil {
         }
     }
 
+    protected static void addProvider(Provider provider) {
+        PROVIDERS.add(provider);
+        LOGGER.debug("Loaded Provider {}", provider);
+    }
+
     /**
      * Loads an individual Provider implementation. This method is really only useful for the OSGi bundle activator and
      * this class itself.
