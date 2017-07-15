@@ -33,9 +33,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -79,6 +81,7 @@ public class FileAppenderPermissionsTest {
 
     @BeforeClass
     public static void beforeClass() {
+        System.setProperty("log4j2.debug", "true");
         Assume.assumeTrue(FileUtils.isFilePosixAttributeViewSupported());
     }
 
@@ -188,6 +191,9 @@ public class FileAppenderPermissionsTest {
     }
 
     public static String findAGroup(final String user) throws IOException {
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            return "staff";
+        }
         String group = user;
         try (FileInputStream fis = new FileInputStream("/etc/group")) {
             final List<String> groups = org.apache.commons.io.IOUtils.readLines(fis, Charset.defaultCharset());
