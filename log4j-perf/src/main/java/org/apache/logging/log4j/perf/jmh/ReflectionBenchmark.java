@@ -145,7 +145,7 @@ public class ReflectionBenchmark {
 
     private static class ClassLocator {
 
-        private Class<?> findClass(int depth) {
+        private Class<?> findClass(final int depth) {
             if (depth == 1) {
                 return locateCaller();
             } else {
@@ -160,7 +160,7 @@ public class ReflectionBenchmark {
 
     private static class MethodLocator {
 
-        private String findMethodName(int depth) {
+        private String findMethodName(final int depth) {
             if (depth == 1) {
                 return locateMethodName();
             } else {

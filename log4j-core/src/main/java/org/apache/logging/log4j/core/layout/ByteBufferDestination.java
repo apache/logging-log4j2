@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.layout;
 
 import java.nio.ByteBuffer;
 
+import org.apache.logging.log4j.core.appender.OutputStreamManager;
+
 /**
  * ByteBufferDestination is the destination that {@link Encoder}s write binary data to. It encapsulates a
  * {@code ByteBuffer} and a {@code drain()} method the producer can call when the {@code ByteBuffer} is full.
@@ -44,4 +46,29 @@ public interface ByteBufferDestination {
      * @return a buffer with more available space (which may or may not be the same instance)
      */
     ByteBuffer drain(ByteBuffer buf);
+
+    /**
+     * Writes the given data to this ByteBufferDestination entirely. Call of this method should *not* be protected
+     * with synchronized on this ByteBufferDestination instance. ByteBufferDestination implementations should
+     * synchronize themselves inside this method, if needed.
+     *
+     * @since 2.9 (see LOG4J2-1874)
+     */
+    void writeBytes(ByteBuffer data);
+
+    /**
+     * Writes the given data to this ByteBufferDestination. Call of this method should *not* be protected with
+     * synchronized on this ByteBufferDestination instance. ByteBufferDestination implementations should
+     * synchronize themselves inside this method, if needed.
+     * <p>
+     * This method should behave identically to {@code writeBytes(ByteBuffer.wrap(data, offset, length)}.
+     * It is provided to allow callers not to generate extra garbage.
+     * <p>
+     * This method is called writeBytes() to avoid clashing with {@link OutputStreamManager#write(byte[], int, int)},
+     * which might be overridden in user-defined subclasses as protected, hence adding it to interface and requiring
+     * the method to be public breaks source compatibility.
+     *
+     * @since 2.9 (see LOG4J2-1874)
+     */
+    void writeBytes(byte[] data, int offset, int length);
 }

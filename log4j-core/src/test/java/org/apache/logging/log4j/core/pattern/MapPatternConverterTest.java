@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -32,7 +32,7 @@ public class MapPatternConverterTest {
     @Test
     public void testConverter() {
 
-        final MapMessage msg = new MapMessage();
+        final StringMapMessage msg = new StringMapMessage();
         msg.put("subject", "I");
         msg.put("verb", "love");
         msg.put("object", "Log4j");
@@ -58,7 +58,7 @@ public class MapPatternConverterTest {
     @Test
     public void testConverterWithKey() {
 
-        final MapMessage msg = new MapMessage();
+        final StringMapMessage msg = new StringMapMessage();
         msg.put("subject", "I");
         msg.put("verb", "love");
         msg.put("object", "Log4j");

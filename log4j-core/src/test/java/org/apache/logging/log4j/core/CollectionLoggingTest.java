@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -61,7 +61,7 @@ public class CollectionLoggingTest {
         final Map<String, String> map = new HashMap<>();
         map.put("MyKey1", "MyValue1");
         map.put("MyKey2", "MyValue2");
-        logger.error(new MapMessage(map));
+        logger.error(new StringMapMessage(map));
         logger.error(map);
         // TODO: some assertions
     }

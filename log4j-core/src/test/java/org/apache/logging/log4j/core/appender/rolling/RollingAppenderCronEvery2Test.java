@@ -17,17 +17,10 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.Random;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
@@ -60,8 +53,8 @@ public class RollingAppenderCronEvery2Test {
         final Logger logger = loggerContextRule.getLogger();
         final File file = new File(FILE);
         assertTrue("Log file does not exist", file.exists());
-        long end = System.currentTimeMillis() + 5000;
-        Random rand = new SecureRandom();
+        final long end = System.currentTimeMillis() + 5000;
+        final Random rand = new SecureRandom();
         rand.setSeed(end);
         int count = 1;
         do {

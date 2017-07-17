@@ -39,8 +39,8 @@ public class ThrowablePatternConverterTest {
     }
 
     private boolean everyLineEndsWith(final String text, final String suffix) {
-        String[] lines = text.split(Strings.LINE_SEPARATOR);
-        for (String line: lines) {
+        final String[] lines = text.split(Strings.LINE_SEPARATOR);
+        for (final String line: lines) {
             if (!line.trim().endsWith(suffix)) {
                 return false;
             }

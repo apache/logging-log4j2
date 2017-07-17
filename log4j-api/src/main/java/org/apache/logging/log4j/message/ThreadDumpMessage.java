@@ -19,13 +19,13 @@ package org.apache.logging.log4j.message;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadInfo;
-import java.lang.management.ThreadMXBean;
-import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
@@ -34,28 +34,12 @@ import org.apache.logging.log4j.util.Strings;
  */
 @AsynchronouslyFormattable
 public class ThreadDumpMessage implements Message, StringBuilderFormattable {
-
     private static final long serialVersionUID = -1103400781608841088L;
-
-    private static final ThreadInfoFactory FACTORY;
+    private static ThreadInfoFactory FACTORY;
 
     private volatile Map<ThreadInformation, StackTraceElement[]> threads;
-
     private final String title;
-
     private String formattedMessage;
-
-    static {
-        final Method[] methods = ThreadInfo.class.getMethods();
-        boolean basic = true;
-        for (final Method method : methods) {
-            if (method.getName().equals("getLockInfo")) {
-                basic = false;
-                break;
-            }
-        }
-        FACTORY = basic ? new BasicThreadInfoFactory() : new ExtendedThreadInfoFactory();
-    }
 
     /**
      * Generate a ThreadDumpMessage with a title.
@@ -63,12 +47,35 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
      */
     public ThreadDumpMessage(final String title) {
         this.title = title == null ? Strings.EMPTY : title;
-        threads = FACTORY.createThreadInfo();
+        threads = getFactory().createThreadInfo();
     }
 
     private ThreadDumpMessage(final String formattedMsg, final String title) {
         this.formattedMessage = formattedMsg;
         this.title = title == null ? Strings.EMPTY : title;
+    }
+
+    private static ThreadInfoFactory getFactory() {
+        if (FACTORY == null) {
+            FACTORY = initFactory(ThreadDumpMessage.class.getClassLoader());
+        }
+        return FACTORY;
+    }
+
+    private static ThreadInfoFactory initFactory(final ClassLoader classLoader) {
+        final ServiceLoader<ThreadInfoFactory> serviceLoader = ServiceLoader.load(ThreadInfoFactory.class, classLoader);
+        ThreadInfoFactory result = null;
+        try {
+            final Iterator<ThreadInfoFactory> iterator = serviceLoader.iterator();
+            while (result == null && iterator.hasNext()) {
+                result = iterator.next();
+            }
+        } catch (ServiceConfigurationError | LinkageError | Exception unavailable) { // if java management classes not available
+            StatusLogger.getLogger().info("ThreadDumpMessage uses BasicThreadInfoFactory: " +
+                            "could not load extended ThreadInfoFactory: {}", unavailable.toString());
+            result = null;
+        }
+        return result == null ? new BasicThreadInfoFactory() : result;
     }
 
     @Override
@@ -161,8 +168,12 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
 
     /**
      * Factory to create Thread information.
+     * <p>
+     * Implementations of this class are loaded via the standard java Service Provider interface.
+     * </p>
+     * @see /log4j-core/src/main/resources/META-INF/services/org.apache.logging.log4j.message.ThreadDumpMessage$ThreadInfoFactory
      */
-    private interface ThreadInfoFactory {
+    public static interface ThreadInfoFactory {
         Map<ThreadInformation, StackTraceElement[]> createThreadInfo();
     }
 
@@ -177,24 +188,6 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
                 new HashMap<>(map.size());
             for (final Map.Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
                 threads.put(new BasicThreadInformation(entry.getKey()), entry.getValue());
-            }
-            return threads;
-        }
-    }
-
-    /**
-     * Factory to create extended thread information.
-     */
-    private static class ExtendedThreadInfoFactory implements ThreadInfoFactory {
-        @Override
-        public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
-            final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-            final ThreadInfo[] array = bean.dumpAllThreads(true, true);
-
-            final Map<ThreadInformation, StackTraceElement[]>  threads =
-                new HashMap<>(array.length);
-            for (final ThreadInfo info : array) {
-                threads.put(new ExtendedThreadInformation(info), info.getStackTrace());
             }
             return threads;
         }

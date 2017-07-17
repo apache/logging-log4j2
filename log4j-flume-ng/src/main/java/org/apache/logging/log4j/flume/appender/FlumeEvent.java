@@ -29,7 +29,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
@@ -39,6 +38,7 @@ import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -133,11 +133,13 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         final Message message = event.getMessage();
         if (message instanceof MapMessage) {
             // Add the guid to the Map so that it can be included in the Layout.
-            ((MapMessage) message).put(GUID, guid);
+        	@SuppressWarnings("unchecked")
+			MapMessage<?, String> stringMapMessage = (MapMessage<?, String>) message;
+        	stringMapMessage.put(GUID, guid);
             if (message instanceof StructuredDataMessage) {
                 addStructuredData(eventPrefix, headers, (StructuredDataMessage) message);
             }
-            addMapData(eventPrefix, headers, (MapMessage) message);
+            addMapData(eventPrefix, headers, stringMapMessage);
         } else {
             headers.put(GUID, guid);
         }
@@ -152,7 +154,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         fields.put(prefix + EVENT_ID, id.getName());
     }
 
-    protected void addMapData(final String prefix, final Map<String, String> fields, final MapMessage msg) {
+    protected void addMapData(final String prefix, final Map<String, String> fields, final MapMessage<?, String> msg) {
         final Map<String, String> data = msg.getData();
         for (final Map.Entry<String, String> entry : data.entrySet()) {
             fields.put(prefix + entry.getKey(), entry.getValue());

@@ -153,7 +153,7 @@ public class FlumePersistentAppenderTest {
             final Event event = primary.poll();
             Assert.assertNotNull("Received " + i + " events. Event " + (i + 1) + " is null", event);
             final String value = event.getHeaders().get("counter");
-            Assert.assertNotNull("Missing counter", value);
+            Assert.assertNotNull("Missing 'counter' in map " + event.getHeaders() + ", i = " + i, value);
             final int counter = Integer.parseInt(value);
             if (fields[counter]) {
                 Assert.fail("Duplicate event");

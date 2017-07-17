@@ -28,14 +28,14 @@ import org.apache.logging.log4j.message.Message;
 /**
  * Formats a {@link LogEvent} in its {@link Message} form.
  * <p>
- * Useful in combination with a JMS Appender to map a Log4j {@link org.apache.logging.log4j.message.MapMessage} to a JMS
+ * Useful in combination with a JMS Appender to map a Log4j {@link org.apache.logging.log4j.message.StringMapMessage} to a JMS
  * {@link javax.jms.MapMessage}.
  * </p>
  */
 @Plugin(name = "MessageLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class MessageLayout extends AbstractLayout<Message> {
 
-    public MessageLayout(Configuration configuration, byte[] header, byte[] footer) {
+    public MessageLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
         super(configuration, header, footer);
     }
 
@@ -44,12 +44,12 @@ public class MessageLayout extends AbstractLayout<Message> {
     }
 
     @Override
-    public byte[] toByteArray(LogEvent event) {
+    public byte[] toByteArray(final LogEvent event) {
         return null;
     }
 
     @Override
-    public Message toSerializable(LogEvent event) {
+    public Message toSerializable(final LogEvent event) {
         return event.getMessage();
     }
 

@@ -21,7 +21,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.8.3-SNAPSHOT</version>
+  <version>2.9-SNAPSHOT</version>
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
@@ -179,7 +179,7 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.8.7</jackson2Version>
+    <jackson2Version>2.8.9</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion>
     <disruptorVersion>3.3.6</disruptorVersion>
@@ -191,6 +191,7 @@
     <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
+    <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
     <surefire.plugin.version>2.20</surefire.plugin.version>
     <failsafe.plugin.version>2.20</failsafe.plugin.version>
     <checkstyle.plugin.version>2.17</checkstyle.plugin.version>
@@ -210,13 +211,14 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
-    <osgi.api.version>4.3.1</osgi.api.version>
+    <osgi.api.version>6.0.0</osgi.api.version>
     <activemq.version>5.14.5</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <mockitoVersion>2.2.7</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
+    <javaTargetVersion>1.7</javaTargetVersion>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -260,17 +262,17 @@
       <dependency>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
-        <version>3.11.2.v20161107-1947</version>
+        <version>3.12.0.v20170512-1932</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.framework</artifactId>
-        <version>5.6.1</version>
+        <version>5.6.4</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.3.9</version>
+        <version>3.5.0</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -280,7 +282,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.5</version>
+        <version>3.6</version>
       </dependency>
       <dependency>
         <groupId>com.beust</groupId>
@@ -299,6 +301,12 @@
         <version>${logbackVersion}</version>
         <type>test-jar</type>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api-java9</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -587,12 +595,12 @@
       <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
-        <version>0.10.2.0</version>
+        <version>0.11.0.0</version>
       </dependency>
       <dependency>
         <groupId>org.zeromq</groupId>
         <artifactId>jeromq</artifactId>
-        <version>0.4.0</version>
+        <version>0.4.2</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
@@ -689,22 +697,22 @@
       <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
-        <version>2.3.4</version>
+        <version>2.3.5</version>
       </dependency>
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.4.193</version>
+        <version>1.4.196</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>org.eclipse.persistence.jpa</artifactId>
-        <version>2.6.0</version>
+        <version>2.6.4</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>javax.persistence</artifactId>
-        <version>2.1.0</version>
+        <version>2.1.1</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
@@ -767,7 +775,7 @@
       <dependency>
         <groupId>org.tukaani</groupId>
         <artifactId>xz</artifactId>
-        <version>1.5</version>
+        <version>1.6</version>
         <scope>test</scope>
       </dependency>
       <!-- Used for the CSV layout -->
@@ -785,7 +793,7 @@
       <dependency>
         <groupId>org.hdrhistogram</groupId>
         <artifactId>HdrHistogram</artifactId>
-        <version>2.1.8</version>
+        <version>2.1.9</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -884,6 +892,7 @@
               <phase>verify</phase>
               <goals>
                 <goal>jar-no-fork</goal>
+                <goal>test-jar-no-fork</goal>
               </goals>
             </execution>
           </executions>
@@ -923,8 +932,13 @@
               <goals>
                 <goal>report</goal>
               </goals>
-            </execution>          
+            </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.0.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -936,64 +950,6 @@
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>clean-java9</id>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <excludeDefaultDirectories>true</excludeDefaultDirectories>
-              <filesets>
-                <fileset>
-                  <directory>${project.build.directory}/classes</directory>
-                  <includes>
-                    <include>**/*.class</include>
-                  </includes>
-                  <excludes>
-                    <exclude>module-info.class</exclude>
-                  </excludes>
-                  <followSymlinks>false</followSymlinks>
-                </fileset>
-              </filesets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler.plugin.version}</version>
-        <executions>
-          <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>default-compile</id>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>java9-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>compile</phase>
-            <configuration>
-              <!-- compile everything to ensure module-info contains right entries -->
-              <!-- required when JAVA_HOME is JDK 8 or below -->
-              <jdkToolchain>
-                <version>9</version>
-              </jdkToolchain>
-              <release>9</release>
-              <proc>none</proc>
-              <includes>
-                <include>module-info.java</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1062,14 +1018,8 @@
         <version>${failsafe.plugin.version}</version>
         <executions>
           <execution>
-            <id>integration-tests</id>
             <goals>
               <goal>integration-test</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
               <goal>verify</goal>
             </goals>
           </execution>
@@ -1322,6 +1272,7 @@
     </site>
   </distributionManagement>
   <modules>
+    <module>log4j-api-java9</module>
     <module>log4j-api</module>
     <module>log4j-core</module>
     <module>log4j-core-its</module>
@@ -1534,6 +1485,37 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <argLine>-XX:MaxPermSize=512m</argLine>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>useJava7</id>
+      <activation>
+        <property>
+          <name>useJava7</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-toolchains-plugin</artifactId>
+            <version>1.1</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>toolchain</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <toolchains>
+                <jdk>
+                  <version>1.7</version>
+                </jdk>
+              </toolchains>
             </configuration>
           </plugin>
         </plugins>

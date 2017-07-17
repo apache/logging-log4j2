@@ -35,7 +35,7 @@ $h1 Frequently Asked Questions
 * [How do I set my log archive retention policy? How do I delete old log archives?](#retention)
 * [What are the trade-offs of using the Log4j 2 API versus the SLF4J API?](#api-tradeoffs)
 * [Is Log4j 2 still garbage-free when I use the SLF4J API?](#gc-free-slf4j)
-* [How do I log my domain object without creating garbage?](#gc-free-domain-object) 
+* [How do I log my domain object without creating garbage?](#gc-free-domain-object)
 * [How do I create a custom logger wrapper that shows the correct class, method and line number?](#logger-wrapper)
 
 <a name="missing_core"/>
@@ -281,6 +281,15 @@ Next, check the name of your configuration file. By default, log4j2 will look
 for a configuration file named `log4j2.xml` on the classpath. Note the "2" in the file name!
 (See the [configuration manual page](manual/configuration.html#AutomaticConfiguration) for more details.)
 
+**From log4j-2.9 onward**
+
+From log4j-2.9 onward, log4j2 will print all internal logging to the console if system property `log4j2.debug`
+is defined (with any or no value).
+
+**Prior to log4j-2.9**
+
+Prior to log4j-2.9, there are two places where internal logging can be controlled:
+
 If the configuration file is found correctly, log4j2 internal status logging can be controlled by
 setting `<Configuration status="trace">` in the configuration file. This will display detailed log4j2-internal
 log statements on the console about what happens during the configuration process.
@@ -354,7 +363,7 @@ You can use the `ThreadContext` map value to determine the log file name.
 <a name="reconfig_level_from_code"/>
 $h4 How do I set a logger's level programmatically?
 
-You can set a logger's level with the class 
+You can set a logger's level with the class
 [`Configurator`](log4j-core/apidocs/org/apache/logging/log4j/core/config/Configurator.html)
 from Log4j Core. Be aware that the `Configurator` class is not part of the public API.
 

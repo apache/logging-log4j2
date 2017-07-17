@@ -413,12 +413,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public PropertyComponentBuilder newProperty(String name, String value) {
+    public PropertyComponentBuilder newProperty(final String name, final String value) {
         return new DefaultPropertyComponentBuilder(this, name, value);
     }
 
     @Override
-    public KeyValuePairComponentBuilder newKeyValuePair(String key, String value) {
+    public KeyValuePairComponentBuilder newKeyValuePair(final String key, final String value) {
         return new DefaultKeyValuePairComponentBuilder(this, key, value);
     }
 

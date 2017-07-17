@@ -310,7 +310,7 @@ public class MyService {
               Use the following command to generate a logger wrapper that adds methods to the built-in ones:
             </p>
             <pre class="prettyprint">
-java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.Generate${dollar}ExtendedLogger \
+java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.ExtendedLoggerGenerator \
         com.mycomp.ExtLogger DIAG=350 NOTICE=450 VERBOSE=550 > com/mycomp/ExtLogger.java</pre>
             <p>
               This will generate source code for a logger wrapper that has the convenience methods
@@ -318,7 +318,8 @@ java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.too
               generated source code to the console.
               By appending " &gt; <em>filename</em>" the output can be redirected to a file.
             </p><p>
-              NOTE: Under the bash shell on Unix/Mac/Linux the ${dollar} character needs to be escaped, so the class name should
+              NOTE: Prior to log4j-2.9, this tool was an inner class <tt>Generate${dollar}ExtendedLogger</tt>.<br/>
+               Under the bash shell on Unix/Mac/Linux the dollar character ${dollar} needs to be escaped, so the class name should
                be between single quotes 'org.apache.logging.log4j.core.tools.Generate${dollar}ExtendedLogger’.
             </p>
           </subsection>
@@ -327,7 +328,7 @@ java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.too
               Use the following command to generate a logger wrapper that hides the built-in levels and has only custom levels:
             </p>
             <pre class="prettyprint">
-java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.Generate${dollar}CustomLogger \
+java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.CustomLoggerGenerator \
         com.mycomp.MyLogger DEFCON1=350 DEFCON2=450 DEFCON3=550 > com/mycomp/MyLogger.java</pre>
             <p>
               This will generate source code for a logger wrapper that <em>only</em> has convenience
@@ -335,7 +336,8 @@ java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.too
               The tool prints the generated source code to the console.
               By appending " &gt; <em>filename</em>" the output can be redirected to a file.
             </p><p>
-              NOTE: Under the bash shell on Unix/Mac/Linux the ${dollar} character needs to be escaped, so the class name should
+              NOTE: Prior to log4j-2.9, this tool was an inner class <tt>Generate${dollar}ExtendedLogger</tt>.<br/>
+               Under the bash shell on Unix/Mac/Linux the dollar character ${dollar} needs to be escaped, so the class name should
                be between single quotes 'org.apache.logging.log4j.core.tools.Generate${dollar}CustomLogger’.
             </p>
           </subsection>

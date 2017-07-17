@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -52,9 +52,9 @@ public class MapMessageLookup extends AbstractLookup {
     @Override
     public String lookup(final LogEvent event, final String key) {
         final Message msg = event.getMessage();
-        if (msg instanceof MapMessage) {
+        if (msg instanceof StringMapMessage) {
             try {
-                final Map<String, String> properties = ((MapMessage) msg).getData();
+                final Map<String, String> properties = ((StringMapMessage) msg).getData();
                 if (properties == null) {
                     return "";
                 }

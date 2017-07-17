@@ -29,7 +29,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -71,8 +70,8 @@ public class RewriteAppenderTest {
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         final LogEvent event = list.get(0);
         final Message m = event.getMessage();
-        assertTrue("Message is not a MapMessage", m instanceof MapMessage);
-        final MapMessage message = (MapMessage) m;
+        assertTrue("Message is not a StringMapMessage: " + m.getClass(), m instanceof StructuredDataMessage);
+        final StructuredDataMessage message = (StructuredDataMessage) m;
         final Map<String, String> map = message.getData();
         assertNotNull("No Map", map);
         assertTrue("Incorrect number of map entries, expected 3 got " + map.size(), map.size() == 3);

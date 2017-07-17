@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 
 /**
  * Demo Appender that does not do any I/O.
@@ -47,10 +48,10 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
         }
     }
 
-    private void consume(final byte[] data, final int offset, final int length) {
+    private void consume(final byte[] data, final int offset, final int limit) {
         // need to do something with the result or the JVM may optimize everything away
         long sum = 0;
-        for (int i = offset; i < length; i++) {
+        for (int i = offset; i < limit; i++) {
             sum += data[i];
         }
         checksum += sum;
@@ -64,8 +65,18 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
     @Override
     public ByteBuffer drain(final ByteBuffer buf) {
         buf.flip();
-        consume(buf.array(), buf.position(), buf.limit());
+        consume(buf.array(), buf.arrayOffset() + buf.position(), buf.arrayOffset() + buf.limit());
         buf.clear();
         return buf;
+    }
+
+    @Override
+    public void writeBytes(final ByteBuffer data) {
+        ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+    }
+
+    @Override
+    public void writeBytes(final byte[] data, final int offset, final int length) {
+        ByteBufferDestinationHelper.writeToUnsynchronized(data, offset, length, this);
     }
 }

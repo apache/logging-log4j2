@@ -37,6 +37,7 @@ import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -98,6 +99,16 @@ public final class StatusLogger extends AbstractLogger {
         this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY,
                 messageFactory, PROPS, System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
+
+        // LOG4J2-1813 if system property "log4j2.debug" is defined, print all status logging
+        if (isDebugPropertyEnabled()) {
+            logger.setLevel(Level.TRACE);
+        }
+    }
+
+    // LOG4J2-1813 if system property "log4j2.debug" is defined, print all status logging
+    private boolean isDebugPropertyEnabled() {
+        return PropertiesUtil.getProperties().getBooleanProperty(Constants.LOG4J2_DEBUG, false, true);
     }
 
     /**
@@ -248,14 +259,19 @@ public final class StatusLogger extends AbstractLogger {
         } finally {
             msgLock.unlock();
         }
-        if (listeners.size() > 0) {
-            for (final StatusListener listener : listeners) {
-                if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {
-                    listener.log(data);
-                }
-            }
-        } else {
+        // LOG4J2-1813 if system property "log4j2.debug" is defined, all status logging is enabled
+        if (isDebugPropertyEnabled()) {
             logger.logMessage(fqcn, level, marker, msg, t);
+        } else {
+            if (listeners.size() > 0) {
+                for (final StatusListener listener : listeners) {
+                    if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {
+                        listener.log(data);
+                    }
+                }
+            } else {
+                logger.logMessage(fqcn, level, marker, msg, t);
+            }
         }
     }
 
@@ -378,6 +394,10 @@ public final class StatusLogger extends AbstractLogger {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker) {
+        // LOG4J2-1813 if system property "log4j2.debug" is defined, all status logging is enabled
+        if (isDebugPropertyEnabled()) {
+            return true;
+        }
         if (listeners.size() > 0) {
             return listenersLevel >= level.intLevel();
         }

@@ -25,31 +25,7 @@ public final class StackLocatorUtil {
     private static StackLocator stackLocator = null;
 
     static {
-        try {
-            final Class<?> stackLocatorClass = LoaderUtil.loadClass("org.apache.logging.log4j.util.StackWalkerStackLocator");
-            stackLocator = (StackLocator) stackLocatorClass.newInstance();
-        } catch (NoClassDefFoundError e) {
-            // Ignore this error.
-        } catch (ClassNotFoundException e) {
-            // Ignore this exception.
-        } catch (InstantiationException e) {
-            // Ignore this exception.
-        } catch (IllegalAccessException e) {
-            // Ignore this exception.
-        } catch (UnsupportedClassVersionError e) {
-            // Ignore this error.
-        }
-        if (stackLocator == null) {
-            try {
-                final Class<?> stackLocatorClass = LoaderUtil.loadClass("sun.reflect.Reflection");
-                stackLocator = ReflectionStackLocator.getInstance();
-            } catch (ClassNotFoundException cnfe) {
-                // Ignore this exception.
-            }
-        }
-        if (stackLocator == null) {
-            stackLocator = new DefaultStackLocator();
-        }
+        stackLocator = StackLocator.getInstance();
     }
 
     private StackLocatorUtil() {

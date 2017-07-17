@@ -430,6 +430,16 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted stack trace including packaging information.
      * @param suffix
      */
+    public String getExtendedStackTraceAsString() {
+        return this.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), "");
+    }
+
+    /**
+     * Format the stack trace including packaging information.
+     *
+     * @return The formatted stack trace including packaging information.
+     * @param suffix
+     */
     public String getExtendedStackTraceAsString(final String suffix) {
         return this.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), suffix);
     }

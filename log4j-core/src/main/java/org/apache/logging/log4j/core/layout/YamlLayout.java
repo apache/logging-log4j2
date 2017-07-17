@@ -62,14 +62,27 @@ public final class YamlLayout extends AbstractJacksonLayout {
             final String headerPattern = toStringOrNull(getHeader());
             final String footerPattern = toStringOrNull(getFooter());
             return new YamlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
-                isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(), isIncludeStacktrace());
+                isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(), isIncludeStacktrace(), isStacktraceAsString());
         }
     }
 
+    /**
+     * @deprecated Use {@link #newBuilder()} instead
+     */
+    @Deprecated
     protected YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
             final String footerPattern, final Charset charset, final boolean includeStacktrace) {
-        super(config, new JacksonFactory.YAML(includeStacktrace).newWriter(locationInfo, properties, compact), charset, compact,
+        super(config, new JacksonFactory.YAML(includeStacktrace, false).newWriter(locationInfo, properties, compact), charset, compact,
+            complete, eventEol,
+            PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
+            PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
+    }
+
+    private YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
+            final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
+            final String footerPattern, final Charset charset, final boolean includeStacktrace, final boolean stacktraceAsString) {
+        super(config, new JacksonFactory.YAML(includeStacktrace, stacktraceAsString).newWriter(locationInfo, properties, compact), charset, compact,
             complete, eventEol,
             PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
             PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build());
@@ -152,18 +165,15 @@ public final class YamlLayout extends AbstractJacksonLayout {
      */
     @Deprecated
     public static AbstractJacksonLayout createLayout(
-            // @formatter:off
-            @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "locationInfo") final boolean locationInfo,
-            @PluginAttribute(value = "properties") final boolean properties,
-            @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
-            @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace
-            // @formatter:on
-    ) {
+            final Configuration config,
+            final boolean locationInfo,
+            final boolean properties,
+            final String headerPattern,
+            final String footerPattern,
+            final Charset charset,
+            final boolean includeStacktrace) {
         return new YamlLayout(config, locationInfo, properties, false, false, true, headerPattern, footerPattern,
-                charset, includeStacktrace);
+                charset, includeStacktrace, false);
     }
 
     @PluginBuilderFactory
@@ -178,6 +188,6 @@ public final class YamlLayout extends AbstractJacksonLayout {
      */
     public static AbstractJacksonLayout createDefaultLayout() {
         return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER,
-                DEFAULT_FOOTER, StandardCharsets.UTF_8, true);
+                DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false);
     }
 }

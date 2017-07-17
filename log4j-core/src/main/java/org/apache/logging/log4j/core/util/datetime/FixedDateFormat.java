@@ -195,7 +195,7 @@ public class FixedDateFormat {
 
     private volatile long midnightToday = 0;
     private volatile long midnightTomorrow = 0;
-    private int[] dstOffsets = new int[25];
+    private final int[] dstOffsets = new int[25];
 
     // cachedDate does not need to be volatile because
     // there is a write to a volatile field *after* cachedDate is modified,

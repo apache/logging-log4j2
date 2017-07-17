@@ -190,10 +190,21 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     static DocumentBuilder newDocumentBuilder(final boolean xIncludeAware) throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
+
+        disableDtdProcessing(factory);
+
         if (xIncludeAware) {
             enableXInclude(factory);
         }
         return factory.newDocumentBuilder();
+    }
+
+    private static void disableDtdProcessing(final DocumentBuilderFactory factory) throws ParserConfigurationException {
+        factory.setValidating(false);
+        factory.setExpandEntityReferences(false);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
     }
 
     /**

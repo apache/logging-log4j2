@@ -18,7 +18,6 @@ package org.apache.logging.log4j.util;
 
 import java.util.Stack;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -26,7 +25,6 @@ import org.junit.runners.ParentRunner;
 import sun.reflect.Reflection;
 
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {
@@ -35,7 +33,7 @@ public class StackLocatorUtilTest {
     @Test
     public void testStackTraceEquivalence() throws Exception {
         for (int i = 1; i < 15; i++) {
-            final Class<?> expected = Reflection.getCallerClass(i + ReflectionStackLocator.JDK_7u25_OFFSET);
+            final Class<?> expected = Reflection.getCallerClass(i + StackLocator.JDK_7u25_OFFSET);
             final Class<?> actual = StackLocatorUtil.getCallerClass(i);
             final Class<?> fallbackActual = Class.forName(
                 StackLocatorUtil.getStackTraceElement(i).getClassName());
@@ -93,8 +91,8 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testLocateClass() {
-        ClassLocator locator = new ClassLocator();
-        Class<?> clazz = locator.locateClass();
+        final ClassLocator locator = new ClassLocator();
+        final Class<?> clazz = locator.locateClass();
         assertNotNull("Could not locate class", clazz);
         assertEquals("Incorrect class", this.getClass(), clazz);
     }

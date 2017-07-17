@@ -47,12 +47,28 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     private RandomAccessFile randomAccessFile;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
 
+    @Deprecated
     public RollingRandomAccessFileManager(final LoggerContext loggerContext, final RandomAccessFile raf,
             final String fileName, final String pattern, final OutputStream os, final boolean append,
             final boolean immediateFlush, final int bufferSize, final long size, final long time,
             final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
             final Layout<? extends Serializable> layout, final boolean writeHeader) {
+        this(loggerContext, raf, fileName, pattern, os, append, immediateFlush, bufferSize, size, time, policy, strategy, advertiseURI,
+               layout, null, null, null, writeHeader);
+    }
+
+    /**
+     * @since 2.8.3
+     */
+    public RollingRandomAccessFileManager(final LoggerContext loggerContext, final RandomAccessFile raf,
+            final String fileName, final String pattern, final OutputStream os, final boolean append,
+            final boolean immediateFlush, final int bufferSize, final long size, final long time,
+            final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
+            final Layout<? extends Serializable> layout,
+            final String filePermissions, final String fileOwner, final String fileGroup,
+            final boolean writeHeader) {
         super(loggerContext, fileName, pattern, os, append, false, size, time, policy, strategy, advertiseURI, layout,
+                filePermissions, fileOwner, fileGroup,
                 writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
         this.randomAccessFile = raf;
         isEndOfBatch.set(Boolean.FALSE);
@@ -83,9 +99,11 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(final String fileName,
             final String filePattern, final boolean isAppend, final boolean immediateFlush, final int bufferSize,
             final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-            final Layout<? extends Serializable> layout, final Configuration configuration) {
-        return (RollingRandomAccessFileManager) getManager(fileName, new FactoryData(filePattern, isAppend,
-                immediateFlush, bufferSize, policy, strategy, advertiseURI, layout, configuration), FACTORY);
+            final Layout<? extends Serializable> layout, final String filePermissions, final String fileOwner, final String fileGroup,
+            final Configuration configuration) {
+        return narrow(RollingRandomAccessFileManager.class, getManager(fileName, new FactoryData(filePattern, isAppend,
+                immediateFlush, bufferSize, policy, strategy, advertiseURI, layout,
+                filePermissions, fileOwner, fileGroup, configuration), FACTORY));
     }
 
     public Boolean isEndOfBatch() {
@@ -186,9 +204,13 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                     LOGGER.trace("RandomAccessFile {} set length to 0", name);
                     raf.setLength(0);
                 }
-                return new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
+                final RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
                         NullOutputStream.getInstance(), data.append, data.immediateFlush, data.bufferSize, size, time, data.policy,
-                        data.strategy, data.advertiseURI, data.layout, writeHeader);
+                        data.strategy, data.advertiseURI, data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader);
+                if (rrm.isAttributeViewEnabled()) {
+                    rrm.defineAttributeView(file.toPath());
+                }
+                return rrm;
             } catch (final IOException ex) {
                 LOGGER.error("Cannot access RandomAccessFile " + ex, ex);
                 if (raf != null) {
@@ -215,6 +237,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         private final RolloverStrategy strategy;
         private final String advertiseURI;
         private final Layout<? extends Serializable> layout;
+        private final String filePermissions;
+        private final String fileOwner;
+        private final String fileGroup;
 
         /**
          * Create the data for the factory.
@@ -227,11 +252,16 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
          * @param strategy
          * @param advertiseURI
          * @param layout
+         * @param filePermissions File permissions
+         * @param fileOwner File owner
+         * @param fileGroup File group
          * @param configuration
          */
         public FactoryData(final String pattern, final boolean append, final boolean immediateFlush,
                 final int bufferSize, final TriggeringPolicy policy, final RolloverStrategy strategy,
-                final String advertiseURI, final Layout<? extends Serializable> layout, final Configuration configuration) {
+                final String advertiseURI, final Layout<? extends Serializable> layout,
+                final String filePermissions, final String fileOwner, final String fileGroup,
+                final Configuration configuration) {
             super(configuration);
             this.pattern = pattern;
             this.append = append;
@@ -241,6 +271,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             this.strategy = strategy;
             this.advertiseURI = advertiseURI;
             this.layout = layout;
+            this.filePermissions = filePermissions;
+            this.fileOwner = fileOwner;
+            this.fileGroup = fileGroup;
         }
 
         public TriggeringPolicy getTriggeringPolicy()

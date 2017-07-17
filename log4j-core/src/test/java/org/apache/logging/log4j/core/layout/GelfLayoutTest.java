@@ -106,7 +106,9 @@ public class GelfLayoutTest {
         formattedAppender.start();
         encodedAppender.start();
 
-        if (host == null) host = NetUtils.getLocalHostname();
+        if (host == null) {
+            host = NetUtils.getLocalHostname();
+        }
 
         final JavaLookup javaLookup = new JavaLookup();
 

@@ -115,12 +115,12 @@ public final class HttpAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public B setConnectTimeoutMillis(int connectTimeoutMillis) {
+        public B setConnectTimeoutMillis(final int connectTimeoutMillis) {
             this.connectTimeoutMillis = connectTimeoutMillis;
             return asBuilder();
         }
 
-        public B setReadTimeoutMillis(int readTimeoutMillis) {
+        public B setReadTimeoutMillis(final int readTimeoutMillis) {
             this.readTimeoutMillis = readTimeoutMillis;
             return asBuilder();
         }
@@ -135,7 +135,7 @@ public final class HttpAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public B setVerifyHostname(boolean verifyHostname) {
+        public B setVerifyHostname(final boolean verifyHostname) {
             this.verifyHostname = verifyHostname;
             return asBuilder();
         }

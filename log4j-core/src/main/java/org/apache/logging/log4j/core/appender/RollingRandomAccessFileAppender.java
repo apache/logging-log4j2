@@ -33,11 +33,9 @@ import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
@@ -80,6 +78,15 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         @PluginBuilderAttribute("advertiseURI")
         private String advertiseURI;
 
+        @PluginBuilderAttribute
+        private String filePermissions;
+
+        @PluginBuilderAttribute
+        private String fileOwner;
+
+        @PluginBuilderAttribute
+        private String fileGroup;
+
         @Override
         public RollingRandomAccessFileAppender build() {
             final String name = getName();
@@ -104,8 +111,10 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             }
 
             if (strategy == null) {
-                strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
-                        String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, getConfiguration());
+                strategy = DefaultRolloverStrategy.newBuilder()
+                                .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                                .withConfig(getConfiguration())
+                                .build();
             }
 
             final Layout<? extends Serializable> layout = getOrCreateLayout();
@@ -114,7 +123,8 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             final int bufferSize = getBufferSize();
             final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager
                     .getRollingRandomAccessFileManager(fileName, filePattern, append, immediateFlush, bufferSize, policy,
-                            strategy, advertiseURI, layout, getConfiguration());
+                            strategy, advertiseURI, layout,
+                            filePermissions, fileOwner, fileGroup, getConfiguration());
             if (manager == null) {
                 return null;
             }
@@ -157,6 +167,21 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
 
         public B withAdvertiseURI(final String advertiseURI) {
             this.advertiseURI = advertiseURI;
+            return asBuilder();
+        }
+
+        public B withFilePermissions(final String filePermissions) {
+            this.filePermissions = filePermissions;
+            return asBuilder();
+        }
+
+        public B withFileOwner(final String fileOwner) {
+            this.fileOwner = fileOwner;
+            return asBuilder();
+        }
+
+        public B withFileGroup(final String fileGroup) {
+            this.fileGroup = fileGroup;
             return asBuilder();
         }
 

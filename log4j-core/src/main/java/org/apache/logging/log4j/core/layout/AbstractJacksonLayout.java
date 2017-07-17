@@ -56,6 +56,9 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private boolean includeStacktrace = true;
 
+        @PluginBuilderAttribute
+        private boolean stacktraceAsString = false;
+
         protected String toStringOrNull(final byte[] header) {
             return header == null ? null : new String(header, Charset.defaultCharset());
         }
@@ -88,6 +91,10 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
             return includeStacktrace;
         }
 
+        public boolean isStacktraceAsString() {
+            return stacktraceAsString;
+        }
+
         public B setEventEol(final boolean eventEol) {
             this.eventEol = eventEol;
             return asBuilder();
@@ -103,12 +110,12 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
             return asBuilder();
         }
 
-        public B setLocationInfo(boolean locationInfo) {
+        public B setLocationInfo(final boolean locationInfo) {
             this.locationInfo = locationInfo;
             return asBuilder();
         }
 
-        public B setProperties(boolean properties) {
+        public B setProperties(final boolean properties) {
             this.properties = properties;
             return asBuilder();
         }
@@ -118,8 +125,13 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
          * @param includeStacktrace If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
          * @return this builder
          */
-        public B setIncludeStacktrace(boolean includeStacktrace) {
+        public B setIncludeStacktrace(final boolean includeStacktrace) {
             this.includeStacktrace = includeStacktrace;
+            return asBuilder();
+        }
+
+        public B setStacktraceAsString(boolean stacktraceAsString) {
+            this.stacktraceAsString = stacktraceAsString;
             return asBuilder();
         }
     }

@@ -17,18 +17,22 @@
 
 package org.apache.logging.log4j.core.osgi;
 
+import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
+import org.apache.logging.log4j.core.impl.Log4jProvider;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.wiring.BundleWiring;
 
@@ -41,8 +45,14 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     private final AtomicReference<BundleContext> contextRef = new AtomicReference<>();
 
+    ServiceRegistration provideRegistration = null;
+
     @Override
     public void start(final BundleContext context) throws Exception {
+        Provider provider = new Log4jProvider();
+        Hashtable<String, String> props = new Hashtable<>();
+        props.put("APIVersion", "2.60");
+        provideRegistration = context.registerService(Provider.class.getName(), provider, props);
         // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
         if (PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR) == null) {
             System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BundleContextSelector.class.getName());
@@ -57,18 +67,19 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     private static void scanInstalledBundlesForPlugins(final BundleContext context) {
         final Bundle[] bundles = context.getBundles();
         for (final Bundle bundle : bundles) {
-            // LOG4J2-920: don't scan system bundle for plugins
-            if (bundle.getState() == Bundle.ACTIVE && bundle.getBundleId() != 0) {
-                // TODO: bundle state can change during this
-                scanBundleForPlugins(bundle);
-            }
+            // TODO: bundle state can change during this
+            scanBundleForPlugins(bundle);
         }
     }
 
     private static void scanBundleForPlugins(final Bundle bundle) {
-        LOGGER.trace("Scanning bundle [{}] for plugins.", bundle.getSymbolicName());
-        PluginRegistry.getInstance().loadFromBundle(bundle.getBundleId(),
-            bundle.adapt(BundleWiring.class).getClassLoader());
+        long bundleId = bundle.getBundleId();
+        // LOG4J2-920: don't scan system bundle for plugins
+        if (bundle.getState() == Bundle.ACTIVE && bundleId != 0) {
+            LOGGER.trace("Scanning bundle [{}, id=%d] for plugins.", bundle.getSymbolicName(), bundleId);
+            PluginRegistry.getInstance().loadFromBundle(bundleId,
+                    bundle.adapt(BundleWiring.class).getClassLoader());
+        }
     }
 
     private static void stopBundlePlugins(final Bundle bundle) {
@@ -79,6 +90,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     @Override
     public void stop(final BundleContext context) throws Exception {
+        provideRegistration.unregister();
         this.contextRef.compareAndSet(context, null);
         LogManager.shutdown();
     }

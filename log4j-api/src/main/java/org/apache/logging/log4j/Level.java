@@ -159,12 +159,14 @@ public final class Level implements Comparable<Level>, Serializable {
      * Compares this level against the level passed as an argument and returns true if this level is the same or is less
      * specific.
      * <p>
-     * Concretely, {@link #TRACE} is less specific than {@link #DEBUG}, which is less specific than {@link #INFO},
-     * etc., until {@link #FATAL}, and finally {@link #OFF}, which is the most specific standard level.
-     * The least specific level is {@link #ALL}.
+     * Concretely, {@link #ALL} is less specific than {@link #TRACE}, which is less specific than {@link #DEBUG}, which
+     * is less specific than {@link #INFO}, which is less specific than {@link #WARN}, which is less specific than
+     * {@link #ERROR}, which is less specific than {@link #FATAL}, and finally {@link #OFF}, which is the most specific
+     * standard level.
      * </p>
      *
-     * @param level The level to test.
+     * @param level
+     *            The level to test.
      * @return True if this level Level is less specific or the same as the given Level.
      */
     public boolean isLessSpecificThan(final Level level) {
