@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.config;
 /**
  * Implementing appenders will be notified when the configuration is preparing to stop, but not actually stopped.
  */
-public interface ConfigurationStoppingAware {
+public interface ConfigurationStopAware {
     
     /**
      * Invoked when the configuration is preparing to stop, but not actually stopped.

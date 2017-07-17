@@ -91,7 +91,7 @@ public class ConfigurationStoppingAwareTest
 
     }
 
-    private static class AppenderTester implements Appender, ConfigurationStoppingAware {
+    private static class AppenderTester implements Appender, ConfigurationStopAware {
 
         private final String name;
         private boolean started = false;

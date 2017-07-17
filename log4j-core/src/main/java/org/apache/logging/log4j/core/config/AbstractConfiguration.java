@@ -285,8 +285,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     
     private void beforeStop() {
         for (Appender appender : appenders.values()) {
-            if (appender instanceof ConfigurationStoppingAware) {
-                ((ConfigurationStoppingAware) appender).beforeStopConfiguration();
+            if (appender instanceof ConfigurationStopAware) {
+                ((ConfigurationStopAware) appender).beforeStopConfiguration();
             }
         }
     }

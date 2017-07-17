@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationStoppingAware;
+import org.apache.logging.log4j.core.config.ConfigurationStopAware;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -46,7 +46,7 @@ import org.apache.logging.log4j.core.util.Constants;
  * to not suppress exceptions for the FailoverAppender to work.
  */
 @Plugin(name = "Failover", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
-public final class FailoverAppender extends AbstractAppender implements ConfigurationStoppingAware {
+public final class FailoverAppender extends AbstractAppender implements ConfigurationStopAware {
 
     private static final int DEFAULT_INTERVAL_SECONDS = 60;
 
