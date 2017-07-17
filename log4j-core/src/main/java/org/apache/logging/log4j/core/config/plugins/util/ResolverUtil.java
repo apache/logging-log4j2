@@ -21,10 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
 import org.apache.logging.log4j.Logger;
@@ -87,6 +85,8 @@ public class ResolverUtil {
     private static final String VFS = "vfs";
 
     private static final String BUNDLE_RESOURCE = "bundleresource";
+
+    private static final String JAR = "jar";
 
     /** The set of matches being accumulated. */
     private final Set<Class<?>> classMatches = new HashSet<>();
@@ -210,11 +210,13 @@ public class ResolverUtil {
                 } else if (BUNDLE_RESOURCE.equals(url.getProtocol())) {
                     loadImplementationsInBundle(test, packageName);
                 } else {
-                    final File file = new File(urlPath);
-                    if (file.isDirectory()) {
-                        loadImplementationsInDirectory(test, packageName, file);
-                    } else {
-                        loadImplementationsInJar(test, packageName, file);
+                    if (JAR.equals(url.getProtocol())){
+                        this.loadImplementationsInJar(test, packageName, url.openConnection());
+                    }else {
+                        final File file = new File(urlPath);
+                        if (file.isDirectory()) {
+                            loadImplementationsInDirectory(test, packageName, file);
+                        }
                     }
                 }
             } catch (final IOException | URISyntaxException ioe) {
@@ -325,6 +327,49 @@ public class ResolverUtil {
                     test, ex);
         } finally {
             close(jarStream, jarFile);
+        }
+    }
+
+    /**
+     * Finds matching classes within a jar files that contains a folder structure matching the package structure. If the
+     * File is not a JarFile or does not exist a warning will be logged, but no error will be raised.
+     *
+     * @param test
+     *        a Test used to filter the classes that are discovered
+     * @param parent
+     *        the parent package under which classes must be in order to be considered
+     * @param connection
+     *        the URL Connection to be examined for classes
+     */
+    private void loadImplementationsInJar(final ResolverUtil.Test test, final String parent, final URLConnection connection) {
+
+        JarFile jarFile = null;
+        try {
+            if (connection != null && connection instanceof JarURLConnection) {
+                JarURLConnection jarURLConnection = (JarURLConnection) connection;
+                jarFile = jarURLConnection.getJarFile();
+                final Enumeration<JarEntry> entries = jarFile.entries();
+
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    String name = entry.getName();
+
+                    if (!entry.isDirectory() && name.startsWith(parent) && this.isTestApplicable(test, name)) {
+                        this.addIfMatching(test, name);
+                    }
+                }
+            }
+        }catch (IOException e){
+            LOGGER.error("Could not search JAR file '{}' for classes matching criteria {}, file not found", jarFile,
+                    test, e);
+        }finally {
+            if (jarFile != null){
+                try {
+                    jarFile.close();
+                } catch (IOException ignored) {
+                    LOGGER.error("Error closing JAR file stream for {}", jarFile, ignored);
+                }
+            }
         }
     }
 
