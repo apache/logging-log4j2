@@ -158,7 +158,7 @@ public class ConfigurationStoppingAwareTest
         }
 
         @Override
-        public void onBeforeStopConfiguration() {
+        public void beforeStopConfiguration() {
             beforeStopConfigurationCount++;
         }
 

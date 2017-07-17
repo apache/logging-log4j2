@@ -163,7 +163,7 @@ public final class FailoverAppender extends AbstractAppender implements Configur
     }
 
     @Override
-    public void onBeforeStopConfiguration() {
+    public void beforeStopConfiguration() {
         Appender appender = primary.getAppender();
         if (appender instanceof FailoverAware) {
             try {

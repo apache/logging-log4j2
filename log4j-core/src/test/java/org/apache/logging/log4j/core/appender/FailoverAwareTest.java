@@ -79,7 +79,7 @@ public class FailoverAwareTest {
     @Test
     public void testOnBeforeStop() throws Exception {
         
-        failoverAppender.onBeforeStopConfiguration();
+        failoverAppender.beforeStopConfiguration();
 
         verify(primaryAppender).onBeforeFailoverAppenderStop();
         verify(primaryAppender, never()).onBeforeFailoverAppenderStopException(any(Exception.class));
@@ -94,7 +94,7 @@ public class FailoverAwareTest {
         doThrow(exception).when(primaryAppender).onBeforeFailoverAppenderStop();
         when(primaryAppender.onBeforeFailoverAppenderStopException(exception)).thenReturn(events);
 
-        failoverAppender.onBeforeStopConfiguration();
+        failoverAppender.beforeStopConfiguration();
 
         verify(primaryAppender).onBeforeFailoverAppenderStop();
         verify(primaryAppender).onBeforeFailoverAppenderStopException(exception);
@@ -112,7 +112,7 @@ public class FailoverAwareTest {
         doThrow(exception).when(primaryAppender).onBeforeFailoverAppenderStop();
         when(primaryAppender.onBeforeFailoverAppenderStopException(exception)).thenReturn(events);
 
-        failoverAppender.onBeforeStopConfiguration();
+        failoverAppender.beforeStopConfiguration();
 
         verify(primaryAppender).onBeforeFailoverAppenderStop();
         verify(primaryAppender).onBeforeFailoverAppenderStopException(exception);

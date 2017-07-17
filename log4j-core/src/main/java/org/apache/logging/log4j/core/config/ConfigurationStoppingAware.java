@@ -24,5 +24,5 @@ public interface ConfigurationStoppingAware {
     /**
      * Invoked when the configuration is preparing to stop, but not actually stopped.
      */
-    void onBeforeStopConfiguration();
+    void beforeStopConfiguration();
 }
