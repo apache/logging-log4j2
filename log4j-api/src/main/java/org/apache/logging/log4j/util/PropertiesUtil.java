@@ -130,7 +130,22 @@ public final class PropertiesUtil {
      */
     public boolean getBooleanProperty(final String name, final boolean defaultValue) {
         final String prop = getStringProperty(name);
-        return (prop == null) ? defaultValue : "true".equalsIgnoreCase(prop);
+        return prop == null ? defaultValue : "true".equalsIgnoreCase(prop);
+    }
+
+    /**
+     * Gets the named property as a boolean value.
+     *
+     * @param name the name of the property to look up
+     * @param defaultValueIfAbsent the default value to use if the property is undefined
+     * @param defaultValueIfPresent the default value to use if the property is defined but not assigned
+     * @return the boolean value of the property or {@code defaultValue} if undefined.
+     */
+    public boolean getBooleanProperty(final String name, final boolean defaultValueIfAbsent,
+            final boolean defaultValueIfPresent) {
+        final String prop = getStringProperty(name);
+        return prop == null ? defaultValueIfAbsent
+                : prop.isEmpty() ? defaultValueIfPresent : "true".equalsIgnoreCase(prop);
     }
 
     /**

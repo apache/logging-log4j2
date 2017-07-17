@@ -14,27 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.nosql.appender;
 
-import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.Appenders;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-/**
- * Extends the LifeCycle interface.
- * <p>
- *  This interface should be merged with the super-interface in 3.0.
- * </p>
- * @since 2.7
- */
-public interface LifeCycle2 extends LifeCycle {
+@Ignore("Requires a running MongoDB server")
+@Category(Appenders.MongoDb.class)
+public class MongoDbCappedTest {
 
-    /**
-     * Blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current
-     * thread is interrupted, whichever happens first.
-     *
-     * @param timeout the maximum time to wait
-     * @param timeUnit the time unit of the timeout argument
-     * @return true if the receiver was stopped cleanly and normally, false otherwise.
-     * @since 2.7
-     */
-    boolean stop(long timeout, TimeUnit timeUnit);
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb-capped.xml");
+
+    @Test
+    public void test() {
+        final Logger logger = LogManager.getLogger();
+        logger.info("Hello log");
+    }
 }

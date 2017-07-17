@@ -38,9 +38,11 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,6 +68,8 @@ public class RollingAppenderTempCompressedFilePatternTest {
 
     @Before
     public void setUp() throws Exception {
+        // Disable this test on MacOS. FileWatcher isn't fast enough to work properly.
+        Assume.assumeTrue(!SystemUtils.IS_OS_MAC_OSX);
         this.logger = loggerContextRule.getLogger(RollingAppenderTempCompressedFilePatternTest.class.getName());
     }
 
