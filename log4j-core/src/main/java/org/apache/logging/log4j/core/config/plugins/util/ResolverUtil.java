@@ -112,7 +112,7 @@ public class ResolverUtil {
 
     /**
      * Returns the matching resources.
-     * 
+     *
      * @return A Set of URIs that match the criteria.
      */
     public Set<URI> getResources() {
@@ -342,12 +342,9 @@ public class ResolverUtil {
      *        the URL Connection to be examined for classes
      */
     private void loadImplementationsInJar(final ResolverUtil.Test test, final String parent, final URLConnection connection) {
-
-        JarFile jarFile = null;
-        try {
-            if (connection != null && connection instanceof JarURLConnection) {
-                JarURLConnection jarURLConnection = (JarURLConnection) connection;
-                jarFile = jarURLConnection.getJarFile();
+        if (connection != null && connection instanceof JarURLConnection) {
+            JarURLConnection jarURLConnection = (JarURLConnection) connection;
+            try (JarFile jarFile = jarURLConnection.getJarFile()) {
                 final Enumeration<JarEntry> entries = jarFile.entries();
 
                 while (entries.hasMoreElements()) {
@@ -358,17 +355,9 @@ public class ResolverUtil {
                         this.addIfMatching(test, name);
                     }
                 }
-            }
-        }catch (IOException e){
-            LOGGER.error("Could not search JAR file '{}' for classes matching criteria {}, file not found", jarFile,
-                    test, e);
-        }finally {
-            if (jarFile != null){
-                try {
-                    jarFile.close();
-                } catch (IOException ignored) {
-                    LOGGER.error("Error closing JAR file stream for {}", jarFile, ignored);
-                }
+            } catch (IOException e) {
+                LOGGER.error("Could not search JAR file '{}' for classes matching criteria {}, file not found", connection.getURL().getPath(),
+                        test, e);
             }
         }
     }
@@ -461,7 +450,7 @@ public class ResolverUtil {
         /**
          * Will be called repeatedly with candidate classes. Must return True if a class is to be included in the
          * results, false otherwise.
-         * 
+         *
          * @param type
          *        The Class to match against.
          * @return true if the Class matches.
@@ -470,7 +459,7 @@ public class ResolverUtil {
 
         /**
          * Test for a resource.
-         * 
+         *
          * @param resource
          *        The URI to the resource.
          * @return true if the resource matches.
