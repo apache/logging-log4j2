@@ -52,7 +52,7 @@ public class LuceneAppenderTest {
 		public void run() {
 			try {
 				write();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -101,7 +101,7 @@ public class LuceneAppenderTest {
 			final IndexSearcher searcher = new IndexSearcher(reader);
 			final TopDocs all = searcher.search(new MatchAllDocsQuery(), Integer.MAX_VALUE);
 			Assert.assertEquals(all.totalHits, exepectedTotalHits);
-			for (ScoreDoc scoreDoc : all.scoreDocs) {
+			for (final ScoreDoc scoreDoc : all.scoreDocs) {
 				final Document doc = searcher.doc(scoreDoc.doc);
 				Assert.assertEquals(doc.getFields().size(), 3);
 				final String field1 = doc.get(FIELD_1);

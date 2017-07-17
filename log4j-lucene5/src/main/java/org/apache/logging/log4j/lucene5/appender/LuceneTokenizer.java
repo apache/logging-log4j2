@@ -24,12 +24,12 @@ import org.apache.lucene.analysis.util.CharTokenizer;
 public class LuceneTokenizer extends CharTokenizer {
 
 	@Override
-	protected boolean isTokenChar(int c) {
+	protected boolean isTokenChar(final int c) {
 		return true;
 	}
 
 	@Override
-	protected int normalize(int c) {
+	protected int normalize(final int c) {
 		return Character.toLowerCase(c);
 	}
 }

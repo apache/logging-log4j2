@@ -142,8 +142,8 @@ public class LuceneAppender extends AbstractAppender {
 	 */
 	private final String target;
 
-	protected LuceneAppender(String name, boolean ignoreExceptions, Filter filter,
-			Layout<? extends Serializable> layout, String target, Integer expiryTime, LuceneIndexField[] indexFields,
+	protected LuceneAppender(final String name, final boolean ignoreExceptions, final Filter filter,
+			final Layout<? extends Serializable> layout, final String target, final Integer expiryTime, final LuceneIndexField[] indexFields,
 			final Configuration configuration) {
 		super(name, filter, layout, ignoreExceptions);
 		this.target = target;
@@ -160,22 +160,22 @@ public class LuceneAppender extends AbstractAppender {
 	 * @param event
 	 */
 	@Override
-	public void append(LogEvent event) {
+	public void append(final LogEvent event) {
 		if (null != indexFields && indexFields.length > 0) {
-			IndexWriter indexWriter = getIndexWriter();
+			final IndexWriter indexWriter = getIndexWriter();
 			if (null != indexWriter) {
-				Document doc = new Document();
+				final Document doc = new Document();
 				doc.add(new LongField("timestamp", event.getTimeMillis(), Field.Store.YES));
 				try {
-					for (LuceneIndexField field : indexFields) {
+					for (final LuceneIndexField field : indexFields) {
 						String value = field.getLayout().toSerializable(event);
 						if (Strings.isEmpty(value) || value.matches("[$]\\{.+\\}")) {
 							return;
 						}
 						value = value.trim();
-						String type = field.getType();
+						final String type = field.getType();
 						if (Strings.isNotEmpty(type)) {
-							Class<?> clazz = Class.forName("org.apache.lucene.document." + type);
+							final Class<?> clazz = Class.forName("org.apache.lucene.document." + type);
 							if (clazz == LongField.class) {
 								doc.add(new LongField(field.getName(), Long.valueOf(value), Field.Store.YES));
 							} else if (clazz == StringField.class) {
@@ -191,7 +191,7 @@ public class LuceneAppender extends AbstractAppender {
 						}
 					}
 					indexWriter.addDocument(doc);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					LOGGER.error(e.getMessage(), e);
 					if (!ignoreExceptions()) {
 						throw new AppenderLoggingException(e);
@@ -208,7 +208,7 @@ public class LuceneAppender extends AbstractAppender {
 			if (this.expirySeconds != null) {
 				registerClearTimer();
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 		super.initialize();
@@ -221,11 +221,11 @@ public class LuceneAppender extends AbstractAppender {
 		if (null == writerMap.get(target)) {
 			try {
 				// TODO Who closes this FSDirectory?
-				FSDirectory fsDir = FSDirectory.open(Paths.get(this.target));
+				final FSDirectory fsDir = FSDirectory.open(Paths.get(this.target));
 				// TODO Who closes this LuceneAnalyzer?
-				IndexWriterConfig writerConfig = new IndexWriterConfig(new LuceneAnalyzer());
+				final IndexWriterConfig writerConfig = new IndexWriterConfig(new LuceneAnalyzer());
 				writerMap.putIfAbsent(target, new IndexWriter(fsDir, writerConfig));
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				LOGGER.error("IndexWriter initialization failed: {}", e.getMessage(), e);
 			}
 		}
@@ -239,29 +239,29 @@ public class LuceneAppender extends AbstractAppender {
 	 * @see LuceneAppender#expirySeconds
 	 */
 	private void registerClearTimer() throws Exception {
-		Calendar calendar = Calendar.getInstance();
-		long curMillis = calendar.getTimeInMillis();
+		final Calendar calendar = Calendar.getInstance();
+		final long curMillis = calendar.getTimeInMillis();
 		calendar.add(Calendar.DAY_OF_MONTH, 1);
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
-		long difMinutes = (calendar.getTimeInMillis() - curMillis) / (1000 * 60);
+		final long difMinutes = (calendar.getTimeInMillis() - curMillis) / (1000 * 60);
 		configuration.getScheduler().scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
 				LOGGER.info("Deleting index {} {}...", target, expirySeconds);
-				IndexWriter indexWriter = getIndexWriter();
+				final IndexWriter indexWriter = getIndexWriter();
 				if (null != indexWriter) {
-					Long start = 0L;
-					Long end = System.currentTimeMillis() - expirySeconds * 1000;
-					NumericRangeQuery<Long> rangeQuery = NumericRangeQuery.newLongRange("timestamp", start, end, true,
+					final Long start = 0L;
+					final Long end = System.currentTimeMillis() - expirySeconds * 1000;
+					final NumericRangeQuery<Long> rangeQuery = NumericRangeQuery.newLongRange("timestamp", start, end, true,
 							true);
 					try {
 						indexWriter.deleteDocuments(rangeQuery);
 						indexWriter.commit();
 						LOGGER.info("Deleted index end {} {}", target, expirySeconds);
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						LOGGER.error("Failed to delete index: {}", e.getMessage(), e);
 					}
 				}
@@ -276,11 +276,11 @@ public class LuceneAppender extends AbstractAppender {
 		configuration.getScheduler().scheduleWithCron(new CronExpression("0 1/1 * * * ? "), new Runnable() {
 			@Override
 			public void run() {
-				IndexWriter indexWriter = getIndexWriter();
+				final IndexWriter indexWriter = getIndexWriter();
 				if (null != indexWriter && indexWriter.numRamDocs() > 0) {
 					try {
 						indexWriter.commit();
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						LOGGER.error("IndexWriter commit failed: {}", e.getMessage(), e);
 					}
 				}
@@ -299,8 +299,8 @@ public class LuceneAppender extends AbstractAppender {
 	@Override
 	public boolean stop(final long timeout, final TimeUnit timeUnit) {
 		setStopping();
-		boolean stopped = super.stop(timeout, timeUnit, false);
-		IndexWriter indexWriter = writerMap.get(target);
+		final boolean stopped = super.stop(timeout, timeUnit, false);
+		final IndexWriter indexWriter = writerMap.get(target);
 		if (null != indexWriter) {
 			try {
 				indexWriter.commit();
@@ -308,7 +308,7 @@ public class LuceneAppender extends AbstractAppender {
 					indexWriter.close();
 				}
 				writerMap.remove(target);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				LOGGER.error(e.getMessage(), e);
 			}
 		}
