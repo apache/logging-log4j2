@@ -127,12 +127,12 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     }
 
     @Override
-    public void onBeforeFailoverAppenderStop() {
+    public void beforeFailoverAppenderStop() {
         manager.onBeforeFailoverAppenderStop();
     }
 
     @Override
-    public List<LogEvent> onBeforeFailoverAppenderStopException(Exception exception) {
+    public List<LogEvent> beforeFailoverAppenderStopException(Exception exception) {
         return manager.onBeforeFailoverAppenderStopException();
     }
     

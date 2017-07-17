@@ -37,13 +37,13 @@ public interface FailoverAware {
     /**
      * Invoked when the parent {@link FailoverAppender} is preparing to stop.  Nothing is actually stopped at this point.
      */
-    void onBeforeFailoverAppenderStop();
+    void beforeFailoverAppenderStop();
 
     /**
-     * Invoked if an error occurred when {@link #onBeforeFailoverAppenderStop()} was invoked.
-     * @param exception the exception thrown from {@link #onBeforeFailoverAppenderStop()}
+     * Invoked if an error occurred when {@link #beforeFailoverAppenderStop()} was invoked.
+     * @param exception the exception thrown from {@link #beforeFailoverAppenderStop()}
      * @return a {@link List} of {@link LogEvent}s to be passed to the secondary appenders
      */
-    List<LogEvent> onBeforeFailoverAppenderStopException(Exception exception);
+    List<LogEvent> beforeFailoverAppenderStopException(Exception exception);
     
 }

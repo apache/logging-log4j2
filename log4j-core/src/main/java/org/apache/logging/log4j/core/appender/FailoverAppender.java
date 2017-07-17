@@ -167,9 +167,9 @@ public final class FailoverAppender extends AbstractAppender implements Configur
         Appender appender = primary.getAppender();
         if (appender instanceof FailoverAware) {
             try {
-                ((FailoverAware) appender).onBeforeFailoverAppenderStop();
+                ((FailoverAware) appender).beforeFailoverAppenderStop();
             } catch (Exception e) {
-                List<LogEvent> events = ((FailoverAware) appender).onBeforeFailoverAppenderStopException(e);
+                List<LogEvent> events = ((FailoverAware) appender).beforeFailoverAppenderStopException(e);
                 if (!events.isEmpty()) {
                     failover(new FailoverContext(events, e));
                 }

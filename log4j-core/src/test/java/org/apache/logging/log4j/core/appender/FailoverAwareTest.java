@@ -81,8 +81,8 @@ public class FailoverAwareTest {
         
         failoverAppender.beforeStopConfiguration();
 
-        verify(primaryAppender).onBeforeFailoverAppenderStop();
-        verify(primaryAppender, never()).onBeforeFailoverAppenderStopException(any(Exception.class));
+        verify(primaryAppender).beforeFailoverAppenderStop();
+        verify(primaryAppender, never()).beforeFailoverAppenderStopException(any(Exception.class));
         verify(secondaryAppender, never()).append(any(LogEvent.class));
     }
 
@@ -91,13 +91,13 @@ public class FailoverAwareTest {
         
         RuntimeException exception = new RuntimeException("test");
         List<LogEvent> events = Collections.emptyList();
-        doThrow(exception).when(primaryAppender).onBeforeFailoverAppenderStop();
-        when(primaryAppender.onBeforeFailoverAppenderStopException(exception)).thenReturn(events);
+        doThrow(exception).when(primaryAppender).beforeFailoverAppenderStop();
+        when(primaryAppender.beforeFailoverAppenderStopException(exception)).thenReturn(events);
 
         failoverAppender.beforeStopConfiguration();
 
-        verify(primaryAppender).onBeforeFailoverAppenderStop();
-        verify(primaryAppender).onBeforeFailoverAppenderStopException(exception);
+        verify(primaryAppender).beforeFailoverAppenderStop();
+        verify(primaryAppender).beforeFailoverAppenderStopException(exception);
         verify(secondaryAppender, never()).append(any(LogEvent.class));
     }
 
@@ -109,13 +109,13 @@ public class FailoverAwareTest {
 
         RuntimeException exception = new RuntimeException("test");
         List<LogEvent> events = Arrays.asList(event1, event2);
-        doThrow(exception).when(primaryAppender).onBeforeFailoverAppenderStop();
-        when(primaryAppender.onBeforeFailoverAppenderStopException(exception)).thenReturn(events);
+        doThrow(exception).when(primaryAppender).beforeFailoverAppenderStop();
+        when(primaryAppender.beforeFailoverAppenderStopException(exception)).thenReturn(events);
 
         failoverAppender.beforeStopConfiguration();
 
-        verify(primaryAppender).onBeforeFailoverAppenderStop();
-        verify(primaryAppender).onBeforeFailoverAppenderStopException(exception);
+        verify(primaryAppender).beforeFailoverAppenderStop();
+        verify(primaryAppender).beforeFailoverAppenderStopException(exception);
         verify(secondaryAppender).append(event1);
         verify(secondaryAppender).append(event2);
     }

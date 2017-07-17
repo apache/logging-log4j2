@@ -110,7 +110,7 @@ public class AbstractDatabaseAppenderTest {
     @Test
     public void testOnBeforeFailoverAppenderStop() throws Exception {
         setUp("name");
-        appender.onBeforeFailoverAppenderStop();
+        appender.beforeFailoverAppenderStop();
         verify(manager).onBeforeFailoverAppenderStop();
     }
     
@@ -118,7 +118,7 @@ public class AbstractDatabaseAppenderTest {
     public void testOnBeforeFailoverAppenderStopException() throws Exception {
         setUp("name");
         Exception exception = mock(Exception.class);
-        appender.onBeforeFailoverAppenderStopException(exception);
+        appender.beforeFailoverAppenderStopException(exception);
         verify(manager).onBeforeFailoverAppenderStopException();
     }
     
