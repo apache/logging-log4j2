@@ -60,7 +60,7 @@ public class AbstractStringLayoutTest {
         assertEquals("capacity unchanged", sb2.capacity(), initialCapacity);
         assertEquals("empty, ready for use", 0, sb2.length());
 
-        final int LARGE = 4096;
+        final int LARGE = ConcreteStringLayout.MAX_STRING_BUILDER_SIZE * 2;
         final String largeMessage = new String(new char[LARGE]);
         sb2.append(largeMessage);
         assertTrue("capacity grown to fit msg length", sb2.capacity() >= LARGE);
