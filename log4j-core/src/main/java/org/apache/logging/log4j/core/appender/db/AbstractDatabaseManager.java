@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.appender.db;
 
+import java.util.Collections;
+import java.util.List;
 import java.io.Flushable;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -174,6 +176,48 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
                 this.commitAndClose();
             }
         }
+    }
+        
+    /**
+     * Handles a failover when used with a failover appender.
+     * @param event the event that triggered the failover
+     * @return the content of the buffer, including the triggering event
+     */
+    public synchronized List<LogEvent> onFailover(LogEvent event) {
+        final List<LogEvent> events;
+        if (bufferSize > 0) {
+            events = new ArrayList<>(buffer);
+            if (!events.contains(event)) {
+                events.add(event);
+            }
+            buffer.clear();
+        } else {
+            events = Collections.singletonList(event);
+        }
+        return events;
+    }
+
+    /**
+     * When used with a failover appender, handles the failover appender stopping.  Attempts to flush the buffer.
+     */
+    public void onBeforeFailoverAppenderStop() {
+        flush();
+    }
+
+    /**
+     * When used with a failover appender, handles any exceptions thrown by {@link #onBeforeFailoverAppenderStop()}.
+     * @param exception the exception thrown from {@link #onBeforeFailoverAppenderStop()}
+     * @return the content of the buffer
+     */
+    public synchronized List<LogEvent> onBeforeFailoverAppenderStopException() {
+        final List<LogEvent> events;
+        if (bufferSize > 0) {
+            events = new ArrayList<>(buffer);
+            buffer.clear();
+        } else {
+            events = Collections.emptyList();
+        }
+        return events;
     }
 
     @Override

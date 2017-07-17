@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.Collections;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
@@ -28,6 +30,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationStoppingAware;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -43,7 +46,7 @@ import org.apache.logging.log4j.core.util.Constants;
  * to not suppress exceptions for the FailoverAppender to work.
  */
 @Plugin(name = "Failover", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
-public final class FailoverAppender extends AbstractAppender {
+public final class FailoverAppender extends AbstractAppender implements ConfigurationStoppingAware {
 
     private static final int DEFAULT_INTERVAL_SECONDS = 60;
 
@@ -113,7 +116,7 @@ public final class FailoverAppender extends AbstractAppender {
         if (localCheckNanos == 0 || System.nanoTime() - localCheckNanos > 0) {
             callAppender(event);
         } else {
-            failover(event, null);
+            failover(new FailoverContext(Collections.singletonList(event)));
         }
     }
 
@@ -123,18 +126,29 @@ public final class FailoverAppender extends AbstractAppender {
             nextCheckNanos = 0;
         } catch (final Exception ex) {
             nextCheckNanos = System.nanoTime() + intervalNanos;
-            failover(event, ex);
+            failover(new FailoverContext(resolveFailoverEvents(event, ex), ex));
         }
     }
-
-    private void failover(final LogEvent event, final Exception ex) {
-        final RuntimeException re = ex != null ?
-                (ex instanceof LoggingException ? (LoggingException) ex : new LoggingException(ex)) : null;
+    
+    private  List<LogEvent> resolveFailoverEvents(LogEvent event, Exception exception) {
+        List<LogEvent> events;
+        Appender appender = primary.getAppender();
+        if (appender instanceof FailoverAware) {
+            events = ((FailoverAware) appender).onFailover(event, exception);
+        } else {
+            events = Collections.singletonList(event);
+        }
+        return events;
+    }
+        
+    private void failover(final FailoverContext failoverContext) {
         boolean written = false;
         Exception failoverException = null;
         for (final AppenderControl control : failoverAppenders) {
             try {
-                control.callAppender(event);
+                for(LogEvent event : failoverContext.getEvents()) {
+                    control.callAppender(event);
+                }
                 written = true;
                 break;
             } catch (final Exception fex) {
@@ -144,13 +158,26 @@ public final class FailoverAppender extends AbstractAppender {
             }
         }
         if (!written && !ignoreExceptions()) {
-            if (re != null) {
-                throw re;
-            }
-            throw new LoggingException("Unable to write to failover appenders", failoverException);
+            throw failoverContext.getException(failoverException);
         }
     }
 
+    @Override
+    public void onBeforeStopConfiguration()
+    {
+        Appender appender = primary.getAppender();
+        if (appender instanceof FailoverAware) {
+            try {
+                ((FailoverAware) appender).onBeforeFailoverAppenderStop();
+            } catch (Exception e) {
+                List<LogEvent> events = ((FailoverAware) appender).onBeforeFailoverAppenderStopException(e);
+                if (!events.isEmpty()) {
+                    failover(new FailoverContext(events, e));
+                }
+            }
+        }
+    }
+        
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(getName());
@@ -214,5 +241,38 @@ public final class FailoverAppender extends AbstractAppender {
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
         return new FailoverAppender(name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions);
+    }
+    
+    private static class FailoverContext {
+                
+        private final List<LogEvent> events;
+        //nullable
+        private final Exception exception;
+
+        private FailoverContext(List<LogEvent> events) {
+            this.events = Objects.requireNonNull(events, "events nust not be null");
+            this.exception = null;
+        }
+        
+        private FailoverContext(List<LogEvent> events, Exception exception) {
+            this.events = Objects.requireNonNull(events, "events nust not be null");
+            this.exception = Objects.requireNonNull(exception, "exception nust not be null");
+        }
+        
+        List<LogEvent> getEvents() {
+            return events;
+        }
+        
+        RuntimeException getException(Exception cause) {
+            RuntimeException resolvedException;
+            if(exception == null) {
+                resolvedException = new LoggingException("Unable to write to failover appenders", cause);
+            } else if (exception instanceof LoggingException) {
+                resolvedException = (LoggingException) exception;
+            } else {
+                resolvedException = new LoggingException(exception); 
+            }
+            return resolvedException;
+        }
     }
 }

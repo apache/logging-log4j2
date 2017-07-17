@@ -19,12 +19,19 @@ package org.apache.logging.log4j.core.appender.db;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class AbstractDatabaseManagerTest {
     private AbstractDatabaseManager manager;
@@ -184,7 +191,110 @@ public class AbstractDatabaseManagerTest {
         then(manager).should().shutdownInternal();
         then(manager).shouldHaveNoMoreInteractions();
     }
+    
+    @Test
+    public void testBufferFlushOnBeforeFailoverAppenderStop() throws Exception {
+        setUp("name", 10);
+        
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        final LogEvent event3 = mock(LogEvent.class);
+        
+        manager.startup();
+        manager.write(event1);
+        manager.write(event2);
+        manager.write(event3);
+        
+        manager.onBeforeFailoverAppenderStop();
+        verify(manager).writeInternal(event1);
+        verify(manager).writeInternal(event2);
+        verify(manager).writeInternal(event3);
+    }
 
+    @Test
+    public void testOnBeforeFailoverAppenderStopExceptionWithBuffer() throws Exception {
+        int bufferSize = 10;
+        setUp("name", bufferSize);
+        manager.startup();
+
+        final List<LogEvent> expectedEvents = new ArrayList<>();
+        for (int i = 0; i < bufferSize - 1; i++) {
+            LogEvent event = mock(LogEvent.class);
+            expectedEvents.add(event);
+            manager.write(event);
+        }
+        
+        verify(manager, never()).writeInternal(any(LogEvent.class));
+
+        final List<LogEvent> events = manager.onBeforeFailoverAppenderStopException();
+        assertEquals("exception events do not match expected", expectedEvents, events);
+
+        //buffer should be cleared, test by refilling and verify that flush was not called
+        for (int i = 0; i < bufferSize - 1; i++) {
+            LogEvent event = mock(LogEvent.class);
+            manager.write(event);
+        }
+
+        verify(manager, never()).writeInternal(any(LogEvent.class));
+    }
+    
+    @Test
+    public void testOnBeforeFailoverAppenderStopExceptionWithoutBuffer() throws Exception {
+        setUp("name", 0);
+        
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        final LogEvent event3 = mock(LogEvent.class);
+        
+        manager.startup();
+        manager.write(event1);
+        manager.write(event2);
+        manager.write(event3);
+        
+        assertTrue("onBeforeStopConfigurationException returned unexpected events", manager.onBeforeFailoverAppenderStopException().isEmpty());
+    }
+    
+    @Test
+    public void testOnFailover() throws Exception {
+        int bufferSize = 10;
+        setUp("name", bufferSize);
+        manager.startup();
+
+        final List<LogEvent> expectedEvents = new ArrayList<>();
+        for (int i = 0; i < bufferSize - 1; i++) {
+            LogEvent event = mock(LogEvent.class);
+            expectedEvents.add(event);
+            manager.write(event);
+        }
+        final LogEvent causalEvent = mock(LogEvent.class);
+        final RuntimeException exception = new RuntimeException("test");
+        doThrow(exception).when(manager).connectAndStart();
+        expectedEvents.add(causalEvent);
+        
+        Exception caught = null;
+        try {
+            manager.write(causalEvent);
+        } catch (Exception e) {
+            caught = e;
+        }
+        assertNotNull("write did not throw expected exception", caught);
+        assertEquals("exception thrown by write did not equal the expected one", exception, caught);
+        
+        verify(manager, never()).writeInternal(any(LogEvent.class));
+
+        final List<LogEvent> events = manager.onFailover(causalEvent);
+        assertEquals("exception events do not match expected", expectedEvents, events);
+
+        //buffer should be cleared, test by refilling and verify that flush was not called
+        reset(manager);
+        for (int i = 0; i < bufferSize - 1; i++) {
+            LogEvent event = mock(LogEvent.class);
+            manager.write(event);
+        }
+
+        verify(manager, never()).writeInternal(any(LogEvent.class));
+    }
+    
     // this stub is provided because mocking constructors is hard
     private static class StubDatabaseManager extends AbstractDatabaseManager {
 

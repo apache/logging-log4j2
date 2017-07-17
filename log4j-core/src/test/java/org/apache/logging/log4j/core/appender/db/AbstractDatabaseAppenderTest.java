@@ -31,6 +31,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractDatabaseAppenderTest {
@@ -104,6 +105,30 @@ public class AbstractDatabaseAppenderTest {
         then(manager).should().connectAndStart();
         then(manager).should().writeInternal(same(event2));
         then(manager).should().commitAndClose();
+    }
+    
+    @Test
+    public void testOnBeforeFailoverAppenderStop() throws Exception {
+        setUp("name");
+        appender.onBeforeFailoverAppenderStop();
+        verify(manager).onBeforeFailoverAppenderStop();
+    }
+    
+    @Test
+    public void testOnBeforeFailoverAppenderStopException() throws Exception {
+        setUp("name");
+        Exception exception = mock(Exception.class);
+        appender.onBeforeFailoverAppenderStopException(exception);
+        verify(manager).onBeforeFailoverAppenderStopException();
+    }
+    
+    @Test
+    public void testOnFailover() throws Exception {
+        setUp("name");
+        LogEvent event = mock(LogEvent.class);
+        Exception exception = mock(Exception.class);
+        appender.onFailover(event, exception);
+        verify(manager).onFailover(event);
     }
 
     private static abstract class LocalAbstractDatabaseManager extends AbstractDatabaseManager {

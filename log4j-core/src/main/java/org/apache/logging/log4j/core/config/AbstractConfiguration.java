@@ -282,12 +282,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         return false;
     }
+    
+    private void beforeStop() {
+        for (Appender appender : appenders.values()) {
+            if (appender instanceof ConfigurationStoppingAware) {
+                ((ConfigurationStoppingAware) appender).onBeforeStopConfiguration();
+            }
+        }
+    }
 
     /**
      * Tear down the configuration.
      */
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        beforeStop();
         this.setStopping();
         super.stop(timeout, timeUnit, false);
         LOGGER.trace("Stopping {}...", this);

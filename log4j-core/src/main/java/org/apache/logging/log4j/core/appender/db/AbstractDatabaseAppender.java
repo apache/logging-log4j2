@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.List;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Filter;
@@ -27,6 +28,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.appender.FailoverAware;
 
 /**
  * An abstract Appender for writing events to a database of some type, be it relational or NoSQL. All database appenders
@@ -36,7 +38,7 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
  *
  * @param <T> Specifies which type of {@link AbstractDatabaseManager} this Appender requires.
  */
-public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager> extends AbstractAppender {
+public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager> extends AbstractAppender implements FailoverAware {
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock = lock.readLock();
@@ -119,6 +121,21 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         }
     }
 
+    @Override
+    public List<LogEvent> onFailover(LogEvent event, Exception exception) {
+        return manager.onFailover(event);
+    }
+
+    @Override
+    public void onBeforeFailoverAppenderStop() {
+        manager.onBeforeFailoverAppenderStop();
+    }
+
+    @Override
+    public List<LogEvent> onBeforeFailoverAppenderStopException(Exception exception) {
+        return manager.onBeforeFailoverAppenderStopException();
+    }
+    
     /**
      * Replaces the underlying manager in use within this appender. This can be useful for manually changing the way log
      * events are written to the database without losing buffered or in-progress events. The existing manager is
