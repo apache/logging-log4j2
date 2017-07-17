@@ -20,6 +20,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Extends the LifeCycle interface.
+ * <p>
+ *  This interface should be merged with the super-interface in 3.0.
+ * </p>
  * @since 2.7
  */
 public interface LifeCycle2 extends LifeCycle {
