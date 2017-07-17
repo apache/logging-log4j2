@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * attributes to the Field in the Lucene document.
  */
 @Plugin(name = "IndexField", category = Node.CATEGORY, printObject = true)
-public final class LuceneIndexField {
+final class LuceneIndexField {
 
 	public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
 			implements org.apache.logging.log4j.core.util.Builder<LuceneIndexField> {

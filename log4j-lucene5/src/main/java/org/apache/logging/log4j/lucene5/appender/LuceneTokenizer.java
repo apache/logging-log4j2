@@ -21,7 +21,7 @@ import org.apache.lucene.analysis.util.CharTokenizer;
 /**
  * Emits the entire input as a single token.
  */
-public class LuceneTokenizer extends CharTokenizer {
+final class LuceneTokenizer extends CharTokenizer {
 
 	@Override
 	protected boolean isTokenChar(final int c) {

@@ -21,7 +21,7 @@ import org.apache.lucene.analysis.Analyzer;
 /**
  * Tokenizes the entire stream as a single token, but case insensitive.
  */
-public class LuceneAnalyzer extends Analyzer {
+final class LuceneAnalyzer extends Analyzer {
 
 	@SuppressWarnings("resource")
 	@Override
