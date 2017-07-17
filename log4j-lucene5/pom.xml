@@ -26,7 +26,7 @@
   <artifactId>log4j-lucene5</artifactId>
   <name>Apache Log4j Lucene 5</name>
   <description>
-    Apache Log4j Lucene 5 appender.
+    Apache Log4j Lucene 5 Appender.
   </description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
