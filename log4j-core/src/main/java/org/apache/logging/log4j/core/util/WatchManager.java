@@ -118,6 +118,11 @@ public class WatchManager extends AbstractLifeCycle {
             this.fileWatcher = fileWatcher;
             this.lastModifiedMillis = lastModifiedMillis;
         }
+
+        @Override
+        public String toString() {
+            return "FileMonitor [fileWatcher=" + fileWatcher + ", lastModifiedMillis=" + lastModifiedMillis + "]";
+        }
     }
 
     @Override
