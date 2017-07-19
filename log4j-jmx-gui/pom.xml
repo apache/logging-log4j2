@@ -33,6 +33,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>JMX GUI Documentation</docLabel>
     <projectDir>/jmx-gui</projectDir>
+    <jenkins.java.home>/home/jenkins/tools/java/latest1.7</jenkins.java.home>
   </properties>
   <dependencies>
     <dependency>
@@ -180,7 +181,7 @@
   </reporting>
   <profiles>
     <profile>
-      <id>default-profile</id>
+      <id>default-jmx-profile</id>
       <activation>
         <activeByDefault>true</activeByDefault>
         <file>
@@ -216,6 +217,25 @@
           <version>1.7.0</version>
           <scope>system</scope>
           <systemPath>${java.home}/../Classes/jconsole.jar</systemPath>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jenkins-profile</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>jenkins</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>jconsole</artifactId>
+          <version>1.7.0</version>
+          <scope>system</scope>
+          <systemPath>${jenkins.java.home}/lib/jconsole.jar</systemPath>
           <optional>true</optional>
         </dependency>
       </dependencies>
