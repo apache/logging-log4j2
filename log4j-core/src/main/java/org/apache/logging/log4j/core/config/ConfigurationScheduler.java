@@ -256,7 +256,9 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ConfigurationScheduler {");
+        final StringBuilder sb = new StringBuilder("ConfigurationScheduler [name=");
+        sb.append(name);
+        sb.append(", [");
         final Queue<Runnable> queue = ((ScheduledThreadPoolExecutor) executorService).getQueue();
         boolean first = true;
         for (final Runnable runnable : queue) {
@@ -266,7 +268,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             sb.append(runnable.toString());
             first = false;
         }
-        sb.append("}");
+        sb.append("]");
         return sb.toString();
     }
 
