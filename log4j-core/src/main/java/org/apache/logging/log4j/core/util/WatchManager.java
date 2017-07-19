@@ -98,25 +98,25 @@ public class WatchManager extends AbstractLifeCycle {
                 final FileMonitor fileMonitor = entry.getValue();
                 final long lastModfied = file.lastModified();
                 if (fileModified(fileMonitor, lastModfied)) {
-                    logger.info("File {} was modified on {}, previous modification was {}", file, lastModfied, fileMonitor.lastModified);
-                    fileMonitor.lastModified = lastModfied;
+                    logger.info("File {} was modified on {}, previous modification was {}", file, lastModfied, fileMonitor.lastModifiedMillis);
+                    fileMonitor.lastModifiedMillis = lastModfied;
                     fileMonitor.fileWatcher.fileModified(file);
                 }
             }
         }
 
-        private boolean fileModified(final FileMonitor fileMonitor, final long lastModfied) {
-            return lastModfied != fileMonitor.lastModified;
+        private boolean fileModified(final FileMonitor fileMonitor, final long lastModifiedMillis) {
+            return lastModifiedMillis != fileMonitor.lastModifiedMillis;
         }
     }
 
     private class FileMonitor {
         private final FileWatcher fileWatcher;
-        private long lastModified;
+        private long lastModifiedMillis;
 
-        public FileMonitor(final long lastModified, final FileWatcher fileWatcher) {
+        public FileMonitor(final long lastModifiedMillis, final FileWatcher fileWatcher) {
             this.fileWatcher = fileWatcher;
-            this.lastModified = lastModified;
+            this.lastModifiedMillis = lastModifiedMillis;
         }
     }
 
