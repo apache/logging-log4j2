@@ -38,9 +38,19 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String SIMPLE_NAME = "Log4j2 " + ConfigurationScheduler.class.getSimpleName();
     private static final int MAX_SCHEDULED_ITEMS = 5;
+    
     private ScheduledExecutorService executorService;
-
     private int scheduledItems = 0;
+    private final String name;
+
+    public ConfigurationScheduler() {
+        this(SIMPLE_NAME);
+    }
+
+    public ConfigurationScheduler(String name) {
+        super();
+        this.name = name;
+    }
 
     @Override
     public void start() {
@@ -51,7 +61,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
         if (isExecutorServiceSet()) {
-            LOGGER.debug("{} shutting down threads in {}", SIMPLE_NAME, getExecutorService());
+            LOGGER.debug("{} shutting down threads in {}", name, getExecutorService());
             executorService.shutdown();
             try {
                 executorService.awaitTermination(timeout, timeUnit);
@@ -79,7 +89,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      */
     public void incrementScheduledItems() {
         if (isExecutorServiceSet()) {
-            LOGGER.error("{} attempted to increment scheduled items after start", SIMPLE_NAME);
+            LOGGER.error("{} attempted to increment scheduled items after start", name);
         } else {
             ++scheduledItems;
         }
@@ -184,7 +194,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     private ScheduledExecutorService getExecutorService() {
         if (executorService == null) {
             if (scheduledItems > 0) {
-                LOGGER.debug("{} starting {} threads", SIMPLE_NAME, scheduledItems);
+                LOGGER.debug("{} starting {} threads", name, scheduledItems);
                 scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
                 final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems,
                         Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
@@ -193,7 +203,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
                 this.executorService = executor;
 
             } else {
-                LOGGER.debug("{}: No scheduled items", SIMPLE_NAME);
+                LOGGER.debug("{}: No scheduled items", name);
             }
         }
         return executorService;
@@ -228,7 +238,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
                 }
                 runnable.run();
             } catch(final Throwable ex) {
-                LOGGER.error("{} caught error running command", SIMPLE_NAME, ex);
+                LOGGER.error("{} caught error running command", name, ex);
             } finally {
                 final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
                 final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
