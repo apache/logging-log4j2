@@ -70,7 +70,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
                 try {
                     executorService.awaitTermination(timeout, timeUnit);
                 } catch (final InterruptedException inner) {
-                    LOGGER.warn("ConfigurationScheduler stopped but some scheduled services may not have completed.");
+                    LOGGER.warn("{} stopped but some scheduled services may not have completed.", name);
                 }
                 // Preserve interrupt status
                 Thread.currentThread().interrupt();
@@ -153,7 +153,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
         final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future, fireDate);
         runnable.setScheduledFuture(cronScheduledFuture);
-        LOGGER.debug("Scheduled cron expression {} to fire at {}", cronExpression.getCronExpression(), fireDate);
+        LOGGER.debug("{} scheduled cron expression {} to fire at {}", name, cronExpression.getCronExpression(), fireDate);
         return cronScheduledFuture;
     }
 
@@ -229,7 +229,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             try {
                 final long millis = scheduledFuture.getFireTime().getTime() - System.currentTimeMillis();
                 if (millis > 0) {
-                    LOGGER.debug("Cron thread woke up {} millis early. Sleeping", millis);
+                    LOGGER.debug("{} Cron thread woke up {} millis early. Sleeping", name, millis);
                     try {
                         Thread.sleep(millis);
                     } catch (final InterruptedException ie) {
@@ -242,7 +242,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             } finally {
                 final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
                 final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
-                LOGGER.debug("Cron expression {} scheduled to fire again at {}", cronExpression.getCronExpression(),
+                LOGGER.debug("{} Cron expression {} scheduled to fire again at {}", name, cronExpression.getCronExpression(),
                         fireDate);
                 scheduledFuture.reset(future, fireDate);
             }
