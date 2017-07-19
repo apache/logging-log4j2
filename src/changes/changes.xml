@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1981" dev="mikes" type="add">
+        JsonLayout, XmlLayout and YamlLayout support 0-byte termination of log events.
+      </action>
       <action issue="LOG4J2-1864" dev="mattsicker" type="add" due-to="Matthias Kappeller">
         Support capped collections for MongoDb appender.
       </action>

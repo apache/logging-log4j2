@@ -342,4 +342,24 @@ public class XmlLayoutTest {
         // @formatter:off
         return layout.toSerializable(expected);
     }
+
+    @Test
+    public void testIncludeNullDelimiterTrue() throws Exception {
+        final AbstractJacksonLayout layout = XmlLayout.newBuilder()
+                .setCompact(true)
+                .setIncludeNullDelimiter(true)
+                .build();
+        final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
+        assertTrue(str.endsWith("\0"));
+    }
+
+    @Test
+    public void testIncludeNullDelimiterFalse() throws Exception {
+        final AbstractJacksonLayout layout = XmlLayout.newBuilder()
+                .setCompact(true)
+                .setIncludeNullDelimiter(false)
+                .build();
+        final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
+        assertFalse(str.endsWith("\0"));
+    }
 }
