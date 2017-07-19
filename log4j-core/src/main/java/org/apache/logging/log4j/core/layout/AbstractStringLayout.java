@@ -148,7 +148,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     /**
      * The charset for the formatted message.
      */
-    // LOG4J2-1099: charset cannot be final due to serialization needs, so we serialize as charset name instead
+    // LOG4J2-1099: Charset cannot be final due to serialization needs, so we serialize as Charset name instead
     private transient Charset charset;
 
     private final String charsetName;

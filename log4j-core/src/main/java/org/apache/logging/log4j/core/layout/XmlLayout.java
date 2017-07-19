@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.jackson.XmlConstants;
 
@@ -69,7 +68,8 @@ public final class XmlLayout extends AbstractJacksonLayout {
         @Override
         public XmlLayout build() {
             return new XmlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
-                isCompact(), getCharset(), isIncludeStacktrace(), isStacktraceAsString());
+                    isCompact(), getCharset(), isIncludeStacktrace(), isStacktraceAsString(),
+                    isIncludeNullDelimiter());
         }
     }
 
@@ -79,14 +79,15 @@ public final class XmlLayout extends AbstractJacksonLayout {
     @Deprecated
     protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete,
                         final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false);
+        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false, false);
     }
 
     private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
                       final boolean complete, final boolean compact, final Charset charset,
-                      final boolean includeStacktrace, final boolean stacktraceAsString) {
+                      final boolean includeStacktrace, final boolean stacktraceAsString,
+                      final boolean includeNullDelimiter) {
         super(config, new JacksonFactory.XML(includeStacktrace, stacktraceAsString).newWriter(
-            locationInfo, properties, compact), charset, compact, complete, false, null, null);
+            locationInfo, properties, compact), charset, compact, complete, false, null, null, includeNullDelimiter);
     }
 
     /**
@@ -177,7 +178,8 @@ public final class XmlLayout extends AbstractJacksonLayout {
             final boolean compact,
             final Charset charset,
             final boolean includeStacktrace) {
-        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false);
+        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false,
+                false);
     }
 
     @PluginBuilderFactory
@@ -191,6 +193,6 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @return an XML Layout.
      */
     public static XmlLayout createDefaultLayout() {
-        return new XmlLayout(null, false, false, false, false, StandardCharsets.UTF_8, true, false);
+        return new XmlLayout(null, false, false, false, false, StandardCharsets.UTF_8, true, false, false);
     }
 }

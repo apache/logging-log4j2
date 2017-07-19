@@ -337,6 +337,24 @@ public class YamlLayoutTest {
         return layout.toSerializable(expected);
     }
 
+    @Test
+    public void testIncludeNullDelimiterTrue() throws Exception {
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setIncludeNullDelimiter(true)
+                .build();
+        final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
+        assertTrue(str.endsWith("\0"));
+    }
+
+    @Test
+    public void testIncludeNullDelimiterFalse() throws Exception {
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setIncludeNullDelimiter(false)
+                .build();
+        final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
+        assertFalse(str.endsWith("\0"));
+    }
+
     private String toPropertySeparator(final boolean compact, final boolean value) {
         return value ? ": " : ":";
     }

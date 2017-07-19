@@ -452,7 +452,12 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>stacktraceAsString</td>
               <td>boolean</td>
-              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+              <td>Whether to format the stacktrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
+            <tr>
+              <td>includeNullDelimiter</td>
+              <td>boolean</td>
+              <td>Whether to include NULL byte as delimiter after each event (optional, default to false).</td>
             </tr>
             <caption align="top">JsonLayout Parameters</caption>
           </table>
@@ -2186,7 +2191,12 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
             <tr>
               <td>stacktraceAsString</td>
               <td>boolean</td>
-              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+              <td>Whether to format the stacktrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
+            <tr>
+              <td>includeNullDelimiter</td>
+              <td>boolean</td>
+              <td>Whether to include NULL byte as delimiter after each event (optional, default to false).</td>
             </tr>
             <caption align="top">XmlLayout Parameters</caption>
           </table>
@@ -2275,7 +2285,12 @@ source:
             <tr>
               <td>stacktraceAsString</td>
               <td>boolean</td>
-              <td>Whether to format the stackstrace as a string, and not a nested object (optional, defaults to false).</td>
+              <td>Whether to format the stacktrace as a string, and not a nested object (optional, defaults to false).</td>
+            </tr>
+            <tr>
+              <td>includeNullDelimiter</td>
+              <td>boolean</td>
+              <td>Whether to include NULL byte as delimiter after each event (optional, default to false).</td>
             </tr>
             <caption align="top">YamlLayout Parameters</caption>
           </table>
