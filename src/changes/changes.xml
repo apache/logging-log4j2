@@ -40,6 +40,9 @@
       <action issue="LOG4J2-1971" dev="rgoers" type="fix">
         Register log4j-core as an OSGi service. Skip tests for LOG4J2-1766 on MacOS. Use group "staff" for LOG4J2-1699 test on MacOS.
       </action>
+      <action issue="LOG4J2-1982" dev="ggregory" type="fix" due-to="Christoph Lembeck">
+        Log4j-config.xsd only allows one AppenderRef element for each Logger element.
+      </action>
       <action issue="LOG4J2-1813" dev="rpopma" type="add">
         Log4j2 will now print all internal logging to the console if system property `log4j2.debug` is defined with any value (or no value).
       </action>
