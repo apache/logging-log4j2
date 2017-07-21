@@ -29,7 +29,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public final class GzCompressAction extends AbstractAction {
 
-    private static final int BUF_SIZE = 8102;
+    private static final int BUF_SIZE = 8192;
 
     /**
      * Source file.
@@ -121,7 +121,7 @@ public final class GzCompressAction extends AbstractAction {
 
     @Override
     public String toString() {
-        return GzCompressAction.class.getSimpleName() + '[' + source + " to " + destination //
+        return GzCompressAction.class.getSimpleName() + '[' + source + " to " + destination 
                 + ", deleteSource=" + deleteSource + ']';
     }
 

@@ -94,7 +94,7 @@ public final class IfAccumulatedFileCount implements PathCondition {
      * @return An IfAccumulatedFileCount condition.
      */
     @PluginFactory
-    public static IfAccumulatedFileCount createFileCountCondition( //
+    public static IfAccumulatedFileCount createFileCountCondition( 
             // @formatter:off
             @PluginAttribute(value = "exceeds", defaultInt = Integer.MAX_VALUE) final int threshold,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {

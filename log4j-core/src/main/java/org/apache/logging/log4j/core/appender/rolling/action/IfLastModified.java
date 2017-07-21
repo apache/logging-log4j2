@@ -98,9 +98,9 @@ public final class IfLastModified implements PathCondition {
      * @return An IfLastModified condition.
      */
     @PluginFactory
-    public static IfLastModified createAgeCondition( //
+    public static IfLastModified createAgeCondition( 
             // @formatter:off
-            @PluginAttribute("age") final Duration age, //
+            @PluginAttribute("age") final Duration age, 
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
             // @formatter:on
         return new IfLastModified(age, nestedConditions);
