@@ -58,12 +58,50 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
     private final String[] required;
     private final String[] optional;
 
-    protected StructuredDataId(final String name, final String[] required, final String[] optional) {
+    /**
+     * Creates a StructuredDataId based on the name.
+     * @param name The Structured Data Element name (maximum length is 32)
+     * @since 2.9
+     */
+    public StructuredDataId(final String name) {
+        this(name, null, null, MAX_LENGTH);
+    }
+
+    /**
+     * Creates a StructuredDataId based on the name.
+     * @param name The Structured Data Element name.
+     * @param maxLength The maximum length of the name.
+     * @since 2.9
+     */
+    public StructuredDataId(final String name, final int maxLength) {
+        this(name, null, null, maxLength);
+    }
+
+    /**
+     *
+     * @param name
+     * @param required
+     * @param optional
+     */
+    public StructuredDataId(final String name, final String[] required, final String[] optional) {
+        this(name, required, optional, MAX_LENGTH);
+    }
+
+    /**
+     * A Constructor that helps conformance to RFC 5424.
+     *
+     * @param name The name portion of the id.
+     * @param required The list of keys that are required for this id.
+     * @param optional The list of keys that are optional for this id.
+     * @since 2.9
+     */
+    public StructuredDataId(final String name, final String[] required, final String[] optional,
+                               final int maxLength) {
         int index = -1;
         if (name != null) {
-            if (name.length() > MAX_LENGTH) {
+            if (maxLength > 0 && name.length() > MAX_LENGTH) {
                 throw new IllegalArgumentException(String.format("Length of id %s exceeds maximum of %d characters",
-                        name, MAX_LENGTH));
+                        name, maxLength));
             }
             index = name.indexOf(AT_SIGN);
         }
@@ -88,7 +126,22 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param optional The list of keys that are optional for this id.
      */
     public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
-            final String[] optional) {
+                            final String[] optional) {
+        this(name, enterpriseNumber, required, optional, MAX_LENGTH);
+    }
+
+    /**
+     * A Constructor that helps conformance to RFC 5424.
+     *
+     * @param name The name portion of the id.
+     * @param enterpriseNumber The enterprise number.
+     * @param required The list of keys that are required for this id.
+     * @param optional The list of keys that are optional for this id.
+     * @param maxLength The maximum length of the StructuredData Id key.
+     * @since 2.9
+     */
+    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
+            final String[] optional, final int maxLength) {
         if (name == null) {
             throw new IllegalArgumentException("No structured id name was supplied");
         }
@@ -101,8 +154,8 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
         this.name = name;
         this.enterpriseNumber = enterpriseNumber;
         final String id = name + AT_SIGN + enterpriseNumber;
-        if (id.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("Length of id exceeds maximum of 32 characters: " + id);
+        if (maxLength > 0 && id.length() > maxLength) {
+            throw new IllegalArgumentException("Length of id exceeds maximum of " + maxLength + " characters: " + id);
         }
         this.required = required;
         this.optional = optional;
