@@ -33,7 +33,7 @@ import org.apache.commons.compress.utils.IOUtils;
  */
 public final class CommonsCompressAction extends AbstractAction {
 
-    private static final int BUF_SIZE = 8102;
+    private static final int BUF_SIZE = 8192;
 
     /**
      * Compressor name. One of "gz", "bzip2", "xz", "pack200", or "deflate".
