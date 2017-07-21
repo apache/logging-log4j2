@@ -57,7 +57,7 @@ public abstract class AbstractPathAction extends AbstractAction {
     protected AbstractPathAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth,
             final PathCondition[] pathFilters, final StrSubstitutor subst) {
         this.basePathString = basePath;
-        this.options = followSymbolicLinks ? EnumSet.of(FileVisitOption.FOLLOW_LINKS) //
+        this.options = followSymbolicLinks ? EnumSet.of(FileVisitOption.FOLLOW_LINKS) 
                 : Collections.<FileVisitOption> emptySet();
         this.maxDepth = maxDepth;
         this.pathConditions = Arrays.asList(Arrays.copyOf(pathFilters, pathFilters.length));

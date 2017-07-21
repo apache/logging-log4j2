@@ -113,7 +113,7 @@
                 <xs:element name="Filters" type="FiltersType"/>
                 <xs:element name="Filter" type="FilterType"/>
             </xs:choice>
-            <xs:element name="AppenderRef" type="AppenderRefType"/>
+            <xs:element name="AppenderRef" type="AppenderRefType" maxOccurs="unbounded" minOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="level" type="xs:string" use="optional"/>
