@@ -52,7 +52,7 @@ public class PathSortByModificationTime implements PathSorter, Serializable {
      * @return A PathSorter.
      */
     @PluginFactory
-    public static PathSorter createSorter( //
+    public static PathSorter createSorter( 
             @PluginAttribute(value = "recentFirst", defaultBoolean = true) final boolean recentFirst) {
         return new PathSortByModificationTime(recentFirst);
     }
