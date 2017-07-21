@@ -105,7 +105,7 @@ public final class IfAll implements PathCondition {
      * @return A Composite PathCondition.
      */
     @PluginFactory
-    public static IfAll createAndCondition( //
+    public static IfAll createAndCondition( 
             @PluginElement("PathConditions") final PathCondition... components) {
         return new IfAll(components);
     }

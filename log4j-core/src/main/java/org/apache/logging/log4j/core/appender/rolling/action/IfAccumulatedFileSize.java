@@ -96,7 +96,7 @@ public final class IfAccumulatedFileSize implements PathCondition {
      * @return An IfAccumulatedFileSize condition.
      */
     @PluginFactory
-    public static IfAccumulatedFileSize createFileSizeCondition( //
+    public static IfAccumulatedFileSize createFileSizeCondition( 
             // @formatter:off
             @PluginAttribute("exceeds") final String size,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {

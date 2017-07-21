@@ -133,10 +133,10 @@ public final class IfFileName implements PathCondition {
      * @see FileSystem#getPathMatcher(String)
      */
     @PluginFactory
-    public static IfFileName createNameCondition( //
+    public static IfFileName createNameCondition( 
             // @formatter:off
-            @PluginAttribute("glob") final String glob, //
-            @PluginAttribute("regex") final String regex, //
+            @PluginAttribute("glob") final String glob, 
+            @PluginAttribute("regex") final String regex, 
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
             // @formatter:on
         return new IfFileName(glob, regex, nestedConditions);

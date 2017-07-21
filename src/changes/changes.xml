@@ -43,6 +43,9 @@
       <action issue="LOG4J2-1982" dev="ggregory" type="fix" due-to="Christoph Lembeck">
         Log4j-config.xsd only allows one AppenderRef element for each Logger element.
       </action>
+      <action issue="LOG4J2-1985" dev="ggregory" type="fix" due-to="Kenneth McFarland">
+        Fix default buffer size to match documentation (from 8102 to 8192 a.k.a. 8KB.)
+      </action>
       <action issue="LOG4J2-1813" dev="rpopma" type="add">
         Log4j2 will now print all internal logging to the console if system property `log4j2.debug` is defined with any value (or no value).
       </action>
