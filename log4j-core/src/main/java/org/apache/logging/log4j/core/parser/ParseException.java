@@ -20,6 +20,9 @@ package org.apache.logging.log4j.core.parser;
  * Thrown when the input cannot be parsed.
  */
 public class ParseException extends Exception {
+
+    private static final long serialVersionUID = -2739649998196663857L;
+
     public ParseException(String message) {
         super(message);
     }
