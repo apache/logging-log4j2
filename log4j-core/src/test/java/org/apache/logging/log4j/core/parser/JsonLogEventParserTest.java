@@ -16,12 +16,22 @@
  */
 package org.apache.logging.log4j.core.parser;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class JsonLogEventParserTest {
 
@@ -30,6 +40,8 @@ public class JsonLogEventParserTest {
     private static final String JSON = "{\n" +
             "  \"timeMillis\" : 1493121664118,\n" +
             "  \"thread\" : \"main\",\n" +
+            "  \"threadId\" : 1,\n" +
+            "  \"threadPriority\" : 5,\n" +
             "  \"level\" : \"INFO\",\n" +
             "  \"loggerName\" : \"HelloWorld\",\n" +
             "  \"marker\" : {\n" +
@@ -44,6 +56,7 @@ public class JsonLogEventParserTest {
             "  \"message\" : \"Hello, world!\",\n" +
             "  \"thrown\" : {\n" +
             "    \"commonElementCount\" : 0,\n" +
+            "    \"message\" : \"error message\",\n" +
             "    \"name\" : \"java.lang.RuntimeException\",\n" +
             "    \"extendedStackTrace\" : [ {\n" +
             "      \"class\" : \"logtest.Main\",\n" +
@@ -56,14 +69,12 @@ public class JsonLogEventParserTest {
             "    } ]\n" +
             "  },\n" +
             "  \"contextStack\" : [ \"one\", \"two\" ],\n" +
-            "  \"endOfBatch\" : false,\n" +
             "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",\n" +
+            "  \"endOfBatch\" : false,\n" +
             "  \"contextMap\" : {\n" +
             "    \"bar\" : \"BAR\",\n" +
             "    \"foo\" : \"FOO\"\n" +
             "  },\n" +
-            "  \"threadId\" : 1,\n" +
-            "  \"threadPriority\" : 5,\n" +
             "  \"source\" : {\n" +
             "    \"class\" : \"logtest.Main\",\n" +
             "    \"method\" : \"main\",\n" +
@@ -80,9 +91,7 @@ public class JsonLogEventParserTest {
     @Test
     public void testString() throws ParseException {
         LogEvent logEvent = parser.parseFrom(JSON);
-        assertNotNull(logEvent);
-        assertEquals("HelloWorld", logEvent.getLoggerName());
-        // TODO assert more here
+        assertLogEvent(logEvent);
     }
 
     @Test(expected = ParseException.class)
@@ -98,6 +107,56 @@ public class JsonLogEventParserTest {
     @Test(expected = ParseException.class)
     public void testStringInvalidProperty() throws ParseException {
         parser.parseFrom("{\"foo\":\"bar\"}");
+    }
+
+    @Test
+    public void testByteArray() throws ParseException {
+        LogEvent logEvent = parser.parseFrom(JSON.getBytes(StandardCharsets.UTF_8));
+        assertLogEvent(logEvent);
+    }
+
+    @Test
+    public void testByteArrayOffsetLength() throws ParseException {
+        byte[] bytes = ("abc" + JSON + "def").getBytes(StandardCharsets.UTF_8);
+        LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
+        assertLogEvent(logEvent);
+    }
+
+    @Test
+    public void testReader() throws ParseException, IOException {
+        LogEvent logEvent = parser.parseFrom(new StringReader(JSON));
+        assertLogEvent(logEvent);
+    }
+
+    @Test
+    public void testInputStream() throws ParseException, IOException {
+        LogEvent logEvent = parser.parseFrom(new ByteArrayInputStream(JSON.getBytes(StandardCharsets.UTF_8)));
+        assertLogEvent(logEvent);
+    }
+
+    private void assertLogEvent(LogEvent logEvent) {
+        assertThat(logEvent, is(notNullValue()));
+        assertThat(logEvent.getTimeMillis(), equalTo(1493121664118L));
+        assertThat(logEvent.getThreadName(), equalTo("main"));
+        assertThat(logEvent.getThreadId(), equalTo(1L));
+        assertThat(logEvent.getThreadPriority(), equalTo(5));
+        assertThat(logEvent.getLevel(), equalTo(Level.INFO));
+        assertThat(logEvent.getLoggerName(), equalTo("HelloWorld"));
+        assertThat(logEvent.getMarker().getName(), equalTo("child"));
+        assertThat(logEvent.getMarker().getParents()[0].getName(), equalTo("parent"));
+        assertThat(logEvent.getMarker().getParents()[0].getParents()[0].getName(),
+                equalTo("grandparent"));
+        assertThat(logEvent.getMessage().getFormattedMessage(), equalTo("Hello, world!"));
+        assertThat(logEvent.getThrown(), is(nullValue()));
+        assertThat(logEvent.getThrownProxy().getMessage(), equalTo("error message"));
+        assertThat(logEvent.getThrownProxy().getName(), equalTo("java.lang.RuntimeException"));
+        assertThat(logEvent.getThrownProxy().getExtendedStackTrace()[0].getClassName(),
+                equalTo("logtest.Main"));
+        assertThat(logEvent.getLoggerFqcn(), equalTo("org.apache.logging.log4j.spi.AbstractLogger"));
+        assertThat(logEvent.getContextStack().asList(), equalTo(Arrays.asList("one", "two")));
+        assertThat((String) logEvent.getContextData().getValue("foo"), equalTo("FOO"));
+        assertThat((String) logEvent.getContextData().getValue("bar"), equalTo("BAR"));
+        assertThat(logEvent.getSource().getClassName(), equalTo("logtest.Main"));
     }
 
 }
