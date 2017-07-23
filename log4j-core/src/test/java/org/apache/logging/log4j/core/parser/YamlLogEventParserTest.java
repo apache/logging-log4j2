@@ -92,7 +92,7 @@ public class YamlLogEventParserTest extends LogEventParserTest {
 
     @Test(expected = ParseException.class)
     public void testStringInvalidProperty() throws ParseException {
-        parser.parseFrom("{\"foo\":\"bar\"}");
+        parser.parseFrom("---\nfoo: \"bar\"\n");
     }
 
     @Test

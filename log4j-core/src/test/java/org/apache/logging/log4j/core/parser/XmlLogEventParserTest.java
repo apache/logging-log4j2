@@ -98,7 +98,7 @@ public class XmlLogEventParserTest extends LogEventParserTest {
 
     @Test(expected = ParseException.class)
     public void testStringInvalidProperty() throws ParseException {
-        parser.parseFrom("{\"foo\":\"bar\"}");
+        parser.parseFrom("<Event><foo>bar</foo></Event>");
     }
 
     @Test
