@@ -355,6 +355,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
   "message" : "Hello, world!",
   "thrown" : {
     "commonElementCount" : 0,
+    "message" : "error message",
     "name" : "java.lang.RuntimeException",
     "extendedStackTrace" : [ {
       "class" : "logtest.Main",
@@ -2117,7 +2118,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
       method="main"
       file="Main.java"
       line="29"/&gt;
-  &lt;Thrown commonElementCount="0" name="java.lang.RuntimeException"&gt;
+  &lt;Thrown commonElementCount="0" message="error message" name="java.lang.RuntimeException"&gt;
     &lt;ExtendedStackTrace&gt;
       &lt;ExtendedStackTraceItem
           class="logtest.Main"
@@ -2226,6 +2227,7 @@ marker:
 message: "Hello, world!"
 thrown:
  commonElementCount: 0
+ message: "error message"
  name: "java.lang.RuntimeException"
  extendedStackTrace:
  - class: "logtest.Main"
