@@ -28,7 +28,7 @@ public interface TextLogEventParser extends LogEventParser {
     /**
      * Parse from a Reader, which is expected to contain exactly one log event.
      *
-     * @param input  the reader
+     * @param input  the reader, which will be closed
      *
      * @return the parsed LogEvent, never {@literal null}.
      * @throws IOException if unable to read from the Reader

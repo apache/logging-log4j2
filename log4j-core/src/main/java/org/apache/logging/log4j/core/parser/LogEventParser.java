@@ -29,7 +29,7 @@ public interface LogEventParser {
     /**
      * Parse from an InputStream, which is expected to contain exactly one log event.
      *
-     * @param input  the input stream
+     * @param input  the input stream, which will be closed
      *
      * @return the parsed LogEvent, never {@literal null}.
      * @throws IOException if unable to read from the input
