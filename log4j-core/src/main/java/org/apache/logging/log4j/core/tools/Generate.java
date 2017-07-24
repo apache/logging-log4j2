@@ -54,6 +54,7 @@ public final class Generate {
         CUSTOM {
             @Override
             String imports() {
+                //@formatter:off
                 return "" 
                         + "import java.io.Serializable;%n" 
                         + "import org.apache.logging.log4j.Level;%n" 
@@ -67,10 +68,12 @@ public final class Generate {
                         + "import org.apache.logging.log4j.util.MessageSupplier;%n" 
                         + "import org.apache.logging.log4j.util.Supplier;%n"
                         + "%n";
+                //@formatter:on
             }
 
             @Override
             String declaration() {
+                //@formatter:off
                 return "" 
                         + "/**%n" 
                         + " * Custom Logger interface with convenience methods for%n" 
@@ -81,16 +84,19 @@ public final class Generate {
                         + "    private static final long serialVersionUID = " + System.nanoTime() + "L;%n" 
                         + "    private final ExtendedLoggerWrapper logger;%n" 
                         + "%n";
+                //@formatter:on
             }
 
             @Override
             String constructor() {
+                //@formatter:off
                 return "" 
                         + "%n" 
                         + "    private %s(final Logger logger) {%n" 
                         + "        this.logger = new ExtendedLoggerWrapper((AbstractLogger) logger, logger.getName(), "
                         + "logger.getMessageFactory());%n" 
                         + "    }%n";
+                //@formatter:on
             }
 
             @Override
@@ -101,6 +107,7 @@ public final class Generate {
         EXTEND {
             @Override
             String imports() {
+                //@formatter:off
                 return "" 
                         + "import org.apache.logging.log4j.Level;%n" 
                         + "import org.apache.logging.log4j.LogManager;%n" 
@@ -113,10 +120,12 @@ public final class Generate {
                         + "import org.apache.logging.log4j.util.MessageSupplier;%n" 
                         + "import org.apache.logging.log4j.util.Supplier;%n"
                         + "%n";
+                //@formatter:on
             }
 
             @Override
             String declaration() {
+                //@formatter:off
                 return "" 
                         + "/**%n" 
                         + " * Extended Logger interface with convenience methods for%n" 
@@ -127,16 +136,19 @@ public final class Generate {
                         + "    private static final long serialVersionUID = " + System.nanoTime() + "L;%n" 
                         + "    private final ExtendedLoggerWrapper logger;%n" 
                         + "%n";
+                //@formatter:on
             }
 
             @Override
             String constructor() {
+                //@formatter:off
                 return "" 
                         + "%n" 
                         + "    private %s(final Logger logger) {%n" 
                         + "        super((AbstractLogger) logger, logger.getName(), logger.getMessageFactory());%n" 
                         + "        this.logger = this;%n" 
                         + "    }%n";
+                //@formatter:on
             }
 
             @Override
@@ -160,6 +172,7 @@ public final class Generate {
             + "    private static final Level %s = Level.forName(\"%s\", %d);%n";
 
     static final String FACTORY_METHODS = "" 
+            //@formatter:off
             + "%n" 
             + "    /**%n" 
             + "     * Returns a custom Logger with the name of the calling class.%n" 
@@ -258,8 +271,10 @@ public final class Generate {
             + "        final Logger wrapped = LogManager.getLogger(name, messageFactory);%n" 
             + "        return new CLASSNAME(wrapped);%n" 
             + "    }%n";
+            //@formatter:on
 
     static final String METHODS = "" 
+            //@formatter:off
             + "%n" 
             + "    /**%n" 
             + "     * Logs a message with the specific Marker at the {@code CUSTOM_LEVEL} level.%n" 
@@ -971,6 +986,7 @@ public final class Generate {
             + "    public void methodName(final MessageSupplier msgSupplier, final Throwable t) {%n" 
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, msgSupplier, t);%n" 
             + "    }%n";
+            //@formatter:on
 
     private Generate() {
     }
