@@ -27,13 +27,11 @@ import java.io.InputStream;
 public interface LogEventParser {
 
     /**
-     * Parse from an InputStream. The input stream may contain multiple log events.
-     * This method will read one log event and leave the stream open and positioned to read the
-     * next log event.
+     * Parse from an InputStream, which is expected to contain exactly one log event.
      *
      * @param input  the input stream
      *
-     * @return the parsed LogEvent, or {@literal null} of end of input is reached.
+     * @return the parsed LogEvent, never {@literal null}.
      * @throws IOException if unable to read from the input
      * @throws ParseException if the input is malformed and cannot be parsed as a LogEvent
      */

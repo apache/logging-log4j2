@@ -26,14 +26,12 @@ import java.io.Reader;
  */
 public interface TextLogEventParser extends LogEventParser {
     /**
-     * Parse from a Reader. The reader may contain multiple log events.
-     * This method will read one log event and leave the reader open and positioned to read the
-     * next log event.
+     * Parse from a Reader, which is expected to contain exactly one log event.
      *
      * @param input  the reader
      *
-     * @return the parsed LogEvent, or {@literal null} of end of input is reached.
-     * @throws IOException if unable to read from the input
+     * @return the parsed LogEvent, never {@literal null}.
+     * @throws IOException if unable to read from the Reader
      * @throws ParseException if the input is malformed and cannot be parsed as a LogEvent
      */
     LogEvent parseFrom(Reader input) throws IOException, ParseException;
@@ -43,7 +41,7 @@ public interface TextLogEventParser extends LogEventParser {
      *
      * @param input  the string
      *
-     * @return the parsed LogEvent
+     * @return the parsed LogEvent, never {@literal null}.
      * @throws ParseException if the input is malformed and cannot be parsed as a LogEvent
      */
     LogEvent parseFrom(String input) throws ParseException;

@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.jackson.Log4jYamlObjectMapper;
 public class YamlLogEventParser extends AbstractJacksonLogEventParser {
 
     public YamlLogEventParser() {
-        super(new Log4jYamlObjectMapper().readerFor(Log4jLogEvent.class));
+        super(new Log4jYamlObjectMapper());
     }
 
 }

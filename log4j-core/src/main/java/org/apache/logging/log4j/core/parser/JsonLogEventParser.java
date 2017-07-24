@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 public class JsonLogEventParser extends AbstractJacksonLogEventParser {
 
     public JsonLogEventParser() {
-        super(new Log4jJsonObjectMapper().readerFor(Log4jLogEvent.class));
+        super(new Log4jJsonObjectMapper());
     }
 
 }

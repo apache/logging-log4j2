@@ -16,10 +16,10 @@
  */package org.apache.logging.log4j.core.parser;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +28,8 @@ import java.io.Reader;
 class AbstractJacksonLogEventParser implements TextLogEventParser {
     final ObjectReader objectReader;
 
-    AbstractJacksonLogEventParser(ObjectReader objectReader) {
-        this.objectReader = objectReader;
+    AbstractJacksonLogEventParser(ObjectMapper objectMapper) {
+        this.objectReader = objectMapper.readerFor(Log4jLogEvent.class);
     }
 
     @Override

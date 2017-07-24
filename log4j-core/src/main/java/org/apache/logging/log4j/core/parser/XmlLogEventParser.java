@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
 public class XmlLogEventParser extends AbstractJacksonLogEventParser {
 
     public XmlLogEventParser() {
-        super(new Log4jXmlObjectMapper().readerFor(Log4jLogEvent.class));
+        super(new Log4jXmlObjectMapper());
     }
 
 }
