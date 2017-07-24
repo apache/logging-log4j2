@@ -43,6 +43,9 @@
       <action issue="LOG4J2-1971" dev="rgoers" type="fix">
         Register log4j-core as an OSGi service. Skip tests for LOG4J2-1766 on MacOS. Use group "staff" for LOG4J2-1699 test on MacOS.
       </action>
+      <action issue="LOG4J2-1987" dev="ggregory" type="fix" due-to="Andreas Felder">
+        Log4J JUL Bridge and RMI Security Manager causes access denied ("java.util.logging.LoggingPermission" "control")
+      </action>
       <action issue="LOG4J2-1982" dev="ggregory" type="fix" due-to="Christoph Lembeck">
         Log4j-config.xsd only allows one AppenderRef element for each Logger element.
       </action>

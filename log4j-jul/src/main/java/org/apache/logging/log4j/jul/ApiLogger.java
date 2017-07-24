@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.jul;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -47,7 +49,15 @@ public class ApiLogger extends Logger {
 
     ApiLogger(final ExtendedLogger logger) {
         super(logger.getName(), null);
-        super.setLevel(LevelTranslator.toJavaLevel(logger.getLevel()));
+        final Level javaLevel = LevelTranslator.toJavaLevel(logger.getLevel());
+        // "java.util.logging.LoggingPermission" "control"
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
+            public Object run() {
+                ApiLogger.super.setLevel(javaLevel);
+                return null;
+            }
+        });
         this.logger = new WrappedLogger(logger);
     }
 
