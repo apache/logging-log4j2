@@ -13,7 +13,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the license for the specific language governing permissions and
  * limitations under the license.
- */package org.apache.logging.log4j.core.parser;
+ */
+package org.apache.logging.log4j.core.parser;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
