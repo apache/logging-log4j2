@@ -47,26 +47,31 @@ public class AbstractStringLayoutTest {
     @Test
     public void testGetStringBuilderCapacityRestrictedToMax() throws Exception {
         final StringBuilder sb = ConcreteStringLayout.getStringBuilder();
+        int initialCapacity = sb.capacity();
         assertEquals("initial capacity", ConcreteStringLayout.DEFAULT_STRING_BUILDER_SIZE, sb.capacity());
 
-        final int MEDIUM = ConcreteStringLayout.DEFAULT_STRING_BUILDER_SIZE + 100;
-        final String mediumMessage = new String(new char[MEDIUM]);
+        final int SMALL = 100;
+        final String mediumMessage = new String(new char[SMALL]);
         sb.append(mediumMessage);
-        final int GROWN = sb.capacity();
-        assertTrue("capacity has grown", GROWN >= MEDIUM);
-        assertEquals("length=msg length", MEDIUM, sb.length());
+        assertTrue("capacity not grown", sb.capacity() == initialCapacity);
+        assertEquals("length=msg length", SMALL, sb.length());
 
-        final int LARGE = 4096;
-        final String largeMessage = new String(new char[LARGE]);
         final StringBuilder sb2 = ConcreteStringLayout.getStringBuilder();
-        assertEquals("resized capacity", GROWN, sb2.capacity());
+        assertEquals("capacity unchanged", sb2.capacity(), initialCapacity);
         assertEquals("empty, ready for use", 0, sb2.length());
+
+        final int LARGE = ConcreteStringLayout.MAX_STRING_BUILDER_SIZE * 2;
+        final String largeMessage = new String(new char[LARGE]);
         sb2.append(largeMessage);
         assertTrue("capacity grown to fit msg length", sb2.capacity() >= LARGE);
+        assertTrue("capacity is now greater than max length", sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE);
         assertEquals("length=msg length", LARGE, sb2.length());
+        sb2.setLength(0); // set 0 before next getStringBuilder
+        assertEquals("empty, cleared", 0, sb2.length());
+        assertTrue("capacity remains very large", sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE);
 
         final StringBuilder next = ConcreteStringLayout.getStringBuilder();
-        assertEquals("max capacity", ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, next.capacity());
+        assertEquals("capacity, trimmed to MAX_STRING_BUILDER_SIZE", ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, next.capacity());
         assertEquals("empty, ready for use", 0, next.length());
     }
 }
