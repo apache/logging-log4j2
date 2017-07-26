@@ -97,7 +97,22 @@ public class JsonLogEventParserTest extends LogEventParserTest {
     }
 
     @Test(expected = ParseException.class)
-    public void testStringInvalidProperty() throws ParseException {
+    public void testStringJsonArray() throws ParseException {
+        parser.parseFrom("[]");
+    }
+
+    @Test
+    public void testEmptyObject() throws ParseException {
+        parser.parseFrom("{}");
+    }
+
+    @Test(expected = ParseException.class)
+    public void testStringWrongPropertyType() throws ParseException {
+        parser.parseFrom("{\"timeMillis\":\"foobar\"}");
+    }
+
+    @Test
+    public void testStringIgnoreInvalidProperty() throws ParseException {
         parser.parseFrom("{\"foo\":\"bar\"}");
     }
 
@@ -111,18 +126,6 @@ public class JsonLogEventParserTest extends LogEventParserTest {
     public void testByteArrayOffsetLength() throws ParseException {
         byte[] bytes = ("abc" + JSON + "def").getBytes(StandardCharsets.UTF_8);
         LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
-        assertLogEvent(logEvent);
-    }
-
-    @Test
-    public void testReader() throws ParseException, IOException {
-        LogEvent logEvent = parser.parseFrom(new StringReader(JSON));
-        assertLogEvent(logEvent);
-    }
-
-    @Test
-    public void testInputStream() throws ParseException, IOException {
-        LogEvent logEvent = parser.parseFrom(new ByteArrayInputStream(JSON.getBytes(StandardCharsets.UTF_8)));
         assertLogEvent(logEvent);
     }
 

@@ -90,8 +90,18 @@ public class YamlLogEventParserTest extends LogEventParserTest {
         parser.parseFrom("foobar");
     }
 
+    @Test
+    public void testEmptyObject() throws ParseException {
+        parser.parseFrom("---\n");
+    }
+
     @Test(expected = ParseException.class)
-    public void testStringInvalidProperty() throws ParseException {
+    public void testStringWrongPropertyType() throws ParseException {
+        parser.parseFrom("---\ntimeMillis: \"foobar\"\n");
+    }
+
+    @Test
+    public void testStringIgnoreInvalidProperty() throws ParseException {
         parser.parseFrom("---\nfoo: \"bar\"\n");
     }
 
@@ -105,18 +115,6 @@ public class YamlLogEventParserTest extends LogEventParserTest {
     public void testByteArrayOffsetLength() throws ParseException {
         byte[] bytes = ("abc" + YAML + "def").getBytes(StandardCharsets.UTF_8);
         LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
-        assertLogEvent(logEvent);
-    }
-
-    @Test
-    public void testReader() throws ParseException, IOException {
-        LogEvent logEvent = parser.parseFrom(new StringReader(YAML));
-        assertLogEvent(logEvent);
-    }
-
-    @Test
-    public void testInputStream() throws ParseException, IOException {
-        LogEvent logEvent = parser.parseFrom(new ByteArrayInputStream(YAML.getBytes(StandardCharsets.UTF_8)));
         assertLogEvent(logEvent);
     }
 

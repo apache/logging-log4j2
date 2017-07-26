@@ -16,49 +16,28 @@
  */
 package org.apache.logging.log4j.core.parser;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 
 class AbstractJacksonLogEventParser implements TextLogEventParser {
-    final ObjectReader objectReader;
+    private final ObjectReader objectReader;
 
     AbstractJacksonLogEventParser(ObjectMapper objectMapper) {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.objectReader = objectMapper.readerFor(Log4jLogEvent.class);
-    }
-
-    @Override
-    public LogEvent parseFrom(InputStream input) throws IOException, ParseException {
-        try {
-            return objectReader.readValue(input);
-        } catch (JsonProcessingException e) {
-            throw new ParseException(e);
-        }
-    }
-
-    @Override
-    public LogEvent parseFrom(Reader input) throws IOException, ParseException {
-        try {
-            return objectReader.readValue(input);
-        } catch (JsonProcessingException e) {
-            throw new ParseException(e);
-        }
     }
 
     @Override
     public LogEvent parseFrom(String input) throws ParseException {
         try {
             return objectReader.readValue(input);
-        } catch (JsonProcessingException e) {
-            throw new ParseException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ParseException(e);
         }
     }
 
@@ -66,10 +45,8 @@ class AbstractJacksonLogEventParser implements TextLogEventParser {
     public LogEvent parseFrom(byte[] input) throws ParseException {
         try {
             return objectReader.readValue(input);
-        } catch (JsonProcessingException e) {
-            throw new ParseException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ParseException(e);
         }
     }
 
@@ -77,10 +54,8 @@ class AbstractJacksonLogEventParser implements TextLogEventParser {
     public LogEvent parseFrom(byte[] input, int offset, int length) throws ParseException {
         try {
             return objectReader.readValue(input, offset, length);
-        } catch (JsonProcessingException e) {
-            throw new ParseException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ParseException(e);
         }
     }
 }

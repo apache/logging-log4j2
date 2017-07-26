@@ -18,27 +18,12 @@ package org.apache.logging.log4j.core.parser;
 
 import org.apache.logging.log4j.core.LogEvent;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 /**
  * Parse the output from a layout into instances of {@link LogEvent}.
  */
 public interface LogEventParser {
-
     /**
-     * Parse from an InputStream, which is expected to contain exactly one log event.
-     *
-     * @param input  the input stream, which will be closed
-     *
-     * @return the parsed LogEvent, never {@literal null}.
-     * @throws IOException if unable to read from the input
-     * @throws ParseException if the input is malformed and cannot be parsed as a LogEvent
-     */
-    LogEvent parseFrom(InputStream input) throws IOException, ParseException;
-
-    /**
-     * Parse from a byte array, which is expected to contain exactly one log event.
+     * Parses a byte array, which is expected to contain exactly one log event.
      *
      * @param input  the byte array
      *
@@ -48,7 +33,7 @@ public interface LogEventParser {
     LogEvent parseFrom(byte[] input) throws ParseException;
 
     /**
-     * Parse from a specified range of a byte array. The specified range is expected to contain
+     * Parses a specified range in a byte array. The specified range is expected to contain
      * exactly one log event.
      *
      * @param input  the byte array

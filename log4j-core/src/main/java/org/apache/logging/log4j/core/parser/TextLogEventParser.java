@@ -18,26 +18,12 @@ package org.apache.logging.log4j.core.parser;
 
 import org.apache.logging.log4j.core.LogEvent;
 
-import java.io.IOException;
-import java.io.Reader;
-
 /**
  * Parse the output from a text based layout into instances of {@link LogEvent}.
  */
 public interface TextLogEventParser extends LogEventParser {
     /**
-     * Parse from a Reader, which is expected to contain exactly one log event.
-     *
-     * @param input  the reader, which will be closed
-     *
-     * @return the parsed LogEvent, never {@literal null}.
-     * @throws IOException if unable to read from the Reader
-     * @throws ParseException if the input is malformed and cannot be parsed as a LogEvent
-     */
-    LogEvent parseFrom(Reader input) throws IOException, ParseException;
-
-    /**
-     * Parse from a String, which is expected to contain exactly one log event.
+     * Parses a String, which is expected to contain exactly one log event.
      *
      * @param input  the string
      *

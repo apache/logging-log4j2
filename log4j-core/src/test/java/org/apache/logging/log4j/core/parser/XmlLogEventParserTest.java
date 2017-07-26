@@ -96,8 +96,18 @@ public class XmlLogEventParserTest extends LogEventParserTest {
         parser.parseFrom("foobar");
     }
 
+    @Test
+    public void testEmptyObject() throws ParseException {
+        parser.parseFrom("<Event></Event>");
+    }
+
     @Test(expected = ParseException.class)
-    public void testStringInvalidProperty() throws ParseException {
+    public void testStringWrongPropertyType() throws ParseException {
+        parser.parseFrom("<Event><timeMillis>foobar</timeMillis></Event>");
+    }
+
+    @Test
+    public void testStringIgnoreInvalidProperty() throws ParseException {
         parser.parseFrom("<Event><foo>bar</foo></Event>");
     }
 
@@ -111,18 +121,6 @@ public class XmlLogEventParserTest extends LogEventParserTest {
     public void testByteArrayOffsetLength() throws ParseException {
         byte[] bytes = ("abc" + XML + "def").getBytes(StandardCharsets.UTF_8);
         LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
-        assertLogEvent(logEvent);
-    }
-
-    @Test
-    public void testReader() throws ParseException, IOException {
-        LogEvent logEvent = parser.parseFrom(new StringReader(XML));
-        assertLogEvent(logEvent);
-    }
-
-    @Test
-    public void testInputStream() throws ParseException, IOException {
-        LogEvent logEvent = parser.parseFrom(new ByteArrayInputStream(XML.getBytes(StandardCharsets.UTF_8)));
         assertLogEvent(logEvent);
     }
 
