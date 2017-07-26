@@ -549,7 +549,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 tempCompressedFilePattern.formatFileName(strSubstitutor, buf, fileIndex);
                 final String tmpCompressedName = buf.toString();
                 final File tmpCompressedNameFile = new File(tmpCompressedName);
-                File parentFile = tmpCompressedNameFile.getParentFile();
+                final File parentFile = tmpCompressedNameFile.getParentFile();
                 if (parentFile != null) {
                     parentFile.mkdirs();
                 }
