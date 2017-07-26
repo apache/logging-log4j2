@@ -549,8 +549,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 tempCompressedFilePattern.formatFileName(strSubstitutor, buf, fileIndex);
                 final String tmpCompressedName = buf.toString();
                 final File tmpCompressedNameFile = new File(tmpCompressedName);
-                if (tmpCompressedNameFile.getParentFile() != null) {
-                    tmpCompressedNameFile.getParentFile().mkdirs();
+                File parentFile = tmpCompressedNameFile.getParentFile();
+                if (parentFile != null) {
+                    parentFile.mkdirs();
                 }
                 compressAction = new CompositeAction(
                         Arrays.asList(fileExtension.createCompressAction(renameTo, tmpCompressedName,
