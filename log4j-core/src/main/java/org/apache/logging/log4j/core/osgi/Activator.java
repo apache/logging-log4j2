@@ -49,8 +49,8 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        Provider provider = new Log4jProvider();
-        Hashtable<String, String> props = new Hashtable<>();
+        final Provider provider = new Log4jProvider();
+        final Hashtable<String, String> props = new Hashtable<>();
         props.put("APIVersion", "2.60");
         provideRegistration = context.registerService(Provider.class.getName(), provider, props);
         // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
@@ -73,7 +73,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     }
 
     private static void scanBundleForPlugins(final Bundle bundle) {
-        long bundleId = bundle.getBundleId();
+        final long bundleId = bundle.getBundleId();
         // LOG4J2-920: don't scan system bundle for plugins
         if (bundle.getState() == Bundle.ACTIVE && bundleId != 0) {
             LOGGER.trace("Scanning bundle [{}, id=%d] for plugins.", bundle.getSymbolicName(), bundleId);

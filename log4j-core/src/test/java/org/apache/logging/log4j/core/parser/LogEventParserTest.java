@@ -28,7 +28,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public abstract class LogEventParserTest {
-    protected void assertLogEvent(LogEvent logEvent) {
+    protected void assertLogEvent(final LogEvent logEvent) {
         assertThat(logEvent, is(notNullValue()));
         assertThat(logEvent.getTimeMillis(), equalTo(1493121664118L));
         assertThat(logEvent.getThreadName(), equalTo("main"));

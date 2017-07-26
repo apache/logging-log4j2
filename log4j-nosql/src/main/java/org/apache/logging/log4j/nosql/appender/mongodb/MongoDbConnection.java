@@ -59,7 +59,7 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<BasicDBObje
         if (database.collectionExists(collectionName)) {
             collection = database.getCollection(collectionName);
         } else {
-            BasicDBObject options = new BasicDBObject();
+            final BasicDBObject options = new BasicDBObject();
             options.put("capped", isCapped);
             options.put("size", collectionSize);
             this.collection = database.createCollection(collectionName, options);

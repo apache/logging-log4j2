@@ -47,7 +47,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         this(SIMPLE_NAME);
     }
 
-    public ConfigurationScheduler(String name) {
+    public ConfigurationScheduler(final String name) {
         super();
         this.name = name;
     }

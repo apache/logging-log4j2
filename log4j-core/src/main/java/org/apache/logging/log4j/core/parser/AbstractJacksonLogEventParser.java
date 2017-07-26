@@ -27,34 +27,34 @@ import java.io.IOException;
 class AbstractJacksonLogEventParser implements TextLogEventParser {
     private final ObjectReader objectReader;
 
-    AbstractJacksonLogEventParser(ObjectMapper objectMapper) {
+    AbstractJacksonLogEventParser(final ObjectMapper objectMapper) {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.objectReader = objectMapper.readerFor(Log4jLogEvent.class);
     }
 
     @Override
-    public LogEvent parseFrom(String input) throws ParseException {
+    public LogEvent parseFrom(final String input) throws ParseException {
         try {
             return objectReader.readValue(input);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ParseException(e);
         }
     }
 
     @Override
-    public LogEvent parseFrom(byte[] input) throws ParseException {
+    public LogEvent parseFrom(final byte[] input) throws ParseException {
         try {
             return objectReader.readValue(input);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ParseException(e);
         }
     }
 
     @Override
-    public LogEvent parseFrom(byte[] input, int offset, int length) throws ParseException {
+    public LogEvent parseFrom(final byte[] input, final int offset, final int length) throws ParseException {
         try {
             return objectReader.readValue(input, offset, length);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ParseException(e);
         }
     }

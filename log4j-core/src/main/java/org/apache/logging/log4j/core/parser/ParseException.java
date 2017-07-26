@@ -23,15 +23,15 @@ public class ParseException extends Exception {
 
     private static final long serialVersionUID = -2739649998196663857L;
 
-    public ParseException(String message) {
+    public ParseException(final String message) {
         super(message);
     }
 
-    public ParseException(String message, Throwable cause) {
+    public ParseException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public ParseException(Throwable cause) {
+    public ParseException(final Throwable cause) {
         super(cause);
     }
 }

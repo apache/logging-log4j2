@@ -172,62 +172,62 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 		@PluginBuilderAttribute
 		private String writeConcernConstant;
 
-		public B setServer(String server) {
+		public B setServer(final String server) {
 			this.server = server;
 			return asBuilder();
 		}
 
-		public B setPort(String port) {
+		public B setPort(final String port) {
 			this.port = port;
 			return asBuilder();
 		}
 
-		public B setDatabaseName(String databaseName) {
+		public B setDatabaseName(final String databaseName) {
 			this.databaseName = databaseName;
 			return asBuilder();
 		}
 
-		public B setCollectionName(String collectionName) {
+		public B setCollectionName(final String collectionName) {
 			this.collectionName = collectionName;
 			return asBuilder();
 		}
 
-		public B setUserName(String userName) {
+		public B setUserName(final String userName) {
 			this.userName = userName;
 			return asBuilder();
 		}
 
-		public B setPassword(String password) {
+		public B setPassword(final String password) {
 			this.password = password;
 			return asBuilder();
 		}
 
-		public B setCapped(boolean isCapped) {
+		public B setCapped(final boolean isCapped) {
 			this.isCapped = isCapped;
 			return asBuilder();
 		}
 
-		public B setCollectionSize(int collectionSize) {
+		public B setCollectionSize(final int collectionSize) {
 			this.collectionSize = collectionSize;
 			return asBuilder();
 		}
 
-		public B setFactoryClassName(String factoryClassName) {
+		public B setFactoryClassName(final String factoryClassName) {
 			this.factoryClassName = factoryClassName;
 			return asBuilder();
 		}
 
-		public B setFactoryMethodName(String factoryMethodName) {
+		public B setFactoryMethodName(final String factoryMethodName) {
 			this.factoryMethodName = factoryMethodName;
 			return asBuilder();
 		}
 
-		public B setWriteConcernConstantClassName(String writeConcernConstantClassName) {
+		public B setWriteConcernConstantClassName(final String writeConcernConstantClassName) {
 			this.writeConcernConstantClassName = writeConcernConstantClassName;
 			return asBuilder();
 		}
 
-		public B setWriteConcernConstant(String writeConcernConstant) {
+		public B setWriteConcernConstant(final String writeConcernConstant) {
 			this.writeConcernConstant = writeConcernConstant;
 			return asBuilder();
 		}

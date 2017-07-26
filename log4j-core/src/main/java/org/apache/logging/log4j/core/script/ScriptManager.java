@@ -77,7 +77,7 @@ public class ScriptManager implements FileWatcher, Serializable {
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
-            int factorySize = factories.size();
+            final int factorySize = factories.size();
             logger.debug("Installed {} script engine{}", factorySize, factorySize != 1 ? "s" : Strings.EMPTY);
             for (final ScriptEngineFactory factory : factories) {
                 String threading = (String) factory.getParameter(KEY_THREADING);
@@ -85,7 +85,7 @@ public class ScriptManager implements FileWatcher, Serializable {
                     threading = "Not Thread Safe";
                 }
                 final StringBuilder names = new StringBuilder();
-                List<String> languageNames = factory.getNames();
+                final List<String> languageNames = factory.getNames();
                 for (final String name : languageNames) {
                     if (names.length() > 0) {
                         names.append(", ");

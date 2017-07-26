@@ -82,7 +82,7 @@ public class XmlLogEventParserTest extends LogEventParserTest {
 
     @Test
     public void testString() throws ParseException {
-        LogEvent logEvent = parser.parseFrom(XML);
+        final LogEvent logEvent = parser.parseFrom(XML);
         assertLogEvent(logEvent);
     }
 
@@ -113,14 +113,14 @@ public class XmlLogEventParserTest extends LogEventParserTest {
 
     @Test
     public void testByteArray() throws ParseException {
-        LogEvent logEvent = parser.parseFrom(XML.getBytes(StandardCharsets.UTF_8));
+        final LogEvent logEvent = parser.parseFrom(XML.getBytes(StandardCharsets.UTF_8));
         assertLogEvent(logEvent);
     }
 
     @Test
     public void testByteArrayOffsetLength() throws ParseException {
-        byte[] bytes = ("abc" + XML + "def").getBytes(StandardCharsets.UTF_8);
-        LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
+        final byte[] bytes = ("abc" + XML + "def").getBytes(StandardCharsets.UTF_8);
+        final LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
         assertLogEvent(logEvent);
     }
 

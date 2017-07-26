@@ -134,6 +134,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         if (message instanceof MapMessage) {
             // Add the guid to the Map so that it can be included in the Layout.
         	@SuppressWarnings("unchecked")
+            final
 			MapMessage<?, String> stringMapMessage = (MapMessage<?, String>) message;
         	stringMapMessage.put(GUID, guid);
             if (message instanceof StructuredDataMessage) {

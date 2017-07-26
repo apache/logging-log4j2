@@ -82,7 +82,7 @@ public class JsonLogEventParserTest extends LogEventParserTest {
 
     @Test
     public void testString() throws ParseException {
-        LogEvent logEvent = parser.parseFrom(JSON);
+        final LogEvent logEvent = parser.parseFrom(JSON);
         assertLogEvent(logEvent);
     }
 
@@ -118,14 +118,14 @@ public class JsonLogEventParserTest extends LogEventParserTest {
 
     @Test
     public void testByteArray() throws ParseException {
-        LogEvent logEvent = parser.parseFrom(JSON.getBytes(StandardCharsets.UTF_8));
+        final LogEvent logEvent = parser.parseFrom(JSON.getBytes(StandardCharsets.UTF_8));
         assertLogEvent(logEvent);
     }
 
     @Test
     public void testByteArrayOffsetLength() throws ParseException {
-        byte[] bytes = ("abc" + JSON + "def").getBytes(StandardCharsets.UTF_8);
-        LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
+        final byte[] bytes = ("abc" + JSON + "def").getBytes(StandardCharsets.UTF_8);
+        final LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
         assertLogEvent(logEvent);
     }
 

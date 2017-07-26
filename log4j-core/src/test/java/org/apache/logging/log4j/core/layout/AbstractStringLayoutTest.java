@@ -47,7 +47,7 @@ public class AbstractStringLayoutTest {
     @Test
     public void testGetStringBuilderCapacityRestrictedToMax() throws Exception {
         final StringBuilder sb = ConcreteStringLayout.getStringBuilder();
-        int initialCapacity = sb.capacity();
+        final int initialCapacity = sb.capacity();
         assertEquals("initial capacity", ConcreteStringLayout.DEFAULT_STRING_BUILDER_SIZE, sb.capacity());
 
         final int SMALL = 100;

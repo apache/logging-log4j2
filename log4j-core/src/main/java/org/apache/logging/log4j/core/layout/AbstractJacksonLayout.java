@@ -140,7 +140,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setStacktraceAsString(boolean stacktraceAsString) {
+        public B setStacktraceAsString(final boolean stacktraceAsString) {
             this.stacktraceAsString = stacktraceAsString;
             return asBuilder();
         }
