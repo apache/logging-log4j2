@@ -65,8 +65,7 @@ public final class MapRewritePolicy implements RewritePolicy {
         }
 
         @SuppressWarnings("unchecked")
-        final
-        MapMessage<?, Object> mapMsg = (MapMessage<?, Object>) msg;
+        final MapMessage<?, Object> mapMsg = (MapMessage<?, Object>) msg;
         final Map<String, Object> newMap = new HashMap<>(mapMsg.getData());
         switch (mode) {
             case Add: {
