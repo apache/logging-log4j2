@@ -76,12 +76,12 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
     }
 
     private void loadProvider(final BundleContext context, final BundleWiring bundleWiring) {
-        String filter = "(APIVersion>=2.60)";
+        final String filter = "(APIVersion>=2.60)";
         try {
-            Collection<ServiceReference<Provider>> serviceReferences = context.getServiceReferences(Provider.class, filter);
+            final Collection<ServiceReference<Provider>> serviceReferences = context.getServiceReferences(Provider.class, filter);
             Provider maxProvider = null;
-            for (ServiceReference<Provider> serviceReference : serviceReferences) {
-                Provider provider = context.getService(serviceReference);
+            for (final ServiceReference<Provider> serviceReference : serviceReferences) {
+                final Provider provider = context.getService(serviceReference);
                 if (maxProvider == null || provider.getPriority() > maxProvider.getPriority()) {
                     maxProvider = provider;
                 }
@@ -89,7 +89,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
             if (maxProvider != null) {
                 ProviderUtil.addProvider(maxProvider);
             }
-        } catch (InvalidSyntaxException ex) {
+        } catch (final InvalidSyntaxException ex) {
             LOGGER.error("Invalid service filter: " + filter, ex);
         }
         final List<URL> urls = bundleWiring.findEntries("META-INF", "log4j-provider.properties", 0);

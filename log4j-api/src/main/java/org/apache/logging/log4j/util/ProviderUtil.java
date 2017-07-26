@@ -69,7 +69,7 @@ public final class ProviderUtil {
         }
     }
 
-    protected static void addProvider(Provider provider) {
+    protected static void addProvider(final Provider provider) {
         PROVIDERS.add(provider);
         LOGGER.debug("Loaded Provider {}", provider);
     }
