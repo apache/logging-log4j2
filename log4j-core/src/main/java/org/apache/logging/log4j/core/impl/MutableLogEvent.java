@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -32,6 +33,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
@@ -207,11 +209,23 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
-            final ReusableMessage reusable = (ReusableMessage) msg;
-            reusable.formatTo(getMessageTextForWriting());
-            if (parameters != null) {
-                parameters = reusable.swapParameters(parameters);
-                parameterCount = reusable.getParameterCount();
+            try {
+                final ReusableMessage reusable = (ReusableMessage) msg;
+                reusable.formatTo(getMessageTextForWriting());
+                if (parameters != null) {
+                    parameters = reusable.swapParameters(parameters);
+                    parameterCount = reusable.getParameterCount();
+                }
+            } catch (ConcurrentModificationException e) {
+                StringBuilder sb = getMessageTextForWriting();
+                sb.append(getClass().getSimpleName());
+                sb.append(": ");
+                sb.append(e.getClass().getName());
+                sb.append(" in setting a ");
+                sb.append(msg.getClass().getSimpleName());
+                sb.append("; format: ");
+                sb.append(msg.getFormat());
+                StatusLogger.getLogger().warn(sb.toString(), e);
             }
         } else {
             // if the Message instance is reused, there is no point in freezing its message here
