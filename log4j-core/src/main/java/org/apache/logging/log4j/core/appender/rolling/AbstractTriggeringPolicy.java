@@ -20,7 +20,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 
 /**
- * Convenience abstract class for extends triggering policies to extend {@link AbstractLifeCycle} and implement
+ * Abstract convenience class for triggering policies that extend {@link AbstractLifeCycle} and implement
  * {@link TriggeringPolicy}.
  */
 public abstract class AbstractTriggeringPolicy extends AbstractLifeCycle implements TriggeringPolicy {
