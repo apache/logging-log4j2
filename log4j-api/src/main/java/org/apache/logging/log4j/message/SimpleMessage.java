@@ -61,19 +61,12 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
      */
     @Override
     public String getFormattedMessage() {
-        if (message == null) {
-            message = String.valueOf(charSequence);
-        }
-        return message;
+        return message = message == null ? String.valueOf(charSequence) : message ;
     }
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-        if (message != null) {
-            buffer.append(message);
-        } else {
-            buffer.append(charSequence);
-        }
+	buffer.append(message != null ? message : charSequence);
     }
 
     /**
