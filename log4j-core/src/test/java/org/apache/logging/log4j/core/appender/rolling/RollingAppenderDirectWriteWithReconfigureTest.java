@@ -51,9 +51,6 @@ public class RollingAppenderDirectWriteWithReconfigureTest {
 
     @Test
     public void testRollingFileAppenderWithReconfigure() throws Exception {
-        // TODO fix this test on Java 8 and Java 9
-        Assume.assumeTrue("Run only on Java 7", System.getProperty("java.specification.version").equals("1.7"));
-        
         logger.debug("Before reconfigure");
 
         @SuppressWarnings("resource") // managed by the rule.
@@ -61,7 +58,7 @@ public class RollingAppenderDirectWriteWithReconfigureTest {
         context.setConfigLocation(new URI(CONFIG));
         context.reconfigure();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         logger.debug("After reconfigure");
 
