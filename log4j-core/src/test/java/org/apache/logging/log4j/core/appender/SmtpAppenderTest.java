@@ -111,27 +111,6 @@ public class SmtpAppenderTest {
     }
 
     @Test
-    public void testCyclicBuffer() {
-        final CyclicBuffer<Integer> buffer = new CyclicBuffer<>(
-                Integer.class, 3);
-
-        assertTrue(buffer.isEmpty());
-        buffer.add(1);
-        assertFalse(buffer.isEmpty());
-        Integer[] items = buffer.removeAll();
-        assertTrue("Incorrect number of items", items.length == 1);
-
-        assertTrue(buffer.isEmpty());
-        buffer.add(1);
-        buffer.add(2);
-        buffer.add(3);
-        buffer.add(4);
-        items = buffer.removeAll();
-        assertTrue("Incorrect number of items", items.length == 3);
-        assertTrue(buffer.isEmpty());
-    }
-
-    @Test
     public void testDelivery() {
         final String subjectKey = getClass().getName();
         final String subjectValue = "SubjectValue1";
