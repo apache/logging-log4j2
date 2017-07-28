@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
 
 /**
- * Parse the output from XmlLayout layout into instances of {@link LogEvent}.
+ * Parses the output from XmlLayout layout into instances of {@link LogEvent}.
  */
 public class XmlLogEventParser extends AbstractJacksonLogEventParser {
 

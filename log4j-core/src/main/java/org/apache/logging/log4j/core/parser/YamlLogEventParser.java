@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jYamlObjectMapper;
 
 /**
- * Parse the output from YamlLayout layout into instances of {@link LogEvent}.
+ * Parses the output from YamlLayout layout into instances of {@link LogEvent}.
  */
 public class YamlLogEventParser extends AbstractJacksonLogEventParser {
 

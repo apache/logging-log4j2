@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 
 /**
- * Parse the output from JsonLayout layout into instances of {@link LogEvent}.
+ * Parses the output from JsonLayout layout into instances of {@link LogEvent}.
  */
 public class JsonLogEventParser extends AbstractJacksonLogEventParser {
 
