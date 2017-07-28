@@ -37,6 +37,9 @@
       <action issue="LOG4J2-1984" dev="rgoers" type="update">
         Allow maxLength of StructuredData to be specified by the user.
       </action>
+      <action issue="LOG4J2-1071" dev="ggregory" type="update" due-to="Ben Ludkiewicz, Benjamin Jaton">
+        Allow for bufferSize=0 in SMTP appender.
+      </action>
       <action issue="LOG4J2-1981" dev="mikes" type="add">
         JsonLayout, XmlLayout and YamlLayout support 0-byte termination of log events.
       </action>

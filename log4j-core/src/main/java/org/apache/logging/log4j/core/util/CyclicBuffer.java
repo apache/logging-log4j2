@@ -37,8 +37,8 @@ public final class CyclicBuffer<T> {
      * @throws IllegalArgumentException if the size is negative.
      */
     public CyclicBuffer(final Class<T> clazz, final int size) throws IllegalArgumentException {
-        if (size < 1) {
-            throw new IllegalArgumentException("The maxSize argument (" + size + ") is not a positive integer.");
+        if (size < 0) {
+            throw new IllegalArgumentException("The maxSize argument (" + size + ") cannot be negative.");
         }
         this.ring = makeArray(clazz, size);
         this.clazz = clazz;
@@ -54,15 +54,17 @@ public final class CyclicBuffer<T> {
      * @param item The item to add to the buffer.
      */
     public synchronized void add(final T item) {
-        ring[last] = item;
-        if (++last == ring.length) {
-            last = 0;
-        }
+        if (ring.length > 0) {
+            ring[last] = item;
+            if (++last == ring.length) {
+                last = 0;
+            }
 
-        if (numElems < ring.length) {
-            numElems++;
-        } else if (++first == ring.length) {
-            first = 0;
+            if (numElems < ring.length) {
+                numElems++;
+            } else if (++first == ring.length) {
+                first = 0;
+            }
         }
     }
 
