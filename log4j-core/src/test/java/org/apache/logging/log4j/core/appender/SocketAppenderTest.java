@@ -79,7 +79,7 @@ public class SocketAppenderTest {
         tcpServer.start();
         udpServer = new UdpSocketTestServer();
         udpServer.start();
-        (LoggerContext.getContext()).reconfigure();
+        LoggerContext.getContext().reconfigure();
         ThreadContext.clearAll();
     }
 
