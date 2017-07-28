@@ -15,19 +15,22 @@ package org.apache.logging.log4j.core.config;/*
  * limitations under the license.
  */
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
 import java.util.HashSet;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests for LoggerConfig.
@@ -39,7 +42,7 @@ public class LoggerConfigTest {
                 new NullConfiguration(), null);
     }
 
-    @SuppressWarnings({"deprecation", "unchecked"})
+    @SuppressWarnings({"deprecation"})
     @Test
     public void testPropertiesWithoutSubstitution() {
         assertNull("null propertiesList", createForProperties(null).getPropertyList());
@@ -51,7 +54,8 @@ public class LoggerConfigTest {
         };
         final LoggerConfig loggerConfig = createForProperties(all);
         final List<Property> list = loggerConfig.getPropertyList();
-        assertEquals("map and list contents equal", new HashSet(list), loggerConfig.getProperties().keySet());
+        assertEquals("map and list contents equal", new HashSet<Property>(list),
+        		     new HashSet<Property>(loggerConfig.getPropertyList()));
 
         final Object[] actualList = new Object[1];
         loggerConfig.setLogEventFactory(new LogEventFactory() {
@@ -60,14 +64,13 @@ public class LoggerConfigTest {
                     final Level level, final Message data,
                     final List<Property> properties, final Throwable t) {
                 actualList[0] = properties;
-                return new Log4jLogEvent(System.currentTimeMillis());
+                return new Builder().setTimeMillis(System.currentTimeMillis()).build();
             }
         });
         loggerConfig.log("name", "fqcn", null, Level.INFO, new SimpleMessage("msg"), null);
         assertSame("propertiesList passed in as is if no substitutions required", list, actualList[0]);
     }
 
-    @SuppressWarnings({"deprecation", "unchecked"})
     @Test
     public void testPropertiesWithSubstitution() {
         final Property[] all = new Property[] {
@@ -76,7 +79,8 @@ public class LoggerConfigTest {
         };
         final LoggerConfig loggerConfig = createForProperties(all);
         final List<Property> list = loggerConfig.getPropertyList();
-        assertEquals("map and list contents equal", new HashSet(list), loggerConfig.getProperties().keySet());
+        assertEquals("map and list contents equal", new HashSet<Property>(list), 
+        		     new HashSet<Property>(loggerConfig.getPropertyList()));
 
         final Object[] actualListHolder = new Object[1];
         loggerConfig.setLogEventFactory(new LogEventFactory() {
@@ -85,13 +89,14 @@ public class LoggerConfigTest {
                     final Level level, final Message data,
                     final List<Property> properties, final Throwable t) {
                 actualListHolder[0] = properties;
-                return new Log4jLogEvent(System.currentTimeMillis());
+                return new Builder().setTimeMillis(System.currentTimeMillis()).build();
             }
         });
         loggerConfig.log("name", "fqcn", null, Level.INFO, new SimpleMessage("msg"), null);
         assertNotSame("propertiesList with substitutions", list, actualListHolder[0]);
 
-        final List<Property> actualList = (List<Property>) actualListHolder[0];
+        @SuppressWarnings("unchecked")
+		final List<Property> actualList = (List<Property>) actualListHolder[0];
 
         for (int i = 0; i < list.size(); i++) {
             assertEquals("name[" + i + "]", list.get(i).getName(), actualList.get(i).getName());
