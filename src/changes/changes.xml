@@ -190,6 +190,9 @@
       <action issue="LOG4J2-1989" dev="ggregory" type="fix" due-to="Kenneth McFarland">
         Clarify Javadoc for AbstractTriggeringPolicy.
       </action>
+      <action issue="LOG4J2-1993" dev="ggregory" type="fix" due-to="Kenneth McFarland">
+        Fix compiler warnings in LoggerConfigTest.
+      </action>
       <action issue="LOG4J2-1851" dev="mikes" type="update">
         Move server components from log4j-core to new log4-server module.
       </action>
