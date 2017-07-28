@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

@@ -3,11 +3,6 @@ package org.apache.logging.log4j;
 import java.util.Map;
 
 import org.apache.logging.log4j.Timer;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.Assert.*;
 import org.apache.logging.log4j.ThreadContext;
 import static org.junit.Assert.*;
 

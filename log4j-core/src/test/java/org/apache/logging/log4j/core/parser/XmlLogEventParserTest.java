@@ -20,9 +20,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
 public class XmlLogEventParserTest extends LogEventParserTest {
