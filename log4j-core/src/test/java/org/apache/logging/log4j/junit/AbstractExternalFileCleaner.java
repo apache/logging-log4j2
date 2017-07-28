@@ -27,41 +27,50 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.junit.Assert;
 import org.junit.rules.ExternalResource;
 
 public abstract class AbstractExternalFileCleaner extends ExternalResource {
+
+    protected static final Marker CLEANER_MARKER = MarkerManager.getMarker("CLEANER");
 
     private static final int SLEEP_RETRY_MILLIS = 200;
     private final boolean cleanAfter;
     private final boolean cleanBefore;
     private final Set<Path> files;
     private final int maxTries;
+    private final Logger logger;
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries, Logger logger,
             final File... files) {
         this.cleanBefore = before;
         this.cleanAfter = after;
         this.maxTries = maxTries;
         this.files = new HashSet<>(files.length);
+        this.logger = logger;
         for (final File file : files) {
             this.files.add(file.toPath());
         }
     }
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries, Logger logger,
             final Path... files) {
         this.cleanBefore = before;
         this.cleanAfter = after;
         this.maxTries = maxTries;
+        this.logger = logger;
         this.files = new HashSet<>(Arrays.asList(files));
     }
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries, Logger logger,
             final String... fileNames) {
         this.cleanBefore = before;
         this.cleanAfter = after;
         this.maxTries = maxTries;
+        this.logger = logger;
         this.files = new HashSet<>(fileNames.length);
         for (final String fileName : fileNames) {
             this.files.add(Paths.get(fileName));
@@ -96,6 +105,9 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
                             break;
                         }
                     } catch (final IOException e) {
+                        if (logger != null) {
+                            logger.error("Caught exception cleaning {}", this, e);
+                        }
                         // We will try again.
                         failures.put(path, e);
                     }
@@ -132,6 +144,10 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
 
     public boolean cleanBefore() {
         return cleanBefore;
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 
     public int getMaxTries() {

@@ -37,23 +37,23 @@ public class CleanFiles extends AbstractExternalFileCleaner {
     private static final int MAX_TRIES = 10;
 
     public CleanFiles(final boolean before, final boolean after, final int maxTries, final File... files) {
-        super(before, after, maxTries, files);
+        super(before, after, maxTries, null, files);
     }
 
     public CleanFiles(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
-        super(before, after, maxTries, fileNames);
+        super(before, after, maxTries, null, fileNames);
     }
 
     public CleanFiles(final File... files) {
-        super(true, true, MAX_TRIES, files);
+        super(true, true, MAX_TRIES, null, files);
     }
 
     public CleanFiles(final Path... paths) {
-        super(true, true, MAX_TRIES, paths);
+        super(true, true, MAX_TRIES, null, paths);
     }
 
     public CleanFiles(final String... fileNames) {
-        super(true, true, MAX_TRIES, fileNames);
+        super(true, true, MAX_TRIES, null, fileNames);
     }
 
     @Override
