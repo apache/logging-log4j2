@@ -19,21 +19,20 @@ package org.apache.logging.log4j.core.impl;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.util.Arrays;
-import java.util.ConcurrentModificationException;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.message.AsynchronouslyFormattable;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
@@ -216,7 +215,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
                     parameters = reusable.swapParameters(parameters);
                     parameterCount = reusable.getParameterCount();
                 }
-            } catch (ConcurrentModificationException e) {
+            } catch (Exception e) {
                 StringBuilder sb = getMessageTextForWriting();
                 sb.append(getClass().getSimpleName());
                 sb.append(": ");
