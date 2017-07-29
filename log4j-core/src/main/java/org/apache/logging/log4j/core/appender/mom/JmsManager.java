@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.appender.mom;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -110,6 +111,14 @@ public class JmsManager extends AbstractManager {
 
         public boolean isRetry() {
             return retry;
+        }
+
+        @Override
+        public String toString() {
+            return "JmsManagerConfiguration [jndiProperties=" + jndiProperties + ", connectionFactoryName="
+                    + connectionFactoryName + ", destinationName=" + destinationName + ", userName=" + userName
+                    + ", immediateFail=" + immediateFail + ", retry=" + retry + ", reconnectIntervalMillis="
+                    + reconnectIntervalMillis + "]";
         }
 
     }
@@ -381,7 +390,8 @@ public class JmsManager extends AbstractManager {
      * @return A MessageProducer on this Destination.
      * @throws JMSException
      */
-    public MessageProducer createMessageProducer(final Session session, final Destination destination) throws JMSException {
+    public MessageProducer createMessageProducer(final Session session, final Destination destination)
+            throws JMSException {
         return session.createProducer(destination);
     }
 
