@@ -49,6 +49,9 @@
       <action issue="LOG4J2-1990" dev="ggregory" type="fix" due-to="Philippe Mouawad">
         ConcurrentModificationException logging a parameter of type Map.
       </action>
+      <action issue="LOG4J2-1311" dev="ggregory" type="fix" due-to="Xibing Liang">
+        SocketAppender will lose several events after re-connection to server.
+      </action>
       <action issue="LOG4J2-1977" dev="ggregory" type="fix" due-to="Jerry xnslong">
         Consider the StringBuilder's capacity instead of content length when trimming.
       </action>

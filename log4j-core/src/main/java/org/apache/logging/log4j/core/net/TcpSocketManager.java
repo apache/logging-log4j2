@@ -100,8 +100,8 @@ public class TcpSocketManager extends AbstractSocketManager {
             final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
             final int reconnectionDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
             final int bufferSize) {
-        this(name, os, socket, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize,
-                null);
+        this(name, os, socket, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail,
+                layout, bufferSize, null);
     }
 
     /**
@@ -202,7 +202,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
     }
 
-    @SuppressWarnings("sync-override") // synchronization on "this" is done within the method 
+    @SuppressWarnings("sync-override") // synchronization on "this" is done within the method
     @Override
     protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         if (socket == null) {
@@ -215,19 +215,40 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
         synchronized (this) {
             try {
-                @SuppressWarnings("resource") // outputStream is managed by this class 
-                final OutputStream outputStream = getOutputStream();
-                outputStream.write(bytes, offset, length);
-                if (immediateFlush) {
-                    outputStream.flush();
-                }
-            } catch (final IOException ex) {
+                writeAndFlush(bytes, offset, length, immediateFlush);
+            } catch (final IOException causeEx) {
                 if (retry && reconnector == null) {
+                    final String config = inetAddress + ":" + port;
                     reconnector = createReconnector();
-                    reconnector.start();
+                    try {
+                        reconnector.reconnect();
+                    } catch (IOException reconnEx) {
+                        LOGGER.debug("Cannot reestablish socket connection to {}: {}; starting reconnector thread {}",
+                                config, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
+                        reconnector.start();
+                        throw new AppenderLoggingException(
+                                String.format("Error sending to %s for %s", getName(), config), causeEx);
+                    }
+                    try {
+                        writeAndFlush(bytes, offset, length, immediateFlush);
+                    } catch (IOException e) {
+                        throw new AppenderLoggingException(
+                                String.format("Error writing to %s after reestablishing connection for %s", getName(),
+                                        config),
+                                causeEx);
+                    }
                 }
-                throw new AppenderLoggingException("Error writing to " + getName(), ex);
             }
+        }
+    }
+
+    private void writeAndFlush(final byte[] bytes, final int offset, final int length, final boolean immediateFlush)
+            throws IOException {
+        @SuppressWarnings("resource") // outputStream is managed by this class
+        final OutputStream outputStream = getOutputStream();
+        outputStream.write(bytes, offset, length);
+        if (immediateFlush) {
+            outputStream.flush();
         }
     }
 
@@ -306,17 +327,7 @@ public class TcpSocketManager extends AbstractSocketManager {
             while (!shutdown) {
                 try {
                     sleep(reconnectionDelayMillis);
-                    final Socket sock = createSocket(inetAddress, port);
-                    @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
-                    final OutputStream newOS = sock.getOutputStream();
-                    synchronized (owner) {
-                        Closer.closeSilently(getOutputStream());
-                        setOutputStream(newOS);
-                        socket = sock;
-                        reconnector = null;
-                        shutdown = true;
-                    }
-                    LOGGER.debug("Connection to {}:{} reestablished: {}", host, port, socket);
+                    reconnect();
                 } catch (final InterruptedException ie) {
                     LOGGER.debug("Reconnection interrupted.");
                 } catch (final ConnectException ex) {
@@ -327,6 +338,25 @@ public class TcpSocketManager extends AbstractSocketManager {
                     latch.countDown();
                 }
             }
+        }
+
+        void reconnect() throws IOException {
+            final Socket sock = createSocket(inetAddress, port);
+            @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
+            final OutputStream newOS = sock.getOutputStream();
+            synchronized (owner) {
+                Closer.closeSilently(getOutputStream());
+                setOutputStream(newOS);
+                socket = sock;
+                reconnector = null;
+                shutdown = true;
+            }
+            LOGGER.debug("Connection to {}:{} reestablished: {}", host, port, socket);
+        }
+
+        @Override
+        public String toString() {
+            return "Reconnector [latch=" + latch + ", shutdown=" + shutdown + ", owner=" + owner + "]";
         }
     }
 
@@ -375,13 +405,20 @@ public class TcpSocketManager extends AbstractSocketManager {
             this.bufferSize = bufferSize;
             this.socketOptions = socketOptions;
         }
+
+        @Override
+        public String toString() {
+            return "FactoryData [host=" + host + ", port=" + port + ", connectTimeoutMillis=" + connectTimeoutMillis
+                    + ", reconnectDelayMillis=" + reconnectDelayMillis + ", immediateFail=" + immediateFail
+                    + ", layout=" + layout + ", bufferSize=" + bufferSize + ", socketOptions=" + socketOptions + "]";
+        }
     }
 
     /**
      * Factory to create a TcpSocketManager.
      */
     protected static class TcpSocketManagerFactory implements ManagerFactory<TcpSocketManager, FactoryData> {
-        
+
         @SuppressWarnings("resource")
         @Override
         public TcpSocketManager createManager(final String name, final FactoryData data) {
@@ -403,7 +440,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                         data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
                         data.bufferSize, data.socketOptions);
             } catch (final IOException ex) {
-                LOGGER.error("TcpSocketManager (" + name + ") " + ex, ex);
+                LOGGER.error("TcpSocketManager (" + name + ") caught exception and will continue:" + ex, ex);
                 os = NullOutputStream.getInstance();
             }
             if (data.reconnectDelayMillis == 0) {
@@ -438,6 +475,10 @@ public class TcpSocketManager extends AbstractSocketManager {
      */
     public Socket getSocket() {
         return socket;
+    }
+
+    public int getReconnectionDelayMillis() {
+        return reconnectionDelayMillis;
     }
 
 }
