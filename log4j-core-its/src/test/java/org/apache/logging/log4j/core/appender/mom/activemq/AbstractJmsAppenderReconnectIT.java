@@ -58,17 +58,21 @@ public class AbstractJmsAppenderReconnectIT {
         if (jmsClientTestConfig != null) {
             jmsClientTestConfig.stop();
         }
-        // Make sure the manager is gone as to not have bad side effect on other tests.
-        @SuppressWarnings("resource")
-        final JmsManager appenderManager = appender.getManager();
-        if (appenderManager != null) {
-            Assert.assertFalse(AbstractManager.hasManager(appenderManager.getName()));
+        if (appender != null) {
+            // Make sure the manager is gone as to not have bad side effect on other tests.
+            @SuppressWarnings("resource")
+            final JmsManager appenderManager = appender.getManager();
+            if (appenderManager != null) {
+                Assert.assertFalse(AbstractManager.hasManager(appenderManager.getName()));
+            }
         }
-        // Make sure the manager is gone as to not have bad side effect on other tests.
-        @SuppressWarnings("resource")
-        final JmsManager testManager = jmsClientTestConfig.getJmsManager();
-        if (testManager != null) {
-            Assert.assertFalse(AbstractManager.hasManager(testManager.getName()));
+        if (jmsClientTestConfig != null) {
+            // Make sure the manager is gone as to not have bad side effect on other tests.
+            @SuppressWarnings("resource")
+            final JmsManager testManager = jmsClientTestConfig.getJmsManager();
+            if (testManager != null) {
+                Assert.assertFalse(AbstractManager.hasManager(testManager.getName()));
+            }
         }
     }
 
