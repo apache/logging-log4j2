@@ -1304,6 +1304,7 @@
     <module>log4j-liquibase</module>
     <module>log4j-api-scala_2.10</module>
     <module>log4j-api-scala_2.11</module>
+    <module>log4j-lucene5</module>
   </modules>
   <profiles>
     <profile>
