@@ -246,6 +246,13 @@ A convenient Scala wrapper for the Logger API. SBT users can add the following t
 #sbt(['log4j-api-scala'])
 
 Maven, Ivy, and Gradle users need to add the Scala version to the artifact name.
+
+Scala 2.12 users can use the following:
+
+#maven(['log4j-api-scala_2.12'])
+#ivy(['log4j-api-scala_2.12'])
+#gradle(['log4j-api-scala_2.12'])
+
 Scala 2.11 users can use the following:
 
 #maven(['log4j-api-scala_2.11'])
