@@ -2089,6 +2089,17 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             final Throwable throwable) {
         try {
             logMessage(fqcn, level, marker, msg, throwable);
+        } catch (Exception e) {
+            final String format = msg.getFormat();
+            final StringBuilder sb = new StringBuilder(format.length() + 100);
+            sb.append(fqcn);
+            sb.append(": ");
+            sb.append(e.getClass().getName());
+            sb.append(" logging a ");
+            sb.append(msg.getClass().getSimpleName());
+            sb.append(": ");
+            sb.append(format);
+            StatusLogger.getLogger().warn(sb.toString(), e);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
             ReusableMessageFactory.release(msg);

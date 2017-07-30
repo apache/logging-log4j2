@@ -208,23 +208,11 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
-            try {
-                final ReusableMessage reusable = (ReusableMessage) msg;
-                reusable.formatTo(getMessageTextForWriting());
-                if (parameters != null) {
-                    parameters = reusable.swapParameters(parameters);
-                    parameterCount = reusable.getParameterCount();
-                }
-            } catch (Exception e) {
-                StringBuilder sb = getMessageTextForWriting();
-                sb.append(getClass().getSimpleName());
-                sb.append(": ");
-                sb.append(e.getClass().getName());
-                sb.append(" in setting a ");
-                sb.append(msg.getClass().getSimpleName());
-                sb.append("; format: ");
-                sb.append(msg.getFormat());
-                StatusLogger.getLogger().warn(sb.toString(), e);
+            final ReusableMessage reusable = (ReusableMessage) msg;
+            reusable.formatTo(getMessageTextForWriting());
+            if (parameters != null) {
+                parameters = reusable.swapParameters(parameters);
+                parameterCount = reusable.getParameterCount();
             }
         } else {
             // if the Message instance is reused, there is no point in freezing its message here
