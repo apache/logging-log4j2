@@ -19,6 +19,7 @@ package org.apache.logging.log4j.spi;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
@@ -2104,8 +2105,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @PerformanceSensitive
-    // NOTE: This is a hot method. Current implementation compiles to 26 bytes of byte code.
-    // This is within the 35 byte MaxInlineSize threshold. Modify with care!
+    // NOTE: This is a hot method. Current implementation compiles to ?? bytes of byte code.
+    // This is within the 35 byte MaxInlineSize threshold (on which JMV and version?). Modify with care!
     private void tryLogMessage(final String fqcn,
                                final Level level,
                                final Marker marker,
@@ -2114,7 +2115,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         try {
             logMessage(fqcn, level, marker, msg, throwable);
         } catch (final Exception e) {
-
+            if (e instanceof LoggingException) {
+                throw e;
+            }
             // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
             handleLogMessageException(e, fqcn, msg);
         }
