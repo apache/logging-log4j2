@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.appender.mom.JmsAppender;
 import org.apache.logging.log4j.core.appender.mom.JmsManager;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.StringMapMessage;
+import org.apache.logging.log4j.server.mom.activemq.ActiveMqBrokerServiceHelper;
 import org.junit.After;
 import org.junit.Assert;
 

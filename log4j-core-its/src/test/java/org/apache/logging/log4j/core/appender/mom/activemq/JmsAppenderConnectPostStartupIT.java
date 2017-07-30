@@ -20,6 +20,7 @@ import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.layout.MessageLayout;
+import org.apache.logging.log4j.server.mom.activemq.ActiveMqBrokerServiceHelper;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.Assert;
 import org.junit.Test;

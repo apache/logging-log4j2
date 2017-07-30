@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.mom.activemq;
 
 import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
 import org.apache.logging.log4j.categories.Appenders;
+import org.apache.logging.log4j.server.mom.activemq.ActiveMqBrokerServiceRule;
 import org.apache.logging.log4j.test.AvailablePortSystemPropertyRule;
 import org.apache.logging.log4j.test.RuleChainFactory;
 import org.junit.AfterClass;

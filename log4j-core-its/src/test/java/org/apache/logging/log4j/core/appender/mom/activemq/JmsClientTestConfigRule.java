@@ -1,5 +1,6 @@
 package org.apache.logging.log4j.core.appender.mom.activemq;
 
+import org.apache.logging.log4j.server.mom.activemq.ActiveMqBrokerServiceRule;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
