@@ -267,8 +267,15 @@ public class SocketAppenderTest {
         logger.addAppender(appender);
         logger.setAdditive(false);
         logger.setLevel(Level.DEBUG);
-        //
-        logger.debug("This message is written because of the new reconnect logic LOG4J-1990");
+
+        try {
+            logger.debug("This message is written because a deadlock never.");
+            fail("No Exception was thrown");
+        } catch (final Exception ex) {
+            // TODO: move exception to @Test(expect = Exception.class)
+            // Failure is expected.
+            // ex.printStackTrace();
+        }
     }
 
     public static class UdpSocketTestServer extends Thread {
