@@ -37,7 +37,7 @@
                 <h4>Requirements</h4>
                 <p>
                     Log4j 2 Scala API is dependent on the Log4j 2 API, Scala runtime library and reflection.
-                    It currently supports Scala 2.10 and 2.11. See <a href="../maven-artifacts.html#Scala_API">instructions</a>
+                    It currently supports Scala 2.10, 2.11 and 2.12. See <a href="../maven-artifacts.html#Scala_API">instructions</a>
                     on including this in an SBT, Maven, Ivy, or Gradle project.
                 </p>
 
@@ -82,12 +82,12 @@ logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBirthday
                     Most logging implementations use a hierarchical scheme for matching logger names with logging
                     configuration. In this scheme the logger name hierarchy is represented by '.' characters in the
                     logger name, in a fashion very similar to the hierarchy used for Java/Scala package names.
-                    The <a class="javadoc" href="../log4j-api-scala_2.11/scaladocs/index.html#org.apache.logging.log4j.scala.Logging">Logging trait</a> will automatically name the Logger accordingly to the class it is being used in.
+                    The <a class="javadoc" href="../log4j-api-scala_2.12/scaladocs/index.html#org.apache.logging.log4j.scala.Logging">Logging trait</a> will automatically name the Logger accordingly to the class it is being used in.
                 </p>
 
                 <h4>ScalaDoc</h4>
                 <p>
-                    <a href="../log4j-api-scala_2.11/scaladocs/index.html#org.apache.logging.log4j.scala.package">ScalaDoc</a>.
+                    <a href="../log4j-api-scala_2.12/scaladocs/index.html#org.apache.logging.log4j.scala.package">ScalaDoc</a>.
                 </p>
 
             </subsection>
