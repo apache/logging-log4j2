@@ -2126,9 +2126,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         final String format = msg.getFormat();
         final StringBuilder sb = new StringBuilder(format.length() + 100);
         sb.append(fqcn);
-        sb.append(": ");
+        sb.append(" caught ");
         sb.append(exception.getClass().getName());
-        sb.append(" logging a ");
+        sb.append(" logging ");
         sb.append(msg.getClass().getSimpleName());
         sb.append(": ");
         sb.append(format);
