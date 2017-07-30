@@ -2105,7 +2105,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @PerformanceSensitive
-    // NOTE: This is a hot method. Current implementation compiles to ?? bytes of byte code.
+    // NOTE: This is a hot method. Current implementation compiles to 26 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold (on which JMV and version?). Modify with care!
     private void tryLogMessage(final String fqcn,
                                final Level level,
@@ -2115,9 +2115,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         try {
             logMessage(fqcn, level, marker, msg, throwable);
         } catch (final Exception e) {
-            if (e instanceof LoggingException) {
-                throw e;
-            }
             // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
             handleLogMessageException(e, fqcn, msg);
         }
@@ -2126,6 +2123,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
     // TODO Configuration setting to propagate exceptions back to the caller *if requested*
     private void handleLogMessageException(final Exception exception, final String fqcn, final Message msg) {
+        if (exception instanceof LoggingException) {
+            throw (LoggingException) exception;
+        }
         final String format = msg.getFormat();
         final StringBuilder sb = new StringBuilder(format.length() + 100);
         sb.append(fqcn);
