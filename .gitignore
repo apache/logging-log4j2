@@ -22,6 +22,8 @@ target/
 .classpath
 .cache-main
 .cache-tests
+.toDelete
+.factorypath
 velocity.log
 felix-cache/
 bin/
