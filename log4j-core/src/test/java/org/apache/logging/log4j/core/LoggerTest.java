@@ -103,7 +103,8 @@ public class LoggerTest {
         assertEventCount(events, 2);
     }
 
-    @Test
+    @SuppressWarnings("deprecation")
+	@Test
     public void simpleFlowDepreacted() {
         logger.entry(CONFIG);
         logger.exit(0);

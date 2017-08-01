@@ -16,7 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator;
+
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -30,12 +37,9 @@ import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.MimeMessageBuilder;
-import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(Appenders.Smtp.class)
 public class SmtpAppenderTest {

@@ -90,4 +90,8 @@ public class HangingAppender extends AbstractAppender {
         setStopped();
         return true;
     }
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 }
