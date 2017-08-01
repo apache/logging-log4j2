@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,8 +29,6 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the RandomAccessFileManager class.
@@ -56,6 +57,9 @@ public class RandomAccessFileManagerTest {
 
             // all data is written if exceeds buffer size
             assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
+            manager.flush();
+            manager.closeOutputStream();
+            manager.close();
         }}
 
     /**
@@ -76,9 +80,11 @@ public class RandomAccessFileManagerTest {
             manager.write(data); // no exception
             // all data is written if exceeds buffer size
             assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1, raf.length());
-
             manager.flush();
             assertEquals(size, raf.length()); // all data written to file now
+            // close resource
+            manager.closeOutputStream();
+            manager.close();
         }}
 
     @Test
@@ -91,9 +97,12 @@ public class RandomAccessFileManagerTest {
 
             final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
                     os, bufferSize, null, null, true);
-
+            manager.flush();
             // check the resulting buffer size is what was requested
             assertEquals(bufferSize, manager.getBufferSize());
+            // close the resource
+            manager.closeOutputStream();
+            manager.close();
         }}
 
     @Test
@@ -109,10 +118,12 @@ public class RandomAccessFileManagerTest {
             final byte[] data = new byte[size];
             manager.write(data); // no exception
             // all data is written if exceeds buffer size
-            assertEquals(bufferSize * 3 + 1, raf.length());
-
             manager.flush();
+            assertEquals(bufferSize * 3 + 1, raf.length());
             assertEquals(size, raf.length()); // all data written to file now
+            // close resource
+            manager.closeOutputStream();
+            manager.close();
         }}
 
     @Test
