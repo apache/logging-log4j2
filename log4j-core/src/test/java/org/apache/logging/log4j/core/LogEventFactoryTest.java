@@ -52,7 +52,7 @@ public class LogEventFactoryTest {
 
     private ListAppender app;
 
-    // this would look so cool using lambdas
+    // consider using lambdas
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(new TestRule() {
         @Override

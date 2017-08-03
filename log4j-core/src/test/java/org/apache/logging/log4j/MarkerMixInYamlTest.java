@@ -21,6 +21,7 @@ import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.jackson.Log4jYamlObjectMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.experimental.categories.Category;
 
 @Category(Layouts.Yaml.class)

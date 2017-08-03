@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Calendar;
 
 import org.apache.logging.log4j.core.appender.FileAppender;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *

@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -36,7 +37,7 @@ public class ShutdownTimeoutConfigurationTest {
     @Test
     public void testShutdownFlag() {
         final Configuration config = context.getConfiguration();
-        assertNotNull("No configuration", config);
+        assertNotNull("No configuration.", config);
         assertEquals(5000, config.getShutdownTimeoutMillis());
     }
 

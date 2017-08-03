@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,8 +29,6 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the RandomAccessFileManager class.
@@ -45,18 +46,18 @@ public class RandomAccessFileManagerTest {
     @Test
     public void testWrite_multiplesOfBufferSize() throws IOException {
         final File file = folder.newFile();
-        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw");
             final OutputStream os = NullOutputStream.getInstance();
             final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
-                    os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
-
+                    os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true)) {
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
             final byte[] data = new byte[size];
             manager.write(data); // no buffer overflow exception
-
+            manager.flush(); // ensure data is written
             // all data is written if exceeds buffer size
             assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
-        }}
+        }
+    }
 
     /**
      * Test method for
@@ -66,74 +67,72 @@ public class RandomAccessFileManagerTest {
     @Test
     public void testWrite_dataExceedingBufferSize() throws IOException {
         final File file = folder.newFile();
-        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw");
             final OutputStream os = NullOutputStream.getInstance();
             final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
-                    os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
-
+                    os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true)) {
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             final byte[] data = new byte[size];
             manager.write(data); // no exception
             // all data is written if exceeds buffer size
             assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1, raf.length());
-
+            // ensure data is written
             manager.flush();
-            assertEquals(size, raf.length()); // all data written to file now
-        }}
+            assertEquals(size, raf.length()); // assert that all data was written to file
+        }
+    }
 
     @Test
     public void testConfigurableBufferSize() throws IOException {
         final File file = folder.newFile();
-        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+        final int bufferSize = 4096;
+        
+        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw");
             final OutputStream os = NullOutputStream.getInstance();
-            final int bufferSize = 4 * 1024;
+        	final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
+                        os, bufferSize, null, null, true)) {
             assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
-
-            final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
-                    os, bufferSize, null, null, true);
-
             // check the resulting buffer size is what was requested
             assertEquals(bufferSize, manager.getBufferSize());
-        }}
-
+        }
+    }
+    
     @Test
     public void testWrite_dataExceedingMinBufferSize() throws IOException {
         final File file = folder.newFile();
-        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+        final int bufferSize = 1;
+        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw");
             final OutputStream os = NullOutputStream.getInstance();
-            final int bufferSize = 1;
             final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
-                    os, bufferSize, null, null, true);
-
+                    os, bufferSize, null, null, true)) {
             final int size = bufferSize * 3 + 1;
             final byte[] data = new byte[size];
             manager.write(data); // no exception
             // all data is written if exceeds buffer size
-            assertEquals(bufferSize * 3 + 1, raf.length());
-
+            assertEquals(size, raf.length());
             manager.flush();
             assertEquals(size, raf.length()); // all data written to file now
-        }}
-
+        }
+    }
+    
     @Test
     public void testAppendDoesNotOverwriteExistingFile() throws IOException {
         final boolean isAppend = true;
         final File file = folder.newFile();
+        final byte[] bytes = new byte[4096];
+        final int expected = bytes.length * 2;
         assertEquals(0, file.length());
-
-        final byte[] bytes = new byte[4 * 1024];
-
         // create existing file
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(bytes, 0, bytes.length);
             fos.flush();
         }
         assertEquals("all flushed to disk", bytes.length, file.length());
-
-        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-                file.getAbsolutePath(), isAppend, true, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, null);
-        manager.write(bytes, 0, bytes.length, true);
-        final int expected = bytes.length * 2;
-        assertEquals("appended, not overwritten", expected, file.length());
+        try(final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
+            file.getAbsolutePath(), isAppend, true, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, null)) {
+            manager.write(bytes, 0, bytes.length, true);
+      
+            assertEquals("appended, not overwritten", expected, file.length());
+        }
     }
 }

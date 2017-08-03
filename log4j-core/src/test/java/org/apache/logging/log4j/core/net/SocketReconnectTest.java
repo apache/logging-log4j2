@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -31,8 +35,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 @Ignore("Currently needs better port choosing support")
 public class SocketReconnectTest {

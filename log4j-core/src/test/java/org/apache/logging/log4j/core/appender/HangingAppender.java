@@ -33,7 +33,8 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 @Plugin(name = "Hanging", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class HangingAppender extends AbstractAppender {
 
-    private static final long serialVersionUID = 1L;
+    @SuppressWarnings("unused")
+	private static final long serialVersionUID = 1L;
 
     private final long delay;
     private final long startupDelay;

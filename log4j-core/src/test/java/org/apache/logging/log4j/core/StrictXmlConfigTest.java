@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -29,8 +31,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -69,7 +69,7 @@ public class StrictXmlConfigTest {
     @Test
     public void simpleFlow() {
         logger.entry(CONFIG);
-        logger.exit(0);
+        logger.traceExit(0);
         final List<LogEvent> events = app.getEvents();
         assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
     }

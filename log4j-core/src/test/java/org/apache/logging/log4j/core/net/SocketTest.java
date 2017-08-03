@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -29,8 +31,6 @@ import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 @Ignore("Currently needs better port choosing support")
 public class SocketTest {

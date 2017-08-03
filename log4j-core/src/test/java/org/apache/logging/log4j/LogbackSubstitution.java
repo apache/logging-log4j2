@@ -19,6 +19,7 @@ package org.apache.logging.log4j;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
