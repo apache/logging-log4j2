@@ -50,33 +50,30 @@ public class MyApp {
     private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY").setParents(SQL_MARKER);
 
     public String doQuery(String table) {
-        logger.entry(param);
+        logger.traceEntry();
 
         logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
+        String result = ...                
 
-        return logger.exit();
+        return logger.traceExit(result);
     }
 
     public String doUpdate(String table, Map<String, String> params) {
-        logger.entry(param);
+        logger.traceEntry();
 
-        if (logger.isDebugEnabled()) {
-          logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols());
+        logger.debug(UPDATE_MARKER, "UPDATE {} SET {}",
+            () -> table,
+            () -> formatCols(params));
 
-        return logger.exit();
+        String result = ...         
+
+        return logger.traceExit(result);
     }
 
     private String formatCols(Map<String, String> cols) {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (Map.Entry<String, String> entry : cols.entrySet()) {
-            if (!first) {
-                sb.append(", ");
-            }
-            sb.append(entry.getKey()).append("=").append(entry.getValue());
-            first = false;
-        }
-        return sb.toString();
+        return cols.entrySet().stream()
+			.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+			.collect(Collectors.joining(", "));
     }
 }]]></pre>
             <p>
