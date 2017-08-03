@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
  */
 public class LogEventTest {
 
-    private static Message MESSAGE = new SimpleMessage("This is a test");
+    private static Message MESSAGE = new SimpleMessage("This is a test message");
     private static TestClass TESTER = new TestClass();
 
     @Test
@@ -84,7 +84,7 @@ public class LogEventTest {
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")) //
-                .setThreadName("this must be initialized or the test fails") //
+                .setThreadName("this must be initialized or the test will fail") //
                 .setNanoTime(12345678L) //
                 .build();
         final LogEvent copy = new Log4jLogEvent.Builder(event1).build();
@@ -99,20 +99,20 @@ public class LogEventTest {
         final LogEvent actual = (LogEvent) ois.readObject();
         assertNotEquals("Different event: nanoTime", copy, actual);
         assertNotEquals("Different nanoTime", copy.getNanoTime(), actual.getNanoTime());
-        assertEquals("deserialized nanoTime is zero", 0, actual.getNanoTime());
+        assertEquals("Deserialized nanoTime is zero", 0, actual.getNanoTime());
     }
 
     @Test
     public void testNanoTimeIsNotSerialized2() throws Exception {
-        final LogEvent event1 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()) //
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
-                .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")) //
+        final LogEvent event1 = Log4jLogEvent.newBuilder() 
+                .setLoggerName(this.getClass().getName()) 
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") 
+                .setLevel(Level.INFO) 
+                .setMessage(new SimpleMessage("Hello, world!")) 
                 .setThreadId(1) // this must be initialized or the test fails
-                .setThreadName("this must be initialized or the test fails") //
+                .setThreadName("this must be initialized or the test fails") 
                 .setThreadPriority(2) // this must be initialized or the test fails
-                .setNanoTime(0) //
+                .setNanoTime(0) 
                 .build();
         final LogEvent event2 = new Log4jLogEvent.Builder(event1).build();
 
@@ -130,23 +130,23 @@ public class LogEventTest {
     @Test
     @Ignore
     public void testEquals() {
-        final LogEvent event1 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()) //
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
-                .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")) //
+        final LogEvent event1 = Log4jLogEvent.newBuilder() 
+                .setLoggerName(this.getClass().getName()) 
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") 
+                .setLevel(Level.INFO) 
+                .setMessage(new SimpleMessage("Hello, world!")) 
                 .build();
-        final LogEvent event2 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()) //
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+        final LogEvent event2 = Log4jLogEvent.newBuilder() 
+                .setLoggerName(this.getClass().getName()) 
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") 
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")) //
+                .setMessage(new SimpleMessage("Hello, world!")) 
                 .build();
-        final LogEvent event3 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()) //
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+        final LogEvent event3 = Log4jLogEvent.newBuilder() 
+                .setLoggerName(this.getClass().getName()) 
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") 
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")) //
+                .setMessage(new SimpleMessage("Hello, world!")) 
                 .build();
         assertNotEquals("Events should not be equal", event1, event2);
         assertEquals("Events should be equal", event2, event3);

@@ -58,7 +58,7 @@ public class LoggerUpdateTest {
         final Configuration config = ctx.getConfiguration();
         final LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
         /* You could also specify the actual logger name as below and it will return the LoggerConfig used by the Logger.
-           LoggerConfig loggerConfig = getLoggerConfig("com.apache.test");
+           eg: LoggerConfig loggerConfig = getLoggerConfig("com.apache.test");
         */
         loggerConfig.setLevel(Level.DEBUG);
         ctx.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.

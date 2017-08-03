@@ -4,7 +4,7 @@
         <RollingFile name="Test" fileName="target/logs/test.log" filePattern="target/logs/test/$${date:yyyyMMddHHmm}/TEST-%d{yyyyMMddHHmm}-%i.log.gz">
             <PatternLayout pattern="%d %p (%t) [%c] - %m%n"/>
             <Policies>
-                <TimeBasedTriggeringPolicy />
+                <TimeBasedTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy size="1 KB"/>
             </Policies>
             <DefaultRolloverStrategy max="999999"/>

@@ -63,7 +63,7 @@ public class PropertiesFileConfigTest {
             Thread.sleep(100);
             newConfig = context.getConfiguration();
         } while (newConfig == oldConfig && loopCount < 5);
-        assertNotSame("Reconfiguration failed", newConfig, oldConfig);
+        assertNotSame("Reconfiguration failed.", newConfig, oldConfig);
     }
 }
 

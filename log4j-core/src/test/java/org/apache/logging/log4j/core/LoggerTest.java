@@ -152,7 +152,7 @@ public class LoggerTest {
 
     @Test
     public void debugChangeLevelAllChildrenLoggers() {
-        // Use logger AND child loggers
+        // Use logger and child loggers
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
         loggerGrandchild.debug("Debug message 1 grandchild");
@@ -172,7 +172,7 @@ public class LoggerTest {
 
     @Test
     public void debugChangeLevelChildLogger() {
-        // Use logger AND child loggers
+        // Use logger and child loggers
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
         loggerGrandchild.debug("Debug message 1 grandchild");

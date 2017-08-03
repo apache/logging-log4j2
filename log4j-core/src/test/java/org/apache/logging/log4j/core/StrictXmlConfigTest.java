@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -29,8 +31,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *

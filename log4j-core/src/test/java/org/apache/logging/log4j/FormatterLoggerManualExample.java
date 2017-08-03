@@ -34,7 +34,7 @@ public class FormatterLoggerManualExample {
         }
     }
 
-    public static Logger logger = LogManager.getFormatterLogger("Foo");
+    public static final Logger logger = LogManager.getFormatterLogger("Foo");
 
     /**
      * @param args
