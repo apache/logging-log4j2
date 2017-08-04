@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import org.junit.Test;
 
 /**
@@ -28,7 +29,7 @@ public class BasicLoggingTest {
     @Test
     public void test1() {
         final Logger logger = LogManager.getLogger(BasicLoggingTest.class.getName());
-        logger.debug("debug not set");
+        logger.debug("Debug not set");
         logger.error("Test message");
     }
 }

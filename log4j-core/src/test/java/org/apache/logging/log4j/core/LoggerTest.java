@@ -77,7 +77,6 @@ public class LoggerTest {
         logger = context.getLogger("LoggerTest");
         loggerChild = context.getLogger("LoggerTest.child");
         loggerGrandchild = context.getLogger("LoggerTest.child.grand");
-        //
         app = context.getListAppender("List").clear();
         host = context.getListAppender("HostTest").clear();
         noThrown = context.getListAppender("NoThrowable").clear();
@@ -103,10 +102,11 @@ public class LoggerTest {
         assertEventCount(events, 2);
     }
 
-    @Test
+    @SuppressWarnings("deprecation")
+	@Test
     public void simpleFlowDepreacted() {
         logger.entry(CONFIG);
-        logger.exit(0);
+        logger.exit(0); // this is intentionally deprecated
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 2);
     }

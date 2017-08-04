@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;

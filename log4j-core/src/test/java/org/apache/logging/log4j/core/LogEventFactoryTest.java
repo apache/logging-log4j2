@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.test.appender.ListAppender;
+
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class LogEventFactoryTest {
 
     private ListAppender app;
 
-    // this would look so cool using lambdas
+    // consider using lambdas
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(new TestRule() {
         @Override
@@ -87,7 +88,7 @@ public class LogEventFactoryTest {
     @Test
     public void testEvent() {
         final org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.test.LogEventFactory");
-        logger.error("error message");
+        logger.error("Error message");
         final List<LogEvent> events = app.getEvents();
         assertNotNull("No events", events);
         assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());

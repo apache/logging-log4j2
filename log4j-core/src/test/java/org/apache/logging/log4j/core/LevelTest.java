@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.hamcrest.Matchers.hasSize;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
@@ -26,12 +32,10 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
+
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 /**
  *

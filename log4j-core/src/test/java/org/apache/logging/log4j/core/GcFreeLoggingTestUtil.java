@@ -39,7 +39,7 @@ import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
 
 /**
- * Utily methods for the GC-free logging tests.s.
+ * Utility methods for the GC-free logging tests.
  */
 public class GcFreeLoggingTestUtil {
 

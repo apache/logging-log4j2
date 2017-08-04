@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -99,20 +100,20 @@ public class LogEventTest {
         final LogEvent actual = (LogEvent) ois.readObject();
         assertNotEquals("Different event: nanoTime", copy, actual);
         assertNotEquals("Different nanoTime", copy.getNanoTime(), actual.getNanoTime());
-        assertEquals("deserialized nanoTime is zero", 0, actual.getNanoTime());
+        assertEquals("Deserialized nanoTime is zero", 0, actual.getNanoTime());
     }
 
     @Test
     public void testNanoTimeIsNotSerialized2() throws Exception {
-        final LogEvent event1 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()) //
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
-                .setLevel(Level.INFO) //
+        final LogEvent event1 = Log4jLogEvent.newBuilder() 
+                .setLoggerName(this.getClass().getName()) 
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") 
+                .setLevel(Level.INFO) 
                 .setMessage(new SimpleMessage("Hello, world!")) //
-                .setThreadId(1) // this must be initialized or the test fails
-                .setThreadName("this must be initialized or the test fails") //
-                .setThreadPriority(2) // this must be initialized or the test fails
-                .setNanoTime(0) //
+                .setThreadId(1) // this must be initialized or the test will fail
+                .setThreadName("this must be initialized or the test will fail") 
+                .setThreadPriority(2) // this must be initialized or the test will fail
+                .setNanoTime(0) 
                 .build();
         final LogEvent event2 = new Log4jLogEvent.Builder(event1).build();
 
@@ -130,23 +131,23 @@ public class LogEventTest {
     @Test
     @Ignore
     public void testEquals() {
-        final LogEvent event1 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()) //
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
-                .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")) //
+        final LogEvent event1 = Log4jLogEvent.newBuilder() 
+                .setLoggerName(this.getClass().getName()) 
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") 
+                .setLevel(Level.INFO) 
+                .setMessage(new SimpleMessage("Hello, world!")) 
                 .build();
-        final LogEvent event2 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()) //
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
-                .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")) //
+        final LogEvent event2 = Log4jLogEvent.newBuilder() 
+                .setLoggerName(this.getClass().getName()) 
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") 
+                .setLevel(Level.INFO) 
+                .setMessage(new SimpleMessage("Hello, world!")) 
                 .build();
-        final LogEvent event3 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()) //
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
-                .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")) //
+        final LogEvent event3 = Log4jLogEvent.newBuilder() 
+                .setLoggerName(this.getClass().getName()) 
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") 
+                .setLevel(Level.INFO) 
+                .setMessage(new SimpleMessage("Hello, world!")) 
                 .build();
         assertNotEquals("Events should not be equal", event1, event2);
         assertEquals("Events should be equal", event2, event3);

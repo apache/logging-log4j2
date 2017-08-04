@@ -26,7 +26,8 @@ import org.junit.runners.Parameterized.Parameters;
 
 public class LoggerSerializationTest extends AbstractSerializationTest {
 
-    @Parameters
+    @SuppressWarnings("resource")
+	@Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 { new LoggerContext("").getLogger("", null) },
