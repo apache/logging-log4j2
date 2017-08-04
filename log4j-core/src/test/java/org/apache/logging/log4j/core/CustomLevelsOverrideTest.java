@@ -83,9 +83,9 @@ public class CustomLevelsOverrideTest {
         final Logger logger = context.getLogger();
         final List<LogEvent> events = listAppender.getEvents();
         assertThat(events, hasSize(0));
-        logger.debug("Hello, {}", "World");
+        logger.debug("Hello, {}", "World Debug");
         assertThat(events, hasSize(1));
-        logger.log(warnLevel, "Hello DIAG");
+        logger.log(warnLevel, "Hello World Warn");
         assertThat(events, hasSize(2));
         assertEquals(events.get(1).getLevel(), warnLevel);
 

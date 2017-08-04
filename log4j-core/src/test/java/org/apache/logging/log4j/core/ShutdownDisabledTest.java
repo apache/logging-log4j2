@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *

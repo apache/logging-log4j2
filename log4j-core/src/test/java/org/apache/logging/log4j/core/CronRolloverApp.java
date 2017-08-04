@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Created by rgoers on 1/1/17.
+ * Created by Ralph Goers on 1/1/17.
  */
 public class CronRolloverApp {
 
@@ -36,8 +36,8 @@ public class CronRolloverApp {
                 Thread.sleep(1 * 1000);
             }
         } catch (final Exception e) {
-            //e.printStackTrace();
-            logger.error("Excepcion general", e);
+            //e.printStackTrace(); 
+            logger.error("Exception general", e);
         }
     }
 }

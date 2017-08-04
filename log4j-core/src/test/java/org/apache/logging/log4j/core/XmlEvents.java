@@ -23,6 +23,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -50,15 +51,11 @@ public class XmlEvents {
         EventLogger.logEvent(msg);
         ThreadContext.clearMap();
         // TODO: do something with the results
-
     }
 
     @AsynchronouslyFormattable
     private static class TransferMessage extends StructuredDataMessage {
-
-        /**
-         * Generated serial version ID.
-         */
+ 
         private static final long serialVersionUID = -4334703653495359785L;
 
         public TransferMessage() {

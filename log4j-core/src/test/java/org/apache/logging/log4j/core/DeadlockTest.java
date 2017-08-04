@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.junit.LoggerContextRule;
+
 import org.junit.ClassRule;
 import org.junit.Test;
 

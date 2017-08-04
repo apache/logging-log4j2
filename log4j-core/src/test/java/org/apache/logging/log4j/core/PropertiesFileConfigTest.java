@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class PropertiesFileConfigTest {
         final File file = new File(CONFIG);
         final long orig = file.lastModified();
         final long newTime = orig + 10000;
-        assertTrue("setLastModified should have succeeded.", file.setLastModified(newTime));
+        assertTrue("setLastModified() should have succeeded.", file.setLastModified(newTime));
         TimeUnit.SECONDS.sleep(MONITOR_INTERVAL_SECONDS + 1);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
