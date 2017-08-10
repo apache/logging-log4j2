@@ -64,6 +64,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * Enumeration of console destinations.
      */
     public enum Target {
+        
         /** Standard output. */
         SYSTEM_OUT {
             @Override
@@ -71,6 +72,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                 return getCharset("sun.stdout.encoding");
             }
         },
+        
         /** Standard error output. */
         SYSTEM_ERR {
             @Override
