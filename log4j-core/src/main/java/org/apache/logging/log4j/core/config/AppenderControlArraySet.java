@@ -123,4 +123,9 @@ public class AppenderControlArraySet {
     public AppenderControl[] get() {
         return appenderArray.get();
     }
+
+    @Override
+    public String toString() {
+        return "AppenderControlArraySet [appenderArray=" + appenderArray + "]";
+    }
 }
