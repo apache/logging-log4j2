@@ -42,7 +42,7 @@ import static org.junit.Assert.*;
  * set to the debug level. This allows for more debug messages as the StatusLogger will be in the error level until a
  * configuration file has been read and parsed into a tree of Nodes.
  */
-public class LoggerContextRule implements TestRule {
+public class LoggerContextRule implements TestRule, LoggerContextAccessor {
 
     public static LoggerContextRule createShutdownTimeoutLoggerContextRule(final String config) {
         return new LoggerContextRule(config, 10, TimeUnit.SECONDS);
@@ -177,6 +177,7 @@ public class LoggerContextRule implements TestRule {
      *
      * @return the current LoggerContext.
      */
+    @Override
     public LoggerContext getLoggerContext() {
         return loggerContext;
     }
