@@ -289,4 +289,12 @@ public class ListAppender extends AbstractAppender {
     public static ListAppender getListAppender(final String name) {
         return ((ListAppender) (LoggerContext.getContext(false)).getConfiguration().getAppender(name));
     }
+
+    @Override
+    public String toString() {
+        return "ListAppender [events=" + events + ", messages=" + messages + ", data=" + data + ", newLine=" + newLine
+                + ", raw=" + raw + ", countDownLatch=" + countDownLatch + ", getHandler()=" + getHandler()
+                + ", getLayout()=" + getLayout() + ", getName()=" + getName() + ", ignoreExceptions()="
+                + ignoreExceptions() + ", getFilter()=" + getFilter() + ", getState()=" + getState() + "]";
+    }
 }
