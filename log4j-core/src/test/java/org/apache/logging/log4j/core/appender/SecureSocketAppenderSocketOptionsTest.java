@@ -25,6 +25,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
 import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
 import org.apache.logging.log4j.core.net.SocketOptions;
+import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -87,7 +88,7 @@ public class SecureSocketAppenderSocketOptionsTest {
         Assert.assertNotNull(loggerContextRule.getConfiguration());
         final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
         Assert.assertNotNull(appender);
-        final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
+        final SslSocketManager manager = (SslSocketManager) appender.getManager();
         Assert.assertNotNull(manager);
         final OutputStream outputStream = manager.getOutputStream();
         Assert.assertFalse(outputStream instanceof NullOutputStream);

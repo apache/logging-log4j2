@@ -20,28 +20,43 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  *
  */
-public class SslSocketManager extends TcpSocketManager {
+public class SslSocketManager extends AbstractSocketManager {
+    public static final int DEFAULT_RECONNECTION_DELAY_MILLIS = 30000;
     public static final int DEFAULT_PORT = 6514;
     private static final SslSocketManagerFactory FACTORY = new SslSocketManagerFactory();
     private final SslConfiguration sslConfig;
+    private final int reconnectionDelayMillis;
+    private final int connectTimeoutMillis;
+    private final boolean immediateFail;
+    private final boolean retry;
+    private final SocketOptions socketOptions;
+    private Socket socket;
+    private SSLReconnector reconnector;
 
     /**
     *
@@ -64,8 +79,7 @@ public class SslSocketManager extends TcpSocketManager {
            final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
            final int connectTimeoutMillis, final int reconnectionDelayMillis, final boolean immediateFail,
            final Layout<? extends Serializable> layout, final int bufferSize) {
-       super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize, null);
-       this.sslConfig = sslConfig;
+       this(name, os, sock, sslConfig, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize, null);
    }
 
    /**
@@ -87,8 +101,18 @@ public class SslSocketManager extends TcpSocketManager {
           final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
           final int connectTimeoutMillis, final int reconnectionDelayMillis, final boolean immediateFail,
           final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
-      super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize, socketOptions);
+      super(name, os, inetAddress, host, port, layout, true, bufferSize);
       this.sslConfig = sslConfig;
+      this.socket = sock;
+      this.reconnectionDelayMillis = reconnectionDelayMillis;
+      this.connectTimeoutMillis = connectTimeoutMillis;
+      this.immediateFail = immediateFail;
+      this.retry = reconnectionDelayMillis > 0;
+      if (socket == null) {
+          this.reconnector = createReconnector();
+          this.reconnector.start();
+      }
+      this.socketOptions = socketOptions;
   }
 
     private static class SslFactoryData {
@@ -143,8 +167,7 @@ public class SslSocketManager extends TcpSocketManager {
                 connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
     }
 
-    @Override
-    protected Socket createSocket(final String host, final int port) throws IOException {
+    private Socket createSocket(final String host, final int port) throws IOException {
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
         final InetSocketAddress address = new InetSocketAddress(host, port);
         final Socket newSocket = socketFactory.createSocket();
@@ -233,5 +256,176 @@ public class SslSocketManager extends TcpSocketManager {
             }
             return socket;
         }
+    }
+
+    @Override
+    protected synchronized boolean closeOutputStream() {
+        final boolean closed = super.closeOutputStream();
+        if (reconnector != null) {
+            reconnector.shutdown();
+            reconnector.interrupt();
+            reconnector = null;
+        }
+        final Socket oldSocket = socket;
+        socket = null;
+        if (oldSocket != null) {
+            try {
+                oldSocket.close();
+            } catch (final IOException e) {
+                LOGGER.error("Could not close socket {}", socket);
+                return false;
+            }
+        }
+        return closed;
+    }
+
+    public int getConnectTimeoutMillis() {
+        return connectTimeoutMillis;
+    }
+
+    /**
+     * Gets this SslSocketManager's content format. Specified by:
+     * <ul>
+     * <li>Key: "protocol" Value: "ssl"</li>
+     * <li>Key: "direction" Value: "out"</li>
+     * </ul>
+     * 
+     * @return Map of content format keys supporting TcpSocketManager
+     */
+    @Override
+    public Map<String, String> getContentFormat() {
+        final Map<String, String> result = new HashMap<>(super.getContentFormat());
+        result.put("protocol", "ssl");
+        result.put("direction", "out");
+        return result;
+    }
+
+    @SuppressWarnings("sync-override") // synchronization on "this" is done within the method
+    @Override
+    protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
+        if (socket == null) {
+            if (reconnector != null && !immediateFail) {
+                reconnector.latch();
+            }
+            if (socket == null) {
+                throw new AppenderLoggingException("Error writing to " + getName() + ": socket not available");
+            }
+        }
+        synchronized (this) {
+            try {
+                writeAndFlush(bytes, offset, length, immediateFlush);
+            } catch (final IOException causeEx) {
+                if (retry && reconnector == null) {
+                    final String config = inetAddress + ":" + port;
+                    reconnector = createReconnector();
+                    try {
+                        reconnector.reconnect();
+                    } catch (IOException reconnEx) {
+                        LOGGER.debug("Cannot reestablish socket connection to {}: {}; starting reconnector thread {}",
+                                config, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
+                        reconnector.start();
+                        throw new AppenderLoggingException(
+                                String.format("Error sending to %s for %s", getName(), config), causeEx);
+                    }
+                    try {
+                        writeAndFlush(bytes, offset, length, immediateFlush);
+                    } catch (IOException e) {
+                        throw new AppenderLoggingException(
+                                String.format("Error writing to %s after reestablishing connection for %s", getName(),
+                                        config),
+                                causeEx);
+                    }
+                }
+            }
+        }
+    }
+
+    private void writeAndFlush(final byte[] bytes, final int offset, final int length, final boolean immediateFlush)
+            throws IOException {
+        @SuppressWarnings("resource") // outputStream is managed by this class
+        final OutputStream outputStream = getOutputStream();
+        outputStream.write(bytes, offset, length);
+        if (immediateFlush) {
+            outputStream.flush();
+        }
+    }
+
+    private SSLReconnector createReconnector() {
+        SSLReconnector recon = new SSLReconnector(this);
+        recon.setDaemon(true);
+        recon.setPriority(Thread.MIN_PRIORITY);
+        return recon;
+    }
+
+    /**
+     * Handles reconnecting to a Socket on a Thread.
+     */
+    private class SSLReconnector extends Log4jThread {
+        private final CountDownLatch latch = new CountDownLatch(1);
+        private boolean shutdown = false;
+        private final Object owner;
+
+        public SSLReconnector(final OutputStreamManager owner) {
+            super("SslSocketManager-Reconnector");
+            this.owner = owner;
+        }
+
+        public void latch() {
+            try {
+                latch.await();
+            } catch (final InterruptedException ex) {
+                // Ignore the exception.
+            }
+        }
+
+        public void shutdown() {
+            shutdown = true;
+        }
+
+        @Override
+        public void run() {
+            while (!shutdown) {
+                try {
+                    sleep(reconnectionDelayMillis);
+                    reconnect();
+                } catch (final InterruptedException ie) {
+                    LOGGER.debug("Reconnection interrupted.");
+                } catch (final ConnectException ex) {
+                    LOGGER.debug("{}:{} refused connection", host, port);
+                } catch (final IOException ioe) {
+                    LOGGER.debug("Unable to reconnect to {}:{}", host, port);
+                } finally {
+                    latch.countDown();
+                }
+            }
+        }
+
+        void reconnect() throws IOException {
+            final Socket sock = createSocket(inetAddress.getHostName(), port);
+            @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
+            final OutputStream newOS = sock.getOutputStream();
+            synchronized (owner) {
+                Closer.closeSilently(getOutputStream());
+                setOutputStream(newOS);
+                socket = sock;
+                reconnector = null;
+                shutdown();
+            }
+            LOGGER.debug("Connection to {}:{} reestablished: {}", host, port, socket);
+        }
+    }
+
+    /**
+     * USE AT YOUR OWN RISK, method is public for testing purpose only for now.
+     */
+    public SocketOptions getSocketOptions() {
+        return socketOptions;
+    }
+
+    /**
+     * USE AT YOUR OWN RISK, method is public for testing purpose only for now.
+     */
+    public Socket getSocket() {
+        return socket;
     }
 }
