@@ -60,9 +60,11 @@ public class Rfc5424LayoutTest {
     private static final String lineEscaped4 =
         "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
         "[RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
-    private static final String collectionLine = "[Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" " +
-            "ToAccount=\"123456\"][Extra@18060 Item1=\"Hello\" Item2=\"World\"][RequestContext@3692 " +
-            "ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
+    private static final String collectionLine1 = "[Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" " +
+            "ToAccount=\"123456\"]";
+    private static final String collectionLine2 = "[Extra@18060 Item1=\"Hello\" Item2=\"World\"]";
+    private static final String collectionLine3 = "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"]";
+    private static final String collectionEndOfLine = "Transfer Complete";
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
@@ -197,9 +199,15 @@ public class Rfc5424LayoutTest {
             root.info(MarkerManager.getMarker("EVENT"), collectionMessage);
 
             List<String> list = appender.getMessages();
-
-            assertTrue("Expected line 1 to end with: " + collectionLine + " Actual " + list.get(0),
-                    list.get(0).endsWith(collectionLine));
+            String result = list.get(0);
+            assertTrue("Expected line to contain " + collectionLine1 + ", Actual " + result,
+                    result.contains(collectionLine1));
+            assertTrue("Expected line to contain " + collectionLine2 + ", Actual " + result,
+                    result.contains(collectionLine2));
+            assertTrue("Expected line to contain " + collectionLine3 + ", Actual " + result,
+                    result.contains(collectionLine3));
+            assertTrue("Expected line to end with: " + collectionEndOfLine + " Actual " + result,
+                    result.endsWith(collectionEndOfLine));
 
             for (final String frame : list) {
                 int length = -1;
