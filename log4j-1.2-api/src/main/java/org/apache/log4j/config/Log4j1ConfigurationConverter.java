@@ -30,20 +30,21 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.util.BasicCommandLineArguments;
-
-import com.beust.jcommander.Parameter;
+import org.apache.logging.log4j.core.util.picocli.CommandLine;
+import org.apache.logging.log4j.core.util.picocli.CommandLine.Command;
+import org.apache.logging.log4j.core.util.picocli.CommandLine.Option;
 
 /**
  * Tool for converting a Log4j 1.x properties configuration file to Log4j 2.x XML configuration file.
- * 
+ *
  * <p>
  * Run with "--help" on the command line.
  * </p>
- * 
+ *
  * <p>
  * Example:
  * </p>
- * 
+ *
  * <pre>
  * java org.apache.log4j.config.Log4j1ConfigurationConverter --recurse
  * E:\vcs\git\apache\logging\logging-log4j2\log4j-1.2-api\src\test\resources\config-1.2\hadoop --in log4j.properties --verbose
@@ -51,21 +52,22 @@ import com.beust.jcommander.Parameter;
  */
 public final class Log4j1ConfigurationConverter {
 
-    public static class CommandLineArguments extends BasicCommandLineArguments {
+    @Command(name = "Log4j1ConfigurationConverter")
+    public static class CommandLineArguments extends BasicCommandLineArguments implements Runnable {
 
-        @Parameter(names = { "--failfast", "-f" }, description = "Fails on the first failure in recurse mode.")
+        @Option(names = { "--failfast", "-f" }, description = "Fails on the first failure in recurse mode.")
         private boolean failFast;
 
-        @Parameter(names = { "--in", "-i" }, description = "Specifies the input file.")
+        @Option(names = { "--in", "-i" }, description = "Specifies the input file.")
         private Path pathIn;
 
-        @Parameter(names = { "--out", "-o" }, description = "Specifies the output file.")
+        @Option(names = { "--out", "-o" }, description = "Specifies the output file.")
         private Path pathOut;
 
-        @Parameter(names = { "--recurse", "-r" }, description = "Recurses into this folder looking for the input file")
+        @Option(names = { "--recurse", "-r" }, description = "Recurses into this folder looking for the input file")
         private Path recurseIntoPath;
 
-        @Parameter(names = { "--verbose", "-v" }, description = "Be verbose.")
+        @Option(names = { "--verbose", "-v" }, description = "Be verbose.")
         private boolean verbose;
 
         public Path getPathIn() {
@@ -109,18 +111,25 @@ public final class Log4j1ConfigurationConverter {
         }
 
         @Override
+        public void run() {
+            if (isHelp()) {
+                CommandLine.usage(this, System.err);
+                return;
+            }
+            new Log4j1ConfigurationConverter(this).run();
+        }
+
+        @Override
         public String toString() {
             return "CommandLineArguments [recurseIntoPath=" + recurseIntoPath + ", verbose=" + verbose + ", pathIn="
                     + pathIn + ", pathOut=" + pathOut + "]";
         }
-
     }
 
     private static final String FILE_EXT_XML = ".xml";
 
     public static void main(final String[] args) {
-        new Log4j1ConfigurationConverter(BasicCommandLineArguments.parseCommandLine(args,
-                Log4j1ConfigurationConverter.class, new CommandLineArguments())).run();
+        CommandLine.run(new CommandLineArguments(), System.err, args);
     }
 
     public static Log4j1ConfigurationConverter run(final CommandLineArguments cla) {

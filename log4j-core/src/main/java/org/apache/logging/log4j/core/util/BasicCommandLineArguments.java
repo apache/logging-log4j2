@@ -16,24 +16,11 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
+import org.apache.logging.log4j.core.util.picocli.CommandLine.Option;
 
 public class BasicCommandLineArguments {
 
-    public static <T extends BasicCommandLineArguments> T parseCommandLine(final String[] mainArgs, final Class<?> clazz,
-            final T args) {
-        final JCommander jCommander = new JCommander(args);
-        jCommander.setProgramName(clazz.getName());
-        jCommander.setCaseSensitiveOptions(false); // for sanity
-        jCommander.parse(mainArgs);
-        if (args.isHelp()) {
-            jCommander.usage();
-        }
-        return args;
-    }
-
-    @Parameter(names = { "--help", "-?", "-h" }, help = true, description = "Prints this help.")
+    @Option(names = { "--help", "-?", "-h" }, usageHelp = true, description = "Prints this help and exits.")
     private boolean help;
 
     public boolean isHelp() {

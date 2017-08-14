@@ -33,12 +33,6 @@
     <projectDir>/log4j12-api</projectDir>
   </properties>
   <dependencies>
-    <!-- Command line for configuration file conversion -->
-    <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
-      <optional>true</optional>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
