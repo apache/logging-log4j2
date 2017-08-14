@@ -27,11 +27,11 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n" />
     </Console>
-    <RollingFile name="RollingFile" filePattern="${LOG_DIR}/test1-%d{MM-dd-yy-HH-mm-ss}.log">
+    <RollingFile name="RollingFile" filePattern="${LOG_DIR}/test1-$${date:MM-dd-yy-HH-mm-ss-SSS}.log">
       <PatternLayout>
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
-      <CronTriggeringPolicy schedule="0/1 * * * * ?" />
+      <SizeBasedTriggeringPolicy size="25" />
     </RollingFile>
   </Appenders>
 
