@@ -22,6 +22,11 @@ package org.apache.logging.log4j.core;
  */
 public class DefaultLoggerContextAccessor implements LoggerContextAccessor {
 
+    /**
+     * Singleton insstamce.
+     */
+    public static DefaultLoggerContextAccessor INSTANCE = new DefaultLoggerContextAccessor();
+
     /*
      * Returns the current LoggerContext.
      * 
