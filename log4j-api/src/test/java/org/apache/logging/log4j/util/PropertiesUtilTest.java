@@ -76,10 +76,6 @@ public class PropertiesUtilTest {
 
         assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.0"));
         assertEquals(StandardCharsets.US_ASCII, pu.getCharsetProperty("e.1"));
-        try {
-            pu.getCharsetProperty("e.2");
-            fail("No expected UnsupportedCharsetException");
-        } catch (final UnsupportedCharsetException ignored) {
-        }
+        assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.2"));
     }
 }

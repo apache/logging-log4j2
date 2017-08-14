@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +168,12 @@ public final class PropertiesUtil {
      */
     public Charset getCharsetProperty(final String name, final Charset defaultValue) {
         final String prop = getStringProperty(name);
-        return prop == null ? defaultValue : Charset.forName(prop);
+        try {
+            return prop == null ? defaultValue : Charset.forName(prop);
+        } catch (UnsupportedCharsetException e) {
+            LowLevelLogUtil.logException("Unable to get Charset '" + name + "', using default " + defaultValue, e);
+            return defaultValue;
+        }
     }
 
     /**
