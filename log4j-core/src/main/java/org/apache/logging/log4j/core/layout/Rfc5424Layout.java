@@ -51,8 +51,11 @@ import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageCollectionMessage;
+import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.ProcessIdUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -190,8 +193,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final String name = config == null ? null : config.getName();
         configName = Strings.isNotEmpty(name) ? name : null;
         this.fieldFormatters = createFieldFormatters(loggerFields, config);
-        // TODO Java 9: ProcessHandle.current().getPid();
-        this.procId = "-";
+        this.procId = ProcessIdUtil.getProcessId();
     }
 
     private Map<String, FieldFormatter> createFieldFormatters(final LoggerFields[] loggerFields,
@@ -331,8 +333,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private void appendMessage(final StringBuilder buffer, final LogEvent event) {
         final Message message = event.getMessage();
         // This layout formats StructuredDataMessages instead of delegating to the Message itself.
-        final String text = (message instanceof StructuredDataMessage) ? message.getFormat() : message
-                .getFormattedMessage();
+        final String text = (message instanceof StructuredDataMessage || message instanceof MessageCollectionMessage)
+                ? message.getFormat() : message.getFormattedMessage();
 
         if (text != null && text.length() > 0) {
             buffer.append(' ').append(escapeNewlines(text, escapeNewLine));
@@ -352,7 +354,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private void appendStructuredElements(final StringBuilder buffer, final LogEvent event) {
         final Message message = event.getMessage();
-        final boolean isStructured = message instanceof StructuredDataMessage;
+        final boolean isStructured = message instanceof StructuredDataMessage ||
+                message instanceof StructuredDataCollectionMessage;
 
         if (!isStructured && (fieldFormatters != null && fieldFormatters.isEmpty()) && !includeMdc) {
             buffer.append('-');
@@ -387,18 +390,12 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         if (isStructured) {
-            final StructuredDataMessage data = (StructuredDataMessage) message;
-            final Map<String, String> map = data.getData();
-            final StructuredDataId id = data.getId();
-            final String sdId = getId(id);
-
-            if (sdElements.containsKey(sdId)) {
-                final StructuredDataElement union = sdElements.get(id.toString());
-                union.union(map);
-                sdElements.put(sdId, union);
+            if (message instanceof MessageCollectionMessage) {
+                for (StructuredDataMessage data : ((StructuredDataCollectionMessage)message)) {
+                    addStructuredData(sdElements, data);
+                }
             } else {
-                final StructuredDataElement formattedData = new StructuredDataElement(map, eventPrefix, false);
-                sdElements.put(sdId, formattedData);
+                addStructuredData(sdElements, (StructuredDataMessage) message);
             }
         }
 
@@ -409,6 +406,21 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         for (final Map.Entry<String, StructuredDataElement> entry : sdElements.entrySet()) {
             formatStructuredElement(entry.getKey(), entry.getValue(), buffer, listChecker);
+        }
+    }
+
+    private void addStructuredData(final Map<String, StructuredDataElement> sdElements, final StructuredDataMessage data) {
+        final Map<String, String> map = data.getData();
+        final StructuredDataId id = data.getId();
+        final String sdId = getId(id);
+
+        if (sdElements.containsKey(sdId)) {
+            final StructuredDataElement union = sdElements.get(id.toString());
+            union.union(map);
+            sdElements.put(sdId, union);
+        } else {
+            final StructuredDataElement formattedData = new StructuredDataElement(map, eventPrefix, false);
+            sdElements.put(sdId, formattedData);
         }
     }
 

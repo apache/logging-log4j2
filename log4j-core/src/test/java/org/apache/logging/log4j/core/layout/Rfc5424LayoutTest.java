@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.junit.ThreadContextRule;
+import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -58,6 +60,9 @@ public class Rfc5424LayoutTest {
     private static final String lineEscaped4 =
         "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
         "[RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
+    private static final String collectionLine = "[Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" " +
+            "ToAccount=\"123456\"][Extra@18060 Item1=\"Hello\" Item2=\"World\"][RequestContext@3692 " +
+            "ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
@@ -148,6 +153,72 @@ public class Rfc5424LayoutTest {
             list = appender.getMessages();
             assertTrue("No messages expected, found " + list.size(), list.isEmpty());
         } finally {
+            ThreadContext.clearMap();
+            root.removeAppender(appender);
+            appender.stop();
+        }
+    }
+
+    /**
+     * Test case for MDC conversion pattern.
+     */
+    @Test
+    public void testCollection() throws Exception {
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+        // set up appender
+        final AbstractStringLayout layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext",
+                null, null, true, null, "ATM", null, "key1, key2, locale", null, "loginId", null, true, null, null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+
+        appender.start();
+
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+
+        ThreadContext.put("loginId", "JohnDoe");
+        ThreadContext.put("ipAddress", "192.168.0.120");
+        ThreadContext.put("locale", Locale.US.getDisplayName());
+        try {
+            final StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
+            msg.put("ToAccount", "123456");
+            msg.put("FromAccount", "123457");
+            msg.put("Amount", "200.00");
+            final StructuredDataMessage msg2 = new StructuredDataMessage("Extra@18060", null, "Audit");
+            msg2.put("Item1", "Hello");
+            msg2.put("Item2", "World");
+            List<StructuredDataMessage> messages = new ArrayList<>();
+            messages.add(msg);
+            messages.add(msg2);
+            final StructuredDataCollectionMessage collectionMessage = new StructuredDataCollectionMessage(messages);
+
+            root.info(MarkerManager.getMarker("EVENT"), collectionMessage);
+
+            List<String> list = appender.getMessages();
+
+            assertTrue("Expected line 1 to end with: " + collectionLine + " Actual " + list.get(0),
+                    list.get(0).endsWith(collectionLine));
+
+            for (final String frame : list) {
+                int length = -1;
+                final int frameLength = frame.length();
+                final int firstSpacePosition = frame.indexOf(' ');
+                final String messageLength = frame.substring(0, firstSpacePosition);
+                try {
+                    length = Integer.parseInt(messageLength);
+                    // the ListAppender removes the ending newline, so we expect one less size
+                    assertEquals(frameLength, messageLength.length() + length);
+                }
+                catch (final NumberFormatException e) {
+                    assertTrue("Not a valid RFC 5425 frame", false);
+                }
+            }
+
+            appender.clear();
+        } finally {
+            ThreadContext.clearMap();
             root.removeAppender(appender);
             appender.stop();
         }
