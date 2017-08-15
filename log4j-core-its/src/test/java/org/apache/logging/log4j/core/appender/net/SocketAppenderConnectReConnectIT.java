@@ -29,7 +29,11 @@ import org.junit.Test;
 /**
  * Tests that a Socket Appender can reconnect to a server after it has been recycled.
  * <p>
- * LOG4J2-1311 SocketAppender will lost first serveral logs after re-connection to log servers.
+ * LOG4J2-1311 SocketAppender will lost first several logs after re-connection to log servers.
+ * </p>
+ * <p>
+ * See also LOG4J2-1934 JMS Appender does not know how to recover from a broken connection. See
+ * https://issues.apache.org/jira/browse/LOG4J2-1934
  * </p>
  * <p>
  * This test class' single test method performs the following:

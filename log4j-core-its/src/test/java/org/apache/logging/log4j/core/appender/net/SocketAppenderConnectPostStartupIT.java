@@ -26,9 +26,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests that a JMS Appender start when there is no broker and connect the broker when it is started later..
+ * Tests that a Socket Appender starts when there is no broker and connect the broker when it is started later..
  * <p>
- * LOG4J2-1934 JMS Appender does not know how to recover from a broken connection. See
+ * LOG4J2-1311 SocketAppender will lost first several logs after re-connection to log servers.
+ * </p>
+ * <p>
+ * See also LOG4J2-1934 JMS Appender does not know how to recover from a broken connection. See
  * https://issues.apache.org/jira/browse/LOG4J2-1934
  * </p>
  * <p>
