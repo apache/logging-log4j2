@@ -24,6 +24,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class SslConfigurationTest {
@@ -31,6 +32,23 @@ public class SslConfigurationTest {
     private static final String TLS_TEST_HOST = "login.yahoo.com";
     private static final int TLS_TEST_PORT = 443;
 
+    public static SslConfiguration createTestSslConfiguration() throws StoreConfigurationException {
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
+                TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null);
+        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
+                TestConstants.TRUSTSTORE_PWD, null, null);
+        return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
+    }
+
+    @Test 
+    public void testGettersFromScratch() throws StoreConfigurationException {
+        Assert.assertNotNull(createTestSslConfiguration().getProtocol());
+        Assert.assertNotNull(createTestSslConfiguration().getKeyStoreConfig());
+        Assert.assertNotNull(createTestSslConfiguration().getSslContext());
+        Assert.assertNotNull(createTestSslConfiguration().getSslSocketFactory());
+        Assert.assertNotNull(createTestSslConfiguration().getTrustStoreConfig());
+    }
+    
     @Test
     public void equals() {
         Assert.assertEquals(SslConfiguration.createSSLConfiguration(null, null, null), SslConfiguration.createSSLConfiguration(null, null, null));
