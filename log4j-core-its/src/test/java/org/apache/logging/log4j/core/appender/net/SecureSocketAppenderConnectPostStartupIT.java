@@ -55,7 +55,7 @@ public class SecureSocketAppenderConnectPostStartupIT extends AbstractSocketAppe
 
     @Before
     public void initServerSocketFactory() throws StoreConfigurationException {
-        sslConfiguration = SslConfigurationTest.createTestSslConfiguration();
+        sslConfiguration = SslConfigurationTest.createTestSslConfigurationResources();
     }
 
     @Test

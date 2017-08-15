@@ -21,12 +21,19 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Represents the source for the logging configuration.
@@ -208,5 +215,74 @@ public class ConfigurationSource {
         }
         final int length = data == null ? -1 : data.length;
         return "stream (" + length + " bytes, unknown location)";
+    }
+
+    /**
+     * Loads the configuration from a URI.
+     * @param configLocation A URI representing the location of the configuration.
+     * @return The ConfigurationSource for the configuration.
+     */
+    public static ConfigurationSource fromUri(final URI configLocation) {
+        final File configFile = FileUtils.fileFromUri(configLocation);
+        if (configFile != null && configFile.exists() && configFile.canRead()) {
+            try {
+                return new ConfigurationSource(new FileInputStream(configFile), configFile);
+            } catch (final FileNotFoundException ex) {
+                ConfigurationFactory.LOGGER.error("Cannot locate file {}", configLocation.getPath(), ex);
+            }
+        }
+        if (ConfigurationFactory.isClassLoaderUri(configLocation)) {
+            final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
+            final String path = ConfigurationFactory.extractClassLoaderUriPath(configLocation);
+            final ConfigurationSource source = fromResource(path, loader);
+            if (source != null) {
+                return source;
+            }
+        }
+        if (!configLocation.isAbsolute()) { // LOG4J2-704 avoid confusing error message thrown by uri.toURL()
+            ConfigurationFactory.LOGGER.error("File not found in file system or classpath: {}", configLocation.toString());
+            return null;
+        }
+        try {
+            return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.toURL());
+        } catch (final MalformedURLException ex) {
+            ConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
+        } catch (final Exception ex) {
+            ConfigurationFactory.LOGGER.error("Unable to access {}", configLocation.toString(), ex);
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves the configuration via the ClassLoader.
+     * @param resource The resource to load.
+     * @param loader The default ClassLoader to use.
+     * @return The ConfigurationSource for the configuration.
+     */
+    public static ConfigurationSource fromResource(final String resource, final ClassLoader loader) {
+        final URL url = Loader.getResource(resource, loader);
+        if (url == null) {
+            return null;
+        }
+        InputStream is = null;
+        try {
+            is = url.openStream();
+        } catch (final IOException ioe) {
+            ConfigurationFactory.LOGGER.catching(Level.DEBUG, ioe);
+            return null;
+        }
+        if (is == null) {
+            return null;
+        }
+    
+        if (FileUtils.isFile(url)) {
+            try {
+                return new ConfigurationSource(is, FileUtils.fileFromUri(url.toURI()));
+            } catch (final URISyntaxException ex) {
+                // Just ignore the exception.
+                ConfigurationFactory.LOGGER.catching(Level.DEBUG, ex);
+            }
+        }
+        return new ConfigurationSource(is, url);
     }
 }

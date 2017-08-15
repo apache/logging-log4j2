@@ -32,7 +32,15 @@ public class SslConfigurationTest {
     private static final String TLS_TEST_HOST = "login.yahoo.com";
     private static final int TLS_TEST_PORT = 443;
 
-    public static SslConfiguration createTestSslConfiguration() throws StoreConfigurationException {
+    public static SslConfiguration createTestSslConfigurationResources() throws StoreConfigurationException {
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE_RESOURCE,
+                TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null);
+        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE_RESOURCE,
+                TestConstants.TRUSTSTORE_PWD, null, null);
+        return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
+    }
+
+    public static SslConfiguration createTestSslConfigurationFiles() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
                 TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
@@ -41,12 +49,21 @@ public class SslConfigurationTest {
     }
 
     @Test 
-    public void testGettersFromScratch() throws StoreConfigurationException {
-        Assert.assertNotNull(createTestSslConfiguration().getProtocol());
-        Assert.assertNotNull(createTestSslConfiguration().getKeyStoreConfig());
-        Assert.assertNotNull(createTestSslConfiguration().getSslContext());
-        Assert.assertNotNull(createTestSslConfiguration().getSslSocketFactory());
-        Assert.assertNotNull(createTestSslConfiguration().getTrustStoreConfig());
+    public void testGettersFromScratchFiles() throws StoreConfigurationException {
+        Assert.assertNotNull(createTestSslConfigurationFiles().getProtocol());
+        Assert.assertNotNull(createTestSslConfigurationFiles().getKeyStoreConfig());
+        Assert.assertNotNull(createTestSslConfigurationFiles().getSslContext());
+        Assert.assertNotNull(createTestSslConfigurationFiles().getSslSocketFactory());
+        Assert.assertNotNull(createTestSslConfigurationFiles().getTrustStoreConfig());
+    }
+    
+    @Test 
+    public void testGettersFromScratchResources() throws StoreConfigurationException {
+        Assert.assertNotNull(createTestSslConfigurationResources().getProtocol());
+        Assert.assertNotNull(createTestSslConfigurationResources().getKeyStoreConfig());
+        Assert.assertNotNull(createTestSslConfigurationResources().getSslContext());
+        Assert.assertNotNull(createTestSslConfigurationResources().getSslSocketFactory());
+        Assert.assertNotNull(createTestSslConfigurationResources().getTrustStoreConfig());
     }
     
     @Test

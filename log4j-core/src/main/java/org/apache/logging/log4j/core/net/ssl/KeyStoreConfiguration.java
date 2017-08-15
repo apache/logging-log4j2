@@ -63,7 +63,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      * Creates a KeyStoreConfiguration.
      *
      * @param location
-     *        The location of the KeyStore.
+     *        The location of the KeyStore, a file path, URL or resource.
      * @param password
      *        The password to access the KeyStore.
      * @param keyStoreType
@@ -89,7 +89,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      * Creates a KeyStoreConfiguration.
      *
      * @param location
-     *        The location of the KeyStore.
+     *        The location of the KeyStore, a file path, URL or resource.
      * @param password
      *        The password to access the KeyStore.
      * @param keyStoreType

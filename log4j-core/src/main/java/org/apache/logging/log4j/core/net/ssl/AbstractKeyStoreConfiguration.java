@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.util.NetUtils;
 
 /**
  * Configuration of the KeyStore
@@ -59,7 +62,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             if (loadLocation == null) {
                 throw new IOException("The location is null");
             }
-            try (final FileInputStream fin = new FileInputStream(loadLocation)) {
+            try (final InputStream fin = openInputStream(loadLocation)) {
                 final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
                 ks.load(fin, this.getPasswordAsCharArray());
                 LOGGER.debug("Keystore successfully loaded with params(location={})", loadLocation);
@@ -81,6 +84,10 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             LOGGER.error("Something is wrong with the format of the keystore or the given password", e);
             throw new StoreConfigurationException(e);
         }
+    }
+
+    private InputStream openInputStream(final String filePathOrUri) {
+        return ConfigurationSource.fromUri(NetUtils.toURI(filePathOrUri)).getInputStream();
     }
 
     public KeyStore getKeyStore() {
