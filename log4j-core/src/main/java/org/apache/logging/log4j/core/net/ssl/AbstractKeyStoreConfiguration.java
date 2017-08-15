@@ -31,6 +31,19 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
     private final KeyStore keyStore;
     private final String keyStoreType;
 
+    public AbstractKeyStoreConfiguration(final String location, final char[] password, final String keyStoreType)
+            throws StoreConfigurationException {
+        super(location, password);
+        this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
+        this.keyStore = this.load();
+    }
+
+    /*
+     * @deprecated Use
+     * org.apache.logging.log4j.core.net.ssl.AbstractKeyStoreConfiguration.AbstractKeyStoreConfiguration(String, char[],
+     * String)
+     */
+    @Deprecated
     public AbstractKeyStoreConfiguration(final String location, final String password, final String keyStoreType)
             throws StoreConfigurationException {
         super(location, password);

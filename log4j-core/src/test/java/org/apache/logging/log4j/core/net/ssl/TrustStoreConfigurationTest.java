@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TrustStoreConfigurationTest {
     @Test(expected = StoreConfigurationException.class)
     public void loadEmptyConfiguration() throws StoreConfigurationException {
-        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(null, null, null, null);
+        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(null, TestConstants.NULL_PWD, null, null);
         final KeyStore ks = ksc.getKeyStore();
         Assert.assertTrue(ks == null);
     }
@@ -46,7 +46,7 @@ public class TrustStoreConfigurationTest {
 
     @Test(expected = StoreConfigurationException.class)
     public void wrongPassword() throws StoreConfigurationException {
-        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, "wrongPassword!", null, null);
+        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, "wrongPassword!".toCharArray(), null, null);
         ksc.getKeyStore();
         Assert.assertTrue(false);
     }

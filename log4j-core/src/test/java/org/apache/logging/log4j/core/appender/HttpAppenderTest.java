@@ -67,7 +67,7 @@ public class HttpAppenderTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort()
         .keystorePath(TestConstants.KEYSTORE_FILE)
-        .keystorePassword(TestConstants.KEYSTORE_PWD)
+        .keystorePassword(String.valueOf(TestConstants.KEYSTORE_PWD))
         .keystoreType(TestConstants.KEYSTORE_TYPE));
 
     @Test

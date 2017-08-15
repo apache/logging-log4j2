@@ -24,7 +24,7 @@ import org.junit.Test;
 public class KeyStoreConfigurationTest {
     @Test(expected = StoreConfigurationException.class)
     public void loadEmptyConfiguration() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(null, null, null, null);
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(null, TestConstants.NULL_PWD, null, null);
         final KeyStore ks = ksc.getKeyStore();
         Assert.assertTrue(ks == null);
     }

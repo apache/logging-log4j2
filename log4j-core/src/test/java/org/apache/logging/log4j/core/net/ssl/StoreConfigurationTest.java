@@ -26,7 +26,7 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
     @Test
     public void equalsWithNotNullValues() {
         final String location = "/to/the/file.jks";
-        final String password = "changeit";
+        final char[] password = "changeit".toCharArray();
         final StoreConfiguration<Object> a = new StoreConfiguration<>(location, password);
         final StoreConfiguration<Object> b = new StoreConfiguration<>(location, password);
 
@@ -37,9 +37,9 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
     @Test
     public void equalsWithNullAndNotNullValues() {
         final String location = "/to/the/file.jks";
-        final String password = "changeit";
+        final char[] password = "changeit".toCharArray();
         final StoreConfiguration<Object> a = new StoreConfiguration<>(location, password);
-        final StoreConfiguration<Object> b = new StoreConfiguration<>(null, null);
+        final StoreConfiguration<Object> b = new StoreConfiguration<>(null, (char[]) null);
 
         Assert.assertTrue(a.equals(b));
         Assert.assertTrue(b.equals(a));
@@ -47,8 +47,8 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
 
     @Test
     public void equalsWithNullValues() {
-        final StoreConfiguration<Object> a = new StoreConfiguration<>(null, null);
-        final StoreConfiguration<Object> b = new StoreConfiguration<>(null, null);
+        final StoreConfiguration<Object> a = new StoreConfiguration<>(null, (char[]) null);
+        final StoreConfiguration<Object> b = new StoreConfiguration<>(null, (char[]) null);
 
         Assert.assertTrue(a.equals(b));
         Assert.assertTrue(b.equals(a));

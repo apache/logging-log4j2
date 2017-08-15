@@ -27,8 +27,17 @@ public class StoreConfiguration<T> {
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private String location;
-    private char[] password;
+    private char[] password; // TODO get and set in some obfuscated or encrypted format?
 
+    public StoreConfiguration(final String location, final char[] password) {
+        this.location = location;
+        this.password = password == null ? null : password;
+    }
+
+    /**
+     * @deprecated Use StoreConfiguration(String, char[])
+     */
+    @Deprecated
     public StoreConfiguration(final String location, final String password) {
         this.location = location;
         this.password = password == null ? null : password.toCharArray();
@@ -55,7 +64,7 @@ public class StoreConfiguration<T> {
     }
 
     /**
-     * @throws StoreConfigurationException May be thrown by subclasses 
+     * @throws StoreConfigurationException May be thrown by subclasses
      */
     protected T load() throws StoreConfigurationException {
         return null;
@@ -93,5 +102,5 @@ public class StoreConfiguration<T> {
             return false;
         }
         return true;
-    }    
+    }
 }
