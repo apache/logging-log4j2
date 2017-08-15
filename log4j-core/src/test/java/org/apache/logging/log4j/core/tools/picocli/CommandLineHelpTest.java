@@ -14,20 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util.picocli;
+package org.apache.logging.log4j.core.tools.picocli;
 
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Ansi.IStyle;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Ansi.Style;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Ansi.Text;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.ColorScheme;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.TextTable;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Option;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Parameters;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Command;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.ColorScheme;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.TextTable;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Option;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Parameters;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Command;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

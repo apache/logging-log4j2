@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util.picocli;
+package org.apache.logging.log4j.core.tools.picocli;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
 
 import static java.util.concurrent.TimeUnit.*;
 import static org.junit.Assert.*;
-import static org.apache.logging.log4j.core.util.picocli.CommandLine.*;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.*;
 
 /**
  * Tests for the CommandLine argument parsing interpreter functionality.

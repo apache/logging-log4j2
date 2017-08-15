@@ -14,23 +14,23 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util.picocli;
+package org.apache.logging.log4j.core.tools.picocli;
 
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Ansi.Text;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Column;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.IOptionRenderer;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.IParameterRenderer;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Layout;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.TextTable;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.IOptionRenderer;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.IParameterRenderer;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Layout;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.TextTable;
 
 import java.awt.Point;
 import java.lang.reflect.Field;
 
-import static org.apache.logging.log4j.core.util.picocli.CommandLine.*;
-import static org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Column.Overflow.*;
-import static org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Column.Overflow.SPAN;
-import static org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
-import static org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Column.Overflow.WRAP;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.*;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.*;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;
 
 /**
  * Demonstrates how the CommandLine.Help API can be used to create custom layouts for usage help messages.

@@ -29,10 +29,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.core.util.BasicCommandLineArguments;
-import org.apache.logging.log4j.core.util.picocli.CommandLine;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Command;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Option;
+import org.apache.logging.log4j.core.tools.BasicCommandLineArguments;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Command;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Option;
 
 /**
  * Tool for converting a Log4j 1.x properties configuration file to Log4j 2.x XML configuration file.

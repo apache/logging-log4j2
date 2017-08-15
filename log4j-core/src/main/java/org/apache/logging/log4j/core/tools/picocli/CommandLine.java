@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util.picocli;
+package org.apache.logging.log4j.core.tools.picocli;
 
 import java.awt.Point;
 import java.io.File;
@@ -62,15 +62,15 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Ansi;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Ansi.IStyle;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Ansi.Style;
-import org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Ansi.Text;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
 
 import static java.util.Locale.ENGLISH;
-import static org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Column.Overflow.SPAN;
-import static org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
-import static org.apache.logging.log4j.core.util.picocli.CommandLine.Help.Column.Overflow.WRAP;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;
 
 /**
  * <p>
