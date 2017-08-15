@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SslConfigurationTest {
+    
     private static final String TLS_TEST_HOST = "login.yahoo.com";
     private static final int TLS_TEST_PORT = 443;
 
