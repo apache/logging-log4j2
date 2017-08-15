@@ -71,7 +71,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         SYSTEM_OUT {
             @Override
             public Charset getDefaultCharset() {
-                return getCharset("sun.stdout.encoding");
+                return getCharset("sun.stdout.encoding", Charset.defaultCharset());
             }
         },
         
@@ -79,14 +79,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         SYSTEM_ERR {
             @Override
             public Charset getDefaultCharset() {
-                return getCharset("sun.stderr.encoding");
+                return getCharset("sun.stderr.encoding", Charset.defaultCharset());
             }
         };
         
         public abstract Charset getDefaultCharset();
         
-        protected Charset getCharset(final String property) {
-            return new PropertiesUtil(PropertiesUtil.getSystemProperties()).getCharsetProperty(property);
+        protected Charset getCharset(final String property, Charset defaultCharset) {
+            return new PropertiesUtil(PropertiesUtil.getSystemProperties()).getCharsetProperty(property, defaultCharset);
         }
 
     }

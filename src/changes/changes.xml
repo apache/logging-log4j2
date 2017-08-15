@@ -55,6 +55,9 @@
       <action issue="LOG4J2-1864" dev="mattsicker" type="add" due-to="Matthias Kappeller">
         Support capped collections for MongoDb appender.
       </action>
+      <action issue="LOG4J2-1888" dev="ggregory" type="fix" due-to="Misagh Moayyed">
+        Log4j throws a java.nio.charset.UnsupportedCharsetException: cp65001.
+      </action>
       <action issue="LOG4J2-1990" dev="ggregory" type="fix" due-to="Philippe Mouawad">
         ConcurrentModificationException logging a parameter of type Map.
       </action>
