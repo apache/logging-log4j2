@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationTest;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
-import org.apache.logging.log4j.server.JsonInputStreamLogEventBridge;
 import org.apache.logging.log4j.server.SecureTcpSocketServer;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.Assert;
@@ -84,7 +83,7 @@ public class SecureSocketAppenderConnectPostStartupIT extends AbstractSocketAppe
         }
         //
         // Start server
-        server = new SecureTcpSocketServer<>(port, new JsonInputStreamLogEventBridge(), sslConfiguration);
+        server = SecureTcpSocketServer.createJsonServer(port, sslConfiguration);
         // Wait to allow the reconnect thread to connect
         startServer(((SslSocketManager) appender.getManager()).getReconnectionDelayMillis() * 2);
         //
