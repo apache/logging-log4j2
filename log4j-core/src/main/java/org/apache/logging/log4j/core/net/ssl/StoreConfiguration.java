@@ -51,6 +51,11 @@ public class StoreConfiguration<T> {
         this.location = location;
     }
 
+    /**
+     * 
+     * @deprecated Use getPasswordAsCharArray()
+     */
+    @Deprecated
     public String getPassword() {
         return String.valueOf(this.password);
     }
