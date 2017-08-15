@@ -53,15 +53,16 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
 
     @Override
     protected KeyStore load() throws StoreConfigurationException {
-        LOGGER.debug("Loading keystore from file with params(location={})", this.getLocation());
+        final String loadLocation = this.getLocation();
+        LOGGER.debug("Loading keystore from file with params(location={})", loadLocation);
         try {
-            if (this.getLocation() == null) {
+            if (loadLocation == null) {
                 throw new IOException("The location is null");
             }
-            try (final FileInputStream fin = new FileInputStream(this.getLocation())) {
+            try (final FileInputStream fin = new FileInputStream(loadLocation)) {
                 final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
                 ks.load(fin, this.getPasswordAsCharArray());
-                LOGGER.debug("Keystore successfully loaded with params(location={})", this.getLocation());
+                LOGGER.debug("Keystore successfully loaded with params(location={})", loadLocation);
                 return ks;
             }
         } catch (final CertificateException e) {
@@ -74,7 +75,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             LOGGER.error(e);
             throw new StoreConfigurationException(e);
         } catch (final FileNotFoundException e) {
-            LOGGER.error("The keystore file(" + this.getLocation() + ") is not found", e);
+            LOGGER.error("The keystore file(" + loadLocation + ") is not found", e);
             throw new StoreConfigurationException(e);
         } catch (final IOException e) {
             LOGGER.error("Something is wrong with the format of the keystore or the given password", e);
