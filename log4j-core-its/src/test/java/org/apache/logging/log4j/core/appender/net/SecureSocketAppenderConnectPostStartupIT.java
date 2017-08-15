@@ -20,11 +20,9 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.net.SslSocketManager;
-import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfigurationTest;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
-import org.apache.logging.log4j.core.net.ssl.TestConstants;
-import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.server.JsonInputStreamLogEventBridge;
 import org.apache.logging.log4j.server.SecureTcpSocketServer;
 import org.apache.logging.log4j.test.AvailablePortFinder;
@@ -57,11 +55,7 @@ public class SecureSocketAppenderConnectPostStartupIT extends AbstractSocketAppe
 
     @Before
     public void initServerSocketFactory() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null);
-        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
-                TestConstants.TRUSTSTORE_PWD, null, null);
-        sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
+        sslConfiguration = SslConfigurationTest.createTestSslConfiguration();
     }
 
     @Test
