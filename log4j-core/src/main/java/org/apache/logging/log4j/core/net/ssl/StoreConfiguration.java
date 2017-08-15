@@ -64,6 +64,15 @@ public class StoreConfiguration<T> {
         return this.password;
     }
 
+    public void setPassword(final char[] password) {
+        this.password = password;
+    }
+
+    /**
+     * 
+     * @deprecated Use getPasswordAsCharArray()
+     */
+    @Deprecated
     public void setPassword(final String password) {
         this.password = password == null ? null : password.toCharArray();
     }
