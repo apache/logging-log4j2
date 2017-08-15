@@ -139,7 +139,6 @@ public class FileRenameAction extends AbstractAction {
                                         exDelete.getClass().getName(), exDelete.getMessage());
                                 try {
                                     new PrintWriter(source.getAbsolutePath()).close();
-                                    result = true;
                                     LOGGER.trace("Renamed file {} to {} with copy and truncation",
                                             source.getAbsolutePath(), destination.getAbsolutePath());
                                 } catch (final IOException exOwerwrite) {
@@ -181,4 +180,3 @@ public class FileRenameAction extends AbstractAction {
     }
 
 }
-
