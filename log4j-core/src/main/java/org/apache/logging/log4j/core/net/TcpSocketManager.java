@@ -428,7 +428,7 @@ public class TcpSocketManager extends AbstractSocketManager {
             try {
                 inetAddress = InetAddress.getByName(data.host);
             } catch (final UnknownHostException ex) {
-                LOGGER.error("Could not find address of " + data.host, ex, ex);
+                LOGGER.error("Could not find address of {}: {}", data.host, ex, ex);
                 return null;
             }
             Socket socket = null;
@@ -440,7 +440,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                         data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
                         data.bufferSize, data.socketOptions);
             } catch (final IOException ex) {
-                LOGGER.error("TcpSocketManager (" + name + ") caught exception and will continue:" + ex, ex);
+                LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex, ex);
                 os = NullOutputStream.getInstance();
             }
             if (data.reconnectDelayMillis == 0) {
