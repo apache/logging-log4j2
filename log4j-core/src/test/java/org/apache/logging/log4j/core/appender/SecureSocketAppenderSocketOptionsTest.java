@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestSe
 import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
 import org.apache.logging.log4j.core.net.SocketOptions;
 import org.apache.logging.log4j.core.net.SslSocketManager;
-import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
@@ -123,7 +122,7 @@ public class SecureSocketAppenderSocketOptionsTest {
         Assume.assumeTrue("Run only on Java 7", System.getProperty("java.specification.version").equals("1.7"));
         Assume.assumeFalse("Do not run on Travis CI", "true".equals(System.getenv("TRAVIS")));
         final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
-        final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
+        final SslSocketManager manager = (SslSocketManager) appender.getManager();
         final Socket socket = manager.getSocket();
         Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(), socket.getTrafficClass());
     }

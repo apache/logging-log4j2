@@ -35,8 +35,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
@@ -48,6 +46,10 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.net.Protocol;
+import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.TestConstants;
+import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.test.AvailablePortFinder;
@@ -58,25 +60,40 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  *
  */
 public class SocketAppenderTest {
 
     private static final int PORT = AvailablePortFinder.getNextAvailable();
+    private static final int SSL_PORT = AvailablePortFinder.getNextAvailable();
     private static final int DYN_PORT = AvailablePortFinder.getNextAvailable();
     private static final int ERROR_PORT = AvailablePortFinder.getNextAvailable();
 
     private static TcpSocketTestServer tcpServer;
+    private static SslSocketTestServer sslServer;
     private static UdpSocketTestServer udpServer;
 
     private final LoggerContext context = LoggerContext.getContext();
     private final Logger logger = context.getLogger(SocketAppenderTest.class.getName());
+    
+    private static SslConfiguration sslConfiguration;
 
     @BeforeClass
     public static void setupClass() throws Exception {
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
+                TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null);
+        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
+                TestConstants.TRUSTSTORE_PWD, null, null);
+        sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
+        
         tcpServer = new TcpSocketTestServer(PORT);
         tcpServer.start();
+        sslServer = new SslSocketTestServer(SSL_PORT, sslConfiguration);
+        sslServer.start();
         udpServer = new UdpSocketTestServer();
         udpServer.start();
         LoggerContext.getContext().reconfigure();
@@ -86,6 +103,7 @@ public class SocketAppenderTest {
     @AfterClass
     public static void cleanupClass() {
         tcpServer.shutdown();
+        sslServer.shutdown();
         udpServer.shutdown();
         ThreadContext.clearAll();
     }
@@ -108,6 +126,7 @@ public class SocketAppenderTest {
 
     static void reset() {
         tcpServer.reset();
+        sslServer.reset();
         udpServer.reset();
     }
 
@@ -166,6 +185,56 @@ public class SocketAppenderTest {
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("Throwing an exception"));
         assertTrue("Message not delivered via TCP", tcpTestServer.getCount() > 1);
+        assertEquals(expectedUuidStr, event.getContextStack().pop());
+        assertNotNull(event.getThrownProxy());
+        assertEquals(expectedExMsg, event.getThrownProxy().getMessage());
+    }
+
+    @Test
+    public void testSslAppender() throws Exception {
+        // @formatter:off
+        final SocketAppender appender = SocketAppender.newBuilder()
+                .withHost("localhost")
+                .withPort(sslServer.getLocalPort())
+                .withReconnectDelayMillis(-1)
+                .withName("test")
+                .withImmediateFail(false)
+                .withBufferSize(Constants.ENCODER_BYTE_BUFFER_SIZE)
+                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .withSslConfiguration(sslConfiguration)
+                .build();
+        // @formatter:on
+        appender.start();
+        Assert.assertEquals(Constants.ENCODER_BYTE_BUFFER_SIZE, appender.getManager().getByteBuffer().capacity());
+
+        // set appender on root and set level to debug
+        logger.addAppender(appender);
+        logger.setAdditive(false);
+        logger.setLevel(Level.DEBUG);
+        final String tcKey = "UUID";
+        final String expectedUuidStr = UUID.randomUUID().toString();
+        ThreadContext.put(tcKey, expectedUuidStr);
+        ThreadContext.push(expectedUuidStr);
+        final String expectedExMsg = "This is a test";
+        try {
+            logger.debug("This is a test message");
+            final Throwable child = new LoggingException(expectedExMsg);
+            logger.error("Throwing an exception", child);
+            logger.debug("This is another test message");
+        } finally {
+            ThreadContext.remove(tcKey);
+            ThreadContext.pop();
+        }
+        Thread.sleep(250);
+        LogEvent event = sslServer.getQueue().poll(3, TimeUnit.SECONDS);
+        assertNotNull("No event retrieved", event);
+        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
+        assertTrue("Message not delivered via TLS", sslServer.getCount() > 0);
+        assertEquals(expectedUuidStr, event.getContextData().getValue(tcKey));
+        event = sslServer.getQueue().poll(3, TimeUnit.SECONDS);
+        assertNotNull("No event retrieved", event);
+        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("Throwing an exception"));
+        assertTrue("Message not delivered via TLS", sslServer.getCount() > 1);
         assertEquals(expectedUuidStr, event.getContextStack().pop());
         assertNotNull(event.getThrownProxy());
         assertEquals(expectedExMsg, event.getThrownProxy().getMessage());
@@ -397,5 +466,68 @@ public class SocketAppenderTest {
             return count;
         }
     }
+    
+    private static class SslSocketTestServer extends Thread {
 
+        private volatile boolean shutdown = false;
+        private volatile int count = 0;
+        private final BlockingQueue<LogEvent> queue;
+        private final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
+        private final int port;
+        private final SslConfiguration sslConfiguration;
+
+        public SslSocketTestServer(int port, SslConfiguration sslConfiguration) {
+            this.queue = new ArrayBlockingQueue<>(10);
+            this.port = port;
+            this.sslConfiguration = sslConfiguration;
+        }
+
+        public int getLocalPort() {
+            return port;
+        }
+
+        public void reset() {
+            queue.clear();
+            count = 0;
+        }
+
+        public void shutdown() {
+            this.shutdown = true;
+            interrupt();
+        }
+
+        @Override
+        public void run() {
+            try {
+                try (final Socket socket = sslConfiguration.getSslServerSocketFactory()
+                        .createServerSocket(port)
+                        .accept()) {
+                    if (socket != null) {
+                        final InputStream is = socket.getInputStream();
+                        while (!shutdown) {
+                            final MappingIterator<LogEvent> mappingIterator = objectMapper.readerFor(Log4jLogEvent.class).readValues(is);
+                            while (mappingIterator.hasNextValue()) {
+                                queue.add(mappingIterator.nextValue());
+                                ++count;
+                            }
+                        }
+                    }
+                }
+            } catch (final EOFException eof) {
+                // Socket is closed.
+            } catch (final Exception e) {
+                if (!shutdown) {
+                    Throwables.rethrow(e);
+                }
+            }
+        }
+
+        public BlockingQueue<LogEvent> getQueue() {
+            return queue;
+        }
+
+        public int getCount() {
+            return count;
+        }
+    }
 }
