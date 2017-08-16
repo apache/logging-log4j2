@@ -62,7 +62,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
     /**
      * Adds a boolean attribute.
      * @param key The attribute key.
-     * @param value The integer value.
+     * @param value The boolean value.
      * @return This ComponentBuilder.
      */
     T addAttribute(String key, boolean value);
@@ -70,7 +70,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
     /**
      * Adds an Object attribute.
      * @param key The attribute key.
-     * @param value The integer value.
+     * @param value The object value.
      * @return This ComponentBuilder.
      */
     T addAttribute(String key, Object value);
