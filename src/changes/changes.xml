@@ -55,6 +55,9 @@
       <action issue="LOG4J2-1864" dev="mattsicker" type="add" due-to="Matthias Kappeller">
         Support capped collections for MongoDb appender.
       </action>
+      <action issue="LOG4J2-2016" dev="ggregory" type="fix" due-to="Benjamin Jaton">
+        Mark FileRenameAction as successful when using alternative ways to move files.
+      </action>
       <action issue="LOG4J2-1888" dev="ggregory" type="fix" due-to="Misagh Moayyed">
         Log4j throws a java.nio.charset.UnsupportedCharsetException: cp65001.
       </action>
