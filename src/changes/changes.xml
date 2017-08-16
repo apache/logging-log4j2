@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-2018" dev="rpopma" type="fix">
+        Fix incorrect documentation for LoggerNameLevelRewritePolicy.
+      </action>
       <action issue="LOG4J2-2015" dev="ggregory" type="update">
         Allow KeyStoreConfiguration and TrustStoreConfiguration to find files as resources.
       </action>
