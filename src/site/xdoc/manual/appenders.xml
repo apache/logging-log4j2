@@ -1284,7 +1284,7 @@ public class ConnectionFactory {
               <td><em>Required</em></td>
               <td>The fully qualified class name that should be used to define the Initial Context Factory as defined in
                 <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
-                If a factoryName is specified without a providerURL a warning message will be logged as this is 
+                If a factoryName is specified without a providerURL a warning message will be logged as this is
                 likely to cause problems.
               </td>
             </tr>
@@ -1414,7 +1414,7 @@ public class ConnectionFactory {
 </Configuration>]]></pre>
 
         <p>
-          To map your Log4j <code>MapMessage</code>s to JMS <code>javax.jms.MapMessage</code>s, set the 
+          To map your Log4j <code>MapMessage</code>s to JMS <code>javax.jms.MapMessage</code>s, set the
           layout of the appender to <code>MessageLayout</code> with <code>&lt;MessageLayout /&gt;</code> (Since 2.9.):
         </p>
 
@@ -1432,7 +1432,7 @@ public class ConnectionFactory {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-        
+
         </subsection>
         <a name="JPAAppender"/>
         <subsection name="JPAAppender">
@@ -2526,7 +2526,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <th>Description</th>
             </tr>
             <tr>
-              <td>loggerName</td>
+              <td>logger</td>
               <td>String</td>
               <td>A logger name used as a prefix to test each event's logger name.</td>
             </tr>
@@ -2548,7 +2548,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Console>
     <Rewrite name="rewrite">
       <AppenderRef ref="STDOUT"/>
-      <LoggerNameLevelRewritePolicy loggerName="com.foo.bar">
+      <LoggerNameLevelRewritePolicy logger="com.foo.bar">
         <KeyValuePair key="INFO" value="DEBUG"/>
         <KeyValuePair key="WARN" value="INFO"/>
       </LoggerNameLevelRewritePolicy>
@@ -3644,7 +3644,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
       <DefaultRolloverStrategy stopCustomActionsOnError="true">
         <PosixViewAttribute basePath="${baseDir}/$${date:yyyy-MM}" filePermissions="r--r--r--">
-        	<IfFileName glob="*.gz" /> 
+        	<IfFileName glob="*.gz" />
         </PosixViewAttribute>
       </DefaultRolloverStrategy>
     </RollingFile>
