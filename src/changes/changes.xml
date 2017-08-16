@@ -229,6 +229,9 @@
       <action issue="LOG4J2-1991" dev="ggregory" type="update" due-to="">
         Refactor SimpleMessage to be concise and clear (#100)
       </action>
+      <action issue="LOG4J2-2017" dev="ggregory" type="update">
+        Update Jackson from 2.8.9 to 2.9.0.
+      </action>
       <action issue="LOG4J2-1868" dev="ggregory" type="update">
         Update ZeroMQ's JeroMQ from 0.3.6 to 0.4.0.
       </action>
