@@ -39,7 +39,7 @@ public class StoreConfiguration<T> {
      */
     public void clearSecrets() {
         this.location = null;
-        Arrays.fill(password, '\0');
+        Arrays.fill(password, Character.MIN_VALUE);
         this.password = null;
     }
 
