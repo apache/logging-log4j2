@@ -35,6 +35,14 @@ public class StoreConfiguration<T> {
     }
 
     /**
+     * Clears the secret fields in this object.
+     */
+    public void clearSecrets() {
+        this.location = null;
+        this.password = null;
+    }
+
+    /**
      * @deprecated Use StoreConfiguration(String, char[])
      */
     @Deprecated
