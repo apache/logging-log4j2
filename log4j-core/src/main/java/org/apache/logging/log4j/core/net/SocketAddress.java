@@ -43,6 +43,7 @@ public class SocketAddress {
         return new SocketAddress(InetAddress.getLoopbackAddress(), 0);
     }
 
+    // never null
     private final InetSocketAddress socketAddress;
 
     private SocketAddress(final InetAddress host, final int port) {
@@ -94,6 +95,11 @@ public class SocketAddress {
         public SocketAddress build() {
             return new SocketAddress(host, port);
         }
+    }
+
+    @Override
+    public String toString() {
+        return socketAddress.toString();
     }
 
 }
