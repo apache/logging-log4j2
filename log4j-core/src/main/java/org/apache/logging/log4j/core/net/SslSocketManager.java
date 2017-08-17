@@ -16,23 +16,18 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -95,12 +90,19 @@ public class SslSocketManager extends TcpSocketManager {
         protected SslConfiguration sslConfiguration;
 
         public SslFactoryData(final SslConfiguration sslConfiguration, final String host, final int port,
-                final int connectTimeoutMillis, final int reconnectDelayMillis, final int delayMillis,
-                final boolean immediateFail, final Layout<? extends Serializable> layout, final int bufferSize,
-                final SocketOptions socketOptions) {
+                final int connectTimeoutMillis, final int reconnectDelayMillis, final boolean immediateFail,
+                final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
             super(host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize,
                     socketOptions);
             this.sslConfiguration = sslConfiguration;
+        }
+
+        @Override
+        public String toString() {
+            return "SslFactoryData [sslConfiguration=" + sslConfiguration + ", host=" + host + ", port=" + port
+                    + ", connectTimeoutMillis=" + connectTimeoutMillis + ", reconnectDelayMillis="
+                    + reconnectDelayMillis + ", immediateFail=" + immediateFail + ", layout=" + layout + ", bufferSize="
+                    + bufferSize + ", socketOptions=" + socketOptions + "]";
         }
     }
 
@@ -126,8 +128,9 @@ public class SslSocketManager extends TcpSocketManager {
         if (reconnectDelayMillis == 0) {
             reconnectDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
         }
-        return (SslSocketManager) getManager("TLS:" + host + ':' + port, new SslFactoryData(sslConfig, host, port,
-                connectTimeoutMillis, 0, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
+        final String name = "TLS:" + host + ':' + port;
+        return (SslSocketManager) getManager(name, new SslFactoryData(sslConfig, host, port, connectTimeoutMillis,
+                reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
     }
 
     @Override
@@ -152,73 +155,36 @@ public class SslSocketManager extends TcpSocketManager {
     }
 
 
-    private static class SslSocketManagerFactory implements ManagerFactory<SslSocketManager, SslFactoryData> {
+    private static class SslSocketManagerFactory extends TcpSocketManagerFactory<SslSocketManager, SslFactoryData> {
 
-        private static class TlsSocketManagerFactoryException extends Exception {
-
-            private static final long serialVersionUID = 1L;
-        }
-
-        @SuppressWarnings("resource")
         @Override
-        public SslSocketManager createManager(final String name, final SslFactoryData data) {
-            InetAddress inetAddress = null;
-            OutputStream os = null;
-            Socket socket = null;
-            try {
-                inetAddress = resolveAddress(data.host);
-                socket = createSocket(data);
-                os = socket.getOutputStream();
-                checkDelay(data.reconnectDelayMillis, os);
-            } catch (final IOException e) {
-                LOGGER.error("SslSocketManager ({})", name, e);
-                os = new ByteArrayOutputStream();
-            } catch (final TlsSocketManagerFactoryException e) {
-                LOGGER.catching(Level.DEBUG, e);
-                Closer.closeSilently(socket);
-                return null;
-            }
+        SslSocketManager createManager(final String name, OutputStream os, Socket socket, InetAddress inetAddress,
+                final SslFactoryData data) {
             return new SslSocketManager(name, os, socket, data.sslConfiguration, inetAddress, data.host, data.port,
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize,
                     data.socketOptions);
         }
-
-        private InetAddress resolveAddress(final String hostName) throws TlsSocketManagerFactoryException {
-            InetAddress address;
-
-            try {
-                address = InetAddress.getByName(hostName);
-            } catch (final UnknownHostException ex) {
-                LOGGER.error("Could not find address of {}", hostName, ex);
-                throw new TlsSocketManagerFactoryException();
-            }
-
-            return address;
+        
+        @Override
+        Socket createSocket(final SslFactoryData data) throws IOException {
+            return SslSocketManager.createSocket(data.host, data.port, data.connectTimeoutMillis, data.sslConfiguration,
+                    data.socketOptions);
         }
+    }
 
-        private void checkDelay(final int delay, final OutputStream os) throws TlsSocketManagerFactoryException {
-            if (delay == 0 && os == null) {
-                throw new TlsSocketManagerFactoryException();
-            }
+    static Socket createSocket(final String host, int port, int connectTimeoutMillis,
+            final SslConfiguration sslConfiguration, SocketOptions socketOptions) throws IOException {
+        final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfiguration);
+        final SSLSocket socket = (SSLSocket) socketFactory.createSocket();
+        if (socketOptions != null) {
+            // Not sure which options must be applied before or after the connect() call.
+            socketOptions.apply(socket);
         }
-
-        private Socket createSocket(final SslFactoryData data) throws IOException {
-            SSLSocketFactory socketFactory;
-            SSLSocket socket;
-
-            socketFactory = createSslSocketFactory(data.sslConfiguration);
-            socket = (SSLSocket) socketFactory.createSocket();
-            final SocketOptions socketOptions = data.socketOptions;
-            if (socketOptions != null) {
-                // Not sure which options must be applied before or after the connect() call.
-                socketOptions.apply(socket);
-            }
-            socket.connect(new InetSocketAddress(data.host, data.port), data.connectTimeoutMillis);
-            if (socketOptions != null) {
-                // Not sure which options must be applied before or after the connect() call.
-                socketOptions.apply(socket);
-            }
-            return socket;
+        socket.connect(new InetSocketAddress(host, port), connectTimeoutMillis);
+        if (socketOptions != null) {
+            // Not sure which options must be applied before or after the connect() call.
+            socketOptions.apply(socket);
         }
+        return socket;
     }
 }

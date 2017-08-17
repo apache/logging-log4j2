@@ -21,6 +21,7 @@ import java.net.Socket;
 
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.layout.JsonLayout;
+import org.apache.logging.log4j.core.net.SocketOptions;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationTest;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
@@ -66,16 +67,18 @@ public class SecureSocketAppenderConnectReConnectIT extends AbstractSocketAppend
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testConnectReConnect() throws Exception {
         port = AvailablePortFinder.getNextAvailable();
         // Start server
-        server = TcpSocketServer.createJsonSocketServer(port);
+        server = SecureTcpSocketServer.createJsonServer(port, sslConfiguration);
         startServer(200);
         // Start appender
         // @formatter:off
         appender = SocketAppender.newBuilder()
                 .withPort(port)
+                .withConnectTimeoutMillis(1000)
+                .withSocketOptions(SocketOptions.newBuilder().setSoTimeout(1000))
                 .withReconnectDelayMillis(1000)
                 .withName("test")
                 .withLayout(JsonLayout.newBuilder().build())

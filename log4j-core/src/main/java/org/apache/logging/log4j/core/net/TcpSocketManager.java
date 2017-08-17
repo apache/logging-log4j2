@@ -33,6 +33,8 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
+import org.apache.logging.log4j.core.net.TcpSocketManager.FactoryData;
+import org.apache.logging.log4j.core.net.TcpSocketManager.TcpSocketManagerFactory;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.NullOutputStream;
@@ -51,7 +53,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      */
     private static final int DEFAULT_PORT = 4560;
 
-    private static final TcpSocketManagerFactory FACTORY = new TcpSocketManagerFactory();
+    private static final TcpSocketManagerFactory<TcpSocketManager, FactoryData> FACTORY = new TcpSocketManagerFactory<>();
 
     private final int reconnectionDelayMillis;
 
@@ -341,7 +343,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
 
         void reconnect() throws IOException {
-            final Socket sock = createSocket(inetAddress, port);
+            final Socket sock = createSocket(inetAddress.getHostName(), port);
             @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
             final OutputStream newOS = sock.getOutputStream();
             synchronized (owner) {
@@ -367,14 +369,21 @@ public class TcpSocketManager extends AbstractSocketManager {
         return recon;
     }
 
-    protected Socket createSocket(final InetAddress host, final int port) throws IOException {
-        return createSocket(host.getHostName(), port);
+    protected Socket createSocket(final String host, final int port) throws IOException {
+        return createSocket(host, port, socketOptions, connectTimeoutMillis);
     }
 
-    protected Socket createSocket(final String host, final int port) throws IOException {
+    protected static Socket createSocket(final String host, final int port, final SocketOptions socketOptions,
+            final int connectTimeoutMillis) throws IOException {
+        LOGGER.debug("Creating socket {}:{}", host, port);
         final Socket newSocket = new Socket();
+        if (socketOptions != null) {
+            // Not sure which options must be applied before or after the connect() call.
+            socketOptions.apply(newSocket);
+        }
         newSocket.connect(new InetSocketAddress(host, port), connectTimeoutMillis);
         if (socketOptions != null) {
+            // Not sure which options must be applied before or after the connect() call.
             socketOptions.apply(newSocket);
         }
         return newSocket;
@@ -416,13 +425,18 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     /**
      * Factory to create a TcpSocketManager.
+     * 
+     * @param <M>
+     *            The manager type.
+     * @param <T>
+     *            The factory data type.
      */
-    protected static class TcpSocketManagerFactory implements ManagerFactory<TcpSocketManager, FactoryData> {
+    protected static class TcpSocketManagerFactory<M extends TcpSocketManager, T extends FactoryData>
+            implements ManagerFactory<M, T> {
 
         @SuppressWarnings("resource")
         @Override
-        public TcpSocketManager createManager(final String name, final FactoryData data) {
-
+        public M createManager(final String name, final T data) {
             InetAddress inetAddress;
             OutputStream os;
             try {
@@ -436,9 +450,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 // LOG4J2-1042
                 socket = createSocket(data);
                 os = socket.getOutputStream();
-                return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
-                        data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
-                        data.bufferSize, data.socketOptions);
+                return createManager(name, os, socket, inetAddress, data);
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex, ex);
                 os = NullOutputStream.getInstance();
@@ -447,18 +459,18 @@ public class TcpSocketManager extends AbstractSocketManager {
                 Closer.closeSilently(socket);
                 return null;
             }
-            return new TcpSocketManager(name, os, null, inetAddress, data.host, data.port, data.connectTimeoutMillis,
-                    data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize, data.socketOptions);
+            return createManager(name, os, null, inetAddress, data);
         }
 
-        static Socket createSocket(final FactoryData data) throws IOException, SocketException {
-            final Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(data.host, data.port), data.connectTimeoutMillis);
-            final SocketOptions socketOptions = data.socketOptions;
-            if (socketOptions != null) {
-                socketOptions.apply(socket);
-            }
-            return socket;
+        @SuppressWarnings("unchecked")
+        M createManager(final String name, OutputStream os, Socket socket, InetAddress inetAddress, final T data) {
+            return (M) new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
+                    data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
+                    data.bufferSize, data.socketOptions);
+        }
+
+        Socket createSocket(final T data) throws IOException {
+            return TcpSocketManager.createSocket(data.host, data.port, data.socketOptions, data.connectTimeoutMillis);
         }
 
     }
@@ -479,6 +491,15 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     public int getReconnectionDelayMillis() {
         return reconnectionDelayMillis;
+    }
+
+    @Override
+    public String toString() {
+        return "TcpSocketManager [reconnectionDelayMillis=" + reconnectionDelayMillis + ", reconnector=" + reconnector
+                + ", socket=" + socket + ", socketOptions=" + socketOptions + ", retry=" + retry + ", immediateFail="
+                + immediateFail + ", connectTimeoutMillis=" + connectTimeoutMillis + ", inetAddress=" + inetAddress
+                + ", host=" + host + ", port=" + port + ", layout=" + layout + ", byteBuffer=" + byteBuffer + ", count="
+                + count + "]";
     }
 
 }
