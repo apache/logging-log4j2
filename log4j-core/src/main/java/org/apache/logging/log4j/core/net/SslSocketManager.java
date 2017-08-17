@@ -91,29 +91,16 @@ public class SslSocketManager extends TcpSocketManager {
       this.sslConfig = sslConfig;
   }
 
-    private static class SslFactoryData {
+    private static class SslFactoryData extends FactoryData {
         protected SslConfiguration sslConfiguration;
-        private final String host;
-        private final int port;
-        private final int connectTimeoutMillis;
-        private final int delayMillis;
-        private final boolean immediateFail;
-        private final Layout<? extends Serializable> layout;
-        private final int bufferSize;
-        private final SocketOptions socketOptions;
 
         public SslFactoryData(final SslConfiguration sslConfiguration, final String host, final int port,
-                final int connectTimeoutMillis, final int delayMillis, final boolean immediateFail,
-                final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
-            this.host = host;
-            this.port = port;
-            this.connectTimeoutMillis = connectTimeoutMillis;
-            this.delayMillis = delayMillis;
-            this.immediateFail = immediateFail;
-            this.layout = layout;
+                final int connectTimeoutMillis, final int reconnectDelayMillis, final int delayMillis,
+                final boolean immediateFail, final Layout<? extends Serializable> layout, final int bufferSize,
+                final SocketOptions socketOptions) {
+            super(host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize,
+                    socketOptions);
             this.sslConfiguration = sslConfiguration;
-            this.bufferSize = bufferSize;
-            this.socketOptions = socketOptions;
         }
     }
 
@@ -140,7 +127,7 @@ public class SslSocketManager extends TcpSocketManager {
             reconnectDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
         }
         return (SslSocketManager) getManager("TLS:" + host + ':' + port, new SslFactoryData(sslConfig, host, port,
-                connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
+                connectTimeoutMillis, 0, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
     }
 
     @Override
@@ -182,7 +169,7 @@ public class SslSocketManager extends TcpSocketManager {
                 inetAddress = resolveAddress(data.host);
                 socket = createSocket(data);
                 os = socket.getOutputStream();
-                checkDelay(data.delayMillis, os);
+                checkDelay(data.reconnectDelayMillis, os);
             } catch (final IOException e) {
                 LOGGER.error("SslSocketManager ({})", name, e);
                 os = new ByteArrayOutputStream();
@@ -192,7 +179,7 @@ public class SslSocketManager extends TcpSocketManager {
                 return null;
             }
             return new SslSocketManager(name, os, socket, data.sslConfiguration, inetAddress, data.host, data.port,
-                    data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout, data.bufferSize,
+                    data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize,
                     data.socketOptions);
         }
 

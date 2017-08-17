@@ -383,15 +383,15 @@ public class TcpSocketManager extends AbstractSocketManager {
     /**
      * Data for the factory.
      */
-    private static class FactoryData {
-        private final String host;
-        private final int port;
-        private final int connectTimeoutMillis;
-        private final int reconnectDelayMillis;
-        private final boolean immediateFail;
-        private final Layout<? extends Serializable> layout;
-        private final int bufferSize;
-        private final SocketOptions socketOptions;
+    static class FactoryData {
+        protected final String host;
+        protected final int port;
+        protected final int connectTimeoutMillis;
+        protected final int reconnectDelayMillis;
+        protected final boolean immediateFail;
+        protected final Layout<? extends Serializable> layout;
+        protected final int bufferSize;
+        protected final SocketOptions socketOptions;
 
         public FactoryData(final String host, final int port, final int connectTimeoutMillis,
                 final int reconnectDelayMillis, final boolean immediateFail,
@@ -428,7 +428,7 @@ public class TcpSocketManager extends AbstractSocketManager {
             try {
                 inetAddress = InetAddress.getByName(data.host);
             } catch (final UnknownHostException ex) {
-                LOGGER.error("Could not find address of " + data.host, ex, ex);
+                LOGGER.error("Could not find address of {}: {}", data.host, ex, ex);
                 return null;
             }
             Socket socket = null;
@@ -440,7 +440,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                         data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
                         data.bufferSize, data.socketOptions);
             } catch (final IOException ex) {
-                LOGGER.error("TcpSocketManager (" + name + ") caught exception and will continue:" + ex, ex);
+                LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex, ex);
                 os = NullOutputStream.getInstance();
             }
             if (data.reconnectDelayMillis == 0) {
