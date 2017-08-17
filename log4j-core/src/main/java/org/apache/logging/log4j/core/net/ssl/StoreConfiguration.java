@@ -39,6 +39,7 @@ public class StoreConfiguration<T> {
      */
     public void clearSecrets() {
         this.location = null;
+        Arrays.fill(password, '\u0000');
         this.password = null;
     }
 
@@ -60,7 +61,7 @@ public class StoreConfiguration<T> {
     }
 
     /**
-     * 
+     *
      * @deprecated Use getPasswordAsCharArray()
      */
     @Deprecated
@@ -77,7 +78,7 @@ public class StoreConfiguration<T> {
     }
 
     /**
-     * 
+     *
      * @deprecated Use getPasswordAsCharArray()
      */
     @Deprecated
