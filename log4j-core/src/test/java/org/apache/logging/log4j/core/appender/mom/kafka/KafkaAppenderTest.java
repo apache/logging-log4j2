@@ -96,19 +96,6 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppend() throws Exception {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppender");
-        appender.append(createLogEvent());
-        final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
-        assertEquals(1, history.size());
-        final ProducerRecord<byte[], byte[]> item = history.get(0);
-        assertNotNull(item);
-        assertEquals(TOPIC_NAME, item.topic());
-        assertNull(item.key());
-        assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
-    }
-
-    @Test
     public void testAppendWithLayout() throws Exception {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithLayout");
         appender.append(createLogEvent());
@@ -157,7 +144,7 @@ public class KafkaAppenderTest {
 
     @Test(timeout = 2000)
     public void testClose() throws Exception {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppender");
+        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithLayout");
         appender.stop();
     }
 }

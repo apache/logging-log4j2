@@ -17,10 +17,6 @@
   -->
 <Configuration name="KafkaAppenderTest" status="OFF">
   <Appenders>
-    <Kafka name="KafkaAppender" topic="kafka-topic">
-      <Property name="bootstrap.servers">localhost:9092</Property>
-      <Property name="timeout.ms">1000</Property>
-    </Kafka>
     <Kafka name="KafkaAppenderWithLayout" topic="kafka-topic">
       <PatternLayout pattern="[%m]"/>
       <Property name="bootstrap.servers">localhost:9092</Property>
@@ -32,13 +28,13 @@
       <Property name="timeout.ms">1000</Property>
     </Kafka>
     <Kafka name="AsyncKafkaAppender" topic="kafka-topic">
+      <PatternLayout pattern="%m"/>
       <Property name="bootstrap.servers">localhost:9092</Property>
       <Property name="syncSend">false</Property>
     </Kafka>
   </Appenders>
   <Loggers>
     <Root level="info">
-      <AppenderRef ref="KafkaAppender"/>
       <AppenderRef ref="KafkaAppenderWithLayout"/>
       <AppenderRef ref="KafkaAppenderWithSerializedLayout"/>
       <AppenderRef ref="AsyncKafkaAppender"/>

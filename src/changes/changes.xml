@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-2020" dev="mikes" type="update">
+        Remove default layout from KafkaAppender.
+      </action>
       <action issue="LOG4J2-2018" dev="rpopma" type="fix">
         Fix incorrect documentation for LoggerNameLevelRewritePolicy.
       </action>

@@ -18,12 +18,12 @@
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -35,11 +35,8 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
-import org.apache.logging.log4j.core.util.StringEncoder;
 
 /**
  * Sends log events to an Apache Kafka topic.
@@ -66,8 +63,13 @@ public final class KafkaAppender extends AbstractAppender {
         @SuppressWarnings("resource")
         @Override
         public KafkaAppender build() {
+            final Layout<? extends Serializable> layout = getLayout();
+            if (layout == null) {
+                AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
+                return null;
+            }
             final KafkaManager kafkaManager = new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic, syncSend, properties);
-            return new KafkaAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), kafkaManager);
+            return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), kafkaManager);
         }
 
         public String getTopic() {
@@ -100,13 +102,18 @@ public final class KafkaAppender extends AbstractAppender {
     
     @Deprecated
     public static KafkaAppender createAppender(
-            @PluginElement("Layout") final Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @Required(message = "No name provided for KafkaAppender") @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions,
-            @Required(message = "No topic provided for KafkaAppender") @PluginAttribute("topic") final String topic,
-            @PluginElement("Properties") final Property[] properties,
-            @PluginConfiguration final Configuration configuration) {
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String name,
+            final boolean ignoreExceptions,
+            final String topic,
+            final Property[] properties,
+            final Configuration configuration) {
+
+        if (layout == null) {
+            AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
+            return null;
+        }
         final KafkaManager kafkaManager = new KafkaManager(configuration.getLoggerContext(), name, topic, true, properties);
         return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager);
     }
@@ -144,18 +151,14 @@ public final class KafkaAppender extends AbstractAppender {
     private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
         final Layout<? extends Serializable> layout = getLayout();
         byte[] data;
-        if (layout != null) {
-            if (layout instanceof SerializedLayout) {
-                final byte[] header = layout.getHeader();
-                final byte[] body = layout.toByteArray(event);
-                data = new byte[header.length + body.length];
-                System.arraycopy(header, 0, data, 0, header.length);
-                System.arraycopy(body, 0, data, header.length, body.length);
-            } else {
-                data = layout.toByteArray(event);
-            }
+        if (layout instanceof SerializedLayout) {
+            final byte[] header = layout.getHeader();
+            final byte[] body = layout.toByteArray(event);
+            data = new byte[header.length + body.length];
+            System.arraycopy(header, 0, data, 0, header.length);
+            System.arraycopy(body, 0, data, header.length, body.length);
         } else {
-            data = StringEncoder.toBytes(event.getMessage().getFormattedMessage(), StandardCharsets.UTF_8);
+            data = layout.toByteArray(event);
         }
         manager.send(data);
     }

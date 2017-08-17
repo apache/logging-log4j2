@@ -1744,9 +1744,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>layout</td>
               <td>Layout</td>
               <td>
-                The Layout to use to format the LogEvent. If you do not specify a layout, the appender will send the
-                <a class="javadoc" href="http://logging.apache.org/log4j/2.x/log4j-api/apidocs/org/apache/logging/log4j/message/Message.html#getFormattedMessage())">formatted message</a>
-                to Kafka as a UTF-8 encoded string.
+                The Layout to use to format the LogEvent. Required, there is no default.
+                <em>New since 2.9, in previous versions &lt;PatternLayout pattern="%m"/&gt; was default.</em>
               </td>
             </tr>
             <tr>
