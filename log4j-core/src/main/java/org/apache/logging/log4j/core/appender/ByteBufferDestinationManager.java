@@ -14,24 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.core.appender;
 
-/**
- * No operation idle strategy.
- * <p>
- * This idle strategy should be prevented from being inlined by using a Hotspot compiler command as a JVM argument e.g:
- * <code>-XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle</code>
- * </p>
- */
-public class NoOpIdleStrategy implements IdleStrategy {
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 
-    /**
-     * <b>Note</b>: this implementation will result in no safepoint poll once inlined.
-     *
-     * @see IdleStrategy
-     */
-    @Override
-    public void idle() {
+public abstract class ByteBufferDestinationManager extends AbstractManager implements ByteBufferDestination {
 
+    protected ByteBufferDestinationManager(final LoggerContext loggerContext, final String name) {
+        super(loggerContext, name);
     }
+
+    protected abstract void write(byte[] bytes, boolean immediateFlush);
+
+    public abstract void flush();
 }

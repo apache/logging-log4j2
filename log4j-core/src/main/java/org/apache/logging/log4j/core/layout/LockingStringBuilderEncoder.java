@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Encoder for StringBuilders that locks on the ByteBufferDestination.
@@ -53,9 +54,20 @@ public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
     public void encode(final StringBuilder source, final ByteBufferDestination destination) {
         try {
             // This synchronized is needed to be able to call destination.getByteBuffer()
-            synchronized (destination) {
-                TextEncoderHelper.encodeText(charsetEncoder, cachedCharBuffer, destination.getByteBuffer(), source,
-                    destination);
+            if (destination instanceof LockableByteBufferDestination) {
+                Lock lock = ((LockableByteBufferDestination) destination).getDestinationLock();
+                lock.lock();
+                try {
+                    TextEncoderHelper.encodeText(charsetEncoder, cachedCharBuffer, destination.getByteBuffer(), source,
+                        destination, true);
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                synchronized (destination) {
+                    TextEncoderHelper.encodeText(charsetEncoder, cachedCharBuffer, destination.getByteBuffer(), source,
+                        destination, true);
+                }
             }
         } catch (final Exception ex) {
             logEncodeTextException(ex, source, destination);

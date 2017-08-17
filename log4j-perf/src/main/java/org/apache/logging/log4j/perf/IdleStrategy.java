@@ -14,24 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.perf;
 
 /**
- * No operation idle strategy.
- * <p>
- * This idle strategy should be prevented from being inlined by using a Hotspot compiler command as a JVM argument e.g:
+ * Idle strategy for use by threads when they do not have work to do.
+ *
+ * <h3>Note regarding potential for TTSP(Time To Safe Point) issues</h3>
+ *
+ * If the caller spins in a 'counted' loop, and the implementation does not include a a safepoint poll this may cause a TTSP
+ * (Time To SafePoint) problem. If this is the case for your application you can solve it by preventing the idle method from
+ * being inlined by using a Hotspot compiler command as a JVM argument e.g:
  * <code>-XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle</code>
- * </p>
+ *
+ * @see <a href="https://github.com/real-logic/Agrona/blob/master/src/main/java/org/agrona/concurrent/IdleStrategy.java">
+ *     https://github.com/real-logic/Agrona/blob/master/src/main/java/org/agrona/concurrent/IdleStrategy.java</a>
  */
-public class NoOpIdleStrategy implements IdleStrategy {
-
+public interface IdleStrategy {
     /**
-     * <b>Note</b>: this implementation will result in no safepoint poll once inlined.
-     *
-     * @see IdleStrategy
+     * Perform current idle action (e.g. nothing/yield/sleep).
      */
-    @Override
-    public void idle() {
-
-    }
+    void idle();
 }

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.async.perftest;
 /**
  * Idle strategy that yields the thread.
  */
-class YieldIdleStrategy implements IdleStrategy {
+public class YieldIdleStrategy implements IdleStrategy {
 
     /**
      * yields the current thread.
