@@ -31,7 +31,7 @@ public class StoreConfiguration<T> {
 
     public StoreConfiguration(final String location, final char[] password) {
         this.location = location;
-        this.password = password == null ? null : password;
+        this.password = password;
     }
 
     /**
@@ -39,8 +39,10 @@ public class StoreConfiguration<T> {
      */
     public void clearSecrets() {
         this.location = null;
-        Arrays.fill(password, Character.MIN_VALUE);
-        this.password = null;
+        if (password != null) {
+            Arrays.fill(password, Character.MIN_VALUE);
+            this.password = null;
+        }
     }
 
     /**
