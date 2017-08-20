@@ -75,7 +75,7 @@
         <item name="Messages" href="/manual/messages.html"/>
         <item name="ThreadContext" href="/manual/thread-context.html"/>
       </item>
-      
+
       <item name="Scala API" href="/manual/scala-api.html"/>
 
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
@@ -248,6 +248,10 @@
         <item name="Code Generation Tool" href="/manual/customloglevels.html#CodeGen"/>
       </item>
 
+    </menu>
+
+    <menu name="Related Projects" inherit="top" img="icon-tags">
+      <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
     </menu>
 
     <menu name="Legacy" inherit="top" img="icon-tags">
