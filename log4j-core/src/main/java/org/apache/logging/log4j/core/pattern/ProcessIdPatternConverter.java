@@ -22,6 +22,7 @@ import java.lang.management.ManagementFactory;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.util.ProcessIdUtil;
 
 @Plugin(name = "ProcessIdPatternConverter", category = "Converter")
 @ConverterKeys({ "pid", "processId" })
@@ -35,15 +36,8 @@ public final class ProcessIdPatternConverter extends LogEventPatternConverter {
     private ProcessIdPatternConverter(final String... options) {
         super("Process ID", "pid");
         final String defaultValue = options.length > 0 ? options[0] : DEFAULT_DEFAULT_VALUE;
-        String discoveredPid = null;
-        try {
-            discoveredPid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0]; // likely works on most platforms
-        } catch (final Exception ex) {
-            try {
-                discoveredPid = new File("/proc/self").getCanonicalFile().getName(); // try a Linux-specific way
-            } catch (final IOException ignoredUseDefault) {}
-        }
-        pid = discoveredPid == null ? defaultValue : discoveredPid;
+        String discoveredPid = ProcessIdUtil.getProcessId();
+        pid = discoveredPid.equals(ProcessIdUtil.DEFAULT_PROCESSID) ? defaultValue : discoveredPid;
     }
 
     /**

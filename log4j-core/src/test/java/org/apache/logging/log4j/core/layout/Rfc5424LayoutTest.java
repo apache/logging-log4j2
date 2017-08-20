@@ -36,6 +36,7 @@ import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.ProcessIdUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -49,22 +50,25 @@ public class Rfc5424LayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
 
-
-    private static final String line1 = "ATM - - [RequestContext@3692 loginId=\"JohnDoe\"] starting mdc pattern test";
-    private static final String line2 = "ATM - - [RequestContext@3692 loginId=\"JohnDoe\"] empty mdc";
-    private static final String line3 = "ATM - - [RequestContext@3692 loginId=\"JohnDoe\"] filled mdc";
+    private static final String PROCESSID = ProcessIdUtil.getProcessId();
+    private static final String line1 = String.format("ATM %s - [RequestContext@3692 loginId=\"JohnDoe\"] starting mdc pattern test", PROCESSID);
+    private static final String line2 = String.format("ATM %s - [RequestContext@3692 loginId=\"JohnDoe\"] empty mdc", PROCESSID);
+    private static final String line3 = String.format("ATM %s - [RequestContext@3692 loginId=\"JohnDoe\"] filled mdc", PROCESSID);
     private static final String line4 =
-        "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
-        "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
-    private static final String lineEscaped3 = "ATM - - [RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" loginId=\"JohnDoe\"] filled mdc";
+        String.format("ATM %s Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
+        "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete", PROCESSID);
+    private static final String lineEscaped3 =
+            String.format("ATM %s - [RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" loginId=\"JohnDoe\"] filled mdc", PROCESSID);
     private static final String lineEscaped4 =
-        "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
-        "[RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
+        String.format("ATM %s Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
+        "[RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete",
+            PROCESSID);
     private static final String collectionLine1 = "[Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" " +
             "ToAccount=\"123456\"]";
     private static final String collectionLine2 = "[Extra@18060 Item1=\"Hello\" Item2=\"World\"]";
     private static final String collectionLine3 = "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"]";
     private static final String collectionEndOfLine = "Transfer Complete";
+
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
@@ -467,7 +471,7 @@ public class Rfc5424LayoutTest {
     public void testSubstituteStructuredData() {
         final String mdcId = "RequestContext";
 
-        final String expectedToContain = "ATM - MSG-ID - Message";
+        final String expectedToContain = String.format("ATM %s MSG-ID - Message", PROCESSID);
 
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
