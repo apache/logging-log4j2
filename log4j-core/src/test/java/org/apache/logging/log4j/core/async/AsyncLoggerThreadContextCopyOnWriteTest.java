@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 @Category(AsyncLoggers.class)
 public class AsyncLoggerThreadContextCopyOnWriteTest extends AbstractAsyncThreadContextTestBase {
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0} {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 { ContextImpl.COPY_ON_WRITE, Mode.ALL_ASYNC},
