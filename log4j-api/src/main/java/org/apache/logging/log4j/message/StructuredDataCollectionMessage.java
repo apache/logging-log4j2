@@ -20,10 +20,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
 /**
  * A collection of StructuredDataMessages.
  */
-public class StructuredDataCollectionMessage implements MessageCollectionMessage<StructuredDataMessage> {
+public class StructuredDataCollectionMessage implements StringBuilderFormattable,
+        MessageCollectionMessage<StructuredDataMessage> {
 
     private List<StructuredDataMessage> structuredDataMessageList;
 
@@ -39,9 +42,7 @@ public class StructuredDataCollectionMessage implements MessageCollectionMessage
     @Override
     public String getFormattedMessage() {
         StringBuilder sb = new StringBuilder();
-        for (StructuredDataMessage msg : structuredDataMessageList) {
-            sb.append(msg.getFormattedMessage());
-        }
+        formatTo(sb);
         return sb.toString();
     }
 
@@ -57,6 +58,13 @@ public class StructuredDataCollectionMessage implements MessageCollectionMessage
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public void formatTo(StringBuilder buffer) {
+        for (StructuredDataMessage msg : structuredDataMessageList) {
+            msg.formatTo(buffer);
+        }
     }
 
     @Override
