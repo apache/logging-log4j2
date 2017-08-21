@@ -19,7 +19,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.junit.Assert;
 import org.junit.Test;
+
 
 import static org.junit.Assert.*;
 
@@ -50,6 +52,38 @@ public class HighlightConverterTest {
         final StringBuilder buffer = new StringBuilder();
         converter.format(event, buffer);
         assertEquals("\u001B[32mINFO : message in a bottle\u001B[m", buffer.toString());
+    }
+    
+    @Test
+    public void testLevelNamesBad() {
+        String colorName = "red";
+        final String[] options = { "%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
+                + PatternParser.DISABLE_ANSI + "=false, " + "BAD_LEVEL_A=" + colorName + ", BAD_LEVEL_B=" + colorName };
+        final HighlightConverter converter = HighlightConverter.newInstance(null, options);
+        Assert.assertNotNull(converter);
+        Assert.assertNotNull(converter.getLevelStyle(Level.TRACE));
+        Assert.assertNotNull(converter.getLevelStyle(Level.DEBUG));
+    }
+
+    @Test
+    public void testLevelNamesGood() {
+        String colorName = "red";
+        final String[] options = { "%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
+                + PatternParser.DISABLE_ANSI + "=false, " + "DEBUG=" + colorName + ", TRACE=" + colorName };
+        final HighlightConverter converter = HighlightConverter.newInstance(null, options);
+        Assert.assertNotNull(converter);
+        Assert.assertEquals(AnsiEscape.createSequence(colorName), converter.getLevelStyle(Level.TRACE));
+        Assert.assertEquals(AnsiEscape.createSequence(colorName), converter.getLevelStyle(Level.DEBUG));
+    }
+
+    @Test
+    public void testLevelNamesNone() {
+        final String[] options = { "%-5level: %msg",
+                PatternParser.NO_CONSOLE_NO_ANSI + "=false, " + PatternParser.DISABLE_ANSI + "=false" };
+        final HighlightConverter converter = HighlightConverter.newInstance(null, options);
+        Assert.assertNotNull(converter);
+        Assert.assertNotNull(converter.getLevelStyle(Level.TRACE));
+        Assert.assertNotNull(converter.getLevelStyle(Level.DEBUG));
     }
 
     @Test

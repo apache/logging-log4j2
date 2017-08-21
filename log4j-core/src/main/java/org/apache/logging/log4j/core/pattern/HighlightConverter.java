@@ -163,10 +163,9 @@ public final class HighlightConverter extends LogEventPatternConverter implement
                     levelStyles.putAll(enumMap);
                 }
             } else {
-                final Level level = Level.toLevel(key);
+                final Level level = Level.toLevel(key, null);
                 if (level == null) {
-                    LOGGER.error("Unknown level name: " + key + ". Use one of " +
-                        Arrays.toString(DEFAULT_STYLES.keySet().toArray()));
+                    LOGGER.error("Unknown level name: {}; use one of {}", key, Arrays.toString(Level.values()));
                 } else {
                     levelStyles.put(level, value);
                 }
@@ -253,6 +252,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         }
     }
 
+    String getLevelStyle(Level level) {
+        return levelStyles.get(level);
+    }
+
     @Override
     public boolean handlesThrowable() {
         for (final PatternFormatter formatter : patternFormatters) {
@@ -262,4 +265,5 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         }
         return false;
     }
+
 }

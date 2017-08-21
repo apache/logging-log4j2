@@ -43,6 +43,9 @@
       <action issue="LOG4J2-2001" dev="ggregory" type="fix" due-to="Paul Burrowes">
         StyleConverter.newInstance argument validation is incorrect.
       </action>
+      <action issue="LOG4J2-1999" dev="ggregory" type="fix" due-to="Paul Burrowes">
+        HighlightConverter converts all unrecognized levels to DEBUG.
+      </action>
       <action issue="LOG4J2-2013" dev="ggregory" type="fix" due-to="Taylor Patton, Gary Gregory">
         SslSocketManager does not apply SSLContext on TCP reconnect.
       </action>
