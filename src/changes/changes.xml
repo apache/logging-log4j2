@@ -43,6 +43,9 @@
       <action issue="LOG4J2-2013" dev="ggregory" type="fix" due-to="Taylor Patton, Gary Gregory">
         SslSocketManager does not apply SSLContext on TCP reconnect.
       </action>
+      <action issue="LOG4J2-2023" dev="ggregory" type="update">
+        Use a class' canonical name instead of name to create its logger name.
+      </action>
       <action issue="LOG4J2-2015" dev="ggregory" type="update">
         Allow KeyStoreConfiguration and TrustStoreConfiguration to find files as resources.
       </action>
