@@ -76,16 +76,19 @@ public final class StyleConverter extends LogEventPatternConverter implements An
      * @return instance of class.
      */
     public static StyleConverter newInstance(final Configuration config, final String[] options) {
-        if (options.length < 1) {
+        if (options == null) {
+            return null;
+        }
+        if (options.length < 2) {
             LOGGER.error("Incorrect number of options on style. Expected at least 1, received " + options.length);
             return null;
         }
         if (options[0] == null) {
-            LOGGER.error("No pattern supplied on style");
+            LOGGER.error("No pattern supplied for style converter");
             return null;
         }
         if (options[1] == null) {
-            LOGGER.error("No style attributes provided");
+            LOGGER.error("No style attributes supplied for style converter");
             return null;
         }
         final PatternParser parser = PatternLayout.createPatternParser(config);

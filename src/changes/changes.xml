@@ -40,6 +40,9 @@
       <action issue="LOG4J2-2018" dev="rpopma" type="fix">
         Fix incorrect documentation for LoggerNameLevelRewritePolicy.
       </action>
+      <action issue="LOG4J2-2001" dev="ggregory" type="fix" due-to="Paul Burrowes">
+        StyleConverter.newInstance argument validation is incorrect.
+      </action>
       <action issue="LOG4J2-2013" dev="ggregory" type="fix" due-to="Taylor Patton, Gary Gregory">
         SslSocketManager does not apply SSLContext on TCP reconnect.
       </action>
