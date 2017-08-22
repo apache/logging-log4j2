@@ -36,6 +36,15 @@ import org.junit.Test;
 public class RollingFileAppenderUpdateDataTest {
 
     private ConfigurationBuilder<BuiltConfiguration> buildConfigA() {
+        return buildConfigurationBuilder("foo.log.%i");
+    }
+
+    // rebuild config with date based rollover
+    private ConfigurationBuilder<BuiltConfiguration> buildConfigB() {
+        return buildConfigurationBuilder("foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
+    }
+
+    private ConfigurationBuilder<BuiltConfiguration> buildConfigurationBuilder(final String filePattern) {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setConfigurationName("LOG4J2-1964 demo");
         builder.setStatusLevel(Level.ERROR);
@@ -44,30 +53,9 @@ public class RollingFileAppenderUpdateDataTest {
             .addAttribute("target", ConsoleAppender.Target.SYSTEM_ERR));
         builder.add(builder.newAppender("fooAppender", "RollingFile")
                 .addAttribute("fileName", "foo.log")
-                .addAttribute("filePattern", "foo.log.%i")
+                .addAttribute("filePattern", filePattern)
                 .addComponent(builder.newComponent("SizeBasedTriggeringPolicy")
                         .addAttribute("size", "10MB")));
-        builder.add(builder.newRootLogger(Level.INFO)
-                .add(builder.newAppenderRef("consoleLog"))
-                .add(builder.newAppenderRef("fooAppender")));
-        // @formatter:on
-        return builder;
-    }
-
-    // rebuild config with date based rollover
-    private ConfigurationBuilder<BuiltConfiguration> buildConfigB() {
-        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        builder.setConfigurationName("LOG4J2-1964 demo");
-        builder.setStatusLevel(Level.ERROR);
-        // @formatter:off
-        builder.add(builder.newAppender("consoleLog", "Console")
-                .addAttribute("target", ConsoleAppender.Target.SYSTEM_ERR));
-        builder.add(builder.newAppender("fooAppender", "RollingFile")
-                .addAttribute("fileName", "foo.log")
-                .addAttribute("filePattern", "foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i")
-                .addComponent(builder.newComponent("TimeBasedTriggeringPolicy")
-                        .addAttribute("interval", 5)
-                        .addAttribute("modulate", true)));
         builder.add(builder.newRootLogger(Level.INFO)
                 .add(builder.newAppenderRef("consoleLog"))
                 .add(builder.newAppenderRef("fooAppender")));
