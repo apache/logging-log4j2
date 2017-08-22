@@ -284,8 +284,12 @@ public final class Level implements Comparable<Level>, Serializable {
         if (name == null) {
             return defaultLevel;
         }
-        final Level level = LEVELS.get(name.toUpperCase(Locale.ENGLISH));
+        final Level level = LEVELS.get(toUpperCase(name));
         return level == null ? defaultLevel : level;
+    }
+
+    private static String toUpperCase(final String name) {
+        return name.toUpperCase(Locale.ENGLISH);
     }
 
     /**
@@ -308,7 +312,7 @@ public final class Level implements Comparable<Level>, Serializable {
      */
     public static Level valueOf(final String name) {
         Objects.requireNonNull(name, "No level name given.");
-        final String levelName = name.toUpperCase(Locale.ENGLISH);
+        final String levelName = toUpperCase(name);
         final Level level = LEVELS.get(levelName);
         if (level != null) {
             return level;
