@@ -1,0 +1,109 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+
+package org.apache.logging.log4j.core.appender.rolling;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+
+/**
+ * Tests LOG4J2-2009 Rolling appender managers broken on pattern/policy reconfiguration
+ */
+public class RollingFileAppenderUpdateDataTest {
+
+    private ConfigurationBuilder<BuiltConfiguration> buildConfigA() {
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        builder.setConfigurationName("LOG4J2-1964 demo");
+        builder.setStatusLevel(Level.ERROR);
+        // @formatter:off
+        builder.add(builder.newAppender("consoleLog", "Console")
+            .addAttribute("target", ConsoleAppender.Target.SYSTEM_ERR));
+        builder.add(builder.newAppender("fooAppender", "RollingFile")
+                .addAttribute("fileName", "foo.log")
+                .addAttribute("filePattern", "foo.log.%i")
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy")
+                        .addAttribute("size", "10MB")));
+        builder.add(builder.newRootLogger(Level.INFO)
+                .add(builder.newAppenderRef("consoleLog"))
+                .add(builder.newAppenderRef("fooAppender")));
+        // @formatter:on
+        return builder;
+    }
+
+    // rebuild config with date based rollover
+    private ConfigurationBuilder<BuiltConfiguration> buildConfigB() {
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        builder.setConfigurationName("LOG4J2-1964 demo");
+        builder.setStatusLevel(Level.ERROR);
+        // @formatter:off
+        builder.add(builder.newAppender("consoleLog", "Console")
+                .addAttribute("target", ConsoleAppender.Target.SYSTEM_ERR));
+        builder.add(builder.newAppender("fooAppender", "RollingFile")
+                .addAttribute("fileName", "foo.log")
+                .addAttribute("filePattern", "foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i")
+                .addComponent(builder.newComponent("TimeBasedTriggeringPolicy")
+                        .addAttribute("interval", 5)
+                        .addAttribute("modulate", true)));
+        builder.add(builder.newRootLogger(Level.INFO)
+                .add(builder.newAppenderRef("consoleLog"))
+                .add(builder.newAppenderRef("fooAppender")));
+        // @formatter:on
+        return builder;
+    }
+
+    @Test
+    public void testClosingLoggerContext() {
+        // initial config with indexed rollover
+        try (LoggerContext loggerContext1 = Configurator.initialize(buildConfigA().build())) {
+            validateAppender(loggerContext1, "foo.log.%i");
+        }
+
+        // rebuild config with date based rollover
+        try (LoggerContext loggerContext2 = Configurator.initialize(buildConfigB().build())) {
+            validateAppender(loggerContext2, "foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
+        }
+    }
+
+    @Test
+    @Ignore
+    public void testNotClosingLoggerContext() {
+        // initial config with indexed rollover
+        final LoggerContext loggerContext1 = Configurator.initialize(buildConfigA().build());
+        validateAppender(loggerContext1, "foo.log.%i");
+
+        // rebuild config with date based rollover
+        final LoggerContext loggerContext2 = Configurator.initialize(buildConfigB().build());
+        validateAppender(loggerContext2, "foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
+    }
+
+    private void validateAppender(final LoggerContext loggerContext1, final String expectedFilePattern) {
+        final RollingFileAppender appender = loggerContext1.getConfiguration().getAppender("fooAppender");
+        Assert.assertNotNull(appender);
+        Assert.assertEquals(expectedFilePattern, appender.getFilePattern());
+        LogManager.getLogger("root").info("just to show it works.");
+    }
+}
