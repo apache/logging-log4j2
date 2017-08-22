@@ -88,8 +88,8 @@ public class RollingFileAppenderUpdateDataTest {
         validateAppender(loggerContext2, "foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
     }
 
-    private void validateAppender(final LoggerContext loggerContext1, final String expectedFilePattern) {
-        final RollingFileAppender appender = loggerContext1.getConfiguration().getAppender("fooAppender");
+    private void validateAppender(final LoggerContext loggerContext, final String expectedFilePattern) {
+        final RollingFileAppender appender = loggerContext.getConfiguration().getAppender("fooAppender");
         Assert.assertNotNull(appender);
         Assert.assertEquals(expectedFilePattern, appender.getFilePattern());
         LogManager.getLogger("root").info("just to show it works.");
