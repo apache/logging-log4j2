@@ -44,9 +44,9 @@
       <vendor>sun</vendor>
     </provides>
     <configuration>
-      <jdkHome>/home/jenkins/tools/java/jdk-9-ea-b181</jdkHome>
+      <jdkHome>/home/jenkins/tools/java/jdk-9-b181</jdkHome>
     </configuration>
   </toolchain>
- 
+
   <!-- other toolchains -->
 </toolchains>
