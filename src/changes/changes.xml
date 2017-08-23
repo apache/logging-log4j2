@@ -43,6 +43,9 @@
       <action issue="LOG4J2-2018" dev="rpopma" type="fix">
         Fix incorrect documentation for LoggerNameLevelRewritePolicy.
       </action>
+      <action issue="LOG4J2-922" dev="ggregory" type="fix" due-to="angus.aqlu, Paul Burrowes">
+        Parameter of mdcId in SyslogAppender has no default value.
+      </action>
       <action issue="LOG4J2-2001" dev="ggregory" type="fix" due-to="Paul Burrowes">
         StyleConverter.newInstance argument validation is incorrect.
       </action>
