@@ -101,6 +101,10 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
             final Layout<? extends Serializable> layout, final String filePermissions, final String fileOwner, final String fileGroup,
             final Configuration configuration) {
+        if (strategy instanceof DirectWriteRolloverStrategy && fileName != null) {
+            LOGGER.error("The fileName attribute must not be specified with the DirectWriteRolloverStrategy");
+            return null;
+        }
         return narrow(RollingRandomAccessFileManager.class, getManager(fileName, new FactoryData(filePattern, isAppend,
                 immediateFlush, bufferSize, policy, strategy, advertiseURI, layout,
                 filePermissions, fileOwner, fileGroup, configuration), FACTORY));

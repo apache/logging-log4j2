@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="MyApp" packages="">
+  <Properties>
+    <Property name="baseDir">target/random-1833</Property>
+  </Properties>
+  <Appenders>
+    <RollingRandomAccessFile name="RollingFile" fileName="${baseDir}/app.log"
+                 filePattern="${baseDir}/app-%d{yyyy-MM-dd'T'HH_mm_ss}.log">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+      <TimeBasedTriggeringPolicy interval="10"/>
+      <DirectWriteRolloverStrategy>
+        <Delete basePath="${baseDir}">
+          <IfFileName glob="app-*.log" />
+          <IfAccumulatedFileCount exceeds="10" />
+        </Delete>
+      </DirectWriteRolloverStrategy>
+    </RollingRandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Root level="trace">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
