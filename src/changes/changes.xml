@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+      <action issue="LOG4J2-1928" dev="rgoers" type="update">
+        Add support for DirectWriteRolloverStrategy to RollingRandomAcessFileAppender.
+      </action>
       <action issue="LOG4J2-1833" dev="rgoers" type="fix">
         Prevent NullPointerException when a file name is specified with the DirectWriteRolloverStrategy.
       </action>

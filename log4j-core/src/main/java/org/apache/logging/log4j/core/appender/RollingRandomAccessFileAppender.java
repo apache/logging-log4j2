@@ -28,6 +28,8 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
+import org.apache.logging.log4j.core.appender.rolling.DirectFileRolloverStrategy;
+import org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
@@ -95,8 +97,20 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
                 return null;
             }
 
-            if (fileName == null) {
-                LOGGER.error("No filename was provided for FileAppender with name " + name);
+            if (strategy == null) {
+                if (fileName != null) {
+                    strategy = DefaultRolloverStrategy.newBuilder()
+                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .withConfig(getConfiguration())
+                            .build();
+                } else {
+                    strategy = DirectWriteRolloverStrategy.newBuilder()
+                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .withConfig(getConfiguration())
+                            .build();
+                }
+            } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
+                LOGGER.error("RollingFileAppender '{}': When no file name is provided a DirectFilenameRolloverStrategy must be configured");
                 return null;
             }
 
@@ -108,13 +122,6 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             if (policy == null) {
                 LOGGER.error("A TriggeringPolicy must be provided");
                 return null;
-            }
-
-            if (strategy == null) {
-                strategy = DefaultRolloverStrategy.newBuilder()
-                                .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
-                                .withConfig(getConfiguration())
-                                .build();
             }
 
             final Layout<? extends Serializable> layout = getOrCreateLayout();
