@@ -36,12 +36,12 @@ import org.junit.Test;
 public class RollingFileAppenderUpdateDataTest {
 
     private ConfigurationBuilder<BuiltConfiguration> buildConfigA() {
-        return buildConfigurationBuilder("foo.log.%i");
+        return buildConfigurationBuilder("target/rolling-update-date/foo.log.%i");
     }
 
     // rebuild config with date based rollover
     private ConfigurationBuilder<BuiltConfiguration> buildConfigB() {
-        return buildConfigurationBuilder("foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
+        return buildConfigurationBuilder("target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
     }
 
     private ConfigurationBuilder<BuiltConfiguration> buildConfigurationBuilder(final String filePattern) {
@@ -52,7 +52,7 @@ public class RollingFileAppenderUpdateDataTest {
         builder.add(builder.newAppender("consoleLog", "Console")
             .addAttribute("target", ConsoleAppender.Target.SYSTEM_ERR));
         builder.add(builder.newAppender("fooAppender", "RollingFile")
-                .addAttribute("fileName", "foo.log")
+                .addAttribute("fileName", "target/rolling-update-date/foo.log")
                 .addAttribute("filePattern", filePattern)
                 .addComponent(builder.newComponent("SizeBasedTriggeringPolicy")
                         .addAttribute("size", "10MB")));
@@ -67,12 +67,12 @@ public class RollingFileAppenderUpdateDataTest {
     public void testClosingLoggerContext() {
         // initial config with indexed rollover
         try (LoggerContext loggerContext1 = Configurator.initialize(buildConfigA().build())) {
-            validateAppender(loggerContext1, "foo.log.%i");
+            validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
         }
 
         // rebuild config with date based rollover
         try (LoggerContext loggerContext2 = Configurator.initialize(buildConfigB().build())) {
-            validateAppender(loggerContext2, "foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
+            validateAppender(loggerContext2, "target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
         }
     }
 
@@ -81,11 +81,11 @@ public class RollingFileAppenderUpdateDataTest {
     public void testNotClosingLoggerContext() {
         // initial config with indexed rollover
         final LoggerContext loggerContext1 = Configurator.initialize(buildConfigA().build());
-        validateAppender(loggerContext1, "foo.log.%i");
+        validateAppender(loggerContext1, "target-rolling-update-date/foo.log.%i");
 
         // rebuild config with date based rollover
         final LoggerContext loggerContext2 = Configurator.initialize(buildConfigB().build());
-        validateAppender(loggerContext2, "foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
+        validateAppender(loggerContext2, "target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
     }
 
     private void validateAppender(final LoggerContext loggerContext, final String expectedFilePattern) {
