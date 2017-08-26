@@ -30,9 +30,17 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.9.1" date="2017-??-??" description="GA Release 2.9.1">
+      <action issue="LOG4J2-1431" dev="mattsicker" type="add">
+        Simplify log4j system property naming scheme.
+      </action>
+      <action issue="LOG4J2-1809" dev="mattsicker" type="add">
+        Add global configuration environment SPI.
+      </action>
+    </release>
     <release version="2.9.0" date="2017-08-26" description="GA Release 2.9.0">
       <action issue="LOG4J2-1928" dev="rgoers" type="update">
-        Add support for DirectWriteRolloverStrategy to RollingRandomAcessFileAppender.
+        Add support for DirectWriteRolloverStrategy to RollingRandomAccessFileAppender.
       </action>
       <action issue="LOG4J2-1833" dev="rgoers" type="fix">
         Prevent NullPointerException when a file name is specified with the DirectWriteRolloverStrategy.
