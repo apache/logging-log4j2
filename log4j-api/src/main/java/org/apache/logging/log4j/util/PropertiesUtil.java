@@ -283,7 +283,7 @@ public final class PropertiesUtil {
      *
      * Tokenized: loose matching based on word boundaries.
      *
-     * @since 2.9
+     * @since 2.9.1
      */
     private static class Environment {
 
