@@ -30,7 +30,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.9.0" date="2017-MM-DD" description="GA Release 2.9.0">
+    <release version="2.9.0" date="2017-08-26" description="GA Release 2.9.0">
       <action issue="LOG4J2-1928" dev="rgoers" type="update">
         Add support for DirectWriteRolloverStrategy to RollingRandomAcessFileAppender.
       </action>
