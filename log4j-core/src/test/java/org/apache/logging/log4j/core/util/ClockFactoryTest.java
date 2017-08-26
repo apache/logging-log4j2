@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertSame;
-
 import java.lang.reflect.Field;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.logging.log4j.core.async.AsyncLogger;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ClockFactoryTest {
 
@@ -40,11 +40,11 @@ public class ClockFactoryTest {
         FieldUtils.writeStaticField(field, ClockFactory.getClock(), false);
     }
 
-    @AfterClass
-    public static void afterClass() throws IllegalAccessException {
+    @Before
+    public void setUp() throws Exception {
         resetClocks();
     }
-    
+
     @Test
     public void testDefaultIsSystemClock() {
         System.clearProperty(ClockFactory.PROPERTY_NAME);
