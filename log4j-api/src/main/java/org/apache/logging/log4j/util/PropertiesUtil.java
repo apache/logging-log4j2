@@ -108,7 +108,7 @@ public final class PropertiesUtil {
      * @return {@code true} if the specified property is defined, regardless of its value
      */
     public boolean hasProperty(final String name) {
-        return System.getProperties().containsKey(name) || props.containsKey(name);
+        return environment.containsKey(name);
     }
 
     /**
@@ -282,6 +282,8 @@ public final class PropertiesUtil {
      * Legacy: the original property name as defined in the source pre-2.9.
      *
      * Tokenized: loose matching based on word boundaries.
+     *
+     * @since 2.9
      */
     private static class Environment {
 
@@ -312,6 +314,14 @@ public final class PropertiesUtil {
             }
         }
 
+        private static boolean hasSystemProperty(final String key) {
+            try {
+                return System.getProperties().containsKey(key);
+            } catch (final SecurityException ignored) {
+                return false;
+            }
+        }
+
         private String get(final String key) {
             if (normalized.containsKey(key)) {
                 return normalized.get(key);
@@ -319,16 +329,17 @@ public final class PropertiesUtil {
             if (literal.containsKey(key)) {
                 return literal.get(key);
             }
-            String prop = null;
-            try {
-                prop = System.getProperty(key);
-            } catch (final SecurityException ignored) {
-                // Ignore
-            }
-            if (prop != null) {
-                return prop;
+            if (hasSystemProperty(key)) {
+                return System.getProperty(key);
             }
             return tokenized.get(PropertySource.Util.tokenize(key));
+        }
+
+        private boolean containsKey(final String key) {
+            return normalized.containsKey(key) ||
+                literal.containsKey(key) ||
+                hasSystemProperty(key) ||
+                tokenized.containsKey(PropertySource.Util.tokenize(key));
         }
     }
 
