@@ -42,7 +42,7 @@
             <p>
               The most used methods are the entry() or traceEntry() and exit() or traceExit() methods. entry()
               or traceEntry() should be placed at the beginning of methods, except perhaps for simple
-              getters and setters. entry() can be calledpassing from 0 to 4 parameters. Typically these will be
+              getters and setters. entry() can be called passing from 0 to 4 parameters. Typically these will be
               parameters passed to the method. traceEntry() can be passed a format String and a variable list of
               parameters, or a Message. The entry() and traceEntry() methods log with a level of TRACE and uses
               a Marker with a name of "ENTER" which is also a "FLOW" Marker and all message strings will begin
@@ -74,7 +74,7 @@
               also an "EXCEPTION" Marker.
             </p>
             <p>
-              The following example shows a simple application using these methods in a fairly typcial manner. The
+              The following example shows a simple application using these methods in a fairly typical manner. The
               throwing() is not present since no Exceptions are explicitly thrown and not handled.
             </p>
 <pre class="prettyprint linenums">

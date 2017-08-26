@@ -92,19 +92,19 @@
             <code>myObject</code> parameter at the time of the call to <code>logger.debug()</code>.
             The log message will not change even if <code>myObject</code> is modified later.
             It is safe to asynchronously log mutable objects because most
-            <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/Message.html">Message</a>
+            <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/Message.html">Message</a>
             implementations built-in to Log4j take a snapshot of the parameters.
             There are some exceptions however:
-            <a
+            <a class="javadoc"
               href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>
             and
-            <a
+            <a class="javadoc"
               href="../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
             are mutable by design: fields can be added to these messages after the message object was created.
             These messages should not be modified after they are logged with asynchronous loggers or
             asynchronous appenders; you may or may not see the modifications in the resulting log output.
             Similarly, custom
-            <a
+            <a class="javadoc"
               href="../log4j-api/apidocs/org/apache/logging/log4j/message/Message.html">Message</a>
             implementations should be designed with asynchronous use in mind, and either take a snapshot
             of their parameters at construction time, or document their thread-safety characteristics.
@@ -132,7 +132,7 @@
         </p>
         <p>
           This is simplest to configure and gives the best performance. To make all loggers asynchronous,
-          add the disruptor jar to the classpath and set the system property <tt>Log4jContextSelector</tt>
+          add the disruptor jar to the classpath and set the system property <tt>log4j2.contextSelector</tt>
           to <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt>.
         </p>
         <p>
@@ -146,7 +146,7 @@
         <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- Don't forget to set system property
--DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
      to make all loggers asynchronous. -->
 
 <Configuration status="WARN">
@@ -183,6 +183,10 @@
           The below properties can also be specified by creating a file named
           <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
         </p>
+        <p>
+          Note that system properties were renamed into a more consistent style in Log4j 2.9.1. All old property
+          names are still supported which are documented <a href="configuration.html#SystemProperties">here</a>.
+        </p>
         <a name="SysPropsAllAsync" />
         <table>
           <caption align="top">System Properties to configure all asynchronous loggers
@@ -193,7 +197,7 @@
             <th>Description</th>
           </tr>
           <tr>
-            <td>AsyncLogger.ExceptionHandler</td>
+            <td>log4j2.asyncLoggerExceptionHandler</td>
             <td>
               <tt>default handler</tt>
             </td>
@@ -208,7 +212,7 @@
             </td>
           </tr>
           <tr>
-            <td>AsyncLogger.RingBufferSize</td>
+            <td>log4j2.asyncLoggerRingBufferSize</td>
             <td>256&#160;*&#160;1024</td>
             <td>
               Size (number of slots) in the RingBuffer used by the asynchronous logging subsystem.
@@ -223,7 +227,7 @@
             </td>
           </tr>
           <tr>
-            <td>AsyncLogger.WaitStrategy</td>
+            <td>log4j2.asyncLoggerWaitStrategy</td>
             <td>
               <tt>Timeout</tt>
             </td>
@@ -251,7 +255,7 @@
             </td>
           </tr>
           <tr>
-            <td>AsyncLogger.ThreadNameStrategy</td>
+            <td>log4j2.asyncLoggerThreadNameStrategy</td>
             <td>
               <tt>CACHED</tt>
             </td>
@@ -265,7 +269,7 @@
             </td>
           </tr>
           <tr>
-            <td>log4j.Clock</td>
+            <td>log4j2.clock</td>
             <td>
               <tt>SystemClock</tt>
             </td>
@@ -297,8 +301,8 @@
           There are also a few system properties that can be used to maintain application throughput even when
           the underlying appender cannot keep up with the logging rate and the queue is filling up.
           See the details for system properties
-          <a href="configuration.html#log4j2.AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
-            <tt>log4j2.DiscardThreshold</tt></a>.
+          <a href="configuration.html#asyncQueueFullPolicy"><tt>log4j2.asyncQueueFullPolicy</tt> and
+            <tt>log4j2.discardThreshold</tt></a>.
         </p>
       </subsection>
       <a name="MixedSync-Async" />
@@ -329,7 +333,7 @@
         </p>
         <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 
-<!-- No need to set system property "Log4jContextSelector" to any value
+<!-- No need to set system property "log4j2.contextSelector" to any value
      when using <asyncLogger> or <asyncRoot>. -->
 
 <Configuration status="WARN">
@@ -360,6 +364,10 @@
           The below properties can also be specified by creating a file named
           <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
         </p>
+        <p>
+          Note that system properties were renamed into a more consistent style in Log4j 2.9.1. All old property
+          names are still supported which are documented <a href="configuration.html#SystemProperties">here</a>.
+        </p>
         <a name="SysPropsMixedSync-Async" />
         <table>
           <caption align="top">System Properties to configure mixed asynchronous and normal loggers</caption>
@@ -369,7 +377,7 @@
             <th>Description</th>
           </tr>
           <tr>
-            <td>AsyncLoggerConfig.ExceptionHandler</td>
+            <td>log4j2.asyncLoggerConfigExceptionHandler</td>
             <td>
               <tt>default handler</tt>
             </td>
@@ -384,7 +392,7 @@
             </td>
           </tr>
           <tr>
-            <td>AsyncLoggerConfig.RingBufferSize</td>
+            <td>log4j2.asyncLoggerConfigRingBufferSize</td>
             <td>256&#160;*&#160;1024</td>
             <td>
               Size (number of slots) in the RingBuffer used by the asynchronous logging subsystem.
@@ -399,7 +407,7 @@
             </td>
           </tr>
           <tr>
-            <td>AsyncLoggerConfig.WaitStrategy</td>
+            <td>log4j2.asyncLoggerConfigWaitStrategy</td>
             <td>
               <tt>Timeout</tt>
             </td>
@@ -431,8 +439,8 @@
           There are also a few system properties that can be used to maintain application throughput even when
           the underlying appender cannot keep up with the logging rate and the queue is filling up.
           See the details for system properties
-          <a href="configuration.html#log4j2.AsyncQueueFullPolicy"><tt>log4j2.AsyncQueueFullPolicy</tt> and
-            <tt>log4j2.DiscardThreshold</tt></a>.
+          <a href="configuration.html#asyncQueueFullPolicy"><tt>log4j2.asyncQueueFullPolicy</tt> and
+            <tt>log4j2.discardThreshold</tt></a>.
         </p>
       </subsection>
       <a name="Location" />

@@ -55,7 +55,7 @@
                 <li>Implement a new <code>LoggerContextFactory</code>.</li>
                 <li>Implement a class that extends <code>org.apache.logging.spi.Provider.</code> with a no-arg
                   constructor that calls super-class's constructor with the <var>Priority</var>, the API version(s),
-                  <code>LoggerContextFactory</code> class, and optinall, a <code>ThreadContextMap</code>
+                  <code>LoggerContextFactory</code> class, and optionally, a <code>ThreadContextMap</code>
                   implementation class.</li>
                 <li>Create a <code>META-INF/services/org.apache.logging.spi.Provider</code> file that contains the
                   name of the class that implements <code>org.apache.logging.spi.Provider</code>.
@@ -534,7 +534,7 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
             The default implementation is ThreadContextDataInjector, which obtains context attributes from the ThreadContext.
           </p><p>
           Applications may replace the default ContextDataInjector by setting the value of the system property
-          log4j2.ContextDataInjector to the name of the custom ContextDataInjector class.
+          <tt>log4j2.contextDataInjector</tt> to the name of the custom ContextDataInjector class.
         </p><p>
           Implementors should be aware there are some subtleties related to thread-safety and implementing a
           context data injector in a garbage-free manner.
@@ -544,11 +544,11 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
         </subsection>
         <subsection name="Custom ThreadContextMap implementations">
           <p>
-            A garbage-free StringMap-based context map can be installed by setting system property log4j2.garbagefree.threadContextMap
+            A garbage-free StringMap-based context map can be installed by setting system property <tt>log4j2.garbagefreeThreadContextMap</tt>
             to true. (Log4j must be <a href="garbagefree.html#Config">enabled</a> to use ThreadLocals.)
           </p><p>
             Any custom <tt>ThreadContextMap</tt> implementation can be installed by setting system property
-            log4j2.threadContextMap to the fully qualified class name of the class implementing the
+            <tt>log4j2.threadContextMap</tt> to the fully qualified class name of the class implementing the
             ThreadContextMap interface. By also implementing the <tt>ReadOnlyThreadContextMap</tt> interface, your custom
             ThreadContextMap implementation will be accessible to applications via the
           <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()">ThreadContext::getThreadContextMap</a>

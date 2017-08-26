@@ -100,7 +100,7 @@ public class RequestFilter implements Filter {
         }
         ThreadContext.put("hostname", servletRequest.getServerName());
         ThreadContext.put("productName", filterConfig.getInitParameter("ProductName"));
-        Threadcontext.put("locale", servletRequest.getLocale().getDisplayName());
+        ThreadContext.put("locale", servletRequest.getLocale().getDisplayName());
         if (timeZone == null) {
             timeZone = TimeZone.getDefault();
         }
@@ -137,7 +137,7 @@ public class MyApp {
             <p>The EventLogger class uses a Logger named "EventLogger". EventLogger uses a logging level
               of OFF as the default to indicate that it cannot be filtered. These events can be
               formatted for printing using the
-              <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/StructuredDataLayout.html">StructuredDataLayout</a>.
+              <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/StructuredDataLayout.html">StructuredDataLayout</a>.
             </p>
           </subsection>
         </section>

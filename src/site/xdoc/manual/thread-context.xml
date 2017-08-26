@@ -155,7 +155,7 @@ for( final Session session : sessions ) {
             <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a>
             by default. The Map can be configured to use an
             <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>
-            by setting system property <tt>isThreadContextMapInheritable</tt> to <tt>"true"</tt>.
+            by setting system property <tt>log4j2.isThreadContextMapInheritable</tt> to <tt>true</tt>.
             When configured this way, the contents of the Map will be passed to child threads. However, as
             discussed in the
             <a href="http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()">Executors</a>

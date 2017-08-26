@@ -96,7 +96,7 @@
           To avoid causing memory leaks, Log4j will not use these ThreadLocals when
           it detects that it is used in a web application
           (when the <tt>javax.servlet.Servlet</tt> class is in the classpath,
-          or when system property <tt>log4j2.is.webapp</tt> is set to "true").
+          or when system property <tt>log4j2.isWebapp</tt> is set to "true").
         </p>
           <p>
             Some garbage-reducing functionality does not rely on ThreadLocals and is
@@ -124,21 +124,22 @@
             creating temporary objects:
           </p>
           <ul>
-            <li><tt>log4j2.enable.threadlocals</tt> - if "true" (the default for non-web applications)
+            <li><tt>log4j2.enableThreadlocals</tt> - if "true" (the default for non-web applications)
               objects are stored in ThreadLocal fields and reused, otherwise new
               objects are created for each log event.</li>
-            <li><tt>log4j2.enable.direct.encoders</tt> - if "true" (the default) log events are converted to text and this
+            <li><tt>log4j2.enableDirectEncoders</tt> - if "true" (the default) log events are converted to text and this
               text is converted to bytes without creating temporary objects. Note:
               <em>synchronous</em> logging performance may be worse for multi-threaded applications in this mode due to
               synchronization on the shared buffer. If your application is multi-threaded and logging performance
               is important, consider using Async Loggers.
               </li>
             <li>The ThreadContext map is <em>not</em> garbage-free by default, but from Log4j 2.7 it can be configured
-              to be garbage-free by setting system property <tt>log4j2.garbagefree.threadContextMap</tt> to "true".</li>
+              to be garbage-free by setting system property <tt>log4j2.garbagefreeThreadContextMap</tt> to "true".</li>
           </ul>
           <p>
             Instead of system properties, the above properties can also be specified in a file named
             <tt>log4j2.component.properties</tt> by including this file in the classpath of the application.
+            See the <a href="configuration.html#SystemProperties">manual regarding system properties</a> for more info.
           </p>
         <a name="Appenders" />
           <h4>Supported Appenders</h4>
@@ -410,7 +411,7 @@
           </p>
           <p>
             Log4j may call <tt>toString()</tt> on message and parameter objects when garbage-free logging
-            is disabled (when system property <tt>log4j2.enable.threadlocals</tt> is set to "false".)
+            is disabled (when system property <tt>log4j2.enableThreadlocals</tt> is set to "false".)
           </p>
         <a name="codeImpact" />
         <h4>Impact on Application Code: Autoboxing</h4>
@@ -439,7 +440,7 @@ public void garbageFree() {
             </p>
             <ul>
               <li>The ThreadContext map is not garbage-free by default, but can be configured to be garbage-free
-              by setting system property <tt>log4j2.garbagefree.threadContextMap</tt> to "true".</li>
+              by setting system property <tt>log4j2.garbagefreeThreadContextMap</tt> to "true".</li>
               <li>The ThreadContext stack is not garbage-free.</li>
               <li>Logging more than 10 parameters creates vararg arrays.</li>
               <li>Logging very large messages (more than 518 characters) when all loggers are Async Loggers
