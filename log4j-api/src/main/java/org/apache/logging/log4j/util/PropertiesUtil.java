@@ -273,6 +273,15 @@ public final class PropertiesUtil {
     }
 
     /**
+     * Reloads all properties. This is primarily useful for unit tests.
+     *
+     * @since 2.9.1
+     */
+    public void reload() {
+        environment.reload();
+    }
+
+    /**
      * Provides support for looking up global configuration properties via environment variables, property files,
      * and system properties, in three variations:
      *
@@ -287,16 +296,23 @@ public final class PropertiesUtil {
      */
     private static class Environment {
 
+        private final Set<PropertySource> sources = new TreeSet<>(new PropertySource.Comparator());
         private final Map<CharSequence, String> literal = new ConcurrentHashMap<>();
         private final Map<CharSequence, String> normalized = new ConcurrentHashMap<>();
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
-            final Set<PropertySource> sources = new TreeSet<>(new PropertySource.Comparator());
             sources.add(propertySource);
             for (final PropertySource source : ServiceLoader.load(PropertySource.class)) {
                 sources.add(source);
             }
+            reload();
+        }
+
+        private synchronized void reload() {
+            literal.clear();
+            normalized.clear();
+            tokenized.clear();
             for (final PropertySource source : sources) {
                 source.forEach(new BiConsumer<String, String>() {
                     @Override
