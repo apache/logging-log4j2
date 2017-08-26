@@ -44,11 +44,16 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
-* [Log4j 2 and Lambda Expressions](http://www.baeldung.com/log4j-2-lazy-logging)(August 22, 2017)
-* [How to use Log4j 2 with Spring Boot](https://www.callicoder.com/spring-boot-log4j-2-example/)(August 11, 2017)
-* [Log4j 2 - RollingFileAppender example](https://www.boraji.com/log4j-2-rollingfileappender-example)(July 26, 2017)
-* [How Log4J2 Works: 10 Ways to Get the Most Out Of It](https://stackify.com/log4j2-java/)(June 14, 2017)
-* [Intro to Log4j2 – Appenders, Layouts and Filters](http://www.baeldung.com/log4j2-appenders-layouts-filters)(February 28, 2017)
+* [Log4j 2 and Lambda Expressions](http://www.baeldung.com/log4j-2-lazy-logging)
+(August 22, 2017)
+* [How to use Log4j 2 with Spring Boot](https://www.callicoder.com/spring-boot-log4j-2-example/)
+(August 11, 2017)
+* [Log4j 2 - RollingFileAppender example](https://www.boraji.com/log4j-2-rollingfileappender-example)
+(July 26, 2017)
+* [How Log4J2 Works: 10 Ways to Get the Most Out Of It](https://stackify.com/log4j2-java/)
+(June 14, 2017)
+* [Intro to Log4j2 – Appenders, Layouts and Filters](http://www.baeldung.com/log4j2-appenders-layouts-filters)
+(February 28, 2017)
 * [Getting Your Own Log4j2 File for Mule via Spring](https://dzone.com/articles/getting-own-log4j2-file-for-mule-via-spring)
 (December 29, 2016)
 * [Understanding and working with Log4j2 for logging in Selenium framework (Part B)](https://www.youtube.com/watch?v=-XNvCNHjIKw)

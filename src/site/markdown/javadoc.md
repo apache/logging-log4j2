@@ -30,7 +30,6 @@ Component | Description
 [Log4j IO Streams](log4j-iostreams/apidocs/index.html) | Extra classes for dealing with older APIs that expect classes from `java.io` for logging.
 [JSP Tag Library](log4j-taglib/apidocs/index.html) | The tag library that enables Java-free logging in JavaServer Pages™ using Log4j 2.
 [JSP Tag Library (TLD Doc)](log4j-taglib/tlddoc/index.html) | The special Javadoc-like Tag Library Documentation for the Log4j 2 JSP Tag Library.
-[Scala API (Scaladoc)](log4j-api-scala_2.12/scaladocs/index.html#org.apache.logging.log4j.scala.package) | The Scala wrapper for the Log4j API.
 
 The table below contains links to the Javadoc API Documentation for all the other Log4j 2 components, which you
 likely will not use directly in code but instead will only configure or include in your dependencies.
