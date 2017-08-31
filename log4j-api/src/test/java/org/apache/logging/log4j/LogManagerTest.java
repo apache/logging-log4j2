@@ -68,14 +68,28 @@ public class LogManagerTest {
     }
 
     @Test
-    public void testGetLoggerForAnonymousInnerClass() throws IOException {
+    public void testGetLoggerForAnonymousInnerClass1() throws IOException {
+        Closeable closeable = new Closeable() {
+            
+            Logger LOGGER = LogManager.getLogger();
+            
+            @Override
+            public void close() throws IOException {
+                Assert.assertEquals("org.apache.logging.log4j.LogManagerTest$1", LOGGER.getName());
+            }
+        };
+        closeable.close();
+    }
+
+    @Test
+    public void testGetLoggerForAnonymousInnerClass2() throws IOException {
         Closeable closeable = new Closeable() {
             
             Logger LOGGER = LogManager.getLogger(getClass());
             
             @Override
             public void close() throws IOException {
-                Assert.assertEquals("org.apache.logging.log4j.LogManagerTest$1", LOGGER.getName());
+                Assert.assertEquals("org.apache.logging.log4j.LogManagerTest$2", LOGGER.getName());
             }
         };
         closeable.close();
