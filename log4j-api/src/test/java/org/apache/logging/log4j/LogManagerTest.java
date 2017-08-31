@@ -16,27 +16,36 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.Closeable;
+import java.io.IOException;
+
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import java.io.Closeable;
-import java.io.IOException;
 
 /**
  *
  */
 public class LogManagerTest {
 
-    static class InnerClass {
-        final static Logger LOGGER = LogManager.getLogger(InnerClass.class);
+    class Inner {
+        final Logger LOGGER = LogManager.getLogger();
     }
     
-    static class StaticInnerClass {
-        final static Logger LOGGER = LogManager.getLogger(StaticInnerClass.class);
+    class InnerByClass {
+        final Logger LOGGER = LogManager.getLogger(InnerByClass.class);
+    }
+    
+    static class StaticInner {
+        final static Logger LOGGER = LogManager.getLogger();
+    }
+    
+    static class StaticInnerByClass {
+        final static Logger LOGGER = LogManager.getLogger(StaticInnerByClass.class);
     }
     
     @Test
@@ -69,7 +78,7 @@ public class LogManagerTest {
 
     @Test
     public void testGetLoggerForAnonymousInnerClass1() throws IOException {
-        Closeable closeable = new Closeable() {
+        final Closeable closeable = new Closeable() {
             
             Logger LOGGER = LogManager.getLogger();
             
@@ -83,7 +92,7 @@ public class LogManagerTest {
 
     @Test
     public void testGetLoggerForAnonymousInnerClass2() throws IOException {
-        Closeable closeable = new Closeable() {
+        final Closeable closeable = new Closeable() {
             
             Logger LOGGER = LogManager.getLogger(getClass());
             
@@ -96,13 +105,23 @@ public class LogManagerTest {
     }
 
     @Test
-    public void testGetLoggerForInnerClass() {
-        Assert.assertEquals("org.apache.logging.log4j.LogManagerTest.InnerClass", InnerClass.LOGGER.getName());
+    public void testGetLoggerForInner() {
+        Assert.assertEquals("org.apache.logging.log4j.LogManagerTest.Inner", new Inner().LOGGER.getName());
     }
 
     @Test
-    public void testGetLoggerForStaticInnerClass() {
-        Assert.assertEquals("org.apache.logging.log4j.LogManagerTest.StaticInnerClass", StaticInnerClass.LOGGER.getName());
+    public void testGetLoggerForInnerByClass() {
+        Assert.assertEquals("org.apache.logging.log4j.LogManagerTest.InnerByClass", new InnerByClass().LOGGER.getName());
+    }
+
+    @Test
+    public void testGetLoggerForStaticInner() {
+        Assert.assertEquals("org.apache.logging.log4j.LogManagerTest.StaticInner", StaticInner.LOGGER.getName());
+    }
+
+    @Test
+    public void testGetLoggerForStaticInnerByClass() {
+        Assert.assertEquals("org.apache.logging.log4j.LogManagerTest.StaticInnerByClass", StaticInnerByClass.LOGGER.getName());
     }
 
     @Test
