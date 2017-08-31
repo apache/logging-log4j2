@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.1" date="2017-MM-DD" description="GA Release 2.9.1">
+      <action issue="LOG4J2-2023" dev="ggregory" type="update">
+        Use a class' canonical name instead of name to create its logger name.
+      </action>
       <action issue="LOG4J2-2026" dev="ggregory" type="fix" due-to="Leon Finker">
         java.lang.AbstractMethodError: javax.xml.parsers.DocumentBuilderFactory.setFeature().
       </action>

@@ -380,6 +380,11 @@ public class LogManager {
         }
     }
 
+    private static String toLoggerName(final Class<?> cls) {
+        String canonicalName = cls.getCanonicalName();
+        return canonicalName != null ? canonicalName : cls.getName();
+    }
+
     /**
      * Returns the current LoggerContextFactory.
      *
@@ -548,7 +553,7 @@ public class LogManager {
      */
     public static Logger getLogger(final Class<?> clazz) {
         final Class<?> cls = callerClass(clazz);
-        return getContext(cls.getClassLoader(), false).getLogger(cls.getCanonicalName());
+        return getContext(cls.getClassLoader(), false).getLogger(toLoggerName(cls));
     }
 
     /**
@@ -564,7 +569,7 @@ public class LogManager {
      */
     public static Logger getLogger(final Class<?> clazz, final MessageFactory messageFactory) {
         final Class<?> cls = callerClass(clazz);
-        return getContext(cls.getClassLoader(), false).getLogger(cls.getCanonicalName(), messageFactory);
+        return getContext(cls.getClassLoader(), false).getLogger(toLoggerName(cls), messageFactory);
     }
 
     /**
