@@ -18,6 +18,7 @@ package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -27,6 +28,14 @@ import static org.junit.Assert.*;
  */
 public class LogManagerTest {
 
+    static class InnerClass {
+        final static Logger LOGGER = LogManager.getLogger(InnerClass.class);
+    }
+    
+    static class StaticInnerClass {
+        final static Logger LOGGER = LogManager.getLogger(StaticInnerClass.class);
+    }
+    
     @Test
     public void testGetLogger() {
         Logger logger = LogManager.getLogger();
@@ -56,8 +65,17 @@ public class LogManagerTest {
     }
 
     @Test
+    public void testGetLoggerForInnerClass() {
+        Assert.assertEquals("org.apache.logging.log4j.LogManagerTest.InnerClass", InnerClass.LOGGER.getName());
+    }
+
+    @Test
+    public void testGetLoggerForStaticInnerClass() {
+        Assert.assertEquals("org.apache.logging.log4j.LogManagerTest.StaticInnerClass", StaticInnerClass.LOGGER.getName());
+    }
+
+    @Test
     public void testShutdown() {
         final LoggerContext loggerContext = LogManager.getContext(false);
-        LogManager.shutdown(loggerContext);
     }
 }
