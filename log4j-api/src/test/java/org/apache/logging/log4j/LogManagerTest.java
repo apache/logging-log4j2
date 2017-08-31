@@ -23,6 +23,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 /**
  *
  */
@@ -62,6 +65,20 @@ public class LogManagerTest {
         logger = LogManager.getLogger((Object) null, ParameterizedMessageFactory.INSTANCE);
         assertNotNull("No Logger returned", logger);
         assertTrue("Incorrect Logger name: " + logger.getName(),LogManagerTest.class.getName().equals(logger.getName()));
+    }
+
+    @Test
+    public void testGetLoggerForAnonymousInnerClass() throws IOException {
+        Closeable closeable = new Closeable() {
+            
+            Logger LOGGER = LogManager.getLogger(getClass());
+            
+            @Override
+            public void close() throws IOException {
+                Assert.assertEquals("org.apache.logging.log4j.LogManagerTest$1", LOGGER.getName());
+            }
+        };
+        closeable.close();
     }
 
     @Test
