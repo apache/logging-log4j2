@@ -16,14 +16,17 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Stack;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
-import static org.junit.Assert.*;
+
+import java.util.Stack;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorTest {
@@ -89,6 +92,47 @@ public class StackLocatorTest {
         Class<?> clazz = locator.locateClass();
         assertNotNull("Could not locate class", clazz);
         assertEquals("Incorrect class", this.getClass(), clazz);
+    }
+
+    private final class Foo {
+
+        private StackTraceElement foo() {
+            return new Bar().bar();
+        }
+
+    }
+
+    private final class Bar {
+
+        private StackTraceElement bar() {
+            return baz();
+        }
+
+        private StackTraceElement baz() {
+            return quux();
+        }
+
+    }
+
+    private StackTraceElement quux() {
+        return stackLocator.calcLocation("org.apache.logging.log4j.util.StackLocatorTest$Bar");
+    }
+
+    @Test
+    public void testCalcLocation() {
+        /*
+         * We are setting up a stack trace that looks like:
+         *  - org.apache.logging.log4j.util.StackLocatorTest#quux(line:118)
+         *  - org.apache.logging.log4j.util.StackLocatorTest$Bar#baz(line:112)
+         *  - org.apache.logging.log4j.util.StackLocatorTest$Bar#bar(line:108)
+         *  - org.apache.logging.log4j.util.StackLocatorTest$Foo(line:100)
+         *
+         * We are pretending that org.apache.logging.log4j.util.StackLocatorTest$Bar is the logging class, and
+         * org.apache.logging.log4j.util.StackLocatorTest$Foo is where the log line emanated.
+         */
+        final StackTraceElement element = new Foo().foo();
+        assertEquals("org.apache.logging.log4j.util.StackLocatorTest$Foo", element.getClassName());
+        assertEquals(100, element.getLineNumber());
     }
 
     class ClassLocator {
