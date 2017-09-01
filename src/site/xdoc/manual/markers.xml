@@ -52,8 +52,9 @@ public class MyApp {
     public String doQuery(String table) {
         logger.traceEntry();
 
-        logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
-        String result = ...                
+        logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);        
+	
+	String result = ... 
 
         return logger.traceExit(result);
     }
@@ -61,19 +62,26 @@ public class MyApp {
     public String doUpdate(String table, Map<String, String> params) {
         logger.traceEntry();
 
-        logger.debug(UPDATE_MARKER, "UPDATE {} SET {}",
-            () -> table,
-            () -> formatCols(params));
-
-        String result = ...         
+        if (logger.isDebugEnabled()) {
+            logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols());
+	}
+	
+	String result = ... 
 
         return logger.traceExit(result);
     }
 
     private String formatCols(Map<String, String> cols) {
-        return cols.entrySet().stream()
-			.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-			.collect(Collectors.joining(", "));
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Map.Entry<String, String> entry : cols.entrySet()) {
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(entry.getKey()).append("=").append(entry.getValue());
+            first = false;
+        }
+        return sb.toString();
     }
 }]]></pre>
             <p>
