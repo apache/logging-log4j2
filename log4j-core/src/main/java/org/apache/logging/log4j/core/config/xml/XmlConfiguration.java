@@ -213,7 +213,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             factory.setFeature(featureName, value);
         } catch (ParserConfigurationException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (Exception | LinkageError e) {
             getStatusLogger().error("Caught {} setting feature {} to {} on DocumentBuilderFactory {}: {}",
                     e.getClass().getCanonicalName(), featureName, value, factory, e, e);
         }
