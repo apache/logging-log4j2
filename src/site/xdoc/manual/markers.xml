@@ -52,9 +52,9 @@ public class MyApp {
     public String doQuery(String table) {
         logger.traceEntry();
 
-        logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);        
-	
-	String result = ... 
+        logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
+
+        String result = ... 
 
         return logger.traceExit(result);
     }
@@ -64,9 +64,9 @@ public class MyApp {
 
         if (logger.isDebugEnabled()) {
             logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols());
-	}
+        }
 	
-	String result = ... 
+        String result = ... 
 
         return logger.traceExit(result);
     }
