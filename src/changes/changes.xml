@@ -37,6 +37,9 @@
       <action issue="LOG4J2-2026" dev="ggregory" type="fix" due-to="Leon Finker">
         java.lang.AbstractMethodError: javax.xml.parsers.DocumentBuilderFactory.setFeature().
       </action>
+      <action issue="LOG4J2-2029" dev="ggregory" type="fix" due-to="Fabrizio Cucci">
+        Marker examples should not use deprecate flow APIs.
+      </action>
     </release>
     <release version="2.9.0" date="2017-08-26" description="GA Release 2.9.0">
       <action issue="LOG4J2-1928" dev="rgoers" type="update">

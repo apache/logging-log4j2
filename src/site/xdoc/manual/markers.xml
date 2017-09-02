@@ -50,20 +50,25 @@ public class MyApp {
     private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY").setParents(SQL_MARKER);
 
     public String doQuery(String table) {
-        logger.entry(param);
+        logger.traceEntry();
 
         logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
 
-        return logger.exit();
+        String result = ... 
+
+        return logger.traceExit(result);
     }
 
     public String doUpdate(String table, Map<String, String> params) {
-        logger.entry(param);
+        logger.traceEntry();
 
         if (logger.isDebugEnabled()) {
-          logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols());
+            logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols());
+        }
+	
+        String result = ... 
 
-        return logger.exit();
+        return logger.traceExit(result);
     }
 
     private String formatCols(Map<String, String> cols) {
