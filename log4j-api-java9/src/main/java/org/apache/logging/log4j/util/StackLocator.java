@@ -68,8 +68,12 @@ public class StackLocator {
     }
 
     public StackTraceElement calcLocation(final String fqcnOfLogger) {
-        return stackWalker.walk(s -> s.dropWhile(f -> f.getClassName().equals(fqcnOfLogger)).
-                dropWhile(f -> f.getClassName().equals(fqcnOfLogger)).findFirst()).get().toStackTraceElement();
+        return stackWalker.walk(
+                s -> s.dropWhile(f -> !f.getClassName().equals(fqcnOfLogger)) // drop the top frames until we reach the logger
+                        .dropWhile(f -> f.getClassName().equals(fqcnOfLogger)) // drop the logger frames
+                        .findFirst())
+                .get()
+                .toStackTraceElement();
     }
 
     public StackTraceElement getStackTraceElement(final int depth) {
