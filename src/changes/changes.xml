@@ -43,6 +43,9 @@
       <action issue="LOG4J2-2029" dev="ggregory" type="fix" due-to="Fabrizio Cucci">
         Marker examples should not use deprecate flow APIs.
       </action>
+      <action issue="LOG4J2-1936" dev="ggregory" type="fix" due-to="Helber Belmiro">
+        ClassNotFoundException when making all loggers asynchronous under OSGi environment.
+      </action>
     </release>
     <release version="2.9.0" date="2017-08-26" description="GA Release 2.9.0">
       <action issue="LOG4J2-1928" dev="rgoers" type="update">
