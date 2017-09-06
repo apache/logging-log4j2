@@ -63,7 +63,9 @@ public final class ProviderUtil {
     private static volatile ProviderUtil instance;
 
     private ProviderUtil() {
-        loadProviders(findClassLoader());
+        for (ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+            loadProviders(classLoader);
+        }
         for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
             loadProvider(resource.getUrl(), resource.getClassLoader());
         }
@@ -97,7 +99,7 @@ public final class ProviderUtil {
     protected static void loadProviders(final ClassLoader cl) {
         final ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, cl);
         for (final Provider provider : serviceLoader) {
-            if (validVersion(provider.getVersions())) {
+            if (validVersion(provider.getVersions()) && !PROVIDERS.contains(provider)) {
                 PROVIDERS.add(provider);
             }
         }

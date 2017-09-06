@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.1" date="2017-MM-DD" description="GA Release 2.9.1">
+      <action issue="LOG4J2-2030" dev="rgoers" type="fix">
+        Inspect all known ClassLoaders to locate the service provider"
+      </action>
       <action issue="LOG4J2-2028" dev="rgoers" type="fix" due-to="Jason Tedor">
         Java 9 StackLocator was not properly skipping the initial stack frames.
       </action>

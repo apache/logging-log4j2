@@ -21,9 +21,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -101,6 +103,28 @@ public final class LoaderUtil {
             final ClassLoader ccl = LoaderUtil.class.getClassLoader();
             return ccl == null && !GET_CLASS_LOADER_DISABLED ? ClassLoader.getSystemClassLoader() : ccl;
         }
+    }
+
+    public static ClassLoader[] getClassLoaders() {
+        List<ClassLoader> classLoaders = new ArrayList<>();
+        ClassLoader tcl = getThreadContextClassLoader();
+        classLoaders.add(tcl);
+        ClassLoader current = LoaderUtil.class.getClassLoader();
+        if (current != tcl) {
+            classLoaders.add(current);
+            ClassLoader parent = current.getParent();
+            while (parent != null && !classLoaders.contains(parent)) {
+                classLoaders.add(parent);
+            }
+        }
+        ClassLoader parent = tcl;
+        while (parent != null && !classLoaders.contains(parent)) {
+            classLoaders.add(parent);
+        }
+        if (!classLoaders.contains(ClassLoader.getSystemClassLoader())) {
+            classLoaders.add(ClassLoader.getSystemClassLoader());
+        }
+        return classLoaders.toArray(new ClassLoader[classLoaders.size()]);
     }
 
     /**
