@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;

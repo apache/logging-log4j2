@@ -62,7 +62,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;

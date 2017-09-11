@@ -30,7 +30,6 @@ import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.MimeMessageBuilder;
-import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
