@@ -55,6 +55,9 @@
       <action issue="LOG4J2-2043" dev="ggregory" type="update">
         Update Jackson from 2.9.0 to 2.9.1 (fix for Java 9.)
       </action>
+      <action issue="LOG4J2-2044" dev="ggregory" type="update">
+        Update Apache Commons CSV from 1.4 to 1.5.
+      </action>
     </release>
     <release version="2.9.0" date="2017-08-26" description="GA Release 2.9.0">
       <action issue="LOG4J2-1928" dev="rgoers" type="update">

@@ -91,23 +91,20 @@ public class CsvJsonParameterLayoutFileAppenderTest {
 
     @Test
     public void testNoNulCharactersOpenCurly() throws IOException {
-        // TODO Why is the char quoted? Check Apache Commons CSV.
-        testNoNulCharacters("{", "\"{\"");
+        testNoNulCharacters("{", "{");
     }
 
     @Test
     public void testNoNulCharactersOpenParen() throws IOException {
-        // TODO Why is the char quoted? Check Apache Commons CSV.
-        testNoNulCharacters("(", "\"(\"");
+        testNoNulCharacters("(", "(");
     }
 
     @Test
     public void testNoNulCharactersOpenSquare() throws IOException {
         // TODO Why is the char quoted? Check Apache Commons CSV.
-        testNoNulCharacters("[", "\"[\"");
+        testNoNulCharacters("[", "[");
     }
 
-    @Test
     public void testNoNulCharactersThreeChars() throws IOException {
         testNoNulCharacters("ABC", "ABC");
     }
