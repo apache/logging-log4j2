@@ -333,6 +333,31 @@ public class LogManager {
         }
     }
 
+
+    /**
+     * Returns a LoggerContext
+     *
+     * @param fqcn The fully qualified class name of the Class that this method is a member of.
+     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     *            ClassLoader.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
+     *            example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     *            returned and if the caller is a class in the container's classpath then a different LoggerContext may
+     *            be returned. If true then only a single LoggerContext will be returned.
+     * @param configLocation The URI for the configuration to use.
+     * @param name The LoggerContext name.
+     * @return a LoggerContext.
+     */
+    protected static LoggerContext getContext(final String fqcn, final ClassLoader loader,
+                                              final boolean currentContext, URI configLocation, String name) {
+        try {
+            return factory.getContext(fqcn, loader, null, currentContext, configLocation, name);
+        } catch (final IllegalStateException ex) {
+            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            return new SimpleLoggerContextFactory().getContext(fqcn, loader, null, currentContext);
+        }
+    }
+
     /**
      * Shutdown using the LoggerContext appropriate for the caller of this method.
      * This is equivalent to calling {@code LogManager.shutdown(false)}.
