@@ -570,7 +570,7 @@
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
-        <version>1.5.6</version>
+        <version>1.6.0</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.jms</groupId>
