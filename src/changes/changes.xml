@@ -61,6 +61,9 @@
       <action issue="LOG4J2-2045" dev="ggregory" type="update">
         Update javax.mail from 1.5.6 to 1.6.0.
       </action>
+      <action issue="LOG4J2-2046" dev="ggregory" type="update">
+        Update Apache Commons Compress from 1.13 to 1.14.
+      </action>
     </release>
     <release version="2.9.0" date="2017-08-26" description="GA Release 2.9.0">
       <action issue="LOG4J2-1928" dev="rgoers" type="update">
