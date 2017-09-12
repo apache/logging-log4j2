@@ -44,7 +44,7 @@
         java.lang.AbstractMethodError: javax.xml.parsers.DocumentBuilderFactory.setFeature().
       </action>
       <action issue="LOG4J2-2029" dev="ggregory" type="fix" due-to="Fabrizio Cucci">
-        Marker examples should not use deprecate flow APIs.
+        Marker examples should not use deprecated flow APIs.
       </action>
       <action issue="LOG4J2-1936" dev="ggregory" type="fix" due-to="Helber Belmiro">
         ClassNotFoundException when making all loggers asynchronous under OSGi environment.
