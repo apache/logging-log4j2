@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.core.appender.mom;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;

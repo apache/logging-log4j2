@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;
 
 /**
