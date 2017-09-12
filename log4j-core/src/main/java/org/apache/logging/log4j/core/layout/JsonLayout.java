@@ -251,8 +251,6 @@ public final class JsonLayout extends AbstractJacksonLayout {
      *            The character set to use, if {@code null}, uses "UTF-8".
      * @param includeStacktrace
      *            If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
-     * @param additionalFields
-     *            Set of custom fields that are appended to the generated JSON.
      * @return A JSON Layout.
      *
      * @deprecated Use {@link #newBuilder()} instead
@@ -269,11 +267,10 @@ public final class JsonLayout extends AbstractJacksonLayout {
             final String headerPattern,
             final String footerPattern,
             final Charset charset,
-            final boolean includeStacktrace,
-            final KeyValuePair[] additionalFields) {
+            final boolean includeStacktrace) {
         final boolean encodeThreadContextAsList = properties && propertiesAsList;
         return new JsonLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
-                headerPattern, footerPattern, charset, includeStacktrace, false, false, additionalFields);
+                headerPattern, footerPattern, charset, includeStacktrace, false, false, null);
     }
 
     @PluginBuilderFactory
