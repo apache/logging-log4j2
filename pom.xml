@@ -1294,7 +1294,7 @@
     <module>log4j-iostreams</module>
     <module>log4j-jul</module>
     <module>log4j-liquibase</module>
-    <module>log4j-appserver</module>
+    <!--<module>log4j-appserver</module>-->
   </modules>
   <profiles>
     <profile>

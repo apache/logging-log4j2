@@ -31,9 +31,6 @@
          - "remove" - Removed
     -->
     <release version="2.9.1" date="2017-MM-DD" description="GA Release 2.9.1">
-      <action issue="LOG4J2-2025" dev="rgoers" type="update">
-        Provide support for overriding the Tomcat Log class in Tomcat 8.5+.
-      </action>
       <action issue="LOG4J2-2030" dev="rgoers" type="fix">
         Inspect all known ClassLoaders to locate the service provider.
       </action>
