@@ -36,9 +36,9 @@ import org.apache.logging.log4j.core.util.Booleans;
  * </p>
  * <ul>
  * <li>
- * MongoDB (org.mongodb:mongo-java-driver:2.11.1 or newer must be on the classpath)</li>
+ * MongoDB (org.mongodb:mongo-java-driver:3.0.4 or newer must be on the classpath)</li>
  * <li>
- * Apache CouchDB (org.lightcouch:lightcouch:0.0.5 or newer must be on the classpath).</li>
+ * Apache CouchDB (org.lightcouch:lightcouch:0.0.6 or newer must be on the classpath).</li>
  * </ul>
  * <p>
  * For examples on how to write your own NoSQL provider, see the simple source code for the MongoDB and CouchDB
