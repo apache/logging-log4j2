@@ -62,8 +62,9 @@ public abstract class AbstractJpaAppenderTest {
     public void tearDown() throws SQLException {
         final LoggerContext context = LoggerContext.getContext(false);
         try {
-            final Appender appender = context.getConfiguration().getAppender("databaseAppender");
-            assertNotNull("The appender should not be null.", appender);
+            String appenderName = "databaseAppender";
+            final Appender appender = context.getConfiguration().getAppender(appenderName);
+            assertNotNull("The appender '" + appenderName + "' should not be null.", appender);
             assertTrue("The appender should be a JpaAppender.", appender instanceof JpaAppender);
             ((JpaAppender) appender).getManager().close();
         } finally {
