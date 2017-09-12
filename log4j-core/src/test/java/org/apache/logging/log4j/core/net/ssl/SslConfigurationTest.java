@@ -24,6 +24,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class SslConfigurationTest {

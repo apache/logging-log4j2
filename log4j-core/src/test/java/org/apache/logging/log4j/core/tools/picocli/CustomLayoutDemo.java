@@ -27,6 +27,7 @@ import java.awt.Point;
 import java.lang.reflect.Field;
 
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.*;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.*;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;

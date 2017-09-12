@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.util.ProcessIdUtil;

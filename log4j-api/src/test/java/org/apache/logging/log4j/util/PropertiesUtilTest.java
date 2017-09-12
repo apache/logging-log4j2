@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.Map;
 import java.util.Properties;
 
