@@ -40,10 +40,10 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         @PluginBuilderAttribute
         private boolean eventEol;
-        
+
         @PluginBuilderAttribute
         private boolean compact;
-        
+
         @PluginBuilderAttribute
         private boolean complete;
 
@@ -199,7 +199,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         }
     }
 
-    private static LogEvent convertMutableToLog4jEvent(final LogEvent event) {
+    protected Object wrapLogEvent(final LogEvent event) {
         // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
         // TODO Need to set up the same filters for MutableLogEvent but don't know how...
         // This is a workaround.
@@ -210,7 +210,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     public void toSerializable(final LogEvent event, final Writer writer)
             throws JsonGenerationException, JsonMappingException, IOException {
-        objectWriter.writeValue(writer, convertMutableToLog4jEvent(event));
+        objectWriter.writeValue(writer, wrapLogEvent(event));
         writer.write(eol);
         if (includeNullDelimiter) {
             writer.write('\0');

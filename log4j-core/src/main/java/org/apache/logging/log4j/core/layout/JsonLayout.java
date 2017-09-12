@@ -20,9 +20,13 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -31,6 +35,8 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 
 /**
  * Appends a series of JSON events as strings serialized as bytes.
@@ -56,6 +62,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
  * appender uses end-of-line characters and indents lines to format the text. If {@code compact="true"}, then no
  * end-of-line or indentation is used. Message content may contain, of course, escaped end-of-lines.
  * </p>
+ * <h3>Extra Fields</h3>
+ * <p>
+ * This property allows addition of custom fields into generated JSON.
+ * {@code <JsonLayout><KeyValuePair key="foo" value="bar"/></JsonLayout>} inserts {@code "key":"bar"} directly
+ * into JSON output. Supports Lookup expressions.
+ * </p>
  */
 @Plugin(name = "JsonLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class JsonLayout extends AbstractJacksonLayout {
@@ -71,7 +83,10 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
         @PluginBuilderAttribute
         private boolean propertiesAsList;
-        
+
+        @PluginElement("Extras")
+        private KeyValuePair[] extras;
+
         public Builder() {
             super();
             setCharset(StandardCharsets.UTF_8);
@@ -84,7 +99,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
             final String footerPattern = toStringOrNull(getFooter());
             return new JsonLayout(getConfiguration(), isLocationInfo(), isProperties(), encodeThreadContextAsList,
                     isComplete(), isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(),
-                    isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter());
+                    isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter(),
+                    getExtras());
         }
 
         public boolean isPropertiesAsList() {
@@ -95,7 +111,18 @@ public final class JsonLayout extends AbstractJacksonLayout {
             this.propertiesAsList = propertiesAsList;
             return asBuilder();
         }
+
+        public KeyValuePair[] getExtras() {
+            return extras;
+        }
+
+        public B setExtras(KeyValuePair[] extras) {
+            this.extras = extras;
+            return asBuilder();
+        }
     }
+
+    protected final Map<String, Object> extras;
 
     /**
      * @deprecated Use {@link #newBuilder()} instead
@@ -111,6 +138,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
                 false);
+
+        extras = null;
     }
 
     private JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
@@ -118,13 +147,26 @@ public final class JsonLayout extends AbstractJacksonLayout {
                        final boolean complete, final boolean compact, final boolean eventEol,
                        final String headerPattern,final String footerPattern, final Charset charset,
                        final boolean includeStacktrace,final boolean stacktraceAsString,
-                       final boolean includeNullDelimiter) {
+                       final boolean includeNullDelimiter,
+                       final KeyValuePair[] extras) {
         super(config, new JacksonFactory.JSON(encodeThreadContextAsList, includeStacktrace, stacktraceAsString).newWriter(
                 locationInfo, properties, compact),
                 charset, compact, complete, eventEol,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
                 includeNullDelimiter);
+
+        if (extras != null && extras.length > 0) {
+            final Map<String, Object> extrasMap = new LinkedHashMap<>();
+
+            for (KeyValuePair pair : extras) {
+                extrasMap.put(pair.getKey(), pair.getValue());
+            }
+
+            this.extras = Collections.unmodifiableMap(extrasMap);
+        } else {
+            this.extras = null;
+        }
     }
 
     /**
@@ -209,6 +251,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
      *            The character set to use, if {@code null}, uses "UTF-8".
      * @param includeStacktrace
      *            If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
+     * @param extras
+     *            Set of custom fields that are appended to the generated JSON.
      * @return A JSON Layout.
      *
      * @deprecated Use {@link #newBuilder()} instead
@@ -225,10 +269,11 @@ public final class JsonLayout extends AbstractJacksonLayout {
             final String headerPattern,
             final String footerPattern,
             final Charset charset,
-            final boolean includeStacktrace) {
+            final boolean includeStacktrace,
+            final KeyValuePair[] extras) {
         final boolean encodeThreadContextAsList = properties && propertiesAsList;
         return new JsonLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
-                headerPattern, footerPattern, charset, includeStacktrace, false, false);
+                headerPattern, footerPattern, charset, includeStacktrace, false, false, extras);
     }
 
     @PluginBuilderFactory
@@ -243,7 +288,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      */
     public static JsonLayout createDefaultLayout() {
         return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, false,
-                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false);
+                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, null);
     }
 
     @Override
@@ -252,5 +297,37 @@ public final class JsonLayout extends AbstractJacksonLayout {
             writer.append(", ");
         }
         super.toSerializable(event, writer);
+    }
+
+    @Override
+    protected Object wrapLogEvent(LogEvent event) {
+        Object result = super.wrapLogEvent(event);
+
+        if (extras != null) {
+            return new LogEventWithExtras(result, extras);
+        } else {
+            return result;
+        }
+    }
+
+    public static class LogEventWithExtras {
+
+        private final Object logEvent;
+        private final Map<String, Object> extras;
+
+        public LogEventWithExtras(Object logEvent, Map<String, Object> extras) {
+            this.logEvent = logEvent;
+            this.extras = extras;
+        }
+
+        @JsonUnwrapped
+        public Object getLogEvent() {
+            return logEvent;
+        }
+
+        @JsonAnyGetter
+        public Map<String, Object> getExtras() {
+            return extras;
+        }
     }
 }
