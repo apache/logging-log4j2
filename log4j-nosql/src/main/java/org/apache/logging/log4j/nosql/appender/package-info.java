@@ -24,9 +24,9 @@
  * automatically be added to your classpath.<br>
  * <br>
  * <ul>
- *     <li><a href="http://www.mongodb.org/" target="_blank">MongoDB</a>: org.mongodb:mongo-java-driver:2.11.1 or newer
+ *     <li><a href="http://www.mongodb.org/" target="_blank">MongoDB</a>: org.mongodb:mongo-java-driver:3.0.4 or newer
  *     must be on the classpath.</li>
- *     <li><a href="http://couchdb.apache.org/" target="_blank">Apache CouchDB</a>: org.lightcouch:lightcouch:0.0.5 or
+ *     <li><a href="http://couchdb.apache.org/" target="_blank">Apache CouchDB</a>: org.lightcouch:lightcouch:0.0.6 or
  *     newer must be on the classpath.</li>
  * </ul>
  */
