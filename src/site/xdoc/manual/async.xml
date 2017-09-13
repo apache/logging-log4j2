@@ -126,7 +126,7 @@
       <a name="AllAsync" />
       <subsection name="Making All Loggers Asynchronous">
         <p>
-          <i>Log4j-2.9 and higher require disruptor-3.3.3.jar or higher on the classpath.
+          <i>Log4j-2.9 and higher require disruptor-3.3.4.jar or higher on the classpath.
           Prior to Log4j-2.9, disruptor-3.0.0.jar or higher was required.
           </i>
         </p>
@@ -304,7 +304,7 @@
       <a name="MixedSync-Async" />
       <subsection name="Mixing Synchronous and Asynchronous Loggers">
         <p>
-          <i>Log4j-2.9 and higher require disruptor-3.3.3.jar or higher on the classpath.
+          <i>Log4j-2.9 and higher require disruptor-3.3.4.jar or higher on the classpath.
             Prior to Log4j-2.9, disruptor-3.0.0.jar or higher was required.
           There is no need to set system property "Log4jContextSelector" to any value.</i></p>
         <p>
