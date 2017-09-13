@@ -60,7 +60,7 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "Async", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class AsyncAppender extends AbstractAppender {
 
-    private static final int DEFAULT_QUEUE_SIZE = 128;
+    private static final int DEFAULT_QUEUE_SIZE = 1024;
     private static final LogEvent SHUTDOWN_LOG_EVENT = new AbstractLogEvent() {
     };
 

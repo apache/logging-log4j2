@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.1" date="2017-MM-DD" description="GA Release 2.9.1">
+      <action issue="LOG4J2-2048" dev="rpopma" type="fix">
+        Increase default queue size for AsyncAppender from 128 to 1024.
+      </action>
       <action issue="LOG4J2-2035" dev="rpopma" type="fix">
         Fix documentation to clarify disruptor-3.3.4 is now required for async loggers: disruptor-3.3.3 was never released.
       </action>
