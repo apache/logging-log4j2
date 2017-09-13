@@ -64,6 +64,9 @@
       <action issue="LOG4J2-2047" dev="ggregory" type="update">
         Update Cassandra driver from 3.1.0 to 3.1.4.
       </action>
+      <action issue="LOG4J2-2049" dev="ggregory" type="update">
+        Update Apache Kafka Client from 0.11.0.0 to 0.11.0.1.
+      </action>
     </release>
     <release version="2.9.0" date="2017-08-26" description="GA Release 2.9.0">
       <action issue="LOG4J2-1928" dev="rgoers" type="update">
