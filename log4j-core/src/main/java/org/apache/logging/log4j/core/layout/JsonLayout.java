@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,6 +35,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 
 /**
@@ -78,7 +78,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/json";
 
-    protected final Map<String, Object> additionalFields;
+    protected final ResolvableKeyValuePair[] additionalFields;
 
     public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<JsonLayout> {
@@ -139,14 +139,14 @@ public final class JsonLayout extends AbstractJacksonLayout {
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
                 false);
 
-        additionalFields = null;
+        this.additionalFields = new ResolvableKeyValuePair[0];
     }
 
     private JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
                        final boolean encodeThreadContextAsList,
                        final boolean complete, final boolean compact, final boolean eventEol,
-                       final String headerPattern,final String footerPattern, final Charset charset,
-                       final boolean includeStacktrace,final boolean stacktraceAsString,
+                       final String headerPattern, final String footerPattern, final Charset charset,
+                       final boolean includeStacktrace, final boolean stacktraceAsString,
                        final boolean includeNullDelimiter,
                        final KeyValuePair[] additionalFields) {
         super(config, new JacksonFactory.JSON(encodeThreadContextAsList, includeStacktrace, stacktraceAsString).newWriter(
@@ -157,15 +157,17 @@ public final class JsonLayout extends AbstractJacksonLayout {
                 includeNullDelimiter);
 
         if (additionalFields != null && additionalFields.length > 0) {
-            final Map<String, Object> additionalFieldsMap = new LinkedHashMap<>();
+            // Convert to specific class which already determines whether values needs lookup during serialization
+            final ResolvableKeyValuePair[] resolvableFields = new ResolvableKeyValuePair[additionalFields.length];
 
-            for (KeyValuePair pair : additionalFields) {
-                additionalFieldsMap.put(pair.getKey(), pair.getValue());
+            for (int i = 0; i < additionalFields.length; i++) {
+                resolvableFields[i] = new ResolvableKeyValuePair(additionalFields[i]);
             }
 
-            this.additionalFields = Collections.unmodifiableMap(additionalFieldsMap);
+            this.additionalFields = resolvableFields;
         } else {
-            this.additionalFields = null;
+            // No fields set
+            this.additionalFields = new ResolvableKeyValuePair[0];
         }
     }
 
@@ -300,19 +302,40 @@ public final class JsonLayout extends AbstractJacksonLayout {
     protected Object wrapLogEvent(LogEvent event) {
         Object result = super.wrapLogEvent(event);
 
-        if (additionalFields != null) {
-            return new LogEventWithAdditionalFields(result, additionalFields);
+        if (additionalFields.length > 0) {
+            // Construct map for serialization - note that we are intentionally using original LogEvent
+            Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
+            // This class combines LogEvent with AdditionalFields during serialization
+            return new LogEventWithAdditionalFields(result, additionalFieldsMap);
         } else {
+            // No additional fields, return original object
             return result;
         }
+    }
+
+    private Map<String,String> resolveAdditionalFields(LogEvent logEvent) {
+        final Map<String,String> additionalFieldsMap = new LinkedHashMap<>();
+        final StrSubstitutor strSubstitutor = configuration.getStrSubstitutor();
+
+        for (ResolvableKeyValuePair pair : additionalFields) {
+            if (pair.valueNeedsLookup) {
+                // Resolve value
+                additionalFieldsMap.put(pair.key, strSubstitutor.replace(logEvent, pair.value));
+            } else {
+                // Plain text value
+                additionalFieldsMap.put(pair.key, pair.value);
+            }
+        }
+
+        return additionalFieldsMap;
     }
 
     public static class LogEventWithAdditionalFields {
 
         private final Object logEvent;
-        private final Map<String, Object> additionalFields;
+        private final Map<String, String> additionalFields;
 
-        public LogEventWithAdditionalFields(Object logEvent, Map<String, Object> additionalFields) {
+        public LogEventWithAdditionalFields(Object logEvent, Map<String, String> additionalFields) {
             this.logEvent = logEvent;
             this.additionalFields = additionalFields;
         }
@@ -323,8 +346,21 @@ public final class JsonLayout extends AbstractJacksonLayout {
         }
 
         @JsonAnyGetter
-        public Map<String, Object> getAdditionalFields() {
+        public Map<String, String> getAdditionalFields() {
             return additionalFields;
+        }
+    }
+
+    private static class ResolvableKeyValuePair {
+
+        final String key;
+        final String value;
+        final boolean valueNeedsLookup;
+
+        ResolvableKeyValuePair(KeyValuePair pair) {
+            this.key = pair.getKey();
+            this.value = pair.getValue();
+            this.valueNeedsLookup = this.value != null && this.value.contains("${");
         }
     }
 }
