@@ -271,7 +271,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     }
 
     protected Object wrapLogEvent(final LogEvent event) {
-         if (additionalFields.length > 0) {
+        if (additionalFields.length > 0) {
             // Construct map for serialization - note that we are intentionally using original LogEvent
             Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
             // This class combines LogEvent with AdditionalFields during serialization
@@ -282,9 +282,9 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         }
     }
 
-    private Map<String,String> resolveAdditionalFields(LogEvent logEvent) {
+    private Map<String, String> resolveAdditionalFields(LogEvent logEvent) {
         // Note: LinkedHashMap retains order
-        final Map<String,String> additionalFieldsMap = new LinkedHashMap<>(additionalFields.length);
+        final Map<String, String> additionalFieldsMap = new LinkedHashMap<>(additionalFields.length);
         final StrSubstitutor strSubstitutor = configuration.getStrSubstitutor();
 
         // Go over each field
