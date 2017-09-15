@@ -284,7 +284,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     private Map<String,String> resolveAdditionalFields(LogEvent logEvent) {
         // Note: LinkedHashMap retains order
-        final Map<String,String> additionalFieldsMap = new LinkedHashMap<>();
+        final Map<String,String> additionalFieldsMap = new LinkedHashMap<>(additionalFields.length);
         final StrSubstitutor strSubstitutor = configuration.getStrSubstitutor();
 
         // Go over each field
