@@ -31,6 +31,12 @@
          - "remove" - Removed
     -->
     <release version="2.9.1" date="2017-MM-DD" description="GA Release 2.9.1">
+      <action issue="LOG4J2-1988" dev="rpopma" type="fix">
+        Prevent ConcurrentModificationException with AsyncLoggerConfig.
+      </action>
+      <action issue="LOG4J2-1914" dev="rpopma" type="fix">
+        Prevent ConcurrentModificationException with AsyncLoggerConfig.
+      </action>
       <action issue="LOG4J2-2048" dev="rpopma" type="fix">
         Increase default queue size for AsyncAppender from 128 to 1024.
       </action>

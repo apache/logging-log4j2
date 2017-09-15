@@ -184,6 +184,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private long backgroundThreadId; // LOG4J2-471
     private EventFactory<Log4jEventWrapper> factory;
     private EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> translator;
+    private volatile boolean alreadyLoggedWarning = false;
 
     public AsyncLoggerConfigDisruptor() {
     }
@@ -335,11 +336,36 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     }
 
     private LogEvent prepareEvent(final LogEvent event) {
-        final LogEvent logEvent = ensureImmutable(event);
-        if (logEvent instanceof Log4jLogEvent && logEvent.getMessage() instanceof ReusableMessage) {
-            ((Log4jLogEvent) logEvent).makeMessageImmutable();
+        LogEvent logEvent = ensureImmutable(event);
+        if (logEvent.getMessage() instanceof ReusableMessage) {
+            if (logEvent instanceof Log4jLogEvent) {
+                ((Log4jLogEvent) logEvent).makeMessageImmutable();
+            } else if (logEvent instanceof MutableLogEvent) {
+                // MutableLogEvents need to be translated into the RingBuffer by the MUTABLE_TRANSLATOR.
+                // That translator calls MutableLogEvent.initFrom to copy the event, which will makeMessageImmutable the message.
+                if (translator != MUTABLE_TRANSLATOR) { // should not happen...
+                    // TRANSLATOR expects an immutable LogEvent
+                    logEvent = ((MutableLogEvent) logEvent).createMemento();
+                }
+            } else { // custom log event, with a ReusableMessage
+                showWarningAboutCustomLogEventWithReusableMessage(logEvent);
+            }
+        } else { // message is not a ReusableMessage; makeMessageImmutable it to prevent ConcurrentModificationExceptions
+            InternalAsyncUtil.makeMessageImmutable(logEvent.getMessage()); // LOG4J2-1988, LOG4J2-1914
         }
         return logEvent;
+    }
+
+    private void showWarningAboutCustomLogEventWithReusableMessage(final LogEvent logEvent) {
+        if (!alreadyLoggedWarning) {
+            LOGGER.warn("Custom log event of type {} contains a mutable message of type {}." +
+                            " AsyncLoggerConfig does not know how to make an immutable copy of this message." +
+                            " This may result in ConcurrentModificationExceptions or incorrect log messages" +
+                            " if the application modifies objects in the message while" +
+                            " the background thread is writing it to the appenders.",
+                    logEvent.getClass().getName(), logEvent.getMessage().getClass().getName());
+            alreadyLoggedWarning = true;
+        }
     }
 
     private void enqueue(final LogEvent logEvent, final AsyncLoggerConfig asyncLoggerConfig) {

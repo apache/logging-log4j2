@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
@@ -129,17 +128,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 parameterCount = reusable.getParameterCount();
             }
         } else {
-            // if the Message instance is reused, there is no point in freezing its message here
-            if (msg != null && !canFormatMessageInBackground(msg)) {
-                msg.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
-            }
-            this.message = msg;
+            this.message = InternalAsyncUtil.makeMessageImmutable(msg);
         }
-    }
-
-    private boolean canFormatMessageInBackground(final Message message) {
-        return Constants.FORMAT_MESSAGES_IN_BACKGROUND // LOG4J2-898: user wants to format all msgs in background
-                || message.getClass().isAnnotationPresent(AsynchronouslyFormattable.class); // LOG4J2-1718
     }
 
     private StringBuilder getMessageTextForWriting() {

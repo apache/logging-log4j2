@@ -32,9 +32,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.NanoClock;
-import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
@@ -244,17 +242,12 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             return;
         }
         // if the Message instance is reused, there is no point in freezing its message here
-        if (!canFormatMessageInBackground(message) && !isReused(message)) {
-            message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
+        if (!isReused(message)) {
+            InternalAsyncUtil.makeMessageImmutable(message);
         }
         // calls the translateTo method on this AsyncLogger
         disruptor.getRingBuffer().publishEvent(this, this, calcLocationIfRequested(fqcn), fqcn, level, marker, message,
                 thrown);
-    }
-
-    private boolean canFormatMessageInBackground(final Message message) {
-        return Constants.FORMAT_MESSAGES_IN_BACKGROUND // LOG4J2-898: user wants to format all msgs in background
-                || message.getClass().isAnnotationPresent(AsynchronouslyFormattable.class); // LOG4J2-1718
     }
 
     /*
