@@ -9,31 +9,8 @@ and provides many of the improvements available in Logback while fixing some inh
 
 ## Usage
 
-Maven users can add the following dependencies to their `pom.xml` file:
-
-```xml
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-api</artifactId>
-    <version>2.9.0</version>
-  </dependency>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-core</artifactId>
-    <version>2.9.0</version>
-  </dependency>
-</dependencies>
-```
-
-Gradle users can add the following to their `build.gradle` file:
-
-```gradle
-dependencies {
-  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.9.0'
-  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.9.0'
-}
-```
+Users should refer to [Maven, Ivy, Gradle, and SBT Artifacts](http://logging.apache.org/log4j/2.x/maven-artifacts.html)
+on the Log4j web site for instructions on how to include Log4j into their project using their chosen build tool.
 
 Basic usage of the `Logger` API:
 

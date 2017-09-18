@@ -47,15 +47,18 @@ property substitution using Lookups, multiple patterns on a PatternLayout and as
 Loggers. Another notable Log4j 2 feature is the ability to be "garbage-free" (avoid allocating
 temporary objects) while logging. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This release contains the first support of Java 9 as well as bugfixes and minor
-enhancements. The Log4j API was modified to use java.util.ServiceLoader to locate Log4j implementations,
+This release contains bugfixes and minor enhancements.
+
+As of Log4j 2.9.0, the Log4j API was modified to use java.util.ServiceLoader to locate Log4j implementations,
 although the former binding mechanism is still supported. The Log4j jar is now a multi-release jar
-to provide implementations of the Java 9 specific classes. Multi-release jars are not supported by
+to provide implementations of Java 9 specific classes. Multi-release jars are not supported by
 the OSGi specification so OSGi modules will not be able to take advantage of these implementations
 but will not lose functionality as they will fall back to the implementations used in Java 7 and 8.
-More details on the new features and fixes are itemized below.
+More details on the new features and fixes are itemized below. Note that some tools are not compatible
+with multi-release jars and may fail trying to process class files in the META-INF/versions/9 folder.
+Those errors should be reported to the tool vendor.
 
-Note that subsequent to the 2.9 release, for security reasons, SerializedLayout is deprecated and no
+Note that subsequent to the 2.9.0 release, for security reasons, SerializedLayout is deprecated and no
 longer used as default in the Socket and JMS appenders. SerializedLayout can still be used as before,
 but has to be specified explicitly. To retain old behaviour, you have to change configuration like:
 
@@ -79,7 +82,7 @@ We do, however, discourage the use of SerializedLayout and recommend JsonLayout 
       </Socket>
     </Appenders>
 
-Note that subsequent to the 2.9 release, for security reasons, Log4j does not process DTD in XML files.
+Note that subsequent to the 2.9.0 release, for security reasons, Log4j does not process DTD in XML files.
 If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.
 
 The Log4j ${relVersion} API, as well as many core components, maintains binary compatibility with previous releases.
