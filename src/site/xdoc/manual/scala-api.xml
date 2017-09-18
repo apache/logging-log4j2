@@ -29,7 +29,7 @@
             <a name="ScalaAPI"/>
             <subsection name="Scala API">
                 <p>
-                    Log4j 2 contains a convenient Scala wrapper for the
+                    Log4j 2 has a companion Log4j Scala project that contains a convenient Scala wrapper for the
                     <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/Logger.html">Logger</a>
                     API.
                 </p>
@@ -82,13 +82,10 @@ logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBirthday
                     Most logging implementations use a hierarchical scheme for matching logger names with logging
                     configuration. In this scheme the logger name hierarchy is represented by '.' characters in the
                     logger name, in a fashion very similar to the hierarchy used for Java/Scala package names.
-                    The <a class="javadoc" href="../log4j-api-scala_2.12/scaladocs/index.html#org.apache.logging.log4j.scala.Logging">Logging trait</a> will automatically name the Logger accordingly to the class it is being used in.
+                    The Logging trait will automatically name the Logger accordingly to the class it is being used in.
                 </p>
 
-                <h4>ScalaDoc</h4>
-                <p>
-                    <a href="../log4j-api-scala_2.12/scaladocs/index.html#org.apache.logging.log4j.scala.package">ScalaDoc</a>.
-                </p>
+              <p>Please see the <a href="http://logging.apache.org/log4j/scala/index.html">Log4j Scala</a> project for more details.</p>
 
             </subsection>
         </section>
