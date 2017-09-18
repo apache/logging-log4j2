@@ -19,17 +19,19 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 
 /**
- * Default: any logging done when queue is full bypasses the queue and logs synchronously: send the event directly to
+ * Default router: enqueue the event for asynchronous logging in the background thread, unless the current thread is the
+ * background thread and the queue is full (enqueueing would cause a deadlock). In that case send the event directly to
  * the appender (in the current thread).
  */
 public class DefaultAsyncQueueFullPolicy implements AsyncQueueFullPolicy {
     @Override
     public EventRoute getRoute(final long backgroundThreadId, final Level level) {
 
-        // LOG4J2-1518: prevent deadlock when RingBuffer is full and object being logged calls
-        // Logger.log in application thread
-        // See also LOG4J2-471: prevent deadlock when RingBuffer is full and object
-        // being logged calls Logger.log() from its toString() method in background thread
-        return EventRoute.SYNCHRONOUS;
+        // LOG4J2-471: prevent deadlock when RingBuffer is full and object
+        // being logged calls Logger.log() from its toString() method
+        if (Thread.currentThread().getId() == backgroundThreadId) {
+            return EventRoute.SYNCHRONOUS;
+        }
+        return EventRoute.ENQUEUE;
     }
 }

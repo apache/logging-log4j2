@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -35,8 +36,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -92,6 +95,17 @@ public class AsyncLoggerConfig extends LoggerConfig {
         populateLazilyInitializedFields(event);
 
         if (!delegate.tryEnqueue(event, this)) {
+            handleQueueFull(event);
+        }
+    }
+
+    private void handleQueueFull(final LogEvent event) {
+        if (Logger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
+            // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
+            final Message message = AsyncQueueFullMessageUtil.transform(event.getMessage());
+            callAppendersInCurrentThread(new Log4jLogEvent.Builder(event).setMessage(message).build());
+        } else {
+            // otherwise, we leave it to the user preference
             final EventRoute eventRoute = delegate.getEventRoute(event.getLevel());
             eventRoute.logMessage(this, event);
         }

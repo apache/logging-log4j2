@@ -22,13 +22,13 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
@@ -36,9 +36,9 @@ import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventTranslatorVararg;
 import com.lmax.disruptor.dsl.Disruptor;
@@ -167,6 +167,13 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     }
 
     private void handleRingBufferFull(final RingBufferLogEventTranslator translator) {
+        if (Logger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
+            // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
+            final Message message = AsyncQueueFullMessageUtil.transform(translator.message);
+            logMessageInCurrentThread(translator.fqcn, translator.level, translator.marker, message,
+                    translator.thrown);
+            return;
+        }
         final EventRoute eventRoute = loggerDisruptor.getEventRoute(translator.level);
         switch (eventRoute) {
             case ENQUEUE:
@@ -245,9 +252,18 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         if (!isReused(message)) {
             InternalAsyncUtil.makeMessageImmutable(message);
         }
+        StackTraceElement location = null;
         // calls the translateTo method on this AsyncLogger
-        disruptor.getRingBuffer().publishEvent(this, this, calcLocationIfRequested(fqcn), fqcn, level, marker, message,
-                thrown);
+        if (!disruptor.getRingBuffer().tryPublishEvent(this,
+                this, // asyncLogger: 0
+                (location = calcLocationIfRequested(fqcn)), // location: 1
+                fqcn, // 2
+                level, // 3
+                marker, // 4
+                message, // 5
+                thrown)) { // 6
+            handleRingBufferFull(location, fqcn, level, marker, message, thrown);
+        }
     }
 
     /*
@@ -294,6 +310,40 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         // bypass RingBuffer and invoke Appender directly
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, getName(), fqcn, marker, level, message, thrown);
+    }
+
+    private void handleRingBufferFull(final StackTraceElement location,
+                                      final String fqcn,
+                                      final Level level,
+                                      final Marker marker,
+                                      final Message msg,
+                                      final Throwable thrown) {
+        if (Logger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
+            // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
+            final Message message = AsyncQueueFullMessageUtil.transform(msg);
+            logMessageInCurrentThread(fqcn, level, marker, message, thrown);
+            return;
+        }
+        final EventRoute eventRoute = loggerDisruptor.getEventRoute(level);
+        switch (eventRoute) {
+            case ENQUEUE:
+                loggerDisruptor.getDisruptor().getRingBuffer().publishEvent(this,
+                        this, // asyncLogger: 0
+                        location, // location: 1
+                        fqcn, // 2
+                        level, // 3
+                        marker, // 4
+                        msg, // 5
+                        thrown); // 6
+                break;
+            case SYNCHRONOUS:
+                logMessageInCurrentThread(fqcn, level, marker, msg, thrown);
+                break;
+            case DISCARD:
+                break;
+            default:
+                throw new IllegalStateException("Unknown EventRoute " + eventRoute);
+        }
     }
 
     /**

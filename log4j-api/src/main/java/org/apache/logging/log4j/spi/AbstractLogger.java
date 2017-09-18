@@ -49,8 +49,8 @@ import org.apache.logging.log4j.util.Supplier;
 public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     // Implementation note: many methods in this class are tuned for performance. MODIFY WITH CARE!
     // Specifically, try to keep the hot methods to 35 bytecodes or less:
-    // this is within the MaxInlineSize threshold and makes these methods candidates for
-    // immediate inlining instead of waiting until they are designated "hot enough".
+    // this is within the MaxInlineSize threshold on Java 7 and Java 8 Hotspot and makes these methods
+    // candidates for immediate inlining instead of waiting until they are designated "hot enough".
 
     /**
      * Marker for flow tracing.
@@ -104,6 +104,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected final String name;
     private final MessageFactory2 messageFactory;
     private final FlowMessageFactory flowMessageFactory;
+    private static ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
 
     /**
      * Creates a new logger named after this class (or subclass).
@@ -2097,7 +2098,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private void logMessageSafely(final String fqcn, final Level level, final Marker marker, final Message msg,
             final Throwable throwable) {
         try {
-            tryLogMessage(fqcn, level, marker, msg, throwable);
+            logMessageTrackRecursion(fqcn, level, marker, msg, throwable);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
             ReusableMessageFactory.release(msg);
@@ -2105,8 +2106,54 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @PerformanceSensitive
+    // NOTE: This is a hot method. Current implementation compiles to 29 bytes of byte code.
+    // This is within the 35 byte MaxInlineSize threshold. Modify with care!
+    private void logMessageTrackRecursion(final String fqcn,
+                                          final Level level,
+                                          final Marker marker,
+                                          final Message msg,
+                                          final Throwable throwable) {
+        try {
+            incrementRecursionDepth(); // LOG4J2-1518, LOG4J2-2031
+            tryLogMessage(fqcn, level, marker, msg, throwable);
+        } finally {
+            decrementRecursionDepth();
+        }
+    }
+
+    private static int[] getRecursionDepthHolder() {
+        int[] result = recursionDepthHolder.get();
+        if (result == null) {
+            result = new int[1];
+            recursionDepthHolder.set(result);
+        }
+        return result;
+    }
+
+    private static void incrementRecursionDepth() {
+        getRecursionDepthHolder()[0]++;
+    }
+    private static void decrementRecursionDepth() {
+        int[] depth = getRecursionDepthHolder();
+        depth[0]--;
+        if (depth[0] < 0) {
+            throw new IllegalStateException("Recursion depth became negative: " + depth[0]);
+        }
+    }
+
+    /**
+     * Returns the depth of nested logging calls in the current Thread: zero if no logging call has been made,
+     * one if a single logging call without nested logging calls has been made, or more depending on the level of
+     * nesting.
+     * @return the depth of the nested logging calls in the current Thread
+     */
+    public static int getRecursionDepth() {
+        return getRecursionDepthHolder()[0];
+    }
+
+    @PerformanceSensitive
     // NOTE: This is a hot method. Current implementation compiles to 26 bytes of byte code.
-    // This is within the 35 byte MaxInlineSize threshold (on which JMV and version?). Modify with care!
+    // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private void tryLogMessage(final String fqcn,
                                final Level level,
                                final Marker marker,
