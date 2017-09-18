@@ -35,10 +35,6 @@ To perform the license release audit, a.k.a. "RAT check", run.
 
     mvn apache-rat:check
 
-To perform a Clirr check on the API module, run
-
-    mvn clirr:check -pl log4j-api
-
 To build the site with Java 7, make sure you give Maven enough memory using 
 `MAVEN_OPTS` with options appropriate for your JVM. Alternatively, you can 
 build with Java 8 and not deal with `MAVEN_OPTS`. 
@@ -47,7 +43,9 @@ To install the jars in your local Maven repository, from a command line, run:
 
     mvn clean install
 
-Once install is run, you can run the Clirr check on the 1.2 API module:
+Once install is run, you can run the Clirr check on the API and 1.2 API modules:
+
+    mvn clirr:check -pl log4j-api
 
     mvn clirr:check -pl log4j-1.2-api
 
