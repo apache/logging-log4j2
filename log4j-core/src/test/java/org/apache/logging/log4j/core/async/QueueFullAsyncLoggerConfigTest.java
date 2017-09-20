@@ -23,11 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -71,7 +68,7 @@ public class QueueFullAsyncLoggerConfigTest extends QueueFullAbstractTest {
         unlocker.start();
 
         for (int i = 0; i < 130; i++) {
-            TRACE("Test logging message " + i  + ". Remaining capacity=" + getDisruptor(logger).getRingBuffer().remainingCapacity());
+            TRACE("Test logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(logger));
             TRACE("Test decrementing unlocker countdown latch. Count=" + unlocker.countDownLatch.getCount());
             unlocker.countDownLatch.countDown();
             final String param = "I'm innocent";

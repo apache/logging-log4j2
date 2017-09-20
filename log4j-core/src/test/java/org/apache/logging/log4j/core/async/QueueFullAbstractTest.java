@@ -25,7 +25,9 @@ import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import com.lmax.disruptor.dsl.Disruptor;
@@ -74,7 +76,7 @@ public abstract class QueueFullAbstractTest {
             for (int i = 0; i < count; i++) {
                 TRACE("DomainObject decrementing unlocker countdown latch before logging. Count was " + unlocker.countDownLatch.getCount());
                 unlocker.countDownLatch.countDown();
-                TRACE("DomainObject logging message " + i  + ". Remaining capacity=" + getDisruptor(innerLogger).getRingBuffer().remainingCapacity());
+                TRACE("DomainObject logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(innerLogger));
                 innerLogger.info("Logging in toString() #" + i);
             }
             return "Who's bad?!";
@@ -92,11 +94,11 @@ public abstract class QueueFullAbstractTest {
         return result;
     }
 
-    static Disruptor getDisruptor(Logger logger) {
+    static long asyncRemainingCapacity(Logger logger) {
         if (logger instanceof AsyncLogger) {
             try {
                 Field f = field(AsyncLogger.class, "loggerDisruptor");
-                return ((AsyncLoggerDisruptor) f.get(logger)).getDisruptor();
+                return ((AsyncLoggerDisruptor) f.get(logger)).getDisruptor().getRingBuffer().remainingCapacity();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -105,13 +107,18 @@ public abstract class QueueFullAbstractTest {
             if (loggerConfig instanceof AsyncLoggerConfig) {
                 try {
                     Object delegate = field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
-                    return (Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor").get(delegate);
+                    return ((Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor").get(delegate)).getRingBuffer().remainingCapacity();
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
+            } else {
+                Appender async = loggerConfig.getAppenders().get("async");
+                if (async instanceof AsyncAppender) {
+                    return ((AsyncAppender) async).getQueueCapacity();
+                }
             }
         }
-        throw new IllegalStateException("Async Loggers are not configured");
+        throw new IllegalStateException("Neither Async Loggers nor AsyncAppender are configured");
     }
     private static Field field(Class<?> c, String name) throws NoSuchFieldException {
         Field f = c.getDeclaredField(name);
