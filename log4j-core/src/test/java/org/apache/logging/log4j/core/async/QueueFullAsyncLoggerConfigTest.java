@@ -39,7 +39,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import static org.junit.Assert.*;
 
 /**
- * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
+ * Tests queue full scenarios with AsyncLoggers in configuration.
  */
 @RunWith(BlockJUnit4ClassRunner.class)
 @Category(AsyncLoggers.class)
