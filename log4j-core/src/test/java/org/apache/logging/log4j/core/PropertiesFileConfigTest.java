@@ -55,14 +55,14 @@ public class PropertiesFileConfigTest {
         assertTrue("setLastModified should have succeeded.", file.setLastModified(newTime));
         TimeUnit.SECONDS.sleep(MONITOR_INTERVAL_SECONDS + 1);
         for (int i = 0; i < 17; ++i) {
-            logger.debug("Reconfigure");
+            logger.info("Reconfigure");
         }
-        final int loopCount = 0;
+        int loopCount = 0;
         Configuration newConfig;
         do {
             Thread.sleep(100);
             newConfig = context.getConfiguration();
-        } while (newConfig == oldConfig && loopCount < 5);
+        } while (newConfig == oldConfig && loopCount++ < 5);
         assertNotSame("Reconfiguration failed", newConfig, oldConfig);
     }
 }
