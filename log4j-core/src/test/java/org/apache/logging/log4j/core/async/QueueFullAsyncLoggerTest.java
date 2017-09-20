@@ -48,7 +48,6 @@ public class QueueFullAsyncLoggerTest extends QueueFullAbstractTest {
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
-//        System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "log4j2-queueFull.xml");
     }
@@ -76,6 +75,12 @@ public class QueueFullAsyncLoggerTest extends QueueFullAbstractTest {
         unlocker = new Unlocker(new CountDownLatch(129));
         unlocker.start();
 
+        asyncLoggerTest(logger, unlocker, blockingAppender);
+    }
+
+    static void asyncLoggerTest(final Logger logger,
+                                final Unlocker unlocker,
+                                final BlockingAppender blockingAppender) {
         for (int i = 0; i < 130; i++) {
             TRACE("Test logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(logger));
             TRACE("Test decrementing unlocker countdown latch. Count=" + unlocker.countDownLatch.getCount());

@@ -22,7 +22,6 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -44,10 +43,13 @@ import static org.junit.Assert.*;
  */
 @RunWith(BlockJUnit4ClassRunner.class)
 @Category(AsyncLoggers.class)
-public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstractTest {
+public class QueueFullAsyncLoggerTest2 extends QueueFullAbstractTest {
 
     @BeforeClass
     public static void beforeClass() {
+        //FORMAT_MESSAGES_IN_BACKGROUND
+        System.setProperty("log4j.format.msg.async", "true");
+
         System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "log4j2-queueFull.xml");
@@ -67,42 +69,15 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstra
         blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
     }
 
+
     @Test(timeout = 5000)
-    public void testLoggingFromToStringCausesOutOfOrderMessages() throws InterruptedException {
+    public void testNormalQueueFullKeepsMessagesInOrder() throws InterruptedException {
         final Logger logger = LogManager.getLogger(this.getClass());
 
         blockingAppender.countDownLatch = new CountDownLatch(1);
         unlocker = new Unlocker(new CountDownLatch(129));
         unlocker.start();
 
-        asyncLoggerRecursiveTest(logger, unlocker, blockingAppender, this);
-    }
-
-    static void asyncLoggerRecursiveTest(final Logger logger,
-                                         final Unlocker unlocker,
-                                         final BlockingAppender blockingAppender,
-                                         final QueueFullAbstractTest factory) {
-        for (int i = 0; i < 1; i++) {
-            TRACE("Test logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(logger));
-            TRACE("Test decrementing unlocker countdown latch. Count=" + unlocker.countDownLatch.getCount());
-            unlocker.countDownLatch.countDown();
-            final DomainObject obj = factory.new DomainObject(129);
-            logger.info(new ParameterizedMessage("logging naughty object #{} {}", i, obj));
-        }
-        TRACE("Before stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
-        CoreLoggerContexts.stopLoggerContext(false); // stop async thread
-        while (blockingAppender.logEvents.size() < 129) { Thread.yield(); }
-        TRACE("After  stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
-
-        final Stack<String> actual = transform(blockingAppender.logEvents);
-        assertEquals("Jumped the queue: test(2)+domain1(65)+domain2(61)=128: queue full",
-                "Logging in toString() #127 (Log4j2 logged this message out of order to prevent deadlock caused by domain objects logging from their toString method when the async queue is full - LOG4J2-2031)", actual.pop());
-        assertEquals("Logging in toString() #128 (Log4j2 logged this message out of order to prevent deadlock caused by domain objects logging from their toString method when the async queue is full - LOG4J2-2031)", actual.pop());
-        assertEquals("logging naughty object #0 Who's bad?!", actual.pop());
-
-        for (int i = 0; i < 127; i++) {
-            assertEquals("First batch", "Logging in toString() #" + i, actual.pop());
-        }
-        assertTrue(actual.isEmpty());
+        QueueFullAsyncLoggerTest.asyncLoggerTest(logger, unlocker, blockingAppender);
     }
 }

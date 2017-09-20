@@ -45,7 +45,6 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
     public static void beforeClass() {
         System.setProperty("log4j2.enable.threadlocals", "true");
         System.setProperty("log4j2.is.webapp", "false");
-//        System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
         System.setProperty("AsyncLoggerConfig.RingBufferSize", "128");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "log4j2-queueFullAsyncLoggerConfig.xml");
@@ -69,11 +68,18 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
         unlocker = new Unlocker(new CountDownLatch(129)); // count slightly different from "pure" async loggers
         unlocker.start();
 
+        asyncLoggerConfigRecursiveTest(logger, unlocker, blockingAppender, this);
+    }
+
+    static void asyncLoggerConfigRecursiveTest(final Logger logger,
+                                               final Unlocker unlocker,
+                                               final BlockingAppender blockingAppender,
+                                               final QueueFullAbstractTest factory) {
         for (int i = 0; i < 1; i++) {
             TRACE("Test logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(logger));
             TRACE("Test decrementing unlocker countdown latch. Count=" + unlocker.countDownLatch.getCount());
             unlocker.countDownLatch.countDown();
-            final DomainObject obj = new DomainObject(129);
+            final DomainObject obj = factory.new DomainObject(129);
             logger.info("logging naughty object #{} {}", i, obj);
         }
         TRACE("Before stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
