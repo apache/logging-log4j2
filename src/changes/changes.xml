@@ -46,7 +46,7 @@
         Increase default queue size for AsyncAppender from 128 to 1024.
       </action>
       <action issue="LOG4J2-2035" dev="rpopma" type="fix">
-        Fix documentation to clarify disruptor-3.3.4 is now required for async loggers: disruptor-3.3.3 was never released.
+        Fix documentation to clarify disruptor-3.3.4 is now required for async loggers (previously the docs referred to disruptor-3.3.3 which was never released).
       </action>
       <action issue="LOG4J2-2030" dev="rgoers" type="fix">
         Inspect all known ClassLoaders to locate the service provider.
