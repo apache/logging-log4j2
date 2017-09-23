@@ -34,22 +34,32 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     private final String trustManagerFactoryAlgorithm;
 
-    public TrustStoreConfiguration(final String location, final char[] password, final String keyStoreType,
-            final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
-        super(location, password, keyStoreType);
+    public TrustStoreConfiguration(final String location,
+                                   final PasswordProvider passwordProvider,
+                                   final String keyStoreType,
+                                   final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
+        super(location, passwordProvider, keyStoreType);
         this.trustManagerFactoryAlgorithm = trustManagerFactoryAlgorithm == null ? TrustManagerFactory
                 .getDefaultAlgorithm() : trustManagerFactoryAlgorithm;
     }
 
     /**
-     * @deprecated Use TrustStoreConfiguration(String, char[], String, String)
+     * @deprecated Use {@link #TrustStoreConfiguration(String, PasswordProvider, String, String)} instead
+     */
+    @Deprecated
+    public TrustStoreConfiguration(final String location, final char[] password, final String keyStoreType,
+            final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
+        this(location, new MemoryPasswordProvider(password), keyStoreType, trustManagerFactoryAlgorithm);
+    }
+
+    /**
+     * @deprecated Use {@link #TrustStoreConfiguration(String, PasswordProvider, String, String)} instead
      */
     @Deprecated
     public TrustStoreConfiguration(final String location, final String password, final String keyStoreType,
             final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
-        super(location, password, keyStoreType);
-        this.trustManagerFactoryAlgorithm = trustManagerFactoryAlgorithm == null ? TrustManagerFactory
-                .getDefaultAlgorithm() : trustManagerFactoryAlgorithm;
+        this(location, new MemoryPasswordProvider(password == null ? null : password.toCharArray()), keyStoreType,
+                trustManagerFactoryAlgorithm);
     }
 
     /**
@@ -74,7 +84,8 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
             @PluginAttribute("type") final String keyStoreType,
             @PluginAttribute("trustManagerFactoryAlgorithm") final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
             // @formatter:on
-        return new TrustStoreConfiguration(location, password, keyStoreType, trustManagerFactoryAlgorithm);
+        return new TrustStoreConfiguration(location, new MemoryPasswordProvider(password), keyStoreType,
+                trustManagerFactoryAlgorithm);
     }
 
     /**

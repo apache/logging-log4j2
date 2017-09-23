@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.2" date="2017-XX-XX" description="GA Release 2.9.2">
+      <action issue="LOG4J2-1896" dev="rpopma" type="update">
+        Update classes in org.apache.logging.log4j.core.net.ssl in APIs from String to a PasswordProvider producing char[] for passwords.
+      </action>
       <action issue="LOG4J2-2031" dev="rpopma" type="fix">
         Until this change, messages appeared out of order in log file any time when the async logging queue was full. With this change, messages are only logged out of order to prevent deadlock when Log4j2 detects recursive logging while the queue is full.
       </action>

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 @Ignore
 public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
@@ -26,31 +27,31 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
     @Test
     public void equalsWithNotNullValues() {
         final String location = "/to/the/file.jks";
-        final char[] password = "changeit".toCharArray();
+        final PasswordProvider password = new MemoryPasswordProvider("changeit".toCharArray());
         final StoreConfiguration<Object> a = new StoreConfiguration<>(location, password);
         final StoreConfiguration<Object> b = new StoreConfiguration<>(location, password);
 
-        Assert.assertTrue(a.equals(b));
-        Assert.assertTrue(b.equals(a));
+        assertTrue(a.equals(b));
+        assertTrue(b.equals(a));
     }
 
     @Test
-    public void equalsWithNullAndNotNullValues() {
+    public void notEqualsWithNullAndNotNullValues() {
         final String location = "/to/the/file.jks";
-        final char[] password = "changeit".toCharArray();
+        final PasswordProvider password = new MemoryPasswordProvider("changeit".toCharArray());
         final StoreConfiguration<Object> a = new StoreConfiguration<>(location, password);
-        final StoreConfiguration<Object> b = new StoreConfiguration<>(null, (char[]) null);
+        final StoreConfiguration<Object> b = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
 
-        Assert.assertTrue(a.equals(b));
-        Assert.assertTrue(b.equals(a));
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
     }
 
     @Test
     public void equalsWithNullValues() {
-        final StoreConfiguration<Object> a = new StoreConfiguration<>(null, (char[]) null);
-        final StoreConfiguration<Object> b = new StoreConfiguration<>(null, (char[]) null);
+        final StoreConfiguration<Object> a = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
+        final StoreConfiguration<Object> b = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
 
-        Assert.assertTrue(a.equals(b));
-        Assert.assertTrue(b.equals(a));
+        assertTrue(a.equals(b));
+        assertTrue(b.equals(a));
     }
 }

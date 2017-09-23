@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.net.ssl;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.util.Arrays;
 
 import javax.net.ssl.KeyManagerFactory;
 
@@ -39,9 +40,11 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      *
      * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
      */
-    public KeyStoreConfiguration(final String location, final char[] password, final String keyStoreType,
-            final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
-        super(location, password, keyStoreType);
+    public KeyStoreConfiguration(final String location,
+                                 final PasswordProvider  passwordProvider,
+                                 final String keyStoreType,
+                                 final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
+        super(location, passwordProvider, keyStoreType);
         this.keyManagerFactoryAlgorithm = keyManagerFactoryAlgorithm == null ? KeyManagerFactory.getDefaultAlgorithm()
                 : keyManagerFactoryAlgorithm;
     }
@@ -49,14 +52,25 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
     /**
      *
      * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
-     * @deprecated Use KeyStoreConfiguration(String, char[], String, String)
+     * @deprecated use {@link #KeyStoreConfiguration(String, PasswordProvider, String, String)} instead
+     */
+    public KeyStoreConfiguration(final String location,
+                                 final char[] password,
+                                 final String keyStoreType,
+                                 final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
+        this(location, new MemoryPasswordProvider(password), keyStoreType, keyManagerFactoryAlgorithm);
+    }
+
+    /**
+     *
+     * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
+     * @deprecated Use {@link #KeyStoreConfiguration(String, PasswordProvider, String, String)} instead
      */
     @Deprecated
     public KeyStoreConfiguration(final String location, final String password, final String keyStoreType,
             final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
-        super(location, password, keyStoreType);
-        this.keyManagerFactoryAlgorithm = keyManagerFactoryAlgorithm == null ? KeyManagerFactory.getDefaultAlgorithm()
-                : keyManagerFactoryAlgorithm;
+        this(location, new MemoryPasswordProvider(password == null ? null : password.toCharArray()), keyStoreType,
+                keyManagerFactoryAlgorithm);
     }
 
     /**
@@ -81,7 +95,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
             @PluginAttribute("type") final String keyStoreType,
             @PluginAttribute("keyManagerFactoryAlgorithm") final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
             // @formatter:on
-        return new KeyStoreConfiguration(location, password, keyStoreType,
+        return new KeyStoreConfiguration(location, new MemoryPasswordProvider(password), keyStoreType,
                 keyManagerFactoryAlgorithm);
     }
 
@@ -108,14 +122,22 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
             final String keyStoreType,
             final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
             // @formatter:on
-        return new KeyStoreConfiguration(location, password == null ? null : password.toCharArray(), keyStoreType,
+        return new KeyStoreConfiguration(location,
+                new MemoryPasswordProvider(password == null ? null : password.toCharArray()), keyStoreType,
                 keyManagerFactoryAlgorithm);
     }
 
     public KeyManagerFactory initKeyManagerFactory() throws NoSuchAlgorithmException, UnrecoverableKeyException,
             KeyStoreException {
         final KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(this.keyManagerFactoryAlgorithm);
-        kmFactory.init(this.getKeyStore(), this.getPasswordAsCharArray());
+        char[] password = this.getPasswordAsCharArray();
+        try {
+            kmFactory.init(this.getKeyStore(), password);
+        } finally {
+            if (password != null) {
+                Arrays.fill(password, '\0');
+            }
+        }
         return kmFactory;
     }
 

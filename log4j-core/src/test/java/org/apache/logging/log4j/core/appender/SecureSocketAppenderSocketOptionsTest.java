@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
 import org.apache.logging.log4j.core.net.SocketOptions;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
+import org.apache.logging.log4j.core.net.ssl.MemoryPasswordProvider;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
 import org.apache.logging.log4j.core.net.ssl.TestConstants;
@@ -52,7 +53,7 @@ public class SecureSocketAppenderSocketOptionsTest {
         PORT = AvailablePortFinder.getNextAvailable();
         System.setProperty("SecureSocketAppenderSocketOptionsTest.port", Integer.toString(PORT));
         try {
-            initServerSocketFactory();            
+            initServerSocketFactory();
             tcpSocketTestServer = new TcpSocketTestServer(serverSocketFactory.createServerSocket(PORT));
             tcpSocketTestServer.start();
             loggerContextRule = new LoggerContextRule("log4j-ssl-socket-options.xml");
@@ -74,9 +75,9 @@ public class SecureSocketAppenderSocketOptionsTest {
 
     public static void initServerSocketFactory() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                TestConstants.KEYSTORE_PWD, null, null);
+                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD), null, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
-                TestConstants.TRUSTSTORE_PWD, null, null);
+                new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD), null, null);
         sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
         serverSocketFactory = sslConfiguration.getSslServerSocketFactory();
     }

@@ -23,6 +23,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.Arrays;
 
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -34,24 +35,29 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
     private final KeyStore keyStore;
     private final String keyStoreType;
 
-    public AbstractKeyStoreConfiguration(final String location, final char[] password, final String keyStoreType)
+    public AbstractKeyStoreConfiguration(final String location, final PasswordProvider passwordProvider, final String keyStoreType)
             throws StoreConfigurationException {
-        super(location, password);
+        super(location, passwordProvider);
         this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
         this.keyStore = this.load();
     }
 
-    /*
-     * @deprecated Use
-     * org.apache.logging.log4j.core.net.ssl.AbstractKeyStoreConfiguration.AbstractKeyStoreConfiguration(String, char[],
-     * String)
+    /**
+     * @deprecated Use {@link #AbstractKeyStoreConfiguration(String, PasswordProvider, String)} instead
+     */
+    @Deprecated
+    public AbstractKeyStoreConfiguration(final String location, final char[] password, final String keyStoreType)
+            throws StoreConfigurationException {
+        this(location, new MemoryPasswordProvider(password), keyStoreType);
+    }
+
+    /**
+     * @deprecated Use {@link #AbstractKeyStoreConfiguration(String, PasswordProvider, String)} instead
      */
     @Deprecated
     public AbstractKeyStoreConfiguration(final String location, final String password, final String keyStoreType)
             throws StoreConfigurationException {
-        super(location, password);
-        this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
-        this.keyStore = this.load();
+        this(location, new MemoryPasswordProvider(password == null ? null : password.toCharArray()), keyStoreType);
     }
 
     @Override
@@ -64,7 +70,14 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             }
             try (final InputStream fin = openInputStream(loadLocation)) {
                 final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
-                ks.load(fin, this.getPasswordAsCharArray());
+                char[] password = this.getPasswordAsCharArray();
+                try {
+                    ks.load(fin, password);
+                } finally {
+                    if (password != null) {
+                        Arrays.fill(password, '\0');
+                    }
+                }
                 LOGGER.debug("KeyStore successfully loaded from location {}", loadLocation);
                 return ks;
             }
