@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.net.ssl;
 /**
  * Simple (and not very secure) PasswordProvider implementation that keeps the password char[] array in memory.
  */
-public class MemoryPasswordProvider implements PasswordProvider {
+class MemoryPasswordProvider implements PasswordProvider {
     private final char[] password;
 
     public MemoryPasswordProvider(final char[] chars) {
