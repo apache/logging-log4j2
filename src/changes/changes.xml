@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.2" date="2017-XX-XX" description="GA Release 2.9.2">
+      <action issue="LOG4J2-2055" dev="rgoers" type="fix">
+        If Log4j is used as the Tomcat logging implementation startup might fail if an application also uses Log4j.
+      </action>
       <action issue="LOG4J2-1896" dev="rpopma" type="update">
         Update classes in org.apache.logging.log4j.core.net.ssl in APIs from String to a PasswordProvider producing char[] for passwords.
       </action>

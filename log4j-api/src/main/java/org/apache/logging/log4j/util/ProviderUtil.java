@@ -64,7 +64,11 @@ public final class ProviderUtil {
 
     private ProviderUtil() {
         for (ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            loadProviders(classLoader);
+            try {
+                loadProviders(classLoader);
+            } catch (Throwable ex) {
+                LOGGER.debug("Unable to retrieve provider from ClassLoader {}", classLoader, ex);
+            }
         }
         for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
             loadProvider(resource.getUrl(), resource.getClassLoader());
