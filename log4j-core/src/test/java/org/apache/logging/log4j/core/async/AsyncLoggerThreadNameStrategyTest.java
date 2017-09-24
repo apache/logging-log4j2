@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -24,16 +26,36 @@ import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerThreadNameStrategyTest {
+    static final String DEFAULT_STRATEGY = System.getProperty("java.version").compareTo("1.8.0_102") < 0
+            ? "CACHED" // LOG4J2-2052 JDK 8u102 removed the String allocation in Thread.getName()
+            : "UNCACHED";
+
+    @After
+    public void after() {
+        System.clearProperty("AsyncLogger.ThreadNameStrategy");
+    }
+
+    @Before
+    public void before() {
+        System.clearProperty("AsyncLogger.ThreadNameStrategy");
+    }
 
     @Test
     public void testDefaultThreadNameIsCached() throws Exception {
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
-        assertSame(ThreadNameCachingStrategy.CACHED, tns);
+        assertSame(ThreadNameCachingStrategy.valueOf(DEFAULT_STRATEGY), tns);
     }
 
     @Test
     public void testUseCachedThreadNameIfInvalidConfig() throws Exception {
         System.setProperty("AsyncLogger.ThreadNameStrategy", "\\%%InValid ");
+        final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
+        assertSame(ThreadNameCachingStrategy.valueOf(DEFAULT_STRATEGY), tns);
+    }
+
+    @Test
+    public void testUseCachedThreadNameIfConfigured() throws Exception {
+        System.setProperty("AsyncLogger.ThreadNameStrategy", "CACHED");
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.CACHED, tns);
     }

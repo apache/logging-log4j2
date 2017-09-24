@@ -48,15 +48,20 @@ public enum ThreadNameCachingStrategy { // LOG4J2-467
     abstract String getThreadName();
 
     public static ThreadNameCachingStrategy create() {
-        final String name = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ThreadNameStrategy",
-                CACHED.name());
+        final String defaultStrategy = System.getProperty("java.version").compareTo("1.8.0_102") < 0
+                ? "CACHED" // LOG4J2-2052 JDK 8u102 removed the String allocation in Thread.getName()
+                : "UNCACHED";
+        final String name = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ThreadNameStrategy");
         try {
-            final ThreadNameCachingStrategy result = ThreadNameCachingStrategy.valueOf(name);
-            LOGGER.debug("AsyncLogger.ThreadNameStrategy={}", result);
+            final ThreadNameCachingStrategy result = ThreadNameCachingStrategy.valueOf(
+                    name != null ? name : defaultStrategy);
+            LOGGER.debug("AsyncLogger.ThreadNameStrategy={} (user specified {}, default is {})",
+                    result, name, defaultStrategy);
             return result;
         } catch (final Exception ex) {
-            LOGGER.debug("Using AsyncLogger.ThreadNameStrategy.CACHED: '{}' not valid: {}", name, ex.toString());
-            return CACHED;
+            LOGGER.debug("Using AsyncLogger.ThreadNameStrategy.{}: '{}' not valid: {}",
+                    defaultStrategy, name, ex.toString());
+            return ThreadNameCachingStrategy.valueOf(defaultStrategy);
         }
     }
 }

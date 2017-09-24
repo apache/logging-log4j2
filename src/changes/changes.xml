@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.2" date="2017-XX-XX" description="GA Release 2.9.2">
+      <action issue="LOG4J2-2052" dev="rpopma" type="update">
+        Disable thread name caching by default when running on Java 8u102 or later.
+      </action>
       <action issue="LOG4J2-2055" dev="rgoers" type="fix">
         If Log4j is used as the Tomcat logging implementation startup might fail if an application also uses Log4j.
       </action>
