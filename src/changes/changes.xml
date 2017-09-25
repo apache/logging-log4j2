@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.2" date="2017-XX-XX" description="GA Release 2.9.2">
+      <action issue="LOG4J2-2057" dev="rgoers" type="update">
+        Support new SLF4J binding mechanism introduced in SLF4J 1.8.
+      </action>
       <action issue="LOG4J2-2052" dev="rpopma" type="update">
         Disable thread name caching by default when running on Java 8u102 or later.
       </action>
