@@ -26,9 +26,10 @@ import java.util.Objects;
  * sensitive data from the application memory. The password data will stay resident in memory until the String object
  * and its associated char[] array object are garbage collected and the memory is overwritten by another object.
  * </p><p>
- * This is slightly more secure than {@link MemoryPasswordProvider} because the actual password string is not pulled
- * into memory until it is needed (so the password string does not need to be passed in from the command line or in a
- * configuration file).
+ * This is slightly more secure than {@link MemoryPasswordProvider} because the actual password string does not
+ * need to be passed to the application.
+ * The actual password string is not pulled into memory until it is needed
+ * (so the password string does not need to be passed in from the command line or in a configuration file).
  * This gives an attacker a smaller window  of opportunity to obtain the password from a memory dump.
  * </p><p>
  * A more secure implementation is {@link FilePasswordProvider}.
