@@ -37,7 +37,7 @@ public class KeyStoreConfigurationTest {
 
     @Test
     public void loadNotEmptyConfigurationDeprecated() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD,
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(),
                 TestConstants.KEYSTORE_TYPE, null);
         final KeyStore ks = ksc.getKeyStore();
         Assert.assertTrue(ks != null);
@@ -45,7 +45,7 @@ public class KeyStoreConfigurationTest {
 
     @Test
     public void loadNotEmptyConfiguration() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD),
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
                 TestConstants.KEYSTORE_TYPE, null);
         final KeyStore ks = ksc.getKeyStore();
         Assert.assertTrue(ks != null);
@@ -53,7 +53,7 @@ public class KeyStoreConfigurationTest {
 
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD,
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(),
                 TestConstants.KEYSTORE_TYPE, null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
@@ -62,7 +62,7 @@ public class KeyStoreConfigurationTest {
 
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD),
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
                 TestConstants.KEYSTORE_TYPE, null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();

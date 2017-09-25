@@ -37,21 +37,21 @@ public class TrustStoreConfigurationTest {
 
     @Test
     public void loadConfigurationDeprecated() throws StoreConfigurationException {
-        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, null, null);
+        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD(), null, null);
         final KeyStore ks = ksc.getKeyStore();
         Assert.assertNotNull(ks);
     }
 
     @Test
     public void loadConfiguration() throws StoreConfigurationException {
-        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD), null, null);
+        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD()), null, null);
         final KeyStore ks = ksc.getKeyStore();
         Assert.assertNotNull(ks);
     }
 
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
-        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, null, null);
+        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD(), null, null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         Assert.assertTrue(ks == ks2);
@@ -59,7 +59,7 @@ public class TrustStoreConfigurationTest {
 
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
-        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD), null, null);
+        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD()), null, null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         Assert.assertTrue(ks == ks2);

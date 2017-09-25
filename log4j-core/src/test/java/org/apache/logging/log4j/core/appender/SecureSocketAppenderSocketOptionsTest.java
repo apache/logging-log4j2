@@ -75,13 +75,17 @@ public class SecureSocketAppenderSocketOptionsTest {
     public static void initServerSocketFactory() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = KeyStoreConfiguration.createKeyStoreConfiguration(
                 TestConstants.KEYSTORE_FILE, // file
-                TestConstants.KEYSTORE_PWD,  // password
+                TestConstants.KEYSTORE_PWD(),  // password
+                null, // passwordEnvironmentVariable
+                null, // passwordFile
                 null, // key store type
                 null); // algorithm
 
         final TrustStoreConfiguration tsc = TrustStoreConfiguration.createKeyStoreConfiguration(
                 TestConstants.TRUSTSTORE_FILE, // file
-                TestConstants.TRUSTSTORE_PWD, // password
+                TestConstants.TRUSTSTORE_PWD(), // password
+                null, // passwordEnvironmentVariable
+                null, // passwordFile
                 null, // key store type
                 null); // algorithm
         sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);

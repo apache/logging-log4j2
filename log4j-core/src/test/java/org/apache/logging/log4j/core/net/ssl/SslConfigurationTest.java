@@ -33,33 +33,33 @@ public class SslConfigurationTest {
 
     public static SslConfiguration createTestSslConfigurationResourcesDeprecated() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE_RESOURCE,
-                TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null);
+                TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE_RESOURCE,
-                TestConstants.TRUSTSTORE_PWD, null, null);
+                TestConstants.TRUSTSTORE_PWD(), null, null);
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 
     public static SslConfiguration createTestSslConfigurationResources() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE_RESOURCE,
-                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD), TestConstants.KEYSTORE_TYPE, null);
+                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()), TestConstants.KEYSTORE_TYPE, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE_RESOURCE,
-                new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD), null, null);
+                new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD()), null, null);
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 
     public static SslConfiguration createTestSslConfigurationFilesDeprecated() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null);
+                TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
-                TestConstants.TRUSTSTORE_PWD, null, null);
+                TestConstants.TRUSTSTORE_PWD(), null, null);
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 
     public static SslConfiguration createTestSslConfigurationFiles() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD), TestConstants.KEYSTORE_TYPE, null);
+                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()), TestConstants.KEYSTORE_TYPE, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
-                new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD), null, null);
+                new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD()), null, null);
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 

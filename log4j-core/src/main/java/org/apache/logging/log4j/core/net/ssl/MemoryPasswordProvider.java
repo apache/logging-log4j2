@@ -16,14 +16,26 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.util.Arrays;
+
 /**
- * Simple (and not very secure) PasswordProvider implementation that keeps the password char[] array in memory.
+ * Simple PasswordProvider implementation that keeps the password char[] array in memory.
+ * <p>
+ * This implementation is not very secure because the password data is resident in memory during the life of this
+ * provider object, giving attackers a large window of opportunity to obtain the password from a memory dump.
+ * A slightly more secure implementation is {@link EnvironmentPasswordProvider},
+ * and an even more secure implementation is {@link FilePasswordProvider}.
+ * </p>
  */
 class MemoryPasswordProvider implements PasswordProvider {
     private final char[] password;
 
     public MemoryPasswordProvider(final char[] chars) {
-        password = chars;
+        if (chars != null) {
+            password = chars.clone();
+        } else {
+            password = null;
+        }
     }
 
     @Override
@@ -32,5 +44,9 @@ class MemoryPasswordProvider implements PasswordProvider {
             return null;
         }
         return password.clone();
+    }
+
+    public void clearSecrets() {
+        Arrays.fill(password, '\0');
     }
 }

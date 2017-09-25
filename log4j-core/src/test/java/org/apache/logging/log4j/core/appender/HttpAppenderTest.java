@@ -82,7 +82,7 @@ public class HttpAppenderTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort()
         .keystorePath(TestConstants.KEYSTORE_FILE)
-        .keystorePassword(String.valueOf(TestConstants.KEYSTORE_PWD))
+        .keystorePassword(String.valueOf(TestConstants.KEYSTORE_PWD()))
         .keystoreType(TestConstants.KEYSTORE_TYPE));
 
     @Test
@@ -115,8 +115,8 @@ public class HttpAppenderTest {
             .setConfiguration(ctx.getConfiguration())
             .setUrl(new URL("https://localhost:" + wireMockRule.httpsPort() + "/test/log4j/"))
             .setSslConfiguration(SslConfiguration.createSSLConfiguration(null,
-                KeyStoreConfiguration.createKeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null),
-                TrustStoreConfiguration.createKeyStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, TestConstants.TRUSTSTORE_TYPE, null)))
+                KeyStoreConfiguration.createKeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null),
+                TrustStoreConfiguration.createKeyStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD(), TestConstants.TRUSTSTORE_TYPE, null)))
             .setVerifyHostname(false)
             .build();
         appender.append(createLogEvent());

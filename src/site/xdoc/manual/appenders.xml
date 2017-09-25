@@ -1658,7 +1658,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>Ssl</td>
               <td>SslConfiguration</td>
               <td>Contains the configuration for the KeyStore and TrustStore for https.
-                  Optional, uses Java runtime defaults if not specified.</td>
+                  Optional, uses Java runtime defaults if not specified. See <a href="#SSL">SSL</a></td>
             </tr>
             <tr>
               <td>verifyHostname</td>
@@ -1710,8 +1710,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       <Property name="X-Java-Runtime" value="$${java:runtime}" />
       <JsonLayout properties="true"/>
       <SSL>
-        <KeyStore location="log4j2-keystore.jks" password="changeme"/>
-        <TrustStore location="truststore.jks" password="changeme"/>
+        <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
+        <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
       </SSL>
     </Http>
   </Appenders>]]></pre>
@@ -4355,7 +4355,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <p>
             The <code>SocketAppender</code> is an OutputStreamAppender that writes its output to a remote destination
             specified by a host and port. The data can be sent over either TCP or UDP and can be sent in any format.
-            You can optionally secure communication with SSL.
+            You can optionally secure communication with <a href="#SSL">SSL</a>.
           </p>
           <table>
             <caption align="top"><code>SocketAppender</code> Parameters</caption>
@@ -4387,7 +4387,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>SSL</td>
               <td>SslConfiguration</td>
-              <td>Contains the configuration for the KeyStore and TrustStore.</td>
+              <td>Contains the configuration for the KeyStore and TrustStore. See <a href="#SSL">SSL</a>.</td>
             </tr>
             <tr>
               <td>filter</td>
@@ -4467,7 +4467,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 </Configuration>]]></pre>
 
           <p>
-            This is a secured SSL configuration:
+            This is a secured <a href="#SSL">SSL</a> configuration:
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -4475,8 +4475,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     <Socket name="socket" host="localhost" port="9500">
       <JsonLayout properties="true"/>
       <SSL>
-        <KeyStore location="log4j2-keystore.jks" password="changeme"/>
-        <TrustStore location="truststore.jks" password="changeme"/>
+        <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
+        <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
       </SSL>
     </Socket>
   </Appenders>
@@ -4486,6 +4486,154 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+
+        </subsection>
+        <a name="SSL" />
+        <subsection name="SSL Configuration">
+          <p>
+            Several appenders can be configured to use either a plain network connection or a Secure Socket Layer (SSL)
+            connection. This section documents the parameters available for SSL configuration.
+          </p>
+          <table>
+          <caption align="top">SSL Configuration Parameters</caption>
+          <tr>
+            <th>Parameter Name</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>protocol</td>
+            <td>String</td>
+            <td><code>SSL</code> if omitted.
+            See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext">Standard names</a>.</td>
+          </tr>
+          <tr>
+            <td>KeyStore</td>
+            <td>KeyStore</td>
+            <td>Contains your private keys and certificates,
+              and determines which authentication credentials to send to the remote host.</td>
+          </tr>
+          <tr>
+            <td>TrustStore</td>
+            <td>TrustStore</td>
+            <td>Contains the CA certificates of the remote counterparty.
+              Determines whether the remote authentication credentials
+              (and thus the connection) should be trusted.</td>
+          </tr>
+          </table>
+
+          <h4>KeyStore</h4>
+          The keystore is meant to contain your private keys and certificates,
+          and determines which authentication credentials to send to the remote host.
+
+          <table>
+            <caption align="top">KeyStore Configuration Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>location</td>
+              <td>String</td>
+              <td>Path to the keystore file.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>char[]</td>
+              <td>Plain text password to access the keystore. Cannot be combined with either
+                <code>passwordEnvironmentVariable</code> or <code>passwordFile</code>.</td>
+            </tr>
+            <tr>
+              <td>passwordEnvironmentVariable</td>
+              <td>String</td>
+              <td>Name of an environment variable that holds the password. Cannot be combined with either
+                <code>password</code> or <code>passwordFile</code>.</td>
+            </tr>
+            <tr>
+              <td>passwordFile</td>
+              <td>String</td>
+              <td>Path to a file that holds the password. Cannot be combined with either
+                <code>password</code> or <code>passwordEnvironmentVariable</code>.</td>
+            </tr>
+            <tr>
+              <td>type</td>
+              <td>String</td>
+              <td>Optional KeyStore type, e.g. <code>JKS</code>, <code>PKCS12</code>, <code>PKCS11</code>,
+                <code>BKS</code>, <code>Windows-MY/Windows-ROOT</code>, <code>KeychainStore</code>, etc.
+                The default is JKS. See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyStore">Standard types</a>.</td>
+            </tr>
+            <tr>
+              <td>keyManagerFactoryAlgorithm</td>
+              <td>String</td>
+              <td>Optional KeyManagerFactory algorithm. The default is <code>SunX509</code>.
+              See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory">Standard algorithms</a>.</td>
+            </tr>
+          </table>
+
+          <h4>TrustStore</h4>
+          <p>
+            The trust store is meant to contain the CA certificates you are willing to trust
+            when a remote party presents its certificate. Determines whether the remote authentication credentials
+            (and thus the connection) should be trusted.
+          </p><p>
+          In some cases, they can be one and the same store,
+          although it is often better practice to use distinct stores (especially when they are file-based).
+          </p>
+
+          <table>
+            <caption align="top">TrustStore Configuration Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>location</td>
+              <td>String</td>
+              <td>Path to the keystore file.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>char[]</td>
+              <td>Plain text password to access the keystore. Cannot be combined with either
+                <code>passwordEnvironmentVariable</code> or <code>passwordFile</code>.</td>
+            </tr>
+            <tr>
+              <td>passwordEnvironmentVariable</td>
+              <td>String</td>
+              <td>Name of an environment variable that holds the password. Cannot be combined with either
+                <code>password</code> or <code>passwordFile</code>.</td>
+            </tr>
+            <tr>
+              <td>passwordFile</td>
+              <td>String</td>
+              <td>Path to a file that holds the password. Cannot be combined with either
+                <code>password</code> or <code>passwordEnvironmentVariable</code>.</td>
+            </tr>
+            <tr>
+              <td>type</td>
+              <td>String</td>
+              <td>Optional KeyStore type, e.g. <code>JKS</code>, <code>PKCS12</code>, <code>PKCS11</code>,
+                <code>BKS</code>, <code>Windows-MY/Windows-ROOT</code>, <code>KeychainStore</code>, etc.
+                The default is JKS. See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyStore">Standard types</a>.</td>
+            </tr>
+            <tr>
+              <td>trustManagerFactoryAlgorithm</td>
+              <td>String</td>
+              <td>Optional TrustManagerFactory algorithm. The default is <code>SunX509</code>.
+                See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#TrustManagerFactory">Standard algorithms</a>.</td>
+            </tr>
+          </table>
+
+          <h4>Example</h4>
+          <pre class="prettyprint linenums"><![CDATA[
+  ...
+      <SSL>
+        <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
+        <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
+      </SSL>
+  ...]]></pre>
 
         </subsection>
         <a name="SyslogAppender"/>
@@ -4659,7 +4807,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>SSL</td>
               <td>SslConfiguration</td>
-              <td>Contains the configuration for the KeyStore and TrustStore.</td>
+              <td>Contains the configuration for the KeyStore and TrustStore. See <a href="#SSL">SSL</a>.</td>
             </tr>
             <tr>
               <td>reconnectionDelayMillis</td>
@@ -4695,7 +4843,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 </Configuration>]]></pre>
 
           <p>
-            For SSL this appender writes its output to a remote destination specified by a host and port over SSL in
+            For <a href="#SSL">SSL</a> this appender writes its output to a remote destination specified by a host and port over SSL in
             a format that conforms with either the BSD Syslog format or the RFC 5424 format.
           </p>
 
@@ -4704,8 +4852,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   <Appenders>
     <TLSSyslog name="bsd" host="localhost" port="6514">
       <SSL>
-        <KeyStore location="log4j2-keystore.jks" password="changeme"/>
-        <TrustStore location="truststore.jks" password="changeme"/>
+        <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
+        <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
       </SSL>
     </TLSSyslog>
   </Appenders>

@@ -147,6 +147,7 @@
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="ScriptAppenderSelector" href="/manual/appenders.html#ScriptAppenderSelector"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
+        <item name="SSL" href="/manual/appenders.html#SSL"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
         <item name="ZeroMQ/JeroMQ" href="/manual/appenders.html#JeroMQAppender"/>
       </item>
