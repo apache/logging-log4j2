@@ -52,6 +52,12 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
  * appender uses end-of-line characters and indents lines to format the XML. If {@code compact="true"}, then no
  * end-of-line or indentation is used. Message content may contain, of course, end-of-lines.
  * </p>
+ * <h3>Additional Fields</h3>
+ * <p>
+ * This property allows addition of custom fields into generated JSON.
+ * {@code <XmlLayout><KeyValuePair key="foo" value="bar"/></XmlLayout>} inserts {@code <foo>bar</foo>} directly
+ * into XML output. Supports Lookup expressions.
+ * </p>
  */
 @Plugin(name = "XmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class XmlLayout extends AbstractJacksonLayout {

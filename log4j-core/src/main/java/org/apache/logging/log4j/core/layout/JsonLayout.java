@@ -62,7 +62,7 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
  * <h3>Additional Fields</h3>
  * <p>
  * This property allows addition of custom fields into generated JSON.
- * {@code <JsonLayout><KeyValuePair key="foo" value="bar"/></JsonLayout>} inserts {@code "key":"bar"} directly
+ * {@code <JsonLayout><KeyValuePair key="foo" value="bar"/></JsonLayout>} inserts {@code "foo":"bar"} directly
  * into JSON output. Supports Lookup expressions.
  * </p>
  */

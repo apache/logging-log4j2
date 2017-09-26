@@ -38,6 +38,12 @@ import org.apache.logging.log4j.util.Strings;
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
  * events containing non ASCII characters could result in corrupted log files.
  * </p>
+ * <h3>Additional Fields</h3>
+ * <p>
+ * This property allows addition of custom fields into generated JSON.
+ * {@code <YamlLayout><KeyValuePair key="foo" value="bar"/></YamlLayout>} inserts {@code foo: "bar"} directly
+ * into YAML output. Supports Lookup expressions.
+ * </p>
  */
 @Plugin(name = "YamlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class YamlLayout extends AbstractJacksonLayout {
