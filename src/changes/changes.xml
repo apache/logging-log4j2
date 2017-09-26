@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.9.2" date="2017-XX-XX" description="GA Release 2.9.2">
+      <action issue="LOG4J2-1694" dev="mikes" type="add" due-to="Michal Dvořák">
+        Add fields with fixed values to JSON/XML/YAML layouts.
+      </action>
       <action issue="LOG4J2-2054" dev="rpopma" type="add">
         Provide ways to configure SSL that avoid plain-text passwords in the log4j configuration. The configuration may now specify a system environment variable that holds the password, or the path to a file that holds the password.
       </action>
