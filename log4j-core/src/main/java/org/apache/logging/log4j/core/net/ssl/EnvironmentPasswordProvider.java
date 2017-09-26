@@ -50,6 +50,6 @@ class EnvironmentPasswordProvider implements PasswordProvider {
     @Override
     public char[] getPassword() {
         String password = System.getenv(passwordEnvironmentVariable);
-        return password.toCharArray();
+        return password == null ? null : password.toCharArray();
     }
 }
