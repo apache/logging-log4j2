@@ -2214,10 +2214,10 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>
               To include any custom field in the output, use following syntax:
               <pre class="prettyprint linenums">
-  &lt;YamlLayout&gt;
+  &lt;XmlLayout&gt;
     &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
     &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
-  &lt;/YamlLayout&gt;
+  &lt;/XmlLayout&gt;
 </pre>
               Custom fields are always last, in the order they are declared.
           </p>
