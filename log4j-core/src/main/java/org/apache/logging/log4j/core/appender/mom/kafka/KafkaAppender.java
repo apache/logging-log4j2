@@ -53,6 +53,9 @@ public final class KafkaAppender extends AbstractAppender {
 
         @PluginAttribute("topic") 
         private String topic;
+
+        @PluginAttribute("key")
+        private String key;
         
         @PluginAttribute(value = "syncSend", defaultBoolean = true)
         private boolean syncSend;
@@ -68,7 +71,8 @@ public final class KafkaAppender extends AbstractAppender {
                 AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
                 return null;
             }
-            final KafkaManager kafkaManager = new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic, syncSend, properties);
+            final KafkaManager kafkaManager =
+                    new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic, syncSend, properties, key);
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), kafkaManager);
         }
 
@@ -108,13 +112,15 @@ public final class KafkaAppender extends AbstractAppender {
             final boolean ignoreExceptions,
             final String topic,
             final Property[] properties,
-            final Configuration configuration) {
+            final Configuration configuration,
+            final String key) {
 
         if (layout == null) {
             AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
             return null;
         }
-        final KafkaManager kafkaManager = new KafkaManager(configuration.getLoggerContext(), name, topic, true, properties);
+        final KafkaManager kafkaManager =
+                new KafkaManager(configuration.getLoggerContext(), name, topic, true, properties, key);
         return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager);
     }
 

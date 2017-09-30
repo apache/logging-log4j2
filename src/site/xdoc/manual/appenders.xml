@@ -1735,6 +1735,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The Kafka topic to use. Required.</td>
             </tr>
             <tr>
+              <td>key</td>
+              <td>String</td>
+              <td>The key that will be sent to Kafka with every message. Optional value defaulting to <code>null</code>.</td>
+            </tr>
+            <tr>
               <td>filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
@@ -1777,7 +1782,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>
                 You can set properties in <a href="http://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>.
                 You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others.
-                Do not set the <code>value.serializer</code> property.
+                Do not set the <code>value.serializer</code> nor <code>key.serializer</code> properties.
               </td>
             </tr>
           </table>
