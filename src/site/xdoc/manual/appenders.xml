@@ -4217,26 +4217,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <th>Description</th>
             </tr>
             <tr>
-              <td>bcc</td>
+              <td>name</td>
               <td>String</td>
-              <td>The comma-separated list of BCC email addresses.</td>
-            </tr>
-            <tr>
-              <td>cc</td>
-              <td>String</td>
-              <td>The comma-separated list of CC email addresses.</td>
-            </tr>
-            <tr>
-              <td>bufferSize</td>
-              <td>integer</td>
-              <td>The maximum number of log events to be buffered for inclusion in the message. Defaults to 512.</td>
-            </tr>
-            <tr>
-              <td>filter</td>
-              <td>Filter</td>
-              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
-                may be used by using a CompositeFilter.
-              </td>
+              <td>The name of the Appender.</td>
             </tr>
             <tr>
               <td>from</td>
@@ -4244,19 +4227,46 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The email address of the sender.</td>
             </tr>
             <tr>
+              <td>replyTo</td>
+              <td>String</td>
+              <td>The comma-separated list of reply-to email addresses.</td>
+            </tr>
+            <tr>
+              <td>to</td>
+              <td>String</td>
+              <td>The comma-separated list of recipient email addresses.</td>
+            </tr>
+            <tr>
+              <td>cc</td>
+              <td>String</td>
+              <td>The comma-separated list of CC email addresses.</td>
+            </tr>
+            <tr>
+              <td>bcc</td>
+              <td>String</td>
+              <td>The comma-separated list of BCC email addresses.</td>
+            </tr>
+            <tr>
+              <td>subject</td>
+              <td>String</td>
+              <td>The subject of the email message.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>integer</td>
+              <td>The maximum number of log events to be buffered for inclusion in the message. Defaults to 512.</td>
+            </tr>
+            <tr>
               <td>layout</td>
               <td>Layout</td>
               <td>The Layout to use to format the LogEvent. If no layout is supplied <a href="layouts.html#HTMLLayout">HTML layout</a> will be used.</td>
             </tr>
             <tr>
-              <td>name</td>
-              <td>String</td>
-              <td>The name of the Appender.</td>
-            </tr>
-            <tr>
-              <td>replyTo</td>
-              <td>String</td>
-              <td>The comma-separated list of reply-to email addresses.</td>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+                may be used by using a CompositeFilter.
+              </td>
             </tr>
             <tr>
               <td>smtpDebug</td>
@@ -4295,11 +4305,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
                 caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
-            </tr>
-            <tr>
-              <td>to</td>
-              <td>String</td>
-              <td>The comma-separated list of recipient email addresses.</td>
             </tr>
           </table>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
