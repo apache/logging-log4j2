@@ -171,7 +171,8 @@ public final class PropertiesUtil {
         try {
             return prop == null ? defaultValue : Charset.forName(prop);
         } catch (UnsupportedCharsetException e) {
-            LowLevelLogUtil.logException("Unable to get Charset '" + name + "', using default " + defaultValue, e);
+            LowLevelLogUtil.logException(
+                    "Unable to get Charset '" + prop + "' for property '" + name + "', using default " + defaultValue + " and continuing.", e);
             return defaultValue;
         }
     }
