@@ -34,7 +34,9 @@ final class LowLevelLogUtil {
     private static PrintWriter writer = new PrintWriter(System.err, true);
 
     public static void logException(final Throwable exception) {
-        exception.printStackTrace(writer);
+        if (exception != null) {
+            exception.printStackTrace(writer);
+        }
     }
 
     public static void logException(final String message, final Throwable exception) {
