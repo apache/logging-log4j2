@@ -77,4 +77,11 @@ public class PropertiesUtilTest {
         assertEquals(StandardCharsets.US_ASCII, pu.getCharsetProperty("e.1"));
         assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.2"));
     }
+    
+    @Test
+    public void testGetMappedProperty() {
+        final Properties p = new Properties();
+        final PropertiesUtil pu = new PropertiesUtil(p);
+        assertEquals(StandardCharsets.UTF_8, pu.getCharsetProperty("cp65001"));
+    }
 }
