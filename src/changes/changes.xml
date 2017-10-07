@@ -52,6 +52,9 @@
       <action issue="LOG4J2-2031" dev="rpopma" type="fix">
         Until this change, messages appeared out of order in log file any time when the async logging queue was full. With this change, messages are only logged out of order to prevent deadlock when Log4j2 detects recursive logging while the queue is full.
       </action>
+      <action issue="LOG4J2-2053" dev="ggregory" type="fix">
+        Exception java.nio.charset.UnsupportedCharsetException: cp65001 in 2.9.0.
+      </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
       <action issue="LOG4J2-1988" dev="rpopma" type="fix">
