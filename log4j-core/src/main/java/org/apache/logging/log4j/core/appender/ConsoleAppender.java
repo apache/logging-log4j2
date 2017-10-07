@@ -71,6 +71,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         SYSTEM_OUT {
             @Override
             public Charset getDefaultCharset() {
+                // "sun.stdout.encoding" is only set when running from the console.
                 return getCharset("sun.stdout.encoding", Charset.defaultCharset());
             }
         },
@@ -79,6 +80,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         SYSTEM_ERR {
             @Override
             public Charset getDefaultCharset() {
+                // "sun.stderr.encoding" is only set when running from the console.
                 return getCharset("sun.stderr.encoding", Charset.defaultCharset());
             }
         };
