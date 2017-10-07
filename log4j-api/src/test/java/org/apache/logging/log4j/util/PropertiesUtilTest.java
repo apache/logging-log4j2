@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.util;
 
+import java.io.Console;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -79,9 +80,16 @@ public class PropertiesUtilTest {
     }
     
     @Test
-    public void testGetMappedProperty() {
-        final Properties p = new Properties();
-        final PropertiesUtil pu = new PropertiesUtil(p);
-        assertEquals(StandardCharsets.UTF_8, pu.getCharsetProperty("cp65001"));
+    public void testGetMappedProperty_sun_stdout_encoding() {
+        final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
+        Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
+        assertEquals(expected, pu.getCharsetProperty("sun.stdout.encoding"));
+    }
+
+    @Test
+    public void testGetMappedProperty_sun_stderr_encoding() {
+        final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
+        Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
+        assertEquals(expected, pu.getCharsetProperty("sun.err.encoding"));
     }
 }
