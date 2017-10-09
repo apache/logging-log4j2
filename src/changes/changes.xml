@@ -30,12 +30,16 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.9.2" date="2017-XX-XX" description="GA Release 2.9.2">
+    <release version="2.10.0" date="2017-XX-XX" description="GA Release 2.10.0">
+      <action issue="LOG4J2-2025" dev="rgoers" type="update">
+        Provide support for overriding the Tomcat Log class in Tomcat 8.5+.
+      </action>
       <action issue="LOG4J2-1694" dev="mikes" type="add" due-to="Michal Dvořák">
         Add fields with fixed values to JSON/XML/YAML layouts.
       </action>
       <action issue="LOG4J2-2054" dev="rpopma" type="add">
-        Provide ways to configure SSL that avoid plain-text passwords in the log4j configuration. The configuration may now specify a system environment variable that holds the password, or the path to a file that holds the password.
+      Provide ways to configure SSL that avoid plain-text passwords in the log4j configuration. The configuration may
+        now specify a system environment variable that holds the password, or the path to a file that holds the password.
       </action>
       <action issue="LOG4J2-2057" dev="rgoers" type="update">
         Support new SLF4J binding mechanism introduced in SLF4J 1.8.
@@ -47,10 +51,13 @@
         If Log4j is used as the Tomcat logging implementation startup might fail if an application also uses Log4j.
       </action>
       <action issue="LOG4J2-1896" dev="rpopma" type="update">
-        Update classes in org.apache.logging.log4j.core.net.ssl in APIs from String to a PasswordProvider producing char[] for passwords.
+        Update classes in org.apache.logging.log4j.core.net.ssl in APIs from String to a PasswordProvider producing
+        char[] for passwords.
       </action>
       <action issue="LOG4J2-2031" dev="rpopma" type="fix">
-        Until this change, messages appeared out of order in log file any time when the async logging queue was full. With this change, messages are only logged out of order to prevent deadlock when Log4j2 detects recursive logging while the queue is full.
+        Until this change, messages appeared out of order in log file any time when the async logging queue was full.
+        With this change, messages are only logged out of order to prevent deadlock when Log4j2 detects recursive
+        logging while the queue is full.
       </action>
       <action issue="LOG4J2-2053" dev="ggregory" type="fix">
         Exception java.nio.charset.UnsupportedCharsetException: cp65001 in 2.9.0.

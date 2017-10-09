@@ -272,7 +272,7 @@
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
-    <!-- <dependency>
+    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-appserver</artifactId>
       <version>${project.version}</version>
@@ -288,7 +288,7 @@
       <artifactId>log4j-appserver</artifactId>
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
-    </dependency> -->
+    </dependency>
   </dependencies>
   <build>
     <plugins>
