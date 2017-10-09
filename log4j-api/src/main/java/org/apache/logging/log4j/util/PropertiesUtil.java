@@ -191,7 +191,7 @@ public final class PropertiesUtil {
         if (Charset.isSupported(charsetName)) {
             return Charset.forName(charsetName);
         }
-        ResourceBundle bundle = ResourceBundle.getBundle("Log4j-charsets");
+        ResourceBundle bundle = getCharsetsResourceBundle();
         if (bundle.containsKey(name)) {
             String mapped = bundle.getString(name);
             if (Charset.isSupported(mapped)) {
@@ -346,6 +346,10 @@ public final class PropertiesUtil {
         }
 
         return subset;
+    }
+
+    static ResourceBundle getCharsetsResourceBundle() {
+        return ResourceBundle.getBundle("Log4j-charsets");
     }
 
     /**
