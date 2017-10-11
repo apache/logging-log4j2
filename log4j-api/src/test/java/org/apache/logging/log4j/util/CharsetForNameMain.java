@@ -27,8 +27,8 @@ public class CharsetForNameMain {
     public static void main(String[] args) {
         for (String charsetName : args) {
             if (Charset.isSupported(charsetName)) {
-                System.out
-                        .println(String.format("%s aliases: %s", charsetName, Charset.forName(charsetName).aliases()));
+                Charset cs = Charset.forName(charsetName);
+                System.out.println(String.format("%s -> %s  aliases: %s", charsetName, cs.name(), cs.aliases()));
             } else {
                 System.out.println("Cannot load " + charsetName);
             }
