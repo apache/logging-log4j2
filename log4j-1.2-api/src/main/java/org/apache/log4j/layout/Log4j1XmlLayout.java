@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.layout;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -107,16 +109,12 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         }
 
         @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-		final
-        Throwable thrown = event.getThrown();
+		final Throwable thrown = event.getThrown();
         if (thrown != null) {
             buf.append("<log4j:throwable><![CDATA[");
-            buf.append(thrown.toString());
-            buf.append("\r\n");
-            for (final StackTraceElement element : thrown.getStackTrace()) {
-                Transform.appendEscapingCData(buf, "\tat " + element.toString());
-                buf.append("\r\n");
-            }
+            final StringWriter w = new StringWriter();
+            thrown.printStackTrace(new PrintWriter(w));
+            Transform.appendEscapingCData(buf, w.toString());
             buf.append("]]></log4j:throwable>\r\n");
         }
 
