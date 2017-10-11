@@ -68,6 +68,9 @@
       <action issue="LOG4J2-2070" dev="ggregory" type="fix" due-to="Doug Hughes">
         Log4j1XmlLayout does not provide the entire stack trace, it is missing the caused by information.
       </action>
+      <action issue="LOG4J2-2036" dev="ggregory" type="fix" due-to="Robert Haycock">
+        CompositeConfiguration supports Reconfiguration. PR #115.
+      </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
       <action issue="LOG4J2-1988" dev="rpopma" type="fix">
