@@ -172,7 +172,12 @@ public class ClassLoaderContextSelector implements ContextSelector {
     }
 
     protected String toContextMapKey(final ClassLoader loader) {
-        return Integer.toHexString(System.identityHashCode(loader));
+        try {
+            return Integer.toHexString(System.identityHashCode(
+                    loader.loadClass(ClassLoaderContextSelector.class.getName())));
+        } catch (ClassNotFoundException e) {
+            return Integer.toHexString(System.identityHashCode(loader));
+        }
     }
 
     protected LoggerContext getDefault() {
