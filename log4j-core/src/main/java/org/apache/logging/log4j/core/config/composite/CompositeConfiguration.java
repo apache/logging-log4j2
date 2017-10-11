@@ -180,4 +180,13 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             printNodes(indent + "  ", child, sb);
         }
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + "@" + Integer.toHexString(hashCode()) + " [configurations=" + configurations
+                + ", mergeStrategy=" + mergeStrategy + ", rootNode=" + rootNode + ", listeners=" + listeners
+                + ", pluginPackages=" + pluginPackages + ", pluginManager=" + pluginManager + ", isShutdownHookEnabled="
+                + isShutdownHookEnabled + ", shutdownTimeoutMillis=" + shutdownTimeoutMillis + ", scriptManager="
+                + scriptManager + "]";
+    }
 }
