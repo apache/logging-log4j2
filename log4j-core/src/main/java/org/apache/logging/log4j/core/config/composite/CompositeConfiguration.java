@@ -169,6 +169,11 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         return new CompositeConfiguration(configs);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[configurations=" + configurations + "]";
+    }
+
     private void staffChildConfiguration(final AbstractConfiguration childConfiguration) {
         childConfiguration.setPluginManager(pluginManager);
         childConfiguration.setScriptManager(scriptManager);
