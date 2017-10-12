@@ -62,7 +62,7 @@
       <action issue="LOG4J2-2053" dev="ggregory" type="fix">
         Exception java.nio.charset.UnsupportedCharsetException: cp65001 in 2.9.0.
       </action>
-      <action issue="LOG4J2-1216" dev="ggregory" type="fix" due-to="Thies Wellpott, Barna Zsombor Klara">
+      <action issue="LOG4J2-1216" dev="ggregory" type="fix" due-to="Thies Wellpott, Barna Zsombor Klara, GFriedrich">
         Nested pattern layout options broken.
       </action>
       <action issue="LOG4J2-2070" dev="ggregory" type="fix" due-to="Doug Hughes">

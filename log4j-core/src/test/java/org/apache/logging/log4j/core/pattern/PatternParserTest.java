@@ -161,7 +161,6 @@ public class PatternParserTest {
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
-
     @Test
     public void testBadPattern() {
         final Calendar cal = Calendar.getInstance();
@@ -230,18 +229,12 @@ public class PatternParserTest {
 
     @Test
     public void testNanoPatternShort() {
-        final List<PatternFormatter> formatters = parser.parse("%N");
-        assertNotNull(formatters);
-        assertEquals(1, formatters.size());
-        assertTrue(formatters.get(0).getConverter() instanceof NanoTimePatternConverter);
+        testFirstConverter("%N", NanoTimePatternConverter.class);
     }
 
     @Test
     public void testNanoPatternLong() {
-        final List<PatternFormatter> formatters = parser.parse("%nano");
-        assertNotNull(formatters);
-        assertEquals(1, formatters.size());
-        assertTrue(formatters.get(0).getConverter() instanceof NanoTimePatternConverter);
+        testFirstConverter("%nano", NanoTimePatternConverter.class);
     }
 
     @Test
@@ -348,6 +341,20 @@ public class PatternParserTest {
         formatters.get(0).format(event, buf);
         final String expected = " 123 ";
         assertEquals(expected, buf.toString());
+    }
 
+    @Test
+    public void testMissingClosingBracket() {
+        testFirstConverter("%d{", DatePatternConverter.class);
+    }
+
+    @Test
+    public void testClosingBracketButWrongPlace() {
+        final List<PatternFormatter> formatters = parser.parse("}%d{");
+        assertNotNull(formatters);
+        assertEquals(2, formatters.size());
+
+        validateConverter(formatters, 0, "Literal");
+        validateConverter(formatters, 1, "Date");
     }
 }
