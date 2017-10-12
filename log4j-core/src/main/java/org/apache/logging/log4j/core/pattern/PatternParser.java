@@ -287,7 +287,11 @@ public final class PatternParser {
             } // while
 
             if (depth > 0) { // option not closed, continue with pattern after closing bracket
-                return pattern.indexOf('}', start) + 1;
+                i = pattern.lastIndexOf('}');
+                if (i == -1 || i < start) {
+                    return start + 1;
+                }
+                return i + 1;
             }
 
             options.add(pattern.substring(begin, i - 1));
