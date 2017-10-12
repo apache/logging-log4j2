@@ -25,12 +25,13 @@ public class CharsetForNameMain {
      * Checks that the given Charset names can be loaded.
      */
     public static void main(String[] args) {
-        for (String charsetName : args) {
+        for (String value : args) {
+            final String charsetName = value.trim();
             if (Charset.isSupported(charsetName)) {
                 Charset cs = Charset.forName(charsetName);
                 System.out.println(String.format("%s -> %s  aliases: %s", charsetName, cs.name(), cs.aliases()));
             } else {
-                System.out.println("Cannot load " + charsetName);
+                System.err.println("Not supported:" + charsetName);
             }
         }
     }
