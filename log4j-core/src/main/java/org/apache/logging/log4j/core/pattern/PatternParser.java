@@ -289,7 +289,9 @@ public final class PatternParser {
             if (depth > 0) { // option not closed, continue with pattern after closing bracket
                 i = pattern.lastIndexOf('}');
                 if (i == -1 || i < start) {
-                    return start + 1;
+                    // if no closing bracket could be found or there is no closing bracket
+                    // after the the start of our parsing process
+                    return begin;
                 }
                 return i + 1;
             }
