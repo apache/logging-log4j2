@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -272,7 +273,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final NoSuchMethodException nsme) {
             LOGGER.warn("{} is missing the proper constructor", JANSI_CLASS);
         } catch (final Exception ex) {
-            LOGGER.warn("Unable to instantiate {}", JANSI_CLASS);
+            LOGGER.warn("Unable to instantiate {} due to {}", JANSI_CLASS, Throwables.getRootCause(ex));
         }
         return outputStream;
     }
@@ -344,7 +345,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     /**
-     * Data to pass to factory method.
+     * Data to pass to factory method.Unable to instantiate
      */
     private static class FactoryData {
         private final OutputStream os;
