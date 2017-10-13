@@ -1737,7 +1737,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>key</td>
               <td>String</td>
-              <td>The key that will be sent to Kafka with every message. Optional value defaulting to <code>null</code>.</td>
+              <td>The key that will be sent to Kafka with every message. Optional value defaulting to <code>null</code> (no key).</td>
             </tr>
             <tr>
               <td>filter</td>
