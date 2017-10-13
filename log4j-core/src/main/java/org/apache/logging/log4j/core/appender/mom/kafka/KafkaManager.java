@@ -60,12 +60,9 @@ public class KafkaManager extends AbstractManager {
         config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("batch.size", "0");
         for (final Property property : properties) {
-
             config.setProperty(property.getName(), property.getValue());
         }
-
         this.key = (key != null ) ? key.getBytes(StandardCharsets.UTF_8) : null ;
-
         this.timeoutMillis = Integer.parseInt(config.getProperty("timeout.ms", DEFAULT_TIMEOUT_MILLIS));
     }
 
@@ -103,7 +100,6 @@ public class KafkaManager extends AbstractManager {
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
-
             final ProducerRecord<byte[], byte[]> newRecord = new ProducerRecord<>(topic, key, msg);
             if (syncSend) {
                 final Future<RecordMetadata> response = producer.send(newRecord);
