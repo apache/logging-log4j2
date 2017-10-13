@@ -74,6 +74,9 @@
       <action issue="LOG4J2-2071" dev="ggregory" type="add" due-to="Carter Kozak">
         Add org.apache.logging.log4j.core.config.composite.CompositeConfiguration#toString().
       </action>
+      <action issue="LOG4J2-2073" dev="ggregory" type="fix" due-to="Patrick Lucas">
+        Log4j-config.xsd should make AppenderRef optional for each Logger element.
+      </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
       <action issue="LOG4J2-1988" dev="rpopma" type="fix">
