@@ -27,9 +27,6 @@ import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- *
- */
 @RunWith(Parameterized.class)
 public class PropertiesPropertySourceTest {
 

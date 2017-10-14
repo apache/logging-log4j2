@@ -22,7 +22,7 @@ import java.util.Map;
  * PropertySource backed by the current system properties. Other than having a higher priority over normal properties,
  * this follows the same rules as {@link PropertiesPropertySource}.
  *
- * @since 2.9.1
+ * @since 2.10.0
  */
 public class SystemPropertiesPropertySource implements PropertySource {
 

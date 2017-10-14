@@ -23,7 +23,7 @@ import java.util.Properties;
  * PropertySource backed by a {@link Properties} instance. Normalized property names follow a scheme like this:
  * {@code Log4jContextSelector} would normalize to {@code log4j2.contextSelector}.
  *
- * @since 2.9.1
+ * @since 2.10.0
  */
 public class PropertiesPropertySource implements PropertySource {
 

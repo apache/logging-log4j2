@@ -1571,7 +1571,7 @@ public class AwesomeTest {
           Any spaces present in the property name are for visual flow and should be removed.
         </p>
           <p>
-            Note that beginning in Log4j 2.9.1, all system property names have been normalized to follow a consistent
+            Note that beginning in Log4j 2.10, all system property names have been normalized to follow a consistent
             naming scheme. While the old property names are still supported for backwards compatibility, it is
             recommended to update configurations to use the new style. This system is extensible and is enabled
             through the
@@ -1621,7 +1621,7 @@ public class AwesomeTest {
             The following is a list of available global configuration properties. Note that these can only be set once
             per JVM process unlike configuration settings available in configuration files. The <i>Property Name</i>
             column contains the name used in properties files and system properties; <i>Environemt Variable</i>
-            for the equivalent environment variable; and <i>Legacy Property Name</i> for the pre-2.9.1 name.
+            for the equivalent environment variable; and <i>Legacy Property Name</i> for the pre-2.10 name.
           </p>
 <table>
   <caption align="top">Log4j 2 global configuration properties</caption>

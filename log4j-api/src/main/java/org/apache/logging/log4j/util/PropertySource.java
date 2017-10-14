@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 /**
  * A source for global configuration properties.
  *
- * @since 2.9.1
+ * @since 2.10.0
  */
 public interface PropertySource {
 
@@ -59,7 +59,7 @@ public interface PropertySource {
     /**
      * Comparator for ordering PropertySource instances by priority.
      *
-     * @since 2.9.1
+     * @since 2.10.0
      */
     class Comparator implements java.util.Comparator<PropertySource>, Serializable {
         private static final long serialVersionUID = 1L;
@@ -73,7 +73,7 @@ public interface PropertySource {
     /**
      * Utility methods useful for PropertySource implementations.
      *
-     * @since 2.9.1
+     * @since 2.10.0
      */
     final class Util {
         private static final String PREFIXES = "(?i:^log4j2?[-._/]?|^org\\.apache\\.logging\\.log4j\\.)?";

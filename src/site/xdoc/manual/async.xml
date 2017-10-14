@@ -184,7 +184,7 @@
           <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
         </p>
         <p>
-          Note that system properties were renamed into a more consistent style in Log4j 2.9.1. All old property
+          Note that system properties were renamed into a more consistent style in Log4j 2.10.0. All old property
           names are still supported which are documented <a href="configuration.html#SystemProperties">here</a>.
         </p>
         <a name="SysPropsAllAsync" />
@@ -365,7 +365,7 @@
           <tt>log4j2.component.properties</tt> and including this file in the classpath of the application.
         </p>
         <p>
-          Note that system properties were renamed into a more consistent style in Log4j 2.9.1. All old property
+          Note that system properties were renamed into a more consistent style in Log4j 2.10. All old property
           names are still supported which are documented <a href="configuration.html#SystemProperties">here</a>.
         </p>
         <a name="SysPropsMixedSync-Async" />

@@ -23,7 +23,7 @@ import java.util.Map;
  * with {@code LOG4J_} so as not to conflict with other variables. Normalized environment variables follow a scheme
  * like this: {@code log4j2.fooBarProperty} would normalize to {@code LOG4J_FOO_BAR_PROPERTY}.
  *
- * @since 2.9.1
+ * @since 2.10.0
  */
 public class EnvironmentPropertySource implements PropertySource {
     @Override

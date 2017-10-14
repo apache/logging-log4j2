@@ -24,7 +24,7 @@ import java.util.Properties;
 /**
  * PropertySource backed by a properties file. Follows the same conventions as {@link PropertiesPropertySource}.
  *
- * @since 2.9.1
+ * @since 2.10.0
  */
 public class PropertyFilePropertySource extends PropertiesPropertySource {
 
