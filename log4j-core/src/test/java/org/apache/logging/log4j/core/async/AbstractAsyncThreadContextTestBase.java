@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Unbox;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -88,6 +89,7 @@ public abstract class AbstractAsyncThreadContextTestBase {
             System.clearProperty("log4j2.threadContextMap");
             final String PACKAGE = "org.apache.logging.log4j.spi.";
             System.setProperty("log4j2.threadContextMap", PACKAGE + implClassSimpleName());
+            PropertiesUtil.getProperties().reload();
             ThreadContextTestAccess.init();
         }
 

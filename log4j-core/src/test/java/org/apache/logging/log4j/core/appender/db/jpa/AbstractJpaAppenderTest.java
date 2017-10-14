@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -52,6 +53,7 @@ public abstract class AbstractJpaAppenderTest {
 
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "org/apache/logging/log4j/core/appender/db/jpa/" + configFileName);
+        PropertiesUtil.getProperties().reload();
         final LoggerContext context = LoggerContext.getContext(false);
         if (context.getConfiguration() instanceof DefaultConfiguration) {
             context.reconfigure();
@@ -69,6 +71,7 @@ public abstract class AbstractJpaAppenderTest {
             ((JpaAppender) appender).getManager().close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+            PropertiesUtil.getProperties().reload();
             context.reconfigure();
             StatusLogger.getLogger().reset();
 

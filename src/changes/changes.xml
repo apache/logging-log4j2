@@ -31,6 +31,12 @@
          - "remove" - Removed
     -->
     <release version="2.10.0" date="2017-MM-DD" description="GA Release 2.10.0">
+      <action issue="LOG4J2-1431" dev="mattsicker" type="add">
+        Simplify log4j system property naming scheme.
+      </action>
+      <action issue="LOG4J2-1809" dev="mattsicker" type="add">
+        Add global configuration environment SPI.
+      </action>
       <action issue="LOG4J2-2025" dev="rgoers" type="update">
         Provide support for overriding the Tomcat Log class in Tomcat 8.5+.
       </action>
@@ -133,7 +139,7 @@
     </release>
     <release version="2.9.0" date="2017-08-26" description="GA Release 2.9.0">
       <action issue="LOG4J2-1928" dev="rgoers" type="update">
-        Add support for DirectWriteRolloverStrategy to RollingRandomAcessFileAppender.
+        Add support for DirectWriteRolloverStrategy to RollingRandomAccessFileAppender.
       </action>
       <action issue="LOG4J2-1833" dev="rgoers" type="fix">
         Prevent NullPointerException when a file name is specified with the DirectWriteRolloverStrategy.

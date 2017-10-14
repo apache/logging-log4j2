@@ -78,7 +78,7 @@
               the available ConfigurationFactories:
             </p>
             <ol>
-              <li>A system property named "log4j.configurationFactory" can be set with the name of the ConfigurationFactory to be used.</li>
+              <li>A system property named <tt>log4j2.configurationFactory</tt> can be set with the name of the ConfigurationFactory to be used.</li>
               <li><code>ConfigurationFactory.setConfigurationFactory(ConfigurationFactory)</code> can be called with the instance of the
               ConfigurationFactory to be used. This must be called before any other calls to Log4j.</li>
               <li>A ConfigurationFactory implementation can be added to the classpath and configured as a plugin

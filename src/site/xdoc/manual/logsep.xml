@@ -94,8 +94,8 @@
             </p>
               <ol>
                 <li>Place the logging jars in the container's classpath and set the system property
-                  "Log4jContextSelector" to "org.apache.logging.log4j.core.selector.BasicContextSelector". This will
-                  create a single LoggerContext using a single configuration that will be shared across all
+                  <tt>log4j2.contextSelector</tt> to <code>org.apache.logging.log4j.core.selector.BasicContextSelector</code>.
+                  This will create a single LoggerContext using a single configuration that will be shared across all
                   applications.</li>
                 <li>
                   Place the logging jars in the container's classpath and use the default ClassLoaderContextSelector.
@@ -106,7 +106,7 @@
                 </li>
                 <li>
                   Follow the <a href="webapp.html">instructions to initialize Log4j 2 in a web application</a> and set
-                  the system property or servlet context parameter <code>Log4jContextSelector</code> to
+                  the system property or servlet context parameter <tt>log4j2.contextSelector</tt> to
                   <kbd>org.apache.logging.log4j.core.selector.JndiContextSelector</kbd>. This will cause the container
                   to use JNDI to locate each web application's <code>LoggerContext</code>. Be sure to set the
                   <code>isLog4jContextSelectorNamed</code> context parameter to <kbd>true</kbd> and also set the

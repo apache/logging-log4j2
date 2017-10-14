@@ -44,7 +44,7 @@
         the StatusLogger, ContextSelector, and all LoggerContexts,
           LoggerConfigs and Appenders are instrumented with MBeans.
         To disable JMX completely, and prevent these MBeans from being created,
-        specify system property <code>log4j2.disable.jmx=true</code> when you start
+        specify system property <tt>log4j2.disableJmx</tt> to <tt>true</tt> when you start
         the Java VM.
         </p>
 		<subsection name="Local Monitoring and Management">
