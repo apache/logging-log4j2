@@ -29,6 +29,135 @@
         dependencies.
       </p>
       <p>
+        As of version 2.10.0 the Log4j API is a Java module (with a module-info.java). Many of the other
+        jars are automatic modules. The characteristics of the modules are:
+
+        <table>
+          <tr>
+            <th>Artifact Name</th>
+            <th>Module Name</th>
+            <th>Module Characteristics</th>
+          </tr>
+          <tr>
+            <td>log4j-api</td>
+            <td>org.apache.logging.log4j</td>
+            <td>
+              <table>
+                <tr>
+                  <th>Module Directive</th>
+                  <th>Notes</th>
+                </tr>
+                <tr>
+                  <td>exports org.apache.logging.log4j</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>exports org.apache.logging.log4j.message</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>exports org.apache.logging.log4j.simple</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>exports org.apache.logging.log4j.spi</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>exports org.apache.logging.log4j.spi</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>exports org.apache.logging.log4j.util</td>
+                  <td>Some classes in this package are used by the logging implementation and should be
+                    considered private. The module info definition may be modified in the future to export
+                    these only to the logging implmentation.</td>
+                </tr>
+                <tr>
+                  <td>uses org.apache.logging.log4j.spi.Provider</td>
+                  <td>Service that must be provided by the logging implementation.</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td>log4j-core</td>
+            <td>org.apache.logging.log4j.core</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-1.2-api</td>
+            <td>org.apache.log4j</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-appserver</td>
+            <td>org.apache.logging.log4j.appserver</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-flume-ng</td>
+            <td>org.apache.logging.log4j.flume</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-iostreams</td>
+            <td>org.apache.logging.log4j.iostreams</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-jcl</td>
+            <td>org.apache.logging.log4j.jcl</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-jmx-gui</td>
+            <td>org.apache.logging.log4j.jmx.gui</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-jul</td>
+            <td>org.apache.logging.log4j.jul</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-nosql</td>
+            <td>org.apache.logging.log4j.nosql</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-osgi</td>
+            <td>org.apache.logging.log4j.osgi</td>
+            <td>Automatic Module. Unclear how OSGi will support Java modules.</td>
+          </tr>
+          <tr>
+          <td>log4j-slf4j-impl</td>
+          <td>org.apache.logging.log4j.slf4j.impl</td>
+          <td>Automatic Module. May require renaming should SLF4J ever require all implementations to have the same
+            module name.</td>
+        </tr>
+          <tr>
+            <td>log4j-to-slf4j</td>
+            <td>org.apache.logging.log4j.slf4j</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-taglib</td>
+            <td>org.apache.logging.log4j.taglib</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-web</td>
+            <td>org.apache.logging.log4j.web</td>
+            <td>Automatic Module</td>
+          </tr>
+        </table>
+      </p>
+      <p>
+        As of version 2.9.1 Log4j supports Java 9 but will still in Java 7 or 8. In this version log4j-api is
+        packages as a multi-release jar and supports the use of the StackWalker and Process APIs.
+      </p>
+      <p>
         As of version 2.4, Log4J requires Java 7.
       </p>
       <p>
