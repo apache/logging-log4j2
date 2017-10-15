@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -150,6 +152,24 @@ public class KafkaAppenderTest {
         assertArrayEquals(item.key(), keyValue);
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
     }
+
+    @Test
+    public void testAppendWithKeyLookup() throws Exception {
+        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKeyLookup");
+        final LogEvent logEvent = createLogEvent();
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        appender.append(logEvent);
+        final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+        assertEquals(1, history.size());
+        final ProducerRecord<byte[], byte[]> item = history.get(0);
+        assertNotNull(item);
+        assertEquals(TOPIC_NAME, item.topic());
+        byte[] keyValue = format.format(date).getBytes(StandardCharsets.UTF_8);
+        assertArrayEquals(item.key(), keyValue);
+        assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
+    }
+
 
     private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bis = new ByteArrayInputStream(data);

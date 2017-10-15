@@ -48,7 +48,7 @@ public class KafkaManager extends AbstractManager {
     private final int timeoutMillis;
 
     private final String topic;
-    private final byte[] key;
+    private final String key;
     private final boolean syncSend;
 
     public KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final boolean syncSend,
@@ -62,7 +62,9 @@ public class KafkaManager extends AbstractManager {
         for (final Property property : properties) {
             config.setProperty(property.getName(), property.getValue());
         }
-        this.key = (key != null ) ? key.getBytes(StandardCharsets.UTF_8) : null ;
+
+        this.key = key;
+
         this.timeoutMillis = Integer.parseInt(config.getProperty("timeout.ms", DEFAULT_TIMEOUT_MILLIS));
     }
 
@@ -100,7 +102,16 @@ public class KafkaManager extends AbstractManager {
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
-            final ProducerRecord<byte[], byte[]> newRecord = new ProducerRecord<>(topic, key, msg);
+
+            byte[] newKey = null;
+
+            if(key != null && key.contains("${")) {
+                newKey = getLoggerContext().getConfiguration().getStrSubstitutor().replace(key).getBytes(StandardCharsets.UTF_8);
+            } else if (key != null) {
+                newKey = key.getBytes(StandardCharsets.UTF_8);
+            }
+
+            final ProducerRecord<byte[], byte[]> newRecord = new ProducerRecord<>(topic, newKey, msg);
             if (syncSend) {
                 final Future<RecordMetadata> response = producer.send(newRecord);
                 response.get(timeoutMillis, TimeUnit.MILLISECONDS);

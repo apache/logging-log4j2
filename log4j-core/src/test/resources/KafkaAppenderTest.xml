@@ -37,6 +37,11 @@
       <Property name="timeout.ms">1000</Property>
       <Property name="bootstrap.servers">localhost:9092</Property>
     </Kafka>
+    <Kafka name="KafkaAppenderWithKeyLookup" topic="kafka-topic" key="$${date:dd-MM-yyyy}">
+      <PatternLayout pattern="%m"/>
+      <Property name="timeout.ms">1000</Property>
+      <Property name="bootstrap.servers">localhost:9092</Property>
+    </Kafka>
   </Appenders>
   <Loggers>
     <Root level="info">

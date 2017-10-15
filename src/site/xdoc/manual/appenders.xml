@@ -1720,7 +1720,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <subsection name="KafkaAppender">
           <p>
             The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.
-            Each log event is sent as a Kafka record with no key.
+            Each log event is sent as a Kafka record.
           </p>
           <table>
             <caption align="top">KafkaAppender Parameters</caption>
@@ -1737,7 +1737,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>key</td>
               <td>String</td>
-              <td>The key that will be sent to Kafka with every message. Optional value defaulting to <code>null</code> (no key).</td>
+              <td>The key that will be sent to Kafka with every message. Optional value defaulting to <code>null</code>.
+                Any of the <a href="./lookups.html">Lookups</a>) can be included.
+              </td>
             </tr>
             <tr>
               <td>filter</td>
