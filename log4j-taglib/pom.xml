@@ -31,6 +31,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Tag Library Documentation</docLabel>
     <projectDir>/taglib</projectDir>
+    <module.name>org.apache.logging.log4j.taglib</module.name>
   </properties>
   <dependencies>
     <dependency>

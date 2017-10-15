@@ -34,6 +34,7 @@
     <docLabel>JMX GUI Documentation</docLabel>
     <projectDir>/jmx-gui</projectDir>
     <jenkins.java.home>/home/jenkins/tools/java/latest1.7</jenkins.java.home>
+    <module.name>org.apache.logging.log4j.jmx.gui</module.name>
   </properties>
   <dependencies>
     <dependency>

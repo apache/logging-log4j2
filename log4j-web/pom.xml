@@ -33,6 +33,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-web</projectDir>
+    <module.name>org.apache.logging.log4j.web</module.name>
   </properties>
 
   <dependencies>

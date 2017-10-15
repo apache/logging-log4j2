@@ -34,6 +34,7 @@
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
     <tomcat.version>8.5.20</tomcat.version>
+    <module.name>org.apache.logging.log4j.appserver</module.name>
   </properties>
 
   <dependencies>

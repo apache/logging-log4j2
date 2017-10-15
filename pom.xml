@@ -14,8 +14,7 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
-  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
@@ -209,7 +208,7 @@
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
     <docLabel>Site Documentation</docLabel>
-    <projectDir />
+    <projectDir/>
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <osgi.api.version>6.0.0</osgi.api.version>
     <!-- Version 5.15.0 requires Java 8 -->
@@ -220,6 +219,7 @@
     <mockitoVersion>2.10.0</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.7</javaTargetVersion>
+    <module.name/>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -870,7 +870,7 @@
             <maxmem>1024</maxmem>
             <compilerArguments>
               <Xmaxwarns>10000</Xmaxwarns>
-              <Xlint />
+              <Xlint/>
             </compilerArguments>
           </configuration>
         </plugin>
@@ -970,6 +970,7 @@
               <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
               <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
               <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+              <Automatic-Module-Name>${module.name}</Automatic-Module-Name>
             </manifestEntries>
           </archive>
         </configuration>
@@ -1084,7 +1085,7 @@
             </goals>
             <configuration>
               <skip>true</skip>
-              <resourceBundles />
+              <resourceBundles/>
             </configuration>
           </execution>
         </executions>
