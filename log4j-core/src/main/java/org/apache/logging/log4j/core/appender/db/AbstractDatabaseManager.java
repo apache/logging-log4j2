@@ -162,7 +162,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      */
     public final synchronized void write(final LogEvent event) {
         if (this.bufferSize > 0) {
-            this.buffer.add(event);
+            this.buffer.add(event.toImmutable());
             if (this.buffer.size() >= this.bufferSize || event.isEndOfBatch()) {
                 this.flush();
             }
