@@ -154,8 +154,8 @@
         </table>
       </p>
       <p>
-        As of version 2.9.1 Log4j supports Java 9 but will still in Java 7 or 8. In this version log4j-api is
-        packages as a multi-release jar and supports the use of the StackWalker and Process APIs.
+        As of version 2.9.1 Log4j supports Java 9 but will still work in Java 7 or 8. In this version log4j-api is
+        packaged as a multi-release jar and supports the use of the StackWalker and Process APIs.
       </p>
       <p>
         As of version 2.4, Log4J requires Java 7.
