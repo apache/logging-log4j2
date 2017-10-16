@@ -73,7 +73,7 @@ public final class StackLocator {
                 o = getCallerClass.invoke(null, 1);
                 if (o == sunReflectionClass) {
                     System.out.println("WARNING: Java 1.7.0_25 is in use which has a broken implementation of Reflection.getCallerClass(). " +
-                        " Plesae consider upgrading to Java 1.7.0_40 or later.");
+                        " Please consider upgrading to Java 1.7.0_40 or later.");
                     java7u25CompensationOffset = 1;
                 }
             }
