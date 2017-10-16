@@ -126,6 +126,11 @@
             <td>Automatic Module</td>
           </tr>
           <tr>
+            <td>log4j-cassandra</td>
+            <td>org.apache.logging.log4j.cassandra</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
             <td>log4j-osgi</td>
             <td>org.apache.logging.log4j.osgi</td>
             <td>Automatic Module. Unclear how OSGi will support Java modules.</td>
@@ -258,7 +263,7 @@
         </tr>
         <tr>
           <td>Cassandra Appender</td>
-          <td>Datastax Cassandra driver and Log4j NoSQL library</td>
+          <td>Datastax Cassandra driver and Log4j Cassandra library</td>
         </tr>
         <tr>
           <td>Bzip2, Deflate, Pack200, and XZ compression on rollover</td>
@@ -386,6 +391,13 @@
           <td>the <a href="http://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html">Datastax Cassandra driver</a></td>
         </tr>
       </table>
+
+      <a name="log4j-cassandra" />
+      <h4>log4j-cassandra</h4>
+      <p>
+        The Log4J <a href="log4j-cassandra/index.html">Cassandra</a> module has depends on
+        the <a href="http://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html">Datastax Cassandra driver</a>.
+      </p>
 
       <a name="log4j-iostreams" />
       <h4>log4j-iostreams</h4>

@@ -71,8 +71,6 @@ $h2 MongoDB
   </dependencies>
 ```
 
-## TODO: Cassandra dependencies (already mentioned in runtime-dependencies.html)
-
 $h2 Requirements
 
 The NoSQL Appenders is dependent on the Log4j 2 API and implementation.
