@@ -102,7 +102,6 @@ public class KafkaManager extends AbstractManager {
 
     public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
-
             byte[] newKey = null;
 
             if(key != null && key.contains("${")) {
