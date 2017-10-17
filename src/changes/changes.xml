@@ -95,6 +95,9 @@
       <action issue="LOG4J2-2078" dev="ggregory" type="fix">
         Update LMAX disruptor from 3.3.6 to 3.3.7.
       </action>
+      <action issue="LOG4J2-2081" dev="ggregory" type="fix">
+        Update Apache Commons Compress from 1.14 to 1.15.
+      </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
       <action issue="LOG4J2-1988" dev="rpopma" type="fix">
