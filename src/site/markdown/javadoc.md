@@ -44,4 +44,6 @@ Component | Description
 [Apache Flume Appender](log4j-flume-ng/apidocs/index.html) | An Appender that allows applications to send logging events to Apache Flume Agents.
 [Log4j JMX GUI](log4j-jmx-gui/apidocs/index.html) | A Java Swing-based client for remotely viewing the status logger and editing the Log4j configuration.
 [Log4j Web Application Support](log4j-web/apidocs/index.html) | Additional classes that enable multiple configurations within a Servlet Container.
-[Log4j NoSQL Support](log4j-nosql/apidocs/index.html) | Additional Appenders for NoSQL databases such as MongoDB and CouchDB.
+[Log4j CouchDB Support](log4j-couchdb/apidocs/index.html) | Additional Appender for CouchDB.
+[Log4j MongoDB Support](log4j-mongodb/apidocs/index.html) | Additional Appender for MongoDB.
+[Log4j Cassandra Support](log4j-cassandra/apidocs/index.html) | Additional Appender for Cassandra.

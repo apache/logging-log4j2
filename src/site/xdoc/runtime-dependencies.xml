@@ -121,8 +121,13 @@
             <td>Automatic Module</td>
           </tr>
           <tr>
-            <td>log4j-nosql</td>
-            <td>org.apache.logging.log4j.nosql</td>
+            <td>log4j-couchdb</td>
+            <td>org.apache.logging.log4j.couchdb</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-mongodb</td>
+            <td>org.apache.logging.log4j.mongodb</td>
             <td>Automatic Module</td>
           </tr>
           <tr>
@@ -255,11 +260,11 @@
         </tr>
         <tr>
           <td>NoSQL Appender with MongoDB provider</td>
-          <td>MongoDB Java Client driver and Log4j NoSQL library</td>
+          <td>MongoDB Java Client driver and Log4j MongoDB library</td>
         </tr>
         <tr>
           <td>NoSQL Appender with Apache CouchDB provider</td>
-          <td>LightCouch CouchDB client library and Log4j NoSQL library</td>
+          <td>LightCouch CouchDB client library and Log4j CouchDB library</td>
         </tr>
         <tr>
           <td>Cassandra Appender</td>
@@ -368,34 +373,24 @@
         Note that this works with the Servlet 2.5 API as well as the Servlet 3.x API.
       </p>
 
-      <a name="log4j-nosql" />
-      <h4>log4j-nosql</h4>
+      <a name="log4j-couchdb" />
+      <h4>log4j-couchdb</h4>
       <p>
-        The Log4J <a href="log4j-nosql/index.html">NoSQL Appenders</a> module has several optional
-        <a href="log4j-nosql/dependencies.html">dependencies</a>.
-        See the <a href="log4j-nosql/dependencies.html#Dependency_Tree">Dependency Tree</a> for the
-        exact list of JAR files needed for these features.
+        The Log4J <a href="log4j-couchdb/index.html">CouchDB</a> module depends on
+        the <a href="http://www.lightcouch.org/">LightCouch</a> CouchDB client library.
       </p>
-      <table>
-        <caption align="top">Optional Dependencies per Feature in Log4J NoSQL Appenders</caption>
-        <tr>
-          <td>NoSQL Appender with <a href="http://www.mongodb.org/">MongoDB</a> provider</td>
-          <td>the <a href="http://docs.mongodb.org/ecosystem/drivers/java/">MongoDB Java Client driver</a></td>
-        </tr>
-        <tr>
-          <td>NoSQL Appender with <a href="https://couchdb.apache.org/">Apache CouchDB</a> provider</td>
-          <td>the <a href="http://www.lightcouch.org/">LightCouch</a> CouchDB client library</td>
-        </tr>
-        <tr>
-          <td>Cassandra Appender</td>
-          <td>the <a href="http://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html">Datastax Cassandra driver</a></td>
-        </tr>
-      </table>
+
+      <a name="log4j-mongodb" />
+      <h4>log4j-mongodb</h4>
+      <p>
+        The Log4J <a href="log4j-mongodb/index.html">MongoDB</a> module depends on
+        the <a href="http://docs.mongodb.org/ecosystem/drivers/java/">MongoDB Java Client driver</a>.
+      </p>
 
       <a name="log4j-cassandra" />
       <h4>log4j-cassandra</h4>
       <p>
-        The Log4J <a href="log4j-cassandra/index.html">Cassandra</a> module has depends on
+        The Log4J <a href="log4j-cassandra/index.html">Cassandra</a> module depends on
         the <a href="http://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html">Datastax Cassandra driver</a>.
       </p>
 

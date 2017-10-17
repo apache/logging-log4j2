@@ -1290,7 +1290,8 @@
     <module>log4j-samples</module>
     <module>log4j-osgi</module>
     <module>log4j-bom</module>
-    <module>log4j-nosql</module>
+    <module>log4j-couchdb</module>
+    <module>log4j-mongodb</module>
     <module>log4j-cassandra</module>
     <module>log4j-web</module>
     <module>log4j-perf</module>

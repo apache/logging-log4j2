@@ -84,10 +84,22 @@
         <artifactId>log4j-web</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- NoSQL Appender Plugins -->
+      <!-- CouchDB Appender Plugin -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-nosql</artifactId>
+        <artifactId>log4j-couchdb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- MongoDB Appender Plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-mongodb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Cassandra Appender Plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-cassandra</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Streaming API -->

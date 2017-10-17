@@ -272,7 +272,9 @@
       <item name="Log4j JMX GUI" href="log4j-jmx-gui/index.html"/>
       <item name="Log4j Web Application Support" href="log4j-web/index.html"/>
       <item name="Log4j Application Server Integration" href="log4j-appserver/index.html"/>
-      <item name="Log4j NoSQL support" href="log4j-nosql/index.html"/>
+      <item name="Log4j CouchDB appender" href="log4j-couchdb/index.html"/>
+      <item name="Log4j MongoDB appender" href="log4j-mongodb/index.html"/>
+      <item name="Log4j Cassandra appender" href="log4j-cassandra/index.html"/>
       <item name="Log4j IO Streams" href="log4j-iostreams/index.html"/>
       <item name="Log4j Liquibase Binding" href="log4j-liquibase/index.html"/>
     </menu>
