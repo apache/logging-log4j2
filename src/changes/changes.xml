@@ -92,6 +92,9 @@
       <action issue="LOG4J2-2074" dev="ggregory" type="fix">
         The console appender should say why it cannot load JAnsi.
       </action>
+      <action issue="LOG4J2-2078" dev="ggregory" type="fix">
+        Update LMAX disruptor from 3.3.6 to 3.3.7.
+      </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
       <action issue="LOG4J2-1988" dev="rpopma" type="fix">

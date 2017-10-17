@@ -181,7 +181,7 @@
     <jackson2Version>2.9.1</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion>
-    <disruptorVersion>3.3.6</disruptorVersion>
+    <disruptorVersion>3.3.7</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
     <compiler.plugin.version>3.7.0</compiler.plugin.version>
     <pmd.plugin.version>3.7</pmd.plugin.version>
