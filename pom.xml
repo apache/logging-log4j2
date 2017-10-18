@@ -179,9 +179,9 @@
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.9.1</jackson2Version>
-    <springVersion>3.2.18.RELEASE</springVersion>
+    <springVersion>4.3.12.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion>
-    <disruptorVersion>3.3.6</disruptorVersion>
+    <disruptorVersion>3.3.7</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
     <compiler.plugin.version>3.7.0</compiler.plugin.version>
     <pmd.plugin.version>3.7</pmd.plugin.version>
@@ -216,7 +216,7 @@
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
-    <mockitoVersion>2.10.0</mockitoVersion>
+    <mockitoVersion>2.11.0</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.7</javaTargetVersion>
     <module.name/>
@@ -263,7 +263,7 @@
       <dependency>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
-        <version>3.12.0.v20170512-1932</version>
+        <version>3.12.1.v20170821-1548</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
@@ -756,13 +756,13 @@
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock</artifactId>
         <scope>test</scope>
-        <version>2.8.0</version>
+        <version>2.9.0</version>
       </dependency>
       <!-- Used for compressing to formats other than zip and gz -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.14</version>
+        <version>1.15</version>
       </dependency>
       <dependency>
         <groupId>org.tukaani</groupId>
@@ -1046,7 +1046,7 @@
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
-            <version>2.10</version>
+            <version>3.0.0</version>
           </dependency>
         </dependencies>
         <configuration>

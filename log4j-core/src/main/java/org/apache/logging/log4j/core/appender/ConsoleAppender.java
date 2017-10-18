@@ -273,7 +273,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final NoSuchMethodException nsme) {
             LOGGER.warn("{} is missing the proper constructor", JANSI_CLASS);
         } catch (final Exception ex) {
-            LOGGER.warn("Unable to instantiate {} due to {}", JANSI_CLASS, Throwables.getRootCause(ex));
+            LOGGER.warn("Unable to instantiate {} due to {}", JANSI_CLASS, Throwables.getRootCause(ex).toString().trim());
         }
         return outputStream;
     }

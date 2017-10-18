@@ -59,9 +59,6 @@
       <action issue="LOG4J2-2052" dev="rpopma" type="update">
         Disable thread name caching by default when running on Java 8u102 or later.
       </action>
-      <action issue="LOG4J2-2060" dev="rpopma" type="fix">
-        AbstractDatabaseManager should make a copy of LogEvents before holding references to them: AsyncLogger log events are mutable.
-      </action>
       <action issue="LOG4J2-2055" dev="rgoers" type="fix">
         If Log4j is used as the Tomcat logging implementation startup might fail if an application also uses Log4j.
       </action>
@@ -94,6 +91,12 @@
       </action>
       <action issue="LOG4J2-2074" dev="ggregory" type="fix">
         The console appender should say why it cannot load JAnsi.
+      </action>
+      <action issue="LOG4J2-2078" dev="ggregory" type="fix">
+        Update LMAX disruptor from 3.3.6 to 3.3.7.
+      </action>
+      <action issue="LOG4J2-2081" dev="ggregory" type="fix">
+        Update Apache Commons Compress from 1.14 to 1.15.
       </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
