@@ -92,6 +92,9 @@
       <action issue="LOG4J2-2074" dev="ggregory" type="fix">
         The console appender should say why it cannot load JAnsi.
       </action>
+      <action issue="LOG4J2-2085" dev="ggregory" type="fix" due-to="István Neuwirth">
+        Wrong Apache Commons CSV version referenced in the Javadoc of CsvParameterLayout.
+      </action>
       <action issue="LOG4J2-2078" dev="ggregory" type="fix">
         Update LMAX disruptor from 3.3.6 to 3.3.7.
       </action>

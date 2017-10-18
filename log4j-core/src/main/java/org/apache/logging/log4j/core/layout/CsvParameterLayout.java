@@ -43,7 +43,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * {@code logger.debug(new ObjectArrayMessage(1, 2, "Bob"));}
  * </p>
  * 
- * Depends on Apache Commons CSV 1.2.
+ * Depends on Apache Commons CSV 1.4.
  * 
  * @since 2.4
  */
