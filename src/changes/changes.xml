@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.10.0" date="2017-MM-DD" description="GA Release 2.10.0">
+      <action issue="LOG4J2-2076" dev="mikes" type="update">
+        Split up log4j-nosql into one module per appender.
+      </action>
       <action issue="LOG4J2-2062" dev="mikes" type="add" due-to="Jorge Sanchez">
         Add possibility of sending the key of a message to Kafka using KafkaAppender.
       </action>
