@@ -14,27 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.nosql.appender.mongodb;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.categories.Appenders;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-@Ignore("Requires a running MongoDB server")
-@Category(Appenders.MongoDb.class)
-public class MongoDbTest {
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb.xml");
-
-    @Test
-    public void test() {
-        final Logger logger = LogManager.getLogger();
-        logger.info("Hello log");
-    }
-}
+/**
+ * The classes in this package contain the Apache CouchDB provider for the NoSQL Appender.
+ */
+package org.apache.logging.log4j.couchdb;

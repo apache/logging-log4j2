@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.nosql.appender.mongodb;
+package org.apache.logging.log4j.mongodb;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,10 +27,10 @@ import org.junit.experimental.categories.Category;
 
 @Ignore("Requires a running MongoDB server")
 @Category(Appenders.MongoDb.class)
-public class MongoDbCappedTest {
+public class MongoDbTest {
 
     @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb-capped.xml");
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb.xml");
 
     @Test
     public void test() {

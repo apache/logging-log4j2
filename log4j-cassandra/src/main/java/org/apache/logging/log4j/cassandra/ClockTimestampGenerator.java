@@ -14,7 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.cassandra;
+
+import com.datastax.driver.core.TimestampGenerator;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.ClockFactory;
+
 /**
- * The classes in this package contain the MongoDB provider for the NoSQL Appender.
+ * A {@link TimestampGenerator} implementation using the configured {@link Clock}.
  */
-package org.apache.logging.log4j.nosql.appender.mongodb;
+public class ClockTimestampGenerator implements TimestampGenerator {
+
+    private final Clock clock = ClockFactory.getClock();
+
+    @Override
+    public long next() {
+        return clock.currentTimeMillis();
+    }
+}

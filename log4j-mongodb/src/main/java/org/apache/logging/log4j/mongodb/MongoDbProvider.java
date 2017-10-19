@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.nosql.appender.mongodb;
+package org.apache.logging.log4j.mongodb;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

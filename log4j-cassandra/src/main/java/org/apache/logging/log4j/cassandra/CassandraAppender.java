@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.nosql.appender.cassandra;
+package org.apache.logging.log4j.cassandra;
 
 import com.datastax.driver.core.BatchStatement;
 import org.apache.logging.log4j.core.Core;

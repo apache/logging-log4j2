@@ -14,10 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-/**
- * Log4j appender plugin and supporting classes for Apache Cassandra.
- *
- * @see <a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#CassandraAppender">Cassandra Appender manual</a>
- * @since 2.8
- */
-package org.apache.logging.log4j.nosql.appender.cassandra;
+package org.apache.logging.log4j.mongodb;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.Appenders;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+@Ignore("Requires a running MongoDB server")
+@Category(Appenders.MongoDb.class)
+public class MongoDbCappedTest {
+
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb-capped.xml");
+
+    @Test
+    public void test() {
+        final Logger logger = LogManager.getLogger();
+        logger.info("Hello log");
+    }
+}

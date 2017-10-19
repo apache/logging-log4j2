@@ -32,7 +32,7 @@
     </Cassandra>
   </Appenders>
   <Loggers>
-    <Logger name="org.apache.logging.log4j.nosql.appender.cassandra" level="DEBUG">
+    <Logger name="org.apache.logging.log4j.cassandra" level="DEBUG">
       <AppenderRef ref="Cassandra"/>
     </Logger>
     <Root level="ERROR"/>
