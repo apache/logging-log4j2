@@ -22,9 +22,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
 public class AbstractDatabaseManagerTest {
     private AbstractDatabaseManager manager;
@@ -119,6 +117,16 @@ public class AbstractDatabaseManagerTest {
         final LogEvent event3 = mock(LogEvent.class);
         final LogEvent event4 = mock(LogEvent.class);
 
+        final LogEvent event1copy = mock(LogEvent.class);
+        final LogEvent event2copy = mock(LogEvent.class);
+        final LogEvent event3copy = mock(LogEvent.class);
+        final LogEvent event4copy = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(event1copy);
+        when(event2.toImmutable()).thenReturn(event2copy);
+        when(event3.toImmutable()).thenReturn(event3copy);
+        when(event4.toImmutable()).thenReturn(event4copy);
+
         manager.startup();
         then(manager).should().startupInternal();
 
@@ -128,10 +136,10 @@ public class AbstractDatabaseManagerTest {
         manager.write(event4);
 
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1));
-        then(manager).should().writeInternal(same(event2));
-        then(manager).should().writeInternal(same(event3));
-        then(manager).should().writeInternal(same(event4));
+        then(manager).should().writeInternal(same(event1copy));
+        then(manager).should().writeInternal(same(event2copy));
+        then(manager).should().writeInternal(same(event3copy));
+        then(manager).should().writeInternal(same(event4copy));
         then(manager).should().commitAndClose();
         then(manager).shouldHaveNoMoreInteractions();
     }
@@ -144,6 +152,14 @@ public class AbstractDatabaseManagerTest {
         final LogEvent event2 = mock(LogEvent.class);
         final LogEvent event3 = mock(LogEvent.class);
 
+        final LogEvent event1copy = mock(LogEvent.class);
+        final LogEvent event2copy = mock(LogEvent.class);
+        final LogEvent event3copy = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(event1copy);
+        when(event2.toImmutable()).thenReturn(event2copy);
+        when(event3.toImmutable()).thenReturn(event3copy);
+
         manager.startup();
         then(manager).should().startupInternal();
 
@@ -153,9 +169,9 @@ public class AbstractDatabaseManagerTest {
         manager.flush();
 
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1));
-        then(manager).should().writeInternal(same(event2));
-        then(manager).should().writeInternal(same(event3));
+        then(manager).should().writeInternal(same(event1copy));
+        then(manager).should().writeInternal(same(event2copy));
+        then(manager).should().writeInternal(same(event3copy));
         then(manager).should().commitAndClose();
         then(manager).shouldHaveNoMoreInteractions();
     }
@@ -168,6 +184,14 @@ public class AbstractDatabaseManagerTest {
         final LogEvent event2 = mock(LogEvent.class);
         final LogEvent event3 = mock(LogEvent.class);
 
+        final LogEvent event1copy = mock(LogEvent.class);
+        final LogEvent event2copy = mock(LogEvent.class);
+        final LogEvent event3copy = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(event1copy);
+        when(event2.toImmutable()).thenReturn(event2copy);
+        when(event3.toImmutable()).thenReturn(event3copy);
+
         manager.startup();
         then(manager).should().startupInternal();
 
@@ -177,9 +201,9 @@ public class AbstractDatabaseManagerTest {
         manager.shutdown();
 
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1));
-        then(manager).should().writeInternal(same(event2));
-        then(manager).should().writeInternal(same(event3));
+        then(manager).should().writeInternal(same(event1copy));
+        then(manager).should().writeInternal(same(event2copy));
+        then(manager).should().writeInternal(same(event3copy));
         then(manager).should().commitAndClose();
         then(manager).should().shutdownInternal();
         then(manager).shouldHaveNoMoreInteractions();
