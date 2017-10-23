@@ -42,7 +42,7 @@ public class ReusableParameterizedMessageTest {
 
         msg.set(testMsg, (Object) null);
         result = msg.getFormattedMessage();
-        assertEquals(testMsg, result);
+        assertEquals("Test message null", result);
 
         msg.set(testMsg, null, null);
         result = msg.getFormattedMessage();
@@ -108,8 +108,8 @@ public class ReusableParameterizedMessageTest {
     @Test
     public void testFormatStringArgsWithEscapedEscape() {
         final String testMsg = "Test message \\\\{}{} {}";
-        final String[] args = { "a", "b", "c" };
-        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
+        final Object[] args = { "a", "b", "c" };
+        final String result = new ReusableParameterizedMessage().set(testMsg, args).getFormattedMessage();
         assertEquals("Test message \\ab c", result);
     }
 
