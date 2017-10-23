@@ -179,7 +179,7 @@
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.9.1</jackson2Version>
-    <springVersion>4.3.12.RELEASE</springVersion>
+    <springVersion>3.2.18.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion>
     <disruptorVersion>3.3.7</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
