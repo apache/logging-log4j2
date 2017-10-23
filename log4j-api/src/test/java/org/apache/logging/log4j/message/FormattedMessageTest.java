@@ -123,7 +123,7 @@ public class FormattedMessageTest {
     @Test
     public void testParamNoArgs() {
         final String testMsg = "Test message {}";
-        FormattedMessage msg = new FormattedMessage(testMsg, null);
+        FormattedMessage msg = new FormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
         final Object[] array = null;

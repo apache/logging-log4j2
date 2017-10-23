@@ -36,8 +36,8 @@ public class Base64Converter {
         try {
             // Base64 is available in Java 8 and up.
             Class<?> clazz = LoaderUtil.loadClass("java.util.Base64");
-            final Method getDecoder = clazz.getMethod("getDecoder", null);
-            decoder = getDecoder.invoke(null, null);
+            final Method getDecoder = clazz.getMethod("getDecoder", (Class[]) null);
+            decoder = getDecoder.invoke(null, (Object[]) null);
             clazz = decoder.getClass();
             method = clazz.getMethod("decode", String.class);
         } catch (final ClassNotFoundException ex) {

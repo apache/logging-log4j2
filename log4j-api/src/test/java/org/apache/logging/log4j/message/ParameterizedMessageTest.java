@@ -29,7 +29,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testNoArgs() {
         final String testMsg = "Test message {}";
-        ParameterizedMessage msg = new ParameterizedMessage(testMsg, null);
+        ParameterizedMessage msg = new ParameterizedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
         final Object[] array = null;
@@ -41,7 +41,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testZeroLength() {
         final String testMsg = "";
-        ParameterizedMessage msg = new ParameterizedMessage(testMsg, new String[]{"arg"});
+        ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[]{"arg"});
         String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
         final Object[] array = null;
@@ -53,7 +53,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testOneCharLength() {
         final String testMsg = "d";
-        ParameterizedMessage msg = new ParameterizedMessage(testMsg, new String[]{"arg"});
+        ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[]{"arg"});
         String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
         final Object[] array = null;
