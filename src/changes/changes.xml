@@ -98,10 +98,10 @@
       <action issue="LOG4J2-2085" dev="ggregory" type="fix" due-to="István Neuwirth">
         Wrong Apache Commons CSV version referenced in the Javadoc of CsvParameterLayout.
       </action>
-      <action issue="LOG4J2-2078" dev="ggregory" type="fix">
+      <action issue="LOG4J2-2078" dev="ggregory" type="update">
         Update LMAX disruptor from 3.3.6 to 3.3.7.
       </action>
-      <action issue="LOG4J2-2081" dev="ggregory" type="fix">
+      <action issue="LOG4J2-2081" dev="ggregory" type="update">
         Update Apache Commons Compress from 1.14 to 1.15.
       </action>
     </release>
