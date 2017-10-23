@@ -104,6 +104,9 @@
       <action issue="LOG4J2-2081" dev="ggregory" type="update">
         Update Apache Commons Compress from 1.14 to 1.15.
       </action>
+      <action issue="LOG4J2-2089" dev="ggregory" type="update">
+        [TagLib] Update servlet-api provided dependency from 2.5 to 3.0.1.
+      </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
       <action issue="LOG4J2-1988" dev="rpopma" type="fix">
