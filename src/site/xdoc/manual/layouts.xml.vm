@@ -912,17 +912,17 @@ WARN  [main]: Message 2</pre>
                 <p>
                   Specifying <code>%throwable{none}</code> or <code>%throwable{0}</code> suppresses output of the exception.
                 </p>
-                <p> 
-                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to 
+                <p>
+                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to
                   suppress matching stack frames from stack traces.
                 </p>
                 <p>
-                  Use a <code>separator</code> string to separate the lines of a stack trace. For example: 
-                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property, 
+                  Use a <code>separator</code> string to separate the lines of a stack trace. For example:
+                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property,
                   which is operating system dependent.
                 </p>
                 <p>
-                  Use <code>ex{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only 
+                  Use <code>ex{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only
                   when there is a throwable to print.
                 </p>
               </td>
@@ -944,6 +944,7 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>Adds ANSI colors to the result of the enclosed pattern based on the current event's logging level.
+                   (See Jansi <a href="#enable-jansi">configuration</a>.)
                 </p>
                 <p>The default colors for each level are:
                  <table>
@@ -1164,7 +1165,8 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <!-- Copied and tweaked from Javadoc for org.apache.logging.log4j.core.pattern.JAnsiMessageRenderer -->
                 <p>
-                  Add <code>{ansi}</code> to render messages with ANSI escape codes (requires JAnsi.)
+                  Add <code>{ansi}</code> to render messages with ANSI escape codes (requires JAnsi,
+                    see <a href="#enable-jansi">configuration</a>.)
                 </p>
                 <p>
                   The default syntax for embedded ANSI codes is:
@@ -1379,23 +1381,23 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <p>
                   The throwable conversion word can be followed by an option in the form
-                  <code>%rEx{short}</code> which will only output the first line of the Throwable or 
+                  <code>%rEx{short}</code> which will only output the first line of the Throwable or
                   <code>%rEx{n}</code> where the first n lines of the stack trace will be printed.
                 </p>
-                <p> 
+                <p>
                   Specifying <code>%rEx{none}</code> or <code>%rEx{0}</code> will suppress printing of the exception.
                 </p>
-                <p> 
-                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to 
+                <p>
+                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to
                   suppress matching stack frames from stack traces.
                 </p>
                 <p>
-                  Use a <code>separator</code> string to separate the lines of a stack trace. For example: 
-                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property, 
+                  Use a <code>separator</code> string to separate the lines of a stack trace. For example:
+                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property,
                   which is operating system dependent.
                 </p>
                 <p>
-                  Use <code>rEx{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only 
+                  Use <code>rEx{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only
                   when there is a throwable to print.
                 </p>
               </td>
@@ -1418,6 +1420,7 @@ WARN  [main]: Message 2</pre>
               <td>
                 <p>Uses ANSI escape sequences to style the result of the enclosed pattern. The style can consist of
                   a comma separated list of style names from the following table.
+                  (See Jansi <a href="#enable-jansi">configuration</a>.)
                   <table>
                     <tr>
                       <th>Style Name</th>
@@ -1645,17 +1648,18 @@ WARN  [main]: Message 2</pre>
                   the first n lines of the stack trace will be printed. Specifying <code>%xEx{none}</code>
                   or <code>%xEx{0}</code> will suppress printing of the exception.
                 </p>
-                <p> 
-                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to 
+                <p>
+                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to
                   suppress matching stack frames from stack traces.
                 </p>
                 <p>
-                  Use a <code>separator</code> string to separate the lines of a stack trace. For example: 
-                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property, 
+                  Use a <code>separator</code> string to separate the lines of a stack trace. For example:
+                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property,
                   which is operating system dependent.
                 </p>
                 <p>
                  The <code>ansi</code> option renders stack traces with ANSI escapes code using the JAnsi library.
+                    (See <a href="#enable-jansi">configuration</a>.)
                  Use <code>{ansi}</code> to use the default color mapping. You can specify your own mappings with
                  <code>key=value</code> pairs. The keys are:
                 </p>
@@ -1821,11 +1825,17 @@ WARN  [main]: Message 2</pre>
             </tr>
             <caption align="top">Pattern Converters</caption>
           </table>
+          <a name="enable-jansi"></a>
           <h4>ANSI Styling on Windows</h4>
           <p>ANSI escape sequences are supported natively on many platforms but are not by default on Windows. To
-            enable ANSI support simply add the <a href="http://jansi.fusesource.org/">Jansi</a> jar to your
-            application and Log4j will automatically make use of it when writing to the console.
+            enable ANSI support add the <a href="http://jansi.fusesource.org/">Jansi</a> jar to your application
+            and set property <code>log4j.skipJansi</code> to <code>false</code>.
+            This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
           </p>
+          <p>NOTE: Prior to Log4j 2.10, Jansi was enabled by default. The fact that Jansi requires native code
+              means that Jansi can only be loaded by a single class loader. For web applications this means the
+              Jansi jar has to be in the web container's classpath. To avoid causing problems for web applications,
+              Log4j will no longer automatically try to load Jansi without explicit configuration from Log4j 2.10 onward.</p>
           <h4>Example Patterns</h4>
           <h5>Filtered Throwables</h5>
           <p>This example shows how to filter out classes from unimportant packages in stack traces.

@@ -67,7 +67,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * Enumeration of console destinations.
      */
     public enum Target {
-        
+
         /** Standard output. */
         SYSTEM_OUT {
             @Override
@@ -76,7 +76,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                 return getCharset("sun.stdout.encoding", Charset.defaultCharset());
             }
         },
-        
+
         /** Standard error output. */
         SYSTEM_ERR {
             @Override
@@ -85,9 +85,9 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                 return getCharset("sun.stderr.encoding", Charset.defaultCharset());
             }
         };
-        
+
         public abstract Charset getDefaultCharset();
-        
+
         protected Charset getCharset(final String property, Charset defaultCharset) {
             return new PropertiesUtil(PropertiesUtil.getSystemProperties()).getCharsetProperty(property, defaultCharset);
         }
@@ -260,7 +260,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
         final PropertiesUtil propsUtil = PropertiesUtil.getProperties();
-        if (!propsUtil.isOsWindows() || propsUtil.getBooleanProperty("log4j.skipJansi") || direct) {
+        if (!propsUtil.isOsWindows() || propsUtil.getBooleanProperty("log4j.skipJansi", true) || direct) {
             return outputStream;
         }
         try {

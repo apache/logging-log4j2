@@ -38,7 +38,7 @@ import org.junit.Test;
  * <pre>
  * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.14\jansi-1.14.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
  * </pre>
- * 
+ *
  */
 public class ConsoleAppenderAnsiStyleLayoutMain {
 
@@ -55,6 +55,7 @@ public class ConsoleAppenderAnsiStyleLayoutMain {
     }
 
     public void test(final String[] args) {
+        System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
         // System.out.println(System.getProperty("java.class.path"));
         final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml"
                 : args[0];

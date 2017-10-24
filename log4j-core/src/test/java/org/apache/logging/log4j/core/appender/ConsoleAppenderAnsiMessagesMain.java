@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.Configurator;
  * <p>
  * Running from a Windows command line from the root of the project:
  * </p>
- * 
+ *
  * <pre>
  * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.14\jansi-1.14.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiMessagesMain log4j-core/target/test-classes/log4j2-console.xml
  * </pre>
@@ -39,6 +39,7 @@ public class ConsoleAppenderAnsiMessagesMain {
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiMessagesMain.class);
 
     public static void main(final String[] args) {
+        System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
         try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
                 "target/test-classes/log4j2-console.xml")) {
             LOG.fatal("\u001b[1;35mFatal message.\u001b[0m");

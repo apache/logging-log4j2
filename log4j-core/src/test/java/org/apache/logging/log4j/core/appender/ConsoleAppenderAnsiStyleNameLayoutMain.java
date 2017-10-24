@@ -32,6 +32,7 @@ public class ConsoleAppenderAnsiStyleNameLayoutMain {
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiStyleNameLayoutMain.class);
 
     public static void main(final String[] args) {
+        System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
         try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
                 "target/test-classes/log4j2-console-style-name-ansi.xml")) {
             LOG.fatal("Fatal message.");

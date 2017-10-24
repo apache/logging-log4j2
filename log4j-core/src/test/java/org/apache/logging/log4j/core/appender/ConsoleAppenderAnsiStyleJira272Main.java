@@ -36,6 +36,7 @@ public class ConsoleAppenderAnsiStyleJira272Main {
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiStyleJira272Main.class);
 
     public static void main(final String[] args) {
+        System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
         // System.out.println(System.getProperty("java.class.path"));
         final String config = args.length == 0 ? "target/test-classes/log4j2-272.xml" : args[0];
         try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config)) {

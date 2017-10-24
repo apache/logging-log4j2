@@ -24,6 +24,7 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -37,6 +38,11 @@ public class StyleConverterTest {
     private static final String EXPECTED =
         "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest"
         + Strings.LINE_SEPARATOR;
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
+    }
 
     @Rule
     public LoggerContextRule init = new LoggerContextRule("log4j-style.xml");

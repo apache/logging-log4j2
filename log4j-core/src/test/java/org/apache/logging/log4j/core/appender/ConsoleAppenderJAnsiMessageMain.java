@@ -40,13 +40,13 @@ import org.junit.experimental.categories.Category;
  * <pre>
  * mvn -Dtest=org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiMessageMain test
  * </pre>
- * 
+ *
  * or, on Windows:
- * 
+ *
  * <pre>
  * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%USERPROFILE%\.m2\repository\org\fusesource\jansi\jansi\1.14\jansi-1.14.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiMessageMain log4j-core/src/test/resources/log4j2-console-msg-ansi.xml
  * </pre>
- * 
+ *
  */
 @Category(Layouts.Jansi.class)
 public class ConsoleAppenderJAnsiMessageMain {
@@ -64,6 +64,7 @@ public class ConsoleAppenderJAnsiMessageMain {
     }
 
     public void test(final String[] args) {
+        System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
         // System.out.println(System.getProperty("java.class.path"));
         final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-msg-ansi.xml"
                 : args[0];
