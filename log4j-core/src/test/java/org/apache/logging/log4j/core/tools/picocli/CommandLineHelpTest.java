@@ -37,9 +37,14 @@ import java.io.UnsupportedEncodingException;
 import java.lang.String;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 import static org.junit.Assert.*;
@@ -123,8 +128,8 @@ public class CommandLineHelpTest {
         }
         String result = usageString(new Params(), Help.Ansi.OFF);
         assertEquals(format("" +
-                "Usage: <main class> -x[=<array>...]%n" +
-                "  -x, --array[=<array>...]    the array%n" +
+                "Usage: <main class> -x=<array> [-x=<array>]...%n" +
+                "  -x, --array=<array>         the array%n" +
                 "                                Default: [1, 5, 11, 23]%n"), result);
     }
 
@@ -159,21 +164,645 @@ public class CommandLineHelpTest {
     public void testUsageParamLabels() throws Exception {
         @Command()
         class ParamLabels {
-            @Option(names = "-f", paramLabel = "FILE", description = "a file") File f;
-            @Option(names = "-n", description = "a number") int number;
+            @Option(names = "-P",    paramLabel = "KEY=VALUE", type  = {String.class, String.class},
+                    description = "Project properties (key-value pairs)")              Map<String, String> props;
+            @Option(names = "-f",    paramLabel = "FILE", description = "files")      File[] f;
+            @Option(names = "-n",    description = "a number option")                  int number;
             @Parameters(index = "0", paramLabel = "NUM", description = "number param") int n;
-            @Parameters(index = "1", description = "the host") InetAddress host;
+            @Parameters(index = "1", description = "the host parameter")               InetAddress host;
         }
         String result = usageString(new ParamLabels(), Help.Ansi.OFF);
         assertEquals(format("" +
-                        "Usage: <main class> [-f=FILE] [-n=<number>] NUM <host>%n" +
+                        "Usage: <main class> [-n=<number>] [-f=FILE]... [-P=KEY=VALUE]... NUM <host>%n" +
                         "      NUM                     number param%n" +
-                        "      host                    the host%n" +
-                        "  -f= FILE                    a file%n" +
-                        "  -n= <number>                a number%n",
+                        "      <host>                  the host parameter%n" +
+                        "  -f= FILE                    files%n" +
+                        "  -n= <number>                a number option%n" +
+                        "  -P= KEY=VALUE               Project properties (key-value pairs)%n",
                 ""), result);
     }
 
+    @Test
+    public void testUsageParamLabelsWithLongMapOptionName() throws Exception {
+        @Command()
+        class ParamLabels {
+            @Option(names = {"-P", "--properties"},
+                    paramLabel  = "KEY=VALUE", type  = {String.class, String.class},
+                    description = "Project properties (key-value pairs)")              Map<String, String> props;
+            @Option(names = "-f",    paramLabel = "FILE", description = "a file")      File f;
+            @Option(names = "-n",    description = "a number option")                  int number;
+            @Parameters(index = "0", paramLabel = "NUM", description = "number param") int n;
+            @Parameters(index = "1", description = "the host parameter")               InetAddress host;
+        }
+        String result = usageString(new ParamLabels(), Help.Ansi.OFF);
+        assertEquals(format("" +
+                        "Usage: <main class> [-f=FILE] [-n=<number>] [-P=KEY=VALUE]... NUM <host>%n" +
+                        "      NUM                     number param%n" +
+                        "      <host>                  the host parameter%n" +
+                        "  -f= FILE                    a file%n" +
+                        "  -n= <number>                a number option%n" +
+                        "  -P, --properties=KEY=VALUE  Project properties (key-value pairs)%n",
+                ""), result);
+    }
+
+    // ---------------
+    @Test
+    public void testUsageVariableArityRequiredShortOptionArray() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Option(names = "-a", required = true, paramLabel = "ARG") // default
+            String[] a;
+            @Option(names = "-b", required = true, paramLabel = "ARG", arity = "0..*")
+            List<String> b;
+            @Option(names = "-c", required = true, paramLabel = "ARG", arity = "1..*")
+            String[] c;
+            @Option(names = "-d", required = true, paramLabel = "ARG", arity = "2..*")
+            List<String> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> -a=ARG [-a=ARG]... -b=[ARG]... [-b=[ARG]...]... -c=ARG...%n" +
+                "                    [-c=ARG...]... -d=ARG ARG... [-d=ARG ARG...]...%n" +
+                "  -a= ARG%n" +
+                "  -b= [ARG]...%n" +
+                "  -c= ARG...%n" +
+                "  -d= ARG ARG...%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageVariableArityShortOptionArray() throws UnsupportedEncodingException {
+        class Args {
+            @Option(names = "-a", paramLabel = "ARG") // default
+            List<String> a;
+            @Option(names = "-b", paramLabel = "ARG", arity = "0..*")
+            String[] b;
+            @Option(names = "-c", paramLabel = "ARG", arity = "1..*")
+            List<String> c;
+            @Option(names = "-d", paramLabel = "ARG", arity = "2..*")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [-a=ARG]... [-b=[ARG]...]... [-c=ARG...]... [-d=ARG%n" +
+                "                    ARG...]...%n" +
+                "  -a= ARG%n" +
+                "  -b= [ARG]...%n" +
+                "  -c= ARG...%n" +
+                "  -d= ARG ARG...%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageRangeArityRequiredShortOptionArray() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Option(names = "-a", required = true, paramLabel = "ARG", arity = "0..1")
+            List<String> a;
+            @Option(names = "-b", required = true, paramLabel = "ARG", arity = "1..2")
+            String[] b;
+            @Option(names = "-c", required = true, paramLabel = "ARG", arity = "1..3")
+            String[] c;
+            @Option(names = "-d", required = true, paramLabel = "ARG", arity = "2..4")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> -a[=ARG] [-a[=ARG]]... -b=ARG [ARG] [-b=ARG [ARG]]...%n" +
+                "                    -c=ARG [ARG [ARG]] [-c=ARG [ARG [ARG]]]... -d=ARG ARG [ARG%n" +
+                "                    [ARG]] [-d=ARG ARG [ARG [ARG]]]...%n" +
+                "  -a= [ARG]%n" +
+                "  -b= ARG [ARG]%n" +
+                "  -c= ARG [ARG [ARG]]%n" +
+                "  -d= ARG ARG [ARG [ARG]]%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageRangeArityShortOptionArray() throws UnsupportedEncodingException {
+        class Args {
+            @Option(names = "-a", paramLabel = "ARG", arity = "0..1")
+            List<String> a;
+            @Option(names = "-b", paramLabel = "ARG", arity = "1..2")
+            String[] b;
+            @Option(names = "-c", paramLabel = "ARG", arity = "1..3")
+            String[] c;
+            @Option(names = "-d", paramLabel = "ARG", arity = "2..4")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [-a[=ARG]]... [-b=ARG [ARG]]... [-c=ARG [ARG [ARG]]]...%n" +
+                "                    [-d=ARG ARG [ARG [ARG]]]...%n" +
+                "  -a= [ARG]%n" +
+                "  -b= ARG [ARG]%n" +
+                "  -c= ARG [ARG [ARG]]%n" +
+                "  -d= ARG ARG [ARG [ARG]]%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageFixedArityRequiredShortOptionArray() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Option(names = "-a", required = true, paramLabel = "ARG") // default
+                    String[] a;
+            @Option(names = "-b", required = true, paramLabel = "ARG", arity = "0")
+            String[] b;
+            @Option(names = "-c", required = true, paramLabel = "ARG", arity = "1")
+            String[] c;
+            @Option(names = "-d", required = true, paramLabel = "ARG", arity = "2")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> -b [-b]... -a=ARG [-a=ARG]... -c=ARG [-c=ARG]... -d=ARG ARG%n" +
+                "                    [-d=ARG ARG]...%n" +
+                "  -a= ARG%n" +
+                "  -b%n" +
+                "  -c= ARG%n" +
+                "  -d= ARG ARG%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageFixedArityShortOptionArray() throws UnsupportedEncodingException {
+        class Args {
+            @Option(names = "-a", paramLabel = "ARG") // default
+                    String[] a;
+            @Option(names = "-b", paramLabel = "ARG", arity = "0")
+            String[] b;
+            @Option(names = "-c", paramLabel = "ARG", arity = "1")
+            String[] c;
+            @Option(names = "-d", paramLabel = "ARG", arity = "2")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [-b]... [-a=ARG]... [-c=ARG]... [-d=ARG ARG]...%n" +
+                "  -a= ARG%n" +
+                "  -b%n" +
+                "  -c= ARG%n" +
+                "  -d= ARG ARG%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+    //--------------
+    @Test
+    public void testUsageVariableArityRequiredLongOptionArray() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Option(names = "--aa", required = true, paramLabel = "ARG") // default
+            String[] a;
+            @Option(names = "--bb", required = true, paramLabel = "ARG", arity = "0..*")
+            List<String> b;
+            @Option(names = "--cc", required = true, paramLabel = "ARG", arity = "1..*")
+            String[] c;
+            @Option(names = "--dd", required = true, paramLabel = "ARG", arity = "2..*")
+            List<String> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> --aa=ARG [--aa=ARG]... --bb=[ARG]... [--bb=[ARG]...]...%n" +
+                "                    --cc=ARG... [--cc=ARG...]... --dd=ARG ARG... [--dd=ARG%n" +
+                "                    ARG...]...%n" +
+                "      --aa=ARG%n" +
+                "      --bb=[ARG]...%n" +
+                "      --cc=ARG...%n" +
+                "      --dd=ARG ARG...%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageVariableArityLongOptionArray() throws UnsupportedEncodingException {
+        class Args {
+            @Option(names = "--aa", paramLabel = "ARG") // default
+            List<String> a;
+            @Option(names = "--bb", paramLabel = "ARG", arity = "0..*")
+            String[] b;
+            @Option(names = "--cc", paramLabel = "ARG", arity = "1..*")
+            List<String> c;
+            @Option(names = "--dd", paramLabel = "ARG", arity = "2..*")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [--aa=ARG]... [--bb=[ARG]...]... [--cc=ARG...]... [--dd=ARG%n" +
+                "                    ARG...]...%n" +
+                "      --aa=ARG%n" +
+                "      --bb=[ARG]...%n" +
+                "      --cc=ARG...%n" +
+                "      --dd=ARG ARG...%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageRangeArityRequiredLongOptionArray() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Option(names = "--aa", required = true, paramLabel = "ARG", arity = "0..1")
+            List<String> a;
+            @Option(names = "--bb", required = true, paramLabel = "ARG", arity = "1..2")
+            String[] b;
+            @Option(names = "--cc", required = true, paramLabel = "ARG", arity = "1..3")
+            String[] c;
+            @Option(names = "--dd", required = true, paramLabel = "ARG", arity = "2..4", description = "foobar")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> --aa[=ARG] [--aa[=ARG]]... --bb=ARG [ARG] [--bb=ARG%n" +
+                "                    [ARG]]... --cc=ARG [ARG [ARG]] [--cc=ARG [ARG [ARG]]]...%n" +
+                "                    --dd=ARG ARG [ARG [ARG]] [--dd=ARG ARG [ARG [ARG]]]...%n" +
+                "      --aa[=ARG]%n" +
+                "      --bb=ARG [ARG]%n" +
+                "      --cc=ARG [ARG [ARG]]%n" +
+                "      --dd=ARG ARG [ARG [ARG]]%n" +
+                "                              foobar%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageRangeArityLongOptionArray() throws UnsupportedEncodingException {
+        class Args {
+            @Option(names = "--aa", paramLabel = "ARG", arity = "0..1")
+            List<String> a;
+            @Option(names = "--bb", paramLabel = "ARG", arity = "1..2")
+            String[] b;
+            @Option(names = "--cc", paramLabel = "ARG", arity = "1..3")
+            String[] c;
+            @Option(names = "--dd", paramLabel = "ARG", arity = "2..4", description = "foobar")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [--aa[=ARG]]... [--bb=ARG [ARG]]... [--cc=ARG [ARG%n" +
+                "                    [ARG]]]... [--dd=ARG ARG [ARG [ARG]]]...%n" +
+                "      --aa[=ARG]%n" +
+                "      --bb=ARG [ARG]%n" +
+                "      --cc=ARG [ARG [ARG]]%n" +
+                "      --dd=ARG ARG [ARG [ARG]]%n" +
+                "                              foobar%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageFixedArityRequiredLongOptionArray() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Option(names = "--aa", required = true, paramLabel = "ARG") // default
+            String[] a;
+            @Option(names = "--bb", required = true, paramLabel = "ARG", arity = "0")
+            String[] b;
+            @Option(names = "--cc", required = true, paramLabel = "ARG", arity = "1")
+            String[] c;
+            @Option(names = "--dd", required = true, paramLabel = "ARG", arity = "2")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> --bb [--bb]... --aa=ARG [--aa=ARG]... --cc=ARG%n" +
+                "                    [--cc=ARG]... --dd=ARG ARG [--dd=ARG ARG]...%n" +
+                "      --aa=ARG%n" +
+                "      --bb%n" +
+                "      --cc=ARG%n" +
+                "      --dd=ARG ARG%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageFixedArityLongOptionArray() throws UnsupportedEncodingException {
+        class Args {
+            @Option(names = "--aa", paramLabel = "ARG") // default
+            String[] a;
+            @Option(names = "--bb", paramLabel = "ARG", arity = "0")
+            String[] b;
+            @Option(names = "--cc", paramLabel = "ARG", arity = "1")
+            String[] c;
+            @Option(names = "--dd", paramLabel = "ARG", arity = "2")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [--bb]... [--aa=ARG]... [--cc=ARG]... [--dd=ARG ARG]...%n" +
+                "      --aa=ARG%n" +
+                "      --bb%n" +
+                "      --cc=ARG%n" +
+                "      --dd=ARG ARG%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    //------------------
+    @Test
+    public void testUsageVariableArityRequiredShortOptionMap() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Option(names = "-a", required = true, paramLabel = "KEY=VAL") // default
+            Map<String, String> a;
+            @Option(names = "-b", required = true, arity = "0..*")
+            @SuppressWarnings("unchecked")
+            Map b;
+            @Option(names = "-c", required = true, arity = "1..*", type = {String.class, TimeUnit.class})
+            Map<String, TimeUnit> c;
+            @Option(names = "-d", required = true, arity = "2..*", type = {Integer.class, URL.class}, description = "description")
+            Map<Integer, URL> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> -a=KEY=VAL [-a=KEY=VAL]... -b=[<String=String>]... [-b=%n" +
+                "                    [<String=String>]...]... -c=<String=TimeUnit>...%n" +
+                "                    [-c=<String=TimeUnit>...]... -d=<Integer=URL>%n" +
+                "                    <Integer=URL>... [-d=<Integer=URL> <Integer=URL>...]...%n" +
+                "  -a= KEY=VAL%n" +
+                "  -b= [<String=String>]...%n" +
+                "  -c= <String=TimeUnit>...%n" +
+                "  -d= <Integer=URL> <Integer=URL>...%n" +
+                "                              description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageVariableArityOptionMap() throws UnsupportedEncodingException {
+        class Args {
+            @Option(names = "-a") // default
+            Map<String, String> a;
+            @Option(names = "-b", arity = "0..*", type = {Integer.class, Integer.class})
+            Map<Integer, Integer> b;
+            @Option(names = "-c", paramLabel = "KEY=VALUE", arity = "1..*", type = {String.class, TimeUnit.class})
+            Map<String, TimeUnit> c;
+            @Option(names = "-d", arity = "2..*", type = {String.class, URL.class}, description = "description")
+            Map<String, URL> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [-a=<String=String>]... [-b=[<Integer=Integer>]...]...%n" +
+                "                    [-c=KEY=VALUE...]... [-d=<String=URL> <String=URL>...]...%n" +
+                "  -a= <String=String>%n" +
+                "  -b= [<Integer=Integer>]...%n" +
+                "  -c= KEY=VALUE...%n" +
+                "  -d= <String=URL> <String=URL>...%n" +
+                "                              description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageRangeArityRequiredOptionMap() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Option(names = "-a", required = true, arity = "0..1", description = "a description")
+            Map<String, String> a;
+            @Option(names = "-b", required = true, arity = "1..2", type = {Integer.class, Integer.class}, description = "b description")
+            Map<Integer, Integer> b;
+            @Option(names = "-c", required = true, arity = "1..3", type = {String.class, URL.class}, description = "c description")
+            Map<String, URL> c;
+            @Option(names = "-d", required = true, paramLabel = "K=URL", arity = "2..4", description = "d description")
+            Map<String, URL> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> -a[=<String=String>] [-a[=<String=String>]]...%n" +
+                "                    -b=<Integer=Integer> [<Integer=Integer>]%n" +
+                "                    [-b=<Integer=Integer> [<Integer=Integer>]]...%n" +
+                "                    -c=<String=URL> [<String=URL> [<String=URL>]]%n" +
+                "                    [-c=<String=URL> [<String=URL> [<String=URL>]]]... -d=K=URL%n" +
+                "                    K=URL [K=URL [K=URL]] [-d=K=URL K=URL [K=URL [K=URL]]]...%n" +
+                "  -a= [<String=String>]       a description%n" +
+                "  -b= <Integer=Integer> [<Integer=Integer>]%n" +
+                "                              b description%n" +
+                "  -c= <String=URL> [<String=URL> [<String=URL>]]%n" +
+                "                              c description%n" +
+                "  -d= K=URL K=URL [K=URL [K=URL]]%n" +
+                "                              d description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageRangeArityOptionMap() throws UnsupportedEncodingException {
+        class Args {
+            @Option(names = "-a", arity = "0..1"/*, type = {UUID.class, URL.class}*/, description = "a description")
+            Map<UUID, URL> a;
+            @Option(names = "-b", arity = "1..2", type = {Long.class, UUID.class}, description = "b description")
+            Map<?, ?> b;
+            @Option(names = "-c", arity = "1..3", type = {Long.class}, description = "c description")
+            Map<?, ?> c;
+            @Option(names = "-d", paramLabel = "K=V", arity = "2..4", description = "d description")
+            Map<?, ?> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [-a[=<UUID=URL>]]... [-b=<Long=UUID> [<Long=UUID>]]...%n" +
+                "                    [-c=<String=String> [<String=String> [<String=String>]]]...%n" +
+                "                    [-d=K=V K=V [K=V [K=V]]]...%n" +
+                "  -a= [<UUID=URL>]            a description%n" +
+                "  -b= <Long=UUID> [<Long=UUID>]%n" +
+                "                              b description%n" +
+                "  -c= <String=String> [<String=String> [<String=String>]]%n" +
+                "                              c description%n" +
+                "  -d= K=V K=V [K=V [K=V]]     d description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageFixedArityRequiredOptionMap() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Option(names = "-a", required = true, description = "a description")
+            Map<Short, Field> a;
+            @Option(names = "-b", required = true, paramLabel = "KEY=VAL", arity = "0", description = "b description")
+            @SuppressWarnings("unchecked")
+            Map b;
+            @Option(names = "-c", required = true, arity = "1", type = {Long.class, File.class}, description = "c description")
+            Map<Long, File> c;
+            @Option(names = "-d", required = true, arity = "2", type = {URI.class, URL.class}, description = "d description")
+            Map<URI, URL> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> -b [-b]... -a=<Short=Field> [-a=<Short=Field>]...%n" +
+                "                    -c=<Long=File> [-c=<Long=File>]... -d=<URI=URL> <URI=URL>%n" +
+                "                    [-d=<URI=URL> <URI=URL>]...%n" +
+                "  -a= <Short=Field>           a description%n" +
+                "  -b                          b description%n" +
+                "  -c= <Long=File>             c description%n" +
+                "  -d= <URI=URL> <URI=URL>     d description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageFixedArityOptionMap() throws UnsupportedEncodingException {
+        class Args {
+            @Option(names = "-a", type = {Short.class, Field.class}, description = "a description")
+            Map<Short, Field> a;
+            @Option(names = "-b", arity = "0", type = {UUID.class, Long.class}, description = "b description")
+            @SuppressWarnings("unchecked")
+            Map b;
+            @Option(names = "-c", arity = "1", description = "c description")
+            Map<Long, File> c;
+            @Option(names = "-d", arity = "2", type = {URI.class, URL.class}, description = "d description")
+            Map<URI, URL> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [-b]... [-a=<Short=Field>]... [-c=<Long=File>]...%n" +
+                "                    [-d=<URI=URL> <URI=URL>]...%n" +
+                "  -a= <Short=Field>           a description%n" +
+                "  -b                          b description%n" +
+                "  -c= <Long=File>             c description%n" +
+                "  -d= <URI=URL> <URI=URL>     d description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+    //--------------
+    @Test
+    public void testUsageVariableArityParametersArray() throws UnsupportedEncodingException {
+        // if option is required at least once and can be specified multiple times:
+        // -f=ARG [-f=ARG]...
+        class Args {
+            @Parameters(paramLabel = "APARAM", description = "APARAM description")
+            String[] a;
+            @Parameters(arity = "0..*", description = "b description")
+            List<String> b;
+            @Parameters(arity = "1..*", description = "c description")
+            String[] c;
+            @Parameters(arity = "2..*", description = "d description")
+            List<String> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [APARAM]... [<b>]... <c>... <d> <d>...%n" +
+                "      [APARAM]...             APARAM description%n" +
+                "      [<b>]...                b description%n" +
+                "      <c>...                  c description%n" +
+                "      <d> <d>...              d description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageRangeArityParameterArray() throws UnsupportedEncodingException {
+        class Args {
+            @Parameters(index = "0", paramLabel = "PARAMA", arity = "0..1", description = "PARAMA description")
+            List<String> a;
+            @Parameters(index = "0", paramLabel = "PARAMB", arity = "1..2", description = "PARAMB description")
+            String[] b;
+            @Parameters(index = "0", paramLabel = "PARAMC", arity = "1..3", description = "PARAMC description")
+            String[] c;
+            @Parameters(index = "0", paramLabel = "PARAMD", arity = "2..4", description = "PARAMD description")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [PARAMA] PARAMB [PARAMB] PARAMC [PARAMC [PARAMC]] PARAMD%n" +
+                "                    PARAMD [PARAMD [PARAMD]]%n" +
+                "      [PARAMA]                PARAMA description%n" +
+                "      PARAMB [PARAMB]         PARAMB description%n" +
+                "      PARAMC [PARAMC [PARAMC]]%n" +
+                "                              PARAMC description%n" +
+                "      PARAMD PARAMD [PARAMD [PARAMD]]%n" +
+                "                              PARAMD description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageFixedArityParametersArray() throws UnsupportedEncodingException {
+        class Args {
+            @Parameters(description = "a description (default arity)")
+            String[] a;
+            @Parameters(index = "0", arity = "0", description = "b description (arity=0)")
+            String[] b;
+            @Parameters(index = "1", arity = "1", description = "b description (arity=1)")
+            String[] c;
+            @Parameters(index = "2", arity = "2", description = "b description (arity=2)")
+            String[] d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class>  [<a>]... <c> <d> <d>%n" +
+                "                              b description (arity=0)%n" +
+                "      [<a>]...                a description (default arity)%n" +
+                "      <c>                     b description (arity=1)%n" +
+                "      <d> <d>                 b description (arity=2)%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageVariableArityParametersMap() throws UnsupportedEncodingException {
+        class Args {
+            @Parameters()
+            Map<String, String> a;
+            @Parameters(arity = "0..*", description = "a description (arity=0..*)")
+            Map<Integer, Integer> b;
+            @Parameters(paramLabel = "KEY=VALUE", arity = "1..*", type = {String.class, TimeUnit.class})
+            Map<String, TimeUnit> c;
+            @Parameters(arity = "2..*", type = {String.class, URL.class}, description = "description")
+            Map<String, URL> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [<String=String>]... [<Integer=Integer>]... KEY=VALUE...%n" +
+                "                    <String=URL> <String=URL>...%n" +
+                "      [<String=String>]...%n" +
+                "      [<Integer=Integer>]...  a description (arity=0..*)%n" +
+                "      KEY=VALUE...%n" +
+                "      <String=URL> <String=URL>...%n" +
+                "                              description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageRangeArityParametersMap() throws UnsupportedEncodingException {
+        class Args {
+            @Parameters(index = "0", arity = "0..1"/*, type = {UUID.class, URL.class}*/, description = "a description")
+            Map<UUID, URL> a;
+            @Parameters(index = "1", arity = "1..2", type = {Long.class, UUID.class}, description = "b description")
+            Map<?, ?> b;
+            @Parameters(index = "2", arity = "1..3", type = {Long.class}, description = "c description")
+            Map<?, ?> c;
+            @Parameters(index = "3", paramLabel = "K=V", arity = "2..4", description = "d description")
+            Map<?, ?> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class> [<UUID=URL>] <Long=UUID> [<Long=UUID>] <String=String>%n" +
+                "                    [<String=String> [<String=String>]] K=V K=V [K=V [K=V]]%n" +
+                "      [<UUID=URL>]            a description%n" +
+                "      <Long=UUID> [<Long=UUID>]%n" +
+                "                              b description%n" +
+                "      <String=String> [<String=String> [<String=String>]]%n" +
+                "                              c description%n" +
+                "      K=V K=V [K=V [K=V]]     d description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+
+    @Test
+    public void testUsageFixedArityParametersMap() throws UnsupportedEncodingException {
+        class Args {
+            @Parameters(type = {Short.class, Field.class}, description = "a description")
+            Map<Short, Field> a;
+            @Parameters(index = "0", arity = "0", type = {UUID.class, Long.class}, description = "b description (arity=0)")
+            @SuppressWarnings("unchecked")
+            Map b;
+            @Parameters(index = "1", arity = "1", description = "c description")
+            Map<Long, File> c;
+            @Parameters(index = "2", arity = "2", type = {URI.class, URL.class}, description = "d description")
+            Map<URI, URL> d;
+        }
+        String expected = String.format("" +
+                "Usage: <main class>  [<Short=Field>]... <Long=File> <URI=URL> <URI=URL>%n" +
+                "                              b description (arity=0)%n" +
+                "      [<Short=Field>]...      a description%n" +
+                "      <Long=File>             c description%n" +
+                "      <URI=URL> <URI=URL>     d description%n");
+        //CommandLine.usage(new Args(), System.out);
+        assertEquals(expected, usageString(new Args(), Help.Ansi.OFF));
+    }
+    //----------
     @Test
     public void testShortestFirstComparator_sortsShortestFirst() {
         String[] values = {"12345", "12", "123", "123456", "1", "", "1234"};
@@ -206,16 +835,16 @@ public class CommandLineHelpTest {
     @Test
     public void testSortByOptionArityAndNameComparator_sortsByMaxThenMinThenName() throws Exception {
         class App {
-            @Option(names = {"-t", "--aaaa"}) boolean tImplicitArity0;
-            @Option(names = {"-e", "--EEE"}, arity = "1") boolean explicitArity1;
-            @Option(names = {"--bbbb", "-k"}) boolean kImplicitArity0;
-            @Option(names = {"--AAAA", "-a"}) int aImplicitArity1;
-            @Option(names = {"--BBBB", "-b"}) String[] bImplicitArity0_n;
-            @Option(names = {"--ZZZZ", "-z"}, arity = "1..3") String[] zExplicitArity1_3;
-            @Option(names = {"-f", "--ffff"}) boolean fImplicitArity0;
+            @Option(names = {"-t", "--aaaa"}                ) boolean tImplicitArity0;
+            @Option(names = {"-e", "--EEE"}, arity = "1"    ) boolean explicitArity1;
+            @Option(names = {"--bbbb", "-k"}                ) boolean kImplicitArity0;
+            @Option(names = {"--AAAA", "-a"}                ) int aImplicitArity1;
+            @Option(names = {"--BBBB", "-z"}                ) String[] zImplicitArity1;
+            @Option(names = {"--ZZZZ", "-b"}, arity = "1..3") String[] bExplicitArity1_3;
+            @Option(names = {"-f", "--ffff"}                ) boolean fImplicitArity0;
         }
         Field[] fields = fields(App.class, "tImplicitArity0", "explicitArity1", "kImplicitArity0",
-                "aImplicitArity1", "bImplicitArity0_n", "zExplicitArity1_3", "fImplicitArity0");
+                "aImplicitArity1", "zImplicitArity1", "bExplicitArity1_3", "fImplicitArity0");
         Arrays.sort(fields, new Help.SortByOptionArityAndNameAlphabetically());
         Field[] expected = fields(App.class,
                 "fImplicitArity0",
@@ -223,8 +852,8 @@ public class CommandLineHelpTest {
                 "tImplicitArity0",
                 "aImplicitArity1",
                 "explicitArity1",
-                "zExplicitArity1_3",
-                "bImplicitArity0_n");
+                "zImplicitArity1",
+                "bExplicitArity1_3");
         assertArrayEquals(expected, fields);
     }
 
@@ -289,9 +918,9 @@ public class CommandLineHelpTest {
         Help.IParamLabelRenderer parameterRenderer = help.createDefaultParamLabelRenderer();
         Field field = help.optionFields.get(0);
         Text[][] row1 = renderer.render(field.getAnnotation(Option.class), field, parameterRenderer, help.colorScheme);
-        assertEquals(2, row1.length);
+        assertEquals(1, row1.length);
         assertArrayEquals(Arrays.toString(row1[0]), textArray(help, "", "-L", ",", "---long=<longField>", "long description"), row1[0]);
-        assertArrayEquals(Arrays.toString(row1[1]), textArray(help, "", "", "", "", "  Default: null"), row1[1]);
+        //assertArrayEquals(Arrays.toString(row1[1]), textArray(help, "", "", "", "", "  Default: null"), row1[1]); // #201 don't show null defaults
 
         field = help.optionFields.get(1);
         Text[][] row2 = renderer.render(field.getAnnotation(Option.class), field, parameterRenderer, help.colorScheme);
@@ -357,9 +986,9 @@ public class CommandLineHelpTest {
         Help.IParamLabelRenderer parameterRenderer = help.createDefaultParamLabelRenderer();
         Field field = help.optionFields.get(0);
         Text[][] row = renderer.render(field.getAnnotation(Option.class), field, parameterRenderer, help.colorScheme);
-        assertEquals(2, row.length);
+        assertEquals(1, row.length);
         assertArrayEquals(Arrays.toString(row[0]), textArray(help, " ", "-b", ",", "-a, --alpha=<otherField>", "other"), row[0]);
-        assertArrayEquals(Arrays.toString(row[1]), textArray(help, "",    "", "",  "", "  Default: null"), row[1]);
+        // assertArrayEquals(Arrays.toString(row[1]), textArray(help, "",    "", "",  "", "  Default: null"), row[1]); // #201 don't show null defaults
     }
 
     @Test
@@ -373,7 +1002,7 @@ public class CommandLineHelpTest {
         Field field = help.positionalParametersFields.get(0);
         Text[][] row1 = renderer.render(field.getAnnotation(Parameters.class), field, parameterRenderer, help.colorScheme);
         assertEquals(1, row1.length);
-        assertArrayEquals(Arrays.toString(row1[0]), textArray(help, " ", "", "", "required", "required"), row1[0]);
+        assertArrayEquals(Arrays.toString(row1[0]), textArray(help, " ", "", "", "<required>", "required"), row1[0]);
     }
 
     @Test
@@ -388,7 +1017,7 @@ public class CommandLineHelpTest {
         Field field = help.positionalParametersFields.get(0);
         Text[][] row1 = renderer.render(field.getAnnotation(Parameters.class), field, parameterRenderer, help.colorScheme);
         assertEquals(1, row1.length);
-        assertArrayEquals(Arrays.toString(row1[0]), textArray(help, "*", "", "", "required", "required"), row1[0]);
+        assertArrayEquals(Arrays.toString(row1[0]), textArray(help, "*", "", "", "<required>", "required"), row1[0]);
     }
 
     @Test
@@ -403,7 +1032,7 @@ public class CommandLineHelpTest {
         Field field = help.positionalParametersFields.get(0);
         Text[][] row1 = renderer.render(field.getAnnotation(Parameters.class), field, parameterRenderer, help.colorScheme);
         assertEquals(1, row1.length);
-        assertArrayEquals(Arrays.toString(row1[0]), textArray(help, "", "", "", "optional", "optional"), row1[0]);
+        assertArrayEquals(Arrays.toString(row1[0]), textArray(help, "", "", "", "<optional>", "optional"), row1[0]);
     }
 
     @Test
@@ -576,7 +1205,7 @@ public class CommandLineHelpTest {
             @Parameters File[] files;
         }
         Help help = new Help(new App(), Help.Ansi.OFF);
-        assertEquals("<main class> [OPTIONS] [<files>...]" + LINESEP, help.synopsis(0));
+        assertEquals("<main class> [OPTIONS] [<files>]..." + LINESEP, help.synopsis(0));
     }
 
     @Test
@@ -589,7 +1218,78 @@ public class CommandLineHelpTest {
             @Parameters File[] files;
         }
         Help help = new Help(new App(), Help.defaultColorScheme(Help.Ansi.ON));
-        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [OPTIONS] [@|yellow <files>|@...]" + LINESEP).toString(), help.synopsis(0));
+        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [OPTIONS] [@|yellow <files>|@]..." + LINESEP).toString(), help.synopsis(0));
+    }
+
+    @Test
+    public void testAbreviatedSynopsis_commandNameCustomizableDeclaratively() throws UnsupportedEncodingException {
+        @CommandLine.Command(abbreviateSynopsis = true, name = "aprogram")
+        class App {
+            @Option(names = {"--verbose", "-v"}) boolean verbose;
+            @Option(names = {"--count", "-c"}) int count;
+            @Option(names = {"--help", "-h"}, hidden = true) boolean helpRequested;
+            @Parameters File[] files;
+        }
+        String expected = "" +
+                "Usage: aprogram [OPTIONS] [<files>]...%n" +
+                "      [<files>]...%n" +
+                "  -c, --count=<count>%n" +
+                "  -v, --verbose%n";
+        String actual = usageString(new CommandLine(new App()), Help.Ansi.OFF);
+        assertEquals(String.format(expected), actual);
+    }
+
+    @Test
+    public void testAbreviatedSynopsis_commandNameCustomizableProgrammatically() throws UnsupportedEncodingException {
+        @CommandLine.Command(abbreviateSynopsis = true)
+        class App {
+            @Option(names = {"--verbose", "-v"}) boolean verbose;
+            @Option(names = {"--count", "-c"}) int count;
+            @Option(names = {"--help", "-h"}, hidden = true) boolean helpRequested;
+            @Parameters File[] files;
+        }
+        String expected = "" +
+                "Usage: anotherProgram [OPTIONS] [<files>]...%n" +
+                "      [<files>]...%n" +
+                "  -c, --count=<count>%n" +
+                "  -v, --verbose%n";
+        String actual = usageString(new CommandLine(new App()).setCommandName("anotherProgram"), Help.Ansi.OFF);
+        assertEquals(String.format(expected), actual);
+    }
+
+    @Test
+    public void testSynopsis_commandNameCustomizableDeclaratively() throws UnsupportedEncodingException {
+        @CommandLine.Command(name = "aprogram")
+        class App {
+            @Option(names = {"--verbose", "-v"}) boolean verbose;
+            @Option(names = {"--count", "-c"}) int count;
+            @Option(names = {"--help", "-h"}, hidden = true) boolean helpRequested;
+            @Parameters File[] files;
+        }
+        String expected = "" +
+                "Usage: aprogram [-v] [-c=<count>] [<files>]...%n" +
+                "      [<files>]...%n" +
+                "  -c, --count=<count>%n" +
+                "  -v, --verbose%n";
+        String actual = usageString(new CommandLine(new App()), Help.Ansi.OFF);
+        assertEquals(String.format(expected), actual);
+    }
+
+    @Test
+    public void testSynopsis_commandNameCustomizableProgrammatically() throws UnsupportedEncodingException {
+        class App {
+            @Option(names = {"--verbose", "-v"}) boolean verbose;
+            @Option(names = {"--count", "-c"}) int count;
+            @Option(names = {"--help", "-h"}, hidden = true) boolean helpRequested;
+            @Parameters File[] files;
+        }
+        String expected = "" +
+                "Usage: anotherProgram [-v] [-c=<count>] [<files>]...%n" +
+                "      [<files>]...%n" +
+                "  -c, --count=<count>%n" +
+                "  -v, --verbose%n";
+        String actual = usageString(new CommandLine(new App()).setCommandName("anotherProgram"), Help.Ansi.OFF);
+        assertEquals(String.format(expected), actual);
     }
 
     @Test
@@ -600,7 +1300,7 @@ public class CommandLineHelpTest {
             @Option(names = {"--help", "-h"}, hidden = true) boolean helpRequested;
         }
         Help help = new Help(new App(), Help.Ansi.OFF);
-        assertEquals("<main class> [-v] [-c=<count> [<count>...]]" + LINESEP, help.synopsis(0));
+        assertEquals("<main class> [-v] [-c=<count>...]" + LINESEP, help.synopsis(0));
     }
 
     @Test
@@ -611,7 +1311,7 @@ public class CommandLineHelpTest {
             @Option(names = {"--help", "-h"}, hidden = true) boolean helpRequested;
         }
         Help help = new Help(new App(), Help.defaultColorScheme(Help.Ansi.ON));
-        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@=@|italic <count>|@ [@|italic <count>|@...]]" + LINESEP),
+        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@=@|italic <count>|@...]" + LINESEP),
                 help.synopsis(0));
     }
 
@@ -689,7 +1389,8 @@ public class CommandLineHelpTest {
             @Option(names = {"--help", "-h"}, hidden = true) boolean helpRequested;
         }
         Help help = new Help(new App(), Help.Ansi.OFF);
-        assertEquals("<main class> [-v] [-c[=<count>...]]" + LINESEP, help.synopsis(0));
+        // NOTE Expected :<main class> [-v] [-c[=<count>]...] but arity=0 for int field is weird anyway...
+        assertEquals("<main class> [-v] [-c=[<count>]...]" + LINESEP, help.synopsis(0));
     }
 
     @Test
@@ -700,7 +1401,25 @@ public class CommandLineHelpTest {
             @Option(names = {"--help", "-h"}, hidden = true) boolean helpRequested;
         }
         Help help = new Help(new App(), Help.Ansi.OFF);
-        assertEquals("<main class> [-v] [-c=<count> [<count>...]]" + LINESEP, help.synopsis(0));
+        assertEquals("<main class> [-v] [-c=<count>...]" + LINESEP, help.synopsis(0));
+    }
+
+    @Test
+    public void testSynopsis_withProgrammaticallySetSeparator_withParameters() throws UnsupportedEncodingException {
+        class App {
+            @Option(names = {"--verbose", "-v"}) boolean verbose;
+            @Option(names = {"--count", "-c"}) int count;
+            @Option(names = {"--help", "-h"}, hidden = true) boolean helpRequested;
+            @Parameters File[] files;
+        }
+        CommandLine commandLine = new CommandLine(new App()).setSeparator(":");
+        String actual = usageString(commandLine, Help.Ansi.OFF);
+        String expected = "" +
+                "Usage: <main class> [-v] [-c:<count>] [<files>]...%n" +
+                "      [<files>]...%n" +
+                "  -c, --count:<count>%n" +
+                "  -v, --verbose%n";
+        assertEquals(String.format(expected), actual);
     }
 
     @Test
@@ -712,7 +1431,7 @@ public class CommandLineHelpTest {
             @Parameters File[] files;
         }
         Help help = new Help(new App(), Help.Ansi.OFF);
-        assertEquals("<main class> [-v] [-c:<count>] [<files>...]" + LINESEP, help.synopsis(0));
+        assertEquals("<main class> [-v] [-c:<count>] [<files>]..." + LINESEP, help.synopsis(0));
     }
 
     @Test
@@ -724,7 +1443,7 @@ public class CommandLineHelpTest {
             @Parameters File[] files;
         }
         Help help = new Help(new App(), Help.defaultColorScheme(Help.Ansi.ON));
-        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@:@|italic <count>|@] [@|yellow <files>|@...]" + LINESEP),
+        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@:@|italic <count>|@] [@|yellow <files>|@]..." + LINESEP),
                 help.synopsis(0));
     }
 
@@ -737,7 +1456,7 @@ public class CommandLineHelpTest {
             @Parameters(paramLabel = "FILE") File[] files;
         }
         Help help = new Help(new App(), Help.Ansi.OFF);
-        assertEquals("<main class> [-v] [-c=<count>] [FILE...]" + LINESEP, help.synopsis(0));
+        assertEquals("<main class> [-v] [-c=<count>] [FILE]..." + LINESEP, help.synopsis(0));
     }
 
     @Test
@@ -749,7 +1468,7 @@ public class CommandLineHelpTest {
             @Parameters(paramLabel = "FILE") File[] files;
         }
         Help help = new Help(new App(), Help.defaultColorScheme(Help.Ansi.ON));
-        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@=@|italic <count>|@] [@|yellow FILE|@...]" + LINESEP),
+        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@=@|italic <count>|@] [@|yellow FILE|@]..." + LINESEP),
                 help.synopsis(0));
     }
 
@@ -762,7 +1481,7 @@ public class CommandLineHelpTest {
             @Parameters(paramLabel = "FILE", arity = "1..*") File[] files;
         }
         Help help = new Help(new App(), Help.Ansi.OFF);
-        assertEquals("<main class> [-v] [-c=<count>] FILE [FILE...]" + LINESEP, help.synopsis(0));
+        assertEquals("<main class> [-v] [-c=<count>] FILE..." + LINESEP, help.synopsis(0));
     }
 
     @Test
@@ -774,7 +1493,7 @@ public class CommandLineHelpTest {
             @Parameters(paramLabel = "FILE", arity = "1..*") File[] files;
         }
         Help help = new Help(new App(), Help.Ansi.ON);
-        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@=@|italic <count>|@] @|yellow FILE|@ [@|yellow FILE|@...]" + LINESEP),
+        assertEquals(Help.Ansi.ON.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@=@|italic <count>|@] @|yellow FILE|@..." + LINESEP),
                 help.synopsis(0));
     }
 
@@ -857,14 +1576,14 @@ public class CommandLineHelpTest {
         String expected = "" +
                 "Usage: small-test-program [-!?acorv] [--version] [-h <number>] [-i" + LINESEP +
                 "                          <includePattern>] [-p <file>|<folder>] [-d <folder>" + LINESEP +
-                "                          [<folder>]]" + LINESEP;
+                "                          [<folder>]]..." + LINESEP;
         assertEquals(expected, help.synopsisHeading() + help.synopsis(help.synopsisHeadingLength()));
 
         help.synopsisHeading = "Usage:%n";
         expected = "" +
                 "Usage:" + LINESEP +
                 "small-test-program [-!?acorv] [--version] [-h <number>] [-i <includePattern>]" + LINESEP +
-                "                   [-p <file>|<folder>] [-d <folder> [<folder>]]" + LINESEP;
+                "                   [-p <file>|<folder>] [-d <folder> [<folder>]]..." + LINESEP;
         assertEquals(expected, help.synopsisHeading() + help.synopsis(help.synopsisHeadingLength()));
     }
 
@@ -1106,19 +1825,20 @@ public class CommandLineHelpTest {
             @Parameters(index = "0", description = "source host") InetAddress host1;
             @Parameters(index = "1", description = "source port") int port1;
             @Parameters(index = "2", description = "destination host") InetAddress host2;
-            @Parameters(index = "3..4", arity = "1..2", description = "destination port range") int[] port2range;
+            @Parameters(index = "3", arity = "1..2", description = "destination port range") int[] port2range;
             @Parameters(index = "4..*", description = "files to transfer") String[] files;
             @Parameters(hidden = true) String[] all;
         }
         String actual = usageString(new App(), Help.Ansi.OFF);
         String expected = String.format(
                 "Usage: <main class> <host1> <port1> <host2> <port2range> [<port2range>]%n" +
-                "                    [<files>...]%n" +
-                "      host1                   source host%n" +
-                "      port1                   source port%n" +
-                "      host2                   destination host%n" +
-                "      port2range              destination port range%n" +
-                "      files                   files to transfer%n"
+                        "                    [<files>]...%n" +
+                        "      <host1>                 source host%n" +
+                        "      <port1>                 source port%n" +
+                        "      <host2>                 destination host%n" +
+                        "      <port2range> [<port2range>]%n" +
+                        "                              destination port range%n" +
+                        "      [<files>]...            files to transfer%n"
         );
         assertEquals(expected, actual);
     }
@@ -1479,7 +2199,7 @@ public class CommandLineHelpTest {
 
     @Test
     public void testTextAdjacentStyles() {
-        assertEquals("\u001B[3m<commit\u001B[23m\u001B[0m\u001B[3m>\u001B[23m\u001B[0m%n\u001B[0m",
+        assertEquals("\u001B[3m<commit\u001B[23m\u001B[0m\u001B[3m>\u001B[23m\u001B[0m%n",
                 Help.Ansi.ON.new Text("@|italic <commit|@@|italic >|@%n").toString());
     }
 
@@ -1552,14 +2272,14 @@ public class CommandLineHelpTest {
         }
         Help.Ansi ansi = Help.Ansi.ON;
         // default color scheme
-        assertEquals(ansi.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@=@|italic <count>|@] @|yellow FILE|@ [@|yellow FILE|@...]" + LINESEP),
+        assertEquals(ansi.new Text("@|bold <main class>|@ [@|yellow -v|@] [@|yellow -c|@=@|italic <count>|@] @|yellow FILE|@..." + LINESEP),
                 new Help(new App(), ansi).synopsis(0));
 
         System.setProperty("picocli.color.commands", "blue");
         System.setProperty("picocli.color.options", "green");
         System.setProperty("picocli.color.parameters", "cyan");
         System.setProperty("picocli.color.optionParams", "magenta");
-        assertEquals(ansi.new Text("@|blue <main class>|@ [@|green -v|@] [@|green -c|@=@|magenta <count>|@] @|cyan FILE|@ [@|cyan FILE|@...]" + LINESEP),
+        assertEquals(ansi.new Text("@|blue <main class>|@ [@|green -v|@] [@|green -c|@=@|magenta <count>|@] @|cyan FILE|@..." + LINESEP),
                 new Help(new App(), ansi).synopsis(0));
     }
 
@@ -1578,14 +2298,14 @@ public class CommandLineHelpTest {
                 .parameters(Style.reverse)
                 .optionParams(Style.bg_green);
         // default color scheme
-        assertEquals(ansi.new Text("@|faint,bg(magenta) <main class>|@ [@|bg(red) -v|@] [@|bg(red) -c|@=@|bg(green) <count>|@] @|reverse FILE|@ [@|reverse FILE|@...]" + LINESEP),
+        assertEquals(ansi.new Text("@|faint,bg(magenta) <main class>|@ [@|bg(red) -v|@] [@|bg(red) -c|@=@|bg(green) <count>|@] @|reverse FILE|@..." + LINESEP),
                 new Help(new App(), explicit).synopsis(0));
 
         System.setProperty("picocli.color.commands", "blue");
         System.setProperty("picocli.color.options", "blink");
         System.setProperty("picocli.color.parameters", "red");
         System.setProperty("picocli.color.optionParams", "magenta");
-        assertEquals(ansi.new Text("@|blue <main class>|@ [@|blink -v|@] [@|blink -c|@=@|magenta <count>|@] @|red FILE|@ [@|red FILE|@...]" + LINESEP),
+        assertEquals(ansi.new Text("@|blue <main class>|@ [@|blink -v|@] [@|blink -c|@=@|magenta <count>|@] @|red FILE|@..." + LINESEP),
                 new Help(new App(), explicit).synopsis(0));
     }
 
@@ -1630,5 +2350,96 @@ public class CommandLineHelpTest {
                 "\u001B[33mVersioned Command 1.0\u001B[39m\u001B[0m%n" +
                 "\u001B[34mBuild 12345\u001B[39m\u001B[0m%n" +
                 "\u001B[31m\u001B[47m(c) 2017\u001B[49m\u001B[39m\u001B[0m%n"), result);
+    }
+    @Test
+    public void testCommandLine_printVersionInfo_formatsArguments() throws Exception {
+        @Command(version = {"First line %1$s", "Second line %2$s", "Third line %s %s"}) class Versioned {}
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF8");
+        new CommandLine(new Versioned()).printVersionHelp(ps, Help.Ansi.OFF, "VALUE1", "VALUE2", "VALUE3");
+        String result = baos.toString("UTF8");
+        assertEquals(String.format("First line VALUE1%nSecond line VALUE2%nThird line VALUE1 VALUE2%n"), result);
+    }
+
+    @Test
+    public void testCommandLine_printVersionInfo_withMarkupAndParameterContainingMarkup() throws Exception {
+        @Command(version = {
+                "@|yellow Versioned Command 1.0|@",
+                "@|blue Build 12345|@%1$s",
+                "@|red,bg(white) (c) 2017|@%2$s" })
+        class Versioned {}
+        String[] args = {"@|bold VALUE1|@", "@|underline VALUE2|@", "VALUE3"};
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF8");
+        new CommandLine(new Versioned()).printVersionHelp(ps, Help.Ansi.ON, (Object[]) args);
+        String result = baos.toString("UTF8");
+        assertEquals(String.format("" +
+                "\u001B[33mVersioned Command 1.0\u001B[39m\u001B[0m%n" +
+                "\u001B[34mBuild 12345\u001B[39m\u001B[0m\u001B[1mVALUE1\u001B[21m\u001B[0m%n" +
+                "\u001B[31m\u001B[47m(c) 2017\u001B[49m\u001B[39m\u001B[0m\u001B[4mVALUE2\u001B[24m\u001B[0m%n"), result);
+    }
+
+    @Test
+    public void testMapFieldHelp() throws Exception {
+        class App {
+            @Parameters(arity = "2", split = "\\|",
+                    paramLabel = "FIXTAG=VALUE",
+                    description = "Exactly two lists of vertical bar '|'-separated FIXTAG=VALUE pairs.")
+            Map<Integer,String> message;
+
+            @Option(names = {"-P", "-map"}, split = ",",
+                    paramLabel = "TIMEUNIT=VALUE",
+                    description = "Any number of TIMEUNIT=VALUE pairs. These may be specified separately (-PTIMEUNIT=VALUE) or as a comma-separated list.")
+            Map<TimeUnit, String> map;
+        }
+        String actual = usageString(new App(), Help.Ansi.OFF);
+        String expected = String.format("" +
+                "Usage: <main class> [-P=TIMEUNIT=VALUE[,TIMEUNIT=VALUE]...]... FIXTAG=VALUE%n" +
+                "                    [\\|FIXTAG=VALUE]... FIXTAG=VALUE[\\|FIXTAG=VALUE]...%n" +
+                "      FIXTAG=VALUE[\\|FIXTAG=VALUE]... FIXTAG=VALUE[\\|FIXTAG=VALUE]...%n" +
+                "                              Exactly two lists of vertical bar '|'-separated%n" +
+                "                                FIXTAG=VALUE pairs.%n" +
+                "  -P, -map=TIMEUNIT=VALUE[,TIMEUNIT=VALUE]...%n" +
+                "                              Any number of TIMEUNIT=VALUE pairs. These may be%n" +
+                "                                specified separately (-PTIMEUNIT=VALUE) or as a%n" +
+                "                                comma-separated list.%n");
+        assertEquals(expected, actual);
+    }
+    @Test
+    public void testMapFieldTypeInference() throws UnsupportedEncodingException {
+        class App {
+            @Option(names = "-a") Map<Integer, URI> a;
+            @Option(names = "-b") Map<TimeUnit, StringBuilder> b;
+            @SuppressWarnings("unchecked")
+            @Option(names = "-c") Map c;
+            @Option(names = "-d") List<File> d;
+            @Option(names = "-e") Map<? extends Integer, ? super Long> e;
+            @Option(names = "-f", type = {Long.class, Float.class}) Map<? extends Number, ? super Number> f;
+            @SuppressWarnings("unchecked")
+            @Option(names = "-g", type = {TimeUnit.class, Float.class}) Map g;
+        }
+        String actual = usageString(new App(), Help.Ansi.OFF);
+        String expected = String.format("" +
+                "Usage: <main class> [-a=<Integer=URI>]... [-b=<TimeUnit=StringBuilder>]...%n" +
+                "                    [-c=<String=String>]... [-d=<d>]... [-e=<Integer=Long>]...%n" +
+                "                    [-f=<Long=Float>]... [-g=<TimeUnit=Float>]...%n" +
+                "  -a= <Integer=URI>%n" +
+                "  -b= <TimeUnit=StringBuilder>%n" +
+                "%n" +
+                "  -c= <String=String>%n" +
+                "  -d= <d>%n" +
+                "  -e= <Integer=Long>%n" +
+                "  -f= <Long=Float>%n" +
+                "  -g= <TimeUnit=Float>%n");
+        assertEquals(expected, actual);
+    }
+    @Test
+    public void test200NPEWithEmptyCommandName() throws UnsupportedEncodingException {
+        @Command(name = "") class Args {}
+        String actual = usageString(new Args(), Help.Ansi.OFF);
+        String expected = String.format("" +
+                "Usage: %n" +
+                "");
+        assertEquals(expected, actual);
     }
 }

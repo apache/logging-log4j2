@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.tools.picocli;
 
-import java.awt.Point;
 import java.io.File;
 import java.io.PrintStream;
 import java.lang.annotation.ElementType;
@@ -26,6 +25,9 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -49,17 +51,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.Stack;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
@@ -78,7 +81,8 @@ import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Colum
  * </p><h2>Example</h2>
  * <pre>import static picocli.CommandLine.*;
  *
- * &#064;Command(header = "Encrypt FILE(s), or standard input, to standard output or to the output file.")
+ * &#064;Command(header = "Encrypt FILE(s), or standard input, to standard output or to the output file.",
+ *          version = "v1.2.3")
  * public class Encrypt {
  *
  *     &#064;Parameters(type = File.class, description = "Any number of input files")
@@ -90,24 +94,26 @@ import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Colum
  *     &#064;Option(names = { "-v", "--verbose"}, description = "Verbosely list files processed")
  *     private boolean verbose;
  *
- *     &#064;Option(names = { "-h", "--help", "-?", "-help"}, help = true, description = "Display this help and exit")
+ *     &#064;Option(names = { "-h", "--help", "-?", "-help"}, usageHelp = true, description = "Display this help and exit")
  *     private boolean help;
+ *
+ *     &#064;Option(names = { "-V", "--version"}, versionHelp = true, description = "Display version info and exit")
+ *     private boolean versionHelp;
  * }
  * </pre>
  * <p>
  * Use {@code CommandLine} to initialize a domain object as follows:
  * </p><pre>
  * public static void main(String... args) {
+ *     Encrypt encrypt = new Encrypt();
  *     try {
- *         Encrypt encrypt = CommandLine.populateCommand(new Encrypt(), args);
- *         if (encrypt.help) {
- *             CommandLine.usage(encrypt, System.out);
- *         } else {
+ *         List&lt;CommandLine&gt; parsedCommands = new CommandLine(encrypt).parse(args);
+ *         if (!CommandLine.printHelpIfRequested(parsedCommands, System.err, Help.Ansi.AUTO)) {
  *             runProgram(encrypt);
  *         }
  *     } catch (ParameterException ex) { // command line arguments could not be parsed
  *         System.err.println(ex.getMessage());
- *         CommandLine.usage(new Encrypt(), System.err);
+ *         ex.getCommandLine().usage(System.err);
  *     }
  * }
  * </pre><p>
@@ -124,18 +130,14 @@ import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Colum
  * -v -ooutfile in1 in2
  * -vooutfile in1 in2
  * </pre>
- *
- * <p>
- * Copied and modified from <a href="http://github.com/remkop/picocli/">picocli</a>.
- * </p>
- *
- * @since 2.9
  */
 public class CommandLine {
     /** This is picocli version {@value}. */
-    public static final String VERSION = "0.9.8";
+    public static final String VERSION = "2.0.0";
 
+    private final Tracer tracer = new Tracer();
     private final Interpreter interpreter;
+    private String commandName = Help.DEFAULT_COMMAND_NAME;
     private boolean overwrittenOptionsAllowed = false;
     private boolean unmatchedArgumentsAllowed = false;
     private List<String> unmatchedArguments = new ArrayList<String>();
@@ -149,7 +151,7 @@ public class CommandLine {
      * When the {@link #parse(String...)} method is called, fields of the specified object that are annotated
      * with {@code @Option} or {@code @Parameters} will be initialized based on command line arguments.
      * @param command the object to initialize from the command line arguments
-     * @throws IllegalArgumentException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
+     * @throws InitializationException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
      */
     public CommandLine(Object command) {
         interpreter = new Interpreter(command);
@@ -186,6 +188,7 @@ public class CommandLine {
      * converters are registered only with the subcommand hierarchy as it existed when the custom type was registered.
      * To ensure a custom type converter is available to all subcommands, register the type converter last, after
      * adding subcommands.</p>
+     * <p>See also the {@link Command#subcommands()} annotation to register subcommands declaratively.</p>
      *
      * @param name the string to recognize on the command line as a subcommand
      * @param command the object to initialize with command line arguments following the subcommand name.
@@ -193,6 +196,7 @@ public class CommandLine {
      * @return this CommandLine object, to allow method chaining
      * @see #registerConverter(Class, ITypeConverter)
      * @since 0.9.7
+     * @see Command#subcommands()
      */
     public CommandLine addSubcommand(String name, Object command) {
         CommandLine commandLine = toCommandLine(command);
@@ -218,21 +222,23 @@ public class CommandLine {
         return parent;
     }
 
-    /**
-     * Returns the annotated object that this {@code CommandLine} instance was constructed with.
+    /** Returns the annotated object that this {@code CommandLine} instance was constructed with.
+     * @param <T> the type of the variable that the return value is being assigned to
      * @return the annotated object that this {@code CommandLine} instance was constructed with
      * @since 0.9.7
      */
-    public Object getCommand() {
-        return interpreter.command;
+    public <T> T getCommand() {
+        return (T) interpreter.command;
     }
 
     /** Returns {@code true} if an option annotated with {@link Option#usageHelp()} was specified on the command line.
-     * @return whether the parser encountered an option annotated with {@link Option#usageHelp()}  */
+     * @return whether the parser encountered an option annotated with {@link Option#usageHelp()}.
+     * @since 0.9.8 */
     public boolean isUsageHelpRequested() { return usageHelpRequested; }
 
     /** Returns {@code true} if an option annotated with {@link Option#versionHelp()} was specified on the command line.
-     * @return whether the parser encountered an option annotated with {@link Option#versionHelp()}  */
+     * @return whether the parser encountered an option annotated with {@link Option#versionHelp()}.
+     * @since 0.9.8 */
     public boolean isVersionHelpRequested() { return versionHelpRequested; }
 
     /** Returns whether options for single-value fields can be specified multiple times on the command line.
@@ -278,9 +284,10 @@ public class CommandLine {
      * subcommands and nested sub-subcommands <em>at the moment this method is called</em>. Subcommands added
      * later will have the default setting. To ensure a setting is applied to all
      * subcommands, call the setter last, after adding subcommands.</p>
-     * @param newValue the new setting
+     * @param newValue the new setting. When {@code true}, the last unmatched arguments are available via the {@link #getUnmatchedArguments()} method.
      * @return this {@code CommandLine} object, to allow method chaining
      * @since 0.9.7
+     * @see #getUnmatchedArguments()
      */
     public CommandLine setUnmatchedArgumentsAllowed(boolean newValue) {
         this.unmatchedArgumentsAllowed = newValue;
@@ -315,7 +322,7 @@ public class CommandLine {
      * @param args the command line arguments to parse
      * @param <T> the type of the annotated object
      * @return the specified annotated object
-     * @throws IllegalArgumentException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
+     * @throws InitializationException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
      * @throws ParameterException if the specified command line arguments are invalid
      * @since 0.9.7
      */
@@ -325,21 +332,332 @@ public class CommandLine {
         return command;
     }
 
-    /**
+    /** Parses the specified command line arguments and returns a list of {@code CommandLine} objects representing the
+     * top-level command and any subcommands (if any) that were recognized and initialized during the parsing process.
      * <p>
-     * Initializes the annotated object that this {@code CommandLine} was constructed with as well as
-     * possibly any registered commands, based on the specified command line arguments,
-     * and returns a list of all commands and subcommands that were initialized by this method.
+     * If parsing succeeds, the first element in the returned list is always {@code this CommandLine} object. The
+     * returned list may contain more elements if subcommands were {@linkplain #addSubcommand(String, Object) registered}
+     * and these subcommands were initialized by matching command line arguments. If parsing fails, a
+     * {@link ParameterException} is thrown.
      * </p>
      *
      * @param args the command line arguments to parse
-     * @return a list with all commands and subcommands initialized by this method
-     * @throws ParameterException if the specified command line arguments are invalid
+     * @return a list with the top-level command and any subcommands initialized by this method
+     * @throws ParameterException if the specified command line arguments are invalid; use
+     *      {@link ParameterException#getCommandLine()} to get the command or subcommand whose user input was invalid
      */
     public List<CommandLine> parse(String... args) {
         return interpreter.parse(args);
     }
-
+    /**
+     * Represents a function that can process a List of {@code CommandLine} objects resulting from successfully
+     * {@linkplain #parse(String...) parsing} the command line arguments. This is a
+     * <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">functional interface</a>
+     * whose functional method is {@link #handleParseResult(List, PrintStream, CommandLine.Help.Ansi)}.
+     * <p>
+     * Implementations of this functions can be passed to the {@link #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...) CommandLine::parseWithHandler}
+     * methods to take some next step after the command line was successfully parsed.
+     * </p>
+     * @see RunFirst
+     * @see RunLast
+     * @see RunAll
+     * @since 2.0 */
+    public static interface IParseResultHandler {
+        /** Processes a List of {@code CommandLine} objects resulting from successfully
+         * {@linkplain #parse(String...) parsing} the command line arguments and optionally returns a list of results.
+         * @param parsedCommands the {@code CommandLine} objects that resulted from successfully parsing the command line arguments
+         * @param out the {@code PrintStream} to print help to if requested
+         * @param ansi for printing help messages using ANSI styles and colors
+         * @return a list of results, or an empty list if there are no results
+         * @throws ExecutionException if a problem occurred while processing the parse results; use
+         *      {@link ExecutionException#getCommandLine()} to get the command or subcommand where processing failed
+         */
+        List<Object> handleParseResult(List<CommandLine> parsedCommands, PrintStream out, Help.Ansi ansi) throws ExecutionException;
+    }
+    /**
+     * Represents a function that can handle a {@code ParameterException} that occurred while
+     * {@linkplain #parse(String...) parsing} the command line arguments. This is a
+     * <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">functional interface</a>
+     * whose functional method is {@link #handleException(CommandLine.ParameterException, PrintStream, CommandLine.Help.Ansi, String...)}.
+     * <p>
+     * Implementations of this functions can be passed to the {@link #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...) CommandLine::parseWithHandler}
+     * methods to handle situations when the command line could not be parsed.
+     * </p>
+     * @see DefaultExceptionHandler
+     * @since 2.0 */
+    public static interface IExceptionHandler {
+        /** Handles a {@code ParameterException} that occurred while {@linkplain #parse(String...) parsing} the command
+         * line arguments and optionally returns a list of results.
+         * @param ex the ParameterException describing the problem that occurred while parsing the command line arguments,
+         *           and the CommandLine representing the command or subcommand whose input was invalid
+         * @param out the {@code PrintStream} to print help to if requested
+         * @param ansi for printing help messages using ANSI styles and colors
+         * @param args the command line arguments that could not be parsed
+         * @return a list of results, or an empty list if there are no results
+         */
+        List<Object> handleException(ParameterException ex, PrintStream out, Help.Ansi ansi, String... args);
+    }
+    /**
+     * Default exception handler that prints the exception message to the specified {@code PrintStream}, followed by the
+     * usage message for the command or subcommand whose input was invalid.
+     * <p>Implementation roughly looks like this:</p>
+     * <pre>
+     *     System.err.println(paramException.getMessage());
+     *     paramException.getCommandLine().usage(System.err);
+     * </pre>
+     * @since 2.0 */
+    public static class DefaultExceptionHandler implements IExceptionHandler {
+        @Override
+        public List<Object> handleException(ParameterException ex, PrintStream out, Help.Ansi ansi, String... args) {
+            out.println(ex.getMessage());
+            ex.getCommandLine().usage(out, ansi);
+            return Collections.emptyList();
+        }
+    }
+    /**
+     * Helper method that may be useful when processing the list of {@code CommandLine} objects that result from successfully
+     * {@linkplain #parse(String...) parsing} command line arguments. This method prints out
+     * {@linkplain #usage(PrintStream, Help.Ansi) usage help} if {@linkplain #isUsageHelpRequested() requested}
+     * or {@linkplain #printVersionHelp(PrintStream, Help.Ansi) version help} if {@linkplain #isVersionHelpRequested() requested}
+     * and returns {@code true}. Otherwise, if none of the specified {@code CommandLine} objects have help requested,
+     * this method returns {@code false}.
+     * <p>
+     * Note that this method <em>only</em> looks at the {@link Option#usageHelp() usageHelp} and
+     * {@link Option#versionHelp() versionHelp} attributes. The {@link Option#help() help} attribute is ignored.
+     * </p>
+     * @param parsedCommands the list of {@code CommandLine} objects to check if help was requested
+     * @param out the {@code PrintStream} to print help to if requested
+     * @param ansi for printing help messages using ANSI styles and colors
+     * @return {@code true} if help was printed, {@code false} otherwise
+     * @since 2.0 */
+    public static boolean printHelpIfRequested(List<CommandLine> parsedCommands, PrintStream out, Help.Ansi ansi) {
+        for (CommandLine parsed : parsedCommands) {
+            if (parsed.isUsageHelpRequested()) {
+                parsed.usage(out, ansi);
+                return true;
+            } else if (parsed.isVersionHelpRequested()) {
+                parsed.printVersionHelp(out, ansi);
+                return true;
+            }
+        }
+        return false;
+    }
+    private static Object execute(CommandLine parsed) {
+        Object command = parsed.getCommand();
+        if (command instanceof Runnable) {
+            try {
+                ((Runnable) command).run();
+                return null;
+            } catch (Exception ex) {
+                throw new ExecutionException(parsed, "Error while running command (" + command + ")", ex);
+            }
+        } else if (command instanceof Callable) {
+            try {
+                return ((Callable<Object>) command).call();
+            } catch (Exception ex) {
+                throw new ExecutionException(parsed, "Error while calling command (" + command + ")", ex);
+            }
+        }
+        throw new ExecutionException(parsed, "Parsed command (" + command + ") is not Runnable or Callable");
+    }
+    /**
+     * Command line parse result handler that prints help if requested, and otherwise executes the top-level
+     * {@code Runnable} or {@code Callable} command.
+     * For use in the {@link #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...) parseWithHandler} methods.
+     * <p>
+     * From picocli v2.0, {@code RunFirst} is used to implement the {@link #run(Runnable, PrintStream, Help.Ansi, String...) run}
+     * and {@link #call(Callable, PrintStream, Help.Ansi, String...) call} convenience methods.
+     * </p>
+     * @since 2.0 */
+    public static class RunFirst implements IParseResultHandler {
+        /** Prints help if requested, and otherwise executes the top-level {@code Runnable} or {@code Callable} command.
+         * If the top-level command does not implement either {@code Runnable} or {@code Callable}, a {@code ExecutionException}
+         * is thrown detailing the problem and capturing the offending {@code CommandLine} object.
+         *
+         * @param parsedCommands the {@code CommandLine} objects that resulted from successfully parsing the command line arguments
+         * @param out the {@code PrintStream} to print help to if requested
+         * @param ansi for printing help messages using ANSI styles and colors
+         * @return an empty list if help was requested, or a list containing a single element: the result of calling the
+         *      {@code Callable}, or a {@code null} element if the top-level command was a {@code Runnable}
+         * @throws ExecutionException if a problem occurred while processing the parse results; use
+         *      {@link ExecutionException#getCommandLine()} to get the command or subcommand where processing failed
+         */
+        public List<Object> handleParseResult(List<CommandLine> parsedCommands, PrintStream out, Help.Ansi ansi) {
+            if (printHelpIfRequested(parsedCommands, out, ansi)) { return Collections.emptyList(); }
+            return Arrays.asList(execute(parsedCommands.get(0)));
+        }
+    }
+    /**
+     * Command line parse result handler that prints help if requested, and otherwise executes the most specific
+     * {@code Runnable} or {@code Callable} subcommand.
+     * For use in the {@link #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...) parseWithHandler} methods.
+     * <p>
+     * Something like this:</p>
+     * <pre>
+     *     // RunLast implementation: print help if requested, otherwise execute the most specific subcommand
+     *     if (CommandLine.printHelpIfRequested(parsedCommands, System.err, Help.Ansi.AUTO)) {
+     *         return emptyList();
+     *     }
+     *     CommandLine last = parsedCommands.get(parsedCommands.size() - 1);
+     *     Object command = last.getCommand();
+     *     if (command instanceof Runnable) {
+     *         try {
+     *             ((Runnable) command).run();
+     *         } catch (Exception ex) {
+     *             throw new ExecutionException(last, "Error in runnable " + command, ex);
+     *         }
+     *     } else if (command instanceof Callable) {
+     *         Object result;
+     *         try {
+     *             result = ((Callable) command).call();
+     *         } catch (Exception ex) {
+     *             throw new ExecutionException(last, "Error in callable " + command, ex);
+     *         }
+     *         // ...do something with result
+     *     } else {
+     *         throw new ExecutionException(last, "Parsed command (" + command + ") is not Runnable or Callable");
+     *     }
+     * </pre>
+     * @since 2.0 */
+    public static class RunLast implements IParseResultHandler {
+        /** Prints help if requested, and otherwise executes the most specific {@code Runnable} or {@code Callable} subcommand.
+         * If the last (sub)command does not implement either {@code Runnable} or {@code Callable}, a {@code ExecutionException}
+         * is thrown detailing the problem and capturing the offending {@code CommandLine} object.
+         *
+         * @param parsedCommands the {@code CommandLine} objects that resulted from successfully parsing the command line arguments
+         * @param out the {@code PrintStream} to print help to if requested
+         * @param ansi for printing help messages using ANSI styles and colors
+         * @return an empty list if help was requested, or a list containing a single element: the result of calling the
+         *      {@code Callable}, or a {@code null} element if the last (sub)command was a {@code Runnable}
+         * @throws ExecutionException if a problem occurred while processing the parse results; use
+         *      {@link ExecutionException#getCommandLine()} to get the command or subcommand where processing failed
+         */
+        public List<Object> handleParseResult(List<CommandLine> parsedCommands, PrintStream out, Help.Ansi ansi) {
+            if (printHelpIfRequested(parsedCommands, out, ansi)) { return Collections.emptyList(); }
+            CommandLine last = parsedCommands.get(parsedCommands.size() - 1);
+            return Arrays.asList(execute(last));
+        }
+    }
+    /**
+     * Command line parse result handler that prints help if requested, and otherwise executes the top-level command and
+     * all subcommands as {@code Runnable} or {@code Callable}.
+     * For use in the {@link #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...) parseWithHandler} methods.
+     * @since 2.0 */
+    public static class RunAll implements IParseResultHandler {
+        /** Prints help if requested, and otherwise executes the top-level command and all subcommands as {@code Runnable}
+         * or {@code Callable}. If any of the {@code CommandLine} commands does not implement either
+         * {@code Runnable} or {@code Callable}, a {@code ExecutionException}
+         * is thrown detailing the problem and capturing the offending {@code CommandLine} object.
+         *
+         * @param parsedCommands the {@code CommandLine} objects that resulted from successfully parsing the command line arguments
+         * @param out the {@code PrintStream} to print help to if requested
+         * @param ansi for printing help messages using ANSI styles and colors
+         * @return an empty list if help was requested, or a list containing the result of executing all commands:
+         *      the return values from calling the {@code Callable} commands, {@code null} elements for commands that implement {@code Runnable}
+         * @throws ExecutionException if a problem occurred while processing the parse results; use
+         *      {@link ExecutionException#getCommandLine()} to get the command or subcommand where processing failed
+         */
+        public List<Object> handleParseResult(List<CommandLine> parsedCommands, PrintStream out, Help.Ansi ansi) {
+            if (printHelpIfRequested(parsedCommands, out, ansi)) {
+                return null;
+            }
+            List<Object> result = new ArrayList<Object>();
+            for (CommandLine parsed : parsedCommands) {
+                result.add(execute(parsed));
+            }
+            return result;
+        }
+    }
+    /**
+     * Returns the result of calling {@link #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...)}
+     * with {@code Help.Ansi.AUTO} and a new {@link DefaultExceptionHandler} in addition to the specified parse result handler,
+     * {@code PrintStream}, and the specified command line arguments.
+     * <p>
+     * This is a convenience method intended to offer the same ease of use as the {@link #run(Runnable, PrintStream, Help.Ansi, String...) run}
+     * and {@link #call(Callable, PrintStream, Help.Ansi, String...) call} methods, but with more flexibility and better
+     * support for nested subcommands.
+     * </p>
+     * <p>Calling this method roughly expands to:</p>
+     * <pre>
+     * try {
+     *     List&lt;CommandLine&gt; parsedCommands = parse(args);
+     *     return parseResultsHandler.handleParseResult(parsedCommands, out, Help.Ansi.AUTO);
+     * } catch (ParameterException ex) {
+     *     return new DefaultExceptionHandler().handleException(ex, out, ansi, args);
+     * }
+     * </pre>
+     * <p>
+     * Picocli provides some default handlers that allow you to accomplish some common tasks with very little code.
+     * The following handlers are available:</p>
+     * <ul>
+     *   <li>{@link RunLast} handler prints help if requested, and otherwise gets the last specified command or subcommand
+     * and tries to execute it as a {@code Runnable} or {@code Callable}.</li>
+     *   <li>{@link RunFirst} handler prints help if requested, and otherwise executes the top-level command as a {@code Runnable} or {@code Callable}.</li>
+     *   <li>{@link RunAll} handler prints help if requested, and otherwise executes all recognized commands and subcommands as {@code Runnable} or {@code Callable} tasks.</li>
+     *   <li>{@link DefaultExceptionHandler} prints the error message followed by usage help</li>
+     * </ul>
+     * @param handler the function that will process the result of successfully parsing the command line arguments
+     * @param out the {@code PrintStream} to print help to if requested
+     * @param args the command line arguments
+     * @return a list of results, or an empty list if there are no results
+     * @throws ExecutionException if the command line arguments were parsed successfully but a problem occurred while processing the
+     *      parse results; use {@link ExecutionException#getCommandLine()} to get the command or subcommand where processing failed
+     * @see RunLast
+     * @see RunAll
+     * @since 2.0 */
+    public List<Object> parseWithHandler(IParseResultHandler handler, PrintStream out, String... args) {
+        return parseWithHandlers(handler, out, Help.Ansi.AUTO, new DefaultExceptionHandler(), args);
+    }
+    /**
+     * Tries to {@linkplain #parse(String...) parse} the specified command line arguments, and if successful, delegates
+     * the processing of the resulting list of {@code CommandLine} objects to the specified {@linkplain IParseResultHandler handler}.
+     * If the command line arguments were invalid, the {@code ParameterException} thrown from the {@code parse} method
+     * is caught and passed to the specified {@link IExceptionHandler}.
+     * <p>
+     * This is a convenience method intended to offer the same ease of use as the {@link #run(Runnable, PrintStream, Help.Ansi, String...) run}
+     * and {@link #call(Callable, PrintStream, Help.Ansi, String...) call} methods, but with more flexibility and better
+     * support for nested subcommands.
+     * </p>
+     * <p>Calling this method roughly expands to:</p>
+     * <pre>
+     * try {
+     *     List&lt;CommandLine&gt; parsedCommands = parse(args);
+     *     return parseResultsHandler.handleParseResult(parsedCommands, out, ansi);
+     * } catch (ParameterException ex) {
+     *     return new exceptionHandler.handleException(ex, out, ansi, args);
+     * }
+     * </pre>
+     * <p>
+     * Picocli provides some default handlers that allow you to accomplish some common tasks with very little code.
+     * The following handlers are available:</p>
+     * <ul>
+     *   <li>{@link RunLast} handler prints help if requested, and otherwise gets the last specified command or subcommand
+     * and tries to execute it as a {@code Runnable} or {@code Callable}.</li>
+     *   <li>{@link RunFirst} handler prints help if requested, and otherwise executes the top-level command as a {@code Runnable} or {@code Callable}.</li>
+     *   <li>{@link RunAll} handler prints help if requested, and otherwise executes all recognized commands and subcommands as {@code Runnable} or {@code Callable} tasks.</li>
+     *   <li>{@link DefaultExceptionHandler} prints the error message followed by usage help</li>
+     * </ul>
+     *
+     * @param handler the function that will process the result of successfully parsing the command line arguments
+     * @param out the {@code PrintStream} to print help to if requested
+     * @param ansi for printing help messages using ANSI styles and colors
+     * @param exceptionHandler the function that can handle the {@code ParameterException} thrown when the command line arguments are invalid
+     * @param args the command line arguments
+     * @return a list of results produced by the {@code IParseResultHandler} or the {@code IExceptionHandler}, or an empty list if there are no results
+     * @throws ExecutionException if the command line arguments were parsed successfully but a problem occurred while processing the parse
+     *      result {@code CommandLine} objects; use {@link ExecutionException#getCommandLine()} to get the command or subcommand where processing failed
+     * @see RunLast
+     * @see RunAll
+     * @see DefaultExceptionHandler
+     * @since 2.0 */
+    public List<Object> parseWithHandlers(IParseResultHandler handler, PrintStream out, Help.Ansi ansi, IExceptionHandler exceptionHandler, String... args) {
+        try {
+            List<CommandLine> result = parse(args);
+            return handler.handleParseResult(result, out, ansi);
+        } catch (ParameterException ex) {
+            return exceptionHandler.handleException(ex, out, ansi, args);
+        }
+    }
     /**
      * Equivalent to {@code new CommandLine(command).usage(out)}. See {@link #usage(PrintStream)} for details.
      * @param command the object annotated with {@link Command}, {@link Option} and {@link Parameters}
@@ -426,6 +744,13 @@ public class CommandLine {
      */
     public void usage(PrintStream out, Help.ColorScheme colorScheme) {
         Help help = new Help(interpreter.command, colorScheme).addAllSubcommands(getSubcommands());
+        if (!Help.DEFAULT_SEPARATOR.equals(getSeparator())) {
+            help.separator = getSeparator();
+            help.parameterLabelRenderer = help.createDefaultParamLabelRenderer(); // update for new separator
+        }
+        if (!Help.DEFAULT_COMMAND_NAME.equals(getCommandName())) {
+            help.commandName = getCommandName();
+        }
         StringBuilder sb = new StringBuilder()
                 .append(help.headerHeading())
                 .append(help.header())
@@ -448,6 +773,7 @@ public class CommandLine {
      * Delegates to {@link #printVersionHelp(PrintStream, Help.Ansi)} with the {@linkplain Help.Ansi#AUTO platform default}.
      * @param out the printStream to print to
      * @see #printVersionHelp(PrintStream, Help.Ansi)
+     * @since 0.9.8
      */
     public void printVersionHelp(PrintStream out) { printVersionHelp(out, Help.Ansi.AUTO); }
 
@@ -460,57 +786,169 @@ public class CommandLine {
      * @see Command#version()
      * @see Option#versionHelp()
      * @see #isVersionHelpRequested()
+     * @since 0.9.8
      */
     public void printVersionHelp(PrintStream out, Help.Ansi ansi) {
         for (String versionInfo : versionLines) {
             out.println(ansi.new Text(versionInfo));
         }
     }
+    /**
+     * Prints version information from the {@link Command#version()} annotation to the specified {@code PrintStream}.
+     * Each element of the array of version strings is {@linkplain String#format(String, Object...) formatted} with the
+     * specified parameters, and printed on a separate line. Both version strings and parameters may contain
+     * <a href="http://picocli.info/#_usage_help_with_styles_and_colors">markup for colors and style</a>.
+     * @param out the printStream to print to
+     * @param ansi whether the usage message should include ANSI escape codes or not
+     * @param params Arguments referenced by the format specifiers in the version strings
+     * @see Command#version()
+     * @see Option#versionHelp()
+     * @see #isVersionHelpRequested()
+     * @since 1.0.0
+     */
+    public void printVersionHelp(PrintStream out, Help.Ansi ansi, Object... params) {
+        for (String versionInfo : versionLines) {
+            out.println(ansi.new Text(String.format(versionInfo, params)));
+        }
+    }
+
+    /**
+     * Delegates to {@link #call(Callable, PrintStream, Help.Ansi, String...)} with {@link Help.Ansi#AUTO}.
+     * <p>
+     * From picocli v2.0, this method prints usage help or version help if {@linkplain #printHelpIfRequested(List, PrintStream, Help.Ansi) requested},
+     * and any exceptions thrown by the {@code Callable} are caught and rethrown wrapped in an {@code ExecutionException}.
+     * </p>
+     * @param callable the command to call when {@linkplain #parse(String...) parsing} succeeds.
+     * @param out the printStream to print to
+     * @param args the command line arguments to parse
+     * @param <C> the annotated object must implement Callable
+     * @param <T> the return type of the most specific command (must implement {@code Callable})
+     * @see #call(Callable, PrintStream, Help.Ansi, String...)
+     * @throws InitializationException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
+     * @throws ExecutionException if the Callable throws an exception
+     * @return {@code null} if an error occurred while parsing the command line options, otherwise returns the result of calling the Callable
+     * @see #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...)
+     * @see RunFirst
+     */
+    public static <C extends Callable<T>, T> T call(C callable, PrintStream out, String... args) {
+        return call(callable, out, Help.Ansi.AUTO, args);
+    }
+    /**
+     * Convenience method to allow command line application authors to avoid some boilerplate code in their application.
+     * The annotated object needs to implement {@link Callable}. Calling this method is equivalent to:
+     * <pre>
+     * CommandLine cmd = new CommandLine(callable);
+     * List&lt;CommandLine&gt; parsedCommands;
+     * try {
+     *     parsedCommands = cmd.parse(args);
+     * } catch (ParameterException ex) {
+     *     out.println(ex.getMessage());
+     *     cmd.usage(out, ansi);
+     *     return null;
+     * }
+     * if (CommandLine.printHelpIfRequested(parsedCommands, out, ansi)) {
+     *     return null;
+     * }
+     * CommandLine last = parsedCommands.get(parsedCommands.size() - 1);
+     * try {
+     *     Callable&lt;Object&gt; subcommand = last.getCommand();
+     *     return subcommand.call();
+     * } catch (Exception ex) {
+     *     throw new ExecutionException(last, "Error calling " + last.getCommand(), ex);
+     * }
+     * </pre>
+     * <p>
+     * If the specified Callable command has subcommands, the {@linkplain RunLast last} subcommand specified on the
+     * command line is executed.
+     * Commands with subcommands may be interested in calling the {@link #parseWithHandler(IParseResultHandler, PrintStream, String...) parseWithHandler}
+     * method with a {@link RunAll} handler or a custom handler.
+     * </p><p>
+     * From picocli v2.0, this method prints usage help or version help if {@linkplain #printHelpIfRequested(List, PrintStream, Help.Ansi) requested},
+     * and any exceptions thrown by the {@code Callable} are caught and rethrown wrapped in an {@code ExecutionException}.
+     * </p>
+     * @param callable the command to call when {@linkplain #parse(String...) parsing} succeeds.
+     * @param out the printStream to print to
+     * @param ansi whether the usage message should include ANSI escape codes or not
+     * @param args the command line arguments to parse
+     * @param <C> the annotated object must implement Callable
+     * @param <T> the return type of the specified {@code Callable}
+     * @throws InitializationException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
+     * @throws ExecutionException if the Callable throws an exception
+     * @return {@code null} if an error occurred while parsing the command line options, or if help was requested and printed. Otherwise returns the result of calling the Callable
+     * @see #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...)
+     * @see RunLast
+     */
+    public static <C extends Callable<T>, T> T call(C callable, PrintStream out, Help.Ansi ansi, String... args) {
+        CommandLine cmd = new CommandLine(callable); // validate command outside of try-catch
+        List<Object> results = cmd.parseWithHandlers(new RunLast(), out, ansi, new DefaultExceptionHandler(), args);
+        return results == null || results.isEmpty() ? null : (T) results.get(0);
+    }
 
     /**
      * Delegates to {@link #run(Runnable, PrintStream, Help.Ansi, String...)} with {@link Help.Ansi#AUTO}.
-     * @param command the command to run when {@linkplain #populateCommand(Object, String...) parsing} succeeds.
+     * <p>
+     * From picocli v2.0, this method prints usage help or version help if {@linkplain #printHelpIfRequested(List, PrintStream, Help.Ansi) requested},
+     * and any exceptions thrown by the {@code Runnable} are caught and rethrown wrapped in an {@code ExecutionException}.
+     * </p>
+     * @param runnable the command to run when {@linkplain #parse(String...) parsing} succeeds.
      * @param out the printStream to print to
      * @param args the command line arguments to parse
      * @param <R> the annotated object must implement Runnable
      * @see #run(Runnable, PrintStream, Help.Ansi, String...)
-     * @throws IllegalArgumentException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
+     * @throws InitializationException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
+     * @throws ExecutionException if the Runnable throws an exception
+     * @see #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...)
+     * @see RunFirst
      */
-    public static <R extends Runnable> void run(R command, PrintStream out, String... args) {
-        run(command, out, Help.Ansi.AUTO, args);
+    public static <R extends Runnable> void run(R runnable, PrintStream out, String... args) {
+        run(runnable, out, Help.Ansi.AUTO, args);
     }
     /**
      * Convenience method to allow command line application authors to avoid some boilerplate code in their application.
      * The annotated object needs to implement {@link Runnable}. Calling this method is equivalent to:
      * <pre>
-     * CommandLine cmd = new CommandLine(command);
+     * CommandLine cmd = new CommandLine(runnable);
+     * List&lt;CommandLine&gt; parsedCommands;
      * try {
-     *     cmd.parse(args);
-     * } catch (Exception ex) {
-     *     System.err.println(ex.getMessage());
+     *     parsedCommands = cmd.parse(args);
+     * } catch (ParameterException ex) {
+     *     out.println(ex.getMessage());
      *     cmd.usage(out, ansi);
-     *     return;
+     *     return null;
      * }
-     * command.run();
+     * if (CommandLine.printHelpIfRequested(parsedCommands, out, ansi)) {
+     *     return null;
+     * }
+     * CommandLine last = parsedCommands.get(parsedCommands.size() - 1);
+     * try {
+     *     Runnable subcommand = last.getCommand();
+     *     subcommand.run();
+     * } catch (Exception ex) {
+     *     throw new ExecutionException(last, "Error running " + last.getCommand(), ex);
+     * }
      * </pre>
-     * Note that this method is not suitable for commands with subcommands.
-     * @param command the command to run when {@linkplain #populateCommand(Object, String...) parsing} succeeds.
+     * <p>
+     * If the specified Runnable command has subcommands, the {@linkplain RunLast last} subcommand specified on the
+     * command line is executed.
+     * Commands with subcommands may be interested in calling the {@link #parseWithHandler(IParseResultHandler, PrintStream, String...) parseWithHandler}
+     * method with a {@link RunAll} handler or a custom handler.
+     * </p><p>
+     * From picocli v2.0, this method prints usage help or version help if {@linkplain #printHelpIfRequested(List, PrintStream, Help.Ansi) requested},
+     * and any exceptions thrown by the {@code Runnable} are caught and rethrown wrapped in an {@code ExecutionException}.
+     * </p>
+     * @param runnable the command to run when {@linkplain #parse(String...) parsing} succeeds.
      * @param out the printStream to print to
      * @param ansi whether the usage message should include ANSI escape codes or not
      * @param args the command line arguments to parse
      * @param <R> the annotated object must implement Runnable
-     * @throws IllegalArgumentException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
+     * @throws InitializationException if the specified command object does not have a {@link Command}, {@link Option} or {@link Parameters} annotation
+     * @throws ExecutionException if the Runnable throws an exception
+     * @see #parseWithHandlers(IParseResultHandler, PrintStream, Help.Ansi, IExceptionHandler, String...)
+     * @see RunLast
      */
-    public static <R extends Runnable> void run(R command, PrintStream out, Help.Ansi ansi, String... args) {
-        CommandLine cmd = new CommandLine(command); // validate command outside of try-catch
-        try {
-            cmd.parse(args);
-        } catch (Exception ex) {
-            out.println(ex.getMessage());
-            cmd.usage(out, ansi);
-            return;
-        }
-        command.run();
+    public static <R extends Runnable> void run(R runnable, PrintStream out, Help.Ansi ansi, String... args) {
+        CommandLine cmd = new CommandLine(runnable); // validate command outside of try-catch
+        cmd.parseWithHandlers(new RunLast(), out, ansi, new DefaultExceptionHandler(), args);
     }
 
     /**
@@ -564,16 +1002,35 @@ public class CommandLine {
         return this;
     }
 
-    /** Returns the String that separates option names from option values when parsing command line options. {@code '='} by default.
+    /** Returns the String that separates option names from option values when parsing command line options. {@value Help#DEFAULT_SEPARATOR} by default.
      * @return the String the parser uses to separate option names from option values */
     public String getSeparator() {
         return interpreter.separator;
     }
 
     /** Sets the String the parser uses to separate option names from option values to the specified value.
-     * @param separator the String that separates option names from option values */
-    public void setSeparator(String separator) {
+     * The separator may also be set declaratively with the {@link CommandLine.Command#separator()} annotation attribute.
+     * @param separator the String that separates option names from option values
+     * @return this {@code CommandLine} object, to allow method chaining */
+    public CommandLine setSeparator(String separator) {
         interpreter.separator = Assert.notNull(separator, "separator");
+        return this;
+    }
+
+    /** Returns the command name (also called program name) displayed in the usage help synopsis. {@value Help#DEFAULT_COMMAND_NAME} by default.
+     * @return the command name (also called program name) displayed in the usage */
+    public String getCommandName() {
+        return commandName;
+    }
+
+    /** Sets the command name (also called program name) displayed in the usage help synopsis to the specified value.
+     * Note that this method only modifies the usage help message, it does not impact parsing behaviour.
+     * The command name may also be set declaratively with the {@link CommandLine.Command#name()} annotation attribute.
+     * @param commandName command name (also called program name) displayed in the usage help synopsis
+     * @return this {@code CommandLine} object, to allow method chaining */
+    public CommandLine setCommandName(String commandName) {
+        this.commandName = Assert.notNull(commandName, "commandName");
+        return this;
     }
     private static boolean empty(String str) { return str == null || str.trim().length() == 0; }
     private static boolean empty(Object[] array) { return array == null || array.length == 0; }
@@ -581,6 +1038,35 @@ public class CommandLine {
     private static String str(String[] arr, int i) { return (arr == null || arr.length == 0) ? "" : arr[i]; }
     private static boolean isBoolean(Class<?> type) { return type == Boolean.class || type == Boolean.TYPE; }
     private static CommandLine toCommandLine(Object obj) { return obj instanceof CommandLine ? (CommandLine) obj : new CommandLine(obj);}
+    private static boolean isMultiValue(Field field) {  return isMultiValue(field.getType()); }
+    private static boolean isMultiValue(Class<?> cls) { return cls.isArray() || Collection.class.isAssignableFrom(cls) || Map.class.isAssignableFrom(cls); }
+    private static Class<?>[] getTypeAttribute(Field field) {
+        Class<?>[] explicit = field.isAnnotationPresent(Parameters.class) ? field.getAnnotation(Parameters.class).type() : field.getAnnotation(Option.class).type();
+        if (explicit.length > 0) { return explicit; }
+        if (field.getType().isArray()) { return new Class<?>[] { field.getType().getComponentType() }; }
+        if (isMultiValue(field)) {
+            Type type = field.getGenericType(); // e.g. Map<Long, ? extends Number>
+            if (type instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                Type[] paramTypes = parameterizedType.getActualTypeArguments(); // e.g. ? extends Number
+                Class<?>[] result = new Class<?>[paramTypes.length];
+                for (int i = 0; i < paramTypes.length; i++) {
+                    if (paramTypes[i] instanceof Class) { result[i] = (Class<?>) paramTypes[i]; continue; } // e.g. Long
+                    if (paramTypes[i] instanceof WildcardType) { // e.g. ? extends Number
+                        WildcardType wildcardType = (WildcardType) paramTypes[i];
+                        Type[] lower = wildcardType.getLowerBounds(); // e.g. []
+                        if (lower.length > 0 && lower[0] instanceof Class) { result[i] = (Class<?>) lower[0]; continue; }
+                        Type[] upper = wildcardType.getUpperBounds(); // e.g. Number
+                        if (upper.length > 0 && upper[0] instanceof Class) { result[i] = (Class<?>) upper[0]; continue; }
+                    }
+                    Arrays.fill(result, String.class); return result; // too convoluted generic type, giving up
+                }
+                return result; // we inferred all types from ParameterizedType
+            }
+            return new Class<?>[] {String.class, String.class}; // field is multi-value but not ParameterizedType
+        }
+        return new Class<?>[] {field.getType()}; // not a multi-value field
+    }
     /**
      * <p>
      * Annotate fields in your class with {@code @Option} and picocli will initialize these fields when matching
@@ -600,10 +1086,10 @@ public class CommandLine {
      *     &#064;Option(names = { "-v", "--verbose"}, description = "Verbosely list files processed")
      *     private boolean verbose;
      *
-     *     &#064;Option(names = { "-h", "--help", "-?", "-help"}, help = true, description = "Display this help and exit")
+     *     &#064;Option(names = { "-h", "--help", "-?", "-help"}, usageHelp = true, description = "Display this help and exit")
      *     private boolean help;
      *
-     *     &#064;Option(names = { "-V", "--version"}, help = true, description = "Display version information and exit")
+     *     &#064;Option(names = { "-V", "--version"}, versionHelp = true, description = "Display version information and exit")
      *     private boolean version;
      * }
      * </pre>
@@ -681,6 +1167,7 @@ public class CommandLine {
          * and take the appropriate action.
          * </p>
          * @return whether this option disables validation of the other arguments
+         * @deprecated Use {@link #usageHelp()} and {@link #versionHelp()} instead. See {@link #printHelpIfRequested(List, PrintStream, CommandLine.Help.Ansi)}
          */
         boolean help() default false;
 
@@ -698,6 +1185,7 @@ public class CommandLine {
          * and take the appropriate action.
          * </p>
          * @return whether this option allows the user to request usage help
+         * @since 0.9.8
          */
         boolean usageHelp() default false;
 
@@ -715,6 +1203,7 @@ public class CommandLine {
          * and take the appropriate action.
          * </p>
          * @return whether this option allows the user to request version information
+         * @since 0.9.8
          */
         boolean versionHelp() default false;
 
@@ -783,22 +1272,34 @@ public class CommandLine {
          */
         String paramLabel() default "";
 
-        /**
-         * <p>
-         * Specify a {@code type} if the annotated field is a {@code Collection} that should hold objects other than Strings.
+        /** <p>
+         * Optionally specify a {@code type} to control exactly what Class the option parameter should be converted
+         * to. This may be useful when the field type is an interface or an abstract class. For example, a field can
+         * be declared to have type {@code java.lang.Number}, and annotating {@code @Option(type=Short.class)}
+         * ensures that the option parameter value is converted to a {@code Short} before setting the field value.
          * </p><p>
-         * If the field's type is a {@code Collection}, the generic type parameter of the collection is erased and
-         * cannot be determined at runtime. Specify a {@code type} attribute to store values other than String in
-         * the Collection. Picocli will use the {@link ITypeConverter}
-         * that is {@linkplain #registerConverter(Class, ITypeConverter) registered} for that type to convert
-         * the raw String values before they are added to the collection.
+         * For array fields whose <em>component</em> type is an interface or abstract class, specify the concrete <em>component</em> type.
+         * For example, a field with type {@code Number[]} may be annotated with {@code @Option(type=Short.class)}
+         * to ensure that option parameter values are converted to {@code Short} before adding an element to the array.
          * </p><p>
-         * When the field's type is an array, the {@code type} attribute is ignored: the values will be converted
-         * to the array component type and the array will be replaced with a new instance containing both the old and
-         * the new values. </p>
-         * @return the type to convert the raw String values to before adding them to the Collection
+         * Picocli will use the {@link ITypeConverter} that is
+         * {@linkplain #registerConverter(Class, ITypeConverter) registered} for the specified type to convert
+         * the raw String values before modifying the field value.
+         * </p><p>
+         * Prior to 2.0, the {@code type} attribute was necessary for {@code Collection} and {@code Map} fields,
+         * but starting from 2.0 picocli will infer the component type from the generic type's type arguments.
+         * For example, for a field of type {@code Map<TimeUnit, Long>} picocli will know the option parameter
+         * should be split up in key=value pairs, where the key should be converted to a {@code java.util.concurrent.TimeUnit}
+         * enum value, and the value should be converted to a {@code Long}. No {@code @Option(type=...)} type attribute
+         * is required for this. For generic types with wildcards, picocli will take the specified upper or lower bound
+         * as the Class to convert to, unless the {@code @Option} annotation specifies an explicit {@code type} attribute.
+         * </p><p>
+         * If the field type is a raw collection or a raw map, and you want it to contain other values than Strings,
+         * or if the generic type's type arguments are interfaces or abstract classes, you may
+         * specify a {@code type} attribute to control the Class that the option parameter should be converted to.
+         * @return the type(s) to convert the raw String values
          */
-        Class<?> type() default String.class;
+        Class<?>[] type() default {};
 
         /**
          * Specify a regular expression to use to split option parameter values before applying them to the field.
@@ -881,20 +1382,33 @@ public class CommandLine {
 
         /**
          * <p>
-         * Specify a {@code type} if the annotated field is a {@code Collection} that should hold objects other than Strings.
+         * Optionally specify a {@code type} to control exactly what Class the positional parameter should be converted
+         * to. This may be useful when the field type is an interface or an abstract class. For example, a field can
+         * be declared to have type {@code java.lang.Number}, and annotating {@code @Parameters(type=Short.class)}
+         * ensures that the positional parameter value is converted to a {@code Short} before setting the field value.
          * </p><p>
-         * If the field's type is a {@code Collection}, the generic type parameter of the collection is erased and
-         * cannot be determined at runtime. Specify a {@code type} attribute to store values other than String in
-         * the Collection. Picocli will use the {@link ITypeConverter}
-         * that is {@linkplain #registerConverter(Class, ITypeConverter) registered} for that type to convert
-         * the raw String values before they are added to the collection.
+         * For array fields whose <em>component</em> type is an interface or abstract class, specify the concrete <em>component</em> type.
+         * For example, a field with type {@code Number[]} may be annotated with {@code @Parameters(type=Short.class)}
+         * to ensure that positional parameter values are converted to {@code Short} before adding an element to the array.
          * </p><p>
-         * When the field's type is an array, the {@code type} attribute is ignored: the values will be converted
-         * to the array component type and the array will be replaced with a new instance containing both the old and
-         * the new values. </p>
-         * @return the type to convert the raw String values to before adding them to the Collection
+         * Picocli will use the {@link ITypeConverter} that is
+         * {@linkplain #registerConverter(Class, ITypeConverter) registered} for the specified type to convert
+         * the raw String values before modifying the field value.
+         * </p><p>
+         * Prior to 2.0, the {@code type} attribute was necessary for {@code Collection} and {@code Map} fields,
+         * but starting from 2.0 picocli will infer the component type from the generic type's type arguments.
+         * For example, for a field of type {@code Map<TimeUnit, Long>} picocli will know the positional parameter
+         * should be split up in key=value pairs, where the key should be converted to a {@code java.util.concurrent.TimeUnit}
+         * enum value, and the value should be converted to a {@code Long}. No {@code @Parameters(type=...)} type attribute
+         * is required for this. For generic types with wildcards, picocli will take the specified upper or lower bound
+         * as the Class to convert to, unless the {@code @Parameters} annotation specifies an explicit {@code type} attribute.
+         * </p><p>
+         * If the field type is a raw collection or a raw map, and you want it to contain other values than Strings,
+         * or if the generic type's type arguments are interfaces or abstract classes, you may
+         * specify a {@code type} attribute to control the Class that the positional parameter should be converted to.
+         * @return the type(s) to convert the raw String values
          */
-        Class<?> type() default String.class;
+        Class<?>[] type() default {};
 
         /**
          * Specify a regular expression to use to split positional parameter values before applying them to the field.
@@ -936,7 +1450,7 @@ public class CommandLine {
      *   <li>[footer]</li>
      * </ul> */
     @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Target({ElementType.TYPE, ElementType.LOCAL_VARIABLE, ElementType.PACKAGE})
     public @interface Command {
         /** Program name to show in the synopsis. If omitted, {@code "<main class>"} is used.
          * For {@linkplain #subcommands() declaratively added} subcommands, this attribute is also used
@@ -1174,19 +1688,41 @@ public class CommandLine {
                     : new Range(0, 0, false, true, "0");
         }
         static Range adjustForType(Range result, Field field) {
-            return result.isUnspecified ? defaultArity(field.getType()) : result;
+            return result.isUnspecified ? defaultArity(field) : result;
         }
-        /** Returns a new {@code Range} based on the specified type: booleans have arity 0, arrays or Collections have
+        /** Returns the default arity {@code Range}: for {@link Option options} this is 0 for booleans and 1 for
+         * other types, for {@link Parameters parameters} booleans have arity 0, arrays or Collections have
          * arity "0..*", and other types have arity 1.
+         * @param field the field whose default arity to return
+         * @return a new {@code Range} indicating the default arity of the specified field
+         * @since 2.0 */
+        public static Range defaultArity(Field field) {
+            Class<?> type = field.getType();
+            if (field.isAnnotationPresent(Option.class)) {
+                return defaultArity(type);
+            }
+            if (isMultiValue(type)) {
+                return Range.valueOf("0..1");
+            }
+            return Range.valueOf("1");// for single-valued fields (incl. boolean positional parameters)
+        }
+        /** Returns the default arity {@code Range} for {@link Option options}: booleans have arity 0, other types have arity 1.
          * @param type the type whose default arity to return
          * @return a new {@code Range} indicating the default arity of the specified type */
         public static Range defaultArity(Class<?> type) {
-            if (isBoolean(type)) {
-                return Range.valueOf("0");
-            } else if (type.isArray() || Collection.class.isAssignableFrom(type)) {
-                return Range.valueOf("0..*");
-            }
-            return Range.valueOf("1");// for single-valued fields
+            return isBoolean(type) ? Range.valueOf("0") : Range.valueOf("1");
+        }
+        private int size() { return 1 + max - min; }
+        static Range parameterCapacity(Field field) {
+            Range arity = parameterArity(field);
+            if (!isMultiValue(field)) { return arity; }
+            Range index = parameterIndex(field);
+            if (arity.max == 0)    { return arity; }
+            if (index.size() == 1) { return arity; }
+            if (index.isVariable)  { return Range.valueOf(arity.min + "..*"); }
+            if (arity.size() == 1) { return Range.valueOf(arity.min * index.size() + ""); }
+            if (arity.isVariable)  { return Range.valueOf(arity.min * index.size() + "..*"); }
+            return Range.valueOf(arity.min * index.size() + ".." + arity.max * index.size());
         }
         /** Leniently parses the specified String as an {@code Range} value and return the result. A range string can
          * be a fixed integer value or a range of the form {@code MIN_VALUE + ".." + MAX_VALUE}. If the
@@ -1231,6 +1767,13 @@ public class CommandLine {
          * @return a new Range object with the specified {@code max} value */
         public Range max(int newMax) { return new Range(Math.min(min, newMax), newMax, isVariable, isUnspecified, originalValue); }
 
+        /**
+         * Returns {@code true} if this Range includes the specified value, {@code false} otherwise.
+         * @param value the value to check
+         * @return {@code true} if the specified value is not less than the minimum and not greater than the maximum of this Range
+         */
+        public boolean contains(int value) { return min <= value && max >= value; }
+
         public boolean equals(Object object) {
             if (!(object instanceof Range)) { return false; }
             Range other = (Range) object;
@@ -1247,11 +1790,11 @@ public class CommandLine {
             return (result == 0) ? max - other.max : result;
         }
     }
-    private static void init(Class<?> cls,
-                             List<Field> requiredFields,
-                             Map<String, Field> optionName2Field,
-                             Map<Character, Field> singleCharOption2Field,
-                             List<Field> positionalParametersFields) {
+    static void init(Class<?> cls,
+                     List<Field> requiredFields,
+                     Map<String, Field> optionName2Field,
+                     Map<Character, Field> singleCharOption2Field,
+                     List<Field> positionalParametersFields) {
         Field[] declaredFields = cls.getDeclaredFields();
         for (Field field : declaredFields) {
             field.setAccessible(true);
@@ -1276,7 +1819,7 @@ public class CommandLine {
             }
             if (field.isAnnotationPresent(Parameters.class)) {
                 if (field.isAnnotationPresent(Option.class)) {
-                    throw new ParameterException("A field can be either @Option or @Parameters, but '"
+                    throw new DuplicateOptionAnnotationsException("A field can be either @Option or @Parameters, but '"
                             + field.getName() + "' is both.");
                 }
                 positionalParametersFields.add(field);
@@ -1315,7 +1858,8 @@ public class CommandLine {
         private final List<Field> positionalParametersFields             = new ArrayList<Field>();
         private final Object command;
         private boolean isHelpRequested;
-        private String separator = "=";
+        private String separator = Help.DEFAULT_SEPARATOR;
+        private int position;
 
         Interpreter(Object command) {
             converterRegistry.put(Path.class,          new BuiltIn.PathConverter());
@@ -1350,9 +1894,10 @@ public class CommandLine {
             converterRegistry.put(Pattern.class,       new BuiltIn.PatternConverter());
             converterRegistry.put(UUID.class,          new BuiltIn.UUIDConverter());
 
-            this.command             = Assert.notNull(command, "command");
-            Class<?> cls             = command.getClass();
-            String declaredSeparator = null;
+            this.command                 = Assert.notNull(command, "command");
+            Class<?> cls                 = command.getClass();
+            String declaredName          = null;
+            String declaredSeparator     = null;
             boolean hasCommandAnnotation = false;
             while (cls != null) {
                 init(cls, requiredFields, optionName2Field, singleCharOption2Field, positionalParametersFields);
@@ -1360,12 +1905,13 @@ public class CommandLine {
                     hasCommandAnnotation = true;
                     Command cmd = cls.getAnnotation(Command.class);
                     declaredSeparator = (declaredSeparator == null) ? cmd.separator() : declaredSeparator;
+                    declaredName = (declaredName == null) ? cmd.name() : declaredName;
                     CommandLine.this.versionLines.addAll(Arrays.asList(cmd.version()));
 
                     for (Class<?> sub : cmd.subcommands()) {
                         Command subCommand = sub.getAnnotation(Command.class);
                         if (subCommand == null || Help.DEFAULT_COMMAND_NAME.equals(subCommand.name())) {
-                            throw new IllegalArgumentException("Subcommand " + sub.getName() +
+                            throw new InitializationException("Subcommand " + sub.getName() +
                                     " is missing the mandatory @Command annotation with a 'name' attribute");
                         }
                         try {
@@ -1375,11 +1921,11 @@ public class CommandLine {
                             commandLine.parent = CommandLine.this;
                             commands.put(subCommand.name(), commandLine);
                         }
-                        catch (IllegalArgumentException ex) { throw ex; }
-                        catch (NoSuchMethodException ex) { throw new IllegalArgumentException("Cannot instantiate subcommand " +
+                        catch (InitializationException ex) { throw ex; }
+                        catch (NoSuchMethodException ex) { throw new InitializationException("Cannot instantiate subcommand " +
                                 sub.getName() + ": the class has no constructor", ex); }
                         catch (Exception ex) {
-                            throw new IllegalStateException("Could not instantiate and add subcommand " +
+                            throw new InitializationException("Could not instantiate and add subcommand " +
                                     sub.getName() + ": " + ex, ex);
                         }
                     }
@@ -1387,11 +1933,12 @@ public class CommandLine {
                 cls = cls.getSuperclass();
             }
             separator = declaredSeparator != null ? declaredSeparator : separator;
+            CommandLine.this.commandName = declaredName != null ? declaredName : CommandLine.this.commandName;
             Collections.sort(positionalParametersFields, new PositionalParametersSorter());
             validatePositionalParameters(positionalParametersFields);
 
             if (positionalParametersFields.isEmpty() && optionName2Field.isEmpty() && !hasCommandAnnotation) {
-                throw new IllegalArgumentException(command + " (" + command.getClass() +
+                throw new InitializationException(command + " (" + command.getClass() +
                         ") is not a command: it has no @Command, @Option or @Parameters annotations");
             }
         }
@@ -1404,6 +1951,7 @@ public class CommandLine {
          */
         List<CommandLine> parse(String... args) {
             Assert.notNull(args, "argument array");
+            if (tracer.isInfo()) {tracer.info("Parsing %d command line args %s%n", args.length, Arrays.toString(args));}
             Stack<String> arguments = new Stack<String>();
             for (int i = args.length - 1; i >= 0; i--) {
                 arguments.push(args[i]);
@@ -1419,6 +1967,8 @@ public class CommandLine {
             CommandLine.this.versionHelpRequested = false;
             CommandLine.this.usageHelpRequested = false;
 
+            Class<?> cmdClass = this.command.getClass();
+            if (tracer.isDebug()) {tracer.debug("Initializing %s: %d options, %d positional parameters, %d required, %d subcommands.%n", cmdClass.getName(), new HashSet<Field>(optionName2Field.values()).size(), positionalParametersFields.size(), requiredFields.size(), commands.size());}
             parsedCommands.add(CommandLine.this);
             List<Field> required = new ArrayList<Field>(requiredFields);
             Set<Field> initialized = new HashSet<Field>();
@@ -1428,19 +1978,22 @@ public class CommandLine {
             } catch (ParameterException ex) {
                 throw ex;
             } catch (Exception ex) {
-                int offendingArgIndex = originalArgs.length - argumentStack.size();
+                int offendingArgIndex = originalArgs.length - argumentStack.size() - 1;
                 String arg = offendingArgIndex >= 0 && offendingArgIndex < originalArgs.length ? originalArgs[offendingArgIndex] : "?";
-                throw ParameterException.create(ex, arg, argumentStack.size(), originalArgs);
+                throw ParameterException.create(CommandLine.this, ex, arg, offendingArgIndex, originalArgs);
             }
             if (!isAnyHelpRequested() && !required.isEmpty()) {
-                if (required.get(0).isAnnotationPresent(Option.class)) {
-                    throw MissingParameterException.create(required);
-                } else {
-                    try {
-                        processPositionalParameters0(required, true, new Stack<String>());
-                    } catch (ParameterException ex) { throw ex;
-                    } catch (Exception ex) { throw new IllegalStateException("Internal error: " + ex, ex); }
+                for (Field missing : required) {
+                    if (missing.isAnnotationPresent(Option.class)) {
+                        throw MissingParameterException.create(CommandLine.this, required, separator);
+                    } else {
+                        assertNoMissingParameters(missing, Range.parameterArity(missing).min, argumentStack);
+                    }
                 }
+            }
+            if (!unmatchedArguments.isEmpty()) {
+                if (!isUnmatchedArgumentsAllowed()) { throw new UnmatchedArgumentException(CommandLine.this, unmatchedArguments); }
+                if (tracer.isWarn()) { tracer.warn("Unmatched arguments: %s%n", unmatchedArguments); }
             }
         }
 
@@ -1460,19 +2013,22 @@ public class CommandLine {
 
             while (!args.isEmpty()) {
                 String arg = args.pop();
+                if (tracer.isDebug()) {tracer.debug("Processing argument '%s'. Remainder=%s%n", arg, reverse((Stack<String>) args.clone()));}
 
                 // Double-dash separates options from positional arguments.
                 // If found, then interpret the remaining args as positional parameters.
                 if ("--".equals(arg)) {
-                    processPositionalParameters(required, args);
+                    tracer.info("Found end-of-options delimiter '--'. Treating remainder as positional parameters.%n");
+                    processRemainderAsPositionalParameters(required, initialized, args);
                     return; // we are done
                 }
 
                 // if we find another command, we are done with the current command
                 if (commands.containsKey(arg)) {
                     if (!isHelpRequested && !required.isEmpty()) { // ensure current command portion is valid
-                        throw MissingParameterException.create(required);
+                        throw MissingParameterException.create(CommandLine.this, required, separator);
                     }
+                    if (tracer.isDebug()) {tracer.debug("Found subcommand '%s' (%s)%n", arg, commands.get(arg).interpreter.command.getClass().getName());}
                     commands.get(arg).interpreter.parse(parsedCommands, args, originalArgs);
                     return; // remainder done by the command
                 }
@@ -1491,7 +2047,12 @@ public class CommandLine {
                         String optionParam = arg.substring(separatorIndex + separator.length());
                         args.push(optionParam);
                         arg = key;
+                        if (tracer.isDebug()) {tracer.debug("Separated '%s' option from '%s' option parameter%n", key, optionParam);}
+                    } else {
+                        if (tracer.isDebug()) {tracer.debug("'%s' contains separator '%s' but '%s' is not a known option%n", arg, separator, key);}
                     }
+                } else {
+                    if (tracer.isDebug()) {tracer.debug("'%s' cannot be separated into <option>%s<option-parameter>%n", arg, separator);}
                 }
                 if (optionName2Field.containsKey(arg)) {
                     processStandaloneOption(required, initialized, arg, args, paramAttachedToOption);
@@ -1499,56 +2060,66 @@ public class CommandLine {
                 // Compact (single-letter) options can be grouped with other options or with an argument.
                 // only single-letter options can be combined with other options or with an argument
                 else if (arg.length() > 2 && arg.startsWith("-")) {
+                    if (tracer.isDebug()) {tracer.debug("Trying to process '%s' as clustered short options%n", arg, args);}
                     processClusteredShortOptions(required, initialized, arg, args);
                 }
                 // The argument could not be interpreted as an option.
                 // We take this to mean that the remainder are positional arguments
                 else {
                     args.push(arg);
-                    processPositionalParameters(required, args);
-                    return;
+                    if (tracer.isDebug()) {tracer.debug("Could not find option '%s', deciding whether to treat as unmatched option or positional parameter...%n", arg);}
+                    if (resemblesOption(arg)) { handleUnmatchedArguments(args.pop()); continue; } // #149
+                    if (tracer.isDebug()) {tracer.debug("No option named '%s' found. Processing remainder as positional parameters%n", arg);}
+                    processPositionalParameter(required, initialized, args);
                 }
             }
         }
-
-        private void processPositionalParameters(Collection<Field> required, Stack<String> args) throws Exception {
-            processPositionalParameters0(required, false, args);
-            if (!args.empty()) {
-                handleUnmatchedArguments(args);
-                return;
-            };
+        private boolean resemblesOption(String arg) {
+            int count = 0;
+            for (String optionName : optionName2Field.keySet()) {
+                for (int i = 0; i < arg.length(); i++) {
+                    if (optionName.length() > i && arg.charAt(i) == optionName.charAt(i)) { count++; } else { break; }
+                }
+            }
+            boolean result = count > 0 && count * 10 >= optionName2Field.size() * 9; // at least one prefix char in common with 9 out of 10 options
+            if (tracer.isDebug()) {tracer.debug("%s %s an option: %d matching prefix chars out of %d option names%n", arg, (result ? "resembles" : "doesn't resemble"), count, optionName2Field.size());}
+            return result;
         }
-
+        private void handleUnmatchedArguments(String arg) {Stack<String> args = new Stack<String>(); args.add(arg); handleUnmatchedArguments(args);}
         private void handleUnmatchedArguments(Stack<String> args) {
-            if (!isUnmatchedArgumentsAllowed()) { throw new UnmatchedArgumentException(args); }
             while (!args.isEmpty()) { unmatchedArguments.add(args.pop()); } // addAll would give args in reverse order
         }
 
-        private void processPositionalParameters0(Collection<Field> required, boolean validateOnly, Stack<String> args) throws Exception {
-            int max = -1;
+        private void processRemainderAsPositionalParameters(Collection<Field> required, Set<Field> initialized, Stack<String> args) throws Exception {
+            while (!args.empty()) {
+                processPositionalParameter(required, initialized, args);
+            }
+        }
+        private void processPositionalParameter(Collection<Field> required, Set<Field> initialized, Stack<String> args) throws Exception {
+            if (tracer.isDebug()) {tracer.debug("Processing next arg as a positional parameter at index=%d. Remainder=%s%n", position, reverse((Stack<String>) args.clone()));}
+            int consumed = 0;
             for (Field positionalParam : positionalParametersFields) {
                 Range indexRange = Range.parameterIndex(positionalParam);
-                max = Math.max(max, indexRange.max);
+                if (!indexRange.contains(position)) {
+                    continue;
+                }
                 @SuppressWarnings("unchecked")
-                Stack<String> argsCopy = reverse((Stack<String>) args.clone());
-                if (!indexRange.isVariable) {
-                    for (int i = argsCopy.size() - 1; i > indexRange.max; i--) {
-                        argsCopy.removeElementAt(i);
-                    }
-                }
-                Collections.reverse(argsCopy);
-                for (int i = 0; i < indexRange.min && !argsCopy.isEmpty(); i++) { argsCopy.pop(); }
+                Stack<String> argsCopy = (Stack<String>) args.clone();
                 Range arity = Range.parameterArity(positionalParam);
+                if (tracer.isDebug()) {tracer.debug("Position %d is in index range %s. Trying to assign args to %s, arity=%s%n", position, indexRange, positionalParam, arity);}
                 assertNoMissingParameters(positionalParam, arity.min, argsCopy);
-                if (!validateOnly) {
-                    applyOption(positionalParam, Parameters.class, arity, false, argsCopy, null);
-                    required.remove(positionalParam);
-                }
+                int originalSize = argsCopy.size();
+                applyOption(positionalParam, Parameters.class, arity, false, argsCopy, initialized, "args[" + indexRange + "]");
+                int count = originalSize - argsCopy.size();
+                if (count > 0) { required.remove(positionalParam); }
+                consumed = Math.max(consumed, count);
             }
             // remove processed args from the stack
-            if (!validateOnly && !positionalParametersFields.isEmpty()) {
-                int processedArgCount = Math.min(args.size(), max < Integer.MAX_VALUE ? max + 1 : Integer.MAX_VALUE);
-                for (int i = 0; i < processedArgCount; i++) { args.pop(); }
+            for (int i = 0; i < consumed; i++) { args.pop(); }
+            position += consumed;
+            if (tracer.isDebug()) {tracer.debug("Consumed %d arguments, moving position to index %d.%n", consumed, position);}
+            if (consumed == 0 && !args.isEmpty()) {
+                handleUnmatchedArguments(args.pop());
             }
         }
 
@@ -1563,7 +2134,8 @@ public class CommandLine {
             if (paramAttachedToKey) {
                 arity = arity.min(Math.max(1, arity.min)); // if key=value, minimum arity is at least 1
             }
-            applyOption(field, Option.class, arity, paramAttachedToKey, args, initialized);
+            if (tracer.isDebug()) {tracer.debug("Found option named '%s': field %s, arity=%s%n", arg, field, arity);}
+            applyOption(field, Option.class, arity, paramAttachedToKey, args, initialized, "option " + arg);
         }
 
         private void processClusteredShortOptions(Collection<Field> required,
@@ -1577,19 +2149,27 @@ public class CommandLine {
             do {
                 if (cluster.length() > 0 && singleCharOption2Field.containsKey(cluster.charAt(0))) {
                     Field field = singleCharOption2Field.get(cluster.charAt(0));
+                    Range arity = Range.optionArity(field);
+                    String argDescription = "option " + prefix + cluster.charAt(0);
+                    if (tracer.isDebug()) {tracer.debug("Found option '%s%s' in %s: field %s, arity=%s%n", prefix, cluster.charAt(0), arg, field, arity);}
                     required.remove(field);
                     cluster = cluster.length() > 0 ? cluster.substring(1) : "";
                     paramAttachedToOption = cluster.length() > 0;
-                    Range arity = Range.optionArity(field);
                     if (cluster.startsWith(separator)) {// attached with separator, like -f=FILE or -v=true
                         cluster = cluster.substring(separator.length());
                         arity = arity.min(Math.max(1, arity.min)); // if key=value, minimum arity is at least 1
+                    }
+                    if (arity.min > 0 && !empty(cluster)) {
+                        if (tracer.isDebug()) {tracer.debug("Trying to process '%s' as option parameter%n", cluster);}
                     }
                     args.push(cluster); // interpret remainder as option parameter (CAUTION: may be empty string!)
                     // arity may be >= 1, or
                     // arity <= 0 && !cluster.startsWith(separator)
                     // e.g., boolean @Option("-v", arity=0, varargs=true); arg "-rvTRUE", remainder cluster="TRUE"
-                    int consumed = applyOption(field, Option.class, arity, paramAttachedToOption, args, initialized);
+                    if (!args.isEmpty() && args.peek().length() == 0 && !paramAttachedToOption) {
+                        args.pop(); // throw out empty string we get at the end of a group of clustered short options
+                    }
+                    int consumed = applyOption(field, Option.class, arity, paramAttachedToOption, args, initialized, argDescription);
                     // only return if cluster (and maybe more) was consumed, otherwise continue do-while loop
                     if (consumed > 0) {
                         return;
@@ -1602,12 +2182,21 @@ public class CommandLine {
                     // We get here when the remainder of the cluster group is neither an option,
                     // nor a parameter that the last option could consume.
                     if (arg.endsWith(cluster)) {
-                        // remainder was part of a clustered group that could not be completely parsed
                         args.push(paramAttachedToOption ? prefix + cluster : cluster);
-                        handleUnmatchedArguments(args);
+                        if (args.peek().equals(arg)) { // #149 be consistent between unmatched short and long options
+                            if (tracer.isDebug()) {tracer.debug("Could not match any short options in %s, deciding whether to treat as unmatched option or positional parameter...%n", arg);}
+                            if (resemblesOption(arg)) { handleUnmatchedArguments(args.pop()); return; } // #149
+                            processPositionalParameter(required, initialized, args);
+                            return;
+                        }
+                        // remainder was part of a clustered group that could not be completely parsed
+                        if (tracer.isDebug()) {tracer.debug("No option found for %s in %s%n", cluster, arg);}
+                        handleUnmatchedArguments(args.pop());
+                    } else {
+                        args.push(cluster);
+                        if (tracer.isDebug()) {tracer.debug("%s is not an option parameter for %s%n", cluster, arg);}
+                        processPositionalParameter(required, initialized, args);
                     }
-                    args.push(cluster);
-                    processPositionalParameters(required, args);
                     return;
                 }
             } while (true);
@@ -1618,28 +2207,32 @@ public class CommandLine {
                                 Range arity,
                                 boolean valueAttachedToOption,
                                 Stack<String> args,
-                                Set<Field> initialized) throws Exception {
+                                Set<Field> initialized,
+                                String argDescription) throws Exception {
             updateHelpRequested(field);
-            if (!args.isEmpty() && args.peek().length() == 0 && !valueAttachedToOption) {
-                args.pop(); // throw out empty string we get at the end of a group of clustered short options
-            }
             int length = args.size();
             assertNoMissingParameters(field, arity.min, args);
 
             Class<?> cls = field.getType();
             if (cls.isArray()) {
-                return applyValuesToArrayField(field, annotation, arity, args, cls);
+                return applyValuesToArrayField(field, annotation, arity, args, cls, argDescription);
             }
             if (Collection.class.isAssignableFrom(cls)) {
-                return applyValuesToCollectionField(field, annotation, arity, args, cls);
+                return applyValuesToCollectionField(field, annotation, arity, args, cls, argDescription);
             }
-            return applyValueToSingleValuedField(field, arity, args, cls, initialized);
+            if (Map.class.isAssignableFrom(cls)) {
+                return applyValuesToMapField(field, annotation, arity, args, cls, argDescription);
+            }
+            cls = getTypeAttribute(field)[0]; // field may be interface/abstract type, use annotation to get concrete type
+            return applyValueToSingleValuedField(field, arity, args, cls, initialized, argDescription);
         }
+
         private int applyValueToSingleValuedField(Field field,
                                                   Range arity,
                                                   Stack<String> args,
                                                   Class<?> cls,
-                                                  Set<Field> initialized) throws Exception {
+                                                  Set<Field> initialized,
+                                                  String argDescription) throws Exception {
             boolean noMoreValues = args.isEmpty();
             String value = args.isEmpty() ? null : trim(args.pop()); // unquote the value
             int result = arity.min; // the number or args we need to consume
@@ -1661,28 +2254,117 @@ public class CommandLine {
             if (noMoreValues && value == null) {
                 return 0;
             }
+            ITypeConverter<?> converter = getTypeConverter(cls, field);
+            Object newValue = tryConvert(field, -1, converter, value, cls);
+            Object oldValue = field.get(command);
+            TraceLevel level = TraceLevel.INFO;
+            String traceMessage = "Setting %s field '%s.%s' to '%5$s' (was '%4$s') for %6$s%n";
             if (initialized != null) {
-                if (initialized.contains(field) && !isOverwrittenOptionsAllowed()) {
-                    throw new OverwrittenOptionException(optionDescription("", field, 0) +  " should be specified only once");
+                if (initialized.contains(field)) {
+                    if (!isOverwrittenOptionsAllowed()) {
+                        throw new OverwrittenOptionException(CommandLine.this, optionDescription("", field, 0) +  " should be specified only once");
+                    }
+                    level = TraceLevel.WARN;
+                    traceMessage = "Overwriting %s field '%s.%s' value '%s' with '%s' for %s%n";
                 }
                 initialized.add(field);
             }
-            ITypeConverter<?> converter = getTypeConverter(cls);
-            Object objValue = tryConvert(field, -1, converter, value, cls);
-            field.set(command, objValue);
+            if (tracer.level.isEnabled(level)) { level.print(tracer, traceMessage, field.getType().getSimpleName(),
+                    field.getDeclaringClass().getSimpleName(), field.getName(), String.valueOf(oldValue), String.valueOf(newValue), argDescription);
+            }
+            field.set(command, newValue);
             return result;
+        }
+        private int applyValuesToMapField(Field field,
+                                          Class<?> annotation,
+                                          Range arity,
+                                          Stack<String> args,
+                                          Class<?> cls,
+                                          String argDescription) throws Exception {
+            Class<?>[] classes = getTypeAttribute(field);
+            if (classes.length < 2) { throw new ParameterException(CommandLine.this, "Field " + field + " needs two types (one for the map key, one for the value) but only has " + classes.length + " types configured."); }
+            ITypeConverter<?> keyConverter   = getTypeConverter(classes[0], field);
+            ITypeConverter<?> valueConverter = getTypeConverter(classes[1], field);
+            Map<Object, Object> result = (Map<Object, Object>) field.get(command);
+            if (result == null) {
+                result = createMap(cls);
+                field.set(command, result);
+            }
+            int originalSize = result.size();
+            consumeMapArguments(field, arity, args, classes, keyConverter, valueConverter, result, argDescription);
+            return result.size() - originalSize;
+        }
+
+        private void consumeMapArguments(Field field,
+                                         Range arity,
+                                         Stack<String> args,
+                                         Class<?>[] classes,
+                                         ITypeConverter<?> keyConverter,
+                                         ITypeConverter<?> valueConverter,
+                                         Map<Object, Object> result,
+                                         String argDescription) throws Exception {
+            // first do the arity.min mandatory parameters
+            for (int i = 0; i < arity.min; i++) {
+                consumeOneMapArgument(field, arity, args, classes, keyConverter, valueConverter, result, i, argDescription);
+            }
+            // now process the varargs if any
+            for (int i = arity.min; i < arity.max && !args.isEmpty(); i++) {
+                if (!field.isAnnotationPresent(Parameters.class)) {
+                    if (commands.containsKey(args.peek()) || isOption(args.peek())) {
+                        return;
+                    }
+                }
+                consumeOneMapArgument(field, arity, args, classes, keyConverter, valueConverter, result, i, argDescription);
+            }
+        }
+
+        private void consumeOneMapArgument(Field field,
+                                           Range arity,
+                                           Stack<String> args,
+                                           Class<?>[] classes,
+                                           ITypeConverter<?> keyConverter, ITypeConverter<?> valueConverter,
+                                           Map<Object, Object> result,
+                                           int index,
+                                           String argDescription) throws Exception {
+            String[] values = split(trim(args.pop()), field);
+            for (String value : values) {
+                String[] keyValue = value.split("=");
+                if (keyValue.length < 2) {
+                    String splitRegex = splitRegex(field);
+                    if (splitRegex.length() == 0) {
+                        throw new ParameterException(CommandLine.this, "Value for option " + optionDescription("", field,
+                                0) + " should be in KEY=VALUE format but was " + value);
+                    } else {
+                        throw new ParameterException(CommandLine.this, "Value for option " + optionDescription("", field,
+                                0) + " should be in KEY=VALUE[" + splitRegex + "KEY=VALUE]... format but was " + value);
+                    }
+                }
+                Object mapKey =   tryConvert(field, index, keyConverter,   keyValue[0], classes[0]);
+                Object mapValue = tryConvert(field, index, valueConverter, keyValue[1], classes[1]);
+                result.put(mapKey, mapValue);
+                if (tracer.isInfo()) {tracer.info("Putting [%s : %s] in %s<%s, %s> field '%s.%s' for %s%n", String.valueOf(mapKey), String.valueOf(mapValue),
+                        result.getClass().getSimpleName(), classes[0].getSimpleName(), classes[1].getSimpleName(), field.getDeclaringClass().getSimpleName(), field.getName(), argDescription);}
+            }
+        }
+
+        private void checkMaxArityExceeded(Range arity, int remainder, Field field, String[] values) {
+            if (values.length <= remainder) { return; }
+            String desc = arity.max == remainder ? "" + remainder : arity + ", remainder=" + remainder;
+            throw new MaxValuesforFieldExceededException(CommandLine.this, optionDescription("", field, -1) +
+                    " max number of values (" + arity.max + ") exceeded: remainder is " + remainder + " but " +
+                    values.length + " values were specified: " + Arrays.toString(values));
         }
 
         private int applyValuesToArrayField(Field field,
                                             Class<?> annotation,
                                             Range arity,
                                             Stack<String> args,
-                                            Class<?> cls) throws Exception {
-            Class<?> type = cls.getComponentType();
-            ITypeConverter<?> converter = getTypeConverter(type);
-            List<Object> converted = consumeArguments(field, annotation, arity, args, converter, cls);
+                                            Class<?> cls,
+                                            String argDescription) throws Exception {
             Object existing = field.get(command);
             int length = existing == null ? 0 : Array.getLength(existing);
+            Class<?> type = getTypeAttribute(field)[0];
+            List<Object> converted = consumeArguments(field, annotation, arity, args, type, length, argDescription);
             List<Object> newValues = new ArrayList<Object>();
             for (int i = 0; i < length; i++) {
                 newValues.add(Array.get(existing, i));
@@ -1707,11 +2389,12 @@ public class CommandLine {
                                                  Class<?> annotation,
                                                  Range arity,
                                                  Stack<String> args,
-                                                 Class<?> cls) throws Exception {
+                                                 Class<?> cls,
+                                                 String argDescription) throws Exception {
             Collection<Object> collection = (Collection<Object>) field.get(command);
-            Class<?> type = getTypeAttribute(field);
-            ITypeConverter<?> converter = getTypeConverter(type);
-            List<Object> converted = consumeArguments(field, annotation, arity, args, converter, type);
+            Class<?> type = getTypeAttribute(field)[0];
+            int length = collection == null ? 0 : collection.size();
+            List<Object> converted = consumeArguments(field, annotation, arity, args, type, length, argDescription);
             if (collection == null) {
                 collection = createCollection(cls);
                 field.set(command, collection);
@@ -1730,23 +2413,23 @@ public class CommandLine {
                                               Class<?> annotation,
                                               Range arity,
                                               Stack<String> args,
-                                              ITypeConverter<?> converter,
-                                              Class<?> type) throws Exception {
+                                              Class<?> type,
+                                              int originalSize,
+                                              String argDescription) throws Exception {
             List<Object> result = new ArrayList<Object>();
-            int index = 0;
 
             // first do the arity.min mandatory parameters
-            for (int i = 0; result.size() < arity.min; i++) {
-                index = consumeOneArgument(field, arity, args, converter, type, result, index);
+            for (int i = 0; i < arity.min; i++) {
+                consumeOneArgument(field, arity, args, type, result, i, originalSize, argDescription);
             }
             // now process the varargs if any
-            while (result.size() < arity.max && !args.isEmpty()) {
-                if (annotation != Parameters.class) {
+            for (int i = arity.min; i < arity.max && !args.isEmpty(); i++) {
+                if (annotation != Parameters.class) { // for vararg Options, we stop if we encounter '--', a command, or another option
                     if (commands.containsKey(args.peek()) || isOption(args.peek())) {
                         return result;
                     }
                 }
-                index = consumeOneArgument(field, arity, args, converter, type, result, index);
+                consumeOneArgument(field, arity, args, type, result, i, originalSize, argDescription);
             }
             return result;
         }
@@ -1754,35 +2437,36 @@ public class CommandLine {
         private int consumeOneArgument(Field field,
                                        Range arity,
                                        Stack<String> args,
-                                       ITypeConverter<?> converter,
                                        Class<?> type,
-                                       List<Object> result, int index) throws Exception {
+                                       List<Object> result,
+                                       int index,
+                                       int originalSize,
+                                       String argDescription) throws Exception {
             String[] values = split(trim(args.pop()), field);
+            ITypeConverter<?> converter = getTypeConverter(type, field);
 
-            // ensure we don't process more than arity.max (as result of splitting args)
-            int max = Math.min(arity.max - result.size(), values.length);
-            for (int j = 0; j < max; j++) {
+            for (int j = 0; j < values.length; j++) {
                 result.add(tryConvert(field, index, converter, values[j], type));
+                if (tracer.isInfo()) {
+                    if (field.getType().isArray()) {
+                        tracer.info("Adding [%s] to %s[] field '%s.%s' for %s%n", String.valueOf(result.get(result.size() - 1)), type.getSimpleName(), field.getDeclaringClass().getSimpleName(), field.getName(), argDescription);
+                    } else {
+                        tracer.info("Adding [%s] to %s<%s> field '%s.%s' for %s%n", String.valueOf(result.get(result.size() - 1)), field.getType().getSimpleName(), type.getSimpleName(), field.getDeclaringClass().getSimpleName(), field.getName(), argDescription);
+                    }
+                }
             }
-            // if this option cannot consume values because of its arity.max,
-            // then push them back on the stack (they are likely processed as positional parameters)
-            for (int j = values.length - 1; j >= max; j--) {
-                args.push(values[j]);
-            }
-            index++;
-            return index;
+            //checkMaxArityExceeded(arity, max, field, values);
+            return ++index;
         }
 
+        private String splitRegex(Field field) {
+            if (field.isAnnotationPresent(Option.class))     { return field.getAnnotation(Option.class).split(); }
+            if (field.isAnnotationPresent(Parameters.class)) { return field.getAnnotation(Parameters.class).split(); }
+            return "";
+        }
         private String[] split(String value, Field field) {
-            if (field.isAnnotationPresent(Option.class)) {
-                String regex = field.getAnnotation(Option.class).split();
-                return regex.length() == 0 ? new String[] {value} : value.split(regex);
-            }
-            if (field.isAnnotationPresent(Parameters.class)) {
-                String regex = field.getAnnotation(Parameters.class).split();
-                return regex.length() == 0 ? new String[] {value} : value.split(regex);
-            }
-            return new String[] {value};
+            String regex = splitRegex(field);
+            return regex.length() == 0 ? new String[] {value} : value.split(regex);
         }
 
         /**
@@ -1811,11 +2495,11 @@ public class CommandLine {
                 throws Exception {
             try {
                 return converter.convert(value);
-            } catch (ParameterException ex) {
-                throw new ParameterException(ex.getMessage() + optionDescription(" for ", field, index));
+            } catch (TypeConversionException ex) {
+                throw new ParameterException(CommandLine.this, ex.getMessage() + optionDescription(" for ", field, index));
             } catch (Exception other) {
                 String desc = optionDescription(" for ", field, index) + ": " + other;
-                throw new ParameterException("Could not convert '" + value + "' to " + type.getSimpleName() + desc, other);
+                throw new ParameterException(CommandLine.this, "Could not convert '" + value + "' to " + type.getSimpleName() + desc, other);
             }
         }
 
@@ -1839,25 +2523,19 @@ public class CommandLine {
             return desc;
         }
 
-        private Class<?> getTypeAttribute(Field field) {
-            if (field.isAnnotationPresent(Parameters.class)) {
-                return field.getAnnotation(Parameters.class).type();
-            } else if (field.isAnnotationPresent(Option.class)) {
-                return field.getAnnotation(Option.class).type();
-            }
-            throw new IllegalStateException(field + " has neither @Parameters nor @Option annotation");
-        }
-
         private boolean isAnyHelpRequested() { return isHelpRequested || versionHelpRequested || usageHelpRequested; }
 
         private void updateHelpRequested(Field field) {
             if (field.isAnnotationPresent(Option.class)) {
-                isHelpRequested                       |= field.getAnnotation(Option.class).help();
-                CommandLine.this.versionHelpRequested |= field.getAnnotation(Option.class).versionHelp();
-                CommandLine.this.usageHelpRequested   |= field.getAnnotation(Option.class).usageHelp();
+                isHelpRequested                       |= is(field, "help", field.getAnnotation(Option.class).help());
+                CommandLine.this.versionHelpRequested |= is(field, "versionHelp", field.getAnnotation(Option.class).versionHelp());
+                CommandLine.this.usageHelpRequested   |= is(field, "usageHelp", field.getAnnotation(Option.class).usageHelp());
             }
         }
-
+        private boolean is(Field f, String description, boolean value) {
+            if (value) { if (tracer.isInfo()) {tracer.info("Field '%s.%s' has '%s' annotation: not validating required fields%n", f.getDeclaringClass().getSimpleName(), f.getName(), description); }}
+            return value;
+        }
         @SuppressWarnings("unchecked")
         private Collection<Object> createCollection(Class<?> collectionClass) throws Exception {
             if (collectionClass.isInterface()) {
@@ -1866,7 +2544,7 @@ public class CommandLine {
                 } else if (SortedSet.class.isAssignableFrom(collectionClass)) {
                     return new TreeSet<Object>();
                 } else if (Set.class.isAssignableFrom(collectionClass)) {
-                    return new HashSet<Object>();
+                    return new LinkedHashSet<Object>();
                 } else if (Queue.class.isAssignableFrom(collectionClass)) {
                     return new LinkedList<Object>(); // ArrayDeque is only available since 1.6
                 }
@@ -1875,8 +2553,13 @@ public class CommandLine {
             // custom Collection implementation class must have default constructor
             return (Collection<Object>) collectionClass.newInstance();
         }
-
-        private ITypeConverter<?> getTypeConverter(final Class<?> type) {
+        private Map<Object, Object> createMap(Class<?> mapClass) throws Exception {
+            try { // if it is an implementation class, instantiate it
+                return (Map<Object, Object>) mapClass.newInstance();
+            } catch (Exception ignored) {}
+            return new LinkedHashMap<Object, Object>();
+        }
+        private ITypeConverter<?> getTypeConverter(final Class<?> type, Field field) {
             ITypeConverter<?> result = converterRegistry.get(type);
             if (result != null) {
                 return result;
@@ -1889,21 +2572,14 @@ public class CommandLine {
                     }
                 };
             }
-            throw new MissingTypeConverterException("No TypeConverter registered for " + type.getName());
+            throw new MissingTypeConverterException(CommandLine.this, "No TypeConverter registered for " + type.getName() + " of field " + field);
         }
 
         private void assertNoMissingParameters(Field field, int arity, Stack<String> args) {
             if (arity > args.size()) {
-                int actualSize = 0;
-                @SuppressWarnings("unchecked")
-                Stack<String> copy = (Stack<String>) args.clone();
-                while (!copy.isEmpty()) {
-                    actualSize += split(copy.pop(), field).length;
-                    if (actualSize >= arity) { return; }
-                }
                 if (arity == 1) {
                     if (field.isAnnotationPresent(Option.class)) {
-                        throw new MissingParameterException("Missing required parameter for " +
+                        throw new MissingParameterException(CommandLine.this, "Missing required parameter for " +
                                 optionDescription("", field, 0));
                     }
                     Range indexRange = Range.parameterIndex(field);
@@ -1926,10 +2602,14 @@ public class CommandLine {
                     } else {
                         msg += (count > 1 ? "s: " : ": ");
                     }
-                    throw new MissingParameterException(msg + names);
+                    throw new MissingParameterException(CommandLine.this, msg + names);
                 }
-                throw new MissingParameterException(optionDescription("", field, 0) +
-                        " requires at least " + arity + " values, but only " + args.size() + " were specified.");
+                if (args.isEmpty()) {
+                    throw new MissingParameterException(CommandLine.this, optionDescription("", field, 0) +
+                            " requires at least " + arity + " values, but none were specified.");
+                }
+                throw new MissingParameterException(CommandLine.this, optionDescription("", field, 0) +
+                        " requires at least " + arity + " values, but only " + args.size() + " were specified: " + reverse(args));
             }
         }
         private String trim(String value) {
@@ -1976,14 +2656,14 @@ public class CommandLine {
                 if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
                     return Boolean.parseBoolean(value);
                 } else {
-                    throw new ParameterException("'" + value + "' is not a boolean");
+                    throw new TypeConversionException("'" + value + "' is not a boolean");
                 }
             }
         }
         static class CharacterConverter implements ITypeConverter<Character> {
             public Character convert(String value) {
                 if (value.length() > 1) {
-                    throw new ParameterException("'" + value + "' is not a single character");
+                    throw new TypeConversionException("'" + value + "' is not a single character");
                 }
                 return value.charAt(0);
             }
@@ -2021,7 +2701,7 @@ public class CommandLine {
                 try {
                     return new SimpleDateFormat("yyyy-MM-dd").parse(value);
                 } catch (ParseException e) {
-                    throw new ParameterException("'" + value + "' is not a yyyy-MM-dd date");
+                    throw new TypeConversionException("'" + value + "' is not a yyyy-MM-dd date");
                 }
             }
         }
@@ -2044,7 +2724,7 @@ public class CommandLine {
                 } catch (ParseException ignored) {
                     // ignored because we throw a ParameterException below
                 }
-                throw new ParameterException("'" + value + "' is not a HH:mm[:ss[.SSS]] time");
+                throw new TypeConversionException("'" + value + "' is not a HH:mm[:ss[.SSS]] time");
             }
         }
         static class BigDecimalConverter implements ITypeConverter<BigDecimal> {
@@ -2106,6 +2786,9 @@ public class CommandLine {
         /** Constant String holding the default program name: {@value} */
         protected static final String DEFAULT_COMMAND_NAME = "<main class>";
 
+        /** Constant String holding the default string that separates options from option parameters: {@value} */
+        protected static final String DEFAULT_SEPARATOR = "=";
+
         private final static int usageHelpWidth = 80;
         private final static int optionsColumnWidth = 2 + 2 + 1 + 24;
         private final Object command;
@@ -2119,7 +2802,8 @@ public class CommandLine {
         public final List<Field> positionalParametersFields;
 
         /** The String to use as the separator between options and option parameters. {@code "="} by default,
-         * initialized from {@link Command#separator()} if defined. */
+         * initialized from {@link Command#separator()} if defined.
+         * @see #parameterLabelRenderer */
         public String separator;
 
         /** The String to use as the program name in the synopsis line of the help message.
@@ -2150,7 +2834,10 @@ public class CommandLine {
          * Applications may programmatically set this field to create a custom help message. */
         public String[] footer = {};
 
-        /** Option and positional parameter value label renderer used for the synopsis line(s) and the option list. */
+        /** Option and positional parameter value label renderer used for the synopsis line(s) and the option list.
+         * By default initialized to the result of {@link #createDefaultParamLabelRenderer()}, which takes a snapshot
+         * of the {@link #separator} at construction time. If the separator is modified after Help construction, you
+         * may need to re-initialize this field by calling {@link #createDefaultParamLabelRenderer()} again. */
         public IParamLabelRenderer parameterLabelRenderer;
 
         /** If {@code true}, the synopsis line(s) will show an abbreviated synopsis without detailed option names. */
@@ -2256,8 +2943,8 @@ public class CommandLine {
             showDefaultValues =    (showDefaultValues == null)    ? false : showDefaultValues;
             synopsisHeading =      (synopsisHeading == null)      ? "Usage: " : synopsisHeading;
             commandListHeading =   (commandListHeading == null)   ? "Commands:%n" : commandListHeading;
-            separator =            (separator == null)            ? "=" : separator;
-            parameterLabelRenderer = new DefaultParamLabelRenderer(separator);
+            separator =            (separator == null)            ? DEFAULT_SEPARATOR : separator;
+            parameterLabelRenderer = createDefaultParamLabelRenderer(); // uses help separator
             Collections.sort(operands, new PositionalParametersSorter());
             positionalParametersFields = Collections.unmodifiableList(operands);
             optionFields                 = Collections.unmodifiableList(options);
@@ -2377,16 +3064,16 @@ public class CommandLine {
             for (Field field : fields) {
                 Option option = field.getAnnotation(Option.class);
                 if (!option.hidden()) {
-                    //sb.append(" ");
-                    optionText = optionText.append(option.required() ? " " : " [");
-
-                    String optionNames = ShortestFirst.sort(option.names())[0];
-                    optionText = optionText.append(colorScheme.optionText(optionNames));
-
-                    Text optionParamText = parameterLabelRenderer.renderParameterLabel(field, colorScheme.ansi(), colorScheme.optionParamStyles);
-                    optionText = optionText.append(optionParamText);
-                    if (!option.required()) {
-                        optionText = optionText.append("]");
+                    if (option.required()) {
+                        optionText = appendOptionSynopsis(optionText, field, ShortestFirst.sort(option.names())[0], " ", "");
+                        if (isMultiValue(field)) {
+                            optionText = appendOptionSynopsis(optionText, field, ShortestFirst.sort(option.names())[0], " [", "]...");
+                        }
+                    } else {
+                        optionText = appendOptionSynopsis(optionText, field, ShortestFirst.sort(option.names())[0], " [", "]");
+                        if (isMultiValue(field)) {
+                            optionText = optionText.append("...");
+                        }
                     }
                 }
             }
@@ -2405,10 +3092,19 @@ public class CommandLine {
             textTable.indentWrappedLines = 1; // don't worry about first line: options (2nd column) always start with a space
 
             // right-adjust the command name by length of synopsis heading
-            Text PADDING = Ansi.OFF.new Text(spaces(synopsisHeadingLength));
+            Text PADDING = Ansi.OFF.new Text(stringOf('X', synopsisHeadingLength));
             textTable.addRowValues(new Text[] {PADDING.append(colorScheme.commandText(commandName)), optionText});
             return textTable.toString().substring(synopsisHeadingLength); // cut off leading synopsis heading spaces
         }
+
+        private Text appendOptionSynopsis(Text optionText, Field field, String optionName, String prefix, String suffix) {
+            Text optionParamText = parameterLabelRenderer.renderParameterLabel(field, colorScheme.ansi(), colorScheme.optionParamStyles);
+            return optionText.append(prefix)
+                    .append(colorScheme.optionText(optionName))
+                    .append(optionParamText)
+                    .append(suffix);
+        }
+
         /** Returns the number of characters the synopsis heading will take on the same line as the synopsis.
          * @return the number of characters the synopsis heading will take on the same line as the synopsis.
          * @see #detailedSynopsis(int, Comparator, boolean)
@@ -2429,7 +3125,7 @@ public class CommandLine {
             Comparator<Field> sortOrder = sortOptions == null || sortOptions.booleanValue()
                     ? createShortOptionNameComparator()
                     : null;
-            return optionList(createDefaultLayout(), sortOrder, createDefaultParamLabelRenderer());
+            return optionList(createDefaultLayout(), sortOrder, parameterLabelRenderer);
         }
 
         /** Sorts all {@code Options} with the specified {@code comparator} (if the comparator is non-{@code null}),
@@ -2454,7 +3150,7 @@ public class CommandLine {
          * @return the section of the usage help message that lists the parameters
          */
         public String parameterList() {
-            return parameterList(createDefaultLayout(), createMinimalParamLabelRenderer());
+            return parameterList(createDefaultLayout(), parameterLabelRenderer);
         }
         /**
          * Returns the section of the usage help message that lists the parameters with their descriptions.
@@ -2606,9 +3302,9 @@ public class CommandLine {
             }
             return result.toString();
         }
-        private static String spaces(int length) {
+        private static String stringOf(char chr, int length) {
             char[] buff = new char[length];
-            Arrays.fill(buff, ' ');
+            Arrays.fill(buff, chr);
             return new String(buff);
         }
 
@@ -2676,14 +3372,7 @@ public class CommandLine {
         public static IParamLabelRenderer createMinimalParamLabelRenderer() {
             return new IParamLabelRenderer() {
                 public Text renderParameterLabel(Field field, Ansi ansi, List<IStyle> styles) {
-                    String paramLabel = null;
-                    Parameters parameters = field.getAnnotation(Parameters.class);
-                    if (parameters != null) {
-                        paramLabel = parameters.paramLabel();
-                    } else {
-                        paramLabel = field.isAnnotationPresent(Option.class) ? field.getAnnotation(Option.class).paramLabel() : null;
-                    }
-                    String text = paramLabel == null || paramLabel.length() == 0 ? field.getName() : paramLabel;
+                    String text = DefaultParamLabelRenderer.renderParameterName(field);
                     return ansi.apply(text, styles);
                 }
                 public String separator() { return ""; }
@@ -2763,7 +3452,10 @@ public class CommandLine {
                 // if no long option, fill in the space between the short option name and the param label value
                 if (paramLabelText.length > 0 && longOption.length() == 0) {
                     sep = paramLabelRenderer.separator();
-                    paramLabelText = paramLabelText.substring(sep.length());
+                    // #181 paramLabelText may be =LABEL or [=LABEL...]
+                    int sepStart = paramLabelText.plainString().indexOf(sep);
+                    Text prefix = paramLabelText.substring(0, sepStart);
+                    paramLabelText = prefix.append(paramLabelText.substring(sepStart + sep.length()));
                 }
                 Text longOptionText = scheme.optionText(longOption);
                 longOptionText = longOptionText.append(paramLabelText);
@@ -2773,7 +3465,8 @@ public class CommandLine {
                 Object defaultValue = null;
                 try {
                     defaultValue = field.get(command);
-                    if (defaultValue != null && field.getType().isArray()) {
+                    if (defaultValue == null) { showDefault = false; } // #201 don't show null default values
+                    else if (field.getType().isArray()) {
                         StringBuilder sb = new StringBuilder();
                         for (int i = 0; i < Array.getLength(defaultValue); i++) {
                             sb.append(i > 0 ? ", " : "").append(Array.get(defaultValue, i));
@@ -2895,34 +3588,37 @@ public class CommandLine {
             public String separator() { return separator; }
             public Text renderParameterLabel(Field field, Ansi ansi, List<IStyle> styles) {
                 boolean isOptionParameter = field.isAnnotationPresent(Option.class);
-                Range arity = isOptionParameter ? Range.optionArity(field) : Range.parameterArity(field);
+                Range arity = isOptionParameter ? Range.optionArity(field) : Range.parameterCapacity(field);
+                String split = isOptionParameter ? field.getAnnotation(Option.class).split() : field.getAnnotation(Parameters.class).split();
                 Text result = ansi.new Text("");
                 String sep = isOptionParameter ? separator : "";
-                if (arity.min > 0) {
-                    for (int i = 0; i < arity.min; i++) {
-                        result = result.append(sep).append(ansi.apply(renderParameterName(field), styles));
-                        sep = " ";
-                    }
+                Text paramName = ansi.apply(renderParameterName(field), styles);
+                if (!empty(split)) { paramName = paramName.append("[" + split).append(paramName).append("]..."); } // #194
+                for (int i = 0; i < arity.min; i++) {
+                    result = result.append(sep).append(paramName);
+                    sep = " ";
                 }
-                if (arity.max > arity.min) {
+                if (arity.isVariable) {
+                    if (result.length == 0) { // arity="*" or arity="0..*"
+                        result = result.append(sep + "[").append(paramName).append("]...");
+                    } else if (!result.plainString().endsWith("...")) { // split param may already end with "..."
+                        result = result.append("...");
+                    }
+                } else {
                     sep = result.length == 0 ? (isOptionParameter ? separator : "") : " ";
-                    int max = arity.isVariable ? 1 : arity.max - arity.min;
-                    for (int i = 0; i < max; i++) {
+                    for (int i = arity.min; i < arity.max; i++) {
                         if (sep.trim().length() == 0) {
-                            result = result.append(sep + "[").append(ansi.apply(renderParameterName(field), styles));
+                            result = result.append(sep + "[").append(paramName);
                         } else {
-                            result = result.append("[" + sep).append(ansi.apply(renderParameterName(field), styles));
+                            result = result.append("[" + sep).append(paramName);
                         }
                         sep  = " ";
                     }
-                    if (arity.isVariable) {
-                        result = result.append("...");
-                    }
-                    for (int i = 0; i < max; i++) { result = result.append("]"); }
+                    for (int i = arity.min; i < arity.max; i++) { result = result.append("]"); }
                 }
                 return result;
             }
-            private String renderParameterName(Field field) {
+            private static String renderParameterName(Field field) {
                 String result = null;
                 if (field.isAnnotationPresent(Option.class)) {
                     result = field.getAnnotation(Option.class).paramLabel();
@@ -2932,7 +3628,14 @@ public class CommandLine {
                 if (result != null && result.trim().length() > 0) {
                     return result.trim();
                 }
-                return "<" + field.getName() + ">";
+                String name = field.getName();
+                if (Map.class.isAssignableFrom(field.getType())) { // #195 better param labels for map fields
+                    Class<?>[] paramTypes = getTypeAttribute(field);
+                    if (paramTypes.length < 2 || paramTypes[0] == null || paramTypes[1] == null) {
+                        name = "String=String";
+                    } else { name = paramTypes[0].getSimpleName() + "=" + paramTypes[1].getSimpleName(); }
+                }
+                return "<" + name + ">";
             }
         }
         /** Use a Layout to format usage help text for options and parameters in tabular format.
@@ -3075,6 +3778,10 @@ public class CommandLine {
                 if (result == 0) {
                     result = arity1.min - arity2.min;
                 }
+                if (result == 0) { // arity is same
+                    if (isMultiValue(f1) && !isMultiValue(f2)) { result = 1; } // f1 > f2
+                    if (!isMultiValue(f1) && isMultiValue(f2)) { result = -1; } // f1 < f2
+                }
                 return result == 0 ? super.compare(f1, f2) : result;
             }
         }
@@ -3084,6 +3791,21 @@ public class CommandLine {
          * longer than the column's width.</p>
          */
         public static class TextTable {
+            /**
+             * Helper class to index positions in a {@code Help.TextTable}.
+             * @since 2.0
+             */
+            public static class Cell {
+                /** Table column index (zero based). */
+                public final int column;
+                /** Table row index (zero based). */
+                public final int row;
+                /** Constructs a new Cell with the specified coordinates in the table.
+                 * @param column the zero-based table column
+                 * @param row the zero-based table row */
+                public Cell(int column, int row) { this.column = column; this.row = row; }
+            }
+
             /** The column definitions of this table. */
             public final Column[] columns;
 
@@ -3139,8 +3861,16 @@ public class CommandLine {
             /** Returns the {@code Text} slot at the specified row and column to write a text value into.
              * @param row the row of the cell whose Text to return
              * @param col the column of the cell whose Text to return
-             * @return the Text object at the specified row and column */
-            public Text cellAt(int row, int col) { return columnValues.get(col + (row * columns.length)); }
+             * @return the Text object at the specified row and column
+             * @since 2.0 */
+            public Text textAt(int row, int col) { return columnValues.get(col + (row * columns.length)); }
+
+            /** Returns the {@code Text} slot at the specified row and column to write a text value into.
+             * @param row the row of the cell whose Text to return
+             * @param col the column of the cell whose Text to return
+             * @return the Text object at the specified row and column
+             * @deprecated use {@link #textAt(int, int)} instead */
+            public Text cellAt(int row, int col) { return textAt(row, col); }
 
             /** Returns the current number of rows of this {@code TextTable}.
              * @return the current number of rows in this TextTable */
@@ -3177,10 +3907,10 @@ public class CommandLine {
                 addEmptyRow();
                 for (int col = 0; col < values.length; col++) {
                     int row = rowCount() - 1;// write to last row: previous value may have wrapped to next row
-                    Point cell = putValue(row, col, values[col]);
+                    Cell cell = putValue(row, col, values[col]);
 
                     // add row if a value spanned/wrapped and there are still remaining values
-                    if ((cell.y != row || cell.x != col) && col != values.length - 1) {
+                    if ((cell.row != row || cell.column != col) && col != values.length - 1) {
                         addEmptyRow();
                     }
                 }
@@ -3192,29 +3922,29 @@ public class CommandLine {
              * @param row the target row in the table
              * @param col the target column in the table to write to
              * @param value the value to write
-             * @return a Point whose {@code x} value is the last column written to and whose {@code y} value is the
-             *          last row written to
+             * @return a Cell indicating the position in the table that was last written to (since 2.0)
              * @throws IllegalArgumentException if the specified row exceeds the table's {@linkplain
              *          TextTable#rowCount() row count}
+             * @since 2.0 (previous versions returned a {@code java.awt.Point} object)
              */
-            public Point putValue(int row, int col, Text value) {
+            public Cell putValue(int row, int col, Text value) {
                 if (row > rowCount() - 1) {
                     throw new IllegalArgumentException("Cannot write to row " + row + ": rowCount=" + rowCount());
                 }
-                if (value == null || value.plain.length() == 0) { return new Point(col, row); }
+                if (value == null || value.plain.length() == 0) { return new Cell(col, row); }
                 Column column = columns[col];
                 int indent = column.indent;
                 switch (column.overflow) {
                     case TRUNCATE:
-                        copy(value, cellAt(row, col), indent);
-                        return new Point(col, row);
+                        copy(value, textAt(row, col), indent);
+                        return new Cell(col, row);
                     case SPAN:
                         int startColumn = col;
                         do {
                             boolean lastColumn = col == columns.length - 1;
                             int charsWritten = lastColumn
-                                    ? copy(BreakIterator.getLineInstance(), value, cellAt(row, col), indent)
-                                    : copy(value, cellAt(row, col), indent);
+                                    ? copy(BreakIterator.getLineInstance(), value, textAt(row, col), indent)
+                                    : copy(value, textAt(row, col), indent);
                             value = value.substring(charsWritten);
                             indent = 0;
                             if (value.length > 0) { // value did not fit in column
@@ -3227,11 +3957,11 @@ public class CommandLine {
                                 indent = column.indent + indentWrappedLines;
                             }
                         } while (value.length > 0);
-                        return new Point(col, row);
+                        return new Cell(col, row);
                     case WRAP:
                         BreakIterator lineBreakIterator = BreakIterator.getLineInstance();
                         do {
-                            int charsWritten = copy(lineBreakIterator, value, cellAt(row, col), indent);
+                            int charsWritten = copy(lineBreakIterator, value, textAt(row, col), indent);
                             value = value.substring(charsWritten);
                             indent = column.indent + indentWrappedLines;
                             if (value.length > 0) {  // value did not fit in column
@@ -3239,7 +3969,7 @@ public class CommandLine {
                                 addEmptyRow();
                             }
                         } while (value.length > 0);
-                        return new Point(col, row);
+                        return new Cell(col, row);
                 }
                 throw new IllegalStateException(column.overflow.toString());
             }
@@ -3567,7 +4297,16 @@ public class CommandLine {
                 public String on() { return String.format(CSI + "%d;5;%dm", fgbg, color); }
                 public String off() { return CSI + (fgbg + 1) + "m"; }
             }
-
+            private static class StyledSection {
+                int startIndex, length;
+                String startStyles, endStyles;
+                StyledSection(int start, int len, String style1, String style2) {
+                    startIndex = start; length = len; startStyles = style1; endStyles = style2;
+                }
+                StyledSection withStartIndex(int newStart) {
+                    return new StyledSection(newStart, length, startStyles, endStyles);
+                }
+            }
 
             /**
              * Returns a new Text object where all the specified styles are applied to the full length of the
@@ -3580,20 +4319,20 @@ public class CommandLine {
                 if (plainText.length() == 0) { return new Text(0); }
                 Text result = new Text(plainText.length());
                 IStyle[] all = styles.toArray(new IStyle[styles.size()]);
-                result.indexToStyle.put(result.plain.length(), Style.on(all));
+                result.sections.add(new StyledSection(
+                        0, plainText.length(), Style.on(all), Style.off(reverse(all)) + Style.reset.off()));
                 result.plain.append(plainText);
                 result.length = result.plain.length();
-                reverse(all);
-                result.indexToStyle.put(result.plain.length(), Style.off(all) + Style.reset.off());
                 return result;
             }
 
-            private static void reverse(Object[] all) {
+            private static <T> T[] reverse(T[] all) {
                 for (int i = 0; i < all.length / 2; i++) {
-                    Object temp = all[i];
+                    T temp = all[i];
                     all[i] = all[all.length - i - 1];
                     all[all.length - i - 1] = temp;
                 }
+                return all;
             }
             /** Encapsulates rich text with styles and colors. Text objects may be constructed with Strings containing
              * markup like {@code @|bg(red),white,underline some text|@}, and this class converts the markup to ANSI
@@ -3606,7 +4345,7 @@ public class CommandLine {
                 private int from;
                 private int length;
                 private StringBuilder plain = new StringBuilder();
-                private SortedMap<Integer, String> indexToStyle = new TreeMap<Integer, String>();
+                private List<StyledSection> sections = new ArrayList<StyledSection>();
 
                 /** Constructs a Text with the specified max length (for use in a TextTable Column).
                  * @param maxLength max length of this text */
@@ -3652,17 +4391,14 @@ public class CommandLine {
                         }
 
                         IStyle[] styles = Style.parse(items[0]);
-                        putStyle(plain.length(), Style.on(styles));
+                        addStyledSection(plain.length(), items[1].length(),
+                                Style.on(styles), Style.off(reverse(styles)) + Style.reset.off());
                         plain.append(items[1]);
-                        reverse(styles);
-                        putStyle(plain.length(), Style.off(styles));
-                        putStyle(plain.length(), Style.reset.off());
                         i = k + 2;
                     }
                 }
-                private void putStyle(int index, String style) {
-                    String existing = indexToStyle.put(index, style);
-                    if (existing != null) { indexToStyle.put(index, existing + style); }
+                private void addStyledSection(int start, int length, String startStyle, String endStyle) {
+                    sections.add(new StyledSection(start, length, startStyle, endStyle));
                 }
                 public Object clone() {
                     try { return super.clone(); } catch (CloneNotSupportedException e) { throw new IllegalStateException(e); }
@@ -3699,17 +4435,14 @@ public class CommandLine {
                     Text result = (Text) clone();
                     result.plain = new StringBuilder(plain.toString().substring(from, from + length));
                     result.from = 0;
-                    result.indexToStyle = new TreeMap<Integer, String>();
-                    for (Integer index : indexToStyle.keySet()) {
-                        result.indexToStyle.put(index - from, indexToStyle.get(index));
+                    result.sections = new ArrayList<StyledSection>();
+                    for (StyledSection section : sections) {
+                        result.sections.add(section.withStartIndex(section.startIndex - from));
                     }
                     result.plain.append(other.plain.toString().substring(other.from, other.from + other.length));
-                    for (Integer otherIndex : other.indexToStyle.keySet()) {
-                        int index = result.length + otherIndex - other.from;
-                        String replaced = result.indexToStyle.put(index, other.indexToStyle.get(otherIndex));
-                        if (replaced != null) {
-                            result.indexToStyle.put(index, replaced + other.indexToStyle.get(otherIndex));
-                        }
+                    for (StyledSection section : other.sections) {
+                        int index = result.length + section.startIndex - other.from;
+                        result.sections.add(section.withStartIndex(index));
                     }
                     result.length = result.plain.length();
                     return result;
@@ -3729,8 +4462,8 @@ public class CommandLine {
                         }
                         destination.length = offset;
                     }
-                    for (Integer index : indexToStyle.keySet()) {
-                        destination.indexToStyle.put(index - from + destination.length, indexToStyle.get(index));
+                    for (StyledSection section : sections) {
+                        destination.sections.add(section.withStartIndex(section.startIndex - from + destination.length));
                     }
                     destination.plain.append(plain.toString().substring(from, from + length));
                     destination.length = destination.plain.length();
@@ -3750,41 +4483,29 @@ public class CommandLine {
                         return plain.toString().substring(from, from + length);
                     }
                     if (length == 0) { return ""; }
-                    StringBuilder sb = new StringBuilder(plain.length() + 20 * indexToStyle.size());
-                    Integer startStyle = null;
-                    Integer endStyle = -1;
-                    for (Integer index : indexToStyle.keySet()) {
-                        if (index <= from) {
-                            startStyle = startStyle == null ? index : null;
-                            endStyle   = endStyle   == null ? index : null;
-                        }
-                        if (index >= from) {break;}
-                    }
-                    if (startStyle != null) {
-                        sb.append(indexToStyle.get(startStyle));
-                        endStyle = startStyle;
-                    }
+                    StringBuilder sb = new StringBuilder(plain.length() + 20 * sections.size());
+                    StyledSection current = null;
                     int end = Math.min(from + length, plain.length());
                     for (int i = from; i < end; i++) {
-                        String style = indexToStyle.get(i);
-                        if (style != null) {
-                            if (endStyle != null && endStyle != i) {
-                                sb.append(style);
-                                startStyle = startStyle == null ? i : null;
-                            }
-                            endStyle = i;
+                        StyledSection section = findSectionContaining(i);
+                        if (section != current) {
+                            if (current != null) { sb.append(current.endStyles); }
+                            if (section != null) { sb.append(section.startStyles); }
+                            current = section;
                         }
                         sb.append(plain.charAt(i));
                     }
-                    if (startStyle != null) { // find closing style
-                        SortedMap<Integer, String> tailMap = indexToStyle.tailMap(startStyle + 1);
-                        if (!tailMap.isEmpty()) {
-                            sb.append(indexToStyle.get(tailMap.firstKey()));
-                        } else {
-                            sb.append(Style.reset.off());
+                    if (current != null) { sb.append(current.endStyles); }
+                    return sb.toString();
+                }
+
+                private StyledSection findSectionContaining(int index) {
+                    for (StyledSection section : sections) {
+                        if (index >= section.startIndex && index < section.startIndex + section.length) {
+                            return section;
                         }
                     }
-                    return sb.toString();
+                    return null;
                 }
             }
         }
@@ -3809,25 +4530,95 @@ public class CommandLine {
         }
         private Assert() {} // private constructor: never instantiate
     }
-
-    /**
-     * Exception indicating something went wrong while parsing command line options.
-     */
-    public static class ParameterException extends RuntimeException {
-        private static final long serialVersionUID = 1477112829129763139L;
-        public ParameterException(String msg) {
+    private enum TraceLevel { OFF, WARN, INFO, DEBUG;
+        public boolean isEnabled(TraceLevel other) { return ordinal() >= other.ordinal(); }
+        private void print(Tracer tracer, String msg, Object... params) {
+            if (tracer.level.isEnabled(this)) { tracer.stream.printf(prefix(msg), params); }
+        }
+        private String prefix(String msg) { return "[picocli " + this + "] " + msg; }
+        static TraceLevel lookup(String key) { return key == null ? WARN : empty(key) ? INFO : valueOf(key); }
+    }
+    private static class Tracer {
+        TraceLevel level = TraceLevel.lookup(System.getProperty("picocli.trace"));
+        PrintStream stream = System.err;
+        void warn (String msg, Object... params) { TraceLevel.WARN.print(this, msg, params); }
+        void info (String msg, Object... params) { TraceLevel.INFO.print(this, msg, params); }
+        void debug(String msg, Object... params) { TraceLevel.DEBUG.print(this, msg, params); }
+        boolean isWarn()  { return level.isEnabled(TraceLevel.WARN); }
+        boolean isInfo()  { return level.isEnabled(TraceLevel.INFO); }
+        boolean isDebug() { return level.isEnabled(TraceLevel.DEBUG); }
+    }
+    /** Base class of all exceptions thrown by {@code picocli.CommandLine}.
+     * @since 2.0 */
+    public static class PicocliException extends RuntimeException {
+        private static final long serialVersionUID = -2574128880125050818L;
+        public PicocliException(String msg) { super(msg); }
+        public PicocliException(String msg, Exception ex) { super(msg, ex); }
+    }
+    /** Exception indicating a problem during {@code CommandLine} initialization.
+     * @since 2.0 */
+    public static class InitializationException extends PicocliException {
+        private static final long serialVersionUID = 8423014001666638895L;
+        public InitializationException(String msg) { super(msg); }
+        public InitializationException(String msg, Exception ex) { super(msg, ex); }
+    }
+    /** Exception indicating a problem while invoking a command or subcommand.
+     * @since 2.0 */
+    public static class ExecutionException extends PicocliException {
+        private static final long serialVersionUID = 7764539594267007998L;
+        private final CommandLine commandLine;
+        public ExecutionException(CommandLine commandLine, String msg) {
             super(msg);
+            this.commandLine = Objects.requireNonNull(commandLine, "commandLine");
         }
-
-        public ParameterException(String msg, Exception ex) {
+        public ExecutionException(CommandLine commandLine, String msg, Exception ex) {
             super(msg, ex);
+            this.commandLine = Objects.requireNonNull(commandLine, "commandLine");
+        }
+        /** Returns the {@code CommandLine} object for the (sub)command that could not be invoked.
+         * @return the {@code CommandLine} object for the (sub)command where invocation failed.
+         */
+        public CommandLine getCommandLine() { return commandLine; }
+    }
+
+    /** Exception thrown by {@link ITypeConverter} implementations to indicate a String could not be converted. */
+    public static class TypeConversionException extends PicocliException {
+        private static final long serialVersionUID = 4251973913816346114L;
+        public TypeConversionException(String msg) { super(msg); }
+    }
+    /** Exception indicating something went wrong while parsing command line options. */
+    public static class ParameterException extends PicocliException {
+        private static final long serialVersionUID = 1477112829129763139L;
+        private final CommandLine commandLine;
+
+        /** Constructs a new ParameterException with the specified CommandLine and error message.
+         * @param commandLine the command or subcommand whose input was invalid
+         * @param msg describes the problem
+         * @since 2.0 */
+        public ParameterException(CommandLine commandLine, String msg) {
+            super(msg);
+            this.commandLine = Objects.requireNonNull(commandLine, "commandLine");
+        }
+        /** Constructs a new ParameterException with the specified CommandLine and error message.
+         * @param commandLine the command or subcommand whose input was invalid
+         * @param msg describes the problem
+         * @param ex the exception that caused this ParameterException
+         * @since 2.0 */
+        public ParameterException(CommandLine commandLine, String msg, Exception ex) {
+            super(msg, ex);
+            this.commandLine = Objects.requireNonNull(commandLine, "commandLine");
         }
 
-        private static ParameterException create(Exception ex, String arg, int i, String[] args) {
-            String next = args.length < i + 1 ? "" : " " + args[i + 1];
+        /** Returns the {@code CommandLine} object for the (sub)command whose input could not be parsed.
+         * @return the {@code CommandLine} object for the (sub)command where parsing failed.
+         * @since 2.0
+         */
+        public CommandLine getCommandLine() { return commandLine; }
+
+        private static ParameterException create(CommandLine cmd, Exception ex, String arg, int i, String[] args) {
             String msg = ex.getClass().getSimpleName() + ": " + ex.getLocalizedMessage()
-                    + " while processing option[" + i + "] '" + arg + next + "': " + ex.toString();
-            return new ParameterException(msg, ex);
+                    + " while processing argument at or before arg[" + i + "] '" + arg + "' in " + Arrays.toString(args) + ": " + ex.toString();
+            return new ParameterException(cmd, msg, ex);
         }
     }
     /**
@@ -3835,31 +4626,35 @@ public class CommandLine {
      */
     public static class MissingParameterException extends ParameterException {
         private static final long serialVersionUID = 5075678535706338753L;
-        public MissingParameterException(String msg) {
-            super(msg);
+        public MissingParameterException(CommandLine commandLine, String msg) {
+            super(commandLine, msg);
         }
 
-        private static MissingParameterException create(Collection<Field> missing) {
+        private static MissingParameterException create(CommandLine cmd, Collection<Field> missing, String separator) {
             if (missing.size() == 1) {
-                return new MissingParameterException("Missing required option '"
-                        + missing.iterator().next().getName() + "'");
+                return new MissingParameterException(cmd, "Missing required option '"
+                        + describe(missing.iterator().next(), separator) + "'");
             }
             List<String> names = new ArrayList<String>(missing.size());
             for (Field field : missing) {
-                names.add(field.getName());
+                names.add(describe(field, separator));
             }
-            return new MissingParameterException("Missing required options " + names.toString());
+            return new MissingParameterException(cmd, "Missing required options " + names.toString());
+        }
+        private static String describe(Field field, String separator) {
+            String prefix = (field.isAnnotationPresent(Option.class))
+                    ? field.getAnnotation(Option.class).names()[0] + separator
+                    : "params[" + field.getAnnotation(Parameters.class).index() + "]" + separator;
+            return prefix + Help.DefaultParamLabelRenderer.renderParameterName(field);
         }
     }
 
     /**
      * Exception indicating that multiple fields have been annotated with the same Option name.
      */
-    public static class DuplicateOptionAnnotationsException extends ParameterException {
+    public static class DuplicateOptionAnnotationsException extends InitializationException {
         private static final long serialVersionUID = -3355128012575075641L;
-        public DuplicateOptionAnnotationsException(String msg) {
-            super(msg);
-        }
+        public DuplicateOptionAnnotationsException(String msg) { super(msg); }
 
         private static DuplicateOptionAnnotationsException create(String name, Field field1, Field field2) {
             return new DuplicateOptionAnnotationsException("Option name '" + name + "' is used by both " +
@@ -3868,7 +4663,7 @@ public class CommandLine {
         }
     }
     /** Exception indicating that there was a gap in the indices of the fields annotated with {@link Parameters}. */
-    public static class ParameterIndexGapException extends ParameterException {
+    public static class ParameterIndexGapException extends InitializationException {
         private static final long serialVersionUID = -1520981133257618319L;
         public ParameterIndexGapException(String msg) { super(msg); }
     }
@@ -3876,15 +4671,19 @@ public class CommandLine {
      * {@link Option} or {@link Parameters}. */
     public static class UnmatchedArgumentException extends ParameterException {
         private static final long serialVersionUID = -8700426380701452440L;
-        public UnmatchedArgumentException(String msg) { super(msg); }
-        public UnmatchedArgumentException(Stack<String> args) {
-            this("Unmatched argument" + (args.size() == 1 ? " " : "s ") + reverse(args));
-        }
+        public UnmatchedArgumentException(CommandLine commandLine, String msg) { super(commandLine, msg); }
+        public UnmatchedArgumentException(CommandLine commandLine, Stack<String> args) { this(commandLine, new ArrayList<String>(reverse(args))); }
+        public UnmatchedArgumentException(CommandLine commandLine, List<String> args) { this(commandLine, "Unmatched argument" + (args.size() == 1 ? " " : "s ") + args); }
     }
-    /** Exception indicating that an option for a single-value field has been specified multiple times on the command line. */
+    /** Exception indicating that more values were specified for an option or parameter than its {@link Option#arity() arity} allows. */
+    public static class MaxValuesforFieldExceededException extends ParameterException {
+        private static final long serialVersionUID = 6536145439570100641L;
+        public MaxValuesforFieldExceededException(CommandLine commandLine, String msg) { super(commandLine, msg); }
+    }
+    /** Exception indicating that an option for a single-value option field has been specified multiple times on the command line. */
     public static class OverwrittenOptionException extends ParameterException {
         private static final long serialVersionUID = 1338029208271055776L;
-        public OverwrittenOptionException(String msg) { super(msg); }
+        public OverwrittenOptionException(CommandLine commandLine, String msg) { super(commandLine, msg); }
     }
     /**
      * Exception indicating that an annotated field had a type for which no {@link ITypeConverter} was
@@ -3892,8 +4691,6 @@ public class CommandLine {
      */
     public static class MissingTypeConverterException extends ParameterException {
         private static final long serialVersionUID = -6050931703233083760L;
-        public MissingTypeConverterException(String msg) {
-            super(msg);
-        }
+        public MissingTypeConverterException(CommandLine commandLine, String msg) { super(commandLine, msg); }
     }
 }

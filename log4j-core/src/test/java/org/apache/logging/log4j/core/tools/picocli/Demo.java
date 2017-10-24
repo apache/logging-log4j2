@@ -22,10 +22,14 @@ import org.apache.logging.log4j.core.tools.picocli.CommandLine.Parameters;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Demonstrates picocli subcommands.
@@ -62,6 +66,9 @@ public class Demo implements Runnable {
     public static void main(String[] args) {
         CommandLine.run(new Demo(), System.err, args);
     }
+
+    @Option(names = {"-a", "--autocomplete"}, description = "Generate sample autocomplete script for git")
+    private boolean autocomplete;
 
     @Option(names = {"-1", "--showUsageForSubcommandGitCommit"}, description = "Shows usage help for the git-commit subcommand")
     private boolean showUsageForSubcommandGitCommit;
@@ -174,7 +181,8 @@ public class Demo implements Runnable {
                 !showRgbColorPalette &&
                 !showUsageForMainCommand &&
                 !showUsageForSubcommandGitCommit &&
-                !showUsageForSubcommandGitStatus) {
+                !showUsageForSubcommandGitStatus &&
+                !autocomplete) {
             CommandLine.usage(this, System.err);
             return;
         }
@@ -379,7 +387,7 @@ public class Demo implements Runnable {
         File file;
 
         @Option(names = {"-m", "--message"}, paramLabel = "<msg>",
-                description = " Use the given <msg> as the commit message. If multiple -m options" +
+                description = "Use the given <msg> as the commit message. If multiple -m options" +
                         " are given, their values are concatenated as separate paragraphs.")
         List<String> message = new ArrayList<String>();
 
@@ -567,7 +575,7 @@ public class Demo implements Runnable {
             "Record changes to the repository.%n" +
             "%n" +
             "git-commit [-ap] [--fixup=<commit>] [--squash=<commit>] [-c=<commit>]%n" +
-            "           [-C=<commit>] [-F=<file>] [-m[=<msg>...]] [<files>...]%n" +
+            "           [-C=<commit>] [-F=<file>] [-m=<msg>]... [<files>]...%n" +
             "%n" +
             "Description:%n" +
             "%n" +
@@ -575,7 +583,7 @@ public class Demo implements Runnable {
             "message from the user describing the changes.%n" +
             "%n" +
             "Parameters:%n" +
-            "      <files>                 the files to commit%n" +
+            "      [<files>]...            the files to commit%n" +
             "%n" +
             "Options:%n" +
             "  -a, --all                   Tell the command to automatically stage files%n" +
@@ -602,7 +610,7 @@ public class Demo implements Runnable {
             "                                commit message options (-m/-c/-C/-F).%n" +
             "  -F, --file=<file>           Take the commit message from the given file. Use%n" +
             "                                - to read the message from the standard input.%n" +
-            "  -m, --message[=<msg>...]     Use the given <msg> as the commit message. If%n" +
+            "  -m, --message=<msg>         Use the given <msg> as the commit message. If%n" +
             "                                multiple -m options are given, their values are%n" +
             "                                concatenated as separate paragraphs.%n";
 
@@ -611,7 +619,7 @@ public class Demo implements Runnable {
             "Record changes to the repository.%n" +
             "%n" +
             "@|bold git-commit|@ [@|yellow -ap|@] [@|yellow --fixup|@=@|italic <commit>|@] [@|yellow --squash|@=@|italic <commit>|@] [@|yellow -c|@=@|italic <commit>|@]%n" +
-            "           [@|yellow -C|@=@|italic <commit>|@] [@|yellow -F|@=@|italic <file>|@] [@|yellow -m|@[=@|italic <msg>|@...]] [@|yellow <files>|@...]%n" +
+            "           [@|yellow -C|@=@|italic <commit>|@] [@|yellow -F|@=@|italic <file>|@] [@|yellow -m|@=@|italic <msg>|@]... [@|yellow <files>|@]...%n" +
             "%n" +
             "@|bold,underline Description:|@%n" +
             "%n" +
@@ -619,7 +627,7 @@ public class Demo implements Runnable {
             "message from the user describing the changes.%n" +
             "%n" +
             "@|bold,underline Parameters:|@%n" +
-            "      @|yellow <files>|@                 the files to commit%n" +
+            "      [@|yellow <files>|@]...            the files to commit%n" +
             "%n" +
             "@|bold,underline Options:|@%n" +
             "  @|yellow -a|@, @|yellow --all|@                   Tell the command to automatically stage files%n" +
@@ -646,7 +654,62 @@ public class Demo implements Runnable {
             "                                commit message options (-m/-c/-C/-F).%n" +
             "  @|yellow -F|@, @|yellow --file|@=@|italic <file>|@           Take the commit message from the given file. Use%n" +
             "                                - to read the message from the standard input.%n" +
-            "  @|yellow -m|@, @|yellow --message|@[=@|italic <msg>|@...]     Use the given <msg> as the commit message. If%n" +
+            "  @|yellow -m|@, @|yellow --message|@=@|italic <msg>|@         Use the given <msg> as the commit message. If%n" +
             "                                multiple -m options are given, their values are%n" +
             "                                concatenated as separate paragraphs.%n";
+
+    static
+    // tag::CheckSum[]
+    @Command(name = "checksum", description = "Prints the checksum (MD5 by default) of a file to STDOUT.")
+    class CheckSum implements Callable<Void> {
+
+        @Parameters(index = "0", description = "The file whose checksum to calculate.")
+        private File file;
+
+        @Option(names = {"-a", "--algorithm"}, description = "MD5, SHA-1, SHA-256, ...")
+        private String algorithm = "MD5";
+
+        @Option(names = {"-h", "--help"}, usageHelp = true, description = "Show this help message and exit.")
+        private boolean helpRequested;
+
+        public static void main(String[] args) throws Exception {
+            // CheckSum implements Callable,
+            // so parsing and error handling can be done in one line of code
+            CommandLine.call(new CheckSum(), System.err, args);
+        }
+
+        @Override
+        public Void call() throws Exception {
+            // business logic: do different things depending on options the user specified
+            if (helpRequested) {
+                CommandLine.usage(this, System.err);
+                return null;
+            }
+            byte[] digest = MessageDigest.getInstance(algorithm).digest(readBytes(file));
+            print(digest, System.out);
+            return null;
+        }
+
+        byte[] readBytes(File f) throws IOException {
+            int pos = 0;
+            int len = 0;
+            byte[] buffer = new byte[(int) f.length()];
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(f);
+                while ((len = fis.read(buffer, pos, buffer.length - pos)) > 0) { pos += len; }
+            } finally {
+                if (fis != null) { fis.close(); }
+            }
+            return buffer;
+        }
+        void print(byte[] digest, PrintStream out) {
+            for (int i = 0; i < digest.length; i++) {
+                if ((digest[i] & 0xFF) < 16) { out.print('0'); }
+                out.print(Integer.toHexString(digest[i] & 0xFF));
+            }
+            out.println();
+        }
+    }
+    // end::CheckSum[]
 }
