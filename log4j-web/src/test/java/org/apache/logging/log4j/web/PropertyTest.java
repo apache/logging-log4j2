@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.web;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.Test;
 
@@ -24,10 +27,17 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class ShutdownPropertyTest {
+public class PropertyTest {
 
     @Test
-    public void testWebProperty() {
-        assertFalse(PropertiesUtil.getProperties().getBooleanProperty("log4j.shutdownHookEnabled", true));
+    public void testShutdownHookDisabled() {
+        assertFalse(
+                "Shutdown hook should be disabled by default in web applications",
+                ((Log4jContextFactory) LogManager.getFactory()).isShutdownHookEnabled());
+    }
+
+    @Test
+    public void testIsWebApp() {
+        assertTrue("When servlet classes are available IS_WEB_APP should default to true", Constants.IS_WEB_APP);
     }
 }
