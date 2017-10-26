@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Constants;
 
 /**
  * Proxies all the other {@link StrLookup}s.
@@ -115,7 +116,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         }
         lookups.put("date", new DateLookup());
         lookups.put("ctx", new ContextMapLookup());
-        if (Loader.isClassAvailable("javax.servlet.ServletContext")) {
+        if (Constants.IS_WEB_APP) {
             try {
                 lookups.put(LOOKUP_KEY_WEB,
                     Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
