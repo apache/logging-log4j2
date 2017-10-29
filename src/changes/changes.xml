@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.10.0" date="2017-MM-DD" description="GA Release 2.10.0">
+      <action issue="LOG4J2-2091" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+        Log4j respects the configured "log4j2.is.webapp" property
+      </action>
       <action issue="LOG4J2-2088" dev="rpopma" type="update">
         Upgrade picocli to 2.0 from 0.9.8.
       </action>
