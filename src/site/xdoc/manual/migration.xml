@@ -189,9 +189,7 @@
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
   <Appenders>
-    <File name="A1" fileName="A1.log" append="false">
-      <Log4j1XmlLayout />
-    </File>
+    <File name="A1" fileName="A1.log" append="false"/>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%level - %m%n"/>
     </Console>
