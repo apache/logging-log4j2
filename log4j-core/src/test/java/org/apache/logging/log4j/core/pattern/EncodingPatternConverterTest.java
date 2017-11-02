@@ -67,4 +67,23 @@ public class EncodingPatternConverterTest {
 
         assertEquals(expected, sb.toString());
     }
+
+    @Test
+    public void testCrlfEscaping() {
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName(EncodingPatternConverterTest.class.getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("Test \r\n<div class=\"test\">this\r</div> & \n<div class='test'>that</div>"))
+                .build();
+        final StringBuilder sb = new StringBuilder();
+        final LoggerContext ctx = LoggerContext.getContext();
+        final String[] options = new String[]{"%msg", "CRLF"};
+        final EncodingPatternConverter converter = EncodingPatternConverter
+            .newInstance(ctx.getConfiguration(), options);
+        assertNotNull("Error creating converter", converter);
+        converter.format(event, sb);
+        assertEquals(
+            "Test \\r\\n<div class=\"test\">this\\r</div> & \\n<div class='test'>that</div>",
+            sb.toString());
+    }
 }
