@@ -119,6 +119,9 @@
       <action issue="LOG4J2-2089" dev="ggregory" type="update">
         [TagLib] Update servlet-api provided dependency from 2.5 to 3.0.1.
       </action>
+      <action issue="LOG4J2-2096" dev="ggregory" type="update">
+        Update Apache Kafka kafka-clients from 0.11.0.1 to 1.0.0.
+      </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
       <action issue="LOG4J2-1988" dev="rpopma" type="fix">
