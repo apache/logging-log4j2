@@ -44,6 +44,12 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
+* [Logging Fundamentals](https://github.com/jvz/jvz.github.io/blob/logging/_posts/2017-10-30-logging.md)
+(October 30, 2017)
+* [Allocation free logging with Log4j2](http://www.rationaljava.com/2017/10/allocation-free-logging-with-log4j2.html)
+(October 27, 2017)
+* [Benchmarking Java logging frameworks](https://www.loggly.com/blog/benchmarking-java-logging-frameworks/)
+(October 25, 2017)
 * [Log4j 2 and Lambda Expressions](http://www.baeldung.com/log4j-2-lazy-logging)
 (August 22, 2017)
 * [How to use Log4j 2 with Spring Boot](https://www.callicoder.com/spring-boot-log4j-2-example/)
