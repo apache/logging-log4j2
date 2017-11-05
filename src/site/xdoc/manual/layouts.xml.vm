@@ -780,8 +780,8 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>enc</b>{<i>pattern</i>}{[HTML|JSON]}<br />
-                <b>encode</b>{<i>pattern</i>}{[HTML|JSON]}
+                <b>enc</b>{<i>pattern</i>}{[HTML|JSON|CRLF]}<br />
+                <b>encode</b>{<i>pattern</i>}{[HTML|JSON|CRLF]}
               </td>
               <td>
                 <p>
@@ -841,6 +841,17 @@ WARN  [main]: Message 2</pre>
                   For example, the pattern <code>{"message": "%enc{%m}{JSON}"}</code> could be used to output a
                   valid JSON document containing the log message as a string value.
                 </p>
+                <p>Using the CRLF encoding format, the following characters are replaced:</p>
+                <table>
+                  <tr>
+                    <th>Character</th>
+                    <th>Replacement</th>
+                  </tr>
+                  <tr>
+                    <td>'\r', '\n'</td>
+                    <td>Converted into escaped strings "\\r" and "\\n" respectively</td>
+                  </tr>
+                </table>
               </td>
             </tr>
             <tr>
