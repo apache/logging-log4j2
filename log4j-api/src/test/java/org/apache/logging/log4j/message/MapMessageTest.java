@@ -61,6 +61,17 @@ public class MapMessageTest {
     }
 
     @Test
+    public void testXMLEscape() {
+        final String testMsg = "Test message <foo>";
+        final StringMapMessage msg = new StringMapMessage();
+        msg.put("message", testMsg);
+        final String result = msg.getFormattedMessage(new String[]{"XML"});
+        final String expected = "<Map>\n  <Entry key=\"message\">Test message &lt;foo&gt;</Entry>\n" +
+                "</Map>";
+        assertEquals(expected, result);
+    }
+
+    @Test
     public void testJSON() {
         final String testMsg = "Test message {}";
         final StringMapMessage msg = new StringMapMessage();
@@ -68,6 +79,16 @@ public class MapMessageTest {
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
         final String expected = "{\"message\":\"Test message {}\", \"project\":\"Log4j\"}";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testJSONEscape() {
+        final String testMsg = "Test message \"Hello, World!\"";
+        final StringMapMessage msg = new StringMapMessage();
+        msg.put("message", testMsg);
+        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final String expected = "{\"message\":\"Test message \\\"Hello, World!\\\"\"}";
         assertEquals(expected, result);
     }
 
