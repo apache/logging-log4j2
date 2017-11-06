@@ -18,6 +18,9 @@ package org.apache.logging.log4j.message;
 
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 /**
@@ -98,5 +101,39 @@ public class MapMessageTest {
         final String result2 = msg.getFormattedMessage(new String[]{"Java"});
         final String expected2 = "{key1=\"value1\", key2=\"value2\", key3=\"value3\"}";
         assertEquals(expected2, result2);
+    }
+
+    @Test
+    public void testGetNonStringValue() {
+        final String key = "Key";
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with(key, 1L);
+        assertEquals("1", msg.get(key));
+    }
+
+    @Test
+    public void testRemoveNonStringValue() {
+        final String key = "Key";
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with(key, 1L);
+        assertEquals("1", msg.remove(key));
+    }
+
+    @Test
+    public void testJSONFormatNonStringValue() {
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with("key", 1L);
+        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final String expected = "{\"key\":\"1\"}";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testXMLFormatNonStringValue() {
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with("key", 1L);
+        final String result = msg.getFormattedMessage(new String[]{"XML"});
+        final String expected = "<Map>\n  <Entry key=\"key\">1</Entry>\n</Map>";
+        assertEquals(expected, result);
     }
 }
