@@ -34,8 +34,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 @JsonIgnoreProperties({ "name", "declaringClass", "standardLevel" })
 abstract class LevelMixIn {
 
-    @JsonCreator
-    public static Level getLevel(@JsonProperty("name") final String name) {
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static Level getLevel(final String name) {
         return null;
     }
 

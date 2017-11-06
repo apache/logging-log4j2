@@ -40,6 +40,9 @@
       <action issue="LOG4J2-2091" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
         Log4j respects the configured "log4j2.is.webapp" property
       </action>
+      <action issue="LOG4J2-2100" dev="ggregory" type="fix">
+        LevelMixIn class for Jackson is coded incorrectly
+      </action>
       <action issue="LOG4J2-2088" dev="rpopma" type="update">
         Upgrade picocli to 2.0 from 0.9.8.
       </action>
