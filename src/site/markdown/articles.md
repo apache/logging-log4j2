@@ -44,8 +44,8 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
-* [Logging Fundamentals](https://github.com/jvz/jvz.github.io/blob/logging/_posts/2017-10-30-logging.md)
-(October 30, 2017)
+* [Logging Fundamentals](http://musigma.org/logging/2017/11/06/logging.html)
+(November 6, 2017)
 * [Allocation free logging with Log4j2](http://www.rationaljava.com/2017/10/allocation-free-logging-with-log4j2.html)
 (October 27, 2017)
 * [Benchmarking Java logging frameworks](https://www.loggly.com/blog/benchmarking-java-logging-frameworks/)
