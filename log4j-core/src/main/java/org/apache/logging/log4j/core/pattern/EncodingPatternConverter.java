@@ -172,6 +172,42 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
                     }
                 }
             }
+        },
+
+        /**
+         * XML string escaping as defined in XML specification.
+         *
+         * @see <a href="https://www.w3.org/TR/xml/">XML specification</a>
+         */
+        XML {
+            @Override
+            void escape(final StringBuilder toAppendTo, final int start) {
+                for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
+                    final char c = toAppendTo.charAt(i);
+                    switch (c) {
+                        case '&':
+                            toAppendTo.setCharAt(i, '&');
+                            toAppendTo.insert(i + 1, "amp;");
+                            break;
+                        case '<':
+                            toAppendTo.setCharAt(i, '&');
+                            toAppendTo.insert(i + 1, "lt;");
+                            break;
+                        case '>':
+                            toAppendTo.setCharAt(i, '&');
+                            toAppendTo.insert(i + 1, "gt;");
+                            break;
+                        case '"':
+                            toAppendTo.setCharAt(i, '&');
+                            toAppendTo.insert(i + 1, "quot;");
+                            break;
+                        case '\'':
+                            toAppendTo.setCharAt(i, '&');
+                            toAppendTo.insert(i + 1, "apos;");
+                            break;
+                    }
+                }
+            }
         };
 
         /**

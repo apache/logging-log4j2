@@ -780,8 +780,8 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>enc</b>{<i>pattern</i>}{[HTML|JSON|CRLF]}<br />
-                <b>encode</b>{<i>pattern</i>}{[HTML|JSON|CRLF]}
+                <b>enc</b>{<i>pattern</i>}{[HTML|XML|JSON|CRLF]}<br />
+                <b>encode</b>{<i>pattern</i>}{[HTML|XML|JSON|CRLF]}
               </td>
               <td>
                 <p>
@@ -809,6 +809,18 @@ WARN  [main]: Message 2</pre>
                   <tr>
                     <td>&amp;, &lt;, &gt;, &quot;, &apos;, &#x2F;</td>
                     <td>Replaced with the corresponding HTML entity</td>
+                  </tr>
+                </table>
+                <p>Using the XML encoding format, this follows the escaping rules specified by
+                   <a href="https://www.w3.org/TR/xml/">the XML specification</a>:</p>
+                <table>
+                  <tr>
+                    <th>Character</th>
+                    <th>Replacement</th>
+                  </tr>
+                  <tr>
+                    <td>&amp;, &lt;, &gt;, &quot;, &apos;</td>
+                    <td>Replaced with the corresponding XML entity</td>
                   </tr>
                 </table>
                 <p>
