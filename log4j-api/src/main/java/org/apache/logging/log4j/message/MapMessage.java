@@ -95,7 +95,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      * Constructs a new instance.
      */
     public MapMessage() {
-        data = new SortedArrayStringMap();
+        this.data = new SortedArrayStringMap();
     }
 
     /**
@@ -104,7 +104,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      * @param  initialCapacity the initial capacity.
      */
     public MapMessage(final int initialCapacity) {
-        data = new SortedArrayStringMap(initialCapacity);
+        this.data = new SortedArrayStringMap(initialCapacity);
     }
 
     /**
