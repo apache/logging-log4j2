@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
@@ -114,9 +115,12 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
             final boolean doRender = textRenderer != null;
             final StringBuilder workingBuilder = doRender ? new StringBuilder(80) : toAppendTo;
 
-            final StringBuilderFormattable stringBuilderFormattable = (StringBuilderFormattable) msg;
             final int offset = workingBuilder.length();
-            stringBuilderFormattable.formatTo(workingBuilder);
+            if (msg instanceof MultiFormatStringBuilderFormattable) {
+                ((MultiFormatStringBuilderFormattable) msg).formatTo(formats, workingBuilder);
+            } else {
+                ((StringBuilderFormattable) msg).formatTo(workingBuilder);
+            }
 
             // TODO can we optimize this?
             if (config != null && !noLookups) {
