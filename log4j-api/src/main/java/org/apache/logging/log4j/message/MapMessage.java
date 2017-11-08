@@ -24,10 +24,10 @@ import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.IndexedStringMap;
+import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -48,9 +48,9 @@ import org.apache.logging.log4j.util.TriConsumer;
  */
 @PerformanceSensitive("allocation")
 @AsynchronouslyFormattable
-public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMessage, StringBuilderFormattable {
+public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStringBuilderFormattable {
 
-    private static final long serialVersionUID = -5031471831131487120L;    
+    private static final long serialVersionUID = -5031471831131487120L;
 
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
@@ -365,17 +365,20 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      */
     @Override
     public String getFormattedMessage(final String[] formats) {
+        return format(getFormat(formats), new StringBuilder()).toString();
+    }
+
+    private MapFormat getFormat(final String[] formats) {
         if (formats == null || formats.length == 0) {
-            return asString();
+            return null;
         }
         for (int i = 0; i < formats.length; i++) {
             final MapFormat mapFormat = MapFormat.lookupIgnoreCase(formats[i]);
             if (mapFormat != null) {
-                return format(mapFormat, new StringBuilder()).toString();
+                return mapFormat;
             }
         }
-        return asString();
-
+        return null;
     }
 
     protected void appendMap(final StringBuilder sb) {
@@ -429,6 +432,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
     @Override
     public void formatTo(final StringBuilder buffer) {
         format((MapFormat) null, buffer);
+    }
+
+    @Override
+    public void formatTo(String[] formats, StringBuilder buffer) {
+        format(getFormat(formats), buffer);
     }
 
     @Override
