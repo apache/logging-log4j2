@@ -36,31 +36,43 @@ import org.apache.logging.log4j.util.Strings;
 public class Log4jServletContextListener implements ServletContextListener {
 
 	private static final int DEFAULT_STOP_TIMEOUT = 30;
-    private static final TimeUnit DEFAULT_STOP_TIMEOUT_TIMEUNIT = TimeUnit.SECONDS;
+	private static final TimeUnit DEFAULT_STOP_TIMEOUT_TIMEUNIT = TimeUnit.SECONDS;
 
 	private static final String KEY_STOP_TIMEOUT = "log4j.stop.timeout";
 	private static final String KEY_STOP_TIMEOUT_TIMEUNIT = "log4j.stop.timeout.timeunit";
 
 	private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private ServletContext servletContext;
-    private Log4jWebLifeCycle initializer;
+	private ServletContext servletContext;
+	private Log4jWebLifeCycle initializer;
 
-    @Override
-    public void contextInitialized(final ServletContextEvent event) {
-        this.servletContext = event.getServletContext();
-        LOGGER.debug("Log4jServletContextListener ensuring that Log4j starts up properly.");
+	public Log4jServletContextListener() {
 
-        this.initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
-        try {
-            this.initializer.start();
-            this.initializer.setLoggerContext(); // the application is just now starting to start up
-        } catch (final IllegalStateException e) {
-            throw new IllegalStateException("Failed to initialize Log4j properly.", e);
-        }
-    }
+	}
 
-    @Override
+	public Log4jServletContextListener(ServletContext servletContext) {
+		this.servletContext = servletContext;
+	}
+
+	@Override
+	public void contextInitialized(final ServletContextEvent event) {
+		if (this.servletContext != null) {
+			LOGGER.warn("Context was already initialized.");
+		}
+
+		this.servletContext = event.getServletContext();
+		LOGGER.debug("Log4jServletContextListener ensuring that Log4j starts up properly.");
+
+		this.initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
+		try {
+			this.initializer.start();
+			this.initializer.setLoggerContext(); // the application is just now starting to start up
+		} catch (final IllegalStateException e) {
+			throw new IllegalStateException("Failed to initialize Log4j properly.", e);
+		}
+	}
+
+	@Override
 	public void contextDestroyed(final ServletContextEvent event) {
 		if (this.servletContext == null || this.initializer == null) {
 			LOGGER.warn("Context destroyed before it was initialized.");
@@ -83,3 +95,4 @@ public class Log4jServletContextListener implements ServletContextListener {
 		}
 	}
 }
+
