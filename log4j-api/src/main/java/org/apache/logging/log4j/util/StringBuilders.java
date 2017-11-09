@@ -69,6 +69,12 @@ public final class StringBuilders {
      * @param obj the object whose text representation to append to the StringBuilder
      */
     public static void appendValue(final StringBuilder stringBuilder, final Object obj) {
+        if (!appendSpecificTypes(stringBuilder, obj)) {
+            stringBuilder.append(obj);
+        }
+    }
+
+    public static boolean appendSpecificTypes(final StringBuilder stringBuilder, final Object obj) {
         if (obj == null || obj instanceof String) {
             stringBuilder.append((String) obj);
         } else if (obj instanceof StringBuilderFormattable) {
@@ -90,8 +96,9 @@ public final class StringBuilders {
         } else if (obj instanceof Float) {
             stringBuilder.append(((Float) obj).floatValue());
         } else {
-            stringBuilder.append(obj);
+            return false;
         }
+        return true;
     }
 
     /**

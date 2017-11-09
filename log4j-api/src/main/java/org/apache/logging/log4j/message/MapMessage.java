@@ -213,10 +213,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     public String get(final String key) {
         Object result = data.getValue(key);
-        if (result == null) {
-            return null;
-        }
-        return String.valueOf(result);
+        return ParameterFormatter.deepToString(result);
     }
 
     /**
@@ -347,7 +344,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
                     .append(data.getKeyAt(i))
                     .append("\">");
             int size = sb.length();
-            sb.append(data.<Object>getValueAt(i));
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
             StringBuilders.escapeXml(sb, size);
             sb.append("</Entry>\n");
         }
@@ -396,7 +393,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             if (i > 0) {
                 sb.append(' ');
             }
-            StringBuilders.appendKeyDqValue(sb, data.getKeyAt(i), data.getValueAt(i));
+            sb.append(data.getKeyAt(i)).append(Chars.EQ).append(Chars.DQUOTE);
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
+            sb.append(Chars.DQUOTE);
         }
     }
 
@@ -412,7 +411,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             StringBuilders.escapeJson(sb, start);
             sb.append(Chars.DQUOTE).append(':').append(Chars.DQUOTE);
             start = sb.length();
-            sb.append(data.<Object>getValueAt(i));
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
             StringBuilders.escapeJson(sb, start);
             sb.append(Chars.DQUOTE);
         }
@@ -426,7 +425,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             if (i > 0) {
                 sb.append(", ");
             }
-            StringBuilders.appendKeyDqValue(sb, data.getKeyAt(i), data.getValueAt(i));
+            sb.append(data.getKeyAt(i)).append(Chars.EQ).append(Chars.DQUOTE);
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
+            sb.append(Chars.DQUOTE);
         }
         sb.append('}');
     }
