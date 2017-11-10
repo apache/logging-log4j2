@@ -49,11 +49,11 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
     @Override
     protected String toContextMapKey(final ClassLoader loader) {
         // LOG4J2-666 ensure unique name across separate instances created by webapp classloaders
-        return "AsyncContext@" + Integer.toHexString(System.identityHashCode(loader));
+        return "AsyncContext@" + super.toContextMapKey(loader);
     }
 
     @Override
     protected String defaultContextName() {
-        return "DefaultAsyncContext@" + Thread.currentThread().getName();
+        return "DefaultAsyncContext";
     }
 }
