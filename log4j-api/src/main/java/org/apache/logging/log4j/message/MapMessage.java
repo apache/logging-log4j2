@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.IndexedStringMap;
@@ -338,8 +339,13 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
     public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
         for (int i = 0; i < data.size(); i++) {
-            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">").append((String)data.getValueAt(i))
-                    .append("</Entry>\n");
+            sb.append("  <Entry key=\"")
+                    .append(data.getKeyAt(i))
+                    .append("\">");
+            int size = sb.length();
+            sb.append(data.<Object>getValueAt(i));
+            StringBuilders.escapeXml(sb, size);
+            sb.append("</Entry>\n");
         }
         sb.append("</Map>");
     }
@@ -393,8 +399,15 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
             if (i > 0) {
                 sb.append(", ");
             }
-            StringBuilders.appendDqValue(sb, data.getKeyAt(i)).append(':');
-            StringBuilders.appendDqValue(sb, data.getValueAt(i));
+            sb.append(Chars.DQUOTE);
+            int start = sb.length();
+            sb.append(data.getKeyAt(i));
+            StringBuilders.escapeJson(sb, start);
+            sb.append(Chars.DQUOTE).append(':').append(Chars.DQUOTE);
+            start = sb.length();
+            sb.append(data.<Object>getValueAt(i));
+            StringBuilders.escapeJson(sb, start);
+            sb.append(Chars.DQUOTE);
         }
         sb.append('}');
     }
