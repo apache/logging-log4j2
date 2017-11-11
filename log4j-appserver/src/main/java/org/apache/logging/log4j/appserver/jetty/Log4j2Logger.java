@@ -17,7 +17,10 @@
 
 package org.apache.logging.log4j.appserver.jetty;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.LoggerContext;
 import org.eclipse.jetty.util.log.AbstractLogger;
 import org.eclipse.jetty.util.log.Logger;
 
@@ -28,14 +31,30 @@ import org.eclipse.jetty.util.log.Logger;
  */
 public class Log4j2Logger extends AbstractLogger {
 
-    private final org.apache.logging.log4j.Logger logger;
+    /**
+     * Internal LogManager.
+     */
+    private static class PrivateManager extends LogManager {
+
+        public static LoggerContext getContext() {
+            final ClassLoader cl = Log4j2Logger.class.getClassLoader();
+            return getContext(FQCN, cl, false);
+        }
+
+        public static ExtendedLogger getLogger(final String name) {
+            return getContext().getLogger(name);
+        }
+    }
+
+    private static final String FQCN = Log4j2Logger.class.getName();
+    private final ExtendedLogger logger;
 
     private final String name;
 
     public Log4j2Logger(final String name) {
         super();
         this.name = name;
-        this.logger = LogManager.getLogger(name);
+        this.logger = PrivateManager.getLogger(name);
     }
 
     public Log4j2Logger() {
@@ -49,7 +68,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void debug(final String msg, final Object... args) {
-        logger.debug(msg, args);
+        logger.logIfEnabled(FQCN, Level.DEBUG, null, msg, args);
     }
 
     /*
@@ -59,7 +78,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void debug(final String msg, final Throwable thrown) {
-        logger.debug(msg, thrown);
+        logger.logIfEnabled(FQCN, Level.DEBUG, null, msg, thrown);
     }
 
     /*
@@ -69,7 +88,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void debug(final Throwable thrown) {
-        logger.debug(thrown);
+        logger.logIfEnabled(FQCN, Level.DEBUG, null, (Object) null, thrown);
     }
 
     /*
@@ -100,7 +119,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void info(final String msg, final Object... args) {
-        logger.info(msg, args);
+        logger.logIfEnabled(FQCN, Level.INFO, null, msg, args);
     }
 
     /*
@@ -110,7 +129,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void info(final String msg, final Throwable thrown) {
-        logger.info(msg, thrown);
+        logger.logIfEnabled(FQCN, Level.INFO, null, msg, thrown);
     }
 
     /*
@@ -120,7 +139,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void info(final Throwable thrown) {
-        logger.info(thrown);
+        logger.logIfEnabled(FQCN, Level.INFO, null, (Object) null, thrown);
     }
 
     /*
@@ -160,7 +179,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void warn(final String msg, final Object... args) {
-        logger.warn(msg, args);
+        logger.logIfEnabled(FQCN, Level.WARN, null, msg, args);
     }
 
     /*
@@ -170,7 +189,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void warn(final String msg, final Throwable thrown) {
-        logger.warn(msg, thrown);
+        logger.logIfEnabled(FQCN, Level.WARN, null, msg, thrown);
     }
 
     /*
@@ -180,7 +199,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void warn(final Throwable thrown) {
-        logger.warn(thrown);
+        logger.logIfEnabled(FQCN, Level.WARN, null, (Object) null, thrown);
     }
 
 }
