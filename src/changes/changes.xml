@@ -52,9 +52,6 @@
       <action issue="LOG4J2-2100" dev="ggregory" type="fix">
         LevelMixIn class for Jackson is coded incorrectly
       </action>
-      <action issue="LOG4J2-2088" dev="rpopma" type="update">
-        Upgrade picocli to 2.0 from 0.9.8.
-      </action>
       <action issue="LOG4J2-2087" dev="rpopma" type="fix" due-to="Andy Gumbrecht">
         Jansi now needs to be enabled explicitly (by setting system property `log4j.skipJansi` to `false`). To avoid causing problems for web applications, Log4j will no longer automatically try to load Jansi without explicit configuration.
       </action>
@@ -63,6 +60,9 @@
       </action>
       <action issue="LOG4J2-2076" dev="mikes" type="update">
         Split up log4j-nosql into one module per appender.
+      </action>
+      <action issue="LOG4J2-2088" dev="rpopma" type="update">
+        Upgrade picocli to 2.0.3 from 0.9.8.
       </action>
       <action issue="LOG4J2-2062" dev="mikes" type="add" due-to="Jorge Sanchez">
         Add possibility of sending the key of a message to Kafka using KafkaAppender.
