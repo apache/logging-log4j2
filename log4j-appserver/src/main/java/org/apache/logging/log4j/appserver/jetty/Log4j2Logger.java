@@ -108,8 +108,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void ignore(final Throwable ignored) {
-        // TODO Auto-generated method stub
-
+        //  Really do nothing
     }
 
     /*
