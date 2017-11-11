@@ -37,6 +37,9 @@
       <action issue="LOG4J2-2103" dev="mikes" type="add">
         XML encoding for PatternLayout.
       </action>
+      <action issue="LOG4J2-2114" dev="ggregory" type="add">
+        Provide a native Log4j 2 implementation of Eclipse Jetty's org.eclipse.jetty.util.log.Logger.
+      </action>
       <action issue="LOG4J2-1203" dev="mikes" type="add" due-to="Robert Turner">
         Allow filtering of line breaks in layout pattern.
       </action>
