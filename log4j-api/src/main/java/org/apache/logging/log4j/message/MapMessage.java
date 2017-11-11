@@ -21,13 +21,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.IndexedStringMap;
+import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -48,9 +49,9 @@ import org.apache.logging.log4j.util.TriConsumer;
  */
 @PerformanceSensitive("allocation")
 @AsynchronouslyFormattable
-public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMessage, StringBuilderFormattable {
+public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStringBuilderFormattable {
 
-    private static final long serialVersionUID = -5031471831131487120L;    
+    private static final long serialVersionUID = -5031471831131487120L;
 
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
@@ -200,7 +201,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      * @param map The Map to add.
      */
     public void putAll(final Map<String, String> map) {
-        for (final Map.Entry<String, ?> entry : map.entrySet()) {
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
             data.putValue(entry.getKey(), entry.getValue());
         }
     }
@@ -211,7 +212,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      * @return The value of the element or null if the key is not present.
      */
     public String get(final String key) {
-        return data.getValue(key);
+        Object result = data.getValue(key);
+        return ParameterFormatter.deepToString(result);
     }
 
     /**
@@ -220,7 +222,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      * @return The previous value of the element.
      */
     public String remove(final String key) {
-        final String result = data.getValue(key);
+        final String result = get(key);
         data.remove(key);
         return result;
     }
@@ -338,8 +340,13 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
     public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
         for (int i = 0; i < data.size(); i++) {
-            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">").append((String)data.getValueAt(i))
-                    .append("</Entry>\n");
+            sb.append("  <Entry key=\"")
+                    .append(data.getKeyAt(i))
+                    .append("\">");
+            int size = sb.length();
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
+            StringBuilders.escapeXml(sb, size);
+            sb.append("</Entry>\n");
         }
         sb.append("</Map>");
     }
@@ -365,17 +372,20 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      */
     @Override
     public String getFormattedMessage(final String[] formats) {
+        return format(getFormat(formats), new StringBuilder()).toString();
+    }
+
+    private MapFormat getFormat(final String[] formats) {
         if (formats == null || formats.length == 0) {
-            return asString();
+            return null;
         }
         for (int i = 0; i < formats.length; i++) {
             final MapFormat mapFormat = MapFormat.lookupIgnoreCase(formats[i]);
             if (mapFormat != null) {
-                return format(mapFormat, new StringBuilder()).toString();
+                return mapFormat;
             }
         }
-        return asString();
-
+        return null;
     }
 
     protected void appendMap(final StringBuilder sb) {
@@ -383,7 +393,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
             if (i > 0) {
                 sb.append(' ');
             }
-            StringBuilders.appendKeyDqValue(sb, data.getKeyAt(i), data.getValueAt(i));
+            sb.append(data.getKeyAt(i)).append(Chars.EQ).append(Chars.DQUOTE);
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
+            sb.append(Chars.DQUOTE);
         }
     }
 
@@ -393,8 +405,15 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
             if (i > 0) {
                 sb.append(", ");
             }
-            StringBuilders.appendDqValue(sb, data.getKeyAt(i)).append(':');
-            StringBuilders.appendDqValue(sb, data.getValueAt(i));
+            sb.append(Chars.DQUOTE);
+            int start = sb.length();
+            sb.append(data.getKeyAt(i));
+            StringBuilders.escapeJson(sb, start);
+            sb.append(Chars.DQUOTE).append(':').append(Chars.DQUOTE);
+            start = sb.length();
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
+            StringBuilders.escapeJson(sb, start);
+            sb.append(Chars.DQUOTE);
         }
         sb.append('}');
     }
@@ -406,7 +425,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
             if (i > 0) {
                 sb.append(", ");
             }
-            StringBuilders.appendKeyDqValue(sb, data.getKeyAt(i), data.getValueAt(i));
+            sb.append(data.getKeyAt(i)).append(Chars.EQ).append(Chars.DQUOTE);
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
+            sb.append(Chars.DQUOTE);
         }
         sb.append('}');
     }
@@ -429,6 +450,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
     @Override
     public void formatTo(final StringBuilder buffer) {
         format((MapFormat) null, buffer);
+    }
+
+    @Override
+    public void formatTo(String[] formats, StringBuilder buffer) {
+        format(getFormat(formats), buffer);
     }
 
     @Override

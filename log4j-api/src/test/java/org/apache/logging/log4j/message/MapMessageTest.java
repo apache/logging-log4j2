@@ -16,7 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -61,6 +65,17 @@ public class MapMessageTest {
     }
 
     @Test
+    public void testXMLEscape() {
+        final String testMsg = "Test message <foo>";
+        final StringMapMessage msg = new StringMapMessage();
+        msg.put("message", testMsg);
+        final String result = msg.getFormattedMessage(new String[]{"XML"});
+        final String expected = "<Map>\n  <Entry key=\"message\">Test message &lt;foo&gt;</Entry>\n" +
+                "</Map>";
+        assertEquals(expected, result);
+    }
+
+    @Test
     public void testJSON() {
         final String testMsg = "Test message {}";
         final StringMapMessage msg = new StringMapMessage();
@@ -68,6 +83,16 @@ public class MapMessageTest {
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
         final String expected = "{\"message\":\"Test message {}\", \"project\":\"Log4j\"}";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testJSONEscape() {
+        final String testMsg = "Test message \"Hello, World!\"";
+        final StringMapMessage msg = new StringMapMessage();
+        msg.put("message", testMsg);
+        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final String expected = "{\"message\":\"Test message \\\"Hello, World!\\\"\"}";
         assertEquals(expected, result);
     }
 
@@ -98,5 +123,108 @@ public class MapMessageTest {
         final String result2 = msg.getFormattedMessage(new String[]{"Java"});
         final String expected2 = "{key1=\"value1\", key2=\"value2\", key3=\"value3\"}";
         assertEquals(expected2, result2);
+    }
+
+    @Test
+    public void testGetNonStringValue() {
+        final String key = "Key";
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with(key, 1L);
+        assertEquals("1", msg.get(key));
+    }
+
+    @Test
+    public void testRemoveNonStringValue() {
+        final String key = "Key";
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with(key, 1L);
+        assertEquals("1", msg.remove(key));
+    }
+
+    @Test
+    public void testJSONFormatNonStringValue() {
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with("key", 1L);
+        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final String expected = "{\"key\":\"1\"}";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testXMLFormatNonStringValue() {
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with("key", 1L);
+        final String result = msg.getFormattedMessage(new String[]{"XML"});
+        final String expected = "<Map>\n  <Entry key=\"key\">1</Entry>\n</Map>";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testFormatToUsedInOutputXml() {
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with("key", new FormattableTestType());
+        final String result = msg.getFormattedMessage(new String[]{"XML"});
+        final String expected = "<Map>\n  <Entry key=\"key\">formatTo</Entry>\n</Map>";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testFormatToUsedInOutputJson() {
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with("key", new FormattableTestType());
+        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final String expected = "{\"key\":\"formatTo\"}";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testFormatToUsedInOutputJava() {
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with("key", new FormattableTestType());
+        final String result = msg.getFormattedMessage(new String[]{"JAVA"});
+        final String expected = "{key=\"formatTo\"}";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testFormatToUsedInOutputDefault() {
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with("key", new FormattableTestType());
+        final String result = msg.getFormattedMessage(null);
+        final String expected = "key=\"formatTo\"";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUsesDeepToString() {
+        final String key = "key";
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with(key, new FormattableTestType());
+        final String result = msg.get(key);
+        final String expected = "formatTo";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testRemoveUsesDeepToString() {
+        final String key = "key";
+        final MapMessage<?, Object> msg = new MapMessage<>()
+                .with(key, new FormattableTestType());
+        final String result = msg.remove(key);
+        final String expected = "formatTo";
+        assertEquals(expected, result);
+    }
+
+    private static final class FormattableTestType implements StringBuilderFormattable {
+
+        @Override
+        public String toString() {
+            return "toString";
+        }
+
+        @Override
+        public void formatTo(StringBuilder buffer) {
+            buffer.append("formatTo");
+        }
     }
 }

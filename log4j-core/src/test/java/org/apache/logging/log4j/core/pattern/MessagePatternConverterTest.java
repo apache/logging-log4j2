@@ -26,6 +26,8 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
+import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.Test;
 
 /**
@@ -101,5 +103,61 @@ public class MessagePatternConverterTest {
         sb = new StringBuilder();
         converter.format(event, sb);
         assertEquals("Incorrect length: " + sb, 4, sb.length());
+    }
+
+    @Test
+    public void testMapMessageFormatJson() throws Exception {
+        final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[]{"json"});
+        Message msg = new StringMapMessage()
+                .with("key", "val");
+        LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg).build();
+        StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        assertEquals("Unexpected result", "{\"key\":\"val\"}", sb.toString());
+    }
+
+    @Test
+    public void testMapMessageFormatXml() throws Exception {
+        final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[]{"xml"});
+        Message msg = new StringMapMessage()
+                .with("key", "val");
+        LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg).build();
+        StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        assertEquals("Unexpected result", "<Map>\n  <Entry key=\"key\">val</Entry>\n</Map>", sb.toString());
+    }
+
+    @Test
+    public void testMapMessageFormatDefault() throws Exception {
+        final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, null);
+        Message msg = new StringMapMessage()
+                .with("key", "val");
+        LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg).build();
+        StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        assertEquals("Unexpected result", "key=\"val\"", sb.toString());
+    }
+
+    @Test
+    public void testStructuredDataFormatFull() throws Exception {
+        final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[]{"FULL"});
+        Message msg = new StructuredDataMessage("id", "message", "type")
+                .with("key", "val");
+        LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg).build();
+        StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        assertEquals("Unexpected result", "type [id key=\"val\"] message", sb.toString());
     }
 }

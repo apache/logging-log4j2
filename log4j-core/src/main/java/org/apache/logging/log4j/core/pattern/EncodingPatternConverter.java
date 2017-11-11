@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Converter that encodes the output from a pattern using a specified format. Supported formats include HTML
@@ -139,19 +140,7 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
         JSON {
             @Override
             void escape(final StringBuilder toAppendTo, final int start) {
-                for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
-                    final char c = toAppendTo.charAt(i);
-                    if (Character.isISOControl(c)) {
-                        // all iso control characters are in U+00xx
-                        toAppendTo.setCharAt(i, '\\');
-                        toAppendTo.insert(i + 1, "u0000");
-                        toAppendTo.setCharAt(i + 4, Chars.getUpperCaseHex((c & 0xF0) >> 4));
-                        toAppendTo.setCharAt(i + 5, Chars.getUpperCaseHex(c & 0xF));
-                    } else if (c == '"' || c == '\\') {
-                        // only " and \ need to be escaped; other escapes are optional
-                        toAppendTo.insert(i, '\\');
-                    }
-                }
+                StringBuilders.escapeJson(toAppendTo, start);
             }
         },
 
@@ -182,31 +171,7 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
         XML {
             @Override
             void escape(final StringBuilder toAppendTo, final int start) {
-                for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
-                    final char c = toAppendTo.charAt(i);
-                    switch (c) {
-                        case '&':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "amp;");
-                            break;
-                        case '<':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "lt;");
-                            break;
-                        case '>':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "gt;");
-                            break;
-                        case '"':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "quot;");
-                            break;
-                        case '\'':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "apos;");
-                            break;
-                    }
-                }
+                StringBuilders.escapeXml(toAppendTo, start);
             }
         };
 
