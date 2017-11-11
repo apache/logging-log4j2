@@ -55,7 +55,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
@@ -133,7 +132,7 @@ import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Colum
  */
 public class CommandLine {
     /** This is picocli version {@value}. */
-    public static final String VERSION = "2.0.0";
+    public static final String VERSION = "2.0.3";
 
     private final Tracer tracer = new Tracer();
     private final Interpreter interpreter;
@@ -1791,10 +1790,10 @@ public class CommandLine {
         }
     }
     static void init(Class<?> cls,
-                     List<Field> requiredFields,
-                     Map<String, Field> optionName2Field,
-                     Map<Character, Field> singleCharOption2Field,
-                     List<Field> positionalParametersFields) {
+                              List<Field> requiredFields,
+                              Map<String, Field> optionName2Field,
+                              Map<Character, Field> singleCharOption2Field,
+                              List<Field> positionalParametersFields) {
         Field[] declaredFields = cls.getDeclaredFields();
         for (Field field : declaredFields) {
             field.setAccessible(true);
@@ -1863,6 +1862,7 @@ public class CommandLine {
 
         Interpreter(Object command) {
             converterRegistry.put(Path.class,          new BuiltIn.PathConverter());
+            converterRegistry.put(Object.class,        new BuiltIn.StringConverter());
             converterRegistry.put(String.class,        new BuiltIn.StringConverter());
             converterRegistry.put(StringBuilder.class, new BuiltIn.StringBuilderConverter());
             converterRegistry.put(CharSequence.class,  new BuiltIn.CharSequenceConverter());
@@ -2109,7 +2109,7 @@ public class CommandLine {
                 if (tracer.isDebug()) {tracer.debug("Position %d is in index range %s. Trying to assign args to %s, arity=%s%n", position, indexRange, positionalParam, arity);}
                 assertNoMissingParameters(positionalParam, arity.min, argsCopy);
                 int originalSize = argsCopy.size();
-                applyOption(positionalParam, Parameters.class, arity, false, argsCopy, initialized, "args[" + indexRange + "]");
+                applyOption(positionalParam, Parameters.class, arity, false, argsCopy, initialized, "args[" + indexRange + "] at position " + position);
                 int count = originalSize - argsCopy.size();
                 if (count > 0) { required.remove(positionalParam); }
                 consumed = Math.max(consumed, count);
@@ -2162,16 +2162,15 @@ public class CommandLine {
                     if (arity.min > 0 && !empty(cluster)) {
                         if (tracer.isDebug()) {tracer.debug("Trying to process '%s' as option parameter%n", cluster);}
                     }
-                    args.push(cluster); // interpret remainder as option parameter (CAUTION: may be empty string!)
                     // arity may be >= 1, or
                     // arity <= 0 && !cluster.startsWith(separator)
                     // e.g., boolean @Option("-v", arity=0, varargs=true); arg "-rvTRUE", remainder cluster="TRUE"
-                    if (!args.isEmpty() && args.peek().length() == 0 && !paramAttachedToOption) {
-                        args.pop(); // throw out empty string we get at the end of a group of clustered short options
+                    if (!empty(cluster)) {
+                        args.push(cluster); // interpret remainder as option parameter
                     }
                     int consumed = applyOption(field, Option.class, arity, paramAttachedToOption, args, initialized, argDescription);
                     // only return if cluster (and maybe more) was consumed, otherwise continue do-while loop
-                    if (consumed > 0) {
+                    if (empty(cluster) || consumed > 0 || args.isEmpty()) {
                         return;
                     }
                     cluster = args.pop();
@@ -2270,7 +2269,7 @@ public class CommandLine {
                 initialized.add(field);
             }
             if (tracer.level.isEnabled(level)) { level.print(tracer, traceMessage, field.getType().getSimpleName(),
-                    field.getDeclaringClass().getSimpleName(), field.getName(), String.valueOf(oldValue), String.valueOf(newValue), argDescription);
+                        field.getDeclaringClass().getSimpleName(), field.getName(), String.valueOf(oldValue), String.valueOf(newValue), argDescription);
             }
             field.set(command, newValue);
             return result;
@@ -2620,8 +2619,8 @@ public class CommandLine {
             return value == null
                     ? null
                     : (value.length() > 1 && value.startsWith("\"") && value.endsWith("\""))
-                    ? value.substring(1, value.length() - 1)
-                    : value;
+                        ? value.substring(1, value.length() - 1)
+                        : value;
         }
     }
     private static class PositionalParametersSorter implements Comparator<Field> {
@@ -3163,6 +3162,21 @@ public class CommandLine {
             return layout.toString();
         }
 
+        private static String heading(Ansi ansi, String values, Object... params) {
+            StringBuilder sb = join(ansi, new String[] {values}, new StringBuilder(), params);
+            String result = sb.toString();
+            result = result.endsWith(System.getProperty("line.separator"))
+                    ? result.substring(0, result.length() - System.getProperty("line.separator").length()) : result;
+            return result + new String(spaces(countTrailingSpaces(values)));
+        }
+        private static char[] spaces(int length) { char[] result = new char[length]; Arrays.fill(result, ' '); return result; }
+        private static int countTrailingSpaces(String str) {
+            if (str == null) {return 0;}
+            int trailingSpaces = 0;
+            for (int i = str.length() - 1; i >= 0 && str.charAt(i) == ' '; i--) { trailingSpaces++; }
+            return trailingSpaces;
+        }
+
         /** Formats each of the specified values and appends it to the specified StringBuilder.
          * @param ansi whether the result should contain ANSI escape codes or not
          * @param values the values to format and append to the StringBuilder
@@ -3174,11 +3188,15 @@ public class CommandLine {
                 TextTable table = new TextTable(ansi, usageHelpWidth);
                 table.indentWrappedLines = 0;
                 for (String summaryLine : values) {
-                    table.addRowValues(ansi.new Text(String.format(summaryLine, params)));
+                    Text[] lines = ansi.new Text(format(summaryLine, params)).splitLines();
+                    for (Text line : lines) {  table.addRowValues(line); }
                 }
                 table.toString(sb);
             }
             return sb;
+        }
+        private static String format(String formatString,  Object... params) {
+            return formatString == null ? "" : String.format(formatString, params);
         }
         /** Returns command custom synopsis as a string. A custom synopsis can be zero or more lines, and can be
          * specified declaratively with the {@link Command#customSynopsis()} annotation attribute or programmatically
@@ -3221,14 +3239,14 @@ public class CommandLine {
          * @param params the parameters to use to format the header heading
          * @return the formatted header heading */
         public String headerHeading(Object... params) {
-            return ansi().new Text(format(headerHeading, params)).toString();
+            return heading(ansi(), headerHeading, params);
         }
 
         /** Returns the text displayed before the synopsis text; the result of {@code String.format(synopsisHeading, params)}.
          * @param params the parameters to use to format the synopsis heading
          * @return the formatted synopsis heading */
         public String synopsisHeading(Object... params) {
-            return ansi().new Text(format(synopsisHeading, params)).toString();
+            return heading(ansi(), synopsisHeading, params);
         }
 
         /** Returns the text displayed before the description text; an empty string if there is no description,
@@ -3236,7 +3254,7 @@ public class CommandLine {
          * @param params the parameters to use to format the description heading
          * @return the formatted description heading */
         public String descriptionHeading(Object... params) {
-            return empty(descriptionHeading) ? "" : ansi().new Text(format(descriptionHeading, params)).toString();
+            return empty(descriptionHeading) ? "" : heading(ansi(), descriptionHeading, params);
         }
 
         /** Returns the text displayed before the positional parameter list; an empty string if there are no positional
@@ -3244,7 +3262,7 @@ public class CommandLine {
          * @param params the parameters to use to format the parameter list heading
          * @return the formatted parameter list heading */
         public String parameterListHeading(Object... params) {
-            return positionalParametersFields.isEmpty() ? "" : ansi().new Text(format(parameterListHeading, params)).toString();
+            return positionalParametersFields.isEmpty() ? "" : heading(ansi(), parameterListHeading, params);
         }
 
         /** Returns the text displayed before the option list; an empty string if there are no options,
@@ -3252,7 +3270,7 @@ public class CommandLine {
          * @param params the parameters to use to format the option list heading
          * @return the formatted option list heading */
         public String optionListHeading(Object... params) {
-            return optionFields.isEmpty() ? "" : ansi().new Text(format(optionListHeading, params)).toString();
+            return optionFields.isEmpty() ? "" : heading(ansi(), optionListHeading, params);
         }
 
         /** Returns the text displayed before the command list; an empty string if there are no commands,
@@ -3260,17 +3278,14 @@ public class CommandLine {
          * @param params the parameters to use to format the command list heading
          * @return the formatted command list heading */
         public String commandListHeading(Object... params) {
-            return commands.isEmpty() ? "" : ansi().new Text(format(commandListHeading, params)).toString();
+            return commands.isEmpty() ? "" : heading(ansi(), commandListHeading, params);
         }
 
         /** Returns the text displayed before the footer text; the result of {@code String.format(footerHeading, params)}.
          * @param params the parameters to use to format the footer heading
          * @return the formatted footer heading */
         public String footerHeading(Object... params) {
-            return ansi().new Text(format(footerHeading, params)).toString();
-        }
-        private String format(String formatString,  Object[] params) {
-            return formatString == null ? "" : String.format(formatString, params);
+            return heading(ansi(), footerHeading, params);
         }
         /** Returns a 2-column list with command names and the first line of their header or (if absent) description.
          * @return a usage help section describing the added commands */
@@ -3441,27 +3456,25 @@ public class CommandLine {
         static class DefaultOptionRenderer implements IOptionRenderer {
             public String requiredMarker = " ";
             public Object command;
+            private String sep;
+            private boolean showDefault;
             public Text[][] render(Option option, Field field, IParamLabelRenderer paramLabelRenderer, ColorScheme scheme) {
                 String[] names = ShortestFirst.sort(option.names());
                 int shortOptionCount = names[0].length() == 2 ? 1 : 0;
                 String shortOption = shortOptionCount > 0 ? names[0] : "";
-                Text paramLabelText = paramLabelRenderer.renderParameterLabel(field, scheme.ansi(), scheme.optionParamStyles);
+                sep = shortOptionCount > 0 && names.length > 1 ? "," : "";
+
                 String longOption = join(names, shortOptionCount, names.length - shortOptionCount, ", ");
-                String sep = shortOptionCount > 0 && names.length > 1 ? "," : "";
+                Text longOptionText = createLongOptionText(field, paramLabelRenderer, scheme, longOption);
 
-                // if no long option, fill in the space between the short option name and the param label value
-                if (paramLabelText.length > 0 && longOption.length() == 0) {
-                    sep = paramLabelRenderer.separator();
-                    // #181 paramLabelText may be =LABEL or [=LABEL...]
-                    int sepStart = paramLabelText.plainString().indexOf(sep);
-                    Text prefix = paramLabelText.substring(0, sepStart);
-                    paramLabelText = prefix.append(paramLabelText.substring(sepStart + sep.length()));
-                }
-                Text longOptionText = scheme.optionText(longOption);
-                longOptionText = longOptionText.append(paramLabelText);
+                showDefault = command != null && !option.help() && !isBoolean(field.getType());
+                Object defaultValue = createDefaultValue(field);
+
                 String requiredOption = option.required() ? requiredMarker : "";
+                return renderDescriptionLines(option, scheme, requiredOption, shortOption, longOptionText, defaultValue);
+            }
 
-                boolean showDefault = command != null && !option.help() && !isBoolean(field.getType());
+            private Object createDefaultValue(Field field) {
                 Object defaultValue = null;
                 try {
                     defaultValue = field.get(command);
@@ -3476,22 +3489,57 @@ public class CommandLine {
                 } catch (Exception ex) {
                     showDefault = false;
                 }
-                final int descriptionCount = Math.max(1, option.description().length);
-                final int ROW_COUNT = showDefault ? descriptionCount + 1 : descriptionCount;
-                final int COLUMN_COUNT = 5;
+                return defaultValue;
+            }
+
+            private Text createLongOptionText(Field field, IParamLabelRenderer renderer, ColorScheme scheme, String longOption) {
+                Text paramLabelText = renderer.renderParameterLabel(field, scheme.ansi(), scheme.optionParamStyles);
+
+                // if no long option, fill in the space between the short option name and the param label value
+                if (paramLabelText.length > 0 && longOption.length() == 0) {
+                    sep = renderer.separator();
+                    // #181 paramLabelText may be =LABEL or [=LABEL...]
+                    int sepStart = paramLabelText.plainString().indexOf(sep);
+                    Text prefix = paramLabelText.substring(0, sepStart);
+                    paramLabelText = prefix.append(paramLabelText.substring(sepStart + sep.length()));
+                }
+                Text longOptionText = scheme.optionText(longOption);
+                longOptionText = longOptionText.append(paramLabelText);
+                return longOptionText;
+            }
+
+            private Text[][] renderDescriptionLines(Option option,
+                                                    ColorScheme scheme,
+                                                    String requiredOption,
+                                                    String shortOption,
+                                                    Text longOptionText,
+                                                    Object defaultValue) {
                 Text EMPTY = Ansi.EMPTY_TEXT;
-                Text[][] result = new Text[ROW_COUNT][COLUMN_COUNT];
-                result[0] = new Text[] { scheme.optionText(requiredOption), scheme.optionText(shortOption),
-                        scheme.ansi().new Text(sep), longOptionText, scheme.ansi().new Text(str(option.description(), 0)) };
+                List<Text[]> result = new ArrayList<Text[]>();
+                Text[] descriptionFirstLines = scheme.ansi().new Text(str(option.description(), 0)).splitLines();
+                if (descriptionFirstLines.length == 0) {
+                    if (showDefault) {
+                        descriptionFirstLines = new Text[]{scheme.ansi().new Text("  Default: " + defaultValue)};
+                        showDefault = false; // don't show the default value twice
+                    } else {
+                        descriptionFirstLines = new Text[]{ EMPTY };
+                    }
+                }
+                result.add(new Text[] { scheme.optionText(requiredOption), scheme.optionText(shortOption),
+                        scheme.ansi().new Text(sep), longOptionText, descriptionFirstLines[0] });
+                for (int i = 1; i < descriptionFirstLines.length; i++) {
+                    result.add(new Text[] { EMPTY, EMPTY, EMPTY, EMPTY, descriptionFirstLines[i] });
+                }
                 for (int i = 1; i < option.description().length; i++) {
-                    result[i] = new Text[] { EMPTY, EMPTY, EMPTY, EMPTY, scheme.ansi().new Text(option.description()[i]) };
+                    Text[] descriptionNextLines = scheme.ansi().new Text(option.description()[i]).splitLines();
+                    for (Text line : descriptionNextLines) {
+                        result.add(new Text[] { EMPTY, EMPTY, EMPTY, EMPTY, line });
+                    }
                 }
                 if (showDefault) {
-                    Arrays.fill(result[result.length - 1], EMPTY);
-                    int row = empty(result[ROW_COUNT - 2][COLUMN_COUNT - 1]) ? ROW_COUNT - 2 : ROW_COUNT - 1;
-                    result[row][COLUMN_COUNT - 1] = scheme.ansi().new Text("  Default: " + defaultValue);
+                    result.add(new Text[] { EMPTY, EMPTY, EMPTY, EMPTY, scheme.ansi().new Text("  Default: " + defaultValue) });
                 }
-                return result;
+                return result.toArray(new Text[result.size()][]);
             }
         }
         /** The MinimalOptionRenderer converts {@link Option Options} to a single row with two columns of text: an
@@ -3502,7 +3550,7 @@ public class CommandLine {
                 Text paramLabelText = parameterLabelRenderer.renderParameterLabel(field, scheme.ansi(), scheme.optionParamStyles);
                 optionText = optionText.append(paramLabelText);
                 return new Text[][] {{ optionText,
-                        scheme.ansi().new Text(option.description().length == 0 ? "" : option.description()[0]) }};
+                                        scheme.ansi().new Text(option.description().length == 0 ? "" : option.description()[0]) }};
             }
         }
         /** The MinimalParameterRenderer converts {@link Parameters Parameters} to a single row with two columns of
@@ -3546,14 +3594,21 @@ public class CommandLine {
                 Text label = paramLabelRenderer.renderParameterLabel(field, scheme.ansi(), scheme.parameterStyles);
                 Text requiredParameter = scheme.parameterText(Range.parameterArity(field).min > 0 ? requiredMarker : "");
 
-                final int COLUMN_COUNT = 5;
-                final Text EMPTY = Ansi.EMPTY_TEXT;
-                Text[][] result = new Text[Math.max(1, params.description().length)][COLUMN_COUNT];
-                result[0] = new Text[] { requiredParameter, EMPTY, EMPTY, label, scheme.ansi().new Text(str(params.description(), 0)) };
-                for (int i = 1; i < params.description().length; i++) {
-                    result[i] = new Text[] { EMPTY, EMPTY, EMPTY, EMPTY, scheme.ansi().new Text(params.description()[i]) };
+                Text EMPTY = Ansi.EMPTY_TEXT;
+                List<Text[]> result = new ArrayList<Text[]>();
+                Text[] descriptionFirstLines = scheme.ansi().new Text(str(params.description(), 0)).splitLines();
+                if (descriptionFirstLines.length == 0) { descriptionFirstLines = new Text[]{ EMPTY }; }
+                result.add(new Text[] { requiredParameter, EMPTY, EMPTY, label, descriptionFirstLines[0] });
+                for (int i = 1; i < descriptionFirstLines.length; i++) {
+                    result.add(new Text[] { EMPTY, EMPTY, EMPTY, EMPTY, descriptionFirstLines[i] });
                 }
-                return result;
+                for (int i = 1; i < params.description().length; i++) {
+                    Text[] descriptionNextLines = scheme.ansi().new Text(params.description()[i]).splitLines();
+                    for (Text line : descriptionNextLines) {
+                        result.add(new Text[] { EMPTY, EMPTY, EMPTY, EMPTY, line });
+                    }
+                }
+                return result.toArray(new Text[result.size()][]);
             }
         }
         /** When customizing online usage help for an option parameter or a positional parameter, a custom
@@ -3830,12 +3885,12 @@ public class CommandLine {
             public TextTable(Ansi ansi) {
                 // "* -c, --create                Creates a ...."
                 this(ansi, new Column[] {
-                        new Column(2,                                        0, TRUNCATE), // "*"
-                        new Column(2,                                        0, TRUNCATE), // "-c"
-                        new Column(1,                                        0, TRUNCATE), // ","
-                        new Column(optionsColumnWidth - 2 - 2 - 1       , 1, SPAN),  // " --create"
-                        new Column(usageHelpWidth - optionsColumnWidth, 1, WRAP) // " Creates a ..."
-                });
+                            new Column(2,                                        0, TRUNCATE), // "*"
+                            new Column(2,                                        0, TRUNCATE), // "-c"
+                            new Column(1,                                        0, TRUNCATE), // ","
+                            new Column(optionsColumnWidth - 2 - 2 - 1       , 1, SPAN),  // " --create"
+                            new Column(usageHelpWidth - optionsColumnWidth, 1, WRAP) // " Creates a ..."
+                    });
             }
 
             /** Constructs a new TextTable with columns with the specified width, all SPANning  multiple columns on
@@ -3976,7 +4031,6 @@ public class CommandLine {
             private static int length(Text str) {
                 return str.length; // TODO count some characters as double length
             }
-            private char[] spaces(int length) { char[] result = new char[length]; Arrays.fill(result, ' '); return result; }
 
             private int copy(BreakIterator line, Text text, Text columnValue, int offset) {
                 // Deceive the BreakIterator to ensure no line breaks after '-' character
@@ -4211,7 +4265,7 @@ public class CommandLine {
                 public String on() { return CSI + startCode + "m"; }
                 public String off() { return CSI + endCode + "m"; }
 
-                /** Returns the concatenated ANSI escape codes for turning all specified styles on.
+				/** Returns the concatenated ANSI escape codes for turning all specified styles on.
                  * @param styles the styles to generate ANSI escape codes for
                  * @return the concatenated ANSI escape codes for turning all specified styles on */
                 public static String on(IStyle... styles) {
@@ -4221,7 +4275,7 @@ public class CommandLine {
                     }
                     return result.toString();
                 }
-                /** Returns the concatenated ANSI escape codes for turning all specified styles off.
+				/** Returns the concatenated ANSI escape codes for turning all specified styles off.
                  * @param styles the styles to generate ANSI escape codes for
                  * @return the concatenated ANSI escape codes for turning all specified styles off */
                 public static String off(IStyle... styles) {
@@ -4231,25 +4285,25 @@ public class CommandLine {
                     }
                     return result.toString();
                 }
-                /** Parses the specified style markup and returns the associated style.
-                 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
-                 *  names when {@code "fg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
+				/** Parses the specified style markup and returns the associated style.
+				 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
+				 *  names when {@code "fg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
                  * @param str the case-insensitive style markup to convert, e.g. {@code "blue"} or {@code "fg_blue"},
                  *          or {@code "46"} (indexed color) or {@code "0;5;0"} (RGB components of an indexed color)
-                 * @return the IStyle for the specified converter
-                 */
+				 * @return the IStyle for the specified converter
+				 */
                 public static IStyle fg(String str) {
                     try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (Exception ignored) {}
                     try { return Style.valueOf("fg_" + str.toLowerCase(ENGLISH)); } catch (Exception ignored) {}
                     return new Palette256Color(true, str);
                 }
-                /** Parses the specified style markup and returns the associated style.
-                 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
-                 *  names when {@code "bg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
-                 * @param str the case-insensitive style markup to convert, e.g. {@code "blue"} or {@code "bg_blue"},
+				/** Parses the specified style markup and returns the associated style.
+				 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
+				 *  names when {@code "bg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
+				 * @param str the case-insensitive style markup to convert, e.g. {@code "blue"} or {@code "bg_blue"},
                  *          or {@code "46"} (indexed color) or {@code "0;5;0"} (RGB components of an indexed color)
-                 * @return the IStyle for the specified converter
-                 */
+				 * @return the IStyle for the specified converter
+				 */
                 public static IStyle bg(String str) {
                     try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (Exception ignored) {}
                     try { return Style.valueOf("bg_" + str.toLowerCase(ENGLISH)); } catch (Exception ignored) {}
@@ -4404,6 +4458,27 @@ public class CommandLine {
                     try { return super.clone(); } catch (CloneNotSupportedException e) { throw new IllegalStateException(e); }
                 }
 
+                public Text[] splitLines() {
+                    List<Text> result = new ArrayList<Text>();
+                    boolean trailingEmptyString = false;
+                    int start = 0, end = 0;
+                    for (int i = 0; i < plain.length(); i++, end = i) {
+                        char c = plain.charAt(i);
+                        boolean eol = c == '\n';
+                        eol |= (c == '\r' && i + 1 < plain.length() && plain.charAt(i + 1) == '\n' && ++i > 0); // \r\n
+                        eol |= c == '\r';
+                        if (eol) {
+                            result.add(this.substring(start, end));
+                            trailingEmptyString = i == plain.length() - 1;
+                            start = i + 1;
+                        }
+                    }
+                    if (start < plain.length() || trailingEmptyString) {
+                        result.add(this.substring(start, plain.length()));
+                    }
+                    return result.toArray(new Text[result.size()]);
+                }
+
                 /** Returns a new {@code Text} instance that is a substring of this Text. Does not modify this instance!
                  * @param start index in the plain text where to start the substring
                  * @return a new Text instance that is a substring of this Text */
@@ -4536,7 +4611,7 @@ public class CommandLine {
             if (tracer.level.isEnabled(this)) { tracer.stream.printf(prefix(msg), params); }
         }
         private String prefix(String msg) { return "[picocli " + this + "] " + msg; }
-        static TraceLevel lookup(String key) { return key == null ? WARN : empty(key) ? INFO : valueOf(key); }
+        static TraceLevel lookup(String key) { return key == null ? WARN : empty(key) || "true".equalsIgnoreCase(key) ? INFO : valueOf(key); }
     }
     private static class Tracer {
         TraceLevel level = TraceLevel.lookup(System.getProperty("picocli.trace"));
@@ -4569,11 +4644,11 @@ public class CommandLine {
         private final CommandLine commandLine;
         public ExecutionException(CommandLine commandLine, String msg) {
             super(msg);
-            this.commandLine = Objects.requireNonNull(commandLine, "commandLine");
+            this.commandLine = Assert.notNull(commandLine, "commandLine");
         }
         public ExecutionException(CommandLine commandLine, String msg, Exception ex) {
             super(msg, ex);
-            this.commandLine = Objects.requireNonNull(commandLine, "commandLine");
+            this.commandLine = Assert.notNull(commandLine, "commandLine");
         }
         /** Returns the {@code CommandLine} object for the (sub)command that could not be invoked.
          * @return the {@code CommandLine} object for the (sub)command where invocation failed.
@@ -4597,7 +4672,7 @@ public class CommandLine {
          * @since 2.0 */
         public ParameterException(CommandLine commandLine, String msg) {
             super(msg);
-            this.commandLine = Objects.requireNonNull(commandLine, "commandLine");
+            this.commandLine = Assert.notNull(commandLine, "commandLine");
         }
         /** Constructs a new ParameterException with the specified CommandLine and error message.
          * @param commandLine the command or subcommand whose input was invalid
@@ -4606,7 +4681,7 @@ public class CommandLine {
          * @since 2.0 */
         public ParameterException(CommandLine commandLine, String msg, Exception ex) {
             super(msg, ex);
-            this.commandLine = Objects.requireNonNull(commandLine, "commandLine");
+            this.commandLine = Assert.notNull(commandLine, "commandLine");
         }
 
         /** Returns the {@code CommandLine} object for the (sub)command whose input could not be parsed.
@@ -4643,8 +4718,8 @@ public class CommandLine {
         }
         private static String describe(Field field, String separator) {
             String prefix = (field.isAnnotationPresent(Option.class))
-                    ? field.getAnnotation(Option.class).names()[0] + separator
-                    : "params[" + field.getAnnotation(Parameters.class).index() + "]" + separator;
+                ? field.getAnnotation(Option.class).names()[0] + separator
+                : "params[" + field.getAnnotation(Parameters.class).index() + "]" + separator;
             return prefix + Help.DefaultParamLabelRenderer.renderParameterName(field);
         }
     }

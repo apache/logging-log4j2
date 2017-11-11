@@ -33,6 +33,9 @@ import java.util.concurrent.Callable;
 
 /**
  * Demonstrates picocli subcommands.
+ * <p>
+ * Banner ascii art thanks to <a href="http://patorjk.com/software/taag/">http://patorjk.com/software/taag/</a>.
+ * </p>
  */
 @Command(name = "picocli.Demo", sortOptions = false,
         header = {
