@@ -31,6 +31,18 @@
          - "remove" - Removed
     -->
     <release version="2.10.0" date="2017-MM-DD" description="GA Release 2.10.0">
+      <action issue="LOG4J2-2112" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
+        MapMessage should use deep toString for values.
+      </action>
+      <action issue="LOG4J2-2107" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+        MapMessage supports both StringBuilderFormattable and MultiformatMessage.
+      </action>
+      <action issue="LOG4J2-2102" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+        MapMessage JSON encoding will escape keys and values.
+      </action>
+      <action issue="LOG4J2-2101" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+        Non-string value in MapMessage caused ClassCastException.
+      </action>
       <action issue="LOG4J2-2106" dev="rogers" type="fix">
         Reduce locking when checking for rollover.
       </action>
