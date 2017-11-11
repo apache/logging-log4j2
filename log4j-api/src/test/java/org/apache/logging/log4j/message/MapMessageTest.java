@@ -19,9 +19,6 @@ package org.apache.logging.log4j.message;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.*;
 
 /**
@@ -128,7 +125,7 @@ public class MapMessageTest {
     @Test
     public void testGetNonStringValue() {
         final String key = "Key";
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with(key, 1L);
         assertEquals("1", msg.get(key));
     }
@@ -136,14 +133,14 @@ public class MapMessageTest {
     @Test
     public void testRemoveNonStringValue() {
         final String key = "Key";
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with(key, 1L);
         assertEquals("1", msg.remove(key));
     }
 
     @Test
     public void testJSONFormatNonStringValue() {
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with("key", 1L);
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
         final String expected = "{\"key\":\"1\"}";
@@ -152,7 +149,7 @@ public class MapMessageTest {
 
     @Test
     public void testXMLFormatNonStringValue() {
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with("key", 1L);
         final String result = msg.getFormattedMessage(new String[]{"XML"});
         final String expected = "<Map>\n  <Entry key=\"key\">1</Entry>\n</Map>";
@@ -161,7 +158,7 @@ public class MapMessageTest {
 
     @Test
     public void testFormatToUsedInOutputXml() {
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(new String[]{"XML"});
         final String expected = "<Map>\n  <Entry key=\"key\">formatTo</Entry>\n</Map>";
@@ -170,7 +167,7 @@ public class MapMessageTest {
 
     @Test
     public void testFormatToUsedInOutputJson() {
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
         final String expected = "{\"key\":\"formatTo\"}";
@@ -179,7 +176,7 @@ public class MapMessageTest {
 
     @Test
     public void testFormatToUsedInOutputJava() {
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(new String[]{"JAVA"});
         final String expected = "{key=\"formatTo\"}";
@@ -188,7 +185,7 @@ public class MapMessageTest {
 
     @Test
     public void testFormatToUsedInOutputDefault() {
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(null);
         final String expected = "key=\"formatTo\"";
@@ -198,7 +195,7 @@ public class MapMessageTest {
     @Test
     public void testGetUsesDeepToString() {
         final String key = "key";
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with(key, new FormattableTestType());
         final String result = msg.get(key);
         final String expected = "formatTo";
@@ -208,7 +205,7 @@ public class MapMessageTest {
     @Test
     public void testRemoveUsesDeepToString() {
         final String key = "key";
-        final MapMessage<?, Object> msg = new MapMessage<>()
+        final ObjectMapMessage msg = new ObjectMapMessage()
                 .with(key, new FormattableTestType());
         final String result = msg.remove(key);
         final String expected = "formatTo";
