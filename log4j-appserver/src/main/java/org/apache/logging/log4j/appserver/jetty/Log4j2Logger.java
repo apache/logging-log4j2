@@ -23,6 +23,8 @@ import org.eclipse.jetty.util.log.Logger;
 
 /**
  * Provides a native Apache Log4j 2 for Jetty logging.
+ * 
+ * @since 2.10.0
  */
 public class Log4j2Logger extends AbstractLogger {
 
