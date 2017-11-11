@@ -63,7 +63,7 @@ public class TomcatLogger implements Log {
      * This constructor is used by LogFactory to create a new Logger.
      * @param name The name of the Logger.
      */
-    public TomcatLogger(String name) {
+    public TomcatLogger(final String name) {
         this.logger = PrivateManager.getLogger(name);
     }
 
@@ -98,62 +98,62 @@ public class TomcatLogger implements Log {
     }
 
     @Override
-    public void trace(Object o) {
+    public void trace(final Object o) {
         logger.logIfEnabled(FQCN, Level.TRACE, null, o, null);
     }
 
     @Override
-    public void trace(Object o, Throwable throwable) {
+    public void trace(final Object o, final Throwable throwable) {
         logger.logIfEnabled(FQCN, Level.TRACE, null, o, throwable);
     }
 
     @Override
-    public void debug(Object o) {
+    public void debug(final Object o) {
         logger.logIfEnabled(FQCN, Level.DEBUG, null, o, null);
     }
 
     @Override
-    public void debug(Object o, Throwable throwable) {
+    public void debug(final Object o, final Throwable throwable) {
         logger.logIfEnabled(FQCN, Level.DEBUG, null, o, throwable);
     }
 
     @Override
-    public void info(Object o) {
+    public void info(final Object o) {
         logger.logIfEnabled(FQCN, Level.INFO, null, o, null);
     }
 
     @Override
-    public void info(Object o, Throwable throwable) {
+    public void info(final Object o, final Throwable throwable) {
         logger.logIfEnabled(FQCN, Level.INFO, null, o, throwable);
     }
 
     @Override
-    public void warn(Object o) {
+    public void warn(final Object o) {
         logger.logIfEnabled(FQCN, Level.WARN, null, o, null);
     }
 
     @Override
-    public void warn(Object o, Throwable throwable) {
+    public void warn(final Object o, final Throwable throwable) {
         logger.logIfEnabled(FQCN, Level.WARN, null, o, throwable);
     }
 
     @Override
-    public void error(Object o) {
+    public void error(final Object o) {
         logger.logIfEnabled(FQCN, Level.ERROR, null, o, null);
     }
 
     @Override
-    public void error(Object o, Throwable throwable) {
+    public void error(final Object o, final Throwable throwable) {
         logger.logIfEnabled(FQCN, Level.ERROR, null, o, throwable);
     }
 
     @Override
-    public void fatal(Object o) {
+    public void fatal(final Object o) {
         logger.logIfEnabled(FQCN, Level.FATAL, null, o, null);
     }
 
     @Override
-    public void fatal(Object o, Throwable throwable) {
+    public void fatal(final Object o, final Throwable throwable) {
         logger.logIfEnabled(FQCN, Level.FATAL, null, o, throwable);
     }
 
@@ -163,16 +163,16 @@ public class TomcatLogger implements Log {
     private static class PrivateManager extends LogManager {
 
         public static LoggerContext getContext() {
-            ClassLoader cl = TomcatLogger.class.getClassLoader();
+            final ClassLoader cl = TomcatLogger.class.getClassLoader();
             URI uri = null;
-            for (String fileName : FILE_NAMES) {
+            for (final String fileName : FILE_NAMES) {
                 try {
-                    URL url = cl.getResource(fileName);
+                    final URL url = cl.getResource(fileName);
                     if (url != null) {
                         uri = url.toURI();
                         break;
                     }
-                } catch (URISyntaxException ex) {
+                } catch (final URISyntaxException ex) {
                     // Ignore the exception.
                 }
             }
@@ -183,7 +183,7 @@ public class TomcatLogger implements Log {
         }
 
         public static ExtendedLogger getLogger(final String name) {
-            LoggerContext context = getContext();
+            final LoggerContext context = getContext();
             return context.getLogger(name);
         }
     }
