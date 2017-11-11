@@ -200,7 +200,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      * @param map The Map to add.
      */
     public void putAll(final Map<String, String> map) {
-        for (final Map.Entry<String, ?> entry : map.entrySet()) {
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
             data.putValue(entry.getKey(), entry.getValue());
         }
     }
@@ -211,7 +211,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      * @return The value of the element or null if the key is not present.
      */
     public String get(final String key) {
-        return data.getValue(key);
+        Object result = data.getValue(key);
+        if (result == null) {
+            return null;
+        }
+        return String.valueOf(result);
     }
 
     /**
@@ -220,7 +224,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
      * @return The previous value of the element.
      */
     public String remove(final String key) {
-        final String result = data.getValue(key);
+        final String result = get(key);
         data.remove(key);
         return result;
     }
@@ -338,7 +342,10 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiformatMes
     public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
         for (int i = 0; i < data.size(); i++) {
-            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">").append((String)data.getValueAt(i))
+            sb.append("  <Entry key=\"")
+                    .append(data.getKeyAt(i))
+                    .append("\">")
+                    .append(data.<Object>getValueAt(i))
                     .append("</Entry>\n");
         }
         sb.append("</Map>");
