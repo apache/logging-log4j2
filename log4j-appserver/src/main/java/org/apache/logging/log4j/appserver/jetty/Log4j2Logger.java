@@ -23,7 +23,7 @@ import org.eclipse.jetty.util.log.Logger;
 
 /**
  * Provides a native Apache Log4j 2 for Jetty logging.
- * 
+ *
  * @since 2.10.0
  */
 public class Log4j2Logger extends AbstractLogger {
@@ -44,7 +44,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#debug(java.lang.String, java.lang.Object[])
      */
     @Override
@@ -54,7 +54,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#debug(java.lang.String, java.lang.Throwable)
      */
     @Override
@@ -64,7 +64,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#debug(java.lang.Throwable)
      */
     @Override
@@ -74,7 +74,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#getName()
      */
     @Override
@@ -84,7 +84,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#ignore(java.lang.Throwable)
      */
     @Override
@@ -95,7 +95,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#info(java.lang.String, java.lang.Object[])
      */
     @Override
@@ -105,7 +105,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#info(java.lang.String, java.lang.Throwable)
      */
     @Override
@@ -115,7 +115,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#info(java.lang.Throwable)
      */
     @Override
@@ -125,7 +125,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#isDebugEnabled()
      */
     @Override
@@ -135,7 +135,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.AbstractLogger#newLogger(java.lang.String)
      */
     @Override
@@ -145,7 +145,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#setDebugEnabled(boolean)
      */
     @Override
@@ -155,7 +155,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#warn(java.lang.String, java.lang.Object[])
      */
     @Override
@@ -165,7 +165,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#warn(java.lang.String, java.lang.Throwable)
      */
     @Override
@@ -175,7 +175,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jetty.util.log.Logger#warn(java.lang.Throwable)
      */
     @Override
