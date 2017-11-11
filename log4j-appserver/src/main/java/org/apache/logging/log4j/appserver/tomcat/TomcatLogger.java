@@ -38,6 +38,8 @@ import org.apache.logging.log4j.spi.LoggerContext;
  * first file it finds with one of the following file names: log4j2-tomcat.xml, log4j2-tomcat.json,
  * log4j2-tomcat.yaml, log4j2-tomcat.yml, log4j2-tomcat.properties. Again, this can be accomplished by adding
  * this file to a directory and then adding that directory to the CLASSPATH environment variable in setenv.sh.
+ * 
+ * @since 2.10.0
  */
 public class TomcatLogger implements Log {
 
