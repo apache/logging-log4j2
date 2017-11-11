@@ -183,8 +183,7 @@ public class TomcatLogger implements Log {
         }
 
         public static ExtendedLogger getLogger(final String name) {
-            final LoggerContext context = getContext();
-            return context.getLogger(name);
+            return getContext().getLogger(name);
         }
     }
 }
