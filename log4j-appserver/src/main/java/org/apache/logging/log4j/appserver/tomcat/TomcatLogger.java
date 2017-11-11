@@ -178,9 +178,8 @@ public class TomcatLogger implements Log {
             }
             if (uri == null) {
                 return getContext(FQCN, cl, false);
-            } else {
-                return getContext(FQCN, cl, false, uri, "Tomcat");
             }
+            return getContext(FQCN, cl, false, uri, "Tomcat");
         }
 
         public static ExtendedLogger getLogger(final String name) {
