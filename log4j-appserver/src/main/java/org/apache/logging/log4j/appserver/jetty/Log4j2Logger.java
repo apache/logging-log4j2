@@ -27,7 +27,7 @@ import org.eclipse.jetty.util.log.Logger;
 /**
  * Provides a native Apache Log4j 2 for Jetty logging.
  *
- * @since 2.10.0
+ * @since Apache Log4j 2.10.0
  */
 public class Log4j2Logger extends AbstractLogger {
 
@@ -46,19 +46,19 @@ public class Log4j2Logger extends AbstractLogger {
         }
     }
 
-    private static final String FQCN = Log4j2Logger.class.getName();
+    static final String FQCN = Log4j2Logger.class.getName();
     private final ExtendedLogger logger;
 
     private final String name;
+
+    public Log4j2Logger() {
+        this("");
+    }
 
     public Log4j2Logger(final String name) {
         super();
         this.name = name;
         this.logger = PrivateManager.getLogger(name);
-    }
-
-    public Log4j2Logger() {
-        this("");
     }
 
     /*
@@ -108,7 +108,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     @Override
     public void ignore(final Throwable ignored) {
-        //  Really do nothing
+        // Really do nothing
     }
 
     /*
