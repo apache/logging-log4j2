@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j integration with Tomcat 8.5 or greater.
+ * Log4j integration with Apache Tomcat 8.5 or greater.
  */
 package org.apache.logging.log4j.appserver.tomcat;
