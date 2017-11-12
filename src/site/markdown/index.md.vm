@@ -92,6 +92,10 @@ $h3 Garbage-free
 During steady state logging, Log4j 2 is [garbage-free](manual/garbagefree.html) in stand-alone applications, and low
 garbage in web applications. This reduces pressure on the garbage collector and can give better response time performance.
 
+#h3 Integrating with Application Servers
+
+Version 2.10.0 introduces a the module log4j-appserver to improve integration with Apache Tomcat and Eclipse Jetty.
+
 $h2 Documentation
 
 The Log4j 2 User's Guide is available on this [site](manual/index.html) or as a downloadable
