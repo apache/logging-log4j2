@@ -61,7 +61,7 @@ public final class Constants {
      * @since 2.10
      */
     public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j.formatMsgNoLookups", false);
+            "log4j2.formatMsgNoLookups", false);
 
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
