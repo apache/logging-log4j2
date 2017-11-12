@@ -46,9 +46,6 @@
       <action issue="LOG4J2-2101" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
         Non-string value in MapMessage caused ClassCastException.
       </action>
-      <action issue="LOG4J2-2106" dev="rogers" type="fix">
-        Reduce locking when checking for rollover.
-      </action>
       <action issue="LOG4J2-2103" dev="mikes" type="add">
         XML encoding for PatternLayout.
       </action>

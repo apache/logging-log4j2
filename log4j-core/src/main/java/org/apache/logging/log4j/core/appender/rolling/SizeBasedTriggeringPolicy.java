@@ -73,7 +73,7 @@ public class SizeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
      * @return true if a rollover should take place, false otherwise.
      */
     @Override
-    public synchronized boolean isTriggeringEvent(final LogEvent event) {
+    public boolean isTriggeringEvent(final LogEvent event) {
         final boolean triggered = manager.getFileSize() > maxFileSize;
         if (triggered) {
             manager.getPatternProcessor().updateTime();

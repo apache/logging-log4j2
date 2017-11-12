@@ -29,9 +29,6 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle;
@@ -68,9 +65,6 @@ public class RollingFileManager extends FileManager {
     private volatile boolean initialized = false;
     private volatile String fileName;
     private final FileExtension fileExtension;
-    private final ReadWriteLock updateLock = new ReentrantReadWriteLock();
-    private final Lock readLock = updateLock.readLock();
-    private final Lock writeLock = updateLock.writeLock();
 
     /* This executor pool will create a new Thread for every work async action to be performed. Using it allows
        us to make sure all the Threads are completed when the Manager is stopped. */
@@ -253,14 +247,9 @@ public class RollingFileManager extends FileManager {
      * Determines if a rollover should occur.
      * @param event The LogEvent.
      */
-    public void checkRollover(final LogEvent event) {
-        readLock.lock();
-        try {
-            if (triggeringPolicy.isTriggeringEvent(event)) {
-                rollover();
-            }
-        } finally {
-            readLock.unlock();
+    public synchronized void checkRollover(final LogEvent event) {
+        if (triggeringPolicy.isTriggeringEvent(event)) {
+            rollover();
         }
     }
 
@@ -344,31 +333,25 @@ public class RollingFileManager extends FileManager {
     }
 
     public void setTriggeringPolicy(final TriggeringPolicy triggeringPolicy) {
-        writeLock.lock();
-        try {
-            triggeringPolicy.initialize(this);
-            final TriggeringPolicy policy = this.triggeringPolicy;
-            int count = 0;
-            boolean policyUpdated = false;
-            do {
-                ++count;
+        triggeringPolicy.initialize(this);
+        final TriggeringPolicy policy = this.triggeringPolicy;
+        int count = 0;
+        boolean policyUpdated = false;
+        do {
+            ++count;
+        } while (!(policyUpdated = triggeringPolicyUpdater.compareAndSet(this, this.triggeringPolicy, triggeringPolicy))
+                && count < MAX_TRIES);
+        if (policyUpdated) {
+            if (triggeringPolicy instanceof LifeCycle) {
+                ((LifeCycle) triggeringPolicy).start();
             }
-            while (!(policyUpdated = triggeringPolicyUpdater.compareAndSet(this, this.triggeringPolicy, triggeringPolicy))
-                    && count < MAX_TRIES);
-            if (policyUpdated) {
-                if (triggeringPolicy instanceof LifeCycle) {
-                    ((LifeCycle) triggeringPolicy).start();
-                }
-                if (policy instanceof LifeCycle) {
-                    ((LifeCycle) policy).stop();
-                }
-            } else {
-                if (triggeringPolicy instanceof LifeCycle) {
-                    ((LifeCycle) triggeringPolicy).stop();
-                }
+            if (policy instanceof LifeCycle) {
+                ((LifeCycle) policy).stop();
             }
-        } finally {
-            writeLock.unlock();
+        } else {
+            if (triggeringPolicy instanceof LifeCycle) {
+                ((LifeCycle) triggeringPolicy).stop();
+            }
         }
     }
 

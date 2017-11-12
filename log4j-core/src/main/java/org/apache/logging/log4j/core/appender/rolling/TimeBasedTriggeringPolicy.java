@@ -122,7 +122,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
      * @return true if a rollover should occur.
      */
     @Override
-    public synchronized boolean isTriggeringEvent(final LogEvent event) {
+    public boolean isTriggeringEvent(final LogEvent event) {
         if (manager.getFileSize() == 0) {
             return false;
         }
