@@ -2231,6 +2231,14 @@ public class AwesomeTest {
     <td>Prints a stacktrace to the <a href="#StatusMessages">status logger</a> at DEBUG level
     when the LoggerContext is started. For debug purposes.</td>
   </tr>
+  <tr>
+      <td><a name="formatMsgNoLookups"/>log4j2.formatMsgNoLookups</td>
+      <td>FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS</td>
+      <td><a name="log4j2.formatMsgNoLookups" />log4j2.formatMsgNoLookups</td>
+      <td>false</td>
+      <td>Disables message pattern lookups globally when set to <tt>true</tt>.
+          This is equivalent to defining all message patterns using <tt>%m{nolookups}</tt>.</td>
+  </tr>
 </table>
 
         </subsection>

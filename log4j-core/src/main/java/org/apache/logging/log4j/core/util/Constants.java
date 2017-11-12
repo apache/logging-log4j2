@@ -55,6 +55,15 @@ public final class Constants {
             "log4j.format.msg.async", false);
 
     /**
+     * LOG4J2-2109 if {@code true}, MessagePatternConverter will always operate as though
+     * <pre>%m{nolookups}</pre> is configured.
+     *
+     * @since 2.10
+     */
+    public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS = PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j2.formatMsgNoLookups", false);
+
+    /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
