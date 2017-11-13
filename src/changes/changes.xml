@@ -155,6 +155,9 @@
       <action issue="LOG4J2-2077" dev="ggregory" type="update">
         Update from Jackson 2.9.1 to 2.9.2.
       </action>
+      <action issue="LOG4J2-2117" dev="ggregory" type="update">
+        Jackson dependencies for 2.9.2 incorrectly bring in jackson-annotations 2.9.0 instead of 2.9.2.
+      </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
       <action issue="LOG4J2-1988" dev="rpopma" type="fix">
