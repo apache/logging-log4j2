@@ -45,3 +45,15 @@ $h3 Requirements
 
 Requires Tomcat 8.5 or later.
 
+$h2 Eclipse Jetty
+
+Log4j may be used as the logging framework for Eclipse Jetty.
+
+To direct Jetty to use this class, set the system property `org.eclipse.jetty.util.log.class` to `org.apache.logging.log4j.appserver.jetty.Log4j2Logger`.
+
+From the command line with:
+```-Dorg.eclipse.jetty.util.log.class = org.apache.logging.log4j.appserver.jetty.Log4j2Logger```
+
+Programmatically with:
+```System.setProperty("org.eclipse.jetty.util.log.class", "org.apache.logging.log4j.appserver.jetty.Log4j2Logger");```
+ 
