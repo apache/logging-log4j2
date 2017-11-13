@@ -7,6 +7,14 @@ and provides many of the improvements available in Logback while fixing some inh
 [![Travis Status](https://travis-ci.org/apache/logging-log4j2.svg?branch=master)](https://travis-ci.org/apache/logging-log4j2)
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api.svg)](http://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api)
 
+
+## Pull Requests on Github
+
+By sending a pull request you grant the Apache Software Foundation sufficient rights to use and release the submitted 
+work under the Apache license. You grant the same rights (copyright license, patent license, etc.) to the 
+Apache Software Foundation as if you have signed a Contributor License Aggreement. For contributions that are 
+judged to be non-trivial, you will be asked to actually signing a Contributor License Aggreement.
+
 ## Usage
 
 Users should refer to [Maven, Ivy, Gradle, and SBT Artifacts](http://logging.apache.org/log4j/2.x/maven-artifacts.html)
