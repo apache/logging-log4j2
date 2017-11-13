@@ -37,7 +37,7 @@ import org.eclipse.jetty.util.log.Logger;
  * <pre>-Dorg.eclipse.jetty.util.log.class = org.apache.logging.log4j.appserver.jetty.Log4j2Logger</pre>
  *
  * <p>
- * Programmatically:
+ * Programmatically with:
  * </p>
  * <pre>System.setProperty("org.eclipse.jetty.util.log.class", "org.apache.logging.log4j.appserver.jetty.Log4j2Logger");</pre>
  *
