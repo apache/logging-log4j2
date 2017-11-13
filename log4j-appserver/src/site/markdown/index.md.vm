@@ -26,9 +26,9 @@ $h1 Application Server Integration
 
 The Application Server module provides support for integrating Log4j into various Java Application Servers.
 
-$h2 Tomcat
+$h2 Apache Tomcat
 
-Log4j may be used as the logging framework for Tomcat. This support is implemented automatically by including
+Log4j may be used as the logging framework for Apache Tomcat. This support is implemented automatically by including
 the log4j-api, log4j-core, and log4j-appserver jars in the boot classpath. A file named log4j2-tomcat.xml,
 log4j2-tomcat.json, log4j2-tomcat.yaml, log4j2-tomcat.yml, or log4j2-tomcat.properties must also be placed
 in the boot classpath. This is most easily done by:
@@ -44,3 +44,4 @@ log4j2-tomcat.properties in the log4j2/conf directory.
 $h3 Requirements
 
 Requires Tomcat 8.5 or later.
+
