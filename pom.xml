@@ -216,7 +216,7 @@
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
-    <mockitoVersion>2.11.0</mockitoVersion>
+    <mockitoVersion>2.12.0</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.7</javaTargetVersion>
     <module.name/>
@@ -736,7 +736,7 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>1.25.0</version>
+        <version>1.25.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
