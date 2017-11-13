@@ -283,7 +283,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.6</version>
+        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>com.beust</groupId>
@@ -754,7 +754,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.5</version>
+        <version>2.6</version>
         <scope>test</scope>
       </dependency>
       <!-- Used for testing HttpAppender -->
