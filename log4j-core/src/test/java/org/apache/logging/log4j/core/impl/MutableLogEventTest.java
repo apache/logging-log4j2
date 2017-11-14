@@ -110,6 +110,7 @@ public class MutableLogEventTest {
         assertNull("logger", mutable.getLoggerName());
         assertNull("marker", mutable.getMarker());
         assertEquals("msg", mutable, mutable.getMessage());
+        assertNull("format", mutable.getFormat());
         assertEquals("nanoTm", 0, mutable.getNanoTime());
         assertEquals("tid", 0, mutable.getThreadId());
         assertNull("tname", mutable.getThreadName());
@@ -145,6 +146,7 @@ public class MutableLogEventTest {
         assertNotNull("logger", mutable.getLoggerName());
         assertNotNull("marker", mutable.getMarker());
         assertEquals("msg", new ParameterizedMessage("message in a {}", "bottle"), mutable.getMessage());
+        assertEquals("format", mutable.getFormat(), "message in a {}");
         assertNotEquals("nanoTm", 0, mutable.getNanoTime());
         assertNotEquals("tid", 0, mutable.getThreadId());
         assertNotNull("tname", mutable.getThreadName());
@@ -163,6 +165,7 @@ public class MutableLogEventTest {
         assertNull("logger", mutable.getLoggerName());
         assertNull("marker", mutable.getMarker());
         assertEquals("msg", mutable, mutable.getMessage());
+        assertNull("format", mutable.getFormat());
         assertNull("thrwn", mutable.getThrown());
 
         assertNull("source", mutable.getSource());
@@ -211,6 +214,7 @@ public class MutableLogEventTest {
         assertEquals(evt.getContextMap(), evt2.getContextMap());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());
+        assertEquals(evt.getFormat(), evt2.getMessage().getFormat());
         assertNotNull(evt2.getSource());
         assertEquals(evt.getSource(), evt2.getSource());
         assertEquals(evt.getThreadName(), evt2.getThreadName());
