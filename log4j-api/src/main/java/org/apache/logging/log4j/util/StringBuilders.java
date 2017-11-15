@@ -95,6 +95,8 @@ public final class StringBuilders {
             stringBuilder.append(((Short) obj).shortValue());
         } else if (obj instanceof Float) {
             stringBuilder.append(((Float) obj).floatValue());
+        } else if (obj instanceof Byte) {
+            stringBuilder.append(((Byte) obj).byteValue());
         } else {
             return false;
         }

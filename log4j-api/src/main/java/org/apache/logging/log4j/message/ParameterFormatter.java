@@ -392,8 +392,33 @@ final class ParameterFormatter {
         if (o == null) {
             return null;
         }
+        // Check special types to avoid unnecessary StringBuilder usage
         if (o instanceof String) {
             return (String) o;
+        }
+        if (o instanceof Integer) {
+            return Integer.toString((Integer) o);
+        }
+        if (o instanceof Long) {
+            return Long.toString((Long) o);
+        }
+        if (o instanceof Double) {
+            return Double.toString((Double) o);
+        }
+        if (o instanceof Boolean) {
+            return Boolean.toString((Boolean) o);
+        }
+        if (o instanceof Character) {
+            return Character.toString((Character) o);
+        }
+        if (o instanceof Short) {
+            return Short.toString((Short) o);
+        }
+        if (o instanceof Float) {
+            return Float.toString((Float) o);
+        }
+        if (o instanceof Byte) {
+            return Byte.toString((Byte) o);
         }
         final StringBuilder str = new StringBuilder();
         recursiveDeepToString(o, str, null);
