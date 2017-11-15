@@ -94,6 +94,16 @@ public class MapMessageTest {
     }
 
     @Test
+    public void testJSONEscapeNewline() {
+        final String testMsg = "hello\nworld";
+        final StringMapMessage msg = new StringMapMessage();
+        msg.put("one\ntwo", testMsg);
+        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final String expected = "{\"one\\ntwo\":\"hello\\nworld\"}";
+        assertEquals(expected, result);
+    }
+
+    @Test
     public void testJava() {
         final String testMsg = "Test message {}";
         final StringMapMessage msg = new StringMapMessage();
