@@ -54,9 +54,9 @@ public class EncodingPatternConverterTest {
         final LogEvent event = Log4jLogEvent.newBuilder()
             .setLoggerName(getClass().getName())
             .setLevel(Level.DEBUG)
-            .setMessage(new SimpleMessage("This string contains \"quotes\" and \\ backslash and \u001F control"))
+            .setMessage(new SimpleMessage("This string contains \"quotes\" and \\ backslash and \u001F control and\nnewline"))
             .build();
-        final String expected = "This string contains \\\"quotes\\\" and \\\\ backslash and \\u001F control";
+        final String expected = "This string contains \\\"quotes\\\" and \\\\ backslash and \\u001F control and\\nnewline";
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
         final String[] options = new String[]{"%msg", "JSON"};
