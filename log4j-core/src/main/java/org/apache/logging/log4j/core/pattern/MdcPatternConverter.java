@@ -20,7 +20,6 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -35,9 +34,6 @@ import org.apache.logging.log4j.util.StringBuilders;
 @ConverterKeys({ "X", "mdc", "MDC" })
 @PerformanceSensitive("allocation")
 public final class MdcPatternConverter extends LogEventPatternConverter {
-
-    private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
-    private static final int DEFAULT_STRING_BUILDER_SIZE = 64;
 
     /**
      * Name of property to output.
@@ -85,11 +81,9 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
     private static final TriConsumer<String, Object, StringBuilder> WRITE_KEY_VALUES_INTO = new TriConsumer<String, Object, StringBuilder>() {
         @Override
         public void accept(final String key, final Object value, final StringBuilder sb) {
-            if (sb.length() > 1) {
-                sb.append(", ");
-            }
             sb.append(key).append('=');
             StringBuilders.appendValue(sb, value);
+            sb.append(", ");
         }
     };
 
@@ -125,23 +119,27 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
     }
 
     private static void appendFully(final ReadOnlyStringMap contextData, final StringBuilder toAppendTo) {
-        final StringBuilder sb = getStringBuilder();
-        sb.append("{");
-        contextData.forEach(WRITE_KEY_VALUES_INTO, sb);
-        sb.append('}');
-        toAppendTo.append(sb);
-        trimToMaxSize(sb);
+        toAppendTo.append("{");
+        final int start = toAppendTo.length();
+        contextData.forEach(WRITE_KEY_VALUES_INTO, toAppendTo);
+        final int end = toAppendTo.length();
+        if (end > start) {
+            toAppendTo.setCharAt(end - 2, '}');
+            toAppendTo.deleteCharAt(end - 1);
+        } else {
+            toAppendTo.append('}');
+        }
     }
 
-    private static void appendSelectedKeys(final String[] keys, final ReadOnlyStringMap contextData, final StringBuilder toAppendTo) {
+    private static void appendSelectedKeys(final String[] keys, final ReadOnlyStringMap contextData, final StringBuilder sb) {
         // Print all the keys in the array that have a value.
-        final StringBuilder sb = getStringBuilder();
-        sb.append("{");
+        final int start = sb.length();
+        sb.append('{');
         for (int i = 0; i < keys.length; i++) {
             final String theKey = keys[i];
             final Object value = contextData.getValue(theKey);
             if (value != null) { // !contextData.containskey(theKey)
-                if (sb.length() > 1) {
+                if (sb.length() - start > 1) {
                     sb.append(", ");
                 }
                 sb.append(theKey).append('=');
@@ -149,21 +147,5 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
             }
         }
         sb.append('}');
-        toAppendTo.append(sb);
-        trimToMaxSize(sb);
-    }
-
-    private static StringBuilder getStringBuilder() {
-        StringBuilder result = threadLocal.get();
-        if (result == null) {
-            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            threadLocal.set(result);
-        }
-        result.setLength(0);
-        return result;
-    }
-
-    private static void trimToMaxSize(final StringBuilder stringBuilder) {
-        StringBuilders.trimToMaxSize(stringBuilder, Constants.MAX_REUSABLE_MESSAGE_SIZE);
     }
 }
