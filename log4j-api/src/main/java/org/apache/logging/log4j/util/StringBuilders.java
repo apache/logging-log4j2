@@ -171,7 +171,11 @@ public final class StringBuilders {
     public static void escapeJson(final StringBuilder toAppendTo, final int start) {
         for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
             final char c = toAppendTo.charAt(i);
-            if (Character.isISOControl(c)) {
+            if (c == '\n') {
+                // Json string newline character must be encoded as literal "\n"
+                toAppendTo.setCharAt(i, '\\');
+                toAppendTo.insert(i + 1, 'n');
+            } else if (Character.isISOControl(c)) {
                 // all iso control characters are in U+00xx
                 toAppendTo.setCharAt(i, '\\');
                 toAppendTo.insert(i + 1, "u0000");
