@@ -94,12 +94,13 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testJSONEscapeNewline() {
-        final String testMsg = "hello\nworld";
+    public void testJSONEscapeNewlineAndOtherControlCharacters() {
+        final String testMsg = "hello\tworld\r\nhh\bere is it\f";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("one\ntwo", testMsg);
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
-        final String expected = "{\"one\\ntwo\":\"hello\\nworld\"}";
+        final String expected =
+                "{\"one\\ntwo\":\"hello\\tworld\\r\\nhh\\bere is it\\f\"}";
         assertEquals(expected, result);
     }
 
