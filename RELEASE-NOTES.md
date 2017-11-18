@@ -10,9 +10,9 @@ Loggers. Another notable Log4j 2 feature is the ability to be "garbage-free" (av
 temporary objects) while logging. In addition, Log4j 2 will not lose events while reconfiguring.
 
 This release contains new features, bugfixes and minor enhancements. Some of the new features include support
-for the Java 9 module system, simplification of the Log4j property naming scheme, and native support of
-Jetty's logger. Log4j API is now a fully compliant module while the other Log4j jars are named
-automatic modules.
+for the Java 9 module system, support for the new SLF4j 1.8 binding mechanism, simplification of the Log4j
+property naming scheme, and native support of Jetty's logger. Log4j API is now a fully compliant module
+while the other Log4j jars are named automatic modules.
 
 As of Log4j 2.9.0, the Log4j API was modified to use java.util.ServiceLoader to locate Log4j implementations,
 although the former binding mechanism is still supported. The Log4j API jar is now a multi-release jar
