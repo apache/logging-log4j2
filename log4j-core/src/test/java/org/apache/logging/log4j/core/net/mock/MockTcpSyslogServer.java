@@ -40,6 +40,11 @@ public class MockTcpSyslogServer extends MockSyslogServer {
             e.printStackTrace();
         }
         thread.interrupt();
+        try {
+            thread.join(100);
+        } catch (InterruptedException ie) {
+            System.out.println("Shutdown of server thread failed.");
+        }
     }
 
     @Override

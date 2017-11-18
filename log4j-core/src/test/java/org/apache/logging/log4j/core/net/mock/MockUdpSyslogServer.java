@@ -37,6 +37,11 @@ public class MockUdpSyslogServer extends MockSyslogServer {
         this.shutdown = true;
         thread.interrupt();
         socket.close();
+        try {
+            thread.join(100);
+        } catch (InterruptedException ie) {
+            System.out.println("Unable to shutdown server");
+        }
     }
 
     @Override
