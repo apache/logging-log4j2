@@ -161,12 +161,15 @@ public class Log4j1ConfigurationFactoryTest {
 
 	@Test
 	public void testSystemProperties1() throws Exception {
-		final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-1.properties");
-		final RollingFileAppender appender = configuration.getAppender("RFA");
         final String tempFileName = System.getProperty("java.io.tmpdir") + "/hadoop.log";
-        System.out.println("expected: " + tempFileName + " Actual: " + appender.getFileName());
-		assertEquals(tempFileName, appender.getFileName());
-		Files.deleteIfExists(new File(tempFileName).toPath());
+        try {
+            final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-1.properties");
+            final RollingFileAppender appender = configuration.getAppender("RFA");
+            System.out.println("expected: " + tempFileName + " Actual: " + appender.getFileName());
+            assertEquals(tempFileName, appender.getFileName());
+        } finally {
+            Files.deleteIfExists(new File(tempFileName).toPath());
+        }
 	}
 
 	@Test
