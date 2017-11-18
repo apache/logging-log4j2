@@ -166,6 +166,7 @@ public class Log4j1ConfigurationFactoryTest {
         final String tempFileName = System.getProperty("java.io.tmpdir") + "/hadoop.log";
         System.out.println("expected: " + tempFileName + " Actual: " + appender.getFileName());
 		assertEquals(tempFileName, appender.getFileName());
+		Files.deleteIfExists(new File(tempFileName).toPath());
 	}
 
 	@Test
