@@ -45,14 +45,16 @@ import org.eclipse.jetty.util.log.Logger;
  */
 public class Log4j2Logger extends AbstractLogger {
 
+    private static final String PARENT_FQCN = AbstractLogger.class.getName();
     /**
-     * Internal LogManager.
+     * Internal LogManager. Applications call AbstractLogger's getLogger() method so that class must be used
+     * as the parent to locate the caller's ClassLoader.
      */
     private static class PrivateManager extends LogManager {
 
         public static LoggerContext getContext() {
-            final ClassLoader cl = Log4j2Logger.class.getClassLoader();
-            return getContext(FQCN, cl, false);
+            final ClassLoader cl = AbstractLogger.class.getClassLoader();
+            return getContext(PARENT_FQCN, cl, false);
         }
 
         public static ExtendedLogger getLogger(final String name) {
