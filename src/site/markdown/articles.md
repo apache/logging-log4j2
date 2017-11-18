@@ -44,6 +44,10 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
+* [Log4j 2 Best Practices example](https://examples.javacodegeeks.com/enterprise-java/log4j/log4j-2-best-practices-example/)
+(November 14, 2017)
+* [Intro to Log4j2 - Appenders, Layouts and Filters](http://www.baeldung.com/log4j2-appenders-layouts-filters)
+(November 14, 2017)
 * [Logging Fundamentals](http://musigma.org/logging/2017/11/06/logging.html)
 (November 6, 2017)
 * [Allocation free logging with Log4j2](http://www.rationaljava.com/2017/10/allocation-free-logging-with-log4j2.html)
