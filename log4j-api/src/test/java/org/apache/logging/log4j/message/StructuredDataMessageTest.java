@@ -38,6 +38,39 @@ public class StructuredDataMessageTest {
     }
 
     @Test
+    public void testMsgNonFull() {
+        final String testMsg = "Test message {}";
+        final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
+        msg.put("message", testMsg);
+        msg.put("project", "Log4j");
+        msg.put("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
+        final String result = msg.getFormattedMessage(new String[] { "WHATEVER" });
+        final String expected = "[MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"]";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testMsgXml() {
+        final String testMsg = "Test message {}";
+        final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
+        msg.put("message", testMsg);
+        msg.put("project", "Log4j");
+        msg.put("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
+        final String result = msg.getFormattedMessage(new String[] { "XML" });
+        final String expected =
+                  "<StructuredData>\n"
+                + "<type>Alert</type>\n"
+                + "<id>MsgId@12345</id>\n"
+                + "<Map>\n"
+                + "  <Entry key=\"memo\">This is a very long test memo to prevent regression of LOG4J2-114</Entry>\n"
+                + "  <Entry key=\"message\">Test message {}</Entry>\n"
+                + "  <Entry key=\"project\">Log4j</Entry>\n"
+                + "</Map>\n"
+                + "</StructuredData>\n";
+        assertEquals(expected, result);
+    }
+
+    @Test
     public void testBuilder() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert")
