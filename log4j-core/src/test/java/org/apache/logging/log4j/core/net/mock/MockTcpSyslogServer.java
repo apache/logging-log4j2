@@ -53,9 +53,10 @@ public class MockTcpSyslogServer extends MockSyslogServer {
         while (!shutdown) {
             try {
                 final byte[] buffer = new byte[4096];
-                final Socket socket = sock.accept();
-                socket.setSoLinger(true, 0);
-                if (socket != null) {
+                Socket socket = null;
+                try {
+                    socket = sock.accept();
+                    socket.setSoLinger(true, 0);
                     final InputStream in = socket.getInputStream();
                     int i = in.read(buffer, 0, buffer.length);
                     while (i != -1) {
@@ -69,8 +70,10 @@ public class MockTcpSyslogServer extends MockSyslogServer {
                             System.out.println("Message too long");
                         }
                     }
-
-                    socket.close();
+                } finally {
+                    if (socket != null) {
+                        socket.close();
+                    }
                 }
             } catch (final Exception ex) {
                 if (!shutdown) {

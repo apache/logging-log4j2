@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
-import java.net.BindException;
 import java.net.SocketException;
 
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
@@ -48,7 +47,6 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
         if (syslogServer != null) {
             syslogServer.shutdown();
         }
-        syslogServer = null;
     }
 
     @Test
@@ -95,46 +93,30 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     protected void initUDPTestEnvironment(final String messageFormat) throws SocketException {
         syslogServer = MockSyslogServerFactory.createUDPSyslogServer(1, PORTNUM);
         syslogServer.start();
-        initAppender("udp", messageFormat, PORTNUM);
+        initAppender("udp", messageFormat);
     }
 
     protected void initTCPTestEnvironment(final String messageFormat) throws IOException {
-        int port = PORTNUM;
-        while (syslogServer == null) {
-            try {
-                syslogServer = MockSyslogServerFactory.createTCPSyslogServer(1, port);
-            } catch (BindException be) {
-                ++port;
-                if (port > 65535) {
-                    throw be;
-                }
-            }
-        }
-
+        syslogServer = MockSyslogServerFactory.createTCPSyslogServer(1, PORTNUM);
         syslogServer.start();
-        initAppender("tcp", messageFormat, port);
+        initAppender("tcp", messageFormat);
     }
 
-    protected void initAppender(final String transportFormat, final String messageFormat, int port) {
-        appender = createAppender(transportFormat, messageFormat, port);
+    protected void initAppender(final String transportFormat, final String messageFormat) {
+        appender = createAppender(transportFormat, messageFormat);
         validate(appender);
         appender.start();
         initRootLogger(appender);
     }
 
-    protected SyslogAppender createAppender(final String protocol, final String format, int port) {
-        return newSyslogAppenderBuilder(protocol, format, includeNewLine, port).build();
+    protected SyslogAppender createAppender(final String protocol, final String format) {
+        return newSyslogAppenderBuilder(protocol, format, includeNewLine).build();
     }
 
     protected Builder newSyslogAppenderBuilder(final String protocol, final String format, final boolean newLine) {
-        return newSyslogAppenderBuilder(protocol, format, newLine, PORTNUM);
-    }
-
-    protected Builder newSyslogAppenderBuilder(final String protocol, final String format, final boolean newLine,
-                                               int port) {
         // @formatter:off
         return SyslogAppender.newSyslogAppenderBuilder()
-                .withPort(port)
+                .withPort(PORTNUM)
                 .withProtocol(EnglishEnums.valueOf(Protocol.class, protocol))
                 .withReconnectDelayMillis(-1)
                 .withName("TestApp")
