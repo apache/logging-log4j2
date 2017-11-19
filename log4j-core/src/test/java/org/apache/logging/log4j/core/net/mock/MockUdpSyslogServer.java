@@ -46,6 +46,7 @@ public class MockUdpSyslogServer extends MockSyslogServer {
 
     @Override
     public void run() {
+        System.out.println("UDP Server Started");
         this.thread = Thread.currentThread();
         final byte[] bytes = new byte[4096];
         final DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
@@ -60,5 +61,6 @@ public class MockUdpSyslogServer extends MockSyslogServer {
                 Throwables.rethrow(e);
             }
         }
+        System.out.println("UDP Server stopped");
     }
 }

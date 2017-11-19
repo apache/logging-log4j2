@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.net.mock;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -49,6 +50,7 @@ public class MockTcpSyslogServer extends MockSyslogServer {
 
     @Override
     public void run() {
+        System.out.println("TCP Server started");
         this.thread = Thread.currentThread();
         while (!shutdown) {
             try {
@@ -70,6 +72,8 @@ public class MockTcpSyslogServer extends MockSyslogServer {
                             System.out.println("Message too long");
                         }
                     }
+                } catch (BindException be) {
+                    be.printStackTrace();
                 } finally {
                     if (socket != null) {
                         socket.close();
@@ -81,5 +85,6 @@ public class MockTcpSyslogServer extends MockSyslogServer {
                 }
             }
         }
+        System.out.println("TCP Server stopped");
     }
 }
