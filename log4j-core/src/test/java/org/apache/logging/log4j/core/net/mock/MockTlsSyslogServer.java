@@ -36,6 +36,9 @@ public class MockTlsSyslogServer extends MockSyslogServer {
     private final List<String> messageList = new ArrayList<>();
     private TlsSyslogInputStreamReaderBase syslogReader;
 
+    private volatile boolean shutdown = false;
+    private Thread thread;
+
     private TlsSyslogMessageFormat messageFormat = TlsSyslogMessageFormat.SYSLOG;
     private final int loopLen;
 
@@ -48,21 +51,29 @@ public class MockTlsSyslogServer extends MockSyslogServer {
 
     @Override
     public void shutdown() {
+        this.shutdown = true;
         try {
             try {
                 this.serverSocket.close();
             }
             catch (final Exception e) {
-
+                e.printStackTrace();
             }
             this.interrupt();
         } catch (final Exception e) {
             e.printStackTrace();
         }
+        try {
+            thread.join(100);
+        } catch (InterruptedException ie) {
+            System.out.println("Shutdown of TLS server thread failed.");
+        }
     }
 
     @Override
     public void run() {
+        System.out.println("TLS Server Started");
+        this.thread = Thread.currentThread();
         try {
             waitForConnection();
             processFrames();
@@ -71,6 +82,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
         } finally {
             closeSockets();
         }
+        System.out.println("TLS Server stopped");
     }
 
     private void waitForConnection() throws IOException {
@@ -95,12 +107,15 @@ public class MockTlsSyslogServer extends MockSyslogServer {
             try {
                 clientSocket.close();
             }
-            catch(final Exception e) {}
+            catch(final Exception e) {
+                e.printStackTrace();
+            }
         }
         if (serverSocket != null) {
             try {
                 serverSocket.close();
             } catch (final Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -108,7 +123,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
     private synchronized void processFrames() throws IOException {
         try {
             int count = 0;
-            while (true) {
+            while (!shutdown) {
                 String message = Strings.EMPTY;
                 message = syslogReader.read();
                 messageList.add(message);
@@ -123,7 +138,6 @@ public class MockTlsSyslogServer extends MockSyslogServer {
             this.notify();
             throw new IOException(e);
         }
-        return;
     }
 
     private boolean isEndOfMessages(final int count) {

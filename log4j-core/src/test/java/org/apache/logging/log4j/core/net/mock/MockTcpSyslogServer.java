@@ -24,7 +24,7 @@ import java.net.Socket;
 
 public class MockTcpSyslogServer extends MockSyslogServer {
     private final ServerSocket sock;
-    private boolean shutdown = false;
+    private volatile boolean shutdown = false;
     private Thread thread;
 
     public MockTcpSyslogServer(final int numberOfMessagesToReceive, final int port) throws IOException {
@@ -44,7 +44,7 @@ public class MockTcpSyslogServer extends MockSyslogServer {
         try {
             thread.join(100);
         } catch (InterruptedException ie) {
-            System.out.println("Shutdown of server thread failed.");
+            System.out.println("Shutdown of TCP server thread failed.");
         }
     }
 

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.net.mock;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockSyslogServer extends Thread {
+public abstract class MockSyslogServer extends Thread {
     protected List<String> messageList;
     protected int port;
     private final int numberOfMessagesToReceive;
