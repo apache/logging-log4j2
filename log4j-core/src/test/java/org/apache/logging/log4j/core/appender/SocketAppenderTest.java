@@ -301,6 +301,11 @@ public class SocketAppenderTest {
         public void shutdown() {
             this.shutdown = true;
             thread.interrupt();
+            try {
+                thread.join(100);
+            } catch (InterruptedException ie) {
+                System.out.println("Unable to stop server");
+            }
         }
 
         @Override
@@ -363,6 +368,11 @@ public class SocketAppenderTest {
         public void shutdown() {
             this.shutdown = true;
             interrupt();
+            try {
+                this.join(100);
+            } catch (InterruptedException ie) {
+                System.out.println("Unable to stop server");
+            }
         }
 
         @Override
