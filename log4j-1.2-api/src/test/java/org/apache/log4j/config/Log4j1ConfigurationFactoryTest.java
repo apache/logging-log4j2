@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
@@ -170,7 +171,9 @@ public class Log4j1ConfigurationFactoryTest {
             System.out.println("expected: " + tempFileName + " Actual: " + appender.getFileName());
             assertEquals(tempFileName, appender.getFileName());
         } finally {
-            Files.deleteIfExists(tempFilePath);
+			try {
+				Files.deleteIfExists(tempFilePath);
+			} catch (FileSystemException ignored) {}
         }
 	}
 
