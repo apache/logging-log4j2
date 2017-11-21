@@ -16,6 +16,11 @@
                     "additivity" : false,
                     "AppenderRef" : {
                         "ref" : "STDOUT"
+                    },
+                    "RegexFilter": {
+                        "regex": "TEST",
+                        "onMatch": "DENY",
+                        "onMismatch": "ACCEPT"
                     }
                 },
                 {
