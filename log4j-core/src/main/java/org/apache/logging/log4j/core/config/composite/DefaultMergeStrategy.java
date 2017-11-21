@@ -171,6 +171,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
                                         if (!foundFilter) {
                                             final Node childNode = new Node(loggerNode, sourceLoggerChild.getName(),
                                                     sourceLoggerChild.getType());
+                                            childNode.getAttributes().putAll(sourceLoggerChild.getAttributes());
+                                            childNode.getChildren().addAll(sourceLoggerChild.getChildren());
                                             targetNode.getChildren().add(childNode);
                                         }
                                     } else {
