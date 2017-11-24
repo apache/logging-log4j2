@@ -18,7 +18,7 @@ package org.apache.logging.log4j.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
 
 /**
  * @Since 2.9
@@ -29,7 +29,16 @@ public class ProcessIdUtil {
 
     public static String getProcessId() {
         try {
-            return ManagementFactory.getRuntimeMXBean().getName().split("@")[0]; // likely works on most platforms
+            // LOG4J2-2126 use reflection to improve compatibility with Android Platform which does not support JMX extensions
+            Class<?> managementFactoryClass = Class.forName("java.lang.management.ManagementFactory");
+            Method getRuntimeMXBean = managementFactoryClass.getDeclaredMethod("getRuntimeMXBean");
+            Class<?> runtimeMXBeanClass = Class.forName("java.lang.management.RuntimeMXBean");
+            Method getName = runtimeMXBeanClass.getDeclaredMethod("getName");
+
+            Object runtimeMXBean = getRuntimeMXBean.invoke(null);
+            String name = (String) getName.invoke(runtimeMXBean);
+            //String name = ManagementFactory.getRuntimeMXBean().getName(); //JMX not allowed on Android
+            return name.split("@")[0]; // likely works on most platforms
         } catch (final Exception ex) {
             try {
                 return new File("/proc/self").getCanonicalFile().getName(); // try a Linux-specific way
