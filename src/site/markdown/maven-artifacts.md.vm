@@ -19,6 +19,9 @@
 #set($h2='##')
 #set($h3='###')
 #macro(maven $artifactIds)
+#mavenVersion($artifactIds $Log4jReleaseVersion)
+#end
+#macro(mavenVersion $artifactIds $version)
 `pom.xml`
 
 ```
@@ -27,40 +30,49 @@
   <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>${artifactId}</artifactId>
-    <version>${Log4jReleaseVersion}</version>
+    <version>${version}</version>
   </dependency>
 #end
 </dependencies>
 ```
 #end
 #macro(ivy $artifactIds)
+#ivyVersion($artifactIds $Log4jReleaseVersion)
+#end
+#macro(ivyVersion $artifactIds $version)
 `ivy.xml`
 
 ```
 <dependencies>
 #foreach($artifactId in $artifactIds)
-  <dependency org="org.apache.logging.log4j" name="${artifactId}" rev="${Log4jReleaseVersion}" />
+  <dependency org="org.apache.logging.log4j" name="${artifactId}" rev="${version}" />
 #end
 </dependencies>
 ```
 #end
 #macro(gradle $artifactIds)
+#gradleVersion($artifactIds $Log4jReleaseVersion)
+#end
+#macro(gradleVersion $artifactIds $version)
 `build.gradle`
 
 ```
 dependencies {
 #foreach($artifactId in $artifactIds)
-  compile group: 'org.apache.logging.log4j', name: '${artifactId}', version: '${Log4jReleaseVersion}'
+  compile group: 'org.apache.logging.log4j', name: '${artifactId}', version: '${version}'
 #end
 }
 ```
 #end
 #macro(sbt $artifactIds)
+#sbtVersion($artifactIds $Log4jReleaseVersion)
+#end
+#macro(sbtVersion $artifactIds $version)
 `build.sbt`
 
 ```
 #foreach($artifactId in $artifactIds)
-libraryDependencies += "org.apache.logging.log4j" %#if($artifactId.endsWith('scala'))%#end "${artifactId}" % "${Log4jReleaseVersion}"
+libraryDependencies += "org.apache.logging.log4j" %#if($artifactId.endsWith('scala'))%#end "${artifactId}" % "${version}"
 #end
 ```
 #end
@@ -255,27 +267,27 @@ $h3 Scala API
 A convenient Scala wrapper for the Logger API. SBT users can add the following to their
 `build.sbt`:
 
-#sbt(['log4j-api-scala'])
+#sbtVersion(['log4j-api-scala'], '11.0')
 
 Maven, Ivy, and Gradle users need to add the Scala version to the artifact name.
 
 Scala 2.12 users can use the following:
 
-#maven(['log4j-api-scala_2.12'])
-#ivy(['log4j-api-scala_2.12'])
-#gradle(['log4j-api-scala_2.12'])
+#mavenVersion(['log4j-api-scala_2.12'], '11.0')
+#ivyVersion(['log4j-api-scala_2.12'], '11.0')
+#gradleVersion(['log4j-api-scala_2.12'], '11.0')
 
 Scala 2.11 users can use the following:
 
-#maven(['log4j-api-scala_2.11'])
-#ivy(['log4j-api-scala_2.11'])
-#gradle(['log4j-api-scala_2.11'])
+#mavenVersion(['log4j-api-scala_2.11'], '11.0')
+#ivyVersion(['log4j-api-scala_2.11'], '11.0')
+#gradleVersion(['log4j-api-scala_2.11'], '11.0')
 
 Scala 2.10 users can use the following:
 
-#maven(['log4j-api-scala_2.10'])
-#ivy(['log4j-api-scala_2.10'])
-#gradle(['log4j-api-scala_2.10'])
+#mavenVersion(['log4j-api-scala_2.10'], '11.0')
+#ivyVersion(['log4j-api-scala_2.10'], '11.0')
+#gradleVersion(['log4j-api-scala_2.10'], '11.0')
 
 $h2 Snapshot builds
 
