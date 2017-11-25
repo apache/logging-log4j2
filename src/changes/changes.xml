@@ -32,7 +32,7 @@
     -->
     <release version="2.10.1" date="2017-xx-xx" description="GA Release 2.10.1">
       <action issue="LOG4J2-2127" dev="rpopma" type="update" due-to="Carter Kozak">
-        Removed unnecessary threadlocal StringBuilder from MdcPatternConverter.
+        Removed unnecessary threadlocal StringBuilder field from MdcPatternConverter.
       </action>
       <action issue="LOG4J2-2126" dev="rpopma" type="fix" due-to="Oleg Kalnichevski">
         Removed compile-time dependency on Java Management APIs from Log4J API module to improve compatibility with Android Platform which does not support JMX extensions.
