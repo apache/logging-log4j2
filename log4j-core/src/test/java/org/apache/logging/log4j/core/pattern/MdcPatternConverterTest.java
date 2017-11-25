@@ -62,6 +62,57 @@ public class MdcPatternConverterTest {
     }
 
     @Test
+    public void testConverterWithExistingData() {
+        final Message msg = new SimpleMessage("Hello");
+        final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
+        final StringBuilder sb = new StringBuilder();
+        sb.append("prefix ");
+        converter.format(event, sb);
+        final String str = sb.toString();
+        final String expected = "prefix {object=Log4j, subject=I, verb=love}";
+        assertTrue("Incorrect result. Expected " + expected + ", actual " + str, str.equals(expected));
+    }
+    @Test
+    public void testConverterFullEmpty() {
+        ThreadContext.clearMap();
+        final Message msg = new SimpleMessage("Hello");
+        final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String str = sb.toString();
+        final String expected = "{}";
+        assertTrue("Incorrect result. Expected " + expected + ", actual " + str, str.equals(expected));
+    }
+
+    @Test
+    public void testConverterFullSingle() {
+        ThreadContext.clearMap();
+        ThreadContext.put("foo", "bar");
+        final Message msg = new SimpleMessage("Hello");
+        final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String str = sb.toString();
+        final String expected = "{foo=bar}";
+        assertTrue("Incorrect result. Expected " + expected + ", actual " + str, str.equals(expected));
+    }
+
+    @Test
     public void testConverterWithKey() {
         final Message msg = new SimpleMessage("Hello");
         final String [] options = new String[] {"object"};
@@ -92,6 +143,59 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{object=Log4j, subject=I}";
+        assertEquals(expected, str);
+    }
+
+    @Test
+    public void testConverterWithKeysAndPrefix() {
+        final Message msg = new SimpleMessage("Hello");
+        final String [] options = new String[] {"object, subject"};
+        final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
+        final StringBuilder sb = new StringBuilder();
+        sb.append("prefix ");
+        converter.format(event, sb);
+        final String str = sb.toString();
+        final String expected = "prefix {object=Log4j, subject=I}";
+        assertEquals(expected, str);
+    }
+
+    @Test
+    public void testConverterWithKeysSinglePresent() {
+        final Message msg = new SimpleMessage("Hello");
+        final String [] options = new String[] {"object, notpresent"};
+        final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String str = sb.toString();
+        final String expected = "{object=Log4j}";
+        assertEquals(expected, str);
+    }
+
+    @Test
+    public void testConverterWithKeysNonePresent() {
+        ThreadContext.clearMap();
+        final Message msg = new SimpleMessage("Hello");
+        final String [] options = new String[] {"object, subject"};
+        final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String str = sb.toString();
+        final String expected = "{}";
         assertEquals(expected, str);
     }
 
