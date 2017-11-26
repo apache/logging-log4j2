@@ -14,15 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-module org.apache.logging.log4j {
-    exports org.apache.logging.log4j;
-    exports org.apache.logging.log4j.message;
-    exports org.apache.logging.log4j.simple;
-    exports org.apache.logging.log4j.spi;
-    exports org.apache.logging.log4j.status;
-    exports org.apache.logging.log4j.util;
+package org.apache.logging.log4j.util;
 
-    uses org.apache.logging.log4j.spi.Provider;
-    uses org.apache.logging.log4j.util.PropertySource;
-    uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
+/**
+ * This is a dummy class and is only here to allow module-info.java to compile. It will not
+ * be copied into the log4j-api module.
+ */
+public class PropertySource {
 }
