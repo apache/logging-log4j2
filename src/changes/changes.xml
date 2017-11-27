@@ -37,6 +37,9 @@
       <action issue="LOG4J2-2126" dev="rpopma" type="fix" due-to="Oleg Kalnichevski">
         Removed compile-time dependency on Java Management APIs from Log4J API module to improve compatibility with Android Platform which does not support JMX extensions.
       </action>
+      <action issue="LOG4J2-2132" dev="ggregory" type="update">
+        Update ZeroMQ's jeromq from 0.4.2 to 0.4.3.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
