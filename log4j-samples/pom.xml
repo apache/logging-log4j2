@@ -78,11 +78,11 @@
     </dependencies>
   </dependencyManagement>
   <modules>
-    <module>flume-common</module>
-    <module>flume-remote</module>
-    <module>flume-embedded</module>
-    <module>configuration</module>
-    <module>loggerProperties</module>
+    <module>log4j-samples-flume-common</module>
+    <module>log4j-samples-flume-remote</module>
+    <module>log4j-samples-flume-embedded</module>
+    <module>log4j-samples-configuration</module>
+    <module>log4j-samples-loggerProperties</module>
   </modules>
   <build>
     <plugins>
