@@ -96,11 +96,11 @@
       <artifactId>jackson-dataformat-xml</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- POM for jackson-dataformat-xml 2.8.3 depends on woodstox-core 5.0.2 -->
+    <!-- POM for jackson-dataformat-xml 2.9.2 depends on woodstox-core 5.0.3 -->
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>5.0.2</version>
+      <version>5.0.3</version>
       <optional>true</optional>
     </dependency>
 
