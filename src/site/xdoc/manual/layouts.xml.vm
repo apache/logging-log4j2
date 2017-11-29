@@ -202,10 +202,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           <pre class="prettyprint linenums">
   &lt;Appenders&gt;
     &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
-        &lt;GelfLayout host="someserver" compressionType="ZLIB" compressionThreshold="1024"&gt;
-            &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
-            &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
-        &lt;/GelfLayout&gt;
+        &lt;GelfLayout host="someserver" compressionType="ZLIB" compressionThreshold="1024"/&gt;
     &lt;/Socket&gt;
   &lt;/Appenders&gt;
 </pre>
@@ -215,10 +212,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           <pre class="prettyprint linenums">
   &lt;Appenders&gt;
     &lt;Socket name="Graylog" protocol="tcp" host="graylog.domain.com" port="12201"&gt;
-        &lt;GelfLayout host="someserver" compressionType="OFF" includeNullDelimiter="true"&gt;
-            &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
-            &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
-        &lt;/GelfLayout&gt;
+        &lt;GelfLayout host="someserver" compressionType="OFF" includeNullDelimiter="true"/&gt;
     &lt;/Socket&gt;
   &lt;/Appenders&gt;
 </pre>
@@ -263,12 +257,24 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             </tr>
             <caption align="top">GelfLayout Parameters</caption>
           </table>
-           <p>
-             See also:
-           </p>
-           <ul>
-             <li>The <a href="http://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a></li>
-           </ul>
+          <p>
+              To include any custom field in the output, use following syntax:
+          </p>
+              <pre class="prettyprint linenums">
+  &lt;GelfLayout&gt;
+    &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
+    &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
+  &lt;/GelfLayout&gt;
+</pre>
+          <p>
+              Custom fields are included in the order they are declared. The values support <a href="lookups.html">lookups</a>.
+          </p>
+          <p>
+            See also:
+          </p>
+          <ul>
+            <li>The <a href="http://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a></li>
+          </ul>
         </subsection>
         <a name="HTMLLayout"/>
         <subsection name="HTML Layout">
@@ -464,13 +470,15 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           </table>
           <p>
               To include any custom field in the output, use following syntax:
+          </p>
               <pre class="prettyprint linenums">
   &lt;JsonLayout&gt;
     &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
     &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
   &lt;/JsonLayout&gt;
 </pre>
-              Custom fields are always last, in the order they are declared.
+          <p>
+              Custom fields are always last, in the order they are declared. The values support <a href="lookups.html">lookups</a>.
           </p>
           <p>
             Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using JsonLayout.
@@ -2246,13 +2254,15 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           </table>
           <p>
               To include any custom field in the output, use following syntax:
+          </p>
               <pre class="prettyprint linenums">
   &lt;XmlLayout&gt;
     &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
     &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
   &lt;/XmlLayout&gt;
 </pre>
-              Custom fields are always last, in the order they are declared.
+          <p>
+              Custom fields are always last, in the order they are declared.  The values support <a href="lookups.html">lookups</a>.
           </p>
           <p>
             Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using XmlLayout.
@@ -2351,13 +2361,15 @@ source:
           </table>
           <p>
               To include any custom field in the output, use following syntax:
+          </p>
               <pre class="prettyprint linenums">
   &lt;YamlLayout&gt;
     &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
     &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
   &lt;/YamlLayout&gt;
 </pre>
-              Custom fields are always last, in the order they are declared.
+          <p>
+              Custom fields are always last, in the order they are declared.  The values support <a href="lookups.html">lookups</a>.
           </p>
           <p>
             Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using YamlLayout.
