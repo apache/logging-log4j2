@@ -1856,7 +1856,7 @@ public class AwesomeTest {
     <td><a name="skipJansi"/>log4j2.skipJansi</td>
     <td>LOG4J_SKIP_JANSI</td>
     <td><a name="log4j.skipJansi"/>log4j.skipJansi</td>
-    <td>false</td>
+    <td>true</td>
     <td>
       If <tt>true</tt>, the ConsoleAppender will not try to use the Jansi output stream on Windows.
     </td>
