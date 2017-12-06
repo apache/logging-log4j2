@@ -1595,6 +1595,20 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternLoggerFqcn"/>
+                <b>fqcn</b>
+              </td>
+              <td>Outputs the fully qualified class name of the logging event.</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <a name="PatternLoggerFqcn"/>
+                <b>endOfBatch</b>
+              </td>
+              <td>Outputs the EndOfBatch status of the logging event, as "true" or "false".</td>
+            </tr>
+            <tr>
+              <td align="center">
                 <a name="PatternNDC"/>
                 <b>x</b><br />
                 <b>NDC</b>

@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.10.1" date="2017-xx-xx" description="GA Release 2.10.1">
+      <action issue="LOG4J2-2143" dev="mikes" type="add">
+        Add missing converters to PatternLayout.
+      </action>
       <action issue="LOG4J2-2127" dev="rpopma" type="update" due-to="Carter Kozak">
         Removed unnecessary threadlocal StringBuilder field from MdcPatternConverter.
       </action>

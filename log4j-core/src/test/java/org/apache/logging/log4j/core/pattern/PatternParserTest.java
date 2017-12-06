@@ -272,6 +272,16 @@ public class PatternParserTest {
         testThreadPriorityPattern("%threadPriority");
     }
 
+    @Test
+    public void testLoggerFqcnPattern() {
+        testFirstConverter("%fqcn", LoggerFqcnPatternConverter.class);
+    }
+
+    @Test
+    public void testEndOfBatchPattern() {
+        testFirstConverter("%endOfBatch", EndOfBatchPatternConverter.class);
+    }
+
     private void testThreadIdPattern(final String pattern) {
         testFirstConverter(pattern, ThreadIdPatternConverter.class);
     }
