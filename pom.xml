@@ -190,7 +190,7 @@
     <pmd.plugin.version>3.8</pmd.plugin.version>
     <findbugs.plugin.version>3.0.5</findbugs.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
-    <javadoc.plugin.version>3.0.0-M1</javadoc.plugin.version>
+    <javadoc.plugin.version>3.0.0</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
