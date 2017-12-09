@@ -145,4 +145,9 @@ public final class StringFormatterMessageFactory extends AbstractMessageFactory 
             final Object p6, final Object p7, final Object p8, final Object p9) {
         return new StringFormattedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object... params) {
+        return new StringFormattedMessage(source, message, params);
+    }
 }

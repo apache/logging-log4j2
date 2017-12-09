@@ -345,6 +345,13 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         return source;
     }
 
+    @Override
+    public StackTraceElement swapSource(StackTraceElement source) {
+        StackTraceElement originalSource = this.source;
+        this.source = source;
+        return originalSource;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public ReadOnlyStringMap getContextData() {

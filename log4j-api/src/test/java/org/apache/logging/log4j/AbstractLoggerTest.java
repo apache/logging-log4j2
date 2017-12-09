@@ -1267,5 +1267,10 @@ public class AbstractLoggerTest {
         public Throwable getThrowable() {
             return throwable;
         }
+
+        @Override
+        public StackTraceElement getSource() {
+            return null;
+        }
     }
 }

@@ -624,6 +624,9 @@ public class Log4jLogEvent implements LogEvent {
         if (source != null) {
             return source;
         }
+        if (message.getSource() != null) {
+            return message.getSource();
+        }
         if (loggerFqcn == null || !includeLocation) {
             return null;
         }

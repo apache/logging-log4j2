@@ -30,6 +30,7 @@ public class ReusableObjectMessage implements ReusableMessage {
 
     private transient Object obj;
     private transient String objectString;
+    private StackTraceElement source;
 
     public void set(final Object object) {
         this.obj = object;
@@ -103,6 +104,18 @@ public class ReusableObjectMessage implements ReusableMessage {
     @Override
     public Object[] swapParameters(final Object[] emptyReplacement) {
         return emptyReplacement;
+    }
+
+    @Override
+    public StackTraceElement swapSource(StackTraceElement source) {
+        StackTraceElement originalSource = this.source;
+        this.source = source;
+        return originalSource;
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 
     /**

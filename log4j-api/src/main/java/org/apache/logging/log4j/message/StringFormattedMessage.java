@@ -22,6 +22,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -49,33 +50,62 @@ public class StringFormattedMessage implements Message {
     private transient String formattedMessage;
     private transient Throwable throwable;
     private final Locale locale;
+    private StackTraceElement source;
     
    /**
-    * Constructs a message.
-    * 
+    * Constructs a message, when the location
+    * of the log statement might be known at compile time.
+    *
+    * @param source the location of the log statement, or null
     * @param locale the locale for this message format
     * @param messagePattern the pattern for this message format
     * @param arguments The objects to format
     * @since 2.6
     */
-    public StringFormattedMessage(final Locale locale, final String messagePattern, final Object... arguments) {
+    public StringFormattedMessage(final StackTraceElement source, final Locale locale, final String messagePattern, final Object... arguments) {
         this.locale = locale;
         this.messagePattern = messagePattern;
         this.argArray = arguments;
         if (arguments != null && arguments.length > 0 && arguments[arguments.length - 1] instanceof Throwable) {
             this.throwable = (Throwable) arguments[arguments.length - 1];
         }
+        this.source = source;
     }
 
     /**
      * Constructs a message.
-     * 
+     *
+     * @param locale the locale for this message format
+     * @param messagePattern the pattern for this message format
+     * @param arguments The objects to format
+     * @since 2.6
+     */
+    public StringFormattedMessage(final Locale locale, final String messagePattern, final Object... arguments) {
+        this(null, locale, messagePattern, arguments);
+    }
+
+    /**
+     * Constructs a message, when the location
+     * of the log statement might be known at compile time.
+     *
+     * @param source the location of the log statement, or null
+     * @param messagePattern the pattern for this message format
+     * @param arguments The objects to format
+     * @since 2.6
+     */
+    public StringFormattedMessage(final StackTraceElement source, final String messagePattern, final Object... arguments) {
+        this(source, Locale.getDefault(Locale.Category.FORMAT), messagePattern, arguments);
+    }
+
+    /**
+     * Constructs a message.
+     *
      * @param messagePattern the pattern for this message format
      * @param arguments The objects to format
      * @since 2.6
      */
     public StringFormattedMessage(final String messagePattern, final Object... arguments) {
-        this(Locale.getDefault(Locale.Category.FORMAT), messagePattern, arguments);
+        this(null, Locale.getDefault(Locale.Category.FORMAT), messagePattern, arguments);
     }
 
     /**
@@ -111,6 +141,11 @@ public class StringFormattedMessage implements Message {
         return stringArgs;
     }
 
+    @Override
+    public StackTraceElement getSource() {
+        return source;
+    }
+
     protected String formatMessage(final String msgPattern, final Object... args) {
         try {
             return String.format(locale, msgPattern, args);
@@ -131,7 +166,7 @@ public class StringFormattedMessage implements Message {
 
         final StringFormattedMessage that = (StringFormattedMessage) o;
 
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+        if (!Objects.equals(messagePattern, that.messagePattern) || !Objects.equals(source, that.source)) {
             return false;
         }
 
@@ -140,8 +175,9 @@ public class StringFormattedMessage implements Message {
 
     @Override
     public int hashCode() {
-        int result = messagePattern != null ? messagePattern.hashCode() : 0;
+        int result = Objects.hashCode(messagePattern);
         result = HASHVAL * result + (stringArgs != null ? Arrays.hashCode(stringArgs) : 0);
+        result = HASHVAL * result + Objects.hashCode(source);
         return result;
     }
 
@@ -165,6 +201,7 @@ public class StringFormattedMessage implements Message {
             out.writeUTF(string);
             ++i;
         }
+        MessageFormatMessage.writeSource(out, source);
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -176,6 +213,7 @@ public class StringFormattedMessage implements Message {
         for (int i = 0; i < length; ++i) {
             stringArgs[i] = in.readUTF();
         }
+        source = MessageFormatMessage.readSource(in);
     }
 
     /**

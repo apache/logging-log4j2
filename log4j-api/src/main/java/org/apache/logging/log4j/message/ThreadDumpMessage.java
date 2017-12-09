@@ -40,17 +40,28 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     private volatile Map<ThreadInformation, StackTraceElement[]> threads;
     private final String title;
     private String formattedMessage;
+    private StackTraceElement source;
 
     /**
      * Generate a ThreadDumpMessage with a title.
      * @param title The title.
      */
     public ThreadDumpMessage(final String title) {
+        this((StackTraceElement) null, title);
+    }
+
+    public ThreadDumpMessage(StackTraceElement source, final String title) {
         this.title = title == null ? Strings.EMPTY : title;
         threads = getFactory().createThreadInfo();
+        this.source = source;
     }
 
     private ThreadDumpMessage(final String formattedMsg, final String title) {
+        this(null, formattedMsg, title);
+    }
+
+    private ThreadDumpMessage(StackTraceElement source, final String formattedMsg, final String title) {
+        this.source = source;
         this.formattedMessage = formattedMsg;
         this.title = title == null ? Strings.EMPTY : title;
     }
@@ -191,6 +202,11 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
             }
             return threads;
         }
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 
     /**

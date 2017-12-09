@@ -49,86 +49,19 @@ public class MessageFormatMessageFactory extends AbstractMessageFactory {
     }
 
     /**
-     * @since 2.6.1
+     * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances, when the location
+     * of the log statement might be known at compile time.
+     *
+     * @param source the location of the log statement, or null
+     * @param message The message pattern.
+     * @param params Parameters to the message.
+     * @return The Message.
+     *
+     * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
      */
     @Override
-    public Message newMessage(final String message, final Object p0) {
-        return new MessageFormatMessage(message, p0);
+    public Message newMessage(StackTraceElement source, String message, Object... params) {
+        return new MessageFormatMessage(source, message, params);
     }
 
-    /**
-     * @since 2.6.1
-     */
-    @Override
-    public Message newMessage(final String message, final Object p0, final Object p1) {
-        return new MessageFormatMessage(message, p0, p1);
-    }
-
-    /**
-     * @since 2.6.1
-     */
-    @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
-        return new MessageFormatMessage(message, p0, p1, p2);
-    }
-
-    /**
-     * @since 2.6.1
-     */
-    @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-        return new MessageFormatMessage(message, p0, p1, p2, p3);
-    }
-
-    /**
-     * @since 2.6.1
-     */
-    @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-        return new MessageFormatMessage(message, p0, p1, p2, p3, p4);
-    }
-
-    /**
-     * @since 2.6.1
-     */
-    @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
-        return new MessageFormatMessage(message, p0, p1, p2, p3, p4, p5);
-    }
-
-    /**
-     * @since 2.6.1
-     */
-    @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6) {
-        return new MessageFormatMessage(message, p0, p1, p2, p3, p4, p5, p6);
-    }
-
-    /**
-     * @since 2.6.1
-     */
-    @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7) {
-        return new MessageFormatMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
-    }
-
-    /**
-     * @since 2.6.1
-     */
-    @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
-        return new MessageFormatMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
-    }
-
-    /**
-     * @since 2.6.1
-     */
-    @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
-        return new MessageFormatMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
-    }
 }

@@ -102,6 +102,11 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         public String getText() {
             return text;
         }
+
+        @Override
+        public StackTraceElement getSource() {
+            return null;
+        }
     }
 
     private static final class SimpleEntryMessage extends AbstractFlowMessage implements EntryMessage {

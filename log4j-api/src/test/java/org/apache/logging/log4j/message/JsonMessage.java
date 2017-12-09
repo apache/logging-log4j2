@@ -63,4 +63,9 @@ public class JsonMessage implements Message {
     public Throwable getThrowable() {
         return null;
     }
+
+    @Override
+    public StackTraceElement getSource() {
+        return null;
+    }
 }
