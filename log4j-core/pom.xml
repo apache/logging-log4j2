@@ -339,6 +339,16 @@
       <artifactId>HdrHistogram</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <scope>provided</scope><!-- make the jar eligible for compilation only -->
+    </dependency>
+    <dependency>
+      <groupId>tech.harmonysoft</groupId>
+      <artifactId>traute-javac</artifactId>
+      <scope>provided</scope><!-- make the jar eligible for compilation only -->
+    </dependency>
   </dependencies>
   <build>
     <plugins>
