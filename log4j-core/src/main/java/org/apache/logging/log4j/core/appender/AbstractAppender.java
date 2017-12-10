@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Integers;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so will simplify their
@@ -146,10 +147,10 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be logged and
      *            then passed to the application.
      */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions) {
+    protected AbstractAppender(@NotNull final String name, final Filter filter,
+                               final Layout<? extends Serializable> layout, final boolean ignoreExceptions) {
         super(filter);
-        this.name = Objects.requireNonNull(name, "name");
+        this.name = name;
         this.layout = layout;
         this.ignoreExceptions = ignoreExceptions;
     }

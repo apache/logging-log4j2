@@ -222,6 +222,8 @@
     <mockitoVersion>2.12.0</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.7</javaTargetVersion>
+    <jetbrainsAnnotationsVersion>15.0</jetbrainsAnnotationsVersion>
+    <trauteVersion>1.0.10</trauteVersion>
     <module.name />
   </properties>
   <pluginRepositories>
@@ -806,6 +808,18 @@
         <artifactId>groovy-all</artifactId>
         <version>2.4.12</version>
       </dependency>
+      <dependency>
+        <groupId>org.jetbrains</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${jetbrainsAnnotationsVersion}</version>
+        <scope>provided</scope><!-- make the jar eligible for compilation only -->
+      </dependency>
+      <dependency>
+        <groupId>tech.harmonysoft</groupId>
+        <artifactId>traute-javac</artifactId>
+        <version>${trauteVersion}</version>
+        <scope>provided</scope><!-- make the jar eligible for compilation only -->
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
@@ -881,6 +895,10 @@
               <Xmaxwarns>10000</Xmaxwarns>
               <Xlint />
             </compilerArguments>
+            <compilerArgs>
+              <arg>-Xplugin:Traute</arg>
+              <arg>-Atraute.failure.text.parameter=$${PARAMETER_NAME}</arg>
+            </compilerArgs>
           </configuration>
         </plugin>
         <plugin>
