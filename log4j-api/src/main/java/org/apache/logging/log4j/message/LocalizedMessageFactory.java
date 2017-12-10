@@ -85,7 +85,7 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String key, final Object... params) {
-        return newMessage((StackTraceElement) null, key, params);
+        return newMessage((SourceLocation) null, key, params);
     }
 
     /**
@@ -100,7 +100,7 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
      */
     @Override
-    public Message newMessage(StackTraceElement source, String message, Object... params) {
+    public Message newMessage(SourceLocation source, String message, Object... params) {
         if (resourceBundle == null) {
             return new LocalizedMessage(source, baseName, message, params);
         }

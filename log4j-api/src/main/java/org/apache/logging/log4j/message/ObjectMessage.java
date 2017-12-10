@@ -33,7 +33,7 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
 
     private transient Object obj;
     private transient String objectString;
-    private transient StackTraceElement source;
+    private transient SourceLocation source;
 
     /**
      * Creates the ObjectMessage.
@@ -49,7 +49,7 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
      *
      * @param obj The Object to format.
      */
-    public ObjectMessage(final StackTraceElement source, final Object obj) {
+    public ObjectMessage(final SourceLocation source, final Object obj) {
         this.obj = obj == null ? "null" : obj;
         this.source = source;
     }
@@ -159,7 +159,7 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public SourceLocation getSource() {
         return source;
     }
 }

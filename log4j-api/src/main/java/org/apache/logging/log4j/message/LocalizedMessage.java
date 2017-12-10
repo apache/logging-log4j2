@@ -52,7 +52,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     private transient Object[] argArray;
     private String formattedMessage;
     private transient Throwable throwable;
-    private StackTraceElement source;
+    private SourceLocation source;
 
     /**
      * Constructor with message pattern and arguments.
@@ -150,19 +150,19 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      * @param messagePattern the message pattern that to be checked for placeholders.
      * @param arguments the argument array to be converted.
      */
-    public LocalizedMessage(final StackTraceElement source, final String messagePattern, final Object[] arguments) {
+    public LocalizedMessage(final SourceLocation source, final String messagePattern, final Object[] arguments) {
         this(source, (ResourceBundle) null, (Locale) null, messagePattern, arguments);
     }
 
-    public LocalizedMessage(final StackTraceElement source, final String baseName, final String key, final Object[] arguments) {
+    public LocalizedMessage(final SourceLocation source, final String baseName, final String key, final Object[] arguments) {
         this(source, baseName, (Locale) null, key, arguments);
     }
 
-    public LocalizedMessage(final StackTraceElement source, final ResourceBundle bundle, final String key, final Object[] arguments) {
+    public LocalizedMessage(final SourceLocation source, final ResourceBundle bundle, final String key, final Object[] arguments) {
         this(source, bundle, (Locale) null, key, arguments);
     }
 
-    public LocalizedMessage(final StackTraceElement source, final String baseName, final Locale locale, final String key, final Object[] arguments) {
+    public LocalizedMessage(final SourceLocation source, final String baseName, final Locale locale, final String key, final Object[] arguments) {
         this.key = key;
         this.argArray = arguments;
         this.throwable = null;
@@ -172,7 +172,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.source = source;
     }
 
-    public LocalizedMessage(final StackTraceElement source, final ResourceBundle bundle, final Locale locale, final String key,
+    public LocalizedMessage(final SourceLocation source, final ResourceBundle bundle, final Locale locale, final String key,
                             final Object[] arguments) {
         this.key = key;
         this.argArray = arguments;
@@ -183,64 +183,64 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.source = source;
     }
 
-    public LocalizedMessage(final StackTraceElement source, final Locale locale, final String key, final Object[] arguments) {
+    public LocalizedMessage(final SourceLocation source, final Locale locale, final String key, final Object[] arguments) {
         this(source, (ResourceBundle) null, locale, key, arguments);
     }
 
-    public LocalizedMessage(final StackTraceElement source, final String messagePattern, final Object arg) {
+    public LocalizedMessage(final SourceLocation source, final String messagePattern, final Object arg) {
         this(source, (ResourceBundle) null, (Locale) null, messagePattern, new Object[] {arg});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final String baseName, final String key, final Object arg) {
+    public LocalizedMessage(final SourceLocation source, final String baseName, final String key, final Object arg) {
         this(source, baseName, (Locale) null, key, new Object[] {arg});
     }
 
     /**
      * @since
      */
-    public LocalizedMessage(final StackTraceElement source, final ResourceBundle bundle, final String key) {
+    public LocalizedMessage(final SourceLocation source, final ResourceBundle bundle, final String key) {
         this(source, bundle, (Locale) null, key, new Object[] {});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final ResourceBundle bundle, final String key, final Object arg) {
+    public LocalizedMessage(final SourceLocation source, final ResourceBundle bundle, final String key, final Object arg) {
         this(source, bundle, (Locale) null, key, new Object[] {arg});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final String baseName, final Locale locale, final String key, final Object arg) {
+    public LocalizedMessage(final SourceLocation source, final String baseName, final Locale locale, final String key, final Object arg) {
         this(source, baseName, locale, key, new Object[] {arg});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final ResourceBundle bundle, final Locale locale, final String key, final Object arg) {
+    public LocalizedMessage(final SourceLocation source, final ResourceBundle bundle, final Locale locale, final String key, final Object arg) {
         this(source, bundle, locale, key, new Object[] {arg});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final Locale locale, final String key, final Object arg) {
+    public LocalizedMessage(final SourceLocation source, final Locale locale, final String key, final Object arg) {
         this(source, (ResourceBundle) null, locale, key, new Object[] {arg});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final String messagePattern, final Object arg1, final Object arg2) {
+    public LocalizedMessage(final SourceLocation source, final String messagePattern, final Object arg1, final Object arg2) {
         this(source, (ResourceBundle) null, (Locale) null, messagePattern, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final String baseName, final String key, final Object arg1, final Object arg2) {
+    public LocalizedMessage(final SourceLocation source, final String baseName, final String key, final Object arg1, final Object arg2) {
         this(source, baseName, (Locale) null, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final ResourceBundle bundle, final String key, final Object arg1, final Object arg2) {
+    public LocalizedMessage(final SourceLocation source, final ResourceBundle bundle, final String key, final Object arg1, final Object arg2) {
         this(source, bundle, (Locale) null, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final String baseName, final Locale locale, final String key, final Object arg1,
+    public LocalizedMessage(final SourceLocation source, final String baseName, final Locale locale, final String key, final Object arg1,
                             final Object arg2) {
         this(source, baseName, locale, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final ResourceBundle bundle, final Locale locale, final String key, final Object arg1,
+    public LocalizedMessage(final SourceLocation source, final ResourceBundle bundle, final Locale locale, final String key, final Object arg1,
                             final Object arg2) {
         this(source, bundle, locale, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final StackTraceElement source, final Locale locale, final String key, final Object arg1, final Object arg2) {
+    public LocalizedMessage(final SourceLocation source, final Locale locale, final String key, final Object arg1, final Object arg2) {
         this(source, (ResourceBundle) null, locale, key, new Object[] {arg1, arg2});
     }
 
@@ -310,7 +310,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public SourceLocation getSource() {
         return source;
     }
 

@@ -65,7 +65,7 @@ public class JsonMessage implements Message {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public SourceLocation getSource() {
         return null;
     }
 }

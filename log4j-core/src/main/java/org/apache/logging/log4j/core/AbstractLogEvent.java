@@ -25,6 +25,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 
@@ -87,7 +88,7 @@ public abstract class AbstractLogEvent implements LogEvent {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public SourceLocation getSource() {
         return null;
     }
 

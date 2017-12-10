@@ -104,7 +104,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         }
 
         @Override
-        public StackTraceElement getSource() {
+        public SourceLocation getSource() {
             return null;
         }
     }

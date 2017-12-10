@@ -60,7 +60,7 @@ public class MessageFormatMessageFactory extends AbstractMessageFactory {
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
      */
     @Override
-    public Message newMessage(StackTraceElement source, String message, Object... params) {
+    public Message newMessage(SourceLocation source, String message, Object... params) {
         return new MessageFormatMessage(source, message, params);
     }
 

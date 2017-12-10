@@ -50,7 +50,7 @@ public class StringFormattedMessage implements Message {
     private transient String formattedMessage;
     private transient Throwable throwable;
     private final Locale locale;
-    private StackTraceElement source;
+    private SourceLocation source;
     
    /**
     * Constructs a message, when the location
@@ -62,7 +62,7 @@ public class StringFormattedMessage implements Message {
     * @param arguments The objects to format
     * @since 2.6
     */
-    public StringFormattedMessage(final StackTraceElement source, final Locale locale, final String messagePattern, final Object... arguments) {
+    public StringFormattedMessage(final SourceLocation source, final Locale locale, final String messagePattern, final Object... arguments) {
         this.locale = locale;
         this.messagePattern = messagePattern;
         this.argArray = arguments;
@@ -93,7 +93,7 @@ public class StringFormattedMessage implements Message {
      * @param arguments The objects to format
      * @since 2.6
      */
-    public StringFormattedMessage(final StackTraceElement source, final String messagePattern, final Object... arguments) {
+    public StringFormattedMessage(final SourceLocation source, final String messagePattern, final Object... arguments) {
         this(source, Locale.getDefault(Locale.Category.FORMAT), messagePattern, arguments);
     }
 
@@ -142,7 +142,7 @@ public class StringFormattedMessage implements Message {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public SourceLocation getSource() {
         return source;
     }
 
@@ -201,7 +201,6 @@ public class StringFormattedMessage implements Message {
             out.writeUTF(string);
             ++i;
         }
-        MessageFormatMessage.writeSource(out, source);
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -213,7 +212,6 @@ public class StringFormattedMessage implements Message {
         for (int i = 0; i < length; ++i) {
             stringArgs[i] = in.readUTF();
         }
-        source = MessageFormatMessage.readSource(in);
     }
 
     /**

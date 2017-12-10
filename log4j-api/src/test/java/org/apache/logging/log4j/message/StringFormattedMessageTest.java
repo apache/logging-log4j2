@@ -133,7 +133,7 @@ public class StringFormattedMessageTest {
 
     @Test
     public void testSerializationWithSource() throws IOException, ClassNotFoundException {
-        final StackTraceElement source = new StackTraceElement("class", "method", "file", 55);
+        final SourceLocation source = new SourceLocation("class", "method", "file", 55);
         final StringFormattedMessage expected = new StringFormattedMessage(source, "Msg", "a", "b", "c");
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {

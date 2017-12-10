@@ -51,7 +51,7 @@ public class MessageFormatMessage implements Message {
     private transient String formattedMessage;
     private transient Throwable throwable;
     private final Locale locale;
-    private StackTraceElement source;
+    private SourceLocation source;
 
     /**
      * Constructs a message.
@@ -73,7 +73,7 @@ public class MessageFormatMessage implements Message {
      * @param parameters The objects to format
      * @since 2.6
      */
-    public MessageFormatMessage(StackTraceElement source, final Locale locale, final String messagePattern, final Object... parameters) {
+    public MessageFormatMessage(SourceLocation source, final Locale locale, final String messagePattern, final Object... parameters) {
         this.source = source;
         this.locale = locale;
         this.messagePattern = messagePattern;
@@ -82,10 +82,10 @@ public class MessageFormatMessage implements Message {
         if (length > 0 && parameters[length - 1] instanceof Throwable) {
             this.throwable = (Throwable) parameters[length - 1];
         }
-        if (length > 0 && parameters[length - 1] instanceof StackTraceElement) {
-            this.source = (StackTraceElement) parameters[length - 1];
-        } else if (length > 1 && parameters[length - 2] instanceof StackTraceElement) {
-            this.source = (StackTraceElement) parameters[length - 2];
+        if (length > 0 && parameters[length - 1] instanceof SourceLocation) {
+            this.source = (SourceLocation) parameters[length - 1];
+        } else if (length > 1 && parameters[length - 2] instanceof SourceLocation) {
+            this.source = (SourceLocation) parameters[length - 2];
         }
     }
 
@@ -96,7 +96,7 @@ public class MessageFormatMessage implements Message {
      * @param parameters The objects to format
      */
     public MessageFormatMessage(final String messagePattern, final Object... parameters) {
-        this((StackTraceElement) null, messagePattern, parameters);
+        this((SourceLocation) null, messagePattern, parameters);
     }
 
     /**
@@ -105,7 +105,7 @@ public class MessageFormatMessage implements Message {
      * @param messagePattern the pattern for this message format
      * @param parameters The objects to format
      */
-    public MessageFormatMessage(final StackTraceElement source, final String messagePattern, final Object... parameters) {
+    public MessageFormatMessage(final SourceLocation source, final String messagePattern, final Object... parameters) {
         this(source, Locale.getDefault(Locale.Category.FORMAT), messagePattern, parameters);
     }
 
@@ -200,7 +200,7 @@ public class MessageFormatMessage implements Message {
         writeSource(out, source);
     }
 
-    static void writeSource(final ObjectOutputStream out, StackTraceElement source) throws IOException {
+    static void writeSource(final ObjectOutputStream out, SourceLocation source) throws IOException {
         boolean hasSource = source != null;
         out.writeBoolean(hasSource);
         if (hasSource) {
@@ -211,15 +211,15 @@ public class MessageFormatMessage implements Message {
         }
     }
 
-    static StackTraceElement readSource(final ObjectInputStream in) throws IOException {
+    static SourceLocation readSource(final ObjectInputStream in) throws IOException {
         boolean hasSource = in.readBoolean();
-        StackTraceElement source = null;
+        SourceLocation source = null;
         if (hasSource) {
             String fileName = readNullableString(in);
             String className = readNullableString(in);
             String methodName = readNullableString(in);
             Integer lineNumber = readNullableInt(in);
-            source = new StackTraceElement(className, methodName, fileName, lineNumber);
+            source = new SourceLocation(className, methodName, fileName, lineNumber);
         }
         return source;
     }
@@ -272,7 +272,7 @@ public class MessageFormatMessage implements Message {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public SourceLocation getSource() {
         return source;
     }
 

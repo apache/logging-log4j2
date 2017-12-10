@@ -43,7 +43,7 @@ public class FormattedMessage implements Message {
     private final Throwable throwable;
     private Message message;
     private final Locale locale;
-    private final StackTraceElement source;
+    private final SourceLocation source;
     
     /**
      * Constructs with a locale, a pattern and a single parameter.
@@ -53,7 +53,7 @@ public class FormattedMessage implements Message {
      * @since 2.6
      */
     public FormattedMessage(final Locale locale, final String messagePattern, final Object arg) {
-        this((StackTraceElement) null, locale, messagePattern, arg, (Throwable) null);
+        this((SourceLocation) null, locale, messagePattern, arg, (Throwable) null);
     }
 
     /**
@@ -63,7 +63,7 @@ public class FormattedMessage implements Message {
      * @param arg The parameter.
      * @since 2.6
      */
-    public FormattedMessage(final StackTraceElement source, final Locale locale, final String messagePattern, final Object arg) {
+    public FormattedMessage(final SourceLocation source, final Locale locale, final String messagePattern, final Object arg) {
         this(source, locale, messagePattern, source, new Object[] { arg }, null);
     }
 
@@ -87,7 +87,7 @@ public class FormattedMessage implements Message {
      * @param arg2 The second parameter.
      * @since 2.6
      */
-    public FormattedMessage(final StackTraceElement source, final Locale locale, final String messagePattern, final Object arg1, final Object arg2) {
+    public FormattedMessage(final SourceLocation source, final Locale locale, final String messagePattern, final Object arg1, final Object arg2) {
         this(source, locale, messagePattern, new Object[] { arg1, arg2 });
     }
 
@@ -99,7 +99,7 @@ public class FormattedMessage implements Message {
      * @since 2.6
      */
     public FormattedMessage(final Locale locale, final String messagePattern, final Object... arguments) {
-        this((StackTraceElement) null, locale, messagePattern, arguments, null);
+        this((SourceLocation) null, locale, messagePattern, arguments, null);
     }
 
     /**
@@ -109,7 +109,7 @@ public class FormattedMessage implements Message {
      * @param arguments The parameter.
      * @since 2.6
      */
-    public FormattedMessage(StackTraceElement source, final Locale locale, final String messagePattern, final Object... arguments) {
+    public FormattedMessage(SourceLocation source, final Locale locale, final String messagePattern, final Object... arguments) {
         this(source, locale, messagePattern, arguments, (Throwable) null);
     }
 
@@ -122,7 +122,7 @@ public class FormattedMessage implements Message {
      * @since 2.6
      */
     public FormattedMessage(final Locale locale, final String messagePattern, final Object[] arguments, final Throwable throwable) {
-        this((StackTraceElement) null, locale, messagePattern, arguments, throwable);
+        this((SourceLocation) null, locale, messagePattern, arguments, throwable);
     }
 
     /**
@@ -133,7 +133,7 @@ public class FormattedMessage implements Message {
      * @param throwable The throwable
      * @since 2.6
      */
-    public FormattedMessage(final StackTraceElement source, final Locale locale, final String messagePattern, final Object[] arguments, final Throwable throwable) {
+    public FormattedMessage(final SourceLocation source, final Locale locale, final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.source = source;
         this.locale = locale;
         this.messagePattern = messagePattern;
@@ -147,7 +147,7 @@ public class FormattedMessage implements Message {
      * @param arg The parameter.
      */
     public FormattedMessage(final String messagePattern, final Object arg) {
-        this((StackTraceElement) null, messagePattern, new Object[] { arg }, null);
+        this((SourceLocation) null, messagePattern, new Object[] { arg }, null);
     }
 
     /**
@@ -155,7 +155,7 @@ public class FormattedMessage implements Message {
      * @param messagePattern The message pattern.
      * @param arg The parameter.
      */
-    public FormattedMessage(final StackTraceElement source, final String messagePattern, final Object arg) {
+    public FormattedMessage(final SourceLocation source, final String messagePattern, final Object arg) {
         this(source, messagePattern, new Object[] { arg }, null);
     }
 
@@ -175,7 +175,7 @@ public class FormattedMessage implements Message {
      * @param arg1 The first parameter.
      * @param arg2 The second parameter.
      */
-    public FormattedMessage(final StackTraceElement source, final String messagePattern, final Object arg1, final Object arg2) {
+    public FormattedMessage(final SourceLocation source, final String messagePattern, final Object arg1, final Object arg2) {
         this(source, messagePattern, new Object[] { arg1, arg2 });
     }
 
@@ -193,7 +193,7 @@ public class FormattedMessage implements Message {
      * @param messagePattern The message pattern.
      * @param arguments The parameter.
      */
-    public FormattedMessage(final StackTraceElement source, final String messagePattern, final Object... arguments) {
+    public FormattedMessage(final SourceLocation source, final String messagePattern, final Object... arguments) {
         this(source, messagePattern, arguments, null);
     }
 
@@ -204,7 +204,7 @@ public class FormattedMessage implements Message {
      * @param throwable The throwable
      */
     public FormattedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
-        this((StackTraceElement) null, messagePattern, arguments, throwable);
+        this((SourceLocation) null, messagePattern, arguments, throwable);
     }
 
     /**
@@ -213,7 +213,7 @@ public class FormattedMessage implements Message {
      * @param arguments The parameter.
      * @param throwable The throwable
      */
-    public FormattedMessage(final StackTraceElement source, final String messagePattern, final Object[] arguments, final Throwable throwable) {
+    public FormattedMessage(final SourceLocation source, final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.locale = Locale.getDefault(Locale.Category.FORMAT);
         this.messagePattern = messagePattern;
         this.argArray = arguments;
@@ -269,7 +269,7 @@ public class FormattedMessage implements Message {
         return formattedMessage;
     }
 
-    protected Message getMessage(final StackTraceElement source, final String msgPattern, final Object[] args, final Throwable aThrowable) {
+    protected Message getMessage(final SourceLocation source, final String msgPattern, final Object[] args, final Throwable aThrowable) {
         try {
             final MessageFormat format = new MessageFormat(msgPattern);
             final Format[] formats = format.getFormats();
@@ -313,7 +313,7 @@ public class FormattedMessage implements Message {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public SourceLocation getSource() {
         return source;
     }
 

@@ -27,7 +27,7 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence {
     private static final long serialVersionUID = -9199974506498249809L;
     private static Object[] EMPTY_PARAMS = new Object[0];
     private CharSequence charSequence;
-    private StackTraceElement source;
+    private SourceLocation source;
 
     public void set(final String message) {
         this.charSequence = message;
@@ -63,13 +63,13 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public SourceLocation getSource() {
         return source;
     }
 
     @Override
-    public StackTraceElement swapSource(StackTraceElement source) {
-        StackTraceElement originalSource = this.source;
+    public SourceLocation swapSource(SourceLocation source) {
+        SourceLocation originalSource = this.source;
         this.source = source;
         return originalSource;
     }

@@ -149,7 +149,7 @@ public final class SimpleMessageFactory extends AbstractMessageFactory {
      * @since
      */
     @Override
-    public Message newMessage(StackTraceElement source, String message, Object... params) {
+    public Message newMessage(SourceLocation source, String message, Object... params) {
         return new SimpleMessage(source, message);
     }
 }
