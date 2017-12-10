@@ -25,6 +25,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -56,12 +57,12 @@ public class MapRewritePolicyTest {
                 .setMessage(new SimpleMessage("Test")) //
                 .setThrown(new RuntimeException("test")) //
                 .setThreadName("none")
-                .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 28))
+                .setSource(new SourceLocation("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 28))
                 .setTimeMillis(2).build();
 
         logEvent1 = ((Log4jLogEvent) logEvent0).asBuilder() //
                 .setMessage(new StringMapMessage(map)) //
-                .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 29)) //
+                .setSource(new SourceLocation("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 29)) //
                 .build();
 
         final ThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>(map.values()));
@@ -71,14 +72,14 @@ public class MapRewritePolicyTest {
                 .setLevel(Level.TRACE) //
                 .setMessage(new StructuredDataMessage("test", "Nothing", "test", map)) //
                 .setTimeMillis(20000000) //
-                .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 30)) //
+                .setSource(new SourceLocation("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 30)) //
                 .build();
         logEvent3 = ((Log4jLogEvent) logEvent0).asBuilder() //
                 .setContextStack(stack) //
                 .setLevel(Level.ALL) //
                 .setMessage(new StringMapMessage(map)) //
                 .setTimeMillis(Long.MAX_VALUE) //
-                .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 31)) //
+                .setSource(new SourceLocation("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 31)) //
                 .build();
         rewrite = new KeyValuePair[]{new KeyValuePair("test2", "2"), new KeyValuePair("test3", "three")};
     }

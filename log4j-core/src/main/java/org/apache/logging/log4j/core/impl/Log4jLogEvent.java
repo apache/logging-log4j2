@@ -626,7 +626,7 @@ public class Log4jLogEvent implements LogEvent {
         if (loggerFqcn == null || !includeLocation) {
             return null;
         }
-        source = new SourceLocation(StackLocatorUtil.calcLocation(loggerFqcn));
+        source = SourceLocation.valueOf(StackLocatorUtil.calcLocation(loggerFqcn));
         return source;
     }
 

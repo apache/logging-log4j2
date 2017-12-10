@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Transform;
+import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -175,7 +176,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
 
         if (locationInfo) {
-            final StackTraceElement element = event.getSource();
+            final SourceLocation element = event.getSource();
             sbuf.append("<td>");
             sbuf.append(Transform.escapeHtmlTags(element.getFileName()));
             sbuf.append(':');

@@ -227,7 +227,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         // exclude if not specified or if "false" was specified.
         SourceLocation messageSource = message.getSource();
         return messageSource == null ?
-                (includeLocation ? new SourceLocation(StackLocatorUtil.calcLocation(fqcn)) : null) :
+                (includeLocation ? SourceLocation.valueOf(StackLocatorUtil.calcLocation(fqcn)) : null) :
                 messageSource;
     }
 

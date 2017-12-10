@@ -9,6 +9,10 @@ import java.util.Objects;
 public class SourceLocation implements java.io.Serializable {
     private static final long serialVersionUID = 4324770886316212646L;
 
+    public static SourceLocation valueOf(StackTraceElement source) {
+        return new SourceLocation(source.getClassName(), source.getMethodName(), source.getFileName(), source.getLineNumber());
+    }
+
     final private String className;
     final private String methodName;
     final private String fileName;
@@ -19,10 +23,6 @@ public class SourceLocation implements java.io.Serializable {
         this.methodName = methodName;
         this.fileName = fileName;
         this.lineNumber = lineNumber;
-    }
-
-    public SourceLocation(StackTraceElement source) {
-        this(source.getClassName(), source.getMethodName(), source.getFileName(), source.getLineNumber());
     }
 
     public String getClassName() {

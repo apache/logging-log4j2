@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.message.SourceLocation;
 
 
 /**
@@ -54,7 +55,7 @@ public final class FileLocationPatternConverter extends LogEventPatternConverter
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        final StackTraceElement element = event.getSource();
+        final SourceLocation element = event.getSource();
 
         if (element != null) {
             output.append(element.getFileName());

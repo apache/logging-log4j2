@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 
 import static org.junit.Assert.*;
@@ -52,7 +53,7 @@ class LogEventFixtures {
         sourceHelper.fillInStackTrace();
         final Exception cause = new NullPointerException("testNPEx");
         sourceHelper.fillInStackTrace();
-        final StackTraceElement source = sourceHelper.getStackTrace()[0];
+        final SourceLocation source = SourceLocation.valueOf(sourceHelper.getStackTrace()[0]);
         final IOException ioException = new IOException("testIOEx", cause);
         ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 1"));
         ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 2"));
