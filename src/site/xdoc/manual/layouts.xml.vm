@@ -1598,7 +1598,7 @@ WARN  [main]: Message 2</pre>
                 <a name="PatternLoggerFqcn"/>
                 <b>fqcn</b>
               </td>
-              <td>Outputs the fully qualified class name of the logging event.</td>
+              <td>Outputs the fully qualified class name of the logger.</td>
             </tr>
             <tr>
               <td align="center">
