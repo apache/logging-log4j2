@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.10.1" date="2017-xx-xx" description="GA Release 2.10.1">
+      <action issue="LOG4J2-2123" dev="rgoers" type="fix" due-to="Jacob Tolar">
+        DefaultMergeStrategy did not merge filters on loggers correctly
+      </action>
       <action issue="LOG4J2-2146" dev="rgoers" type="update">
         Update version of bnd. Convert bundle plugin error to a warning.
       </action>
