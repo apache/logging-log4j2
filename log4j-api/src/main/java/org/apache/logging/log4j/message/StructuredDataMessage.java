@@ -169,7 +169,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      */
     public StructuredDataMessage(final String id, final String msg, final String type,
                                  final Map<String, String> data, final int maxLength, SourceLocation source) {
-        super(data, source);
+        super(source, data);
         this.id = new StructuredDataId(id, null, null, maxLength);
         this.message = msg;
         this.type = type;
@@ -284,7 +284,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      */
     public StructuredDataMessage(final StructuredDataId id, final String msg, final String type,
                                  final Map<String, String> data, final int maxLength, SourceLocation source) {
-        super(data, source);
+        super(source, data);
         this.id = id;
         this.message = msg;
         this.type = type;
@@ -311,7 +311,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param map The StructuredData map.
      */
     private StructuredDataMessage(final StructuredDataMessage msg, final Map<String, String> map, SourceLocation source) {
-        super(map, source);
+        super(source, map);
         this.id = msg.id;
         this.message = msg.message;
         this.type = msg.type;

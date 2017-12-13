@@ -39,6 +39,10 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
         super();
     }
 
+    public StringMapMessage(final SourceLocation source) {
+        super(source);
+    }
+
     /**
      * Constructs a new instance.
      * 
@@ -46,7 +50,11 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
      *            the initial capacity.
      */
     public StringMapMessage(final int initialCapacity) {
-        super(initialCapacity);
+        this(null, initialCapacity);
+    }
+
+    public StringMapMessage(final SourceLocation source, final int initialCapacity) {
+        super(source, initialCapacity);
     }
 
     /**
@@ -56,7 +64,11 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
      *            The Map.
      */
     public StringMapMessage(final Map<String, String> map) {
-        super(map);
+        this(null, map);
+    }
+
+    public StringMapMessage(SourceLocation source, final Map<String, String> map) {
+        super(source, map);
     }
 
     /**

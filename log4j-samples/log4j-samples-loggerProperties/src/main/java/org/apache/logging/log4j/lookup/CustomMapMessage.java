@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.lookup;
 
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
+import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.message.StringMapMessage;
 
 import java.util.Map;
@@ -31,7 +32,11 @@ public class CustomMapMessage extends StringMapMessage {
     private final String message;
 
     public CustomMapMessage(final String msg, final Map<String, String> map) {
-        super(map);
+        this(null, msg, map);
+    }
+
+    public CustomMapMessage(final SourceLocation source, final String msg, final Map<String, String> map) {
+        super(source, map);
         this.message = msg;
     }
 

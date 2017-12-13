@@ -21,38 +21,51 @@ package org.apache.logging.log4j.message;
  * @since 2.6
  */
 public interface FlowMessageFactory {
-    
+
     /**
      * Creates a new entry message based on an existing message.
      *
+     * @param source the location of the log statement if known at compile time.
      * @param message the original message
      * @return the new entry message
      */
+    EntryMessage newEntryMessage(SourceLocation source, Message message);
+
     EntryMessage newEntryMessage(Message message);
 
     /**
      * Creates a new exit message based on a return value and an existing message.
      *
+     * @param source the location of the log statement if known at compile time.
      * @param result the return value.
      * @param message the original message
      * @return the new exit message
      */
+    ExitMessage newExitMessage(SourceLocation source, Object result, Message message);
+
     ExitMessage newExitMessage(Object result, Message message);
 
     /**
      * Creates a new exit message based on no return value and an existing entry message.
      *
+     * @param source the location of the log statement if known at compile time.
      * @param message the original entry message
      * @return the new exit message
      */
+    ExitMessage newExitMessage(SourceLocation source, EntryMessage message);
+
     ExitMessage newExitMessage(EntryMessage message);
 
     /**
      * Creates a new exit message based on a return value and an existing entry message.
      *
+     * @param source the location of the log statement if known at compile time.
      * @param result the return value.
      * @param message the original entry message
      * @return the new exit message
      */
+    ExitMessage newExitMessage(SourceLocation source, Object result, EntryMessage message);
+
     ExitMessage newExitMessage(Object result, EntryMessage message);
+
 }
