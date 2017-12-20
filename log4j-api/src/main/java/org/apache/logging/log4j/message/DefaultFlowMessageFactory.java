@@ -191,7 +191,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         if (!(message instanceof ReusableMessage)) {
             return message;
         }
-        return new SimpleMessage(message.getFormattedMessage());
+        return new SimpleMessage(message.getSource(), message.getFormattedMessage());
     }
 
     /*
