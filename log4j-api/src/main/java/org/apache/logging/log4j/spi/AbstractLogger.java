@@ -2518,7 +2518,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public EntryMessage traceEntry(final SourceLocation source, final String format, final Supplier<?>... paramSuppliers) {
-        return enter(null, FQCN, format, paramSuppliers);
+        return enter(source, FQCN, format, paramSuppliers);
     }
 
     @Override
@@ -2528,7 +2528,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public EntryMessage traceEntry(final SourceLocation source, final Message message) {
-        return enter(null, FQCN, message);
+        return enter(source, FQCN, message);
     }
 
     @Override
