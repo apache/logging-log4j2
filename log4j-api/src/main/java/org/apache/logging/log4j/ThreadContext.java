@@ -225,6 +225,8 @@ public final class ThreadContext {
         }
         if (contextMap instanceof ReadOnlyThreadContextMap) {
             readOnlyContextMap = (ReadOnlyThreadContextMap) contextMap;
+        } else {
+            readOnlyContextMap = null;
         }
     }
 

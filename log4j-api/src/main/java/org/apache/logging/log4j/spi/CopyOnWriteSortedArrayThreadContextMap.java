@@ -72,7 +72,12 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
             return new InheritableThreadLocal<StringMap>() {
                 @Override
                 protected StringMap childValue(final StringMap parentValue) {
-                    return parentValue != null ? createStringMap(parentValue) : null;
+                    if (parentValue == null) {
+                        return null;
+                    }
+                    StringMap stringMap = createStringMap(parentValue);
+                    stringMap.freeze();
+                    return stringMap;
                 }
             };
         }
