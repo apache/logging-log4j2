@@ -43,6 +43,9 @@
       <action issue="LOG4J2-2143" dev="mikes" type="add">
         Add missing converters to PatternLayout.
       </action>
+      <action issue="LOG4J2-2160" dev="ggregory" type="add">
+        Add API org.apache.logging.log4j.core.lookup.Interpolator.getStrLookupMap().
+      </action>
       <action issue="LOG4J2-2127" dev="rpopma" type="update" due-to="Carter Kozak">
         Removed unnecessary threadlocal StringBuilder field from MdcPatternConverter.
       </action>
