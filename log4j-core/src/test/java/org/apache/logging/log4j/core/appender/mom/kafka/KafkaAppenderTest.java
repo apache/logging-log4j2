@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -173,7 +174,7 @@ public class KafkaAppenderTest {
 
     private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        try (ObjectInput ois = new ObjectInputStream(bis)) {
+        try (ObjectInput ois = new FilteredObjectInputStream(bis)) {
             return (LogEvent) ois.readObject();
         }
     }

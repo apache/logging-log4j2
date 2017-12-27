@@ -30,7 +30,7 @@ public class DeserializerHelper {
         final File file = new File(args[0]);
         ObjectInputStream in = null;
         try {
-            in = new ObjectInputStream(new FileInputStream(file));
+            in = new FilteredObjectInputStream(new FileInputStream(file));
             final Object result = in.readObject();
             System.out.println(result);
         } catch (final Throwable t) {

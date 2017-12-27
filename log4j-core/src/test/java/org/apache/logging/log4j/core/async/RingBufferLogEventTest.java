@@ -30,6 +30,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
@@ -132,7 +133,7 @@ public class RingBufferLogEventTest {
         final ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(evt);
 
-        final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        final ObjectInputStream in = new FilteredObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         final RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
         assertEquals(loggerName, other.getLoggerName());
         assertEquals(marker, other.getMarker());

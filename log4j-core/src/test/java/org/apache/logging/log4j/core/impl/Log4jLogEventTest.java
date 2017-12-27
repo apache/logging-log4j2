@@ -50,6 +50,7 @@ import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -168,7 +169,7 @@ public class Log4jLogEventTest {
 
     private Log4jLogEvent deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        final ObjectInputStream in = new ObjectInputStream(inArr);
+        final ObjectInputStream in = new FilteredObjectInputStream(inArr);
         final Log4jLogEvent result = (Log4jLogEvent) in.readObject();
         return result;
     }

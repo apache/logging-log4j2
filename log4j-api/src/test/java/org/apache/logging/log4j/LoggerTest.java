@@ -538,9 +538,14 @@ public class LoggerTest {
 
         ThreadContext.put("TestYear", Integer.valueOf(2010).toString());
         logger.debug("Debug message");
+        String testYear = ThreadContext.get("TestYear");
+        assertNotNull("Test Year is null", testYear);
+        assertEquals("Incorrect test year: " + testYear, "2010", testYear);
         ThreadContext.clearMap();
         logger.debug("Debug message");
         assertEquals(2, results.size());
+        System.out.println("Log line 1: " + results.get(0));
+        System.out.println("log line 2: " + results.get(1));
         assertTrue("Incorrect MDC: " + results.get(0),
             results.get(0).startsWith(" DEBUG Debug message {TestYear=2010}"));
         assertTrue("MDC not cleared?: " + results.get(1),

@@ -30,6 +30,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
@@ -278,7 +279,7 @@ public class MutableLogEventTest {
 
     private Log4jLogEvent deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        final ObjectInputStream in = new ObjectInputStream(inArr);
+        final ObjectInputStream in = new FilteredObjectInputStream(inArr);
         final Log4jLogEvent result = (Log4jLogEvent) in.readObject();
         return result;
     }

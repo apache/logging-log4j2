@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -127,7 +128,7 @@ public class SerializedLayoutTest {
         int i = 0;
         for (final byte[] item : data) {
             final ByteArrayInputStream bais = new ByteArrayInputStream(item);
-            final ObjectInputStream ois = new ObjectInputStream(bais);
+            final ObjectInputStream ois = new FilteredObjectInputStream(bais);
             LogEvent event;
             try {
                 event = (LogEvent) ois.readObject();
@@ -167,7 +168,7 @@ public class SerializedLayoutTest {
         testSerialization();
         final File file = new File(DAT_PATH);
         final FileInputStream fis = new FileInputStream(file);
-        try (final ObjectInputStream ois = new ObjectInputStream(fis) ) {
+        try (final ObjectInputStream ois = new FilteredObjectInputStream(fis) ) {
             final LogEvent event = (LogEvent) ois.readObject();
             assertNotNull(event);
         }

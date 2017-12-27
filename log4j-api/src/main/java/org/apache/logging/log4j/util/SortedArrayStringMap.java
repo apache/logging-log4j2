@@ -22,7 +22,13 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
+import java.io.StreamCorruptedException;
+import java.io.WriteAbortedException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,6 +88,24 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * The number of key-value mappings contained in this map.
      */
     private transient int size;
+
+    private static final Method setObjectInputFilter;
+    private static final Method getObjectInputFilter;
+
+    static {
+        Method[] methods = ObjectInputStream.class.getMethods();
+        Method setMethod = null;
+        Method getMethod = null;
+        for (Method method : methods) {
+            if (method.getName().equals("setObjectInputFilter")) {
+                setMethod = method;;
+            } else if (method.getName().equals("getObjectInputFilter")) {
+                getMethod = method;
+            }
+        }
+        setObjectInputFilter = setMethod;
+        getObjectInputFilter = getMethod;
+    }
 
     /**
      * The next size value at which to resize (capacity * load factor).
@@ -509,10 +533,30 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
-    private static Object unmarshall(final byte[] data) throws IOException, ClassNotFoundException {
+    private static Object unmarshall(final byte[] data, ObjectInputStream inputStream)
+            throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
-        try (ObjectInputStream ois = new ObjectInputStream(bin)) {
+        Collection<String> allowedClasses = null;
+        ObjectInputStream ois;
+        if (inputStream instanceof FilteredObjectInputStream) {
+            allowedClasses = ((FilteredObjectInputStream) inputStream).getAllowedClasses();
+            ois = new FilteredObjectInputStream(bin, allowedClasses);
+        } else {
+            try {
+                Object obj = getObjectInputFilter.invoke(inputStream);
+                if (obj == null) {
+                    throw new StreamCorruptedException("An ObjectInputFilter must be provided");
+                }
+                ois = new ObjectInputStream(bin);
+                setObjectInputFilter.invoke(ois, obj);
+            } catch (IllegalAccessException | InvocationTargetException ex) {
+                throw new StreamCorruptedException("Unable to set ObjectInputFilter on stream");
+            }
+        }
+        try {
             return ois.readObject();
+        } finally {
+            ois.close();
         }
     }
 
@@ -534,6 +578,9 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * deserialize it).
      */
     private void readObject(final java.io.ObjectInputStream s)  throws IOException, ClassNotFoundException {
+        if (!(s instanceof FilteredObjectInputStream) || setObjectInputFilter != null) {
+            throw new IllegalArgumentException("readObject requires a FilteredObjectInputStream or an ObjectInputStream that accepts an ObjectInputFilter");
+        }
         // Read in the threshold (ignored), and any hidden stuff
         s.defaultReadObject();
 
@@ -565,7 +612,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
             keys[i] = (String) s.readObject();
             try {
                 final byte[] marshalledObject = (byte[]) s.readObject();
-                values[i] = marshalledObject == null ? null : unmarshall(marshalledObject);
+                values[i] = marshalledObject == null ? null : unmarshall(marshalledObject, s);
             } catch (final Exception | LinkageError error) {
                 handleSerializationException(error, i, keys[i]);
                 values[i] = null;

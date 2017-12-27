@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -64,7 +65,7 @@ public class LogEventTest {
         oos.writeObject(event2);
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream ois = new ObjectInputStream(bais);
+        final ObjectInputStream ois = new FilteredObjectInputStream(bais);
         try {
             ois.readObject();
         } catch (final IOException ioe) {
@@ -94,7 +95,7 @@ public class LogEventTest {
         oos.writeObject(event1);
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream ois = new ObjectInputStream(bais);
+        final ObjectInputStream ois = new FilteredObjectInputStream(bais);
         
         final LogEvent actual = (LogEvent) ois.readObject();
         assertNotEquals("Different event: nanoTime", copy, actual);
@@ -121,7 +122,7 @@ public class LogEventTest {
         oos.writeObject(event1);
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream ois = new ObjectInputStream(bais);
+        final ObjectInputStream ois = new FilteredObjectInputStream(bais);
         
         final LogEvent actual = (LogEvent) ois.readObject();
         assertEquals("both zero nanoTime", event2, actual);
