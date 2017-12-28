@@ -56,11 +56,19 @@ public class SerializedLayoutTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
+    static boolean useObjectInputStream = false;
+
     @Rule
     public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
 
     @BeforeClass
     public static void setupClass() {
+        try {
+            Class.forName("java.io.ObjectInputFilter");
+            useObjectInputStream = true;
+        } catch (ClassNotFoundException ex) {
+            // Ignore the exception
+        }
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
@@ -128,7 +136,8 @@ public class SerializedLayoutTest {
         int i = 0;
         for (final byte[] item : data) {
             final ByteArrayInputStream bais = new ByteArrayInputStream(item);
-            final ObjectInputStream ois = new FilteredObjectInputStream(bais);
+            final ObjectInputStream ois = useObjectInputStream ? new ObjectInputStream(bais) :
+                    new FilteredObjectInputStream(bais);
             LogEvent event;
             try {
                 event = (LogEvent) ois.readObject();
@@ -168,9 +177,13 @@ public class SerializedLayoutTest {
         testSerialization();
         final File file = new File(DAT_PATH);
         final FileInputStream fis = new FileInputStream(file);
-        try (final ObjectInputStream ois = new FilteredObjectInputStream(fis) ) {
+        final ObjectInputStream ois = useObjectInputStream ? new ObjectInputStream(fis) :
+                new FilteredObjectInputStream(fis);
+        try {
             final LogEvent event = (LogEvent) ois.readObject();
             assertNotNull(event);
+        } finally {
+            ois.close();
         }
     }
 }
