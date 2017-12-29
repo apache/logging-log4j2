@@ -31,6 +31,7 @@
          - "remove" - Removed
     -->
     <release version="2.10.1" date="2017-xx-xx" description="GA Release 2.10.1">
+
       <action issue="LOG4J2-2163" dev="rgoers" type="fix">
         Allow SortedArrayStringMap to be filtered upon deserialization. Fix build error in Java 9 when
         compiling log4j-core test classes.
@@ -42,7 +43,7 @@
         DefaultMergeStrategy did not merge filters on loggers correctly.
       </action>
       <action issue="LOG4J2-2146" dev="rgoers" type="update">
-        Update version of bnd. Convert bundle plugin error to a warning.
+        Update version of maven bundle plugin to 3.4.0. Convert bundle plugin error to a warning.
       </action>
       <action issue="LOG4J2-2143" dev="mikes" type="add">
         Add missing converters to PatternLayout.

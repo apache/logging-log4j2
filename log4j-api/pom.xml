@@ -239,13 +239,6 @@
             <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
           </instructions>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>biz.aQute.bnd</groupId>
-            <artifactId>biz.aQute.bndlib</artifactId>
-            <version>3.5.0</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
