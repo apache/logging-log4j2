@@ -22,13 +22,13 @@ package org.apache.logging.log4j.message;
 public interface ThreadInformation {
     
     /**
-     * Format the thread information into the provided StringBuilder.
+     * Formats the thread information into the provided StringBuilder.
      * @param sb The StringBuilder.
      */
     void printThreadInfo(StringBuilder sb);
 
     /**
-     * Format the stack trace into the provided StringBuilder.
+     * Formats the stack trace into the provided StringBuilder.
      * @param sb The StringBuilder.
      * @param trace The stack trace element array to format.
      */
