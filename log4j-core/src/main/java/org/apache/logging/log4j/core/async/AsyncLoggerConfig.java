@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -100,7 +101,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     private void handleQueueFull(final LogEvent event) {
-        if (Logger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
+        if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
             // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
             final Message message = AsyncQueueFullMessageUtil.transform(event.getMessage());
             callAppendersInCurrentThread(new Log4jLogEvent.Builder(event).setMessage(message).build());
