@@ -51,9 +51,11 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
         super();
     }
 
+    @Override
     public void activateOptions() {
     }
 
+    @Override
     public void addFilter(Filter newFilter) {
         if(headFilter == null) {
             headFilter = tailFilter = newFilter;
@@ -65,17 +67,21 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
     protected abstract void append(LoggingEvent event);
 
+    @Override
     public void clearFilters() {
         headFilter = tailFilter = null;
     }
 
+    @Override
     public void finalize() {
     }
 
+    @Override
     public ErrorHandler getErrorHandler() {
         return this.errorHandler;
     }
 
+    @Override
     public Filter getFilter() {
         return headFilter;
     }
@@ -84,10 +90,12 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
         return headFilter;
     }
 
+    @Override
     public Layout getLayout() {
         return layout;
     }
 
+    @Override
     public final String getName() {
         return this.name;
     }
@@ -104,6 +112,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      * This method is never going to be called in Log4j 2 so there isn't much point in having any code in it.
      * @param event The LoggingEvent.
      */
+    @Override
     public void doAppend(LoggingEvent event) {
     }
 
@@ -112,16 +121,19 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      *
      * @since 0.9.0
      */
+    @Override
     public synchronized void setErrorHandler(ErrorHandler eh) {
         if (eh != null) {
             this.errorHandler = eh;
         }
     }
 
+    @Override
     public void setLayout(Layout layout) {
         this.layout = layout;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }

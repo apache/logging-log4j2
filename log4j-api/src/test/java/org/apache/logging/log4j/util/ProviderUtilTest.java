@@ -43,6 +43,7 @@ public class ProviderUtilTest {
     private class Worker extends Thread {
         LoggerContext context = null;
 
+        @Override
         public void run() {
             context = LogManager.getContext(false);
         }

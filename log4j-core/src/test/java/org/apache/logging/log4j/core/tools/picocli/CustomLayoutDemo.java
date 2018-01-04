@@ -51,6 +51,7 @@ public class CustomLayoutDemo implements Runnable {
     @Option(names = {"-n", "--netstat"}, description = "Show usage help for a layout with a narrow options column and a wide description column. Descriptions that wrap to the next row are not indented.")
     private boolean showNetstat;
 
+    @Override
     public void run() {
         if (!showZip && !showNetstat) {
             CommandLine.usage(this, System.err);

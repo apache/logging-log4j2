@@ -245,6 +245,7 @@ public class CommandLineTest {
         SupportedTypes bean = new SupportedTypes();
         CommandLine commandLine = new CommandLine(bean);
         ITypeConverter<Byte> converter = new ITypeConverter<Byte>() {
+            @Override
             public Byte convert(String s) {
                 return Byte.decode(s);
             }
@@ -278,6 +279,7 @@ public class CommandLineTest {
         SupportedTypes bean = new SupportedTypes();
         CommandLine commandLine = new CommandLine(bean);
         ITypeConverter<Short> shortConverter = new ITypeConverter<Short>() {
+            @Override
             public Short convert(String s) {
                 return Short.decode(s);
             }
@@ -311,6 +313,7 @@ public class CommandLineTest {
         SupportedTypes bean = new SupportedTypes();
         CommandLine commandLine = new CommandLine(bean);
         ITypeConverter<Integer> intConverter = new ITypeConverter<Integer>() {
+            @Override
             public Integer convert(String s) {
                 return Integer.decode(s);
             }
@@ -344,6 +347,7 @@ public class CommandLineTest {
         SupportedTypes bean = new SupportedTypes();
         CommandLine commandLine = new CommandLine(bean);
         ITypeConverter<Long> longConverter = new ITypeConverter<Long>() {
+            @Override
             public Long convert(String s) {
                 return Long.decode(s);
             }
@@ -508,6 +512,7 @@ public class CommandLineTest {
             @Parameters Glob globField;
         }
         class GlobConverter implements ITypeConverter<Glob> {
+            @Override
             public Glob convert(String value) throws Exception { return new Glob(value); }
         }
         CommandLine commandLine = new CommandLine(new App());
@@ -2063,22 +2068,31 @@ public class CommandLineTest {
         assertTrue("cmd2", commandMap.get("cmd2").getCommand() instanceof Command2);
     }
 
-    static class MainCommand { @Option(names = "-a") boolean a; public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
-    static class ChildCommand1 { @Option(names = "-b") boolean b; public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
-    static class ChildCommand2 { @Option(names = "-c") boolean c; public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
-    static class GrandChild1Command1 { @Option(names = "-d") boolean d; public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
-    static class GrandChild1Command2 { @Option(names = "-e") CustomType e; public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
-    static class GrandChild2Command1 { @Option(names = "-f") boolean f; public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
-    static class GrandChild2Command2 { @Option(names = "-g") boolean g; public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
+    static class MainCommand { @Option(names = "-a") boolean a; @Override
+    public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
+    static class ChildCommand1 { @Option(names = "-b") boolean b; @Override
+    public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
+    static class ChildCommand2 { @Option(names = "-c") boolean c; @Override
+    public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
+    static class GrandChild1Command1 { @Option(names = "-d") boolean d; @Override
+    public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
+    static class GrandChild1Command2 { @Option(names = "-e") CustomType e; @Override
+    public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
+    static class GrandChild2Command1 { @Option(names = "-f") boolean f; @Override
+    public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
+    static class GrandChild2Command2 { @Option(names = "-g") boolean g; @Override
+    public boolean equals(Object o) { return getClass().equals(o.getClass()); }}
     static class GreatGrandChild2Command2_1 {
         @Option(names = "-h") boolean h;
         @Option(names = {"-t", "--type"}) CustomType customType;
+        @Override
         public boolean equals(Object o) { return getClass().equals(o.getClass()); }
     }
 
     static class CustomType implements ITypeConverter<CustomType> {
         private final String val;
         private CustomType(String val) { this.val = val; }
+        @Override
         public CustomType convert(String value) { return new CustomType(value); }
     }
     private static CommandLine createNestedCommand() {
@@ -2238,7 +2252,8 @@ public class CommandLineTest {
 
     @Test
     public void testCustomTypeConverterRegisteredAfterSubcommandsAdded() {
-        @Command class TopLevel { public boolean equals(Object o) {return getClass().equals(o.getClass());}}
+        @Command class TopLevel { @Override
+        public boolean equals(Object o) {return getClass().equals(o.getClass());}}
         CommandLine commandLine = new CommandLine(new TopLevel());
         commandLine.addSubcommand("main", createNestedCommand());
         commandLine.registerConverter(CustomType.class, new CustomType(null));
@@ -2254,6 +2269,7 @@ public class CommandLineTest {
     public void testRunCallsRunnableIfParseSucceeds() {
         final boolean[] runWasCalled = {false};
         @Command class App implements Runnable {
+            @Override
             public void run() {
                 runWasCalled[0] = true;
             }
@@ -2267,6 +2283,7 @@ public class CommandLineTest {
         final boolean[] runWasCalled = {false};
         class App implements Runnable {
             @Option(names = "-number") int number;
+            @Override
             public void run() {
                 runWasCalled[0] = true;
             }
@@ -2288,6 +2305,7 @@ public class CommandLineTest {
     @Test(expected = InitializationException.class)
     public void testRunRequiresAnnotatedCommand() {
         class App implements Runnable {
+            @Override
             public void run() { }
         }
         CommandLine.run(new App(), System.err);
@@ -2296,6 +2314,7 @@ public class CommandLineTest {
     @Test
     public void testCallReturnsCallableResultParseSucceeds() throws Exception {
         @Command class App implements Callable<Boolean> {
+            @Override
             public Boolean call() { return true; }
         }
         assertTrue(CommandLine.call(new App(), System.err));
@@ -2305,6 +2324,7 @@ public class CommandLineTest {
     public void testCallReturnsNullAndPrintsErrorIfParseFails() throws Exception {
         class App implements Callable<Boolean> {
             @Option(names = "-number") int number;
+            @Override
             public Boolean call() { return true; }
         }
         PrintStream oldErr = System.err;
@@ -2324,6 +2344,7 @@ public class CommandLineTest {
     @Test(expected = InitializationException.class)
     public void testCallRequiresAnnotatedCommand() throws Exception {
         class App implements Callable<Object> {
+            @Override
             public Object call() { return null; }
         }
         CommandLine.call(new App(), System.err);

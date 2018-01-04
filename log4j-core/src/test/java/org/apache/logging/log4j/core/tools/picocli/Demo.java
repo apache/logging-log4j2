@@ -176,6 +176,7 @@ public class Demo implements Runnable {
     @Option(names = {"-t", "--tests"}, description = "Runs all tests in this class")
     private boolean runTests;
 
+    @Override
     public void run() {
         if (!runTests &&
                 !showSimpleExample &&
