@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory;
 import org.apache.logging.log4j.core.async.AsyncQueueFullMessageUtil;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
