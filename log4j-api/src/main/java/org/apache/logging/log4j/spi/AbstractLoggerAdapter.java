@@ -70,18 +70,17 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
 
         if (loggers != null) {
             return loggers;
-        } else {
-            lock.writeLock ().lock ();
-            try {
-                loggers = registry.get (context);
-                if (loggers == null) {
-                    loggers = new ConcurrentHashMap<> ();
-                    registry.put (context, loggers);
-                }
-                return loggers;
-            } finally {
-                lock.writeLock ().unlock ();
+        }
+        lock.writeLock ().lock ();
+        try {
+            loggers = registry.get (context);
+            if (loggers == null) {
+                loggers = new ConcurrentHashMap<> ();
+                registry.put (context, loggers);
             }
+            return loggers;
+        } finally {
+            lock.writeLock ().unlock ();
         }
     }
 
