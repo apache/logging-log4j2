@@ -64,7 +64,7 @@ public final class StackLocator {
             final Class<?> sunReflectionClass = LoaderUtil.loadClass("sun.reflect.Reflection");
             getCallerClass = sunReflectionClass.getDeclaredMethod("getCallerClass", int.class);
             Object o = getCallerClass.invoke(null, 0);
-            final Object test1 = getCallerClass.invoke(null, 0);
+            getCallerClass.invoke(null, 0);
             if (o == null || o != sunReflectionClass) {
                 getCallerClass = null;
                 java7u25CompensationOffset = -1;
