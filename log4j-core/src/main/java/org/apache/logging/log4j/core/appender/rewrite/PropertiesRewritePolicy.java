@@ -38,8 +38,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "PropertiesRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
 public final class PropertiesRewritePolicy implements RewritePolicy {
+    
     /**
-     * Allow subclasses access to the status logger without creating another instance.
+     * Allows subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -57,7 +58,7 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
     }
 
     /**
-     * Rewrite the event.
+     * Rewrites the event.
      * @param source a logging event that may be returned or
      * used to create a new logging event.
      * @return The LogEvent after rewriting.
@@ -93,7 +94,7 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
     }
 
     /**
-     * The factory method to create the PropertiesRewritePolicy.
+     * Creates a PropertiesRewritePolicy.
      * @param config The Configuration.
      * @param props key/value pairs for the new keys and values.
      * @return The PropertiesRewritePolicy.
