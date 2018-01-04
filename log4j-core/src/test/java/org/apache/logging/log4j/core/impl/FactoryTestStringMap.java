@@ -38,8 +38,8 @@ public class FactoryTestStringMap implements StringMap {
     }
 
     @Override
-    public Map<String, String> toMap() {
-        return null;
+    public void clear() {
+
     }
 
     @Override
@@ -58,6 +58,11 @@ public class FactoryTestStringMap implements StringMap {
     }
 
     @Override
+    public void freeze() {
+
+    }
+
+    @Override
     public <V> V getValue(final String key) {
         return null;
     }
@@ -65,21 +70,6 @@ public class FactoryTestStringMap implements StringMap {
     @Override
     public boolean isEmpty() {
         return false;
-    }
-
-    @Override
-    public int size() {
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public void freeze() {
-
     }
 
     @Override
@@ -100,5 +90,15 @@ public class FactoryTestStringMap implements StringMap {
     @Override
     public void remove(final String key) {
 
+    }
+
+    @Override
+    public int size() {
+        return 0;
+    }
+
+    @Override
+    public Map<String, String> toMap() {
+        return null;
     }
 }
