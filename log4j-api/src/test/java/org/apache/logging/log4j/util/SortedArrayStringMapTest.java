@@ -47,9 +47,9 @@ public class SortedArrayStringMapTest {
         new SortedArrayStringMap(-1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorDisallowsZeroCapacity() throws Exception {
-        new SortedArrayStringMap(0);
+    public void testConstructorAllowsZeroCapacity() throws Exception {
+        SortedArrayStringMap sortedArrayStringMap = new SortedArrayStringMap(0);
+        assertEquals(0, sortedArrayStringMap.size());
     }
 
     @Test

@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -111,6 +112,12 @@ public class ContextDataFactory {
         }
     }
 
+    public static StringMap createContextData(final ReadOnlyStringMap readOnlyStringMap) {
+        final StringMap contextData = createContextData(readOnlyStringMap.size());
+        contextData.putAll(readOnlyStringMap);
+        return contextData;
+    }
+
     /**
      * An empty pre-frozen StringMap. The returned object may be shared.
      *
@@ -119,4 +126,5 @@ public class ContextDataFactory {
     public static StringMap emptyFrozenContextData() {
         return EMPTY_STRING_MAP;
     }
+
 }
