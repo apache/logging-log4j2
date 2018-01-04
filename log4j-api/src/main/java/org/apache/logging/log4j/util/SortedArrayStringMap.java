@@ -98,7 +98,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         Method getMethod = null;
         for (Method method : methods) {
             if (method.getName().equals("setObjectInputFilter")) {
-                setMethod = method;;
+                setMethod = method;
             } else if (method.getName().equals("getObjectInputFilter")) {
                 getMethod = method;
             }
