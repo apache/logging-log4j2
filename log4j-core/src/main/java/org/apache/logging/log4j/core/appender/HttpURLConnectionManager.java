@@ -111,7 +111,7 @@ public class HttpURLConnectionManager extends HttpManager {
         final byte[] buffer = new byte[1024];
         try (InputStream is = urlConnection.getInputStream()) {
             while (IOUtils.EOF != is.read(buffer)) {
-                ;
+                // empty
             }
         } catch (final IOException e) {
             final StringBuilder errorMessage = new StringBuilder();
