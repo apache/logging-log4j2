@@ -53,7 +53,6 @@ public final class StackLocator {
     static final int JDK_7u25_OFFSET;
     // CHECKSTYLE:OFF
 
-    private static final boolean SUN_REFLECTION_SUPPORTED;
     private static final Method GET_CALLER_CLASS;
 
     private static final StackLocator INSTANCE;
@@ -83,7 +82,6 @@ public final class StackLocator {
             java7u25CompensationOffset = -1;
         }
 
-        SUN_REFLECTION_SUPPORTED = getCallerClass != null;
         GET_CALLER_CLASS = getCallerClass;
         JDK_7u25_OFFSET = java7u25CompensationOffset;
 
