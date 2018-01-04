@@ -953,6 +953,7 @@ public class Log4jLogEvent implements LogEvent {
                 try {
                     return marshalledMessage.get();
                 } catch (final Exception ex) {
+                    // ignore me
                 }
             }
             return new SimpleMessage(messageString);
