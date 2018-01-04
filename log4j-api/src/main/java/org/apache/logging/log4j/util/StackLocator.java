@@ -250,33 +250,5 @@ public final class StackLocator {
             return super.getClassContext();
         }
 
-        protected Class<?> getCallerClass(final String fqcn, final String pkg) {
-            boolean next = false;
-            for (final Class<?> clazz : getClassContext()) {
-                if (fqcn.equals(clazz.getName())) {
-                    next = true;
-                    continue;
-                }
-                if (next && clazz.getName().startsWith(pkg)) {
-                    return clazz;
-                }
-            }
-            // TODO: return Object.class
-            return null;
-        }
-
-        protected Class<?> getCallerClass(final Class<?> anchor) {
-            boolean next = false;
-            for (final Class<?> clazz : getClassContext()) {
-                if (anchor.equals(clazz)) {
-                    next = true;
-                    continue;
-                }
-                if (next) {
-                    return clazz;
-                }
-            }
-            return Object.class;
-        }
     }
 }
