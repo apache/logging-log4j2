@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
 @AsynchronouslyFormattable
-public class StructuredDataMessage extends MapMessage<StructuredDataMessage, String> implements MultiFormatStringBuilderFormattable {
+public class StructuredDataMessage extends MapMessage<StructuredDataMessage, String> {
 
     private static final long serialVersionUID = 1703221292892071920L;
     private static final int MAX_LENGTH = 32;
