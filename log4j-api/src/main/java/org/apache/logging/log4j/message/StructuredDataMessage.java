@@ -20,7 +20,6 @@ package org.apache.logging.log4j.message;
 import java.util.Map;
 
 import org.apache.logging.log4j.util.EnglishEnums;
-import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
