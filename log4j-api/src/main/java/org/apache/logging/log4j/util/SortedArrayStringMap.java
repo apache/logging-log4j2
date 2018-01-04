@@ -106,7 +106,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         Method newMethod = null;
         try {
             if (setMethod != null) {
-                Class clazz = Class.forName("org.apache.logging.log4j.util.internal.DefaultObjectInputFilter");
+                Class<?> clazz = Class.forName("org.apache.logging.log4j.util.internal.DefaultObjectInputFilter");
                 methods = clazz.getMethods();
                 for (Method method : methods) {
                     if (method.getName().equals("newInstance") && Modifier.isStatic(method.getModifiers())) {
