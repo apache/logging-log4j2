@@ -167,9 +167,10 @@ public class SortedArrayStringMapTest {
 
     private SortedArrayStringMap deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        final ObjectInputStream in = new FilteredObjectInputStream(inArr);
-        final SortedArrayStringMap result = (SortedArrayStringMap) in.readObject();
-        return result;
+        try (final ObjectInputStream in = new FilteredObjectInputStream(inArr)) {
+            final SortedArrayStringMap result = (SortedArrayStringMap) in.readObject();
+            return result;
+        }
     }
 
     @Test
