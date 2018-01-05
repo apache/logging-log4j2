@@ -139,7 +139,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
 
     public SortedArrayStringMap(final int initialCapacity) {
         if (initialCapacity < 0) {
-            throw new IllegalArgumentException("Initial capacity must be at least one but was " + initialCapacity);
+            throw new IllegalArgumentException("Initial capacity must be at least zero but was " + initialCapacity);
         }
         threshold = ceilingNextPowerOfTwo(initialCapacity == 0 ? 1 : initialCapacity);
     }
