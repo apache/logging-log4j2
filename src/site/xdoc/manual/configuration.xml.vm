@@ -1070,7 +1070,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             multiple leading '$' characters each time the variable is resolved the leading '$' is simply removed.
             In the previous example the "Routes" element is capable of resolving the variable at runtime. To allow
             this the prefix value is specified as a variable with two leading '$' characters. When the configuration
-            file is first processed the first variable is simply removed. Thus, when the Routes element is evaluated
+            file is first processed the first '$' character is simply removed. Thus, when the Routes element is evaluated
             at runtime it is the variable declaration "${dollar}{sd:type}" which causes the event to be inspected for a
             StructuredDataMessage and if one is present the value of its type attribute to be used as the routing key.
             Not all elements support resolving variables at runtime. Components that do will specifically call that

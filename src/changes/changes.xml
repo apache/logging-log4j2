@@ -31,7 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.10.1" date="2017-xx-xx" description="GA Release 2.10.1">
-
+      <action issue="LOG4J2-2175" dev="mikes" type="fix" due-to="Behrang Saeedzadeh">
+        Fix typo in Property Substitution docs.
+      </action>
       <action issue="LOG4J2-2163" dev="rgoers" type="fix">
         Allow SortedArrayStringMap to be filtered upon deserialization. Fix build error in Java 9 when
         compiling log4j-core test classes.
