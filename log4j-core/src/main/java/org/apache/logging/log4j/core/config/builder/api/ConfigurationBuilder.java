@@ -134,6 +134,22 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      */
     AppenderRefComponentBuilder newAppenderRef(String ref);
 
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the Logger.
+     * @return A new LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newAsyncLogger(String name);
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the Logger.
+     * @param includeLocation If true include location information.
+     * @return A new LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newAsyncLogger(String name, boolean includeLocation);
+
     /**
      * Returns a builder for creating Async Loggers.
      * @param name The name of the Logger.
@@ -167,6 +183,20 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return A new LoggerComponentBuilder.
      */
     LoggerComponentBuilder newAsyncLogger(String name, String level, boolean includeLocation);
+
+    /**
+     * Returns a builder for creating the async root Logger.
+     * @return A new RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newAsyncRootLogger();
+
+
+    /**
+     * Returns a builder for creating the async root Logger.
+     * @param includeLocation If true include location information.
+     * @return A new RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newAsyncRootLogger(boolean includeLocation);
 
     /**
      * Returns a builder for creating the async root Logger.
@@ -279,6 +309,21 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     /**
      * Returns a builder for creating Loggers.
      * @param name The name of the Logger.
+     * @return A new LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newLogger(String name);
+
+    /**
+     * Returns a builder for creating Loggers.
+     * @param name The name of the Logger.
+     * @param includeLocation If true include location information.
+     * @return A new LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newLogger(String name, boolean includeLocation);
+
+    /**
+     * Returns a builder for creating Loggers.
+     * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
      * @return A new LoggerComponentBuilder.
      */
@@ -309,6 +354,19 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return A new LoggerComponentBuilder.
      */
     LoggerComponentBuilder newLogger(String name, String level, boolean includeLocation);
+
+    /**
+     * Returns a builder for creating the root Logger.
+     * @return A new RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newRootLogger();
+
+    /**
+     * Returns a builder for creating the root Logger.
+     * @param includeLocation If true include location information.
+     * @return A new RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newRootLogger(boolean includeLocation);
 
     /**
      * Returns a builder for creating the root Logger.

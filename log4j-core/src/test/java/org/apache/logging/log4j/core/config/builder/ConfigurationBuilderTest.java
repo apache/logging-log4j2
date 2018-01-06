@@ -60,6 +60,8 @@ public class ConfigurationBuilderTest {
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true).
                     add(builder.newAppenderRef("Stdout")).
                     addAttribute("additivity", false));
+        builder.add(builder.newLogger("org.apache.logging.log4j.core").
+                    add(builder.newAppenderRef("Stdout")));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
 
         builder.addProperty("MyKey", "MyValue");
@@ -94,6 +96,9 @@ public class ConfigurationBuilderTest {
                 INDENT + "</Appenders>" + EOL +
                 INDENT + "<Loggers>" + EOL +
                 INDENT + INDENT + "<Logger name=\"org.apache.logging.log4j\" level=\"DEBUG\" includeLocation=\"true\" additivity=\"false\">" + EOL +
+                INDENT + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL +
+                INDENT + INDENT + "</Logger>" + EOL +
+                INDENT + INDENT + "<Logger name=\"org.apache.logging.log4j.core\">" + EOL +
                 INDENT + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL +
                 INDENT + INDENT + "</Logger>" + EOL +
                 INDENT + INDENT + "<Root level=\"ERROR\">" + EOL +

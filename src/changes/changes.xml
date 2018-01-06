@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.10.1" date="2017-xx-xx" description="GA Release 2.10.1">
+      <action issue="LOG4J2-2002" dev="mikes" type="fix" due-to="Paul Burrowes">
+        Avoid null attribute values in DefaultConfigurationBuilder.
+      </action>
       <action issue="LOG4J2-2175" dev="mikes" type="fix" due-to="Behrang Saeedzadeh">
         Fix typo in Property Substitution docs.
       </action>
