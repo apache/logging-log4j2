@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.10.1" date="2017-xx-xx" description="GA Release 2.10.1">
+      <action issue="LOG4J2-2158" dev="rpopma" type="fix" due-to="Björn Kautler">
+        Fixed bug where ThreadContext map was cleared, resulting in entries being only available for one log event.
+      </action>
       <action issue="LOG4J2-2002" dev="mikes" type="fix" due-to="Paul Burrowes">
         Avoid null attribute values in DefaultConfigurationBuilder.
       </action>
