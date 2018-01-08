@@ -17,7 +17,7 @@ sudo: true
 dist: trusty
 
 jdk:
-  - oraclejdk7
+  - openjdk7
 
 env:
   global:
