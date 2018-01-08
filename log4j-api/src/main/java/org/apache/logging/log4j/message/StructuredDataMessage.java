@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Represents a Message that conforms to an RFC 5424 StructuredData element along with the syslog message.
@@ -83,6 +84,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         this.type = type;
         this.maxLength = maxLength;
     }
+    
     /**
      * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
      * initial map of structured data to include.
@@ -108,6 +110,25 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      */
     public StructuredDataMessage(final String id, final String msg, final String type,
                                  final Map<String, String> data, final int maxLength) {
+        super(data);
+        this.id = new StructuredDataId(id, null, null, maxLength);
+        this.message = msg;
+        this.type = type;
+        this.maxLength = maxLength;
+    }
+
+    /**
+     * Creates a StructuredDataMessage using an (user specified max characters), message, and type (user specified
+     * maximum number of characters, and an initial map of structured data to include.
+     * @param id The String id.
+     * @param msg The message.
+     * @param type The message type.
+     * @param data The StructuredData map.
+     * @param maxLength The maximum length of keys;
+     * @since 2.10.1
+     */
+    public StructuredDataMessage(final String id, final String msg, final String type,
+                                 final StringMap data, final int maxLength) {
         super(data);
         this.id = new StructuredDataId(id, null, null, maxLength);
         this.message = msg;
@@ -186,6 +207,18 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         this.maxLength = MAX_LENGTH;
     }
 
+    /**
+     * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
+     * initial map of structured data to include.
+     * @param id The String id.
+     * @param msg The message.
+     * @param type The message type.
+     * @param data The StructuredData map.
+     * @since 2.10.1
+     */
+    public StructuredDataMessage(final String id, final String msg, final String type, final StringMap data) {
+        this(id, msg, type, data, MAX_LENGTH);
+    }
 
     /**
      * Basic constructor.
