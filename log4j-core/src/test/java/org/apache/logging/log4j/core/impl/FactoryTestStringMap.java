@@ -19,14 +19,14 @@ package org.apache.logging.log4j.core.impl;
 import java.util.Map;
 
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Dummy implementation of the StringMap interface for testing.
  */
-public class FactoryTestStringMap implements StringMap {
+public class FactoryTestStringMap implements IndexedStringMap {
     private static final long serialVersionUID = -2035823164390218862L;
     int initialCapacity;
 
@@ -39,7 +39,7 @@ public class FactoryTestStringMap implements StringMap {
 
     @Override
     public void clear() {
-
+        // do nothing
     }
 
     @Override
@@ -49,22 +49,37 @@ public class FactoryTestStringMap implements StringMap {
 
     @Override
     public <V> void forEach(final BiConsumer<String, ? super V> action) {
-
+        // do nothing
     }
 
     @Override
     public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
-
+        // do nothing
     }
 
     @Override
     public void freeze() {
+        // do nothing
+    }
 
+    @Override
+    public String getKeyAt(int index) {
+        return null;
     }
 
     @Override
     public <V> V getValue(final String key) {
         return null;
+    }
+
+    @Override
+    public <V> V getValueAt(int index) {
+        return null;
+    }
+
+    @Override
+    public int indexOfKey(String key) {
+        return 0;
     }
 
     @Override
@@ -79,17 +94,17 @@ public class FactoryTestStringMap implements StringMap {
 
     @Override
     public void putAll(final ReadOnlyStringMap source) {
-
+        // do nothing
     }
 
     @Override
     public void putValue(final String key, final Object value) {
-
+        // do nothing
     }
 
     @Override
     public void remove(final String key) {
-
+        // do nothing
     }
 
     @Override

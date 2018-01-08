@@ -20,7 +20,6 @@ package org.apache.logging.log4j.perf.jmh;
 import java.nio.charset.Charset;
 import java.util.Deque;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.apache.logging.log4j.Level;
@@ -35,6 +34,7 @@ import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.StringMap;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -154,7 +154,7 @@ public class ThreadLocalVsPoolBenchmark {
         final String STR = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
         final Message message = new SimpleMessage(STR);
         final Throwable t = null;
-        final Map<String, String> mdc = null;
+        final StringMap mdc = null;
         final ContextStack ndc = null;
         final String threadName = null;
         final StackTraceElement location = null;
@@ -167,7 +167,7 @@ public class ThreadLocalVsPoolBenchmark {
                 .setLevel(level) //
                 .setMessage(message) //
                 .setThrown(t) //
-                .setContextMap(mdc) //
+                .setContextData(mdc) //
                 .setContextStack(ndc) //
                 .setThreadName(threadName) //
                 .setSource(location) //

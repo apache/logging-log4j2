@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
@@ -31,6 +30,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.StringMap;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -74,7 +74,7 @@ public class Log4j2AppenderComparisonBenchmark {
         final Level level = Level.DEBUG;
         final Message message = new SimpleMessage(MESSAGE);
         final Throwable t = null;
-        final Map<String, String> mdc = null;
+        final StringMap mdc = null;
         final ThreadContext.ContextStack ndc = null;
         final String threadName = "THREAD";
         final StackTraceElement location = null;
@@ -87,7 +87,7 @@ public class Log4j2AppenderComparisonBenchmark {
                 .setLevel(level) //
                 .setMessage(message) //
                 .setThrown(t) //
-                .setContextMap(mdc) //
+                .setContextData(mdc) //
                 .setContextStack(ndc) //
                 .setThreadName(threadName) //
                 .setSource(location) //

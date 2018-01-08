@@ -19,7 +19,6 @@ package org.apache.logging.log4j.perf.jmh;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
@@ -33,6 +32,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.StringMap;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -99,7 +99,7 @@ public class TextEncoderHelperBenchmark {
         final Level level = Level.DEBUG;
         final Message message = new SimpleMessage(STR);
         final Throwable t = null;
-        final Map<String, String> mdc = null;
+        final StringMap mdc = null;
         final ContextStack ndc = null;
         final String threadName = null;
         final StackTraceElement location = null;
@@ -112,7 +112,7 @@ public class TextEncoderHelperBenchmark {
                 .setLevel(level) //
                 .setMessage(message) //
                 .setThrown(t) //
-                .setContextMap(mdc) //
+                .setContextData(mdc) //
                 .setContextStack(ndc) //
                 .setThreadName(threadName) //
                 .setSource(location) //

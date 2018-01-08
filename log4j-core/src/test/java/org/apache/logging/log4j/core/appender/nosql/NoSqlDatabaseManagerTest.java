@@ -29,6 +29,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.message.Message;
@@ -212,7 +213,7 @@ public class NoSqlDatabaseManagerTest {
                 .setThreadPriority(1)
                 .setTimeMillis(987654321564L)
                 .setThrown(exception)
-                .setContextMap(context)
+                .setContextData(ContextDataFactory.createContextData(context))
                 .setContextStack(stack)
                 .build();
 
@@ -313,7 +314,7 @@ public class NoSqlDatabaseManagerTest {
                 .setThreadPriority(1)
                 .setTimeMillis(987654321564L)
                 .setThrown(exception2)
-                .setContextMap(context)
+                .setContextData(ContextDataFactory.createContextData(context))
                 .setContextStack(stack)
                 .build();
 

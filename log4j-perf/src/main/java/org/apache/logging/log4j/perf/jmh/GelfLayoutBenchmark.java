@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
@@ -28,10 +30,15 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.perf.util.DemoAppender;
-import org.openjdk.jmh.annotations.*;
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.util.StringMap;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
 
 /**
  * Benchmarks Log4j 2 GelfLayout.
@@ -51,7 +58,7 @@ public class GelfLayoutBenchmark {
         final org.apache.logging.log4j.Level level = org.apache.logging.log4j.Level.DEBUG;
         final Message message = new SimpleMessage(MESSAGE);
         final Throwable t = null;
-        final Map<String, String> mdc = null;
+        final StringMap mdc = null;
         final ThreadContext.ContextStack ndc = null;
         final String threadName = null;
         final StackTraceElement location = null;
@@ -64,7 +71,7 @@ public class GelfLayoutBenchmark {
                 .setLevel(level) //
                 .setMessage(message) //
                 .setThrown(t) //
-                .setContextMap(mdc) //
+                .setContextData(mdc) //
                 .setContextStack(ndc) //
                 .setThreadName(threadName) //
                 .setSource(location) //

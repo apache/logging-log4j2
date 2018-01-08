@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -28,15 +29,15 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -96,8 +97,8 @@ public class PatternParserTest {
     public void testCustomPattern() {
         final List<PatternFormatter> formatters = parser.parse(customPattern);
         assertNotNull(formatters);
-        final Map<String, String> mdc = new HashMap<>();
-        mdc.put("loginId", "Fred");
+        final IndexedStringMap mdc = ContextDataFactory.createContextData();
+        mdc.putValue("loginId", "Fred");
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
@@ -106,7 +107,7 @@ public class PatternParserTest {
                 .setLoggerFqcn(Logger.class.getName()) //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world")) //
-                .setContextMap(mdc) //
+                .setContextData(mdc) //
                 .setThreadName("Thread1") //
                 .setSource(elements[0])
                 .setTimeMillis(System.currentTimeMillis()).build();
@@ -115,7 +116,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :101 ] - Hello, world" + Strings.LINE_SEPARATOR;
+        final String expected = "INFO  [PatternParserTest        :102 ] - Hello, world" + Strings.LINE_SEPARATOR;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
@@ -343,10 +344,10 @@ public class PatternParserTest {
         assertNotNull(formatters);
         assertEquals(1, formatters.size());
 
-        final Map<String, String> mdc = new HashMap<>();
-        mdc.put("var", "1234");
+        final IndexedStringMap mdc = ContextDataFactory.createContextData();
+        mdc.putValue("var", "1234");
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
-            .setContextMap(mdc).build();
+            .setContextData(mdc).build();
         final StringBuilder buf = new StringBuilder();
         formatters.get(0).format(event, buf);
         final String expected = " 123 ";
