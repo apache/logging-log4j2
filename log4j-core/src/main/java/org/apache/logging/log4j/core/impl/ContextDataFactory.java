@@ -19,9 +19,12 @@ package org.apache.logging.log4j.core.impl;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -29,15 +32,14 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
- * Factory for creating the StringMap instances used to initialize LogEvents'
- * {@linkplain LogEvent#getContextData() context data}. When context data is
- * {@linkplain ContextDataInjector injected} into the log event, these StringMap
+ * Factory for creating the StringMap instances used to initialize LogEvents' {@linkplain LogEvent#getContextData()
+ * context data}. When context data is {@linkplain ContextDataInjector injected} into the log event, these StringMap
  * instances may be either populated with key-value pairs from the context, or completely replaced altogether.
  * <p>
  * By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
- * {@code "log4j2.ContextData"} to the fully qualified class name of a class implementing the
- * {@code StringMap} interface. The class must have a public default constructor, and if possible should also have a
- * public constructor that takes a single {@code int} argument for the initial capacity.
+ * {@code "log4j2.ContextData"} to the fully qualified class name of a class implementing the {@code StringMap}
+ * interface. The class must have a public default constructor, and if possible should also have a public constructor
+ * that takes a single {@code int} argument for the initial capacity.
  * </p>
  *
  * @see LogEvent#getContextData()
@@ -48,21 +50,22 @@ import org.apache.logging.log4j.util.StringMap;
 public class ContextDataFactory {
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
     private static final String CLASS_NAME = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData");
-    private static final Class<? extends StringMap> CACHED_CLASS = createCachedClass(CLASS_NAME);
+    private static final Class<? extends IndexedStringMap> CACHED_CLASS = createCachedClass(CLASS_NAME);
     private static final MethodHandle DEFAULT_CONSTRUCTOR = createDefaultConstructor(CACHED_CLASS);
     private static final MethodHandle INITIAL_CAPACITY_CONSTRUCTOR = createInitialCapacityConstructor(CACHED_CLASS);
 
-    private static final StringMap EMPTY_STRING_MAP = createContextData(1);
+    private static final IndexedStringMap EMPTY_STRING_MAP = createContextData(0);
+
     static {
         EMPTY_STRING_MAP.freeze();
     }
 
-    private static Class<? extends StringMap> createCachedClass(final String className) {
+    private static Class<? extends IndexedStringMap> createCachedClass(final String className) {
         if (className == null) {
             return null;
         }
         try {
-            return LoaderUtil.loadClass(className).asSubclass(StringMap.class);
+            return LoaderUtil.loadClass(className).asSubclass(IndexedStringMap.class);
         } catch (final Exception any) {
             return null;
         }
@@ -90,40 +93,48 @@ public class ContextDataFactory {
         }
     }
 
-    public static StringMap createContextData() {
+    public static IndexedStringMap createContextData() {
         if (DEFAULT_CONSTRUCTOR == null) {
             return new SortedArrayStringMap();
         }
         try {
-            return (StringMap) DEFAULT_CONSTRUCTOR.invoke();
+            return (IndexedStringMap) DEFAULT_CONSTRUCTOR.invoke();
         } catch (final Throwable ignored) {
             return new SortedArrayStringMap();
         }
     }
 
-    public static StringMap createContextData(final int initialCapacity) {
+    public static IndexedStringMap createContextData(final int initialCapacity) {
         if (INITIAL_CAPACITY_CONSTRUCTOR == null) {
             return new SortedArrayStringMap(initialCapacity);
         }
         try {
-            return (StringMap) INITIAL_CAPACITY_CONSTRUCTOR.invoke(initialCapacity);
+            return (IndexedStringMap) INITIAL_CAPACITY_CONSTRUCTOR.invoke(initialCapacity);
         } catch (final Throwable ignored) {
             return new SortedArrayStringMap(initialCapacity);
         }
     }
 
-    public static StringMap createContextData(final ReadOnlyStringMap readOnlyStringMap) {
-        final StringMap contextData = createContextData(readOnlyStringMap.size());
+    public static IndexedStringMap createContextData(final Map<String, String> context) {
+        final IndexedStringMap contextData = createContextData(context.size());
+        for (Entry<String, String> entry : context.entrySet()) {
+            contextData.putValue(entry.getKey(), entry.getValue());
+        }
+        return contextData;
+    }
+
+    public static IndexedStringMap createContextData(final ReadOnlyStringMap readOnlyStringMap) {
+        final IndexedStringMap contextData = createContextData(readOnlyStringMap.size());
         contextData.putAll(readOnlyStringMap);
         return contextData;
     }
 
     /**
-     * An empty pre-frozen StringMap. The returned object may be shared.
+     * An empty pre-frozen IndexedStringMap. The returned object may be shared.
      *
-     * @return an empty pre-frozen StringMap
+     * @return an empty pre-frozen IndexedStringMap
      */
-    public static StringMap emptyFrozenContextData() {
+    public static IndexedStringMap emptyFrozenContextData() {
         return EMPTY_STRING_MAP;
     }
 
