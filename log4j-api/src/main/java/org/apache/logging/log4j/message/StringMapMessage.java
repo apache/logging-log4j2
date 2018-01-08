@@ -20,6 +20,7 @@ package org.apache.logging.log4j.message;
 import java.util.Map;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * A {@link StringMapMessage} typed to {@link String}-only values. This is like the MapMessage class before 2.9.
@@ -56,6 +57,17 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
      *            The Map.
      */
     public StringMapMessage(final Map<String, String> map) {
+        super(map);
+    }
+
+    /**
+     * Constructs a new instance based on an existing StringMap.
+     * 
+     * @param map
+     *            The StringMap.
+     * @since 2.10.1
+     */
+    public StringMapMessage(final StringMap map) {
         super(map);
     }
 
