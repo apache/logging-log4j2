@@ -30,6 +30,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -100,6 +101,15 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
+     * Constructs a new instance based on an existing {@link IndexedStringMap}.
+     * @param map The IndexedStringMap.
+     * @since 2.10.1
+     */
+    public MapMessage(final IndexedStringMap map) {
+        this.data = map;
+    }
+
+    /**
      * Constructs a new instance.
      * 
      * @param  initialCapacity the initial capacity.
@@ -109,11 +119,20 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
-     * Constructs a new instance based on an existing Map.
+     * Constructs a new instance based on an existing {@link Map}.
      * @param map The Map.
      */
     public MapMessage(final Map<String, V> map) {
         this.data = new SortedArrayStringMap(map);
+    }
+
+    /**
+     * Constructs a new instance based on an existing {@link StringMap}.
+     * @param map The StringMap.
+     * @since 2.10.1
+     */
+    public MapMessage(final StringMap map) {
+        this.data = map instanceof IndexedStringMap ? (IndexedStringMap) map : new SortedArrayStringMap(map);
     }
 
     @Override
