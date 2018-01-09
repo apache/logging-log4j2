@@ -117,7 +117,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :102 ] - Hello, world" + Strings.LINE_SEPARATOR;
+        final String expected = "INFO  [PatternParserTest        :103 ] - Hello, world" + Strings.LINE_SEPARATOR;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
