@@ -23,21 +23,21 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.IndexedStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.Test;
 
 public class Log4j1MdcPatternConverterTest {
 
     @Test
     public void testConverter0() {
-        final IndexedStringMap contextMap = ContextDataFactory.createContextData(0);
+        final StringMap contextMap = ContextDataFactory.createContextData(0);
         final String expected = "{}";
         test(contextMap, expected, null);
     }
 
     @Test
     public void testConverter1() {
-        final IndexedStringMap contextMap = ContextDataFactory.createContextData(1);
+        final StringMap contextMap = ContextDataFactory.createContextData(1);
         contextMap.putValue("key1", "value1");
         final String expected = "{{key1,value1}}";
         test(contextMap, expected, null);
@@ -45,7 +45,7 @@ public class Log4j1MdcPatternConverterTest {
 
     @Test
     public void testConverter2() {
-        final IndexedStringMap contextMap = ContextDataFactory.createContextData(2);
+        final StringMap contextMap = ContextDataFactory.createContextData(2);
         contextMap.putValue("key1", "value1");
         contextMap.putValue("key2", "value2");
         final String expected = "{{key1,value1}{key2,value2}}";
@@ -54,14 +54,14 @@ public class Log4j1MdcPatternConverterTest {
 
     @Test
     public void testConverterWithKey() {
-        final IndexedStringMap contextMap = ContextDataFactory.createContextData(2);
+        final StringMap contextMap = ContextDataFactory.createContextData(2);
         contextMap.putValue("key1", "value1");
         contextMap.putValue("key2", "value2");
         final String expected = "value1";
         test(contextMap, expected, new String[] {"key1"});
     }
 
-    private void test(final IndexedStringMap contextMap, final String expected, final String[] options) {
+    private void test(final StringMap contextMap, final String expected, final String[] options) {
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName("MyLogger")
                 .setLevel(Level.DEBUG)

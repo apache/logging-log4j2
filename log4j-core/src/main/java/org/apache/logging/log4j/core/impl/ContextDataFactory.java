@@ -50,17 +50,17 @@ import org.apache.logging.log4j.util.StringMap;
 public class ContextDataFactory {
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
     private static final String CLASS_NAME = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData");
-    private static final Class<? extends IndexedStringMap> CACHED_CLASS = createCachedClass(CLASS_NAME);
+    private static final Class<? extends StringMap> CACHED_CLASS = createCachedClass(CLASS_NAME);
     private static final MethodHandle DEFAULT_CONSTRUCTOR = createDefaultConstructor(CACHED_CLASS);
     private static final MethodHandle INITIAL_CAPACITY_CONSTRUCTOR = createInitialCapacityConstructor(CACHED_CLASS);
 
-    private static final IndexedStringMap EMPTY_STRING_MAP = createContextData(0);
+    private static final StringMap EMPTY_STRING_MAP = createContextData(0);
 
     static {
         EMPTY_STRING_MAP.freeze();
     }
 
-    private static Class<? extends IndexedStringMap> createCachedClass(final String className) {
+    private static Class<? extends StringMap> createCachedClass(final String className) {
         if (className == null) {
             return null;
         }
@@ -93,7 +93,7 @@ public class ContextDataFactory {
         }
     }
 
-    public static IndexedStringMap createContextData() {
+    public static StringMap createContextData() {
         if (DEFAULT_CONSTRUCTOR == null) {
             return new SortedArrayStringMap();
         }
@@ -104,7 +104,7 @@ public class ContextDataFactory {
         }
     }
 
-    public static IndexedStringMap createContextData(final int initialCapacity) {
+    public static StringMap createContextData(final int initialCapacity) {
         if (INITIAL_CAPACITY_CONSTRUCTOR == null) {
             return new SortedArrayStringMap(initialCapacity);
         }
@@ -115,16 +115,16 @@ public class ContextDataFactory {
         }
     }
 
-    public static IndexedStringMap createContextData(final Map<String, String> context) {
-        final IndexedStringMap contextData = createContextData(context.size());
+    public static StringMap createContextData(final Map<String, String> context) {
+        final StringMap contextData = createContextData(context.size());
         for (Entry<String, String> entry : context.entrySet()) {
             contextData.putValue(entry.getKey(), entry.getValue());
         }
         return contextData;
     }
 
-    public static IndexedStringMap createContextData(final ReadOnlyStringMap readOnlyStringMap) {
-        final IndexedStringMap contextData = createContextData(readOnlyStringMap.size());
+    public static StringMap createContextData(final ReadOnlyStringMap readOnlyStringMap) {
+        final StringMap contextData = createContextData(readOnlyStringMap.size());
         contextData.putAll(readOnlyStringMap);
         return contextData;
     }
@@ -134,7 +134,7 @@ public class ContextDataFactory {
      *
      * @return an empty pre-frozen IndexedStringMap
      */
-    public static IndexedStringMap emptyFrozenContextData() {
+    public static StringMap emptyFrozenContextData() {
         return EMPTY_STRING_MAP;
     }
 

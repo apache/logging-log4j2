@@ -16,8 +16,14 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.IOException;
 import java.util.Collections;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -27,9 +33,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
-import org.apache.logging.log4j.util.IndexedStringMap;
-
-import static org.junit.Assert.*;
+import org.apache.logging.log4j.util.StringMap;
 
 class LogEventFixtures {
 
@@ -55,7 +59,7 @@ class LogEventFixtures {
         ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 1"));
         ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 2"));
         final ThrowableProxy throwableProxy = new ThrowableProxy(ioException);
-        final IndexedStringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = ContextDataFactory.createContextData();
         contextData.putValue("MDC.A", "A_Value");
         contextData.putValue("MDC.B", "B_Value");
         final DefaultThreadContextStack contextStack = new DefaultThreadContextStack(true);

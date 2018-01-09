@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.IndexedStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,7 +98,7 @@ public class PatternParserTest {
     public void testCustomPattern() {
         final List<PatternFormatter> formatters = parser.parse(customPattern);
         assertNotNull(formatters);
-        final IndexedStringMap mdc = ContextDataFactory.createContextData();
+        final StringMap mdc = ContextDataFactory.createContextData();
         mdc.putValue("loginId", "Fred");
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
@@ -344,7 +345,7 @@ public class PatternParserTest {
         assertNotNull(formatters);
         assertEquals(1, formatters.size());
 
-        final IndexedStringMap mdc = ContextDataFactory.createContextData();
+        final StringMap mdc = ContextDataFactory.createContextData();
         mdc.putValue("var", "1234");
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
             .setContextData(mdc).build();

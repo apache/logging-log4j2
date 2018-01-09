@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -47,7 +48,6 @@ import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
-import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -260,7 +260,7 @@ public class Log4jLogEventTest {
     @SuppressWarnings("deprecation")
     @Test
     public void testBuilderCorrectlyCopiesAllEventAttributes() {
-        final IndexedStringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = ContextDataFactory.createContextData();
         contextData.putValue("A", "B");
         final ContextStack contextStack = ThreadContext.getImmutableStack();
         final Exception exception = new Exception("test");
@@ -426,7 +426,7 @@ public class Log4jLogEventTest {
     @SuppressWarnings("deprecation")
     @Test
     public void testEquals() {
-        final IndexedStringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = ContextDataFactory.createContextData();
         contextData.putValue("A", "B");
         ThreadContext.push("first");
         final ContextStack contextStack = ThreadContext.getImmutableStack();
@@ -488,7 +488,7 @@ public class Log4jLogEventTest {
         assertSame(exception, event2.getThrown());
         assertEquals(987654321L, event2.getTimeMillis());
 
-        final IndexedStringMap differentMap = ContextDataFactory.emptyFrozenContextData();
+        final StringMap differentMap = ContextDataFactory.emptyFrozenContextData();
         different("different contextMap", builder(event).setContextData(differentMap), event);
         different("null contextMap", builder(event).setContextData(null), event);
 
