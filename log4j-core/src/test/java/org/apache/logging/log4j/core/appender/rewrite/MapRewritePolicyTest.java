@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -42,17 +43,19 @@ import org.junit.Test;
 
 
 public class MapRewritePolicyTest {
-    private static final StringMap map = ContextDataFactory.createContextData();
+    private static final StringMap stringMap = ContextDataFactory.createContextData();
+    private static Map<String, String> map = new HashMap<>();
     private static KeyValuePair[] rewrite;
     private static LogEvent logEvent0, logEvent1, logEvent2, logEvent3;
 
     @BeforeClass
     public static void setupClass() {
-        map.putValue("test1", "one");
-        map.putValue("test2", "two");
+        stringMap.putValue("test1", "one");
+        stringMap.putValue("test2", "two");
+        map = stringMap.toMap(); 
         logEvent0 = Log4jLogEvent.newBuilder() //
                 .setLoggerName("test") //
-                .setContextData(map) //
+                .setContextData(stringMap) //
                 .setLoggerFqcn("MapRewritePolicyTest.setupClass()") //
                 .setLevel(Level.ERROR) //
                 .setMessage(new SimpleMessage("Test")) //
@@ -66,7 +69,7 @@ public class MapRewritePolicyTest {
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 29)) //
                 .build();
 
-        final ThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>(map.toMap().values()));
+        final ThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>(map.values()));
         logEvent2 = ((Log4jLogEvent) logEvent0).asBuilder() //
                 .setContextStack(stack) //
                 .setMarker(MarkerManager.getMarker("test")) //

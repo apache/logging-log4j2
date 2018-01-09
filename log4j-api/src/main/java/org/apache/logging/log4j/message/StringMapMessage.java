@@ -61,17 +61,6 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
     }
 
     /**
-     * Constructs a new instance based on an existing StringMap.
-     * 
-     * @param map
-     *            The StringMap.
-     * @since 2.10.1
-     */
-    public StringMapMessage(final StringMap map) {
-        super(map);
-    }
-
-    /**
      * Constructs a new instance based on an existing Map.
      * @param map The Map.
      * @return A new StringMapMessage
