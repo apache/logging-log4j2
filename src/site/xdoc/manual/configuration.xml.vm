@@ -1639,8 +1639,7 @@ public class AwesomeTest {
     <td><a name="log4j.configurationFile"/>log4j.configurationFile</td>
     <td>&nbsp;</td>
     <td>
-      Path to an XML or JSON Log4j 2 configuration file. May also contain a comma separated list of configuration
-      file names.
+      Path to an Log4j 2 configuration file. May also contain a comma separated list of configuration file names.
     </td>
   </tr>
   <tr>
