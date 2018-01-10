@@ -66,6 +66,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
      * @param provider The NoSQL provider that provides connections to the chosen NoSQL database.
      * @return a new NoSQL appender.
      */
+    @SuppressWarnings("resource")
     @PluginFactory
     public static NoSqlAppender createAppender(
             @PluginAttribute("name") final String name,
