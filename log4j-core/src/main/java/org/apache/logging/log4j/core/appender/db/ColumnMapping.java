@@ -101,6 +101,8 @@ public class ColumnMapping {
 
         /**
          * Column name.
+         * 
+         * @return this. 
          */
         public Builder setName(final String name) {
             this.name = name;
@@ -110,6 +112,8 @@ public class ColumnMapping {
         /**
          * Layout of value to write to database (before type conversion). Not applicable if {@link #setType(Class)} is
          * a {@link ReadOnlyStringMap}, {@link ThreadContextMap}, or {@link ThreadContextStack}.
+         * 
+         * @return this. 
          */
         public Builder setLayout(final StringLayout layout) {
             this.layout = layout;
@@ -119,6 +123,8 @@ public class ColumnMapping {
         /**
          * Pattern to use as a {@link PatternLayout}. Convenient shorthand for {@link #setLayout(StringLayout)} with a
          * PatternLayout.
+         * 
+         * @return this. 
          */
         public Builder setPattern(final String pattern) {
             this.pattern = pattern;
@@ -128,6 +134,8 @@ public class ColumnMapping {
         /**
          * Literal value to use for populating a column. This is generally useful for functions, stored procedures,
          * etc. No escaping will be done on this value.
+         * 
+         * @return this. 
          */
         public Builder setLiteral(final String literal) {
             this.literal = literal;
@@ -138,6 +146,8 @@ public class ColumnMapping {
          * Class to convert value to before storing in database. If the type is compatible with {@link ThreadContextMap} or
          * {@link ReadOnlyStringMap}, then the MDC will be used. If the type is compatible with {@link ThreadContextStack},
          * then the NDC will be used. If the type is compatible with {@link Date}, then the event timestamp will be used.
+         * 
+         * @return this. 
          */
         public Builder setType(final Class<?> type) {
             this.type = type;
