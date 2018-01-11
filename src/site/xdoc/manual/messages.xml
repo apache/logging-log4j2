@@ -199,9 +199,26 @@ public class MyApp {
       <h4>MapMessage</h4>
         <a name="MapMessage"/>
         <p>
-          A MapMessage contains a Map of String keys and values. MapMessage implements FormattedMessage and accepts
-          a format specifier of "XML", in which case the Map will be formatted as XML. Otherwise, the Map will be
-          formatted as "key1=value1 key2=value2...".
+          A <code>MapMessage</code> contains a Map of String keys and values. <code>MapMessage</code> implements 
+          <code>FormattedMessage</code> and accepts a format specifier of "XML", in which case the Map will be 
+          formatted as XML. Otherwise, the Map will be formatted as <code>"key1=value1 key2=value2 ..."</code>.
+        </p>
+        <p>
+          Some Appenders make special use of <code>MapMessage</code> objects: 
+        </p>
+        <ul>
+          <li>
+            When a <a href="appenders.html#JMSAppender">JMS Appender</a> is configured with a <code>MessageLayout</code>, it converts a Log4j 
+            <code>MapMessage</code> to a JMS <code>javax.jms.MapMessage</code>.
+          </li>
+          <li>
+            When a <a href="appenders.html#NoSQLAppenderMongoDB">MongoDB Appender</a> is configured with a <code>MessageLayout</code>, it converts a Log4j 
+            <code>MapMessage</code> to fields in a MongoDB object. 
+          </li>
+        </ul>
+        <p>
+          When an Appender is <code>MessageLayout</code>-aware, the object Log4j sends to target is not a Log4j Log 
+          Event but a custom object.
         </p>
         <h4>MessageFormatMessage</h4>
         <a name="MessageFormatMessage"/>
