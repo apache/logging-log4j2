@@ -54,7 +54,7 @@ public class MongoDbMapMessageTestJava8 {
     @Test
     public void test() {
         final Logger logger = LogManager.getLogger();
-        final MapMessage<?, Object> map = new MapMessage<>();
+        final MapMessage map = new MapMessage();
         map.with("SomeName", "SomeValue");
         map.with("SomeInt", 1);
         logger.info(map);
