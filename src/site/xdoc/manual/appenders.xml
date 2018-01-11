@@ -2065,8 +2065,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <a name="NoSQLAppenderMongoDB"/>
         <subsection name="NoSQLAppender for MongoDB">
           <p>
-            The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
-            This section details specializations for MongoDB.
+            This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB.
+            The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.
           </p>
           <table>
             <caption align="top">MongoDB Provider Parameters</caption>
@@ -2191,8 +2191,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <a name="NoSQLAppenderApacheCouchDB"/>
         <subsection name="NoSQLAppender for Apache CouchDB">
           <p>
+            This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for CouchDB.
             The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
-            This section details specializations for Apache CouchDB.
           </p>
           <table>
             <caption align="top">CouchDB Provider Parameters</caption>
