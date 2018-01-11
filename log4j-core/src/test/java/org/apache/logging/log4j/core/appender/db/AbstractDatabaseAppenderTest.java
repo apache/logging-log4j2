@@ -112,7 +112,7 @@ public class AbstractDatabaseAppenderTest {
 
     private static abstract class LocalAbstractDatabaseManager extends AbstractDatabaseManager {
         public LocalAbstractDatabaseManager(final String name, final int bufferSize) {
-            super(name, bufferSize;
+            super(name, bufferSize);
         }
     }
 
