@@ -20,17 +20,29 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
+import org.apache.logging.log4j.test.RuleChainFactory;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.RuleChain;
 
-@Ignore("Requires a running MongoDB server")
+/**
+ * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
+ */
 @Category(Appenders.MongoDb.class)
-public class MongoDbCappedTest {
+public class MongoDbAuthTestJava8 {
+
+    static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-auth.xml");
+
+    static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
+            .create(MongoDbTestJava8.class.getName());
+
+    static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName());
 
     @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb-capped.xml");
+    public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
+            loggerContextTestRule);
 
     @Test
     public void test() {

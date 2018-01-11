@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 
 import javax.persistence.EntityManager;
@@ -83,8 +84,14 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
         }
     }
 
+    @Deprecated
     @Override
     protected void writeInternal(final LogEvent event) {
+        writeInternal(event, null);
+    }
+    
+    @Override
+    protected void writeInternal(final LogEvent event, final Serializable serializable) {
         if (!this.isRunning() || this.entityManagerFactory == null || this.entityManager == null
                 || this.transaction == null) {
             throw new AppenderLoggingException(

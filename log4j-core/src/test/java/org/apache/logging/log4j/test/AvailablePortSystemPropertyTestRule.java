@@ -25,16 +25,16 @@ import org.junit.runners.model.Statement;
  * A JUnit TestRule to discover an available port and save it in a system property. Useful for setting up tests using
  * Apache Active MQ.
  */
-public class AvailablePortSystemPropertyRule implements TestRule {
+public class AvailablePortSystemPropertyTestRule implements TestRule {
 
-    public static AvailablePortSystemPropertyRule create(final String name) {
-        return new AvailablePortSystemPropertyRule(name);
+    public static AvailablePortSystemPropertyTestRule create(final String name) {
+        return new AvailablePortSystemPropertyTestRule(name);
     }
 
     protected final String name;
     protected int port;
 
-    protected AvailablePortSystemPropertyRule(final String name) {
+    protected AvailablePortSystemPropertyTestRule(final String name) {
         this.name = name;
     }
 

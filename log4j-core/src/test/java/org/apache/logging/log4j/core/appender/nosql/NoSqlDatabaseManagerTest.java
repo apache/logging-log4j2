@@ -102,7 +102,7 @@ public class NoSqlDatabaseManagerTest {
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
             provider)) {
             expectedException.expect(AppenderLoggingException.class);
-            manager.writeInternal(mock(LogEvent.class));
+            manager.writeInternal(mock(LogEvent.class), null);
         }
     }
 
@@ -118,7 +118,7 @@ public class NoSqlDatabaseManagerTest {
             then(provider).should().getConnection();
 
             expectedException.expect(AppenderLoggingException.class);
-            manager.writeInternal(mock(LogEvent.class));
+            manager.writeInternal(mock(LogEvent.class), null);
         }
     }
 
@@ -145,7 +145,7 @@ public class NoSqlDatabaseManagerTest {
                 .setTimeMillis(1234567890123L)
                 .build();
 
-            manager.writeInternal(event);
+            manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
@@ -217,7 +217,7 @@ public class NoSqlDatabaseManagerTest {
                 .setContextStack(stack)
                 .build();
 
-            manager.writeInternal(event);
+            manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
@@ -318,7 +318,7 @@ public class NoSqlDatabaseManagerTest {
                 .setContextStack(stack)
                 .build();
 
-            manager.writeInternal(event);
+            manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();

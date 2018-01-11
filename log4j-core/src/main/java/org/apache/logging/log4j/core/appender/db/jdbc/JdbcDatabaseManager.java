@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import java.io.Serializable;
 import java.io.StringReader;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -98,8 +99,14 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         }
     }
 
+    @Deprecated
     @Override
     protected void writeInternal(final LogEvent event) {
+        writeInternal(event, null);
+    }
+    
+    @Override
+    protected void writeInternal(final LogEvent event, final Serializable serializable) {
         StringReader reader = null;
         try {
             if (!this.isRunning() || this.connection == null || this.connection.isClosed() || this.statement == null

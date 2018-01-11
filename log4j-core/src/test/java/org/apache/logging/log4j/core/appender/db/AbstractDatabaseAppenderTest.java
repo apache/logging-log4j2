@@ -95,14 +95,14 @@ public class AbstractDatabaseAppenderTest {
 
         appender.append(event1);
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1));
+        then(manager).should().writeInternal(same(event1), null);
         then(manager).should().commitAndClose();
 
         reset(manager);
 
         appender.append(event2);
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event2));
+        then(manager).should().writeInternal(same(event2), null);
         then(manager).should().commitAndClose();
     }
 

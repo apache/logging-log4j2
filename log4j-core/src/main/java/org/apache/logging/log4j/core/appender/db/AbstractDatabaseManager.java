@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.appender.db;
 
 import java.io.Flushable;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -120,11 +121,21 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
 
     /**
      * Performs the actual writing of the event in an implementation-specific way. This method is called immediately
-     * from {@link #write(LogEvent)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
+     * from {@link #write(LogEvent, Serializable)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
+     *
+     * @param event The event to write to the database.
+     * @deprecated Use {@link #writeInternal(LogEvent, Serializable)}.
+     */
+    @Deprecated
+    protected abstract void writeInternal(LogEvent event);
+
+    /**
+     * Performs the actual writing of the event in an implementation-specific way. This method is called immediately
+     * from {@link #write(LogEvent, Serializable)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
      *
      * @param event The event to write to the database.
      */
-    protected abstract void writeInternal(LogEvent event);
+    protected abstract void writeInternal(LogEvent event, Serializable serializable);
 
     /**
      * Commits any active transaction (if applicable) and disconnects from the database (returns the connection to the
@@ -159,8 +170,20 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * This method manages buffering and writing of events.
      *
      * @param event The event to write to the database.
+     * @deprecated since 2.10.1 Use {@link #write(LogEvent, Serializable)}.
      */
+    @Deprecated
     public final synchronized void write(final LogEvent event) {
+        write(event, null);
+    }
+
+    /**
+     * This method manages buffering and writing of events.
+     *
+     * @param event The event to write to the database.
+     * @param serializable Serializable event
+     */
+    public final synchronized void write(final LogEvent event, final Serializable serializable) {
         if (this.bufferSize > 0) {
             this.buffer.add(event.toImmutable());
             if (this.buffer.size() >= this.bufferSize || event.isEndOfBatch()) {
@@ -169,7 +192,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
         } else {
             this.connectAndStart();
             try {
-                this.writeInternal(event);
+                this.writeInternal(event, serializable);
             } finally {
                 this.commitAndClose();
             }

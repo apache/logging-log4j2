@@ -74,6 +74,12 @@
       <action issue="LOG4J2-2165" dev="ggregory" type="update">
         Update Jackson from 2.9.2 to 2.9.3.
       </action>
+      <action issue="LOG4J2-2179" dev="ggregory" type="add">
+        The MongoDB Appender should use a keys and values for a Log4j MapMessage.
+      </action>
+      <action issue="LOG4J2-2180" dev="ggregory" type="add">
+        Add a MongoDbProvider builder for and deprecate org.apache.logging.log4j.mongodb.MongoDbProvider.createNoSqlProvider().
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
