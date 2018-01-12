@@ -22,10 +22,16 @@ import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
 import org.apache.logging.log4j.test.RuleChainFactory;
+import org.bson.Document;
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
+
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
@@ -48,5 +54,14 @@ public class MongoDbCappedTestJava8 {
     public void test() {
         final Logger logger = LogManager.getLogger();
         logger.info("Hello log");
+        try (final MongoClient mongoClient = mongoDbTestRule.getMongoClient()) {
+            final MongoDatabase database = mongoClient.getDatabase("test");
+            Assert.assertNotNull(database);
+            final MongoCollection<Document> collection = database.getCollection("applog");
+            Assert.assertNotNull(collection);
+            Document first = collection.find().first();
+            Assert.assertNotNull(first);
+            Assert.assertEquals(first.toJson(), "Hello log", first.getString("message"));
+        }
     }
 }
