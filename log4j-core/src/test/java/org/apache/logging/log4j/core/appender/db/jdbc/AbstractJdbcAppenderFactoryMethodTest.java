@@ -58,9 +58,9 @@ public abstract class AbstractJdbcAppenderFactoryMethodTest {
         try (final Connection connection = jdbcRule.getConnectionSource().getConnection()) {
             final SQLException exception = new SQLException("Some other error message!");
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            final PrintWriter writer = new PrintWriter(outputStream);
-            exception.printStackTrace(writer);
-            writer.close();
+            try (final PrintWriter writer = new PrintWriter(outputStream)) {
+                exception.printStackTrace(writer);
+            }
             final String stackTrace = outputStream.toString();
 
             final long millis = System.currentTimeMillis();
@@ -70,42 +70,43 @@ public abstract class AbstractJdbcAppenderFactoryMethodTest {
             logger.debug("Factory logged message 01.");
             logger.error("Error from factory 02.", exception);
 
-            final Statement statement = connection.createStatement();
-            final ResultSet resultSet = statement.executeQuery("SELECT * FROM fmLogEntry ORDER BY id");
+            try (final Statement statement = connection.createStatement();
+                    final ResultSet resultSet = statement.executeQuery("SELECT * FROM fmLogEntry ORDER BY id")) {
 
-            assertTrue("There should be at least one row.", resultSet.next());
+                assertTrue("There should be at least one row.", resultSet.next());
 
-            long date = resultSet.getTimestamp("eventDate").getTime();
-            long anotherDate = resultSet.getTimestamp("anotherDate").getTime();
-            assertEquals(date, anotherDate);
-            assertTrue("The date should be later than pre-logging (1).", date >= millis);
-            assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
-            assertEquals("The literal column is not correct (1).", "Some Other Literal Value",
-                resultSet.getString("literalColumn"));
-            assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getNString("level"));
-            assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
-            assertEquals("The message column is not correct (1).", "Factory logged message 01.",
-                resultSet.getString("message"));
-            assertEquals("The exception column is not correct (1).", Strings.EMPTY,
-                IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
+                long date = resultSet.getTimestamp("eventDate").getTime();
+                long anotherDate = resultSet.getTimestamp("anotherDate").getTime();
+                assertEquals(date, anotherDate);
+                assertTrue("The date should be later than pre-logging (1).", date >= millis);
+                assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
+                assertEquals("The literal column is not correct (1).", "Some Other Literal Value",
+                        resultSet.getString("literalColumn"));
+                assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getNString("level"));
+                assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
+                assertEquals("The message column is not correct (1).", "Factory logged message 01.",
+                        resultSet.getString("message"));
+                assertEquals("The exception column is not correct (1).", Strings.EMPTY,
+                        IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
-            assertTrue("There should be two rows.", resultSet.next());
+                assertTrue("There should be two rows.", resultSet.next());
 
-            date = resultSet.getTimestamp("eventDate").getTime();
-            anotherDate = resultSet.getTimestamp("anotherDate").getTime();
-            assertEquals(date, anotherDate);
-            assertTrue("The date should be later than pre-logging (2).", date >= millis);
-            assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
-            assertEquals("The literal column is not correct (2).", "Some Other Literal Value",
-                resultSet.getString("literalColumn"));
-            assertEquals("The level column is not correct (2).", "ERROR", resultSet.getNString("level"));
-            assertEquals("The logger column is not correct (2).", logger.getName(), resultSet.getNString("logger"));
-            assertEquals("The message column is not correct (2).", "Error from factory 02.",
-                resultSet.getString("message"));
-            assertEquals("The exception column is not correct (2).", stackTrace,
-                IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
+                date = resultSet.getTimestamp("eventDate").getTime();
+                anotherDate = resultSet.getTimestamp("anotherDate").getTime();
+                assertEquals(date, anotherDate);
+                assertTrue("The date should be later than pre-logging (2).", date >= millis);
+                assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
+                assertEquals("The literal column is not correct (2).", "Some Other Literal Value",
+                        resultSet.getString("literalColumn"));
+                assertEquals("The level column is not correct (2).", "ERROR", resultSet.getNString("level"));
+                assertEquals("The logger column is not correct (2).", logger.getName(), resultSet.getNString("logger"));
+                assertEquals("The message column is not correct (2).", "Error from factory 02.",
+                        resultSet.getString("message"));
+                assertEquals("The exception column is not correct (2).", stackTrace,
+                        IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
-            assertFalse("There should not be three rows.", resultSet.next());
+                assertFalse("There should not be three rows.", resultSet.next());
+            }
         }
     }
 
