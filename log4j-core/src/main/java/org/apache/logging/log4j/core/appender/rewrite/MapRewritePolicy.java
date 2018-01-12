@@ -81,8 +81,7 @@ public final class MapRewritePolicy implements RewritePolicy {
             }
         }
         final Message message = mapMsg.newInstance(newMap);
-        final LogEvent result = new Log4jLogEvent.Builder(source).setMessage(message).build();
-        return result;
+        return new Log4jLogEvent.Builder(source).setMessage(message).build();
     }
 
     /**
