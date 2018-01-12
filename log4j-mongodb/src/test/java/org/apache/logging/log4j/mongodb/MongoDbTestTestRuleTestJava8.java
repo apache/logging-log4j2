@@ -43,10 +43,10 @@ public class MongoDbTestTestRuleTestJava8 {
         Assume.assumeTrue(SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_8));
     }
 
-    public static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(MongoDbTestTestRuleTestJava8.class.getName());
+    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
+            .create(TestConstants.SYS_PROP_NAME_PORT);
 
-    public static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName());
+    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName());
 
     @ClassRule
     public static RuleChain mongoDbChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule);

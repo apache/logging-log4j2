@@ -19,7 +19,8 @@
 <Configuration status="error">
   <Appenders>
     <NoSql name="MongoDbAppender">
-      <MongoDb databaseName="test" collectionName="applog" server="localhost" capped="true" collectionSize="1073741824" />
+      <MongoDb databaseName="test" collectionName="applog" server="localhost" capped="true" collectionSize="1073741824"
+        port="${sys:MongoDBTestPort:-27017}" />
     </NoSql>
   </Appenders>
   <Loggers>

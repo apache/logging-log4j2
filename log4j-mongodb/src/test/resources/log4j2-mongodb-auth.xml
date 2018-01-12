@@ -19,7 +19,8 @@
 <Configuration status="error">
   <Appenders>
     <NoSql name="MongoDbAppender">
-      <MongoDb databaseName="test" collectionName="applog" server="localhost" userName="log4jUser" password="12345678"/>
+      <MongoDb databaseName="test" collectionName="applog" server="localhost" userName="log4jUser" password="12345678"
+        port="${sys:MongoDBTestPort:-27017}" />
     </NoSql>
   </Appenders>
   <Loggers>

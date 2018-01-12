@@ -33,12 +33,12 @@ import org.junit.rules.RuleChain;
 @Category(Appenders.MongoDb.class)
 public class MongoDbCappedTestJava8 {
 
-    static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-capped.xml");
+    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-capped.xml");
 
-    static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(MongoDbTestJava8.class.getName());
+    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
+            .create(TestConstants.SYS_PROP_NAME_PORT);
 
-    static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName());
+    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName());
 
     @ClassRule
     public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,

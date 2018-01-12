@@ -40,12 +40,12 @@ import com.mongodb.client.MongoDatabase;
 @Category(Appenders.MongoDb.class)
 public class MongoDbMapMessageTestJava8 {
 
-    static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-map-message.xml");
+    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-map-message.xml");
 
-    static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(MongoDbMapMessageTestJava8.class.getName());
+    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
+            .create(TestConstants.SYS_PROP_NAME_PORT);
 
-    static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName());
+    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName());
 
     @ClassRule
     public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
