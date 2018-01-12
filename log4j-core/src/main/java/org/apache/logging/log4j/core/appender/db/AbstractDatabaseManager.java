@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
@@ -32,6 +33,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 public abstract class AbstractDatabaseManager extends AbstractManager implements Flushable {
     private final ArrayList<LogEvent> buffer;
     private final int bufferSize;
+    private final Layout<? extends Serializable> layout;
 
     private boolean running = false;
 
@@ -43,9 +45,22 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param bufferSize The size of the log event buffer.
      */
     protected AbstractDatabaseManager(final String name, final int bufferSize) {
+        this(name, bufferSize, null);
+    }
+
+    /**
+     * Instantiates the base manager.
+     *
+     * @param name The manager name, which should include any configuration details that one might want to be able to
+     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
+     * @param layout the Appender-level layout.
+     * @param bufferSize The size of the log event buffer.
+     */
+    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout<? extends Serializable> layout) {
         super(null, name);
         this.bufferSize = bufferSize;
         this.buffer = new ArrayList<>(bufferSize + 1);
+        this.layout = layout;
     }
 
     /**
@@ -156,7 +171,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
             this.connectAndStart();
             try {
                 for (final LogEvent event : this.buffer) {
-                    this.writeInternal(event);
+                    this.writeInternal(event, layout != null ? layout.toSerializable(event) : null);
                 }
             } finally {
                 this.commitAndClose();
@@ -233,14 +248,17 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      */
     protected abstract static class AbstractFactoryData {
         private final int bufferSize;
+        private final Layout<? extends Serializable> layout;
 
         /**
          * Constructs the base factory data.
          *
          * @param bufferSize The size of the buffer.
+         * @param bufferSize The appender-level layout
          */
-        protected AbstractFactoryData(final int bufferSize) {
+        protected AbstractFactoryData(final int bufferSize, final Layout<? extends Serializable> layout) {
             this.bufferSize = bufferSize;
+            this.layout = layout;
         }
 
         /**
@@ -250,6 +268,15 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
          */
         public int getBufferSize() {
             return bufferSize;
+        }
+
+        /**
+         * Gets the layout.
+         * 
+         * @return the layout.
+         */
+        public Layout<? extends Serializable> getLayout() {
+            return layout;
         }
     }
 }

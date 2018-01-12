@@ -178,7 +178,7 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
         protected FactoryData(final int bufferSize, final Class<? extends AbstractLogEventWrapperEntity> entityClass,
                               final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
                               final String persistenceUnitName) {
-            super(bufferSize);
+            super(bufferSize, null);
 
             this.entityClass = entityClass;
             this.entityConstructor = entityConstructor;

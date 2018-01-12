@@ -214,6 +214,10 @@ public class MyApp {
             <code>MapMessage</code> to a JMS <code>javax.jms.MapMessage</code>.
           </li>
           <li>
+            When a <a href="appenders.html#JDBCAppender">JDBC Appender</a> is configured with a <code>MessageLayout</code>, it converts a Log4j 
+            <code>MapMessage</code> to values in a SQL INSERT statement.
+          </li>
+          <li>
             When a <a href="appenders.html#NoSQLAppenderMongoDB">MongoDB Appender</a> is configured with a <code>MessageLayout</code>, it converts a Log4j 
             <code>MapMessage</code> to fields in a MongoDB object. 
           </li>

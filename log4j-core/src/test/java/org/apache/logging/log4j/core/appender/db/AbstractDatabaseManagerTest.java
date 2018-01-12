@@ -144,10 +144,10 @@ public class AbstractDatabaseManagerTest {
         manager.write(event4, null);
 
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1copy));
-        then(manager).should().writeInternal(same(event2copy));
-        then(manager).should().writeInternal(same(event3copy));
-        then(manager).should().writeInternal(same(event4copy));
+        then(manager).should().writeInternal(same(event1copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event2copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event3copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event4copy), (Serializable) isNull());
         then(manager).should().commitAndClose();
         then(manager).shouldHaveNoMoreInteractions();
     }
@@ -177,9 +177,9 @@ public class AbstractDatabaseManagerTest {
         manager.flush();
 
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1copy));
-        then(manager).should().writeInternal(same(event2copy));
-        then(manager).should().writeInternal(same(event3copy));
+        then(manager).should().writeInternal(same(event1copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event2copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event3copy), (Serializable) isNull());
         then(manager).should().commitAndClose();
         then(manager).shouldHaveNoMoreInteractions();
     }
@@ -209,9 +209,9 @@ public class AbstractDatabaseManagerTest {
         manager.shutdown();
 
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1copy));
-        then(manager).should().writeInternal(same(event2copy));
-        then(manager).should().writeInternal(same(event3copy));
+        then(manager).should().writeInternal(same(event1copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event2copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event3copy), (Serializable) isNull());
         then(manager).should().commitAndClose();
         then(manager).should().shutdownInternal();
         then(manager).shouldHaveNoMoreInteractions();

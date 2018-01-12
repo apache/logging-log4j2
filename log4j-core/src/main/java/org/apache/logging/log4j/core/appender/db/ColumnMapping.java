@@ -167,8 +167,8 @@ public class ColumnMapping {
                     .withConfiguration(configuration)
                     .build();
             }
-            if (!(layout != null
-                || literal != null
+            if (!(layout == null
+                || literal == null
                 || Date.class.isAssignableFrom(type)
                 || ReadOnlyStringMap.class.isAssignableFrom(type)
                 || ThreadContextMap.class.isAssignableFrom(type)

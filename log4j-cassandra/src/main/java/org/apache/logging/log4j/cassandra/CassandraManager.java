@@ -197,7 +197,7 @@ public class CassandraManager extends AbstractDatabaseManager {
                             final String clusterName, final String keyspace, final String table, final String username,
                             final String password, final boolean useClockForTimestampGenerator, final int bufferSize,
                             final boolean batched, final BatchStatement.Type batchType) {
-            super(bufferSize);
+            super(bufferSize, null);
             this.contactPoints = convertAndAddDefaultPorts(contactPoints);
             this.columns = columns;
             this.useTls = useTls;

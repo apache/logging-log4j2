@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.util.Arrays;
 import java.util.Objects;
@@ -55,9 +54,9 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
     private final String description;
 
-    private JdbcAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                         final JdbcDatabaseManager manager) {
-        super(name, filter, ignoreExceptions, manager);
+    private JdbcAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions, final JdbcDatabaseManager manager) {
+        super(name, filter, layout, ignoreExceptions, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 
@@ -124,6 +123,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         /**
          * The connections source from which database connections should be retrieved.
+         * 
+         * @return this
          */
         public B setConnectionSource(final ConnectionSource connectionSource) {
             this.connectionSource = connectionSource;
@@ -133,6 +134,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         /**
          * If an integer greater than 0, this causes the appender to buffer log events and flush whenever the buffer
          * reaches this size.
+         * 
+         * @return this
          */
         public B setBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
@@ -141,6 +144,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         /**
          * The name of the database table to insert log events into.
+         * 
+         * @return this
          */
         public B setTableName(final String tableName) {
             this.tableName = tableName;
@@ -149,6 +154,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         /**
          * Information about the columns that log event data should be inserted into and how to insert that data.
+         * 
+         * @return this
          */
         public B setColumnConfigs(final ColumnConfig... columnConfigs) {
             this.columnConfigs = columnConfigs;
@@ -163,42 +170,19 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         @Override
         public JdbcAppender build() {
             if (Assert.isEmpty(columnConfigs) && Assert.isEmpty(columnMappings)) {
-                LOGGER.error("Cannot create JdbcAppender without any columns configured.");
+                LOGGER.error("Cannot create JdbcAppender without any columns.");
                 return null;
             }
-            final String managerName = "JdbcManager{name=" + getName() + ", bufferSize=" + bufferSize + ", tableName=" +
-                tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings=" +
-                Arrays.toString(columnMappings) + '}';
-            final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize,
-                connectionSource, tableName, columnConfigs, columnMappings);
+            final String managerName = "JdbcManager{name=" + getName() + ", bufferSize=" + bufferSize + ", tableName="
+                    + tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings="
+                    + Arrays.toString(columnMappings) + '}';
+            final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
+                    connectionSource, tableName, columnConfigs, columnMappings);
             if (manager == null) {
                 return null;
             }
-            return new JdbcAppender(getName(), getFilter(), isIgnoreExceptions(), manager);
+            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), manager);
         }
 
-        @Override
-        @Deprecated
-        public Layout<? extends Serializable> getLayout() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        @Deprecated
-        public B withLayout(final Layout<? extends Serializable> layout) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        @Deprecated
-        public Layout<? extends Serializable> getOrCreateLayout() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        @Deprecated
-        public Layout<? extends Serializable> getOrCreateLayout(final Charset charset) {
-            throw new UnsupportedOperationException();
-        }
     }
 }

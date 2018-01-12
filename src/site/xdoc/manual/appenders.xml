@@ -1163,6 +1163,48 @@ CREATE TABLE logs (
               </td>
             </tr>
           </table>
+          <table>
+            <caption align="top">ColumnMapping Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the database column.</td>
+            </tr>
+            <tr>
+              <td>pattern</td>
+              <td>String</td>
+              <td>Use this attribute to insert a value or values from the log event in this column using a
+                <code>PatternLayout</code> pattern. Simply specify any legal pattern in this attribute. Either this
+                attribute, <code>literal</code>, or <code>isEventTimestamp="true"</code> must be specified, but not more
+                than one of these.</td>
+            </tr>
+            <tr>
+              <td>literal</td>
+              <td>String</td>
+              <td>Use this attribute to insert a literal value in this column. The value will be included directly in
+                the insert SQL, without any quoting (which means that if you want this to be a string, your value should
+                contain single quotes around it like this: <code>literal="'Literal String'"</code>). This is especially
+                useful for databases that don't support identity columns. For example, if you are using Oracle you could
+                specify <code>literal="NAME_OF_YOUR_SEQUENCE.NEXTVAL"</code> to insert a unique ID in an ID column.
+                Either this attribute, <code>pattern</code>, or <code>isEventTimestamp="true"</code> must be specified,
+                but not more than one of these.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to format the LogEvent.</td>
+            </tr>
+            <tr>
+              <td>type</td>
+              <td>String</td>
+              <td>Conversion type name, a fully-qualified class name.</td>
+            </tr>
+          </table>
           <p>
             Here are a couple sample configurations for the JDBCAppender, as well as a sample factory implementation
             that uses Commons Pooling and Commons DBCP to pool database connections:
@@ -1247,6 +1289,41 @@ public class ConnectionFactory {
         return Singleton.INSTANCE.dataSource.getConnection();
     }
 }]]></pre>
+          <p>
+            This appender is <a href="messages.html#MapMessage">MapMessage</a>-aware.
+          </p>
+          <p>
+            The following configuration uses a <code>MessageLayout</code> to indicate that the Appender should match 
+            the keys of a <code>MapMessage</code> to the names of <code>ColumnMapping</code>s when setting the 
+            values of the Appender's SQL INSERT statement. This let you insert rows for custom values in a 
+            database table based on a Log4j <code>MapMessage</code> instead of values from <code>LogEvent</code>s.
+          </p>
+          <pre class="prettyprint linenums lang-xml"><![CDATA[<Configuration status="debug">
+
+  <Appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
+    </Console>
+    <Jdbc name="databaseAppender" tableName="dsLogEntry" ignoreExceptions="false">
+      <DataSource jndiName="java:/comp/env/jdbc/TestDataSourceAppender" />
+      <ColumnMapping name="Id" />
+      <ColumnMapping name="ColumnA" />
+      <ColumnMapping name="ColumnB" />
+      <MessageLayout />
+    </Jdbc>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.core.appender.db" level="debug" additivity="false">
+      <AppenderRef ref="databaseAppender" />
+    </Logger>
+
+    <Root level="fatal">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>]]></pre>          
         </subsection>
         <a name="JMSAppender"/>
         <!-- cool URLs don't change, so here are some old anchors -->

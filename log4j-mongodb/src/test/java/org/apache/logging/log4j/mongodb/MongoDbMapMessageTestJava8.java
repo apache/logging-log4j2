@@ -54,10 +54,10 @@ public class MongoDbMapMessageTestJava8 {
     @Test
     public void test() {
         final Logger logger = LogManager.getLogger();
-        final MapMessage map = new MapMessage();
-        map.with("SomeName", "SomeValue");
-        map.with("SomeInt", 1);
-        logger.info(map);
+        final MapMessage mapMessage = new MapMessage();
+        mapMessage.with("SomeName", "SomeValue");
+        mapMessage.with("SomeInt", 1);
+        logger.info(mapMessage);
         //
         try (final MongoClient mongoClient = mongoDbTestRule.getMongoClient()) {
             final MongoDatabase database = mongoClient.getDatabase("test");

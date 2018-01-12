@@ -30,16 +30,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
+import org.apache.logging.log4j.core.appender.nosql.NoSqlObject;
 import org.apache.logging.log4j.core.config.plugins.convert.DateTypeConverter;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
@@ -47,6 +54,10 @@ import org.apache.logging.log4j.util.Strings;
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
  */
 public final class JdbcDatabaseManager extends AbstractDatabaseManager {
+
+    private static StatusLogger logger() {
+        return StatusLogger.getLogger();
+    }
 
     private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
 
@@ -91,11 +102,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         try {
             this.connection = this.connectionSource.getConnection();
             this.connection.setAutoCommit(false);
+            logger().debug("Preparing SQL: {}", this.sqlStatement);
             this.statement = this.connection.prepareStatement(this.sqlStatement);
         } catch (final SQLException e) {
             throw new AppenderLoggingException(
-                    "Cannot write logging event or flush buffer; JDBC manager cannot connect to the database.", e
-            );
+                    "Cannot write logging event or flush buffer; JDBC manager cannot connect to the database.", e);
         }
     }
 
@@ -105,6 +116,14 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         writeInternal(event, null);
     }
     
+    private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
+        final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
+        int i = 1; // JDBC indices start at 1
+        for (final ColumnMapping mapping : this.columnMappings) {
+            statement.setObject(i++, map.getValue(mapping.getName()));
+        }
+    }
+
     @Override
     protected void writeInternal(final LogEvent event, final Serializable serializable) {
         StringReader reader = null;
@@ -115,27 +134,35 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         "Cannot write logging event; JDBC manager not connected to the database.");
             }
 
-            int i = 1;
+            if (serializable instanceof MapMessage) {
+                setFields((MapMessage<?, ?>) serializable);
+            }
+            int i = 1; // JDBC indices start at 1
             for (final ColumnMapping mapping : this.columnMappings) {
                 if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
-                    || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
+                        || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
                     this.statement.setObject(i++, event.getContextData().toMap());
                 } else if (ThreadContextStack.class.isAssignableFrom(mapping.getType())) {
                     this.statement.setObject(i++, event.getContextStack().asList());
                 } else if (Date.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(i++,
-                        DateTypeConverter.fromMillis(event.getTimeMillis(), mapping.getType().asSubclass(Date.class)));
-                } else if (Clob.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setClob(i++, new StringReader(mapping.getLayout().toSerializable(event)));
-                } else if (NClob.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setNClob(i++, new StringReader(mapping.getLayout().toSerializable(event)));
+                    this.statement.setObject(i++, DateTypeConverter.fromMillis(event.getTimeMillis(),
+                            mapping.getType().asSubclass(Date.class)));
                 } else {
-                    final Object value = TypeConverters.convert(mapping.getLayout().toSerializable(event),
-                        mapping.getType(), null);
-                    if (value == null) {
-                        this.statement.setNull(i++, Types.NULL);
-                    } else {
-                        this.statement.setObject(i++, value);
+                    StringLayout layout = mapping.getLayout();
+                    if (layout != null) {
+                        if (Clob.class.isAssignableFrom(mapping.getType())) {
+                            this.statement.setClob(i++, new StringReader(layout.toSerializable(event)));
+                        } else if (NClob.class.isAssignableFrom(mapping.getType())) {
+                            this.statement.setNClob(i++, new StringReader(layout.toSerializable(event)));
+                        } else {
+                            final Object value = TypeConverters.convert(layout.toSerializable(event), mapping.getType(),
+                                    null);
+                            if (value == null) {
+                                this.statement.setNull(i++, Types.NULL);
+                            } else {
+                                this.statement.setObject(i++, value);
+                            }
+                        }
                     }
                 }
             }
@@ -213,7 +240,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * @param tableName The name of the database table to insert log events into.
      * @param columnConfigs Configuration information about the log table columns.
      * @return a new or existing JDBC manager as applicable.
-     * @deprecated use {@link #getManager(String, int, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
+     * @deprecated use {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
      */
     @Deprecated
     public static JdbcDatabaseManager getJDBCDatabaseManager(final String name, final int bufferSize,
@@ -222,7 +249,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                                                              final ColumnConfig[] columnConfigs) {
 
         return getManager(name,
-            new FactoryData(bufferSize, connectionSource, tableName, columnConfigs, new ColumnMapping[0]),
+            new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, new ColumnMapping[0]),
             getFactory());
     }
 
@@ -236,14 +263,39 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * @param columnConfigs Configuration information about the log table columns.
      * @param columnMappings column mapping configuration (including type conversion).
      * @return a new or existing JDBC manager as applicable.
+     * @deprecated use {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
      */
+    @Deprecated
     public static JdbcDatabaseManager getManager(final String name,
                                                  final int bufferSize,
                                                  final ConnectionSource connectionSource,
                                                  final String tableName,
                                                  final ColumnConfig[] columnConfigs,
                                                  final ColumnMapping[] columnMappings) {
-        return getManager(name, new FactoryData(bufferSize, connectionSource, tableName, columnConfigs, columnMappings),
+        return getManager(name, new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, columnMappings),
+            getFactory());
+    }
+
+    /**
+     * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
+     *
+     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize The size of the log event buffer.
+     * @param layout The Appender-level layout
+     * @param connectionSource The source for connections to the database.
+     * @param tableName The name of the database table to insert log events into.
+     * @param columnConfigs Configuration information about the log table columns.
+     * @param columnMappings column mapping configuration (including type conversion).
+     * @return a new or existing JDBC manager as applicable.
+     */
+    public static JdbcDatabaseManager getManager(final String name,
+                                                 final int bufferSize,
+                                                 final Layout<? extends Serializable> layout,
+                                                 final ConnectionSource connectionSource,
+                                                 final String tableName,
+                                                 final ColumnConfig[] columnConfigs,
+                                                 final ColumnMapping[] columnMappings) {
+        return getManager(name, new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs, columnMappings),
             getFactory());
     }
 
@@ -260,9 +312,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         private final ColumnConfig[] columnConfigs;
         private final ColumnMapping[] columnMappings;
 
-        protected FactoryData(final int bufferSize, final ConnectionSource connectionSource, final String tableName,
-                              final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings) {
-            super(bufferSize);
+        protected FactoryData(final int bufferSize, final Layout<? extends Serializable> layout,
+                final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs,
+                final ColumnMapping[] columnMappings) {
+            super(bufferSize, layout);
             this.connectionSource = connectionSource;
             this.tableName = tableName;
             this.columnConfigs = columnConfigs;
