@@ -69,6 +69,5 @@ public class MongoDbMapMessageTestJava8 {
             Assert.assertEquals(first.toJson(), "SomeValue", first.getString("SomeName"));
             Assert.assertEquals(first.toJson(), Integer.valueOf(1), first.getInteger("SomeInt"));
         }
-
     }
 }
