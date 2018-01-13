@@ -85,6 +85,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         this.connection = this.connectionSource.getConnection();
         final DatabaseMetaData metaData = this.connection.getMetaData();
         this.isBatchSupported = metaData.supportsBatchUpdates();
+        logger().debug("Closing Connection {}", this.connection);
         Closer.closeSilently(this.connection);
     }
 
@@ -211,14 +212,17 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         try {
             if (this.connection != null && !this.connection.isClosed()) {
                 if (this.isBatchSupported) {
+                    logger().debug("Executing batch PreparedStatement {}", this.statement);
                     this.statement.executeBatch();
                 }
+                logger().debug("Committing Connection {}", this.connection);
                 this.connection.commit();
             }
         } catch (final SQLException e) {
             throw new AppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
         } finally {
             try {
+                logger().debug("Closing PreparedStatement {}", this.statement);
                 Closer.close(this.statement);
             } catch (final Exception e) {
                 logWarn("Failed to close SQL statement logging event or flushing buffer", e);
@@ -228,6 +232,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
 
             try {
+                logger().debug("Closing Connection {}", this.connection);
                 Closer.close(this.connection);
             } catch (final Exception e) {
                 logWarn("Failed to close database connection logging event or flushing buffer", e);
