@@ -1296,7 +1296,6 @@
     <module>log4j-taglib</module>
     <module>log4j-jmx-gui</module>
     <module>log4j-samples</module>
-    <module>log4j-osgi</module>
     <module>log4j-bom</module>
     <module>log4j-couchdb</module>
     <module>log4j-mongodb</module>
@@ -1307,6 +1306,7 @@
     <module>log4j-jul</module>
     <module>log4j-liquibase</module>
     <module>log4j-appserver</module>
+    <module>log4j-osgi</module>
   </modules>
   <profiles>
     <profile>
