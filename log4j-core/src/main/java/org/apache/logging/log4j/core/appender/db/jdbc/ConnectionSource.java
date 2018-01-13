@@ -24,6 +24,7 @@ import java.sql.SQLException;
  * connection sources meet your needs, you can simply create your own connection source.
  */
 public interface ConnectionSource {
+    
     /**
      * This should return a new connection every time it is called.
      *
