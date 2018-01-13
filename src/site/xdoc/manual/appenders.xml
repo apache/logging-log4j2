@@ -4683,8 +4683,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </table>
 
           <h4>KeyStore</h4>
-          The keystore is meant to contain your private keys and certificates,
-          and determines which authentication credentials to send to the remote host.
+          <p>
+            The keystore is meant to contain your private keys and certificates,
+            and determines which authentication credentials to send to the remote host.
+          </p>
 
           <table>
             <caption align="top">KeyStore Configuration Parameters</caption>
