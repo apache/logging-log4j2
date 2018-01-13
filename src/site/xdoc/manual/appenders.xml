@@ -1177,13 +1177,6 @@ CREATE TABLE logs (
                 Either this attribute, <code>pattern</code>, or <code>isEventTimestamp="true"</code> must be specified,
                 but not more than one of these.
                 </p>
-                <p>
-                  Another use of this attribute is to provide an expression that includes the SQL parameter marker '?'.
-                  For example, using an H2 database expression:
-                </p>
-                <p>
-                  <code>&lt;ColumnMapping name="instant" literal="TIMESTAMPADD('MILLISECOND', ?, TIMESTAMP '1970-01-01')"/></code>
-                </p>
               </td>
             </tr>
             <tr>
