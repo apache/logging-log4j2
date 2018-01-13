@@ -1168,13 +1168,23 @@ CREATE TABLE logs (
             <tr>
               <td>literal</td>
               <td>String</td>
-              <td>Use this attribute to insert a literal value in this column. The value will be included directly in
+              <td>
+                <p>Use this attribute to insert a literal value in this column. The value will be included directly in
                 the insert SQL, without any quoting (which means that if you want this to be a string, your value should
                 contain single quotes around it like this: <code>literal="'Literal String'"</code>). This is especially
                 useful for databases that don't support identity columns. For example, if you are using Oracle you could
                 specify <code>literal="NAME_OF_YOUR_SEQUENCE.NEXTVAL"</code> to insert a unique ID in an ID column.
                 Either this attribute, <code>pattern</code>, or <code>isEventTimestamp="true"</code> must be specified,
-                but not more than one of these.</td>
+                but not more than one of these.
+                </p>
+                <p>
+                  Another use of this attribute is to provide an expression that includes the SQL parameter marker '?'.
+                  For example, using an H2 database expression:
+                </p>
+                <p>
+                  <code>&lt;ColumnMapping name="instant" literal="TIMESTAMPADD('MILLISECOND', ?, TIMESTAMP '1970-01-01')"/></code>
+                </p>
+              </td>
             </tr>
             <tr>
               <td>isEventTimestamp</td>
