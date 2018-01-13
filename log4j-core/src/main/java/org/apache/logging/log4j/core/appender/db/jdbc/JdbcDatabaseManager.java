@@ -325,6 +325,9 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * Creates managers.
      */
     private static final class JdbcDatabaseManagerFactory implements ManagerFactory<JdbcDatabaseManager, FactoryData> {
+        
+        private static final char PARAMETER_MARKER = '?';
+
         @Override
         public JdbcDatabaseManager createManager(final String name, final FactoryData data) {
             final StringBuilder sb = new StringBuilder("INSERT INTO ").append(data.tableName).append(" (");
@@ -344,7 +347,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 if (Strings.isNotEmpty(mapping.getLiteralValue())) {
                     sb.append(mapping.getLiteralValue());
                 } else {
-                    sb.append('?');
+                    sb.append(PARAMETER_MARKER);
                     columnMappings.add(mapping);
                 }
                 sb.append(',');
@@ -354,7 +357,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 if (Strings.isNotEmpty(config.getLiteralValue())) {
                     sb.append(config.getLiteralValue());
                 } else {
-                    sb.append('?');
+                    sb.append(PARAMETER_MARKER);
                     columnConfigs.add(config);
                 }
                 sb.append(',');
