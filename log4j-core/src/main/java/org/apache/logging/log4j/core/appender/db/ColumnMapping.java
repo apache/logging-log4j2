@@ -180,4 +180,10 @@ public class ColumnMapping {
             return new ColumnMapping(name, layout, literal, type);
         }
     }
+
+    @Override
+    public String toString() {
+        return "ColumnMapping [name=" + name + ", layout=" + layout + ", literalValue=" + literalValue + ", type="
+                + type + "]";
+    }
 }
