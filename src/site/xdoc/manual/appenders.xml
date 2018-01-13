@@ -1188,7 +1188,7 @@ CREATE TABLE logs (
                 contain single quotes around it like this: 
                 </p>
                 <p>
-                  <code>&lt;ColumnMapping name="instant" literal="TIMESTAMPADD('MILLISECOND', ?, TIMESTAMP '1970-01-01')"/></code>
+                  <code>&lt;ColumnMapping name="instant" parameter="TIMESTAMPADD('MILLISECOND', ?, TIMESTAMP '1970-01-01')"/></code>
                 </p>
                 <p>
                   You can only specify one of <code>literal</code> or <code>parameter</code>.
