@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -103,6 +104,11 @@ public final class DriverManagerConnectionSource implements ConnectionSource {
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+    
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
 
     private final String connectionString;
     private final String driverClassName;
@@ -134,14 +140,6 @@ public final class DriverManagerConnectionSource implements ConnectionSource {
         return DriverManager.getConnection(connectionString, toString(userName), toString(password));
     }
 
-    private Properties toProperties(Property[] properties) {
-        Properties props = new Properties();
-        for (Property property : properties) {
-            props.setProperty(property.getName(), property.getValue());
-        }
-        return props;
-    }
-
     private void loadDriver() throws SQLException {
         if (driverClassName != null) {
             // Hack for old JDBC drivers.
@@ -152,6 +150,14 @@ public final class DriverManagerConnectionSource implements ConnectionSource {
                         getClass().getSimpleName(), driverClassName, e.toString()), e);
             }
         }
+    }
+
+    private Properties toProperties(Property[] properties) {
+        Properties props = new Properties();
+        for (Property property : properties) {
+            props.setProperty(property.getName(), property.getValue());
+        }
+        return props;
     }
 
     @Override
