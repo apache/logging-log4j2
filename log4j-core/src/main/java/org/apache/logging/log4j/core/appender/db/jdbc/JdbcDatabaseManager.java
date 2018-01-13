@@ -116,9 +116,14 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     
     private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
         final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
+        final String simpleName = statement.getClass().getName();
         int i = 1; // JDBC indices start at 1
         for (final ColumnMapping mapping : this.columnMappings) {
-            statement.setObject(i++, map.getValue(mapping.getName()));
+            final String source = mapping.getSource();
+            final String key = Strings.isEmpty(source) ? mapping.getName() : source;
+            final Object value = map.getValue(key);
+            logger().trace("{} setObject({}, {}) for key '{}' and mapping '{}'", simpleName, i, value, key, mapping.getName());
+            statement.setObject(i++, value);
         }
     }
 
@@ -333,8 +338,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             final StringBuilder sb = new StringBuilder("INSERT INTO ").append(data.tableName).append(" (");
             // so this gets a little more complicated now that there are two ways to configure column mappings, but
             // both mappings follow the same exact pattern for the prepared statement
+            int i = 1;
             for (final ColumnMapping mapping : data.columnMappings) {
-                sb.append(mapping.getName()).append(',');
+                final  String mappingName = mapping.getName();
+                logger().trace("Adding INSERT ColumnMapping[{}]: {}={} ", i++, mappingName, mapping);
+                sb.append(mappingName).append(',');
             }
             for (final ColumnConfig config : data.columnConfigs) {
                 sb.append(config.getColumnName()).append(',');
@@ -342,15 +350,25 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             // at least one of those arrays is guaranteed to be non-empty
             sb.setCharAt(sb.length() - 1, ')');
             sb.append(" VALUES (");
+            i = 1;
             final List<ColumnMapping> columnMappings = new ArrayList<>(data.columnMappings.length);
             for (final ColumnMapping mapping : data.columnMappings) {
+                final String mappingName = mapping.getName();
                 if (Strings.isNotEmpty(mapping.getLiteralValue())) {
+                    logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName, mapping.getLiteralValue());
                     sb.append(mapping.getLiteralValue());
+                }
+                if (Strings.isNotEmpty(mapping.getParameter())) {
+                    logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName, mapping.getParameter());
+                    sb.append(mapping.getParameter());
+                    columnMappings.add(mapping);
                 } else {
+                    logger().trace("Adding INSERT VALUES parameter marker for ColumnMapping[{}]: {}={} ", i, mappingName, PARAMETER_MARKER);
                     sb.append(PARAMETER_MARKER);
                     columnMappings.add(mapping);
                 }
                 sb.append(',');
+                i++;
             }
             final List<ColumnConfig> columnConfigs = new ArrayList<>(data.columnConfigs.length);
             for (final ColumnConfig config : data.columnConfigs) {

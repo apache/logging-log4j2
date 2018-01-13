@@ -1180,6 +1180,22 @@ CREATE TABLE logs (
               </td>
             </tr>
             <tr>
+              <td>parameter</td>
+              <td>String</td>
+              <td>
+                <p>Use this attribute to insert an expression with a parameter marker '?' in this column. The value will be included directly in
+                the insert SQL, without any quoting (which means that if you want this to be a string, your value should
+                contain single quotes around it like this: 
+                </p>
+                <p>
+                  <code>&lt;ColumnMapping name="instant" literal="TIMESTAMPADD('MILLISECOND', ?, TIMESTAMP '1970-01-01')"/></code>
+                </p>
+                <p>
+                  You can only specify one of <code>literal</code> or <code>parameter</code>.
+                </p>
+              </td>
+            </tr>
+            <tr>
               <td>isEventTimestamp</td>
               <td>boolean</td>
               <td>Use this attribute to insert the event timestamp in this column, which should be a SQL datetime. The
