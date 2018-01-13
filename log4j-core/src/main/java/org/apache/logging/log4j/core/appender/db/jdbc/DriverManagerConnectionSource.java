@@ -42,7 +42,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class DriverManagerConnectionSource implements ConnectionSource {
 
     /**
-     * Builds ConsoleAppender instances.
+     * Builds DriverManagerConnectionSource instances.
      * 
      * @param <B>
      *            The type to build
