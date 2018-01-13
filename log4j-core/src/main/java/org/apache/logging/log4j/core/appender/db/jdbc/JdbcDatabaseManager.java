@@ -29,6 +29,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -122,7 +123,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             final String source = mapping.getSource();
             final String key = Strings.isEmpty(source) ? mapping.getName() : source;
             final Object value = map.getValue(key);
-            logger().trace("{} setObject({}, {}) for key '{}' and mapping '{}'", simpleName, i, value, key, mapping.getName());
+            if (logger().isTraceEnabled()) {
+                final String valueStr = value instanceof String ? "\"" + value + "\"" : Objects.toString(value, null);
+                logger().trace("{} setObject({}, {}) for key '{}' and mapping '{}'", simpleName, i, valueStr, key,
+                        mapping.getName());
+            }
             statement.setObject(i++, value);
         }
     }
