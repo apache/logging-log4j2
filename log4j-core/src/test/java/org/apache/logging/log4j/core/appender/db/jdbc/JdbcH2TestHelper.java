@@ -22,15 +22,19 @@ import java.sql.SQLException;
 
 public class JdbcH2TestHelper {
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:h2:mem:Log4j", "sa", "");
-    }
-
+    static final String CONNECTION_STRING = "jdbc:h2:mem:Log4j";
+    static final String USER_NAME = "sa";
+    static final String PASSWORD = "";
+    
     public static ConnectionSource TEST_CONFIGURATION_SOURCE = new ConnectionSource() {
         @Override
         public Connection getConnection() throws SQLException {
             return JdbcH2TestHelper.getConnection();
         }
     };
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(CONNECTION_STRING, USER_NAME, PASSWORD);
+    }
 
 }

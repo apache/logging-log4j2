@@ -991,6 +991,11 @@ CREATE TABLE logs (
             style that only allows strings and timestamps, and the new <code>ColumnMapping</code> plugin that uses Log4j's
             built-in type conversion to allow for more data types (this is the same plugin as in the
             <a href="#CassandraAppender">Cassandra Appender</a>).</p>
+          <p>
+            To get off the ground quickly during development, an alternative to using a connection source based on 
+            JNDI is to use the non-pooling <code>DriverManager</code> connection source. This connection source uses 
+            a JDBC connection string, a user name, and a password. Optionally, you can also use properties.
+          </p>
           <table>
             <caption align="top">JDBCAppender Parameters</caption>
             <tr>
@@ -1102,6 +1107,39 @@ CREATE TABLE logs (
                 connection pool (and they will be returned to the pool when Log4j is done with them); otherwise, logging
                 will be very slow. If the method returns a <code>DataSource</code>, the <code>DataSource</code> will
                 only be retrieved once, and it must be backed by a connection pool for the same reasons.</td>
+            </tr>
+          </table>
+          <table>
+            <caption align="top">DriverManager Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>connectionString</td>
+              <td>String</td>
+              <td><em>Required.</em> The driver-specific JDBC connection string.</td>
+            </tr>
+            <tr>
+              <td>userName</td>
+              <td>String</td>
+              <td>The database user name. You cannot specify both properties and a user name or password.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>The database password. You cannot specify both properties and a user name or password.</td>
+            </tr>
+            <tr>
+              <td>driverClassName</td>
+              <td>String</td>
+              <td>The JDBC driver class name. Some old JDBC Driver can only be discovered by explicitly loading them by class name.</td>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>Property[]</td>
+              <td>A list of properties. You cannot specify both properties and a user name or password.</td>
             </tr>
           </table>
           <p>When configuring the JDBCAppender, use the nested <code>&lt;Column&gt;</code> elements to specify which
