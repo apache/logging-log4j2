@@ -83,8 +83,11 @@
       <action issue="LOG4J2-2181" dev="ggregory" type="add">
         The JDBC Appender should use keys and values from a Log4j MapMessage.
       </action>
-      <action issue="LOG4J2-2184" dev="ggregory" type="add">
+      <action issue="LOG4J2-2184" dev="ggregory" type="update">
         Update MongoDB driver from 3.0.4 to 3.6.1.
+      </action>
+      <action issue="LOG4J2-2185" dev="ggregory" type="add">
+        Add a simple JDBC DriverManager-based ConnectionSource that uses JDBC's DriverManager#getConnection(String, String, String).
       </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
