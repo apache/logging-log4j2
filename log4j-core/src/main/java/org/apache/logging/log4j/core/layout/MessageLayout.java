@@ -35,12 +35,12 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "MessageLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class MessageLayout extends AbstractLayout<Message> {
 
-    public MessageLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
-        super(configuration, header, footer);
-    }
-
     public MessageLayout() {
         super(null, null, null);
+    }
+
+    public MessageLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
+        super(configuration, header, footer);
     }
 
     @Override
