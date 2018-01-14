@@ -18,6 +18,10 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Supplier;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Factory for {@code Clock} objects.
@@ -62,21 +66,24 @@ public final class ClockFactory {
         return createClock();
     }
 
+    private static Map<String, Supplier<Clock>> aliases() {
+        Map<String, Supplier<Clock>> result = new HashMap<>();
+        result.put("SystemClock",       new Supplier<Clock>() { @Override public Clock get() { return new SystemClock(); } });
+        result.put("CachedClock",       new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
+        result.put("CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
+        return result;
+    }
+
     private static Clock createClock() {
         final String userRequest = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME);
-        if (userRequest == null || "SystemClock".equals(userRequest)) {
+        if (userRequest == null) {
             LOGGER.trace("Using default SystemClock for timestamps.");
             return new SystemClock();
         }
-        if (CachedClock.class.getName().equals(userRequest)
-                || "CachedClock".equals(userRequest)) {
-            LOGGER.trace("Using specified CachedClock for timestamps.");
-            return CachedClock.instance();
-        }
-        if (CoarseCachedClock.class.getName().equals(userRequest)
-                || "CoarseCachedClock".equals(userRequest)) {
-            LOGGER.trace("Using specified CoarseCachedClock for timestamps.");
-            return CoarseCachedClock.instance();
+        Supplier<Clock> specified = aliases().get(userRequest);
+        if (specified != null) {
+            LOGGER.trace("Using specified {} for timestamps.", userRequest);
+            return specified.get();
         }
         try {
             final Clock result = Loader.newCheckedInstanceOf(userRequest, Clock.class);

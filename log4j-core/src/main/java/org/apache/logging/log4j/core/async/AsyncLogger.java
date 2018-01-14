@@ -203,8 +203,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
                 // location (expensive to calculate)
                 calcLocationIfRequested(fqcn), //
-                CLOCK.currentTimeMillis(), //
-                nanoClock.nanoTime() //
+                CLOCK, //
+                nanoClock //
         );
     }
 
@@ -293,7 +293,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 // in the AsyncLogger#actualAsyncLog method
                 CONTEXT_DATA_INJECTOR.injectContextData(null, (StringMap) event.getContextData()),
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
-                CLOCK.currentTimeMillis(), nanoClock.nanoTime());
+                CLOCK, nanoClock);
     }
 
     /**

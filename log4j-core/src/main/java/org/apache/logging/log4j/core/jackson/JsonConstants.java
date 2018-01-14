@@ -31,4 +31,5 @@ public final class JsonConstants {
     public static final String ELT_MESSAGE = "message";
     public static final String ELT_EXTENDED_STACK_TRACE = "extendedStackTrace";
     public static final String ELT_NANO_TIME = "nanoTime";
+    public static final String ELT_INSTANT = "instant";
 }

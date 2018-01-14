@@ -30,6 +30,8 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.util.DummyNanoClock;
+import org.apache.logging.log4j.core.util.DummyPreciseClock;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
@@ -66,10 +68,8 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
-        final long currentTimeMillis = 0;
-        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
+                contextStack, -1, threadName, -1, location, new DummyPreciseClock(), new DummyNanoClock(1));
         assertEquals(Level.OFF, evt.getLevel());
     }
 
@@ -85,10 +85,8 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
-        final long currentTimeMillis = 0;
-        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
+                contextStack, -1, threadName, -1, location, new DummyPreciseClock(), new DummyNanoClock(1));
         assertNotNull(evt.getMessage());
     }
 
@@ -104,11 +102,10 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
-        final long currentTimeMillis = 123;
-        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
+                contextStack, -1, threadName, -1, location, new DummyPreciseClock(123, 456), new DummyNanoClock(1));
         assertEquals(123, evt.getTimeMillis());
+        assertEquals(456, evt.getInstant().getNanoOfMillisecond());
     }
 
     @Test
@@ -123,10 +120,9 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = null;
         final String threadName = "main";
         final StackTraceElement location = null;
-        final long currentTimeMillis = 12345;
-        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
+                contextStack, -1, threadName, -1, location,
+                new DummyPreciseClock(12345, 678), new DummyNanoClock(1));
         ((StringMap) evt.getContextData()).putValue("key", "value");
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -146,7 +142,8 @@ public class RingBufferLogEventTest {
         assertEquals(contextStack, other.getContextStack());
         assertEquals(threadName, other.getThreadName());
         assertEquals(location, other.getSource());
-        assertEquals(currentTimeMillis, other.getTimeMillis());
+        assertEquals(12345, other.getTimeMillis());
+        assertEquals(678, other.getInstant().getNanoOfMillisecond());
     }
 
     @SuppressWarnings("deprecation")
@@ -162,10 +159,8 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
         final String threadName = "main";
         final StackTraceElement location = null;
-        final long currentTimeMillis = 12345;
-        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, currentTimeMillis, nanoTime);
+                contextStack, -1, threadName, -1, location, new DummyPreciseClock(12345, 678), new DummyNanoClock(1));
         ((StringMap) evt.getContextData()).putValue("key", "value");
 
         final LogEvent actual = evt.createMemento();
@@ -180,6 +175,7 @@ public class RingBufferLogEventTest {
         assertEquals(evt.getContextStack(), actual.getContextStack());
         assertEquals(evt.getThreadName(), actual.getThreadName());
         assertEquals(evt.getTimeMillis(), actual.getTimeMillis());
+        assertEquals(evt.getInstant().getNanoOfMillisecond(), actual.getInstant().getNanoOfMillisecond());
         assertEquals(evt.getSource(), actual.getSource());
         assertEquals(evt.getThrownProxy(), actual.getThrownProxy());
     }

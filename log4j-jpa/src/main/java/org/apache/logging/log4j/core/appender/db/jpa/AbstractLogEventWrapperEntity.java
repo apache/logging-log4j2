@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.AbstractLogEvent;
+import org.apache.logging.log4j.core.util.Instant;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextDataAttributeConverter;
@@ -210,6 +211,26 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      */
     @SuppressWarnings("unused")
     public void setTimeMillis(final long millis) {
+        // this entity is write-only
+    }
+
+    /**
+     * A no-op mutator to satisfy JPA requirements, as this entity is write-only.
+     *
+     * @param instant Ignored.
+     */
+    @SuppressWarnings("unused")
+    public void setInstant(final Instant instant) {
+        // this entity is write-only
+    }
+
+    /**
+     * A no-op mutator to satisfy JPA requirements, as this entity is write-only.
+     *
+     * @param nanoOfMillisecond Ignored.
+     */
+    @SuppressWarnings("unused")
+    public void setNanoOfMillisecond(final int nanoOfMillisecond) {
         // this entity is write-only
     }
 

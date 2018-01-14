@@ -17,8 +17,33 @@
 package org.apache.logging.log4j.core.util;
 
 /**
- * This is a dummy class and is only here to allow module-info.java to compile. It will not
- * be copied into the log4j-api module.
+ * Implementation of the {@code PreciseClock} interface that always returns a fixed value.
+ * @since 2.11
  */
-public class Dummy {
+public class DummyPreciseClock implements PreciseClock {
+    private final long currentTimeMillis;
+    private final int nanosOfMillisecond;
+
+    public DummyPreciseClock() {
+        this(0);
+    }
+
+    public DummyPreciseClock(final long currentTimeMillis) {
+        this(currentTimeMillis, 0);
+    }
+
+    public DummyPreciseClock(final long currentTimeMillis, final int nanosOfMillisecond) {
+        this.currentTimeMillis = currentTimeMillis;
+        this.nanosOfMillisecond = nanosOfMillisecond;
+    }
+
+    @Override
+    public void init(final MutableInstant instant) {
+        instant.initFromEpochMilli(currentTimeMillis, nanosOfMillisecond);
+    }
+
+    @Override
+    public long currentTimeMillis() {
+        return currentTimeMillis;
+    }
 }

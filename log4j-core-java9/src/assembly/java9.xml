@@ -34,10 +34,10 @@
       <excludes>
         <exclude>module-info.class</exclude>
         <exclude>**/Dummy.class</exclude>
-        <exclude>**/spi/Provider.class</exclude>
-        <exclude>**/util/PropertySource.class</exclude>
-        <exclude>**/message/ThreadDumpMessage.class</exclude>
-        <exclude>**/message/ThreadDumpMessage$ThreadInfoFactory.class</exclude>
+        <exclude>**/util/Clock.class</exclude>
+        <exclude>**/util/Instant.class</exclude>
+        <exclude>**/util/MutableInstant.class</exclude>
+        <exclude>**/util/PreciseClock.class</exclude>
       </excludes>
     </fileSet>
     <fileSet>

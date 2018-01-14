@@ -156,6 +156,9 @@ public class FixedDateFormatTest {
         final long start = now - TimeUnit.HOURS.toMillis(25);
         final long end = now + TimeUnit.HOURS.toMillis(25);
         for (final FixedFormat format : FixedFormat.values()) {
+            if (format.getPattern().endsWith("n")) {
+                continue; // cannot compile precise timestamp formats with SimpleDateFormat
+            }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern(), Locale.getDefault());
             final FixedDateFormat customTF = new FixedDateFormat(format, TimeZone.getDefault());
             for (long time = start; time < end; time += 12345) {
@@ -172,6 +175,9 @@ public class FixedDateFormatTest {
         final long start = now - TimeUnit.HOURS.toMillis(25);
         final long end = now + TimeUnit.HOURS.toMillis(25);
         for (final FixedFormat format : FixedFormat.values()) {
+            if (format.getPattern().endsWith("n")) {
+                continue; // cannot compile precise timestamp formats with SimpleDateFormat
+            }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern(), Locale.getDefault());
             final FixedDateFormat customTF = new FixedDateFormat(format, TimeZone.getDefault());
             for (long time = end; time > start; time -= 12345) {
@@ -189,6 +195,9 @@ public class FixedDateFormatTest {
         final long end = now + TimeUnit.HOURS.toMillis(25);
         final char[] buffer = new char[128];
         for (final FixedFormat format : FixedFormat.values()) {
+            if (format.getPattern().endsWith("n")) {
+                continue; // cannot compile precise timestamp formats with SimpleDateFormat
+            }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern(), Locale.getDefault());
             final FixedDateFormat customTF = new FixedDateFormat(format, TimeZone.getDefault());
             for (long time = start; time < end; time += 12345) {
@@ -207,6 +216,9 @@ public class FixedDateFormatTest {
         final long end = now + TimeUnit.HOURS.toMillis(25);
         final char[] buffer = new char[128];
         for (final FixedFormat format : FixedFormat.values()) {
+            if (format.getPattern().endsWith("n")) {
+                continue; // cannot compile precise timestamp formats with SimpleDateFormat
+            }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern(), Locale.getDefault());
             final FixedDateFormat customTF = new FixedDateFormat(format, TimeZone.getDefault());
             for (long time = end; time > start; time -= 12345) {
@@ -362,6 +374,9 @@ public class FixedDateFormatTest {
         final long end = now + TimeUnit.HOURS.toMillis(1);
 
         for (final FixedFormat format : FixedFormat.values()) {
+            if (format.getPattern().endsWith("n")) {
+                continue; // cannot compile precise timestamp formats with SimpleDateFormat
+            }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern(), Locale.getDefault());
             final FixedDateFormat customTF = new FixedDateFormat(format, TimeZone.getDefault());
             for (long time = end; time > start; time -= 12345) {

@@ -85,7 +85,7 @@ public class ConcurrentLoggingWithJsonLayoutTest {
         if (new File(PATH).exists()) {
             final List<String> lines = Files.readAllLines(new File(PATH).toPath(), Charset.defaultCharset());
             for (final String line : lines) {
-                assertThat(line, startsWith("{\"timeMillis\":"));
+                assertThat(line, startsWith("{\"thread\":"));
                 assertThat(line, endsWith("\"threadPriority\":5}"));
             }
         }

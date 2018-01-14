@@ -32,6 +32,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.util.Instant;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.UuidUtil;
 import org.apache.logging.log4j.message.MapMessage;
@@ -291,6 +292,15 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     @Override
     public long getTimeMillis() {
         return event.getTimeMillis();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since 2.11
+     */
+    @Override
+    public Instant getInstant() {
+        return event.getInstant();
     }
 
     /**

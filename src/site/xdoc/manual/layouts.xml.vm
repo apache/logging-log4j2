@@ -346,6 +346,10 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           </p>
           <pre class="prettyprint linenums">{
   "timeMillis" : 1493121664118,
+  "instant" : {
+    "epochSecond" : 1493121664,
+    "nanoOfSecond" : 118000000
+  },
   "thread" : "main",
   "level" : "INFO",
   "loggerName" : "HelloWorld",
@@ -736,7 +740,15 @@ WARN  [main]: Message 2</pre>
                     </tr>
                     <tr>
                       <td>%d{DEFAULT}</td>
-                      <td>2012-11-02 14:34:02,781</td>
+                      <td>2012-11-02 14:34:02,123</td>
+                    </tr>
+                    <tr>
+                      <td>%d{DEFAULT_MICROS}</td>
+                      <td>2012-11-02 14:34:02,123456</td>
+                    </tr>
+                    <tr>
+                      <td>%d{DEFAULT_NANOS}</td>
+                      <td>2012-11-02 14:34:02,123456789</td>
                     </tr>
                     <tr>
                       <td>%d{ISO8601}</td>
@@ -751,6 +763,14 @@ WARN  [main]: Message 2</pre>
                       <td>14:34:02,781</td>
                     </tr>
                     <tr>
+                      <td>%d{ABSOLUTE_MICROS}</td>
+                      <td>14:34:02,123456</td>
+                    </tr>
+                    <tr>
+                      <td>%d{ABSOLUTE_NANOS}</td>
+                      <td>14:34:02,123456789</td>
+                    </tr>
+                    <tr>
                       <td>%d{DATE}</td>
                       <td>02 Nov 2012 14:34:02,781</td>
                     </tr>
@@ -760,11 +780,19 @@ WARN  [main]: Message 2</pre>
                     </tr>
                     <tr>
                       <td>%d{HH:mm:ss,SSS}</td>
-                      <td>14:34:02,781</td>
+                      <td>14:34:02,123</td>
+                    </tr>
+                    <tr>
+                      <td>%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}</td>
+                      <td>14:34:02,1234 to 14:34:02,123456789</td>
                     </tr>
                     <tr>
                       <td>%d{dd MMM yyyy HH:mm:ss,SSS}</td>
-                      <td>02 Nov 2012 14:34:02,781</td>
+                      <td>02 Nov 2012 14:34:02,123</td>
+                    </tr>
+                    <tr>
+                      <td>%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}</td>
+                      <td>02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789</td>
                     </tr>
                     <tr>
                       <td>%d{HH:mm:ss}{GMT+0}</td>
@@ -788,6 +816,18 @@ WARN  [main]: Message 2</pre>
                   (<a href="http://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx">Windows</a>).
                   This is an efficient way to output the event time because only a conversion from long to String
                   takes place, there is no Date formatting involved.
+                </p>
+                <p>
+                  Log4j 2.11 adds limited support for timestamps more precise than milliseconds when running on Java 9.
+                  Note that not all
+                  <a href="https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>
+                   formats are supported.
+                  Only timestamps in the formats mentioned in the table above may use the "nano-of-second"
+                  pattern letter <code>n</code> instead of the "fraction-of-second" pattern letter <code>S</code>.
+                </p>
+                <p>
+                  Users may revert back to a millisecond-precision clock when running on Java 9 by setting system property
+                  <code>log4j2.Clock</code> to <code>org.apache.logging.log4j.core.util.SystemMillisClock</code>.
                 </p>
               </td>
             </tr>
@@ -2162,6 +2202,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
        loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger"
        threadId="1"
        threadPriority="5"&gt;
+  <Instant epochSecond="1493121664" nanoOfSecond="118000000"/>
   &lt;Marker name="child"&gt;
     &lt;Parents&gt;
       &lt;Marker name="parent"&gt;
@@ -2294,6 +2335,9 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           </p>
           <pre class="prettyprint linenums">---
 timeMillis: 1493122307075
+instant:
+ epochSecond: 1493121664
+ nanoOfSecond: 118000000
 thread: "main"
 level: "INFO"
 loggerName: "HelloWorld"

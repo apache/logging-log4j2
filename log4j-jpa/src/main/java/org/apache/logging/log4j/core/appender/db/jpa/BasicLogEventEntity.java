@@ -26,14 +26,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapAttributeConverter;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackAttributeConverter;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.MarkerAttributeConverter;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter;
+import org.apache.logging.log4j.core.appender.db.jpa.converter.*;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.util.Instant;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -187,6 +182,12 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
     @Basic
     public long getTimeMillis() {
         return this.getWrappedEvent().getTimeMillis();
+    }
+
+    @Override
+    @Convert(converter = InstantAttributeConverter.class)
+    public Instant getInstant() {
+        return this.getWrappedEvent().getInstant();
     }
 
     /**

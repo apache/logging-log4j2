@@ -24,6 +24,8 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.util.Instant;
+import org.apache.logging.log4j.core.util.MutableInstant;
 import org.apache.logging.log4j.message.Message;
 import org.junit.Assert;
 import org.junit.Test;
@@ -69,6 +71,11 @@ public class LogEventEntityTest {
             @Override
             public Message getMessage() {
                 return null;
+            }
+
+            @Override
+            public Instant getInstant() {
+                return new MutableInstant();
             }
 
             @Override

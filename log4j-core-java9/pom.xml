@@ -33,6 +33,11 @@
     <projectDir>/core</projectDir>
   </properties>
   <dependencies>
+    <!-- Naturally, all implementations require the log4j-api JAR -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -84,12 +89,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <source>9</source>
-          <target>9</target>
-          <release>9</release>
-          <proc>none</proc>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

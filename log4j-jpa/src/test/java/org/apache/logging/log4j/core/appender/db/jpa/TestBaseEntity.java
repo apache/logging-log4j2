@@ -34,6 +34,8 @@ import javax.persistence.Transient;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.appender.db.jpa.converter.InstantAttributeConverter;
+import org.apache.logging.log4j.core.util.Instant;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter;
@@ -133,6 +135,13 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     @Transient
     public long getTimeMillis() {
         return this.getWrappedEvent().getTimeMillis();
+    }
+
+    @Override
+    @Convert(converter = InstantAttributeConverter.class)
+    @Column(name = "instant")
+    public Instant getInstant() {
+        return this.getWrappedEvent().getInstant();
     }
 
     @Override
