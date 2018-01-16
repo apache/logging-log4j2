@@ -22,6 +22,8 @@ import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ObjectMessage;
 
 import com.fasterxml.jackson.databind.Module.SetupContext;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -78,11 +80,15 @@ class Initializers {
      * Used to set up {@link SimpleModule} from different {@link SimpleModule} subclasses.
      */
     static class SimpleModuleInitializer {
-        void initialize(final SimpleModule simpleModule) {
+        void initialize(final SimpleModule simpleModule, final boolean objectMessageAsJsonObject) {
             // Workaround because mix-ins do not work for classes that already have a built-in deserializer.
             // See Jackson issue 429.
             simpleModule.addDeserializer(StackTraceElement.class, new Log4jStackTraceElementDeserializer());
             simpleModule.addDeserializer(ContextStack.class, new MutableThreadContextStackDeserializer());
+            if (objectMessageAsJsonObject) {
+            	    simpleModule.addSerializer(ObjectMessage.class, new ObjectMessageSerializer());
+            }
+            simpleModule.addSerializer(Message.class, new MessageSerializer());
         }
     }
 

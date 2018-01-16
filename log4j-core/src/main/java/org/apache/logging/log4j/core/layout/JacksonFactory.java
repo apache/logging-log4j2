@@ -45,11 +45,13 @@ abstract class JacksonFactory {
         private final boolean encodeThreadContextAsList;
         private final boolean includeStacktrace;
         private final boolean stacktraceAsString;
+        private final boolean objectMessageAsJsonObject;
 
-        public JSON(final boolean encodeThreadContextAsList, final boolean includeStacktrace, final boolean stacktraceAsString) {
+        public JSON(final boolean encodeThreadContextAsList, final boolean includeStacktrace, final boolean stacktraceAsString, final boolean objectMessageAsJsonObject) {
             this.encodeThreadContextAsList = encodeThreadContextAsList;
             this.includeStacktrace = includeStacktrace;
             this.stacktraceAsString = stacktraceAsString;
+            this.objectMessageAsJsonObject = objectMessageAsJsonObject;
         }
 
         @Override
@@ -74,13 +76,14 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jJsonObjectMapper(encodeThreadContextAsList, includeStacktrace, stacktraceAsString);
+            return new Log4jJsonObjectMapper(encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject);
         }
 
         @Override
         protected PrettyPrinter newPrettyPrinter() {
             return new DefaultPrettyPrinter();
         }
+
     }
 
     static class XML extends JacksonFactory {

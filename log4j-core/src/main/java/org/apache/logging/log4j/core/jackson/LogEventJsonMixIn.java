@@ -91,7 +91,6 @@ abstract class LogEventJsonMixIn implements LogEvent {
     public abstract Marker getMarker();
 
     @JsonProperty(JsonConstants.ELT_MESSAGE)
-    @JsonSerialize(using = MessageSerializer.class)
     @JsonDeserialize(using = SimpleMessageDeserializer.class)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_MESSAGE)
     @Override
