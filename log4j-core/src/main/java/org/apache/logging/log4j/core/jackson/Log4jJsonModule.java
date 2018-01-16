@@ -34,16 +34,18 @@ class Log4jJsonModule extends SimpleModule {
     private final boolean encodeThreadContextAsList;
     private final boolean includeStacktrace;
     private final boolean stacktraceAsString;
+    private final boolean objectMessageAsJsonObject;
 
-    Log4jJsonModule(final boolean encodeThreadContextAsList, final boolean includeStacktrace, final boolean stacktraceAsString) {
+    Log4jJsonModule(final boolean encodeThreadContextAsList, final boolean includeStacktrace, final boolean stacktraceAsString, final boolean objectMessageAsJsonObject) {
         super(Log4jJsonModule.class.getName(), new Version(2, 0, 0, null, null, null));
         this.encodeThreadContextAsList = encodeThreadContextAsList;
         this.includeStacktrace = includeStacktrace;
         this.stacktraceAsString = stacktraceAsString;
+        this.objectMessageAsJsonObject = objectMessageAsJsonObject;
         // MUST init here.
         // Calling this from setupModule is too late!
         //noinspection ThisEscapedInObjectConstruction
-        new SimpleModuleInitializer().initialize(this);
+        new SimpleModuleInitializer().initialize(this, objectMessageAsJsonObject);
     }
 
     @Override

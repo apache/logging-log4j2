@@ -14,19 +14,34 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.jackson;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.categories.Layouts;
-import org.junit.experimental.categories.Category;
+import java.io.IOException;
 
-@Category(Layouts.Json.class)
-public class LevelMixInJsonTest extends LevelMixInTest {
+import org.apache.logging.log4j.message.ObjectMessage;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
+
+/**
+ * <p>
+ * <em>Consider this class private.</em>
+ * </p>
+ */
+final class ObjectMessageSerializer extends StdScalarSerializer<ObjectMessage> {
+
+    private static final long serialVersionUID = 1L;
+
+    ObjectMessageSerializer() {
+        super(ObjectMessage.class);
+    }
 
     @Override
-    protected ObjectMapper newObjectMapper() {
-        return new Log4jJsonObjectMapper(false, true, false, false);
+    public void serialize(final ObjectMessage value, final JsonGenerator jgen, final SerializerProvider provider) throws IOException,
+            JsonGenerationException {
+        jgen.writeObject(value.getParameter());
     }
 
 }
