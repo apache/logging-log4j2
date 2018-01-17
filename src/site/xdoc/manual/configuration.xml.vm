@@ -1018,7 +1018,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
               </tr>
               <tr>
                 <td>env</td>
-                <td>System environment variables</td>
+                <td>System environment variables. The formats are <code>${dollar}{env:ENV_NAME}</code> and <code>${dollar}{env:ENV_NAME:-default_value}</code>.</td>
               </tr>
               <tr>
                 <td>jndi</td>
@@ -1053,7 +1053,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
               </tr>
               <tr>
                 <td>sys</td>
-                <td>System properties</td>
+                <td>System properties. The formats are <code>${dollar}{sys:some.property}</code> and <code>${dollar}{sys:some.property:-default_value}</code>.</td>
               </tr>
             </table>
           <p>
