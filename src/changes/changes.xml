@@ -30,7 +30,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.10.1" date="2017-xx-xx" description="GA Release 2.10.1">
+    <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2129" dev="rgoers" type="fix" due-to="Blazej Bucko">
         Log4j2 throws NoClassDefFoundError in Java 9 in java.util.ServiceLoader.
       </action>
@@ -67,6 +67,9 @@
       </action>
       <action issue="LOG4J2-2126" dev="rpopma" type="fix" due-to="Oleg Kalnichevski">
         Removed compile-time dependency on Java Management APIs from Log4J API module to improve compatibility with Android Platform which does not support JMX extensions.
+      </action>
+      <action issue="LOG4J2-2193" dev="rpopma" type="update">
+        Update JMH to version 1.19 from 1.1.1.
       </action>
       <action issue="LOG4J2-2132" dev="ggregory" type="update">
         Update ZeroMQ's jeromq from 0.4.2 to 0.4.3.
