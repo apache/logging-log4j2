@@ -68,6 +68,9 @@
       <action issue="LOG4J2-2126" dev="rpopma" type="fix" due-to="Oleg Kalnichevski">
         Removed compile-time dependency on Java Management APIs from Log4J API module to improve compatibility with Android Platform which does not support JMX extensions.
       </action>
+      <action issue="LOG4J2-2194" dev="rpopma" type="update">
+        Require Java 9 to compile the log4j-perf module to allow benchmarking with Java 9 APIs.
+      </action>
       <action issue="LOG4J2-2193" dev="rpopma" type="update">
         Update JMH to version 1.19 from 1.1.1.
       </action>
