@@ -115,6 +115,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
     /**
      * @deprecated Use {@link #createKeyStoreConfiguration(String, char[], String, String, String, String)}
      */
+    @Deprecated
     public static TrustStoreConfiguration createKeyStoreConfiguration(
             // @formatter:off
             final String location,

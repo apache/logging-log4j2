@@ -105,6 +105,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
      * @return a new MongoDB provider.
      * @deprecated in 2.8; use {@link #newBuilder()} instead.
      */
+    @Deprecated
     @PluginFactory
     public static MongoDbProvider createNoSqlProvider(
             final String collectionName,

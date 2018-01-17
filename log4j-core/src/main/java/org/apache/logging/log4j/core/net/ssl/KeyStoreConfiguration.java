@@ -54,6 +54,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
      * @deprecated use {@link #KeyStoreConfiguration(String, PasswordProvider, String, String)} instead
      */
+    @Deprecated
     public KeyStoreConfiguration(final String location,
                                  final char[] password,
                                  final String keyStoreType,
@@ -125,6 +126,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
     /**
      * @deprecated use {@link #createKeyStoreConfiguration(String, char[], String, String, String, String)}
      */
+    @Deprecated
     public static KeyStoreConfiguration createKeyStoreConfiguration(
             // @formatter:off
             final String location,

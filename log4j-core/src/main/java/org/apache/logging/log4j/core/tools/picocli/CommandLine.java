@@ -3010,6 +3010,7 @@ public class CommandLine {
          * @see #detailedSynopsis(Comparator, boolean)
          * @deprecated use {@link #synopsis(int)} instead
          */
+        @Deprecated
         public String synopsis() { return synopsis(0); }
 
         /**
@@ -3049,6 +3050,7 @@ public class CommandLine {
          * @param clusterBooleanOptions {@code true} if boolean short options should be clustered into a single string
          * @return a detailed synopsis
          * @deprecated use {@link #detailedSynopsis(int, Comparator, boolean)} instead. */
+        @Deprecated
         public String detailedSynopsis(Comparator<Field> optionSort, boolean clusterBooleanOptions) {
             return detailedSynopsis(0, optionSort, clusterBooleanOptions);
         }
@@ -3967,6 +3969,7 @@ public class CommandLine {
              * @param col the column of the cell whose Text to return
              * @return the Text object at the specified row and column
              * @deprecated use {@link #textAt(int, int)} instead */
+            @Deprecated
             public Text cellAt(int row, int col) { return textAt(row, col); }
 
             /** Returns the current number of rows of this {@code TextTable}.
