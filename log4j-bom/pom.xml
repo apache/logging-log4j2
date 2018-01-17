@@ -127,7 +127,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>${site.plugin.version}</version>
+        <version>3.7</version>
         <configuration>
           <skip>true</skip>
           <skipDeploy>true</skipDeploy>
