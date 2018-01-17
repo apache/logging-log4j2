@@ -95,6 +95,9 @@
       <action issue="LOG4J2-2185" dev="ggregory" type="add">
         Add a simple JDBC DriverManager-based ConnectionSource that uses JDBC's DriverManager#getConnection(String, String, String).
       </action>
+      <action issue="LOG4J2-2197" dev="ggregory" type="update" due-to="Fabrice Daugan">
+        Document default property value support.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
