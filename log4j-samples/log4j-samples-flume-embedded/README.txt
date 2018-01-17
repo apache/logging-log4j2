@@ -4,7 +4,7 @@ This sample uses the classes in the sample flume-common project. It will randoml
 and send them to Flume. At the same time it will intermix some random non-audit events.
 
 To run this sample:
-1. Run "mvn install" on the flume-common project.
+1. Run "mvn install" on the log4j-samples-flume-common project.
 2. Download and install Flume.
 3. Copy the flume-conf.properties in src/main/resources/flume/conf to the conf directory of where Flume was installed.
 4. In a terminal window start flume using "bin/flume-ng agent --conf ./conf/ -f conf/flume-conf.properties -Dflume.root.logger=DEBUG,console -n agent"
