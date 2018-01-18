@@ -331,6 +331,12 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core-java9</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1296,6 +1302,7 @@
   <modules>
     <module>log4j-api-java9</module>
     <module>log4j-api</module>
+    <module>log4j-core-java9</module>
     <module>log4j-core</module>
     <module>log4j-core-its</module>
     <module>log4j-1.2-api</module>
