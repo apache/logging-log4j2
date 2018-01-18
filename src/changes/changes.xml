@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+      <action issue="LOG4J2-2191" dev="rpopma" type="add">
+        Made log4j-core a multi-release ("multi-version") jar, added log4j-core-java9 module.
+      </action>
       <action issue="LOG4J2-2129" dev="rgoers" type="fix" due-to="Blazej Bucko">
         Log4j2 throws NoClassDefFoundError in Java 9 in java.util.ServiceLoader.
       </action>
