@@ -101,6 +101,9 @@
       <action issue="LOG4J2-2197" dev="ggregory" type="update" due-to="Fabrice Daugan">
         Document default property value support.
       </action>
+      <action issue="LOG4J2-2198" dev="ggregory" type="update">
+        Update MongoDB dependencies from classic to modern.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak ">

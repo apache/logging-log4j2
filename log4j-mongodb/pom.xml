@@ -43,7 +43,11 @@
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
-      <artifactId>mongo-java-driver</artifactId>
+      <artifactId>mongodb-driver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>bson</artifactId>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
