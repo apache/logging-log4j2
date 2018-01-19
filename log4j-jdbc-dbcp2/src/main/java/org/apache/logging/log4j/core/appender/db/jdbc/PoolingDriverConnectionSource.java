@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.dbcp2.ConnectionFactory;
 import org.apache.commons.dbcp2.DriverManagerConnectionFactory;
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
  * <a href="http://commons.apache.org/proper/commons-dbcp/">Apache Commons DBCP</a> pooling driver.
  */
 @Plugin(name = "PoolingDriver", category = Core.CATEGORY_NAME, elementType = "connectionSource", printObject = true)
-public final class PoolingDriverConnectionSource extends DriverManagerConnectionSource {
+public final class PoolingDriverConnectionSource extends AbstractDriverManagerConnectionSource {
 
     /**
      * Builds PoolingDriverConnectionSource instances.
@@ -45,8 +46,8 @@ public final class PoolingDriverConnectionSource extends DriverManagerConnection
      * @param <B>
      *            This builder type or a subclass.
      */
-    public static class Builder<B extends Builder<B>>
-            extends DriverManagerConnectionSource.Builder<B, PoolingDriverConnectionSource> {
+    public static class Builder<B extends Builder<B>> extends AbstractDriverManagerConnectionSource.Builder<B>
+    implements org.apache.logging.log4j.core.util.Builder<PoolingDriverConnectionSource> {
 
         public static final String DEFAULT_POOL_NAME = "example";
         private String poolName = DEFAULT_POOL_NAME;
@@ -57,8 +58,7 @@ public final class PoolingDriverConnectionSource extends DriverManagerConnection
                 return new PoolingDriverConnectionSource(getDriverClassName(), getConnectionString(), getUserName(),
                         getPassword(), getProperties(), poolName);
             } catch (final SQLException e) {
-                getLogger().error("Exception constructing {} for {}", PoolingDriverConnectionSource.class,
-                        getConnectionString(), e);
+                getLogger().error("Exception constructing {} to '{}'", getClass(), getConnectionString(), e);
                 return null;
             }
         }
@@ -98,7 +98,7 @@ public final class PoolingDriverConnectionSource extends DriverManagerConnection
     private PoolingDriver getPoolingDriver() throws SQLException {
         final PoolingDriver driver = (PoolingDriver) DriverManager.getDriver(URL_PREFIX);
         if (driver == null) {
-            getLogger().error("No JDBC driver for {}", URL_PREFIX);
+            getLogger().error("No JDBC driver for '{}'", URL_PREFIX);
         }
         return driver;
     }
@@ -138,6 +138,7 @@ public final class PoolingDriverConnectionSource extends DriverManagerConnection
         loadDriver(poolingDriverClassName);
         final PoolingDriver driver = getPoolingDriver();
         if (driver != null) {
+            getLogger().debug("Registering DBCP pool '{}'", poolName);
             driver.registerPool(poolName, connectionPool);
         }
         //
@@ -146,10 +147,19 @@ public final class PoolingDriverConnectionSource extends DriverManagerConnection
         //
     }
 
-    public void shutdownDriver() throws SQLException {
-        final PoolingDriver driver = getPoolingDriver();
-        if (driver != null) {
-            driver.closePool(poolName);
+    @Override
+    public boolean stop(long timeout, TimeUnit timeUnit) {
+        try {
+            final PoolingDriver driver = getPoolingDriver();
+            if (driver != null) {
+                getLogger().debug("Closing DBCP pool '{}'", poolName);
+                driver.closePool(poolName);
+            }
+            return true;
+        } catch (Exception e) {
+            getLogger().error("Exception stopping connection source for '{}' → '{}'", getConnectionString(),
+                    getActualConnectionString(), e);
+            return false;
         }
     }
 }

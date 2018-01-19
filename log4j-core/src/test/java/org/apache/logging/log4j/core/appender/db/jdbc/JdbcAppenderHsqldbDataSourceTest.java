@@ -28,7 +28,7 @@ import org.apache.logging.log4j.junit.JdbcRule;
 public class JdbcAppenderHsqldbDataSourceTest extends AbstractJdbcAppenderDataSourceTest {
     public JdbcAppenderHsqldbDataSourceTest() {
         super(new JdbcRule(
-            new ConnectionSource() {
+            new AbstractConnectionSource() {
                 @Override
                 public Connection getConnection() throws SQLException {
                     return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");

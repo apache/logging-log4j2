@@ -14,27 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 
-public class JdbcH2TestHelper {
-
-    static final String CONNECTION_STRING = "jdbc:h2:mem:Log4j";
-    static final String USER_NAME = "sa";
-    static final String PASSWORD = "";
+public abstract class AbstractConnectionSource extends AbstractLifeCycle implements ConnectionSource {
     
-    public static ConnectionSource TEST_CONFIGURATION_SOURCE = new AbstractConnectionSource() {
-        @Override
-        public Connection getConnection() throws SQLException {
-            return JdbcH2TestHelper.getConnection();
-        }
-    };
-
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(CONNECTION_STRING, USER_NAME, PASSWORD);
-    }
+    // nothing yet
 
 }

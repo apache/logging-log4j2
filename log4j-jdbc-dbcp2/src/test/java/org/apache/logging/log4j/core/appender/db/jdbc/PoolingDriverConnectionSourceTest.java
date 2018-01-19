@@ -35,7 +35,7 @@ public class PoolingDriverConnectionSourceTest {
                 // @formatter:on
         };
         // @formatter:off
-        final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
+        final PoolingDriverConnectionSource source = (PoolingDriverConnectionSource) PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
             .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING)
             .setProperties(properties)
             .build();
