@@ -1068,8 +1068,13 @@ CREATE TABLE logs (
             </tr>
           </table>
           <p>When configuring the JDBCAppender, you must specify a <code>ConnectionSource</code> implementation from
-            which the Appender gets JDBC connections. You must use exactly one of the <code>&lt;DataSource&gt;</code>
-            or <code>&lt;ConnectionFactory&gt;</code> nested elements.</p>
+            which the Appender gets JDBC connections. You must use exactly one of the following nested elements:</p>
+          <ul>
+            <li><a href="#JDBCDataSource"><code>&lt;DataSource&gt;</code></a></li>
+            <li><a href="#JDBCConnectionFactory"><code>&lt;ConnectionFactory&gt;</code></a></li>
+            <li><a href="#JDBCDriverManager"><code>&lt;DriverManager&gt;</code></a></li>
+          </ul>
+          <a name="JDBCDataSource"/>
           <table>
             <caption align="top">DataSource Parameters</caption>
             <tr>
@@ -1085,6 +1090,7 @@ CREATE TABLE logs (
                 by a connection pool; otherwise, logging will be very slow.</td>
             </tr>
           </table>
+          <a name="JDBCConnectionFactory"/>
           <table>
             <caption align="top">ConnectionFactory Parameters</caption>
             <tr>
@@ -1109,6 +1115,7 @@ CREATE TABLE logs (
                 only be retrieved once, and it must be backed by a connection pool for the same reasons.</td>
             </tr>
           </table>
+          <a name="JDBCDriverManager"/>
           <table>
             <caption align="top">DriverManager Parameters</caption>
             <tr>
