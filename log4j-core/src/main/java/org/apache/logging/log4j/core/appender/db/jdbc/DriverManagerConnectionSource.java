@@ -40,16 +40,18 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 @Plugin(name = "DriverManager", category = Core.CATEGORY_NAME, elementType = "connectionSource", printObject = true)
-public final class DriverManagerConnectionSource implements ConnectionSource {
+public class DriverManagerConnectionSource implements ConnectionSource {
 
     /**
      * Builds DriverManagerConnectionSource instances.
-     * 
+     *
      * @param <B>
-     *            The type to build
+     *            This builder type or a subclass.
+     * @param <T>
+     *            The type to build.
      */
-    public static class Builder<B extends Builder<B>>
-            implements org.apache.logging.log4j.core.util.Builder<DriverManagerConnectionSource> {
+    public static class Builder<B extends Builder<B, T>, T extends DriverManagerConnectionSource>
+            implements org.apache.logging.log4j.core.util.Builder<T> {
 
         @PluginBuilderAttribute
         @Required
@@ -72,89 +74,154 @@ public final class DriverManagerConnectionSource implements ConnectionSource {
             return (B) this;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
-        public DriverManagerConnectionSource build() {
-            return new DriverManagerConnectionSource(driverClassName, connectionString, userName, password, properties);
+        public T build() {
+            return (T) new DriverManagerConnectionSource(driverClassName, connectionString, connectionString, userName,
+                    password, properties);
         }
 
-        public B setConnectionString(String connectionString) {
+        public String getConnectionString() {
+            return connectionString;
+        }
+
+        public String getDriverClassName() {
+            return driverClassName;
+        }
+
+        public char[] getPassword() {
+            return password;
+        }
+
+        public Property[] getProperties() {
+            return properties;
+        }
+
+        public char[] getUserName() {
+            return userName;
+        }
+
+        public B setConnectionString(final String connectionString) {
             this.connectionString = connectionString;
             return asBuilder();
         }
 
-        public B setDriverClassName(String driverClassName) {
+        public B setDriverClassName(final String driverClassName) {
             this.driverClassName = driverClassName;
             return asBuilder();
         }
 
-        public B setPassword(char[] password) {
+        public B setPassword(final char[] password) {
             this.password = password;
             return asBuilder();
         }
 
-        public B setProperties(Property[] properties) {
+        public B setProperties(final Property[] properties) {
             this.properties = properties;
             return asBuilder();
         }
 
-        public B setUserName(char[] userName) {
+        public B setUserName(final char[] userName) {
             this.userName = userName;
             return asBuilder();
         }
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    
-    @PluginBuilderFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+
+    public static Logger getLogger() {
+        return LOGGER;
     }
 
+    @PluginBuilderFactory
+    public static <B extends Builder<B, T>, T extends DriverManagerConnectionSource> B newBuilder() {
+        return new Builder<B, T>().asBuilder();
+    }
+
+    private final String actualConnectionString;
     private final String connectionString;
     private final String driverClassName;
     private final char[] password;
-    private final char[] userName;
     private final Property[] properties;
+    private final char[] userName;
 
-    public DriverManagerConnectionSource(String driverClassName, String connectionString, char[] userName,
-            char[] password, final Property[] properties) {
+    public DriverManagerConnectionSource(final String driverClassName, final String connectionString,
+            String actualConnectionString, final char[] userName, final char[] password, final Property[] properties) {
         super();
         this.driverClassName = driverClassName;
         this.connectionString = connectionString;
+        this.actualConnectionString = actualConnectionString;
         this.userName = userName;
         this.password = password;
         this.properties = properties;
+    }
+
+    public String getActualConnectionString() {
+        return actualConnectionString;
     }
 
     @Override
     public Connection getConnection() throws SQLException {
         loadDriver();
         // No, you cannot see the user name and password.
-        LOGGER.debug("Getting connection from DriverManage for '{}'", connectionString);
+        final String actualConnectionString = getActualConnectionString();
+        LOGGER.debug("Getting connection from DriverManage for '{}'", actualConnectionString);
         if (properties != null && properties.length > 0) {
             if (userName != null || password != null) {
                 throw new SQLException("Either set the userName and password, or set the Properties, but not both.");
             }
-            return DriverManager.getConnection(connectionString, toProperties(properties));
+            return DriverManager.getConnection(actualConnectionString, toProperties(properties));
         }
-        return DriverManager.getConnection(connectionString, toString(userName), toString(password));
+        return DriverManager.getConnection(actualConnectionString, toString(userName), toString(password));
     }
 
-    private void loadDriver() throws SQLException {
-        if (driverClassName != null) {
+    public String getConnectionString() {
+        return connectionString;
+    }
+
+    public String getDriverClassName() {
+        return driverClassName;
+    }
+
+    public char[] getPassword() {
+        return password;
+    }
+
+    public Property[] getProperties() {
+        return properties;
+    }
+
+    public char[] getUserName() {
+        return userName;
+    }
+
+    protected void loadDriver() throws SQLException {
+        loadDriver(driverClassName);
+    }
+
+    /**
+     * Loads a JDBC driver for the given class name
+     *
+     * @param className
+     *            the fully-qualified class name for a JDBC Driver.
+     * @throws SQLException
+     *             thrown when loading the driver throws an exception.
+     */
+    protected void loadDriver(final String className) throws SQLException {
+        if (className != null) {
             // Hack for old JDBC drivers.
             try {
-                Class.forName(driverClassName);
-            } catch (Exception e) {
+                Class.forName(className);
+            } catch (final Exception e) {
                 throw new SQLException(String.format("The %s could not load the JDBC driver %s: %s",
-                        getClass().getSimpleName(), driverClassName, e.toString()), e);
+                        getClass().getSimpleName(), className, e.toString()), e);
             }
         }
     }
 
-    private Properties toProperties(Property[] properties) {
-        Properties props = new Properties();
-        for (Property property : properties) {
+    private Properties toProperties(final Property[] properties) {
+        final Properties props = new Properties();
+        for (final Property property : properties) {
             props.setProperty(property.getName(), property.getValue());
         }
         return props;
@@ -165,7 +232,7 @@ public final class DriverManagerConnectionSource implements ConnectionSource {
         return this.connectionString;
     }
 
-    private String toString(char[] value) {
+    private String toString(final char[] value) {
         return value == null ? null : String.valueOf(value);
     }
 }
