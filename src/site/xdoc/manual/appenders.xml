@@ -1070,9 +1070,10 @@ CREATE TABLE logs (
           <p>When configuring the JDBCAppender, you must specify a <code>ConnectionSource</code> implementation from
             which the Appender gets JDBC connections. You must use exactly one of the following nested elements:</p>
           <ul>
-            <li><a href="#JDBCDataSource"><code>&lt;DataSource&gt;</code></a></li>
-            <li><a href="#JDBCConnectionFactory"><code>&lt;ConnectionFactory&gt;</code></a></li>
-            <li><a href="#JDBCDriverManager"><code>&lt;DriverManager&gt;</code></a></li>
+            <li><a href="#JDBCDataSource"><code>&lt;DataSource&gt;</code></a>: Uses JNDI.</li>
+            <li><a href="#JDBCConnectionFactory"><code>&lt;ConnectionFactory&gt;</code></a>: Points to a class-method pair to provide JDBC connections.</li>
+            <li><a href="#JDBCDriverManager"><code>&lt;DriverManager&gt;</code></a>: A quick and dirty way to get off the ground, no connection pooling.</li>
+            <li><a href="#JDBCPoolingDriver"><code>&lt;PoolingDriver&gt;</code></a>: Uses Apache Commons DBCP to provide connection pooling.</li>
           </ul>
           <a name="JDBCDataSource"/>
           <table>
@@ -1147,6 +1148,27 @@ CREATE TABLE logs (
               <td>properties</td>
               <td>Property[]</td>
               <td>A list of properties. You cannot specify both properties and a user name or password.</td>
+            </tr>
+          </table>
+          <a name="JDBCPoolingDriver"/>
+          <table>
+            <caption align="top">PoolingDriver Parameters (Apache Commons DBCP)</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>DriverManager parameters</td>
+              <td>DriverManager parameters</td>
+              <td>This connection source inherits all parameter from the DriverManager connection source.</td>
+            </tr>
+            <tr>
+              <td>poolName</td>
+              <td>String</td>
+              <td>The pool name used to pool JDBC Connections. Defaults to <code>example</code>. You can use the JDBC 
+              connection string prefix <code>jdbc:apache:commons:dbcp:</code> followed by the pool name if you want 
+              to use a pooled connection elsewhere. For example: <code>jdbc:apache:commons:dbcp:example</code>.</td>
             </tr>
           </table>
           <p>When configuring the JDBCAppender, use the nested <code>&lt;Column&gt;</code> elements to specify which
