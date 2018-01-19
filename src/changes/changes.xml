@@ -101,6 +101,15 @@
       <action issue="LOG4J2-2197" dev="ggregory" type="update" due-to="Fabrice Daugan">
         Document default property value support.
       </action>
+      <action issue="LOG4J2-2198" dev="ggregory" type="update">
+        Update MongoDB dependencies from classic to modern.
+      </action>
+      <action issue="LOG4J2-2186" dev="ggregory" type="add">
+        Add a JDBC ConnectionSource that provides pooling through Apache Commons DBCP 2.
+      </action>
+      <action issue="LOG4J2-2187" dev="ggregory" type="add">
+        Add a hook for a Connection Source for a JDBC Appender to release its resources.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak ">

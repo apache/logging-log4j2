@@ -94,6 +94,9 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         if (this.connection != null || this.statement != null) {
             return this.commitAndClose();
         }
+        if (connectionSource != null) {
+            connectionSource.stop();
+        }
         return true;
     }
 
