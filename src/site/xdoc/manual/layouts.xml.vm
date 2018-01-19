@@ -466,6 +466,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>boolean</td>
               <td>Whether to include NULL byte as delimiter after each event (optional, default to false).</td>
             </tr>
+            <tr>
+              <td>objectMessageAsJsonObject</td>
+              <td>boolean</td>
+              <td>If true, ObjectMessage is serialized as JSON object to the "message" field of the output log. Defaults to false.</td>
+            </tr>
             <caption align="top">JsonLayout Parameters</caption>
           </table>
           <p>
