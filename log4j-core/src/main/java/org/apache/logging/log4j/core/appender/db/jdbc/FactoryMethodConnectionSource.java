@@ -37,7 +37,7 @@ import org.apache.logging.log4j.util.Strings;
  * {@link DataSource}.
  */
 @Plugin(name = "ConnectionFactory", category = Core.CATEGORY_NAME, elementType = "connectionSource", printObject = true)
-public final class FactoryMethodConnectionSource implements ConnectionSource {
+public final class FactoryMethodConnectionSource extends AbstractConnectionSource {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final DataSource dataSource;

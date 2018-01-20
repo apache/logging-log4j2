@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.Strings;
  * A {@link JdbcAppender} connection source that uses a {@link DataSource} to connect to the database.
  */
 @Plugin(name = "DataSource", category = Core.CATEGORY_NAME, elementType = "connectionSource", printObject = true)
-public final class DataSourceConnectionSource implements ConnectionSource {
+public final class DataSourceConnectionSource extends AbstractConnectionSource {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final DataSource dataSource;

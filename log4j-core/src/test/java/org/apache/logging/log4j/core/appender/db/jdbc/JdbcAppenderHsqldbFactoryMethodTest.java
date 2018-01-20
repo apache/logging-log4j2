@@ -28,7 +28,7 @@ import org.apache.logging.log4j.junit.JdbcRule;
 public class JdbcAppenderHsqldbFactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
     public JdbcAppenderHsqldbFactoryMethodTest() {
         super(new JdbcRule(
-                new ConnectionSource() {
+                new AbstractConnectionSource() {
                     @Override
                     public Connection getConnection() throws SQLException {
                         return JdbcAppenderHsqldbFactoryMethodTest.getConnection();
