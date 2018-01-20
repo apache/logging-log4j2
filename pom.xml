@@ -47,7 +47,7 @@
       <email>rgoers@apache.org</email>
       <organization>Nextiva</organization>
       <roles>
-        <role>PMC Chair</role>
+        <role>PMC Member</role>
       </roles>
       <timezone>America/Phoenix</timezone>
     </developer>
@@ -95,9 +95,9 @@
       <id>mattsicker</id>
       <name>Matt Sicker</name>
       <email>mattsicker@apache.org</email>
-      <organization>SPR Consulting</organization>
+      <organization>Independent Consultant</organization>
       <roles>
-        <role>PMC Member</role>
+        <role>PMC Chair</role>
       </roles>
       <timezone>America/Chicago</timezone>
     </developer>
@@ -176,7 +176,7 @@
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!--<Log4jReleaseManager>Matt Sicker</Log4jReleaseManager> -->
-    <!--<Log4jReleaseKey>FA1C814D</Log4jReleaseKey> -->
+    <!--<Log4jReleaseKey>748F15B2CF9BA8F024155E6ED7C92B70FA1C814D</Log4jReleaseKey> -->
     <!-- note that any properties you want available in velocity templates must not use periods! -->
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
