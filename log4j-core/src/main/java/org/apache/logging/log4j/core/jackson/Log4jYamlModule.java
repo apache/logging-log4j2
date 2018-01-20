@@ -43,7 +43,7 @@ final class Log4jYamlModule extends SimpleModule {
         // MUST init here.
         // Calling this from setupModule is too late!
         //noinspection ThisEscapedInObjectConstruction
-        new SimpleModuleInitializer().initialize(this);
+        new SimpleModuleInitializer().initialize(this, false);
     }
 
     @Override
