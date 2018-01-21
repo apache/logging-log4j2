@@ -76,6 +76,10 @@ public class WatchManager extends AbstractLifeCycle {
         return stopped;
     }
 
+    public void unwatchFile(final File file) {
+        watchers.remove(file);
+    }
+
     public void watchFile(final File file, final FileWatcher watcher) {
         watchers.put(file, new FileMonitor(file.lastModified(), watcher));
     }
