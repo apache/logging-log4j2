@@ -31,7 +31,10 @@ import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Manages FileWatchers.
+ * Manages {@link FileWatcher}s.
+ * 
+ * @see FileWatcher
+ * @see ConfigurationScheduler
  */
 public class WatchManager extends AbstractLifeCycle {
 
