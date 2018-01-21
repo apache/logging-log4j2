@@ -71,6 +71,8 @@ public final class ClockFactory {
         result.put("SystemClock",       new Supplier<Clock>() { @Override public Clock get() { return new SystemClock(); } });
         result.put("CachedClock",       new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
         result.put("CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
+        result.put("org.apache.logging.log4j.core.util.CachedClock", new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
+        result.put("org.apache.logging.log4j.core.util.CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
         return result;
     }
 
