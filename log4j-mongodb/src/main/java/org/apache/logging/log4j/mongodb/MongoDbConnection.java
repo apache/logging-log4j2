@@ -29,6 +29,7 @@ import org.bson.Transformer;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
@@ -57,11 +58,13 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<BasicDBObje
     public MongoDbConnection(final DB database, final WriteConcern writeConcern, final String collectionName,
             final Boolean isCapped, final Integer collectionSize) {
         if (database.collectionExists(collectionName)) {
+            LOGGER.debug("Gettting collection {}", collectionName);
             collection = database.getCollection(collectionName);
         } else {
             final BasicDBObject options = new BasicDBObject();
             options.put("capped", isCapped);
             options.put("size", collectionSize);
+            LOGGER.debug("Creating collection {} (capped = {}, size = {})", collectionName, isCapped, collectionSize);
             this.collection = database.createCollection(collectionName, options);
         }
         this.writeConcern = writeConcern;
@@ -80,7 +83,9 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<BasicDBObje
     @Override
     public void insertObject(final NoSqlObject<BasicDBObject> object) {
         try {
-            this.collection.insert(object.unwrap(), this.writeConcern);
+            BasicDBObject unwrapped = object.unwrap();
+            LOGGER.debug("Inserting object {}", unwrapped);
+            this.collection.insert(unwrapped, this.writeConcern);
         } catch (final MongoException e) {
             throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " + e.getMessage(),
                     e);
@@ -90,7 +95,9 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<BasicDBObje
     @Override
     public void closeImpl() {
         // LOG4J2-1196
-        this.collection.getDB().getMongo().close();
+        Mongo mongo = this.collection.getDB().getMongo();
+        LOGGER.debug("Closing {} client {}", mongo.getClass().getSimpleName(), mongo);
+        mongo.close();
     }
 
 }
