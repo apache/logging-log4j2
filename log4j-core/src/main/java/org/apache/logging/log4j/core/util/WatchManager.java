@@ -85,7 +85,7 @@ public class WatchManager extends AbstractLifeCycle {
     }
 
     public Map<File, FileWatcher> getWatchers() {
-        final Map<File, FileWatcher> map = new HashMap<>();
+        final Map<File, FileWatcher> map = new HashMap<>(watchers.size());
         for (final Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
             map.put(entry.getKey(), entry.getValue().fileWatcher);
         }
