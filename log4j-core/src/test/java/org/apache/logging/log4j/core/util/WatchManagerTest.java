@@ -56,10 +56,11 @@ public class WatchManagerTest {
         watchManager.start();
         try {
             final File sourceFile = new File(originalFile);
-            final FileOutputStream targetStream = new FileOutputStream(testFile);
-            final File updateFile = new File(newFile);
             Path source = Paths.get(sourceFile.toURI());
-            Files.copy(source, targetStream);
+            try (final FileOutputStream targetStream = new FileOutputStream(testFile)) {
+                Files.copy(source, targetStream);
+            }
+            final File updateFile = new File(newFile);
             final File targetFile = new File(testFile);
             final BlockingQueue<File> queue = new LinkedBlockingQueue<>();
             watchManager.watchFile(targetFile, new TestWatcher(queue));
