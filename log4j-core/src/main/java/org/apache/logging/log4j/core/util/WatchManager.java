@@ -78,7 +78,6 @@ public class WatchManager extends AbstractLifeCycle {
 
     public void watchFile(final File file, final FileWatcher watcher) {
         watchers.put(file, new FileMonitor(file.lastModified(), watcher));
-
     }
 
     public Map<File, FileWatcher> getWatchers() {
