@@ -119,6 +119,9 @@
       <action issue="LOG4J2-2204" dev="ggregory" type="update">
         org.apache.logging.log4j.core.util.WatchManager.getWatchers() should pre-allocate its new Map.
       </action>
+      <action issue="LOG4J2-2206" dev="ggregory" type="add">
+        Add method org.apache.logging.log4j.core.util.WatchManager.reset(File) and reset().
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
