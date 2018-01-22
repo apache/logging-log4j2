@@ -284,7 +284,7 @@ public class Log4jLogEvent implements LogEvent {
 
     public Log4jLogEvent() {
         this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, 0, null,
-                0, null, CLOCK.currentTimeMillis(), 0, nanoClock.nanoTime());
+                0, null, CLOCK, nanoClock.nanoTime());
     }
 
     /**
@@ -328,13 +328,12 @@ public class Log4jLogEvent implements LogEvent {
                         final Message message, final List<Property> properties, final Throwable t) {
        this(loggerName, marker, loggerFQCN, level, message, t, null, createContextData(properties),
            ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
-           0, // thread name
-           null, // stack trace element
-           0,
-           null, // LOG4J2-628 use log4j.Clock for timestamps
-           // LOG4J2-744 unless TimestampMessage already has one
-           message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
-               CLOCK.currentTimeMillis(), 0, nanoClock.nanoTime());
+           0, // thread id
+           null, // thread name
+           0, // thread priority
+           null, // StackTraceElement source
+           CLOCK, //
+           nanoClock.nanoTime());
    }
 
    /**
@@ -415,6 +414,29 @@ public class Log4jLogEvent implements LogEvent {
             final StringMap contextData, final ThreadContext.ContextStack contextStack, final long threadId,
             final String threadName, final int threadPriority, final StackTraceElement source,
             final long timestampMillis, final int nanoOfMillisecond, final long nanoTime) {
+        this(loggerName, marker, loggerFQCN, level, message, thrown, thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, nanoTime);
+        long millis = message instanceof TimestampMessage
+                ? ((TimestampMessage) message).getTimestamp()
+                : timestampMillis;
+        instant.initFromEpochMilli(millis, nanoOfMillisecond);
+    }
+    private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
+                          final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
+                          final StringMap contextData, final ThreadContext.ContextStack contextStack, final long threadId,
+                          final String threadName, final int threadPriority, final StackTraceElement source,
+                          final Clock clock, final long nanoTime) {
+        this(loggerName, marker, loggerFQCN, level, message, thrown, thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, nanoTime);
+        if (message instanceof TimestampMessage) {
+            instant.initFromEpochMilli(((TimestampMessage) message).getTimestamp(), 0);
+        } else {
+            instant.initFrom(clock);
+        }
+    }
+    private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
+                          final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
+                          final StringMap contextData, final ThreadContext.ContextStack contextStack, final long threadId,
+                          final String threadName, final int threadPriority, final StackTraceElement source,
+                          final long nanoTime) {
         this.loggerName = loggerName;
         this.marker = marker;
         this.loggerFqcn = loggerFQCN;
@@ -424,15 +446,11 @@ public class Log4jLogEvent implements LogEvent {
         this.thrownProxy = thrownProxy;
         this.contextData = contextData == null ? ContextDataFactory.createContextData() : contextData;
         this.contextStack = contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
-        long millis = message instanceof TimestampMessage
-                ? ((TimestampMessage) message).getTimestamp()
-                : timestampMillis;
-        this.instant.initFromEpochMilli(millis, nanoOfMillisecond);
         this.threadId = threadId;
         this.threadName = threadName;
         this.threadPriority = threadPriority;
         this.source = source;
-        if (message != null && message instanceof LoggerNameAwareMessage) {
+        if (message instanceof LoggerNameAwareMessage) {
             ((LoggerNameAwareMessage) message).setLoggerName(loggerName);
         }
         this.nanoTime = nanoTime;

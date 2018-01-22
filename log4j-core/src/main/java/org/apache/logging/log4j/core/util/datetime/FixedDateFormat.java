@@ -43,73 +43,73 @@ public class FixedDateFormat {
         /**
          * ABSOLUTE time format: {@code "HH:mm:ss,SSS"}.
          */
-        ABSOLUTE("HH:mm:ss,SSS", null, 0, ':', 1, ',', 1),
+        ABSOLUTE("HH:mm:ss,SSS", null, 0, ':', 1, ',', 1, 3),
         /**
          * ABSOLUTE time format with microsecond precision: {@code "HH:mm:ss,nnnnnn"}.
          */
-        ABSOLUTE_MICROS("HH:mm:ss,nnnnnn", null, 0, ':', 1, ',', 1),
+        ABSOLUTE_MICROS("HH:mm:ss,nnnnnn", null, 0, ':', 1, ',', 1, 6),
         /**
          * ABSOLUTE time format with nanosecond precision: {@code "HH:mm:ss,nnnnnnnnn"}.
          */
-        ABSOLUTE_NANOS("HH:mm:ss,nnnnnnnnn", null, 0, ':', 1, ',', 1),
+        ABSOLUTE_NANOS("HH:mm:ss,nnnnnnnnn", null, 0, ':', 1, ',', 1, 9),
 
         /**
          * ABSOLUTE time format variation with period separator: {@code "HH:mm:ss.SSS"}.
          */
-        ABSOLUTE_PERIOD("HH:mm:ss.SSS", null, 0, ':', 1, '.', 1),
+        ABSOLUTE_PERIOD("HH:mm:ss.SSS", null, 0, ':', 1, '.', 1, 3),
 
         /**
          * COMPACT time format: {@code "yyyyMMddHHmmssSSS"}.
          */
-        COMPACT("yyyyMMddHHmmssSSS", "yyyyMMdd", 0, ' ', 0, ' ', 0),
+        COMPACT("yyyyMMddHHmmssSSS", "yyyyMMdd", 0, ' ', 0, ' ', 0, 3),
 
         /**
          * DATE_AND_TIME time format: {@code "dd MMM yyyy HH:mm:ss,SSS"}.
          */
-        DATE("dd MMM yyyy HH:mm:ss,SSS", "dd MMM yyyy ", 0, ':', 1, ',', 1),
+        DATE("dd MMM yyyy HH:mm:ss,SSS", "dd MMM yyyy ", 0, ':', 1, ',', 1, 3),
 
         /**
          * DATE_AND_TIME time format variation with period separator: {@code "dd MMM yyyy HH:mm:ss.SSS"}.
          */
-        DATE_PERIOD("dd MMM yyyy HH:mm:ss.SSS", "dd MMM yyyy ", 0, ':', 1, '.', 1),
+        DATE_PERIOD("dd MMM yyyy HH:mm:ss.SSS", "dd MMM yyyy ", 0, ':', 1, '.', 1, 3),
 
         /**
          * DEFAULT time format: {@code "yyyy-MM-dd HH:mm:ss,SSS"}.
          */
-        DEFAULT("yyyy-MM-dd HH:mm:ss,SSS", "yyyy-MM-dd ", 0, ':', 1, ',', 1),
+        DEFAULT("yyyy-MM-dd HH:mm:ss,SSS", "yyyy-MM-dd ", 0, ':', 1, ',', 1, 3),
         /**
          * DEFAULT time format with microsecond precision: {@code "yyyy-MM-dd HH:mm:ss,nnnnnn"}.
          */
-        DEFAULT_MICROS("yyyy-MM-dd HH:mm:ss,nnnnnn", "yyyy-MM-dd ", 0, ':', 1, ',', 1),
+        DEFAULT_MICROS("yyyy-MM-dd HH:mm:ss,nnnnnn", "yyyy-MM-dd ", 0, ':', 1, ',', 1, 6),
         /**
          * DEFAULT time format with nanosecond precision: {@code "yyyy-MM-dd HH:mm:ss,nnnnnnnnn"}.
          */
-        DEFAULT_NANOS("yyyy-MM-dd HH:mm:ss,nnnnnnnnn", "yyyy-MM-dd ", 0, ':', 1, ',', 1),
+        DEFAULT_NANOS("yyyy-MM-dd HH:mm:ss,nnnnnnnnn", "yyyy-MM-dd ", 0, ':', 1, ',', 1, 9),
 
         /**
          * DEFAULT time format variation with period separator: {@code "yyyy-MM-dd HH:mm:ss.SSS"}.
          */
-        DEFAULT_PERIOD("yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd ", 0, ':', 1, '.', 1),
+        DEFAULT_PERIOD("yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd ", 0, ':', 1, '.', 1, 3),
 
         /**
          * ISO8601_BASIC time format: {@code "yyyyMMdd'T'HHmmss,SSS"}.
          */
-        ISO8601_BASIC("yyyyMMdd'T'HHmmss,SSS", "yyyyMMdd'T'", 2, ' ', 0, ',', 1),
+        ISO8601_BASIC("yyyyMMdd'T'HHmmss,SSS", "yyyyMMdd'T'", 2, ' ', 0, ',', 1, 3),
 
         /**
          * ISO8601_BASIC time format: {@code "yyyyMMdd'T'HHmmss.SSS"}.
          */
-        ISO8601_BASIC_PERIOD("yyyyMMdd'T'HHmmss.SSS", "yyyyMMdd'T'", 2, ' ', 0, '.', 1),
+        ISO8601_BASIC_PERIOD("yyyyMMdd'T'HHmmss.SSS", "yyyyMMdd'T'", 2, ' ', 0, '.', 1, 3),
 
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSS"}.
          */
-        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1),
+        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3),
 
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss.SSS"}.
          */
-        ISO8601_PERIOD("yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1);
+        ISO8601_PERIOD("yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1, 3);
 
         private static final String DEFAULT_SECOND_FRACTION_PATTERN = "SSS";
         private static final int MILLI_FRACTION_DIGITS = DEFAULT_SECOND_FRACTION_PATTERN.length();
@@ -122,9 +122,11 @@ public class FixedDateFormat {
         private final int timeSeparatorLength;
         private final char millisSeparatorChar;
         private final int millisSeparatorLength;
+        private final int secondFractionDigits;
 
         FixedFormat(final String pattern, final String datePattern, final int escapeCount, final char timeSeparator,
-                    final int timeSepLength, final char millisSeparator, final int millisSepLength) {
+                    final int timeSepLength, final char millisSeparator, final int millisSepLength,
+                    final int secondFractionDigits) {
             this.timeSeparatorChar = timeSeparator;
             this.timeSeparatorLength = timeSepLength;
             this.millisSeparatorChar = millisSeparator;
@@ -132,6 +134,7 @@ public class FixedDateFormat {
             this.pattern = Objects.requireNonNull(pattern);
             this.datePattern = datePattern; // may be null
             this.escapeCount = escapeCount;
+            this.secondFractionDigits = secondFractionDigits;
         }
 
         /**
@@ -230,6 +233,14 @@ public class FixedDateFormat {
         public FastDateFormat getFastDateFormat(final TimeZone tz) {
             return getDatePattern() == null ? null : FastDateFormat.getInstance(getDatePattern(), tz);
         }
+
+        /**
+         * Returns the number of digits specifying the fraction of the second to show
+         * @return 3 for millisecond precision, 6 for microsecond precision or 9 for nanosecond precision
+         */
+        public int getSecondFractionDigits() {
+            return secondFractionDigits;
+        }
     }
 
     private final FixedFormat fixedFormat;
@@ -264,7 +275,7 @@ public class FixedDateFormat {
      * @param tz time zone
      */
     FixedDateFormat(final FixedFormat fixedFormat, final TimeZone tz) {
-        this(fixedFormat, tz, FixedFormat.DEFAULT_SECOND_FRACTION_PATTERN.length());
+        this(fixedFormat, tz, fixedFormat.getSecondFractionDigits());
     }
 
     /**

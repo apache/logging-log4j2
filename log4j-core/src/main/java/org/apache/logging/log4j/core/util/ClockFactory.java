@@ -80,21 +80,27 @@ public final class ClockFactory {
         final String userRequest = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME);
         if (userRequest == null) {
             LOGGER.trace("Using default SystemClock for timestamps.");
-            return new SystemClock();
+            return logSupportedPrecision(new SystemClock());
         }
         Supplier<Clock> specified = aliases().get(userRequest);
         if (specified != null) {
             LOGGER.trace("Using specified {} for timestamps.", userRequest);
-            return specified.get();
+            return logSupportedPrecision(specified.get());
         }
         try {
             final Clock result = Loader.newCheckedInstanceOf(userRequest, Clock.class);
             LOGGER.trace("Using {} for timestamps.", result.getClass().getName());
-            return result;
+            return logSupportedPrecision(result);
         } catch (final Exception e) {
             final String fmt = "Could not create {}: {}, using default SystemClock for timestamps.";
             LOGGER.error(fmt, userRequest, e);
-            return new SystemClock();
+            return logSupportedPrecision(new SystemClock());
         }
+    }
+
+    private static Clock logSupportedPrecision(Clock clock) {
+        String support = clock instanceof PreciseClock ? "supports" : "does not support";
+        LOGGER.debug("{} {} precise timestamps.", clock.getClass().getName(), support);
+        return clock;
     }
 }

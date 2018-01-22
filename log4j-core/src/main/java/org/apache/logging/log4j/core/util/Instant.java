@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
 /**
  * Models a point in time, suitable for event timestamps.
  * <p>
@@ -31,7 +33,7 @@ package org.apache.logging.log4j.core.util;
  * </p>
  * @since 2.11
  */
-public interface Instant {
+public interface Instant extends StringBuilderFormattable {
     /**
      * Gets the number of seconds from the Java epoch of 1970-01-01T00:00:00Z.
      * <p>

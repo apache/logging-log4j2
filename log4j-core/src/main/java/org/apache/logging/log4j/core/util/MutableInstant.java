@@ -147,6 +147,13 @@ public class MutableInstant implements Instant, Serializable {
 
     @Override
     public String toString() {
-        return "MutableInstant[epochSecond=" + epochSecond + ", nano=" + nanoOfSecond + "]";
+        final StringBuilder sb = new StringBuilder(64);
+        formatTo(sb);
+        return sb.toString();
+    }
+
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        buffer.append("MutableInstant[epochSecond=").append(epochSecond).append(", nano=").append(nanoOfSecond).append("]");
     }
 }
