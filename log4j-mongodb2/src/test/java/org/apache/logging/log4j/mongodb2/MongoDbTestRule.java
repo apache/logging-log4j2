@@ -162,8 +162,10 @@ public class MongoDbTestRule implements TestRule {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("MongoDbTestRule [portSystemPropertyName=");
+        StringBuilder builder = new StringBuilder();
+        builder.append("MongoDbTestRule [starter=");
+        builder.append(starter);
+        builder.append(", portSystemPropertyName=");
         builder.append(portSystemPropertyName);
         builder.append(", mongoClient=");
         builder.append(mongoClient);
@@ -171,6 +173,8 @@ public class MongoDbTestRule implements TestRule {
         builder.append(mongodExecutable);
         builder.append(", mongodProcess=");
         builder.append(mongodProcess);
+        builder.append(", loggingTarget=");
+        builder.append(loggingTarget);
         builder.append("]");
         return builder.toString();
     }
