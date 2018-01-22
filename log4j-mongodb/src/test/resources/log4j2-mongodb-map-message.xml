@@ -20,8 +20,7 @@
   <Appenders>
     <NoSql name="MongoDbAppender">
       <MongoDb databaseName="test" collectionName="applog" server="localhost"
-        port="${sys:MongoDBTestPort:-27017}">
-      </MongoDb>
+        port="${sys:MongoDBTestPort:-27017}" />
       <MessageLayout />
     </NoSql>
   </Appenders>
