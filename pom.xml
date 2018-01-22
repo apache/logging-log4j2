@@ -186,7 +186,8 @@
     <flumeVersion>1.7.0</flumeVersion> <!-- Version 1.8.0 requires Java 8 -->
     <disruptorVersion>3.3.7</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
-    <mongodb.version>3.6.1</mongodb.version>
+    <mongodb2.version>2.14.3</mongodb2.version>
+    <mongodb3.version>3.6.1</mongodb3.version>
     <compiler.plugin.version>3.7.0</compiler.plugin.version>
     <pmd.plugin.version>3.8</pmd.plugin.version>
     <findbugs.plugin.version>3.0.5</findbugs.plugin.version>
@@ -730,13 +731,18 @@
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
+        <artifactId>mongo-java-driver</artifactId>
+        <version>${mongodb2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb3.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>bson</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb3.version}</version>
       </dependency>
       <dependency>
         <groupId>org.lightcouch</groupId>
@@ -1322,7 +1328,8 @@
     <module>log4j-bom</module>
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-couchdb</module>
-    <module>log4j-mongodb</module>
+    <module>log4j-mongodb2</module>
+    <!-- <module>log4j-mongodb3</module> -->
     <module>log4j-cassandra</module>
     <module>log4j-web</module>
     <module>log4j-perf</module>

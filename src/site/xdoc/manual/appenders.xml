@@ -2225,14 +2225,15 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     ]
 }]]></pre>
         </subsection>
-        <a name="NoSQLAppenderMongoDB"/>
-        <subsection name="NoSQLAppender for MongoDB">
+        <a name="NoSQLAppenderMongoDB2"/>
+        <subsection name="NoSQLAppender for MongoDB 2">
           <p>
-            This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB.
-            The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.
+            This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using
+            the MongoDB driver version 2. The NoSQLAppender Appender writes log events to a NoSQL database using an 
+            internal lightweight provider interface.
           </p>
           <table>
-            <caption align="top">MongoDB Provider Parameters</caption>
+            <caption align="top">MongoDB2 Provider Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -2318,14 +2319,14 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             This appender is <a href="messages.html#MapMessage">MapMessage</a>-aware.
           </p>
           <p>
-            Here are a few sample configurations for the NoSQLAppender and MongoDB provider:
+            Here are a few sample configurations for the NoSQLAppender and MongoDB2 provider:
           </p>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
   <Appenders>
     <NoSql name="databaseAppender">
-      <MongoDb databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
+      <MongoDb2 databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
                username="loggingUser" password="abc123" />
     </NoSql>
   </Appenders>
@@ -2340,7 +2341,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 <Configuration status="error">
   <Appenders>
     <NoSql name="databaseAppender">
-      <MongoDb collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
+      <MongoDb2 collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
                factoryMethodName="getNewMongoClient" />
     </NoSql>
   </Appenders>
@@ -2350,6 +2351,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+        <p>
+          Starting in Log4j version 2.11.0, the provider element name is <code>MongoDb2</code>. 
+          The name <code>MongoDb</code> is now a deprecated alias for <code>MongoDb2</code>.
+        </p>
         </subsection>
         <a name="NoSQLAppenderApacheCouchDB"/>
         <subsection name="NoSQLAppender for Apache CouchDB">
