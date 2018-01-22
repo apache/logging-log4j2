@@ -39,9 +39,9 @@ import com.mongodb.client.MongoDatabase;
  * TODO set up the log4j user in MongoDB.
  */
 @Category(Appenders.MongoDb.class)
-public class MongoDbAuthTestJava8 {
+public class MongoDbAuthFailureTestJava8 {
 
-    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-auth.xml");
+    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-auth-failure.xml");
 
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
             .create(TestConstants.SYS_PROP_NAME_PORT);
@@ -62,8 +62,7 @@ public class MongoDbAuthTestJava8 {
             final MongoCollection<Document> collection = database.getCollection("applog");
             Assert.assertNotNull(collection);
             Document first = collection.find().first();
-//            Assert.assertNotNull(first);
-//            Assert.assertEquals(first.toJson(), "Hello log", first.getString("message"));
+            Assert.assertNull(first);
         }
     }
 }
