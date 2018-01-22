@@ -32,7 +32,7 @@ import org.junit.runners.Suite;
  * </p>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ MongoDbTestTestRuleTestJava8.class, MongoDbAuthTestJava8.class, MongoDbCappedTestJava8.class,
+@Suite.SuiteClasses({ MongoDbTestTestRuleTestJava8.class, MongoDbAuthFailureTestJava8.class, MongoDbCappedTestJava8.class,
         MongoDbMapMessageTestJava8.class, MongoDbTestJava8.class })
 public class Java8Test {
 
