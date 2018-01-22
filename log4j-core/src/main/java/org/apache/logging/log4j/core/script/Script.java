@@ -44,7 +44,7 @@ public class Script extends AbstractScript {
             language = DEFAULT_LANGUAGE;
         }
         if (scriptText == null) {
-            LOGGER.error("No scriptText attribute provided for ScriptFile {}", name);
+            LOGGER.error("No scriptText attribute provided for Script {}", name);
             return null;
         }
         return new Script(name, language, scriptText);
