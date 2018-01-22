@@ -93,7 +93,7 @@
       <!-- MongoDB Appender Plugin -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-mongodb</artifactId>
+        <artifactId>log4j-mongodb2</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Cassandra Appender Plugin -->
