@@ -68,8 +68,9 @@ public class MongoDbMapMessageTestJava8 {
             Assert.assertNotNull(collection);
             final DBObject first = collection.find().next();
             Assert.assertNotNull(first);
-            Assert.assertEquals(first.toMap().toString(), "SomeValue", first.get("SomeName"));
-            Assert.assertEquals(first.toMap().toString(), Integer.valueOf(1), first.get("SomeInt"));
+            final String firstMapString = first.toMap().toString();
+            Assert.assertEquals(firstMapString, "SomeValue", first.get("SomeName"));
+            Assert.assertEquals(firstMapString, Integer.valueOf(1), first.get("SomeInt"));
         } finally {
             mongoClient.close();
         }
