@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests {@link ThreadContext}.
@@ -54,6 +57,7 @@ public class ThreadContextInheritanceTest {
     @Test
     public void testInheritanceSwitchedOn() throws Exception {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
+        ThreadContext.init();
         try {
             ThreadContext.clearMap();
             ThreadContext.put("Greeting", "Hello");

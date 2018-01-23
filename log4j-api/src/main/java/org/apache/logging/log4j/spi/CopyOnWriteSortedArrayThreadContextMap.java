@@ -53,9 +53,23 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
     private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
+    
+    private static volatile int InitialCapacity;
+    private static volatile boolean InheritableMap;
 
+    /**
+     * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
+     * and when Log4j is reconfigured.
+     */
+    static void init() {
+        final PropertiesUtil properties = PropertiesUtil.getProperties();
+        InitialCapacity = properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
+        InheritableMap = properties.getBooleanProperty(INHERITABLE_MAP);
+    }
+    
     static {
         EMPTY_CONTEXT_DATA.freeze();
+        init();
     }
 
     private final ThreadLocal<StringMap> localMap;
@@ -67,9 +81,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
     // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap() {
-        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        final boolean inheritable = managerProps.getBooleanProperty(INHERITABLE_MAP);
-        if (inheritable) {
+        if (InheritableMap) {
             return new InheritableThreadLocal<StringMap>() {
                 @Override
                 protected StringMap childValue(final StringMap parentValue) {
@@ -94,8 +106,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
      * @return an implementation of the {@code StringMap} used to back this thread context map
      */
     protected StringMap createStringMap() {
-        return new SortedArrayStringMap(PropertiesUtil.getProperties().getIntegerProperty(
-                PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
+        return new SortedArrayStringMap(InitialCapacity);
     }
 
     /**

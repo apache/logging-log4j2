@@ -131,6 +131,17 @@
       <action issue="LOG4J2-2210" dev="ggregory" type="update" due-to="Björn Kautler">
         Fix error log message for Script which says ScriptFile instead.
       </action>
+      <action issue="LOG4J2-2212" dev="ggregory" type="update" due-to="Daniel Feist, Gary Gregory">
+        Unnecessary contention in CopyOnWriteSortedArrayThreadContextMap.
+      </action>
+      <action issue="LOG4J2-2213" dev="ggregory" type="update" due-to="Daniel Feist, Gary Gregory">
+        Unnecessary contention in GarbageFreeSortedArrayThreadContextMap.
+      </action>
+      <!-- 
+      <action issue="LOG4J2-2205" dev="ggregory" type="update" due-to="Björn Kautler">
+        New module log4j-mongodb3: Remove use of deprecated MongoDB APIs and code to the Java driver version 3 API.
+      </action>
+      -->
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak ">

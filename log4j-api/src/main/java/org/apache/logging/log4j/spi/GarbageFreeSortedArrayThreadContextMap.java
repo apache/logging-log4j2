@@ -53,6 +53,23 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
     protected final ThreadLocal<StringMap> localMap;
+    
+    private static volatile int InitialCapacity;
+    private static volatile boolean InheritableMap;
+
+    /**
+     * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
+     * and when Log4j is reconfigured.
+     */
+    static void init() {
+        final PropertiesUtil properties = PropertiesUtil.getProperties();
+        InitialCapacity = properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
+        InheritableMap = properties.getBooleanProperty(INHERITABLE_MAP);
+    }
+    
+    static {
+        init();
+    }
 
     public GarbageFreeSortedArrayThreadContextMap() {
         this.localMap = createThreadLocalMap();
@@ -62,8 +79,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap() {
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        final boolean inheritable = managerProps.getBooleanProperty(INHERITABLE_MAP);
-        if (inheritable) {
+        if (InheritableMap) {
             return new InheritableThreadLocal<StringMap>() {
                 @Override
                 protected StringMap childValue(final StringMap parentValue) {
@@ -83,8 +99,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
      * @return an implementation of the {@code StringMap} used to back this thread context map
      */
     protected StringMap createStringMap() {
-        return new SortedArrayStringMap(PropertiesUtil.getProperties().getIntegerProperty(
-                PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
+        return new SortedArrayStringMap(InitialCapacity);
     }
 
     /**

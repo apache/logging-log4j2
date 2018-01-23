@@ -49,8 +49,10 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
+import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
@@ -662,6 +664,7 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public synchronized void onChange(final Reconfigurable reconfigurable) {
         LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
+        initApiModule();
         final Configuration newConfig = reconfigurable.reconfigure();
         if (newConfig != null) {
             setConfiguration(newConfig);
@@ -669,6 +672,10 @@ public class LoggerContext extends AbstractLifeCycle
         } else {
             LOGGER.debug("Reconfiguration failed for {} ({})", contextName, this);
         }
+    }
+
+    private void initApiModule() {        
+        ThreadContextMapFactory.init(); // Or make public and call ThreadContext.init() which calls ThreadContextMapFactory.init().
     }
 
     // LOG4J2-151: changed visibility from private to protected
