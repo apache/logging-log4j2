@@ -53,6 +53,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
     private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
+
     static {
         EMPTY_CONTEXT_DATA.freeze();
     }
