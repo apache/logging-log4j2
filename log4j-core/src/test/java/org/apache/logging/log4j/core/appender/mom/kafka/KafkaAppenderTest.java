@@ -50,21 +50,16 @@ import static org.junit.Assert.*;
 public class KafkaAppenderTest {
 
     private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, null, null) {
-        @Override
-        public void close() {
-            try {
-                Thread.sleep(3000);
-            } catch (final InterruptedException ignore) {
-            }
-        }
 
         @Override
         public void close(final long timeout, final TimeUnit timeUnit) {
             try {
-                Thread.sleep(timeUnit.toMillis(timeout));
+                Thread.sleep(50);
             } catch (final InterruptedException ignore) {
+                // ignore
             }
         }
+
     };
 
     private static final String LOG_MESSAGE = "Hello, world!";
