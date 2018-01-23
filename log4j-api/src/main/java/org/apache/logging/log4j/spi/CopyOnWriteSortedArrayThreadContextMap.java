@@ -54,8 +54,8 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
     
-    private static volatile int InitialCapacity;
-    private static volatile boolean InheritableMap;
+    private static volatile int initialCapacity;
+    private static volatile boolean inheritableMap;
 
     /**
      * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
@@ -63,8 +63,8 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
      */
     static void init() {
         final PropertiesUtil properties = PropertiesUtil.getProperties();
-        InitialCapacity = properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
-        InheritableMap = properties.getBooleanProperty(INHERITABLE_MAP);
+        initialCapacity = properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
+        inheritableMap = properties.getBooleanProperty(INHERITABLE_MAP);
     }
     
     static {
@@ -81,7 +81,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
     // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap() {
-        if (InheritableMap) {
+        if (inheritableMap) {
             return new InheritableThreadLocal<StringMap>() {
                 @Override
                 protected StringMap childValue(final StringMap parentValue) {
@@ -106,7 +106,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
      * @return an implementation of the {@code StringMap} used to back this thread context map
      */
     protected StringMap createStringMap() {
-        return new SortedArrayStringMap(InitialCapacity);
+        return new SortedArrayStringMap(initialCapacity);
     }
 
     /**

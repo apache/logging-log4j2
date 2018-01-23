@@ -42,7 +42,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     private final boolean useMap;
     private final ThreadLocal<Map<String, String>> localMap;
 
-    private static boolean InheritableMap;
+    private static boolean inheritableMap;
     
     static {
         init();
@@ -51,7 +51,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
     // (This method is package protected for JUnit tests.)
     static ThreadLocal<Map<String, String>> createThreadLocalMap(final boolean isMapEnabled) {
-        if (InheritableMap) {
+        if (inheritableMap) {
             return new InheritableThreadLocal<Map<String, String>>() {
                 @Override
                 protected Map<String, String> childValue(final Map<String, String> parentValue) {
@@ -66,7 +66,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     }
 
     static void init() {
-        InheritableMap = PropertiesUtil.getProperties().getBooleanProperty(INHERITABLE_MAP);
+        inheritableMap = PropertiesUtil.getProperties().getBooleanProperty(INHERITABLE_MAP);
     }
     
     public DefaultThreadContextMap() {
