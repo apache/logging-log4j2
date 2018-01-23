@@ -137,6 +137,9 @@
       <action issue="LOG4J2-2213" dev="ggregory" type="update" due-to="Daniel Feist, Gary Gregory">
         Unnecessary contention in GarbageFreeSortedArrayThreadContextMap.
       </action>
+      <action issue="LOG4J2-2214" dev="ggregory" type="update" due-to="Daniel Feist, Gary Gregory">
+        Unnecessary contention in DefaultThreadContextMap.
+      </action>
       <!-- 
       <action issue="LOG4J2-2205" dev="ggregory" type="update" due-to="Björn Kautler">
         New module log4j-mongodb3: Remove use of deprecated MongoDB APIs and code to the Java driver version 3 API.

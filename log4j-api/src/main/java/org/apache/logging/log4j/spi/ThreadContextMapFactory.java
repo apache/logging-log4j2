@@ -64,6 +64,7 @@ public final class ThreadContextMapFactory {
     public static void init() {
         CopyOnWriteSortedArrayThreadContextMap.init();
         GarbageFreeSortedArrayThreadContextMap.init();
+        DefaultThreadContextMap.init();
         initPrivate();
     }
 
