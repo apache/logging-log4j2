@@ -78,7 +78,6 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
     // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap() {
-        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
         if (InheritableMap) {
             return new InheritableThreadLocal<StringMap>() {
                 @Override
