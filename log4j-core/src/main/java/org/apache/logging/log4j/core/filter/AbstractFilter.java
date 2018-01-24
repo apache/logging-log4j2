@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -37,6 +38,52 @@ import org.apache.logging.log4j.message.Message;
  */
 public abstract class AbstractFilter extends AbstractLifeCycle implements Filter {
 
+    public static abstract class AbstractFilterBuilder<B extends AbstractFilterBuilder<B>>  {
+
+        public static final String ATTR_ON_MISMATCH = "onMismatch";
+        public static final String ATTR_ON_MATCH = "onMatch";
+
+        @PluginBuilderAttribute(ATTR_ON_MATCH)
+        private Result onMatch = Result.NEUTRAL;
+
+        @PluginBuilderAttribute(ATTR_ON_MISMATCH)
+        private Result onMismatch = Result.DENY;
+
+        public Result getOnMatch() {
+            return onMatch;
+        }
+
+        public Result getOnMismatch() {
+            return onMismatch;
+        }
+
+        /**
+         * Sets the Result to return when the filter matches. Defaults to Result.NEUTRAL.
+         * @param onMatch the Result to return when the filter matches.
+         * @return this
+         */
+        public B setOnMatch(final Result onMatch) {
+            this.onMatch = onMatch;
+            return asBuilder();
+        }
+
+        /**
+         * Sets the Result to return when the filter does not match. The default is Result.DENY.
+         * @param onMismatch the Result to return when the filter does not match. 
+         * @return this
+         */
+        public B setOnMismatch(final Result onMismatch) {
+            this.onMismatch = onMismatch;
+            return asBuilder();
+        }
+        
+        @SuppressWarnings("unchecked")
+        public B asBuilder() {
+            return (B) this;
+        }
+
+    }
+    
     /**
      * The onMatch Result.
      */

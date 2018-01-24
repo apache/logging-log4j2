@@ -37,9 +37,6 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 public final class MarkerFilter extends AbstractFilter {
 
     public static final String ATTR_MARKER = "marker";
-    public static final String ATTR_ON_MATCH = "onMatch";
-    public static final String ATTR_ON_MISMATCH = "onMismatch";
-    
     private final String name;
 
     private MarkerFilter(final String name, final Result onMatch, final Result onMismatch) {
@@ -158,8 +155,8 @@ public final class MarkerFilter extends AbstractFilter {
     @PluginFactory
     public static MarkerFilter createFilter(
             @PluginAttribute(ATTR_MARKER) final String marker,
-            @PluginAttribute(ATTR_ON_MATCH) final Result match,
-            @PluginAttribute(ATTR_ON_MISMATCH) final Result mismatch) {
+            @PluginAttribute(AbstractFilterBuilder.ATTR_ON_MATCH) final Result match,
+            @PluginAttribute(AbstractFilterBuilder.ATTR_ON_MISMATCH) final Result mismatch) {
 
         if (marker == null) {
             LOGGER.error("A marker must be provided for MarkerFilter");

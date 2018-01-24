@@ -40,7 +40,7 @@ import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
-import org.apache.logging.log4j.core.filter.MarkerFilter;
+import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
 import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -230,8 +230,8 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Appender " + key);
         }
-        final String onMatch = (String) properties.remove(MarkerFilter.ATTR_ON_MATCH);
-        final String onMismatch = (String) properties.remove(MarkerFilter.ATTR_ON_MISMATCH);
+        final String onMatch = (String) properties.remove(AbstractFilterBuilder.ATTR_ON_MATCH);
+        final String onMismatch = (String) properties.remove(AbstractFilterBuilder.ATTR_ON_MISMATCH);
         final FilterComponentBuilder filterBuilder = builder.newFilter(type, onMatch, onMismatch);
         return processRemainingProperties(filterBuilder, properties);
     }

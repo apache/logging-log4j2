@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config.builder.impl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.CompositeFilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
+import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
 
 /**
  * @since 2.4
@@ -30,8 +31,8 @@ class DefaultCompositeFilterComponentBuilder
     public DefaultCompositeFilterComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
             final String onMatch, final String onMismatch) {
         super(builder, "Filters");
-        addAttribute("onMatch", onMatch);
-        addAttribute("onMisMatch", onMismatch);
+        addAttribute(AbstractFilterBuilder.ATTR_ON_MATCH, onMatch);
+        addAttribute(AbstractFilterBuilder.ATTR_ON_MISMATCH, onMismatch);
     }
 
     @Override
