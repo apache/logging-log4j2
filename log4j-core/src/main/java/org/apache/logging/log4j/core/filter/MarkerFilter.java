@@ -145,7 +145,7 @@ public final class MarkerFilter extends AbstractFilter {
     }
 
     /**
-     * Create the MarkerFilter.
+     * Creates the MarkerFilter.
      * @param marker The Marker name to match.
      * @param match The action to take if a match occurs.
      * @param mismatch The action to take if no match occurs.
