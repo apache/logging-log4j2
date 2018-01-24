@@ -979,7 +979,9 @@ public class StrSubstitutor implements ConfigurationAware {
                                 priorVariables.add(varName);
 
                                 // resolve the variable
-                                String varValue = resolveVariable(event, varName, buf, startPos, endPos);
+                                //String varValue = resolveVariable(event, varName, buf, startPos, endPos);
+                                //fix bug LOG4J2-2211 (https://issues.apache.org/jira/projects/LOG4J2/issues/LOG4J2-2211?filter=addedrecently)
+                                String varValue = resolveVariable(event, varNameExpr, buf, startPos, endPos);
                                 if (varValue == null) {
                                     varValue = varDefaultValue;
                                 }
