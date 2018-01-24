@@ -170,9 +170,9 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     @Override
-    public Object getValue(final String key) {
+    public <V> V getValue(final String key) {
         final StringMap map = localMap.get();
-        return map == null ? null : map.getValue(key);
+        return map == null ? null : map.<V>getValue(key);
     }
 
     @Override
