@@ -231,8 +231,8 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             throw new ConfigurationException("No type attribute provided for Appender " + key);
         }
         final String onMatch = (String) properties.remove(MarkerFilter.ATTR_ON_MATCH);
-        final String onMisMatch = (String) properties.remove(MarkerFilter.ATTR_ON_MISMATCH);
-        final FilterComponentBuilder filterBuilder = builder.newFilter(type, onMatch, onMisMatch);
+        final String onMismatch = (String) properties.remove(MarkerFilter.ATTR_ON_MISMATCH);
+        final FilterComponentBuilder filterBuilder = builder.newFilter(type, onMatch, onMismatch);
         return processRemainingProperties(filterBuilder, properties);
     }
 

@@ -285,19 +285,19 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating Filters.
      * @param pluginName The Plugin type of the Filter.
      * @param onMatch "ACCEPT", "DENY", or "NEUTRAL"
-     * @param onMisMatch "ACCEPT", "DENY", or "NEUTRAL"
+     * @param onMismatch "ACCEPT", "DENY", or "NEUTRAL"
      * @return A new FilterComponentBuilder.
      */
-    FilterComponentBuilder newFilter(String pluginName, Filter.Result onMatch, Filter.Result onMisMatch);
+    FilterComponentBuilder newFilter(String pluginName, Filter.Result onMatch, Filter.Result onMismatch);
 
     /**
      * Returns a builder for creating Filters.
      * @param pluginName The Plugin type of the Filter.
      * @param onMatch "ACCEPT", "DENY", or "NEUTRAL"
-     * @param onMisMatch "ACCEPT", "DENY", or "NEUTRAL"
+     * @param onMismatch "ACCEPT", "DENY", or "NEUTRAL"
      * @return A new FilterComponentBuilder.
      */
-    FilterComponentBuilder newFilter(String pluginName, String onMatch, String onMisMatch);
+    FilterComponentBuilder newFilter(String pluginName, String onMatch, String onMismatch);
 
     /**
      * Returns a builder for creating Layouts.

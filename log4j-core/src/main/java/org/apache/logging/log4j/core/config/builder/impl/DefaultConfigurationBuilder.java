@@ -449,13 +449,13 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public FilterComponentBuilder newFilter(final String type, final Filter.Result onMatch,
-                                            final Filter.Result onMisMatch) {
-        return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMisMatch.name());
+                                            final Filter.Result onMismatch) {
+        return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMismatch.name());
     }
 
     @Override
-    public FilterComponentBuilder newFilter(final String type, final String onMatch, final String onMisMatch) {
-        return new DefaultFilterComponentBuilder(this, type, onMatch, onMisMatch);
+    public FilterComponentBuilder newFilter(final String type, final String onMatch, final String onMismatch) {
+        return new DefaultFilterComponentBuilder(this, type, onMatch, onMismatch);
     }
 
     @Override
