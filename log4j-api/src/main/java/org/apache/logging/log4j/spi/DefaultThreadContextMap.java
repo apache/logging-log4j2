@@ -32,6 +32,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * should be much better than if the Map was copied for each event.
  */
 public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyStringMap {
+    private static final long serialVersionUID = 8218007901108944053L;
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
