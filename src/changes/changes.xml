@@ -140,6 +140,9 @@
       <action issue="LOG4J2-2214" dev="ggregory" type="update" due-to="Daniel Feist, Gary Gregory">
         Unnecessary contention in DefaultThreadContextMap.
       </action>
+      <action issue="LOG4J2-2182" dev="ggregory" type="update" due-to="liwenxian2017, Gary Gregory">
+        NullPointerException at org.apache.logging.log4j.util.Activator.loadProvider(Activator.java:81) in log4j 2.10.0.
+      </action>
       <!-- 
       <action issue="LOG4J2-2205" dev="ggregory" type="update" due-to="Björn Kautler">
         New module log4j-mongodb3: Remove use of deprecated MongoDB APIs and code to the Java driver version 3 API.
