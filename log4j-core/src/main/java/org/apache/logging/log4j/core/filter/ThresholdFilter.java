@@ -153,7 +153,7 @@ public final class ThresholdFilter extends AbstractFilter {
     }
 
     /**
-     * Create a ThresholdFilter.
+     * Creates a ThresholdFilter.
      * @param level The log Level.
      * @param match The action to take on a match.
      * @param mismatch The action to take on a mismatch.

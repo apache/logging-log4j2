@@ -218,7 +218,7 @@ public final class TimeFilter extends AbstractFilter {
     }
 
     /**
-     * Create a TimeFilter.
+     * Creates a TimeFilter.
      * @param start The start time.
      * @param end The end time.
      * @param tz timezone.

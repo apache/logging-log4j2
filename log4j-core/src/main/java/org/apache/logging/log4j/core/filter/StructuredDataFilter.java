@@ -147,7 +147,7 @@ public final class StructuredDataFilter extends MapFilter {
     }
 
     /**
-     * Create the StructuredDataFilter.
+     * Creates the StructuredDataFilter.
      * @param pairs Key and value pairs.
      * @param oper The operator to perform. If not "or" the operation will be an "and".
      * @param match The action to perform on a match.

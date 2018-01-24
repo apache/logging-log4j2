@@ -43,7 +43,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 public final class LevelRangeFilter extends AbstractFilter {
 
     /**
-     * Create a ThresholdFilter.
+     * Creates a ThresholdFilter.
      *
      * @param minLevel
      *            The minimum log Level.

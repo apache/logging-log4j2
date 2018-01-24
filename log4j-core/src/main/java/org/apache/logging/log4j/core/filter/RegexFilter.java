@@ -102,7 +102,7 @@ public final class RegexFilter extends AbstractFilter {
     }
 
     /**
-     * Create a Filter that matches a regular expression.
+     * Creates a Filter that matches a regular expression.
      *
      * @param regex
      *        The regular expression to match.
