@@ -62,6 +62,9 @@
       <action issue="LOG4J2-2146" dev="rgoers" type="update">
         Update version of maven bundle plugin to 3.4.0. Convert bundle plugin error to a warning.
       </action>
+      <action issue="LOG4J2-2215" dev="rpopma" type="update">
+        Reduce compiler warnings in log4j-api.
+      </action>
       <action issue="LOG4J2-2143" dev="mikes" type="add">
         Add missing converters to PatternLayout.
       </action>
