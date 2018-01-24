@@ -81,11 +81,11 @@ public class ConfigurationBuilderTest {
                 INDENT + "<CustomLevels>" + EOL +
                 INDENT + INDENT + "<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + EOL +
                 INDENT + "</CustomLevels>" + EOL +
-                INDENT + "<ThresholdFilter onMatch=\"ACCEPT\" onMisMatch=\"NEUTRAL\" level=\"DEBUG\"/>" + EOL +
+                INDENT + "<ThresholdFilter onMatch=\"ACCEPT\" onMismatch=\"NEUTRAL\" level=\"DEBUG\"/>" + EOL +
                 INDENT + "<Appenders>" + EOL +
                 INDENT + INDENT + "<CONSOLE name=\"Stdout\" target=\"SYSTEM_OUT\">" + EOL +
                 INDENT + INDENT + INDENT + "<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + EOL +
-                INDENT + INDENT + INDENT + "<MarkerFilter onMatch=\"DENY\" onMisMatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL +
+                INDENT + INDENT + INDENT + "<MarkerFilter onMatch=\"DENY\" onMismatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL +
                 INDENT + INDENT + "</CONSOLE>" + EOL +
                 INDENT + INDENT + "<Kafka name=\"Kafka\" topic=\"my-topic\">" + EOL +
                 INDENT + INDENT + INDENT + "<Property name=\"bootstrap.servers\">localhost:9092</Property>" + EOL +
