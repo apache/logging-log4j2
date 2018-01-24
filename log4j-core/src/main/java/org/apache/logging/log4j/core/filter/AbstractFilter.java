@@ -27,7 +27,7 @@ import org.apache.logging.log4j.message.Message;
 /**
  * Users should extend this class to implement filters. Filters can be either context wide or attached to
  * an appender. A filter may choose to support being called only from the context or only from an appender in
- * which case it will only implement the required method(s). The rest will default to return {@link Result#NEUTRAL}.
+ * which case it will only implement the required method(s). The rest will default to return {@link org.apache.logging.log4j.core.Filter.Result#NEUTRAL}.
  * <p>
  * Garbage-free note: the methods with unrolled varargs by default delegate to the
  * {@link #filter(Logger, Level, Marker, String, Object...) filter method with vararg parameters}.
