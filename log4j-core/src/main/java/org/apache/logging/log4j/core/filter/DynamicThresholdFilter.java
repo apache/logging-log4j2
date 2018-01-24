@@ -56,6 +56,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
      * @param onMismatch The action to perform if no match occurs.
      * @return The DynamicThresholdFilter.
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static DynamicThresholdFilter createFilter(
             @PluginAttribute("key") final String key,

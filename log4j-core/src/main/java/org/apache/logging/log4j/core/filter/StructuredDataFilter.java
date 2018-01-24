@@ -154,6 +154,7 @@ public final class StructuredDataFilter extends MapFilter {
      * @param mismatch The action to perform on a mismatch.
      * @return The StructuredDataFilter.
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static StructuredDataFilter createFilter(
             @PluginElement("Pairs") final KeyValuePair[] pairs,

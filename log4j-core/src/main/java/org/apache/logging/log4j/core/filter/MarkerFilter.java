@@ -152,6 +152,7 @@ public final class MarkerFilter extends AbstractFilter {
      * @param mismatch The action to take if no match occurs.
      * @return A MarkerFilter.
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static MarkerFilter createFilter(
             @PluginAttribute(ATTR_MARKER) final String marker,

@@ -234,6 +234,7 @@ public class MapFilter extends AbstractFilter {
         return map;
     }
 
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static MapFilter createFilter(
             @PluginElement("Pairs") final KeyValuePair[] pairs,

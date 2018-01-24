@@ -159,6 +159,7 @@ public final class ThresholdFilter extends AbstractFilter {
      * @param mismatch The action to take on a mismatch.
      * @return The created ThresholdFilter.
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static ThresholdFilter createFilter(
             @PluginAttribute("level") final Level level,

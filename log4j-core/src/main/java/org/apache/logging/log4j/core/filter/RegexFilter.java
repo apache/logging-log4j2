@@ -118,6 +118,7 @@ public final class RegexFilter extends AbstractFilter {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static RegexFilter createFilter(
             //@formatter:off

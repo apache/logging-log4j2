@@ -55,6 +55,7 @@ public final class LevelRangeFilter extends AbstractFilter {
      *            The action to take on a mismatch.
      * @return The created ThresholdFilter.
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static LevelRangeFilter createFilter(
             // @formatter:off

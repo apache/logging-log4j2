@@ -130,6 +130,7 @@ public final class ScriptFilter extends AbstractFilter {
      * @param configuration the configuration 
      * @return A ScriptFilter.
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static ScriptFilter createFilter(
             @PluginElement("Script") final AbstractScript script,
