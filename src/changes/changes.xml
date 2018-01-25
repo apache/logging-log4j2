@@ -31,8 +31,8 @@
          - "remove" - Removed
     -->
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
-      <action issue="LOG4J2-2190" dev="mikes" type="add" due-to="Franz Wong ">
-        Output Json object for ObjectMessage in JsonLayout.
+      <action issue="LOG4J2-2190" dev="mikes" type="add" due-to="Franz Wong">
+        Output JSON object for ObjectMessage in JsonLayout.
       </action>
       <action issue="LOG4J2-2191" dev="rpopma" type="add">
         Made log4j-core a multi-release ("multi-version") jar, added log4j-core-java9 module.
@@ -157,22 +157,22 @@
       </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
-      <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">
         Properly escape newlines and other control characters in JSON.
       </action>
-      <action issue="LOG4J2-2109" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2109" dev="mikes" type="add" due-to="Carter Douglas Kozak">
         Add property to disable message pattern converter lookups.
       </action>
-      <action issue="LOG4J2-2112" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2112" dev="mikes" type="add" due-to="Carter Douglas Kozak">
         MapMessage should use deep toString for values.
       </action>
-      <action issue="LOG4J2-2107" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2107" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
         MapMessage supports both StringBuilderFormattable and MultiformatMessage.
       </action>
-      <action issue="LOG4J2-2102" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2102" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
         MapMessage JSON encoding will escape keys and values.
       </action>
-      <action issue="LOG4J2-2101" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2101" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
         Non-string value in MapMessage caused ClassCastException.
       </action>
       <action issue="LOG4J2-2103" dev="mikes" type="add">
@@ -187,7 +187,7 @@
       <action issue="LOG4J2-2098" dev="rgoers" type="add">
         Add a noop AppenderSkeleton for applications still using Log4j 1.x.
       </action>
-      <action issue="LOG4J2-2091" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2091" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
         Log4j respects the configured "log4j2.is.webapp" property
       </action>
       <action issue="LOG4J2-2100" dev="ggregory" type="fix">
