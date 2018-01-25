@@ -152,7 +152,7 @@
       <action issue="LOG4J2-2219" dev="ggregory" type="update" due-to="Kilian, Gary Gregory">
         Configuration builder classes should look for "onMismatch", not "onMisMatch".
       </action>
-      <action issue="LOG4J2-2205" dev="ggregory" type="update" due-to="Björn Kautler">
+      <action issue="LOG4J2-2205" dev="ggregory" type="update" due-to="Gary Gregory">
         New module log4j-mongodb3: Remove use of deprecated MongoDB APIs and code to the Java driver version 3 API.
       </action>
     </release>
