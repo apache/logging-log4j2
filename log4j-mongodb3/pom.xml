@@ -24,16 +24,16 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>log4j-mongodb2</artifactId>
-  <name>Apache Log4j MongoDB 2</name>
+  <artifactId>log4j-mongodb3</artifactId>
+  <name>Apache Log4j MongoDB 3</name>
   <description>
-    MongoDB appender for Log4j using the MongoDB 2 driver API.
+    MongoDB appender for Log4j using the MongoDB 3 driver API.
   </description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>MongoDB 2 Documentation</docLabel>
-    <projectDir>/log4j-mongodb2</projectDir>
-    <module.name>org.apache.logging.log4j.mongodb2</module.name>
+    <docLabel>MongoDB 3 Documentation</docLabel>
+    <projectDir>/log4j-mongodb3</projectDir>
+    <module.name>org.apache.logging.log4j.mongodb3</module.name>
   </properties>
 
   <dependencies>
@@ -43,7 +43,11 @@
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
-      <artifactId>mongo-java-driver</artifactId>
+      <artifactId>mongodb-driver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>bson</artifactId>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>

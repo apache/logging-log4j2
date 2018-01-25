@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.mongodb2;
+package org.apache.logging.log4j.mongodb3;
 
 import java.util.Objects;
 
@@ -49,43 +49,17 @@ import de.flapdoodle.embed.process.runtime.Network;
 public class MongoDbTestRule implements TestRule {
 
     public enum LoggingTarget {
-        NULL, CONSOLE
+        CONSOLE, NULL;
+
+        public static LoggingTarget getLoggingTarget(final String sysPropertyName, final LoggingTarget defaultValue) {
+            return LoggingTarget.valueOf(System.getProperty(sysPropertyName, defaultValue.name()));
+        }
     }
 
     private static final int BUILDER_TIMEOUT_MILLIS = 30000;
 
     public static int getBuilderTimeoutMillis() {
         return BUILDER_TIMEOUT_MILLIS;
-    }
-
-    /**
-     * Store {@link MongodStarter} (or RuntimeConfig) in a static final field if you want to use artifact store caching
-     * (or else disable caching).
-     * <p>
-     * The test framework {@code de.flapdoodle.embed.mongo} requires Java 8.
-     * </p>
-     */
-    protected final MongodStarter starter;
-
-    protected final String portSystemPropertyName;
-
-    protected MongoClient mongoClient;
-    protected MongodExecutable mongodExecutable;
-    protected MongodProcess mongodProcess;
-    protected final LoggingTarget loggingTarget;
-
-    /**
-     * Constructs a new test rule.
-     *
-     * @param portSystemPropertyName
-     *            The system property name for the MongoDB port.
-     * @param loggingTarget
-     *            The logging target
-     */
-    public MongoDbTestRule(final String portSystemPropertyName, final LoggingTarget loggingTarget) {
-        this.portSystemPropertyName = Objects.requireNonNull(portSystemPropertyName, "portSystemPropertyName");
-        this.loggingTarget = loggingTarget;
-        this.starter = getMongodStarter(loggingTarget);
     }
 
     private static MongodStarter getMongodStarter(final LoggingTarget loggingTarget) {
@@ -108,6 +82,40 @@ public class MongoDbTestRule implements TestRule {
         default:
             throw new NotImplementedException(loggingTarget.toString());
         }
+    }
+
+    protected final LoggingTarget loggingTarget;
+
+    protected MongoClient mongoClient;
+    protected MongodExecutable mongodExecutable;
+    protected MongodProcess mongodProcess;
+    protected final String portSystemPropertyName;
+
+    /**
+     * Store {@link MongodStarter} (or RuntimeConfig) in a static final field if you want to use artifact store caching
+     * (or else disable caching).
+     * <p>
+     * The test framework {@code de.flapdoodle.embed.mongo} requires Java 8.
+     * </p>
+     */
+    protected final MongodStarter starter;
+
+    /**
+     * Constructs a new test rule.
+     *
+     * @param portSystemPropertyName
+     *            The system property name for the MongoDB port.
+     * @param clazz
+     *            The test case class.
+     * @param defaultLoggingTarget
+     *            The logging target.
+     */
+    public MongoDbTestRule(final String portSystemPropertyName, final Class<?> clazz,
+            final LoggingTarget defaultLoggingTarget) {
+        this.portSystemPropertyName = Objects.requireNonNull(portSystemPropertyName, "portSystemPropertyName");
+        this.loggingTarget = LoggingTarget.getLoggingTarget(clazz.getName() + "." + LoggingTarget.class.getSimpleName(),
+                defaultLoggingTarget);
+        this.starter = getMongodStarter(this.loggingTarget);
     }
 
     @Override

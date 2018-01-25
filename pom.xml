@@ -829,6 +829,13 @@
         <artifactId>groovy-all</artifactId>
         <version>2.4.13</version>
       </dependency>
+      <dependency>
+        <!-- Testing MongoDB -->
+        <groupId>de.flapdoodle.embed</groupId>
+        <artifactId>de.flapdoodle.embed.mongo</artifactId>
+        <version>2.0.1</version>
+        <scope>test</scope>
+      </dependency>      
     </dependencies>
   </dependencyManagement>
   <build>
@@ -1329,7 +1336,7 @@
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-couchdb</module>
     <module>log4j-mongodb2</module>
-    <!-- <module>log4j-mongodb3</module> -->
+    <module>log4j-mongodb3</module>
     <module>log4j-cassandra</module>
     <module>log4j-web</module>
     <module>log4j-perf</module>
