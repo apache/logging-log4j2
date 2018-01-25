@@ -1038,8 +1038,11 @@
       <action issue="LOG4J2-1733" dev="ggregory" type="add" due-to="Vincent Tieleman">
         Add SyncSend attribute to KafkaAppender (as in KafkaLog4jAppender).
       </action>
-      <action issue="LOG4J2-2195" dev="ggregory" type="add" due-to="Raman Gupta, Gary Gregory">
+      <action issue="LOG4J2-2195" dev="ggregory" type="fix" due-to="Raman Gupta, Gary Gregory">
         Cannot define both `filters` and `separator` for PatternLayout %xEx.
+      </action>
+      <action issue="LOG4J2-2221" dev="ggregory" type="fix" due-to="Raman Gupta, Gary Gregory">
+        RootThrowablePatternConverter does not use TextRenderer or line separator options.
       </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">
