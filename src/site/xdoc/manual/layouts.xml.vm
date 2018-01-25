@@ -906,12 +906,11 @@ WARN  [main]: Message 2</pre>
                 &nbsp;&nbsp;&nbsp;| "short.lineNumber"<br />
                 &nbsp;&nbsp;&nbsp;| "short.methodName"<br />
                 &nbsp;&nbsp;&nbsp;| "short.message"<br />
-                &nbsp;&nbsp;&nbsp;| "short.localizedMessage"]}<br />
-                &nbsp;&nbsp;[,filters(package,package,...)]<br/>
-                &nbsp;&nbsp;[,separator(<i>separator</i>)]<br/>
-                }<br/>
-                {suffix(<i>pattern</i>)<br/>
-                }<br/>
+                &nbsp;&nbsp;&nbsp;| "short.localizedMessage"]<br />
+                }<br />
+                &nbsp;&nbsp;{filters(package,package,...)}<br/>
+                &nbsp;&nbsp;{suffix(<i>pattern</i>)}<br/>
+                &nbsp;&nbsp;{separator(<i>separator</i>)}<br/>
               </td>
               <td>
                 <p>
@@ -949,17 +948,15 @@ WARN  [main]: Message 2</pre>
                   Specifying <code>%throwable{none}</code> or <code>%throwable{0}</code> suppresses output of the exception.
                 </p>
                 <p>
-                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to
+                  Use <code>{filters(<i>packages</i>)}</code> where <i>packages</i> is a list of package names to
                   suppress matching stack frames from stack traces.
                 </p>
                 <p>
-                  Use a <code>separator</code> string to separate the lines of a stack trace. For example:
-                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property,
-                  which is operating system dependent.
+                  Use <code>{suffix(<i>pattern</i>)}</code> to add the output of <i>pattern</i> at the end of each stack frames.
                 </p>
                 <p>
-                  Use <code>ex{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only
-                  when there is a throwable to print.
+                  Use a <code>{separator(...)}</code> as the end-of-line string. For example: <code>separator(|)</code>. 
+                  The default value is the <code>line.separator</code> system property, which is operating system dependent.
                 </p>
               </td>
             </tr>

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -117,7 +118,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :103 ] - Hello, world" + Strings.LINE_SEPARATOR;
+        final String expected = "INFO  [PatternParserTest        :104 ] - Hello, world" + Strings.LINE_SEPARATOR;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
@@ -369,4 +370,40 @@ public class PatternParserTest {
         validateConverter(formatters, 0, "Literal");
         validateConverter(formatters, 1, "Date");
     }
+
+    @Test
+    public void testExceptionWithFilters() {
+        final List<PatternFormatter> formatters = parser
+                .parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}%n");
+        assertNotNull(formatters);
+        assertEquals(6, formatters.size());
+        final PatternFormatter patternFormatter = formatters.get(4);
+        final LogEventPatternConverter converter = patternFormatter.getConverter();
+        assertEquals(ExtendedThrowablePatternConverter.class, converter.getClass());
+        final ExtendedThrowablePatternConverter exConverter = (ExtendedThrowablePatternConverter) converter;
+        final ThrowableFormatOptions options = exConverter.getOptions();
+        assertTrue(options.getIgnorePackages().contains("org.junit"));
+        assertTrue(options.getIgnorePackages().contains("org.eclipse"));
+        assertEquals(System.lineSeparator(), options.getSeparator());
+    }
+
+    @Test
+    public void testExceptionWithFiltersAndSeparator() {
+        final List<PatternFormatter> formatters = parser
+                .parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}{separator(|)}%n");
+        assertNotNull(formatters);
+        assertEquals(6, formatters.size());
+        final PatternFormatter patternFormatter = formatters.get(4);
+        final LogEventPatternConverter converter = patternFormatter.getConverter();
+        assertEquals(ExtendedThrowablePatternConverter.class, converter.getClass());
+        final ExtendedThrowablePatternConverter exConverter = (ExtendedThrowablePatternConverter) converter;
+        final ThrowableFormatOptions options = exConverter.getOptions();
+        final List<String> ignorePackages = options.getIgnorePackages();
+        assertNotNull(ignorePackages);
+        final String ignorePackagesString = ignorePackages.toString();
+        assertTrue(ignorePackagesString, ignorePackages.contains("org.junit"));
+        assertTrue(ignorePackagesString, ignorePackages.contains("org.eclipse"));
+        assertEquals("|", options.getSeparator());
+    }
+
 }

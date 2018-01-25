@@ -39,11 +39,14 @@ import org.apache.logging.log4j.util.Strings;
 @ConverterKeys({ "ex", "throwable", "exception" })
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 
+    /**
+     * Lists {@link PatternFormatter}s for the suffix attribute.
+     */
     protected final List<PatternFormatter> formatters;
     private String rawOption;
 
     /**
-     * The number of lines to write.
+     * Options.
      */
     protected final ThrowableFormatOptions options;
 
@@ -62,24 +65,24 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
         if (this.options.getSuffix() != null) {
             final PatternParser parser = PatternLayout.createPatternParser(config);
-            final List<PatternFormatter> parsedFormatters = parser.parse(this.options.getSuffix());
+            final List<PatternFormatter> parsedSuffixFormatters = parser.parse(this.options.getSuffix());
             // filter out nested formatters that will handle throwable
-            boolean hasThrowableFormatter = false;
-            for (final PatternFormatter formatter : parsedFormatters) {
-                if (formatter.handlesThrowable()) {
-                    hasThrowableFormatter = true;
+            boolean hasThrowableSuffixFormatter = false;
+            for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
+                if (suffixFormatter.handlesThrowable()) {
+                    hasThrowableSuffixFormatter = true;
                 }
             }
-            if (!hasThrowableFormatter) {
-                this.formatters = parsedFormatters;
+            if (!hasThrowableSuffixFormatter) {
+                this.formatters = parsedSuffixFormatters;
             } else {
-                final List<PatternFormatter> formatters = new ArrayList<>();
-                for (final PatternFormatter formatter : parsedFormatters) {
-                    if (!formatter.handlesThrowable()) {
-                        formatters.add(formatter);
+                final List<PatternFormatter> suffixFormatters = new ArrayList<>();
+                for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
+                    if (!suffixFormatter.handlesThrowable()) {
+                        suffixFormatters.add(suffixFormatter);
                     }
                 }
-                this.formatters = formatters;
+                this.formatters = suffixFormatters;
             }
         } else {
             this.formatters = Collections.emptyList();
@@ -89,7 +92,6 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     /**
      * Gets an instance of the class.
-     *
      *
      * @param config
      * @param options pattern options, may be null.  If first element is "short",
@@ -218,5 +220,9 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             formatters.get(i).format(event, toAppendTo);
         }
         return toAppendTo.toString();
+    }
+
+    public ThrowableFormatOptions getOptions() {
+        return options;
     }
 }

@@ -18,15 +18,18 @@ package org.apache.logging.log4j.core.pattern;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -153,7 +156,21 @@ public class ExtendedThrowablePatternConverterTest {
         parent.printStackTrace(pw);
         String result = sb.toString();
         result = result.replaceAll(" ~?\\[.*\\]", Strings.EMPTY);
-        final String expected = sw.toString().replaceAll("\r", Strings.EMPTY);
+        final String expected = sw.toString(); //.replaceAll("\r", Strings.EMPTY);
         assertEquals(expected, result);
     }
+    
+    @Test
+    public void testFiltersAndSeparator() {
+        final ExtendedThrowablePatternConverter exConverter = ExtendedThrowablePatternConverter.newInstance(null,
+                new String[] { "full", "filters(org.junit,org.eclipse)", "separator(|)" });
+        final ThrowableFormatOptions options = exConverter.getOptions();
+        final List<String> ignorePackages = options.getIgnorePackages();
+        assertNotNull(ignorePackages);
+        final String ignorePackagesString = ignorePackages.toString();
+        assertTrue(ignorePackagesString, ignorePackages.contains("org.junit"));
+        assertTrue(ignorePackagesString, ignorePackages.contains("org.eclipse"));
+        assertEquals("|", options.getSeparator());
+    }
+
 }

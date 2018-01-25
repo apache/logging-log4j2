@@ -47,6 +47,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.convert.Base64Converter;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
+import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
@@ -92,6 +93,12 @@ public class ThrowableProxyTest {
             }
         }
         return true;
+    }
+
+    private boolean lastLineContains(final String text, final String containedText) {
+        final String[] lines = text.split("\n");
+        final String lastLine = lines[lines.length-1];
+        return lastLine.contains(containedText);
     }
 
     private void testIoContainer(final ObjectMapper objectMapper ) throws IOException {
@@ -294,12 +301,24 @@ public class ThrowableProxyTest {
     }
 
     @Test
+    public void testSeparator_getExtendedStackTraceAsString() throws Exception {
+        final Throwable throwable = new IllegalArgumentException("This is a test");
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+
+        final String separator = " | ";
+        final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString(null,
+                PlainTextRenderer.getInstance(), " | ", Strings.EMPTY);
+        assertTrue(extendedStackTraceAsString, allLinesContain(extendedStackTraceAsString, separator));
+    }
+
+    @Test
     public void testSuffix_getExtendedStackTraceAsString() throws Exception {
         final Throwable throwable = new IllegalArgumentException("This is a test");
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
         final String suffix = "some suffix";
-        assertTrue(allLinesContain(proxy.getExtendedStackTraceAsString(suffix), suffix));
+        final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString(suffix);
+        assertTrue(extendedStackTraceAsString, lastLineContains(extendedStackTraceAsString, suffix));
     }
 
     @Test

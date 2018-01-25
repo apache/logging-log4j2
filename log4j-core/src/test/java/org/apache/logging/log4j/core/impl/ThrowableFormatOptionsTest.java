@@ -63,7 +63,7 @@ public final class ThrowableFormatOptionsTest {
     }
 
     /**
-     * Test {@code %throwable } with null options.
+     * Test {@code %throwable} with null options.
      */
     @Test
     public void testNull() {
@@ -71,7 +71,7 @@ public final class ThrowableFormatOptionsTest {
     }
 
     /**
-     * Test {@code %throwable }
+     * Test {@code %throwable}
      */
     @Test
     public void testEmpty() {
@@ -113,7 +113,7 @@ public final class ThrowableFormatOptionsTest {
     }
 
     /**
-     * Test {@code %throwable{full}{ansi} }
+     * Test {@code %throwable{full}{ansi()} }
      */
     @Test
     public void testFullAnsiEmptyConfig() {
@@ -233,7 +233,7 @@ public final class ThrowableFormatOptionsTest {
     }
 
     /**
-     * Test {@code %throwable{separator(|)} }
+     * Test {@code %throwable{separator( | )} }
      */
     @Test
     public void testSeparatorAsMultipleCharacters() {
@@ -246,6 +246,14 @@ public final class ThrowableFormatOptionsTest {
     @Test
     public void testFullAndSeparator() {
         test(new String[] { "full", "separator(|)" }, Integer.MAX_VALUE, "|", null);
+    }
+
+    /**
+     * Test {@code %throwable{full}{filters(org.junit)}{separator(|)} }
+     */
+    @Test
+    public void testFullAndFiltersAndSeparator() {
+        test(new String[] { "full", "filters(org.junit)", "separator(|)" }, Integer.MAX_VALUE, "|", Arrays.asList("org.junit"));
     }
 
     /**
@@ -335,9 +343,18 @@ public final class ThrowableFormatOptionsTest {
      * Test {@code %throwable{full}{separator(|)}{filters(packages)} }
      */
     @Test
-    public void testFullAndSeparatorAndFilters() {
+    public void testFullAndSeparatorAndFilter() {
         test(new String[] { "full", "separator(|)", "filters(packages)" }, Integer.MAX_VALUE, "|",
                 Arrays.asList("packages"));
+    }
+
+    /**
+     * Test {@code %throwable{full}{separator(|)}{filters(package1,package2)} }
+     */
+    @Test
+    public void testFullAndSeparatorAndFilters() {
+        test(new String[] { "full", "separator(|)", "filters(package1,package2)" }, Integer.MAX_VALUE, "|",
+                Arrays.asList("package1", "package2"));
     }
 
     /**

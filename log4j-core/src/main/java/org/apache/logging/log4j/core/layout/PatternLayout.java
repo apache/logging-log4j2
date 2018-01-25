@@ -661,4 +661,8 @@ public final class PatternLayout extends AbstractStringLayout {
                 alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, header, footer);
         }
     }
+
+    public Serializer getEventSerializer() {
+        return eventSerializer;
+    }
 }
