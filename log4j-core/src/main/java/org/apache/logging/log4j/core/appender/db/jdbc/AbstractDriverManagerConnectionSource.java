@@ -141,19 +141,24 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
         return actualConnectionString;
     }
 
+    @SuppressWarnings("resource") // The JDBC Connection is freed when the connection source is stopped.
     @Override
     public Connection getConnection() throws SQLException {
         loadDriver();
-        // No, you cannot see the user name and password.
         final String actualConnectionString = getActualConnectionString();
-        LOGGER.debug("Getting connection from DriverManage for '{}'", actualConnectionString);
+        LOGGER.debug("{} getting connection for '{}'", getClass().getSimpleName(), actualConnectionString);
+        Connection connection;
         if (properties != null && properties.length > 0) {
             if (userName != null || password != null) {
                 throw new SQLException("Either set the userName and password, or set the Properties, but not both.");
             }
-            return DriverManager.getConnection(actualConnectionString, toProperties(properties));
+            connection = DriverManager.getConnection(actualConnectionString, toProperties(properties));
+        } else {
+            connection = DriverManager.getConnection(actualConnectionString, toString(userName), toString(password));
         }
-        return DriverManager.getConnection(actualConnectionString, toString(userName), toString(password));
+        LOGGER.debug("{} acquired connection for '{}': {} ({}@{})", getClass().getSimpleName(), actualConnectionString,
+                connection, connection.getClass().getName(), Integer.toHexString(connection.hashCode()));
+        return connection;
     }
 
     public String getConnectionString() {
@@ -191,6 +196,7 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
     protected void loadDriver(final String className) throws SQLException {
         if (className != null) {
             // Hack for old JDBC drivers.
+            LOGGER.debug("Loading driver class {}", className);
             try {
                 Class.forName(className);
             } catch (final Exception e) {
