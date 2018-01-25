@@ -53,11 +53,6 @@ public class KafkaAppenderTest {
 
         @Override
         public void close(final long timeout, final TimeUnit timeUnit) {
-            try {
-                Thread.sleep(50);
-            } catch (final InterruptedException ignore) {
-                // ignore
-            }
         }
 
     };
@@ -173,9 +168,4 @@ public class KafkaAppenderTest {
         }
     }
 
-    @Test(timeout = 2000)
-    public void testClose() throws Exception {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithLayout");
-        appender.stop();
-    }
 }
