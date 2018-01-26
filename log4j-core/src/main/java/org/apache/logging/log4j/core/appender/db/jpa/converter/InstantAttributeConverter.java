@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import org.apache.logging.log4j.core.util.Instant;
-import org.apache.logging.log4j.core.util.MutableInstant;
-import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 

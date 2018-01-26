@@ -27,7 +27,7 @@ import org.apache.logging.log4j.message.ObjectMessage;
 
 import com.fasterxml.jackson.databind.Module.SetupContext;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.apache.logging.log4j.core.util.Instant;
+import org.apache.logging.log4j.core.time.Instant;
 
 /**
  * Initialization utils.

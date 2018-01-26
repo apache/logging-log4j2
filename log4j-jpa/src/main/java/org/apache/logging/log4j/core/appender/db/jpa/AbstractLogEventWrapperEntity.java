@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.core.util.Instant;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextDataAttributeConverter;

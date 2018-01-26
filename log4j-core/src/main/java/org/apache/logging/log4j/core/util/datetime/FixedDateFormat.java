@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.util.datetime;
 
-import org.apache.logging.log4j.core.util.Instant;
+import org.apache.logging.log4j.core.time.Instant;
 
 import java.util.Arrays;
 import java.util.Calendar;

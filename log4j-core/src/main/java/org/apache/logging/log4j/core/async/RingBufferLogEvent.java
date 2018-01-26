@@ -28,6 +28,8 @@ import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.util.*;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;

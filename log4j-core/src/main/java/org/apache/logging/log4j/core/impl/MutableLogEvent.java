@@ -27,6 +27,8 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.InternalAsyncUtil;
 import org.apache.logging.log4j.core.util.*;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;

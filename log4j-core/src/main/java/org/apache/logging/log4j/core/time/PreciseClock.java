@@ -14,7 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.time;
+
+import org.apache.logging.log4j.core.util.Clock;
 
 /**
  * Extension of the {@link Clock} interface that is able to provide more accurate time information than milliseconds

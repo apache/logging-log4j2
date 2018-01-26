@@ -19,11 +19,9 @@ package org.apache.logging.log4j.core.jackson;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.util.Instant;
+import org.apache.logging.log4j.core.time.Instant;
 
 /**
  * Jackson mix-in for {@link Instant}.

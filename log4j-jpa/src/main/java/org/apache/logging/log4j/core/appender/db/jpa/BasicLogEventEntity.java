@@ -28,7 +28,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.*;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.core.util.Instant;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
 
 /**
