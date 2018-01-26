@@ -17,22 +17,35 @@
 package org.apache.logging.log4j.core.util;
 
 /**
- * Implementation of the {@code PreciseClock} interface that always returns a fixed value.
+ * Implementation of the {@code PreciseClock} interface that always returns a fixed time value.
  * @since 2.11
  */
-public class DummyPreciseClock implements PreciseClock {
+public class FixedPreciseClock implements PreciseClock {
     private final long currentTimeMillis;
     private final int nanosOfMillisecond;
 
-    public DummyPreciseClock() {
+    /**
+     * Constructs a {@code FixedPreciseClock} that always returns the epoch.
+     */
+    public FixedPreciseClock() {
         this(0);
     }
 
-    public DummyPreciseClock(final long currentTimeMillis) {
+    /**
+     * Constructs a {@code FixedPreciseClock} that always returns the specified time in milliseconds since the epoch.
+     * @param currentTimeMillis milliseconds since the epoch
+     */
+    public FixedPreciseClock(final long currentTimeMillis) {
         this(currentTimeMillis, 0);
     }
 
-    public DummyPreciseClock(final long currentTimeMillis, final int nanosOfMillisecond) {
+    /**
+     * Constructs a {@code FixedPreciseClock} that always returns the specified time in milliseconds since the epoch
+     * and nanosecond of the millisecond.
+     * @param currentTimeMillis milliseconds since the epoch
+     * @param nanosOfMillisecond nanosecond of the specified millisecond
+     */
+    public FixedPreciseClock(final long currentTimeMillis, final int nanosOfMillisecond) {
         this.currentTimeMillis = currentTimeMillis;
         this.nanosOfMillisecond = nanosOfMillisecond;
     }

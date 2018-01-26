@@ -183,7 +183,7 @@ public class MutableInstantTest {
     public void testInitFromClock() {
         MutableInstant instant = new MutableInstant();
 
-        PreciseClock clock = new DummyPreciseClock(123456, 789012);
+        PreciseClock clock = new FixedPreciseClock(123456, 789012);
         instant.initFrom(clock);
 
         assertEquals(123456, instant.getEpochMillisecond());
