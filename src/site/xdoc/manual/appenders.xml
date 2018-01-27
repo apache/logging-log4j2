@@ -1599,6 +1599,9 @@ public class ConnectionFactory {
         </subsection>
         <a name="JPAAppender"/>
         <subsection name="JPAAppender">
+          <p>
+             As of Log4j 2.11.0, JPA support has moved from the existing module <code>logj-core</code> to the new module <code>log4j-jpa</code>.
+          </p>
           <p>The JPAAppender writes log events to a relational database table using the Java Persistence API 2.1.
             It requires the API and a provider implementation be on the classpath. It also requires a decorated entity
             configured to persist to the table desired. The entity should either extend

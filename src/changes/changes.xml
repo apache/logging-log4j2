@@ -155,6 +155,9 @@
       <action issue="LOG4J2-2205" dev="ggregory" type="update" due-to="Gary Gregory">
         New module log4j-mongodb3: Remove use of deprecated MongoDB APIs and code to the Java driver version 3 API.
       </action>
+      <action issue="LOG4J2-2188" dev="ggregory" type="update" due-to="Gary Gregory">
+        Split off JPA support into a new module log4j-jpa.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">

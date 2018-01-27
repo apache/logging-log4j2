@@ -108,6 +108,12 @@
         <artifactId>log4j-cassandra</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- JPA Appender Plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Streaming API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

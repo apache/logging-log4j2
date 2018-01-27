@@ -113,13 +113,6 @@
       <artifactId>javax.mail</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Used for JPA appenders (needs an implementation of course) -->
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>javax.persistence</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
     <!-- Used for JMS appenders (needs an implementation of course) -->
     <dependency>
       <groupId>org.jboss.spec.javax.jms</groupId>
@@ -226,19 +219,13 @@
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- JPA Tests -->
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Useful mock classes and utilities -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- JPA, JNDI and JMS tests -->
+    <!-- JNDI and JMS tests -->
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-broker</artifactId>
