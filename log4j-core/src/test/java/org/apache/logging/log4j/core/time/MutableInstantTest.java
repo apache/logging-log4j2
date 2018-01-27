@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.time;
 
+import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

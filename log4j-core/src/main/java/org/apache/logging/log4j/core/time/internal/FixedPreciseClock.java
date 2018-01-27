@@ -14,7 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.time;
+package org.apache.logging.log4j.core.time.internal;
+
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.time.PreciseClock;
 
 /**
  * Implementation of the {@code PreciseClock} interface that always returns a fixed time value.
