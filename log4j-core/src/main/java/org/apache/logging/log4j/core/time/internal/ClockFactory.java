@@ -14,9 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.time.internal;
 
 import org.apache.logging.log4j.core.time.PreciseClock;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Supplier;
@@ -73,8 +75,8 @@ public final class ClockFactory {
         result.put("SystemMillisClock", new Supplier<Clock>() { @Override public Clock get() { return new SystemMillisClock(); } });
         result.put("CachedClock",       new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
         result.put("CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
-        result.put("org.apache.logging.log4j.core.util.CachedClock", new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
-        result.put("org.apache.logging.log4j.core.util.CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
+        result.put("org.apache.logging.log4j.core.time.internal.CachedClock", new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
+        result.put("org.apache.logging.log4j.core.time.internal.CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
         return result;
     }
 

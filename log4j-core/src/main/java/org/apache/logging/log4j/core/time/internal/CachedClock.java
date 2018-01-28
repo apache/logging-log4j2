@@ -14,7 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.time.internal;
+
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.Log4jThread;
 
 import java.util.concurrent.locks.LockSupport;
 

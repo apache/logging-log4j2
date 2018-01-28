@@ -14,33 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
 
+package org.apache.logging.log4j.core.time.internal;
+
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class SystemClockTest {
+/**
+ * Tests the DummyNanoClock.
+ */
+public class DummyNanoClockTest {
 
     @Test
-    public void testLessThan2Millis() {
-        final long millis1 = new SystemClock().currentTimeMillis();
-        final long sysMillis = System.currentTimeMillis();
-
-        final long diff = sysMillis - millis1;
-
-        assertTrue("diff too large: " + diff, diff <= 1);
+    public void testReturnsZeroByDefault() {
+        assertEquals(0, new DummyNanoClock().nanoTime());
     }
 
     @Test
-    public void testAfterWaitStillLessThan2Millis() throws Exception {
-        Thread.sleep(100);
-        final long millis1 = new SystemClock().currentTimeMillis();
-        final long sysMillis = System.currentTimeMillis();
-
-        final long diff = sysMillis - millis1;
-
-        assertTrue("diff too large: " + diff, diff <= 1);
+    public void testReturnsConstructorValue() {
+        assertEquals(123, new DummyNanoClock(123).nanoTime());
     }
 
 }

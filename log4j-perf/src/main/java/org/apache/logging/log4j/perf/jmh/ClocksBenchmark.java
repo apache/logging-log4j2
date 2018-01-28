@@ -20,10 +20,10 @@ package org.apache.logging.log4j.perf.jmh;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
-import org.apache.logging.log4j.core.util.CachedClock;
+import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.util.CoarseCachedClock;
-import org.apache.logging.log4j.core.util.SystemClock;
+import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
+import org.apache.logging.log4j.core.time.internal.SystemClock;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;

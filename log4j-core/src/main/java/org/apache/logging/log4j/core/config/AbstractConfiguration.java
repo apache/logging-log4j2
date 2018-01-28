@@ -62,7 +62,7 @@ import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.DummyNanoClock;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.NanoClock;

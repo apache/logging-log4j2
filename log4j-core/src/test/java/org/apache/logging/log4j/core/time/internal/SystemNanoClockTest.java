@@ -14,21 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.cassandra;
 
-import com.datastax.driver.core.TimestampGenerator;
-import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.time.internal.ClockFactory;
+package org.apache.logging.log4j.core.time.internal;
+
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.time.internal.SystemNanoClock;
+import org.apache.logging.log4j.core.util.NanoClock;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
- * A {@link TimestampGenerator} implementation using the configured {@link Clock}.
+ * Tests the SystemNanoClock.
  */
-public class ClockTimestampGenerator implements TimestampGenerator {
+public class SystemNanoClockTest {
 
-    private final Clock clock = ClockFactory.getClock();
-
-    @Override
-    public long next() {
-        return clock.currentTimeMillis();
+    @Test
+    public void testReturnsSystemNanoTime() {
+        final NanoClock clock = new SystemNanoClock();
+        final long expected = System.nanoTime();
+        final long actual = clock.nanoTime();
+        assertTrue("smal difference", actual - expected < TimeUnit.SECONDS.toNanos(1));
     }
+
 }

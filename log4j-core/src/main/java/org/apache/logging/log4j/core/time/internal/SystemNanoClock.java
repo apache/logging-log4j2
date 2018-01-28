@@ -14,35 +14,22 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.time.internal;
+
+import org.apache.logging.log4j.core.util.NanoClock;
 
 /**
- * Implementation of the {@code NanoClock} interface that always returns a fixed value.
+ * Implementation of the {@code NanoClock} interface that returns the system nano time.
  */
-public final class DummyNanoClock implements NanoClock {
-
-    private final long fixedNanoTime;
-
-    public DummyNanoClock() {
-        this(0L);
-    }
+public final class SystemNanoClock implements NanoClock {
 
     /**
-     * Constructs a new DummyNanoClock with the specified value to return.
-     * @param fixedNanoTime the value to return from {@link #nanoTime()}.
-     */
-    public DummyNanoClock(final long fixedNanoTime) {
-        this.fixedNanoTime = fixedNanoTime;
-    }
-
-    /**
-     * Returns the constructor value.
-     * 
-     * @return the constructor value
+     * Returns the system high-resolution time.
+     * @return the result of calling {@code System.nanoTime()}
      */
     @Override
     public long nanoTime() {
-        return fixedNanoTime;
+        return System.nanoTime();
     }
 
 }

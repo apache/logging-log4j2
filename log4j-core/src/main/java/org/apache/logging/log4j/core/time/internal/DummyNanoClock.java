@@ -14,21 +14,37 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.cassandra;
+package org.apache.logging.log4j.core.time.internal;
 
-import com.datastax.driver.core.TimestampGenerator;
-import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.time.internal.ClockFactory;
+import org.apache.logging.log4j.core.util.NanoClock;
 
 /**
- * A {@link TimestampGenerator} implementation using the configured {@link Clock}.
+ * Implementation of the {@code NanoClock} interface that always returns a fixed value.
  */
-public class ClockTimestampGenerator implements TimestampGenerator {
+public final class DummyNanoClock implements NanoClock {
 
-    private final Clock clock = ClockFactory.getClock();
+    private final long fixedNanoTime;
 
-    @Override
-    public long next() {
-        return clock.currentTimeMillis();
+    public DummyNanoClock() {
+        this(0L);
     }
+
+    /**
+     * Constructs a new DummyNanoClock with the specified value to return.
+     * @param fixedNanoTime the value to return from {@link #nanoTime()}.
+     */
+    public DummyNanoClock(final long fixedNanoTime) {
+        this.fixedNanoTime = fixedNanoTime;
+    }
+
+    /**
+     * Returns the constructor value.
+     * 
+     * @return the constructor value
+     */
+    @Override
+    public long nanoTime() {
+        return fixedNanoTime;
+    }
+
 }

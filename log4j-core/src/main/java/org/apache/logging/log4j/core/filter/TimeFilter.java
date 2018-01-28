@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.time.internal.ClockFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 

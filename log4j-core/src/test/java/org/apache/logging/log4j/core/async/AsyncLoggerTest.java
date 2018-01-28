@@ -25,7 +25,7 @@ import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.DummyNanoClock;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

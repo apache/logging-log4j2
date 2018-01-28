@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.ThreadNameCachingStrategy;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.time.internal.ClockFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.StringMap;
 

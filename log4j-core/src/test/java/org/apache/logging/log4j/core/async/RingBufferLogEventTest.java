@@ -30,7 +30,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.util.DummyNanoClock;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.StringMap;
