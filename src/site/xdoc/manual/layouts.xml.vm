@@ -345,7 +345,6 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           Log event follows this pattern:
           </p>
           <pre class="prettyprint linenums">{
-  "timeMillis" : 1493121664118,
   "instant" : {
     "epochSecond" : 1493121664,
     "nanoOfSecond" : 118000000
@@ -2194,7 +2193,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           A well-formed XML document follows this pattern:
           </p>
           <pre class="prettyprint linenums">&lt;Event xmlns="http://logging.apache.org/log4j/2.0/events"
-       timeMillis="1493122559666"
        level="INFO"
        loggerName="HelloWorld"
        endOfBatch="false"
@@ -2202,7 +2200,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
        loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger"
        threadId="1"
        threadPriority="5"&gt;
-  <Instant epochSecond="1493121664" nanoOfSecond="118000000"/>
+  &lt;Instant epochSecond="1493121664" nanoOfSecond="118000000"/>
   &lt;Marker name="child"&gt;
     &lt;Parents&gt;
       &lt;Marker name="parent"&gt;
@@ -2334,7 +2332,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
             A YAML log event follows this pattern:
           </p>
           <pre class="prettyprint linenums">---
-timeMillis: 1493122307075
 instant:
  epochSecond: 1493121664
  nanoOfSecond: 118000000
