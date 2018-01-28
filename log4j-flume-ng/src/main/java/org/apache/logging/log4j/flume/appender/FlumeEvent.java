@@ -296,7 +296,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     /**
      * {@inheritDoc}
-     * @since 2.11
+     * @since 2.11.0
      */
     @Override
     public Instant getInstant() {

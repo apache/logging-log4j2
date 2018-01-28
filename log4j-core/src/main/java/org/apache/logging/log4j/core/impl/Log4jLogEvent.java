@@ -581,7 +581,7 @@ public class Log4jLogEvent implements LogEvent {
 
     /**
      * {@inheritDoc}
-     * @since 2.11
+     * @since 2.11.0
      */
     @Override
     public Instant getInstant() {

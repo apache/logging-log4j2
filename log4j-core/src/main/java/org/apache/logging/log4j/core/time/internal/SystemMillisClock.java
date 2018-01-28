@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.util.Clock;
 
 /**
  * Implementation of the {@code Clock} interface that returns the system time in millisecond granularity.
- * @since 2.11
+ * @since 2.11.0
  */
 public final class SystemMillisClock implements Clock {
 

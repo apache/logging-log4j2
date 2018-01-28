@@ -31,7 +31,7 @@ import java.io.Serializable;
  * Instances of this class are <em>not</em> thread-safe and should not be shared between threads.
  * </p>
  *
- * @since 2.11
+ * @since 2.11.0
  */
 @PerformanceSensitive("allocation")
 public class MutableInstant implements Instant, Serializable {

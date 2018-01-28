@@ -32,7 +32,7 @@ package org.apache.logging.log4j.core.util;
  * </p><p>
  * This class bridges these two time APIs.
  * </p>
- * @since 2.11
+ * @since 2.11.0
  */
 public interface Instant {
     /**

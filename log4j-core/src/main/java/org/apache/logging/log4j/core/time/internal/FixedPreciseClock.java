@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.time.PreciseClock;
 
 /**
  * Implementation of the {@code PreciseClock} interface that always returns a fixed time value.
- * @since 2.11
+ * @since 2.11.0
  */
 public class FixedPreciseClock implements PreciseClock {
     private final long currentTimeMillis;

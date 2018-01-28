@@ -141,7 +141,7 @@ public interface LogEvent extends Serializable {
      * </p>
      *
      * @return the {@code Instant} holding timestamp details for this log event
-     * @since 2.11
+     * @since 2.11.0
      */
     Instant getInstant();
 

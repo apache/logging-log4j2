@@ -23,14 +23,14 @@ package org.apache.logging.log4j.core.util;
  * Extension of the {@link Clock} interface that is able to provide more accurate time information than milliseconds
  * since the epoch. {@code PreciseClock} implementations are free to return millisecond-precision time
  * if that is the most accurate time information available on this platform.
- * @since 2.11
+ * @since 2.11.0
  */
 public interface PreciseClock extends Clock {
 
     /**
      * Initializes the specified instant with time information as accurate as available on this platform.
      * @param mutableInstant the container to be initialized with the accurate time information
-     * @since 2.11
+     * @since 2.11.0
      */
     void init(final MutableInstant mutableInstant);
 }

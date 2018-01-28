@@ -25,14 +25,16 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * Provides methods for obtaining high precision time information similar to the
  * <a href="https://docs.oracle.com/javase/9/docs/api/java/time/Instant.html">Instant</a> class introduced in Java 8,
  * while also supporting the legacy millisecond precision API.
- * </p><p>
+ * </p>
+ * <p>
  * Depending on the platform, time sources ({@link Clock} implementations) may produce high precision or millisecond
  * precision time values. At the same time, some time value consumers (for example timestamp formatters) may only be
  * able to consume time values of millisecond precision, while some others may require a high precision time value.
- * </p><p>
+ * </p>
+ * <p>
  * This class bridges these two time APIs.
  * </p>
- * @since 2.11
+ * @since 2.11.0
  */
 public interface Instant extends StringBuilderFormattable {
     /**
