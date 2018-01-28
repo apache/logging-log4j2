@@ -170,6 +170,9 @@
       <action issue="LOG4J2-2227" dev="ggregory" type="update" due-to="Gary Gregory">
         Split off Kafka support into a new module log4j-kafka.
       </action>
+      <action issue="LOG4J2-2230" dev="ggregory" type="update" due-to="Gary Gregory">
+        Split off SMTP support into a new module log4j-smtp.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">

@@ -144,6 +144,12 @@
         <artifactId>log4j-liquibase</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- SMTP Appender plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-smtp</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>

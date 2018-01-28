@@ -4539,6 +4539,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <a name="SMTPAppender"/>
         <subsection name="SMTPAppender">
           <p>
+             As of Log4j 2.11.0, Simple Mail Transfer Protocol (SMTP) support has moved from the existing module 
+             <code>logj-core</code> to the new module <code>log4j-smtp</code>.
+          </p>
+          <p>
             Sends an e-mail when a specific logging event occurs, typically on errors or fatal errors.
           </p>
           <p>
