@@ -50,6 +50,13 @@ public class ConfigurationBuilderTest {
                 Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
         builder.add(appenderBuilder);
 
+        final AppenderComponentBuilder appenderBuilder2 = builder.newAppender("Kafka", "Kafka").addAttribute("topic", "my-topic");
+        appenderBuilder2.addComponent(builder.newProperty("bootstrap.servers", "localhost:9092"));
+        appenderBuilder2.add(builder.newLayout("GelfLayout").
+            addAttribute("host", "my-host").
+            addComponent(builder.newKeyValuePair("extraField", "extraValue")));
+        builder.add(appenderBuilder2);
+
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true).
                     add(builder.newAppenderRef("Stdout")).
                     addAttribute("additivity", false));
@@ -80,6 +87,12 @@ public class ConfigurationBuilderTest {
                 INDENT + INDENT + INDENT + "<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + EOL +
                 INDENT + INDENT + INDENT + "<MarkerFilter onMatch=\"DENY\" onMismatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL +
                 INDENT + INDENT + "</CONSOLE>" + EOL +
+                INDENT + INDENT + "<Kafka name=\"Kafka\" topic=\"my-topic\">" + EOL +
+                INDENT + INDENT + INDENT + "<Property name=\"bootstrap.servers\">localhost:9092</Property>" + EOL +
+                INDENT + INDENT + INDENT + "<GelfLayout host=\"my-host\">" + EOL +
+                INDENT + INDENT + INDENT + INDENT + "<KeyValuePair key=\"extraField\" value=\"extraValue\"/>" + EOL +
+                INDENT + INDENT + INDENT + "</GelfLayout>" + EOL +
+                INDENT + INDENT + "</Kafka>" + EOL +
                 INDENT + "</Appenders>" + EOL +
                 INDENT + "<Loggers>" + EOL +
                 INDENT + INDENT + "<Logger name=\"org.apache.logging.log4j\" level=\"DEBUG\" includeLocation=\"true\" additivity=\"false\">" + EOL +
