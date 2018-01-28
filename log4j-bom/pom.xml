@@ -96,6 +96,12 @@
         <artifactId>log4j-couchdb</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- CSV Layout Plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-csv</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- MongoDB 2 Appender Plugin -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

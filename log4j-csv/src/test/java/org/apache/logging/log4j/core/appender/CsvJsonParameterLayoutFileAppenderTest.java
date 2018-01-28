@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -31,8 +32,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
-
-import com.google.common.io.Files;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-1502
@@ -54,7 +53,7 @@ public class CsvJsonParameterLayoutFileAppenderTest {
         logger.error("log:", message);
         loggerContext.stop();
         final File file = new File(FILE_PATH);
-        final byte[] contents = Files.toByteArray(file);
+        final byte[] contents = FileUtils.readFileToByteArray(file);
         int count0s = 0;
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < contents.length; i++) {
@@ -66,7 +65,7 @@ public class CsvJsonParameterLayoutFileAppenderTest {
             }
         }
         Assert.assertEquals("File contains " + count0s + " 0x00 byte at indices " + sb, 0, count0s);
-        final List<String> readLines = Files.readLines(file, Charset.defaultCharset());
+        final List<String> readLines = FileUtils.readLines(file, Charset.defaultCharset());
         final String actual = readLines.get(0);
         // Assert.assertTrue(actual, actual.contains(message));
         Assert.assertEquals(actual, expected, actual);

@@ -1329,6 +1329,7 @@
     <module>log4j-slf4j-impl</module>
     <module>log4j-to-slf4j</module>
     <module>log4j-jcl</module>
+    <module>log4j-csv</module>
     <module>log4j-flume-ng</module>
     <module>log4j-taglib</module>
     <module>log4j-jmx-gui</module>

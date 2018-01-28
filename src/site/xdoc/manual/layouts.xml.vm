@@ -57,6 +57,9 @@
         <a name="CSVLayouts"/>
         <subsection name="CSV Layouts">
           <p>
+             As of Log4j 2.11.0, CSV support has moved from the existing module <code>logj-core</code> to the new module <code>log4j-csv</code>.
+          </p>
+          <p>
             This layout creates <a href="https://en.wikipedia.org/wiki/Comma-separated_values">Comma Separated Value (CSV)</a>
             records and requires <a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a> 1.4.
           </p>
