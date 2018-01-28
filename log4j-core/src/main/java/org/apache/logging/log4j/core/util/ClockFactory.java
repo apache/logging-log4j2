@@ -70,6 +70,7 @@ public final class ClockFactory {
     private static Map<String, Supplier<Clock>> aliases() {
         Map<String, Supplier<Clock>> result = new HashMap<>();
         result.put("SystemClock",       new Supplier<Clock>() { @Override public Clock get() { return new SystemClock(); } });
+        result.put("SystemMillisClock", new Supplier<Clock>() { @Override public Clock get() { return new SystemMillisClock(); } });
         result.put("CachedClock",       new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
         result.put("CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
         result.put("org.apache.logging.log4j.core.util.CachedClock", new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });

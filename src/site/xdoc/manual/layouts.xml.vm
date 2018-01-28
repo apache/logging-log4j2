@@ -826,7 +826,7 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <p>
                   Users may revert back to a millisecond-precision clock when running on Java 9 by setting system property
-                  <code>log4j2.Clock</code> to <code>org.apache.logging.log4j.core.util.SystemMillisClock</code>.
+                  <code>log4j2.Clock</code> to <code>SystemMillisClock</code>.
                 </p>
               </td>
             </tr>
