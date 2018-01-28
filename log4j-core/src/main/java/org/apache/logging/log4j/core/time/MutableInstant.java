@@ -34,6 +34,7 @@ import java.io.Serializable;
 @PerformanceSensitive("allocation")
 public class MutableInstant implements Instant, Serializable {
 
+    private static final long serialVersionUID = 1L;
     private static final int MILLIS_PER_SECOND = 1000;
     private static final int NANOS_PER_MILLI = 1000_000;
     private static final int NANOS_PER_SECOND = MILLIS_PER_SECOND * NANOS_PER_MILLI;
