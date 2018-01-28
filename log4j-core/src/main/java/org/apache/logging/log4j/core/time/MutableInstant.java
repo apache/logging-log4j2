@@ -55,15 +55,14 @@ public class MutableInstant implements Instant, Serializable {
     @Override
     public long getEpochMillisecond() {
         final int millis = nanoOfSecond / NANOS_PER_MILLI;
-        long epochMillisecond = epochSecond * MILLIS_PER_SECOND + millis;
-        return epochMillisecond;
+        return epochSecond * MILLIS_PER_SECOND + millis;
     }
 
     @Override
     public int getNanoOfMillisecond() {
         final int millis = nanoOfSecond / NANOS_PER_MILLI;
-        int nanoOfMillisecond = nanoOfSecond - (millis * NANOS_PER_MILLI); // cheaper than nanoOfSecond % NANOS_PER_MILLI
-        return nanoOfMillisecond;
+         // cheaper than nanoOfSecond % NANOS_PER_MILLI
+        return nanoOfSecond - (millis * NANOS_PER_MILLI);
     }
 
     public void initFrom(final Instant other) {
