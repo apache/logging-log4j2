@@ -164,6 +164,9 @@
       <action issue="LOG4J2-2229" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Jackson from 2.9.3 to 2.9.4.
       </action>
+      <action issue="LOG4J2-2228" dev="ggregory" type="update" due-to="Gary Gregory">
+        Split off ZeroMq/JeroMq support into a new module log4j-jeromq.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">

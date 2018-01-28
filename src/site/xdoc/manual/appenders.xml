@@ -5219,6 +5219,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <a name="JeroMQAppender"/>
         <subsection name="ZeroMQ/JeroMQ Appender">
           <p>
+             As of Log4j 2.11.0, ZeroMQ/JeroMQ  support has moved from the existing module <code>logj-core</code> to the new module <code>log4j-jeromq</code>.
+          </p>
+          <p>
             The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log
             events to one or more ZeroMQ endpoints.
           </p>
