@@ -1,3 +1,73 @@
+# Apache Log4j 2.11.0 Release Notes
+
+## List of Binary Compatibility Breaking Changes in log4j-core
+
+Log4j 2.11.0 moves code from `log4j-core` to several new Maven modules. Dependencies to other jars that used to be 
+optional in `log4j-core` are now required in the new modules. The code in these modules have been repackaged.
+
+These changes do not affect your configuration files.
+
+The new modules are:
+
+### log4j-cvs
+
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-cvs`
+
+* Old package: `org.apache.logging.log4j.core.layout`
+* New package: `org.apache.logging.log4j.csv.layout`
+
+### log4j-jeromq
+
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-jeromq`
+
+* Old package: `org.apache.logging.log4j.core.appender.mom.jeromq`
+* New package: `org.apache.logging.log4j.jeromq.appender`
+
+### log4j-jpa
+
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-jpa`
+
+* Old package 1: `org.apache.logging.log4j.core.appender.db.jpa`
+* New package 1: `org.apache.logging.log4j.jpa.appender`
+
+* Old package 2: `org.apache.logging.log4j.core.appender.db.jpa.converter`
+* New package 2: `org.apache.logging.log4j.jpa.converter`
+
+### log4j-kafka
+
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-kafka`
+
+* Old package: `org.apache.logging.log4j.core.appender.mom.kafka`
+* New package: `org.apache.logging.log4j.kafka.appender`
+
+### log4j-mongodb2
+
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-mongodb2`
+
+* Old package: `org.apache.logging.log4j.mongodb`
+* New package: `org.apache.logging.log4j.mongodb2`
+
+### log4j-mongodb3
+
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-mongodb3`
+
+* Old package: `org.apache.logging.log4j.mongodb`
+* New package: `org.apache.logging.log4j.mongodb3`
+
+### log4j-smtp
+
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-smtp`
+
+* Old package: `org.apache.logging.log4j.core.appender`
+* New package: `org.apache.logging.log4j.smtp.appender`
+
 # Apache Log4j 2.10.0 Release Notes
 
 The Apache Log4j 2 team is pleased to announce the Log4j 2.10.0 release!

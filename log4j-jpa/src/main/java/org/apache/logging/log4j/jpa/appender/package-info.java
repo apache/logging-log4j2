@@ -14,27 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.db.jdbc;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-public class JdbcH2TestHelper {
-
-    public static final String CONNECTION_STRING = "jdbc:h2:mem:Log4j";
-    public static final String USER_NAME = "sa";
-    public static final String PASSWORD = "";
-    
-    public static ConnectionSource TEST_CONFIGURATION_SOURCE = new AbstractConnectionSource() {
-        @Override
-        public Connection getConnection() throws SQLException {
-            return JdbcH2TestHelper.getConnection();
-        }
-    };
-
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(CONNECTION_STRING, USER_NAME, PASSWORD);
-    }
-
-}
+/**
+ * The JPA Appender supports writing log events to a relational database using the Java Persistence API. You will need
+ * a JDBC driver on your classpath for the database you wish to log to. You will also need the Java Persistence API 2.1
+ * and your JPA provider of choice on the class path; these Maven dependencies are optional and will not automatically
+ * be added to your classpath.
+ */
+package org.apache.logging.log4j.jpa.appender;

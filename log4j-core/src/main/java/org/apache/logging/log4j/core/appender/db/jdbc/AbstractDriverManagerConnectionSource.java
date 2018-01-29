@@ -63,7 +63,7 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
         private char[] userName;
 
         @SuppressWarnings("unchecked")
-        protected B asBuilder() {
+        public B asBuilder() {
             return (B) this;
         }
 

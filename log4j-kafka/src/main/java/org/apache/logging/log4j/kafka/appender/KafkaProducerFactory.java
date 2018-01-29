@@ -14,27 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+package org.apache.logging.log4j.kafka.appender;
 
-public class JdbcH2TestHelper {
+import java.util.Properties;
 
-    public static final String CONNECTION_STRING = "jdbc:h2:mem:Log4j";
-    public static final String USER_NAME = "sa";
-    public static final String PASSWORD = "";
-    
-    public static ConnectionSource TEST_CONFIGURATION_SOURCE = new AbstractConnectionSource() {
-        @Override
-        public Connection getConnection() throws SQLException {
-            return JdbcH2TestHelper.getConnection();
-        }
-    };
+import org.apache.kafka.clients.producer.Producer;
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(CONNECTION_STRING, USER_NAME, PASSWORD);
-    }
+/**
+ * Creates <a href="https://kafka.apache.org/">Apache Kafka</a> {@link Producer} instances.
+ */
+public interface KafkaProducerFactory {
+
+    /**
+     * Creates a new Kafka Producer from the given configuration properties.
+     * 
+     * @param config
+     *            <a href="https://kafka.apache.org/documentation.html#producerconfigs">Kafka Producer configuration
+     *            properties.</a>
+     * @return a new Kafka {@link Producer}.
+     */
+    Producer<byte[], byte[]> newKafkaProducer(Properties config);
 
 }
