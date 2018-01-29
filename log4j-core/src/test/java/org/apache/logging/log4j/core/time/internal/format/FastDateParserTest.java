@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.util.datetime;
+package org.apache.logging.log4j.core.time.internal.format;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,6 +34,10 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.logging.log4j.core.time.internal.format.DateParser;
+import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FastDateParser;
+import org.apache.logging.log4j.core.time.internal.format.FormatCache;
 import org.junit.Assert;
 import org.junit.Test;
 

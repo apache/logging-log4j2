@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.util.datetime;
+package org.apache.logging.log4j.core.time.internal.format;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,10 +24,11 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
 import org.junit.Test;
 
-import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.*;
+import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat.*;
 import static org.junit.Assert.*;
 
 /**

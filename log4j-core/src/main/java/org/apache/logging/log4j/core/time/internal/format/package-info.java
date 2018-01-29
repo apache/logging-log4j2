@@ -17,4 +17,4 @@
 /**
  * Log4j 2 date formatting classes.
  */
-package org.apache.logging.log4j.core.util.datetime;
+package org.apache.logging.log4j.core.time.internal.format;

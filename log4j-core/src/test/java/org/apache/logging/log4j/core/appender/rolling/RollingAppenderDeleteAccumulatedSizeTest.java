@@ -23,8 +23,8 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;

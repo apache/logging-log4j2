@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+      <action issue="LOG4J2-2224" dev="rpopma" type="update">
+        Renamed package core.util.datetime to core.time.internal.format to clarify these classes are to be considered private.
+      </action>
       <action issue="LOG4J2-2225" dev="rpopma" type="update">
         Moved time-related classes from core.util to core.time. Classes considered private moved to core.time.internal.
       </action>

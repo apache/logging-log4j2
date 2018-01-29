@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.util.datetime;
+package org.apache.logging.log4j.core.time.internal.format;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

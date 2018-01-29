@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.junit.CleanFolders;
 import org.junit.Assert;
 import org.junit.Rule;

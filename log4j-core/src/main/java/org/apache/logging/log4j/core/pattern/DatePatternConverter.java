@@ -27,9 +27,9 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**

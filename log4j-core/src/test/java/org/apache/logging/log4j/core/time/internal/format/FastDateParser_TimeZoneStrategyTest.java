@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.util.datetime;
+package org.apache.logging.log4j.core.time.internal.format;
 
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.apache.logging.log4j.core.time.internal.format.FastDateParser;
 import org.junit.Assert;
 import org.junit.Test;
 
